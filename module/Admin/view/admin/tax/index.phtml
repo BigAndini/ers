@@ -1,0 +1,28 @@
+<?php
+ // module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+ $title = 'Tax';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <p>
+     <a href="<?php echo $this->url('admin/tax', array('action'=>'add'));?>">Add new tax group</a>
+ </p>
+
+ <table class="table">
+ <tr>
+     <th>Name</th>
+     <th>Percentage</th>
+     <th>&nbsp;</th>
+ </tr>
+ <?php foreach ($taxes as $tax) : ?>
+ <tr>
+     <td><?php echo $this->escapeHtml($tax->name);?></td>
+     <td><?php echo $this->escapeHtml($tax->percentage);?></td>
+     <td>
+         <a href="<?php echo $this->url('admin/tax', array('action'=>'edit', 'id' => $tax->id));?>">Edit</a>
+         <a href="<?php echo $this->url('admin/tax', array('action'=>'delete', 'id' => $tax->id));?>">Delete</a>
+     </td>
+ </tr>
+ <?php endforeach; ?>
+ </table>

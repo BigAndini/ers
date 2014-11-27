@@ -1,0 +1,20 @@
+<?php
+// module/PreReg/view/pre-registration/product/index.phtml:
+
+$title = 'User Login';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('user', array('action' => 'login')));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+echo $this->formRow($form->get('email'));
+echo $this->formRow($form->get('password'));
+echo $this->formSubmit($form->get('submit'));
+?>
+<a href="<?php echo $this->url('product');?>">Cancel</a>
+<?php
+echo $this->form()->closeTag();

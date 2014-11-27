@@ -1,0 +1,178 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 07.08.2014, 20:15:35
+    Author     : andi
+*/
+
+/** /public/css/StickyNotes.css */
+@import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);
+
+* { box-sizing:border-box; }
+
+body { 
+    /*background:url(http://subtlepatterns.com/patterns/little_pluses.png) #cacaca;*/
+    background: #fff;
+}
+
+#sticky-notes {
+    float: left;
+}
+/*#create, textarea  {
+    float:left;
+    padding:25px 25px 40px;
+    margin:0 20px 20px 0;
+    width:250px;
+    height:250px;
+}*/
+
+#create {
+    user-select:none;
+    padding:20px;
+    border-radius:20px;
+    text-align:center;
+    border:15px solid rgba(0,0,0,0.1);
+    cursor:pointer;
+    color:rgba(0,0,0,0.1);
+    font:220px "Helvetica", sans-serif;
+    line-height:185px;
+}
+
+#create:hover { border-color:rgba(0,0,0,0.2); color:rgba(0,0,0,0.2); }
+
+/*textarea {
+    font:20px 'Gloria Hallelujah', cursive;
+    line-height:1.5;
+    border:0;
+    border-radius:3px;
+    background: linear-gradient(#F9EFAF, #F7E98D);
+    background: -webkit-linear-gradient(#F9EFAF, #F7E98D);
+    box-shadow:0 4px 6px rgba(0,0,0,0.1);
+    overflow:hidden;
+    transition:box-shadow 0.5s ease;
+    transition:-webkit-box-shadow 0.5s ease;
+    font-smoothing:subpixel-antialiased;
+    max-width:520px;
+    max-height:250px;
+}
+textarea:hover { box-shadow:0 5px 8px rgba(0,0,0,0.15); }
+textarea:focus { box-shadow:0 5px 12px rgba(0,0,0,0.2); outline:none; }*/
+
+.delete-sticky{
+    float: left;
+    margin: 5px 0 0 -35px;
+    display: none;
+}
+a.delete-sticky {
+    color: red;
+}
+.sticky-note{
+    float: left;
+}
+.sticky-note:hover .delete-sticky{
+    display: block;
+}
+.clear-both {
+    clear: both;
+}
+
+.navbar-admin {
+    color: #fff;
+  background-image: -webkit-linear-gradient(top, #3c3c3c 0%, #222222 100%);
+  background-image: linear-gradient(to bottom, #3c3c3c 0%, #222222 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3c3c3c', endColorstr='#ff222222', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+input, button, select, textarea {
+    display: block;
+}
+
+label {
+    margin-bottom: 10px;
+    display: block;
+}
+
+.product-view {
+    border: 1px solid #aaa;
+    padding: .5em;
+    margin-bottom: 1em;
+    position: relative;
+}
+.clearfix {
+    clear:both;
+}
+
+.product-image {
+    float: left;
+}
+
+.desc-long {
+    width: 300px;
+}
+
+.next-price {
+    position: absolute;
+    top: .5em;
+    right: .5em;
+}
+
+.desc-long {
+    float: left;
+}
+.product-price {
+    font-size: 3em;
+    font-weight: bold;
+    display: block;
+}
+.product-price-div {
+    text-align: right;
+    height: 100px;
+}
+.product-price-div input {
+    float: right;
+}
+
+.add-to-shopping-cart {
+    text-align: right;
+}
+
+.inner-container {
+    float: left;
+    margin: 1em;
+}
+
+.add-to-cart {
+    float:right;
+}
+
+.add-to-cart .price {
+    font-size: 2.5em;
+}
+
+.main-container {
+    width: 680px;
+}
+.shopping-cart-container {
+    width: 200px;
+}
+
+.footer {
+    margin: 1em;
+}
+
+.product-container {
+    height: 80px;
+}
+
+#submitbutton {
+    margin-right: 10px;
+}
+
+.product-detail {
+    text-align: right;
+}

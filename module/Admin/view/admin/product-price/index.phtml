@@ -1,0 +1,28 @@
+<?php
+ // module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+ $title = 'Product Price';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <p>
+     <a href="<?php echo $this->url('admin/product-price', array('action'=>'add'));?>">Add new product</a>
+ </p>
+
+ <table class="table">
+ <tr>
+    <th>Price</th>
+    <th>Availability</th>
+    <th>&nbsp;</th>
+ </tr>
+ <?php foreach ($productprices as $price) : ?>
+ <tr>
+     <td><?php echo $this->escapeHtml($price->charge);?></td>
+     <td><?php echo $this->escapeHtml($price->activeFrom).' - '.$this->escapeHtml($price->activeFrom);?></td>
+     <td>
+         <a href="<?php echo $this->url('admin/product-price', array('action'=>'edit', 'id' => $price->id));?>">Edit</a>
+         <a href="<?php echo $this->url('admin/product-price', array('action'=>'delete', 'id' => $price->id));?>">Delete</a>
+     </td>
+ </tr>
+ <?php endforeach; ?>
+ </table>

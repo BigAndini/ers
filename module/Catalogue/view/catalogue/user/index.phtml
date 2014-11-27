@@ -1,0 +1,33 @@
+<?php
+ // module/Catalogue/view/registration-system/user/index.phtml:
+
+ $title = 'Users';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <p>
+     <a href="<?php echo $this->url('user', array('action'=>'add'));?>">Add new user</a>
+ </p>
+
+ <table class="table">
+ <tr>
+     <th>User</th>
+     <th>Email</th>
+     <th>&nbsp;</th>
+ </tr>
+ <?php foreach ($users as $u) : ?>
+ <tr>
+     <td><?php echo $this->escapeHtml($u->name);?></td>
+     <td><?php echo $this->escapeHtml($u->email);?></td>
+     <td>
+         <a href="<?php echo $this->url('user',
+             array('action'=>'edit', 'id' => $u->id));?>">Edit</a>
+         <a href="<?php echo $this->url('user',
+             array('action'=>'delete', 'id' => $u->id));?>">Delete</a>
+     </td>
+ </tr>
+ <?php endforeach; ?>
+ </table>
+ <?php if($cart != '') { ?>
+ <h3>cart: <?php echo $cart; ?></h3>
+ <?php } ?>

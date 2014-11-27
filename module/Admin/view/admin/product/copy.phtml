@@ -1,0 +1,34 @@
+<?php
+// module/Album/view/album/album/add.phtml:
+
+$title = 'Copy Product';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url(
+    'admin/product',
+    array(
+        'action' => 'copy',
+        'id'     => $this->id,
+    )
+));
+#$form->setAttribute('action', $this->url('admin/product', array('action' => 'copy')));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+?>
+<input type="hidden" name="id" value="0" />
+<?php
+echo $this->formRow($form->get('order'));
+echo $this->formRow($form->get('name'));
+echo $this->formRow($form->get('shortDescription'));
+echo $this->formRow($form->get('longDescription'));
+echo $this->formRow($form->get('personalized'));
+echo $this->formRow($form->get('Tax_id'));
+echo $this->formSubmit($form->get('submit'));
+?>
+<a href="<?php echo $this->url('admin/product');?>">Cancel</a>
+<?php
+echo $this->form()->closeTag();

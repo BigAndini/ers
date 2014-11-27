@@ -1,0 +1,56 @@
+<?php
+// module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+$title = 'Product Overview';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('admin/product', array('action'=>'add'));?>">Add new product</a>
+</p>
+
+<table class="table">
+    <tr>
+        <th>Order</th>
+        <th>Name</th>
+        <th>Variant</th>
+        <th colspan="2">Base Price</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+    </tr>
+<?php foreach ($products as $product) : ?>
+    <tr>
+        <td><?php echo $this->escapeHtml($product->order);?></td>
+        <td><?php 
+            echo $this->escapeHtml($product->name);
+            if($product->personalized == 1) {
+                ?> <img src="/img/icons/32px/user.png" alt="(personalized)" title="This product needs to be linked to a user" /><?php
+            }
+        ?></td>
+        <td>
+            <a href="<?php echo $this->url('admin/product-variant', array('action'=>'add', 'id' => $product->id));?>"><?php echo $this->translate('Add Product Variant'); ?></a>
+            <?php foreach($product->getProductVariants() as $variant) : ?>
+            <p>
+                <span><?php echo $variant->name; ?></span>
+                <a href="<?php echo $this->url('admin/product-variant', array('action'=>'edit', 'id' => $variant->id));?>">edit</a>
+                <a href="<?php echo $this->url('admin/product-variant', array('action'=>'delete', 'id' => $variant->id));?>">delete</a></p>
+            <?php endforeach; ?>
+        </td>
+        <td colspan="2">
+            <a href="<?php echo $this->url('admin/product-price', array('action'=>'add', 'id' => $product->id));?>"><?php echo $this->translate('Add Product Price'); ?></a>
+            <?php foreach($product->getProductPrices('charge ASC') as $price) : ?>
+            <p>
+                <span><?php echo $price->charge; ?>,-&nbsp;€</span>
+                <a href="<?php echo $this->url('admin/product-price', array('action'=>'edit', 'id' => $price->id));?>">edit</a>
+                <a href="<?php echo $this->url('admin/product-price', array('action'=>'delete', 'id' => $price->id));?>">delete</a></p>
+            <?php endforeach; ?>
+        </td>
+        <td>&nbsp;</td>
+        <td>
+            <a href="<?php echo $this->url('admin/product', array('action'=>'edit', 'id' => $product->id));?>"><?php echo $this->translate('Edit'); ?></a>
+            <a href="<?php echo $this->url('admin/product', array('action'=>'copy', 'id' => $product->id));?>"><?php echo $this->translate('Copy'); ?></a>
+            <a href="<?php echo $this->url('admin/product', array('action'=>'delete', 'id' => $product->id));?>"><?php echo $this->translate('Delete'); ?></a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

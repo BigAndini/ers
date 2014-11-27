@@ -1,0 +1,69 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?php #echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?php echo $this->headTitle($this->translate('EJC Registration System'))->setSeparator(' - ')->setAutoEscape(false)  // change Skeleton Application to Sticky Notes ?> 
+
+        <?php echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+
+        <!-- Le styles -->
+        <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+                ->appendStylesheet($this->basePath() . '/css/custom.css')
+                ->prependStylesheet($this->basePath() . '/css/style.css')
+                ->prependStylesheet($this->basePath() . '/css/bootstrap-theme.min.css')
+                ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
+                ->prependStylesheet($this->basePath() . '/js/jquery-ui/jquery-ui.theme.min.css')
+                ->prependStylesheet($this->basePath() . '/js/jquery-ui/jquery-ui.structure.min.css')
+                ->prependStylesheet($this->basePath() . '/js/jquery-ui/jquery-ui.min.css')
+                ->prependStylesheet($this->basePath() . '/js/datetimepicker/jquery-ui-timepicker-addon.min.css')
+        ?>
+
+        <!-- Scripts -->
+        <?php echo $this->headScript()
+            ->prependFile($this->basePath() . '/js/bootstrap.min.js')
+            ->prependFile($this->basePath() . '/js/datetimepicker/jquery-ui-timepicker-addon.min.js')
+            ->prependFile($this->basePath() . '/js/jquery-ui/jquery-ui.min.js')
+            ->prependFile($this->basePath() . '/js/jquery.min.js')            
+            ->appendFile($this->basePath() . '/js/custom.js')
+            ->prependFile($this->basePath() . '/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+            ->prependFile($this->basePath() . '/js/html5shiv.js',   'text/javascript', array('conditional' => 'lt IE 9',))
+        ; ?>
+
+    </head>
+    <body>
+        <nav class="navbar-admin navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar">foo</span>
+                        <span class="icon-bar">bar</span>
+                        <span class="icon-bar">baz</span>
+                    </button>
+                    <a class="navbar-brand" href="<?php echo $this->url('admin') ?>"><?php echo $this->translate('ERS Admin Panel') // change Skeleton Application to Sticky Notes ?></a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Main Site') ?></a></li>
+                        <li class="active"><a href="<?php echo $this->url('admin/tax') ?>"><?php echo $this->translate('Tax') ?></a></li>
+                        <li class="active"><a href="<?php echo $this->url('admin/product') ?>"><?php echo $this->translate('Product') ?></a></li>
+                        <li class="active"><a href="<?php echo $this->url('admin/price-limit') ?>"><?php echo $this->translate('Price Limit') ?></a></li>
+
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+        <div class="container">
+            <?php echo $this->content; ?>
+            <hr>
+            <footer>
+                <p>&copy; <!--2014 - --><?php echo date('Y') ?> by European Juggling Association <?php echo $this->translate('All rights reserved.') ?></p>
+            </footer>
+        </div> <!-- /container -->
+        <?php echo $this->inlineScript() ?>
+    </body>
+</html>

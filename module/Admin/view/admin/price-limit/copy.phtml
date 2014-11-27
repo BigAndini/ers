@@ -1,0 +1,30 @@
+<?php
+// module/Album/view/album/album/add.phtml:
+
+$title = 'Copy Price Limit';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url(
+    'admin/price-limit',
+    array(
+        'action' => 'copy',
+        'id'     => $this->id,
+    )
+));
+#$form->setAttribute('action', $this->url('admin/product', array('action' => 'copy')));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+?>
+<input type="hidden" name="id" value="0" />
+<?php
+#echo $this->formHidden($form->get('id'));
+echo $this->formRow($form->get('name'));
+echo $this->formSubmit($form->get('submit'));
+?>
+<a href="<?php echo $this->url('admin/price-limit');?>">Cancel</a>
+<?php
+echo $this->form()->closeTag();

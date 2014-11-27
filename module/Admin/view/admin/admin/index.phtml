@@ -1,0 +1,14 @@
+<?php
+ // module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+ $title = 'Admin';
+ $this->headTitle($title);
+ ?>
+
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <!--<p>
+     <a href="<?php #echo $this->url('user', array('action'=>'add'));?>">Add new user</a>
+ </p>-->
+ <h3>1. <a href="<?php echo $this->url('admin/tax'); ?>">configure taxes</a></h3>
+ <h3>2. <a href="<?php echo $this->url('admin/product'); ?>">add your products</a></h3>
+ <h3>3. <a href="<?php echo $this->url('admin/product'); ?>">add prices to your products</a></h3>
