@@ -20,17 +20,17 @@ Installation instructions
 
 3. create a mysql database and user
 
-mysql> CREATE DATABASE ers CHARACTER SET utf8 COLLATE utf8_bin;
-mysql> GRANT ALL PRIVILEGES ON ers.* TO 'ers'@'localhost' IDENTIFIED BY 'secureerspass';
-mysql> exit;
+	mysql> CREATE DATABASE ers CHARACTER SET utf8 COLLATE utf8_bin;
+	mysql> GRANT ALL PRIVILEGES ON ers.* TO 'ers'@'localhost' IDENTIFIED BY 'secureerspass';
+	mysql> exit;
 
 4. load database scheme
 
-mysql < install/ers.sql
+	mysql < install/ers.sql
 
 5. load database example data
 
-mysql < install/ers-insterts.sql
+	mysql < install/ers-insterts.sql
 
 Administration information
 --------------------------
