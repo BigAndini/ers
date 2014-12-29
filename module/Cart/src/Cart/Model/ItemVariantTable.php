@@ -15,6 +15,6 @@ class ItemTable extends Table {
     public function __construct(Adapter $adapter) {
         $this->adapter = $adapter;
         $this->table = 'Item';
-        $this->entityClass = '\Admin\Model\Entity\Item';
+        $this->entityClass = '\Cart\Model\Entity\Item';
     }
 }

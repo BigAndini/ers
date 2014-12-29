@@ -33,6 +33,12 @@ class ProductViewForm extends Form
                 'type'  => 'hidden',
             ),
         ));
+        $this->add(array(
+            'name' => 'Price_id',
+            'attributes' => array(
+                'type'  => 'hidden',
+            ),
+        ));
         
         $this->add(array(
             'name' => 'submit',

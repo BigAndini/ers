@@ -6,9 +6,10 @@ return array(
         'ZfcUser',
         'BjyAuthorize',
         'Application',
-        'Admin',
         'Catalogue',
-        'Cart',
+        #'Cart',
+        'Order',
+        'Admin',
     ),
 
     // These are various options for the listeners attached to the ModuleManager

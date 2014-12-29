@@ -141,11 +141,6 @@ label {
     text-align: right;
 }
 
-.inner-container {
-    float: left;
-    margin: 1em;
-}
-
 .add-to-cart {
     float:right;
 }
@@ -154,9 +149,6 @@ label {
     font-size: 2.5em;
 }
 
-.main-container {
-    width: 680px;
-}
 .shopping-cart-container {
     width: 200px;
 }

@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Cart\Model;
+namespace Order\Model;
 
 use Zend\Db\Adapter\Adapter;
 
@@ -15,6 +15,6 @@ class ProductVariantValueTable extends Table {
     public function __construct(Adapter $adapter) {
         $this->adapter = $adapter;
         $this->table = 'ProductVariantValue';
-        $this->entityClass = '\Cart\Model\Entity\ProductVariantValue';
+        $this->entityClass = '\Order\Model\Entity\ProductVariantValue';
     }
 }

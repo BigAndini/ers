@@ -1,4 +1,4 @@
-<?php
+
 
 /* 
  * To change this license header, choose License Headers in Project Properties.
@@ -6,15 +6,15 @@
  * and open the template in the editor.
  */
 
-namespace Cart\Model;
+namespace Order\Model;
 
 use Zend\Db\Adapter\Adapter;
 
-class ProductVariantValueTable extends Table {
+class PaymentTypeTable extends Table {
     
     public function __construct(Adapter $adapter) {
         $this->adapter = $adapter;
-        $this->table = 'ProductVariantValue';
-        $this->entityClass = '\Cart\Model\Entity\ProductVariantValue';
+        $this->table = 'PaymentType';
+        $this->entityClass = '\Order\Model\Entity\PaymentType';
     }
 }

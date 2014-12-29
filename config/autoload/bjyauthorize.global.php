@@ -134,6 +134,11 @@ return [
                 ['controller' => 'Cart\Controller\ShoppingCart', 'roles' => ['guest']],
                 ['controller' => 'Cart\Controller\Checkout', 'roles' => ['user']],
                 
+                /* Order */
+                ['controller' => 'Order\Controller\Cart', 'roles' => ['guest']],
+                ['controller' => 'Order\Controller\Order', 'roles' => ['guest']],
+                ['controller' => 'Order\Controller\Package', 'roles' => ['guest']],
+                
                 /* Catalogue */
                 ['controller' => 'Catalogue\Controller\Product', 'roles' => ['guest']],
                 

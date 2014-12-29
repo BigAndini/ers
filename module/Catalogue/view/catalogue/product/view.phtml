@@ -19,7 +19,7 @@ else:
     <?php
     $form = $this->form;
     $form->setAttribute('action', $this->url(
-        'shoppingcart',
+        'cart',
         array(
             'action' => 'add',
         )
@@ -27,14 +27,17 @@ else:
     $form->prepare();
 
     echo $this->form()->openTag($form);
-    echo $this->formHidden($form->get('id'));
+    #echo $this->formHidden($form->get('id'));
+    $form->get('Product_id')->setAttribute('value', $product->id);
     echo $this->formHidden($form->get('Product_id'));
+    $price = $product->getPrice();
+    
     for($i = 0; $i<$form->getVariantCounter(); $i++) {
         echo $this->formRow($form->get('variant_'.$i));
     }
     ?>
     <div class="product-price-div">
-        <span class="product-price"><?php echo $product->getPrice()->charge.",- €"; ?></span>    
+        <span class="product-price"><?php echo $price->charge.",- €"; ?></span>    
         <?php echo $this->formSubmit($form->get('submit')); ?>
     </div>
     <?php

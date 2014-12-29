@@ -49,7 +49,7 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
-                        <li class="active"><a href="<?php echo $this->url('shoppingcart') ?>"><?php echo $this->translate('My Shopping Cart') ?></a></li>
+                        <li class="active"><a href="<?php echo $this->url('cart') ?>"><?php echo $this->translate('My Shopping Cart') ?></a></li>
 
                     </ul>
                 </div><!--/.nav-collapse -->
@@ -59,10 +59,6 @@
             <div class="inner-container main-container">
                 <?php echo $this->content; ?>
             </div> <!-- /container -->
-            <div class="inner-container shopping-cart-container">
-                <h4>Your Shopping Cart</h4>
-                <p>Total sum: 0,- €</p>
-            </div> <!-- /shopping-cart -->
         </div>
         <div class="footer">
             <hr>
