@@ -14,7 +14,7 @@ Installation instructions
 
 1. get a copy of the project:
 
-$ git clone https://github.com/inbaz/ers
+	$ git clone https://github.com/inbaz/ers
 
 2. create a VirtualHost running PHP (We tested on PHP 5.5, maybe 5.4 is working, 5.3 doesn't)
 
