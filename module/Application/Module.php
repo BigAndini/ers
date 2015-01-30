@@ -19,6 +19,15 @@ class Module
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+
+        
+        
+        #$sm = $e->getApplication()->getServiceManager();
+        // Add ACL information to the Navigation view helper
+        #$authorize = $sm->get('BjyAuthorize\Service\Authorize');
+        #$acl = $authorize->getAcl();
+        #\Zend\View\Helper\Navigation::setDefaultAcl($acl);
+        #\Zend\View\Helper\Navigation::setDefaultRole('guest');
     }
 
     public function getConfig()

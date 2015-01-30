@@ -40,7 +40,7 @@ $this->headTitle($title);
             <a href="<?php echo $this->url('admin/product-price', array('action'=>'add', 'id' => $product->id));?>"><?php echo $this->translate('Add Product Price'); ?></a>
             <?php foreach($product->getProductPrices('charge ASC') as $price) : ?>
             <p>
-                <span><?php echo $price->charge; ?>,-&nbsp;€</span>
+                <span><?php echo $this->currencyFormat($price->charge, 'EUR', null, 'de_DE'); ?></span>
                 <a href="<?php echo $this->url('admin/product-price', array('action'=>'edit', 'id' => $price->id));?>">edit</a>
                 <a href="<?php echo $this->url('admin/product-price', array('action'=>'delete', 'id' => $price->id));?>">delete</a></p>
             <?php endforeach; ?>

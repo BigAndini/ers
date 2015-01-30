@@ -168,3 +168,110 @@ label {
 .product-detail {
     text-align: right;
 }
+
+#cart-widget {
+    padding: .5em 0;
+    text-align: right;
+    
+}
+
+#cart-widget a {
+    margin: 0 5px;
+}
+
+.order-step {
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    /* 
+     * width of 390px 
+     */
+    width: 265px;
+    margin-right: 20px;
+    padding: 10px 15px;
+    line-height: 40px;
+    font-size: 25px;
+    float: left;
+}
+.order-step-no {
+    border: 1px solid #000;
+    border-radius:30px;
+    font-weight: normal;
+    padding: 3px 10px;
+}
+.order-steps .active {
+    font-weight: bold;
+}
+
+.checkout {
+    text-align: right;
+    margin: 20px 0;
+}
+
+.col-description {
+    width: 320px;
+}
+.col-belongsto {
+    width: 230px;
+}
+.col-price {
+    width: 80px;
+    text-align: right;
+}
+.col-tools {
+    width: 50px;
+}
+
+.cart-sum {
+    float: right;
+    margin-right: 85px;
+}
+.sum-table {
+    /*width: 300px;*/
+}
+
+.col-sum {
+    width: 150px;
+    text-align: right;
+}
+
+.total-sum {
+    font-size: 16px;
+    font-weight: bold;
+}
+.col-sumdesc {
+    width: 220px;
+}
+
+.payment-desc {
+    margin-left: 18px;
+}
+
+.sum-price {
+    font-weight: bold;
+    font-size: 18px;
+    text-align: right;
+}
+.sum-desc {
+    font-weight: bold;
+    font-size: 18px;
+    text-align: right;
+}
+
+.order-info {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    /* 
+     * width of 390px 
+     */
+    width: 550px;
+    margin-top: 30px;
+    padding: 10px 15px;
+    float: left;
+}
+
+.order-info-left {
+    margin-right: 10px;
+}
+.order-info-right {
+    margin-left: 10px;
+}

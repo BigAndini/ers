@@ -1,0 +1,134 @@
+<html>
+    <head>
+        <style type="text/css">
+            * {
+                font-family: sans-serif;
+            }
+            .clear-both {
+                clear: both;
+            }
+            .small {
+                font-size: 12px;
+            }
+            .very-small {
+                font-size: 10px;
+            }
+            .bluetext {
+                color: #5278cf;
+            }
+            .greytext {
+                color: #888;
+            }
+            .initial-info {
+                width: 40%;
+            }
+            .codes {
+                width: 250px;
+                position: absolute;
+                top: 100px;
+                right: 0px;
+                border: 1px solid #eee;
+            }
+            .very-small p {
+                margin: 2px;
+                padding: 0;
+            }
+            .very-small h1 {
+                color: #5278cf;
+                font-size: 32px;
+            }
+            .justify {
+                text-align: justify;
+            }
+            .disclaimer {
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 1mm 2mm;
+            }
+        </style>
+    </head>
+    <body>
+        
+        <h1><img src="/home/ers/www/ers.sixhop.net/public/img/logo.jpg" alt="EJC 2015 Bruneck" /> eTicket <?php echo $name; ?></h1>
+        <div class="codes">
+        <!--<img src="/home/ers/www/ers.sixhop.net/public/img/qr-code_test.jpg" alt="AA-BB-CC-DD" />-->
+        <!--<img src='<?php echo $this->qr; ?>' alt="foo" />-->
+            <img src="<?php echo $qrcode; ?>" alt="QR-Code is missing, please regenerate your eTicket" /><br />
+            <img src="<?php echo $barcode; ?>" alt="Barcode is missing, please regenerate your eTicket" />
+        </div>
+        <div class="initial-info very-small">
+            <p class="bluetext">Thank you for registering for the 34<sup>th</sup> European Juggling Convention!</p>
+            <p>Your registration helps us to improve EJC 2011 for you and for all jugglers.There are three steps to your convention badge:</p>
+            <p class="greytext">Vielen Dank für Deine Anmeldung zur 34ten Europäischen Jonglierkonvention! Mit Deiner Anmeldung hilfst Du uns, die EJC 2011 für Dich und alle andere Teilnehmer noch besser zu machen. Bitte beachte die folgenden drei Schritte:</p>
+            
+        </div>
+        <div class="clear-both"></div>
+        <div class="very-small">
+            <table>
+                <tr>
+                    <td>
+                        <h1>1</h1>
+                    </td>
+                    <td>
+                        <p>Please print this e-ticket, keep it in safe custody and do not forward it to a third person. It is a valuable document and crucial for getting access to the EJC 2011.</p>
+                        <p class="greytext">Bitte drucke diese E-Ticket aus, bewahre es sorgfältig auf und gib es nicht an Dritte weiter. Es ist ein wertvolles Dokument, ohne das der Zugang zur EJC 2011 nicht möglich ist.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1>2</h1>
+                    </td>
+                    <td>
+                        <p>Please read the disclaimer stated below carefully and sign it personally</p>
+                        <p class="greytext">Bitte lies Dir den Haftungsausschluss aufmerksam durch und unterschreibe ihn anschließend persönlich.</p>
+                        <p class="greytext">Nur wenn Du unter 18 Jahre alt bist: Bitte lasse das Formular „Teilnehmer unter 18 Jahren“, das Du hier findest, von Deinen Eltern ausfüllen und unterschreiben. Nur so ist Deine Teilnahme an der EJC 2011 möglich.</p>
+                        <p>Only if you are under 18 years old: Please ask your parents to fill in and sign the form "Participants under 18 years of age" which you find here. Otherwise, your participation is unfortunately not possible.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1>3</h1>
+                    </td>
+                    <td>
+                        <p>Personally present this e-ticket at the registration desk together with any valid ID card in order to receive your convention badge.</p>
+                        <p class="greytext">Zeige dieses E-Ticket gemeinsam mit einem gültigen Ausweis an den Registrierungsschaltern vor, um so Dein Konvention-Badge zu erhalten.</p>
+                    </td>
+                </tr>
+            </table>
+            <div class="very-small">
+                <p>We are looking forward to welcoming you at the Olympic Park in Munich! For further information, please consider also our general terms and conditions, the information letter and www.ejc 2011.org</p>
+                <p class="greytext">Wir freuen uns, Dich bald im Münchner Olympiapark zu begrüßen! Mehr Infos findest Du in unseren AGBs, dem Informationsbrief und auf www.ejc2011.org</p>
+            </div>
+            <table class="disclaimer">
+                <tr>
+                    <td>
+                        <h3>Disclaimer</h3>
+                        <p class="small justify">Bei Teilnahme an der 34ten Europäischen Jonglierkonvention
+                        gilt Haftungsausschluss für die Veranstalter, ihre
+                        Vertreter und Erfüllungsgehilfen für Schäden jeder Art an, es
+                        sei denn, sie beruhen auf einer grob fahrlässigen oder
+                        vorsätzlichen Pflichtverletzung der Veranstalter, ihrer
+                        Vertreter und Erfüllungsgehilfen oder auf der Verletzung des
+                        Lebens, Körpers oder der Gesundheit. Teilnehmer nehmen
+                        aus freiem Willen, auf eigenes Risiko an der Veranstaltung
+                        teil, verantworten ihren Gesundheitszustand selbst und
+                        achten auf diesen.</p>
+                    </td>
+                    <td>
+                        <h3>Haftungsausschluss</h3>
+                        <p class="greytext small justify">Bei Teilnahme an der 34ten Europäischen Jonglierkonvention
+gilt Haftungsausschluss für die Veranstalter, ihre
+Vertreter und Erfüllungsgehilfen für Schäden jeder Art an, es
+sei denn, sie beruhen auf einer grob fahrlässigen oder
+vorsätzlichen Pflichtverletzung der Veranstalter, ihrer
+Vertreter und Erfüllungsgehilfen oder auf der Verletzung des
+Lebens, Körpers oder der Gesundheit. Teilnehmer nehmen
+aus freiem Willen, auf eigenes Risiko an der Veranstaltung
+teil, verantworten ihren Gesundheitszustand selbst und
+achten auf diesen.</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

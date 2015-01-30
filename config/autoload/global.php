@@ -26,8 +26,9 @@ return array(
         ),
     ),
     'module_layouts' => array(
-       'Application'    => 'layout/layout.phtml',
-       'Admin'          => 'layout/admin.phtml',
+        'Application'    => 'layout/layout.phtml',
+        'PreReg'         => 'layout/prereg.phtml',
+        'Admin'          => 'layout/admin.phtml',
     ),
     'session' => array(
         'config' => array(

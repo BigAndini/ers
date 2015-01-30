@@ -92,7 +92,7 @@ class RedirectCallback
      * @param bool $redirect
      * @return mixed
      */
-    private function getRedirect($currentRoute, $redirect = false)
+    protected function getRedirect($currentRoute, $redirect = false)
     {
         $useRedirect = $this->options->getUseRedirectParameterIfPresent();
         $routeExists = ($redirect && $this->routeExists($redirect));
@@ -101,6 +101,7 @@ class RedirectCallback
         }
 
         switch ($currentRoute) {
+            case 'zfcuser/register':
             case 'zfcuser/login':
                 $route = ($redirect) ?: $this->options->getLoginRedirectRoute();
                 return $this->router->assemble(array(), array('name' => $route));

@@ -8,6 +8,8 @@
  */
 
 return array(
+    
+
     'router' => array(
         'routes' => array(
             'home' => array(
@@ -15,45 +17,18 @@ return array(
                 'options' => array(
                     'route'    => '/',
                     'defaults' => array(
-                        'controller' => 'Catalogue\Controller\Product',
+                        'controller' => 'PreReg\Controller\Product',
                         'action'     => 'index',
                     ),
                 ),
             ),
-            
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
-            /*'application' => array(
-                'type'    => 'Literal',
-                'options' => array(
-                    'route'    => '/application',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Application\Controller',
-                        'controller'    => 'Index',
-                        'action'        => 'index',
-                    ),
-                ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Segment',
-                        'options' => array(
-                            'route'    => '/[:controller[/:action]]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
-                            ),
-                        ),
-                    ),
-                ),
-            ),*/
         ),
     ),
     'service_manager' => array(
+        'factories' => array(
+            'main_nav' => 'Zend\Navigation\Service\DefaultNavigationFactory',
+            'top_nav' => 'Zend\Navigation\Service\DefaultNavigationFactory',
+        ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',

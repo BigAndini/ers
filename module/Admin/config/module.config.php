@@ -6,25 +6,24 @@
  * and open the template in the editor.
  */
 
-// module/RegistrationSystem/config/module.config.php:
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Admin\Controller\Admin' => 'Admin\Controller\AdminController',
-            'Admin\Controller\Tax' => 'Admin\Controller\TaxController',
-            'Admin\Controller\Product' => 'Admin\Controller\ProductController',
-            'Admin\Controller\ProductVariant' => 'Admin\Controller\ProductVariantController',
-            'Admin\Controller\ProductVariantValue' => 'Admin\Controller\ProductVariantValueController',
-            'Admin\Controller\ProductPrice' => 'Admin\Controller\ProductPriceController',
-            'Admin\Controller\PriceLimit' => 'Admin\Controller\PriceLimitController',
+            'Admin\Controller\Admin'                => 'Admin\Controller\AdminController',
+            'Admin\Controller\Tax'                  => 'Admin\Controller\TaxController',
+            'Admin\Controller\Product'              => 'Admin\Controller\ProductController',
+            'Admin\Controller\ProductVariant'       => 'Admin\Controller\ProductVariantController',
+            'Admin\Controller\ProductVariantValue'  => 'Admin\Controller\ProductVariantValueController',
+            'Admin\Controller\ProductPrice'         => 'Admin\Controller\ProductPriceController',
+            'Admin\Controller\PriceLimit'           => 'Admin\Controller\PriceLimitController',
         ),
     ),
-     'router' => array(
+    'router' => array(
         'routes' => array(
             'admin' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/admin',
+                    'route' => '/admin[/]',
                     'defaults' => array(
                         'controller' => 'Admin\Controller\Admin',
                         'action' => 'index',
@@ -103,6 +102,29 @@ return array(
                         ),
                     ),
                 ),
+            ),
+        ),
+    ),
+    'service_manager' => array(
+        'factories' => array(
+            'main_nav' => 'Zend\Navigation\Service\DefaultNavigationFactory',
+            'top_nav' => 'Zend\Navigation\Service\DefaultNavigationFactory',
+        ),
+        'abstract_factories' => array(
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Zend\Log\LoggerAbstractServiceFactory',
+        ),
+        'aliases' => array(
+            'translator' => 'MvcTranslator',
+        ),
+    ),
+    'translator' => array(
+        'locale' => 'en_US',
+        'translation_file_patterns' => array(
+            array(
+                'type'     => 'gettext',
+                'base_dir' => __DIR__ . '/../language',
+                'pattern'  => '%s.mo',
             ),
         ),
     ),

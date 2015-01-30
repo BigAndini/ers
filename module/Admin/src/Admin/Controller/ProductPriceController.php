@@ -100,15 +100,14 @@ class ProductPriceController extends AbstractActionController {
         if ($request->isPost()) {
             $form->setInputFilter($productprice->getInputFilter());
             $form->setData($request->getPost());
-            error_log('IN POST');
-
             if ($form->isValid()) {
-                foreach($form->getData() as $k => $v) {
-                    error_log('      '.$k.' '.$v);
+                $data = $form->getData();
+                error_log('charge: '.$data->charge);
+                error_log(var_export($data, true));
+                if(!$this->getTable('ProductPrice')->save($data)) {
+                    error_log('saved product price');
                 }
-                $this->getTable('ProductPrice')->save($form->getData());
 
-                // Redirect to list of productprices
                 return $this->redirect()->toRoute('admin/product');
             }
         }

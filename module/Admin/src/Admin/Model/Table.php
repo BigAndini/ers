@@ -125,7 +125,7 @@ class Table extends AbstractTableGateway implements \Zend\ServiceManager\Service
                 if(get_class($entity->$key) == 'DateTime') {
                     $data[$key] = $entity->$key->format("Y-m-d H:i:s");
                 }
-            } elseif(is_string($entity->$key)) {
+            } elseif(is_string($entity->$key) || is_numeric($entity->$key)) {
                 $data[$key] = $entity->$key;
             } elseif(!isset($entity->$key)) {
                 $data[$key] = null;
@@ -144,8 +144,7 @@ class Table extends AbstractTableGateway implements \Zend\ServiceManager\Service
                 return false;
             }
             return $this->getLastInsertValue();
-        }
-        elseif ($this->getById($id)) {
+        } elseif ($this->getById($id)) {
             $data['id'] = $id;
             if (!$this->update($data, array('id' => $id))) {
                 return false;

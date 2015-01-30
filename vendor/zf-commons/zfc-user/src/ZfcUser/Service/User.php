@@ -90,9 +90,7 @@ class User extends EventProvider implements ServiceManagerAwareInterface
 
         // If user state is enabled, set the default state value
         if ($this->getOptions()->getEnableUserState()) {
-            if ($this->getOptions()->getDefaultUserState()) {
-                $user->setState($this->getOptions()->getDefaultUserState());
-            }
+            $user->setState($this->getOptions()->getDefaultUserState());
         }
         $this->getEventManager()->trigger(__FUNCTION__, $this, array('user' => $user, 'form' => $form));
         $this->getUserMapper()->insert($user);
@@ -123,9 +121,9 @@ class User extends EventProvider implements ServiceManagerAwareInterface
         $pass = $bcrypt->create($newPass);
         $currentUser->setPassword($pass);
 
-        $this->getEventManager()->trigger(__FUNCTION__, $this, array('user' => $currentUser));
+        $this->getEventManager()->trigger(__FUNCTION__, $this, array('user' => $currentUser, 'data' => $data));
         $this->getUserMapper()->update($currentUser);
-        $this->getEventManager()->trigger(__FUNCTION__.'.post', $this, array('user' => $currentUser));
+        $this->getEventManager()->trigger(__FUNCTION__.'.post', $this, array('user' => $currentUser, 'data' => $data));
 
         return true;
     }
@@ -143,9 +141,9 @@ class User extends EventProvider implements ServiceManagerAwareInterface
 
         $currentUser->setEmail($data['newIdentity']);
 
-        $this->getEventManager()->trigger(__FUNCTION__, $this, array('user' => $currentUser));
+        $this->getEventManager()->trigger(__FUNCTION__, $this, array('user' => $currentUser, 'data' => $data));
         $this->getUserMapper()->update($currentUser);
-        $this->getEventManager()->trigger(__FUNCTION__.'.post', $this, array('user' => $currentUser));
+        $this->getEventManager()->trigger(__FUNCTION__.'.post', $this, array('user' => $currentUser, 'data' => $data));
 
         return true;
     }

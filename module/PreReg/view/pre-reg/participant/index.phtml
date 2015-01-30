@@ -1,0 +1,21 @@
+<?php
+
+$title = 'My Participants';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<a href="<?php echo $this->url('participant', array('action'=>'add'));?>">Add new participant</a>
+
+<?php foreach ($participants as $participant) : ?>
+<div class="product-container">
+    <div class="add-to-cart">
+        <h3><?php echo $participant->getPrename()." ".$participant->getSurname(); ?></h3>
+        <p class="product-detail">
+            <?php echo $participant->getBirthday();?>
+            <a href="mailto:<?php echo $participant->getEmail();?>"><?php echo $participant->getEmail();?></a>
+        </p>
+    </div>
+</div>
+<hr />
+
+<?php endforeach; ?>

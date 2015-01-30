@@ -31,6 +31,7 @@ class ProductPrice extends Entity {
                 $this->charge  = $data->charge;
             }
         } elseif(is_array($data)) {
+            error_log(var_export($data, true));
             $this->Product_id = (!empty($data['Product_id'])) ? $data['Product_id'] : null;
             if(isset($data['charge']) && is_numeric($data['charge'])) {
                 $this->charge  = $data['charge'];
@@ -67,46 +68,6 @@ class ProductPrice extends Entity {
                     ),
                 ),
             )));
-
-            /*$inputFilter->add($factory->createInput(array(
-                'name'     => 'validFrom',
-                'required' => true,
-                'filters'  => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'Callback',
-                        'options' => array(
-                            'messages' => array(
-                                    \Zend\Validator\Callback::INVALID_VALUE => 'The valid from date needs to be in date format (yyyy-mm-dd hh:mm:ss)',
-                            ),
-                            'callback' => function($value, $context = array()) {
-                                error_log('value: '.$value);
-                                $Date = \DateTime::createFromFormat('Y-m-d H:i:s', $value);
-                                if(!$Date) {
-                                    return false;
-                                } else {
-                                    return true;
-                                }
-                            },
-                        ),
-                    ),  
-                    array(
-                        'name' => 'Callback',
-                        'options' => array(
-                            'messages' => array(
-                                    \Zend\Validator\Callback::INVALID_VALUE => 'Just logging some information',
-                            ),
-                            'callback' => function($value, $context = array()) {
-                                error_log('given value: '.$value);
-                                return true;
-                            },
-                        ),
-                    ),
-                ),
-            )));*/
 
             $inputFilter->add($factory->createInput(array(
                 'name'     => 'charge',

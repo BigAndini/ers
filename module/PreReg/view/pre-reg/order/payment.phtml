@@ -1,0 +1,40 @@
+<?php
+// module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+$title = 'My Shopping Cart';
+$this->headTitle($title);
+?>
+
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+ 
+<div class="order-steps">
+    <div class="order-step">1: <a href="<?php echo $this->url('order'); ?>">My cart</a></div>
+    <div class="order-step">2: <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">Register</a></div>
+    <div class="order-step active">3: <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">Payment</a></div>
+    <div class="order-step">4: <a href="<?php echo $this->url('order', array('action' => 'checkout')); ?>">Checkout</a></div>
+</div>
+<div class="clear-both"></div>
+<div class="checkout">
+    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'checkout')) ?>">Save payment type</a>
+</div>
+<div>
+    <h1>Choose Paymenttype</h1>
+    <p>
+        <h3><input style="display: inline;" type='radio' name='paymenttype' value='1' /> Bank Transfer</h3>
+        <p class="payment-desc">When your bank transfer has been arrived at our bank account you will be informed by E-Mail when your eTicket is ready for download. <a href="#">more info...</a></p>
+        <!-- put some more information on the information page like the bank account -->
+    </p>
+    <p>
+        <h3><input style="display: inline;" type='radio' name='paymenttype' value='2' /> <img src="<?php echo $this->basePath('img/paymenttypes/paypal.jpg') ?>" alt="PayPal" /></h3>
+        <p class="payment-desc">Secure, easy and fast payment with credit card, direct debit or giropay. PayPal-Account needed. <a href="#">more info...</a></p>
+    </p>
+    <p>
+        <h3><input style="display: inline;" type='radio' name='paymenttype' value='3' /> <img src="<?php echo $this->basePath('img/paymenttypes/creditcard.jpg') ?>" alt="VISA" /></h3>
+        <p class="payment-desc">Pay with your credit card. <a href="#">more info...</a></p>
+    </p>
+</div>
+
+<div class="clear-both"></div>
+<div class="checkout">
+    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'checkout')) ?>">Save payment type</a>
+</div>

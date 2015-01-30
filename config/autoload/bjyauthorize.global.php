@@ -43,11 +43,14 @@ return [
              * 'admin' inheriting from user
              */
             \BjyAuthorize\Provider\Role\Config::class => [
-                'guest' => [],
-                'user'  => [
+                'guest' => [
                     'children' => [
-                        'admin' => [],
-                    ]
+                        'user'  => [
+                            'children' => [
+                                'admin' => [],
+                            ]
+                        ],
+                    ],
                 ],
             ],
 
@@ -116,9 +119,6 @@ return [
              * You may omit the 'action' index to allow access to the entire controller
              */
             \BjyAuthorize\Guard\Controller::class => [
-
-                
-
                 /* Admin */
                 ['controller' => 'Admin\Controller\Admin', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\PriceLimit', 'roles' => ['admin']],
@@ -130,17 +130,13 @@ return [
                 /* Application */
                 ['controller' => 'Application\Controller\Index', 'roles' => ['guest', 'user']],
                 
-                /* Cart */
-                ['controller' => 'Cart\Controller\ShoppingCart', 'roles' => ['guest']],
-                ['controller' => 'Cart\Controller\Checkout', 'roles' => ['user']],
-                
-                /* Order */
-                ['controller' => 'Order\Controller\Cart', 'roles' => ['guest']],
-                ['controller' => 'Order\Controller\Order', 'roles' => ['guest']],
-                ['controller' => 'Order\Controller\Package', 'roles' => ['guest']],
-                
-                /* Catalogue */
-                ['controller' => 'Catalogue\Controller\Product', 'roles' => ['guest']],
+                /* PreReg */
+                ['controller' => 'PreReg\Controller\Cart', 'action' => 'reset', 'roles' => ['user']],
+                #['controller' => 'PreReg\Controller\Cart', 'roles' => ['guest']],
+                ['controller' => 'PreReg\Controller\Order', 'roles' => ['guest']],
+                ['controller' => 'PreReg\Controller\Package', 'roles' => ['guest']],
+                ['controller' => 'PreReg\Controller\Product', 'roles' => ['guest']],
+                ['controller' => 'PreReg\Controller\Participant', 'roles' => ['guest']],
                 
                 /* ZfcUser */
                 ['controller' => 'zfcuser', 'roles' => ['guest']],

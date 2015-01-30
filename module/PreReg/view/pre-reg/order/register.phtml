@@ -1,0 +1,45 @@
+<?php
+// module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+$title = 'My Shopping Cart';
+$this->headTitle($title);
+?>
+
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+ 
+<div class="order-steps">
+    <div class="order-step">1: <a href="<?php echo $this->url('order'); ?>">My cart</a></div>
+    <div class="order-step active">2: <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">Register</a></div>
+    <div class="order-step">3: <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">Payment</a></div>
+    <div class="order-step">4: <a href="<?php echo $this->url('order', array('action' => 'checkout')); ?>">Checkout</a></div>
+</div>
+<div class="clear-both"></div>
+<div class="checkout">
+    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'payment')) ?>">Save purchaser</a>
+</div>
+<div>
+    <table class="table">
+        <tr>
+            <td>It's me:</td>
+            <td>
+                <input style="display: inline;" type='radio' name='userid' value='42' /> Andreas Nitsche<br />
+                <input style="display: inline;" type='radio' name='userid' value='42' /> Tim Adams<br />
+                <input style="display: inline;" type='radio' name='userid' value='42' /> Christian Bross<br />
+            </td>
+        </tr>
+        <tr>
+            <td>I will not take part myself:</td>
+            <td>
+                <input type="text" name="prename" value="prename" />
+                <input type="text" name="surname" value="surname" />
+                <input type="text" name="email" value="email" />
+            </td>
+        </tr>
+    </table>
+    
+</div>
+
+<div class="clear-both"></div>
+<div class="checkout">
+    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'payment')) ?>">Save purchaser</a>
+</div>

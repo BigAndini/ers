@@ -5,11 +5,15 @@ return array(
         'ZfcBase',
         'ZfcUser',
         'BjyAuthorize',
+        'ZendDeveloperTools',
+        'BjyProfiler',
+        #'DoctrineModule',
+        #'DoctrineORMModule',
+        'DOMPDFModule',
+        'QRCode',
         'Application',
-        'Catalogue',
-        #'Cart',
-        'Order',
         'Admin',
+        'PreReg',
     ),
 
     // These are various options for the listeners attached to the ModuleManager

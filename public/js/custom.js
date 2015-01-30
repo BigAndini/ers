@@ -68,6 +68,10 @@ jQuery(function($) {
     $('.datepicker').datepicker({
         dateFormat: "yy-mm-dd",
         addSliderAccess: true,
+        firstDay: 1,
+        changeMonth: true, 
+        changeYear: true, 
+        yearRange: '1900:2015',
 	sliderAccessArgs: { touchonly: false }
     });
     /*$('.datetimepicker').datetimepicker({
