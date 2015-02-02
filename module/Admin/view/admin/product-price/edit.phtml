@@ -20,6 +20,7 @@ $form->prepare();
 echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('id'));
 echo $this->formRow($form->get('charge'));
+echo $this->formRow($form->get('limit'));
 echo $this->formRow($form->get('Product_id'));
 echo $this->formSubmit($form->get('submit'));
 ?>

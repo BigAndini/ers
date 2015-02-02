@@ -10,13 +10,14 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Admin\Model\Entity;
+use ersEntity\Entity;
+use Zend\Session\Container;
 #use RegistrationSystem\Form\UserForm;
 use Admin\Form;
 use Zend\Form\Element;
 
 class ProductPriceController extends AbstractActionController {
-    protected $table;
+    /*protected $table;
     
     public function getTable($name)
     {
@@ -26,11 +27,14 @@ class ProductPriceController extends AbstractActionController {
             $this->table[$name] = $sm->get($className);
         }
         return $this->table[$name];
-    }
+    }*/
     public function indexAction()
     {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
-            'productprices' => $this->getTable('ProductPrice')->fetchAll(),
+            'productprices' => $em->getRepository("ersEntity\Entity\ProductPrice")->findAll(),
          ));
     }
 
@@ -40,13 +44,31 @@ class ProductPriceController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
         
         #$product = $this->getTable('Product')->getById($id);
         $productprice = new Entity\ProductPrice();
-        $productprice->Product_id = $id;
+        $productprice->setProductId($id);
 
         #$form = $this->getServiceLocator()->get('Form\ProductPriceForm');
         $form = new Form\ProductPriceForm();
+        
+        $limits = $em->getRepository("ersEntity\Entity\PriceLimit")
+                ->findBy(array('type' => 'deadline'));
+        $options = array();
+        foreach($limits as $limit) {
+            
+            $options[] = array(
+                'value' => $limit->getId(),
+                'label' => $limit->getType().': '.$limit->getValue(),
+                'selected' => false,
+            );
+            #$options[$limit->getId()] = $limit->getType().': '.$limit->getValue();
+        }
+        $form->get('limit')->setAttribute('options', $options);
+        
         $form->bind($productprice);
         
         $form->get('submit')->setValue('Add');
@@ -59,11 +81,22 @@ class ProductPriceController extends AbstractActionController {
             $form->setData($request->getPost());
             
             if ($form->isValid()) {
-                $productprice->exchangeArray($form->getData());
-                $this->getTable('ProductPrice')->save($productprice);
-
-                // Redirect to list of productprices
-                return $this->redirect()->toRoute('admin/product');
+                $productprice = $form->getData();
+                
+                $limit = $em->getRepository("ersEntity\Entity\PriceLimit")
+                    ->findOneBy(array('id' => $productprice->getData('limit')));
+                
+                $productprice->addLimit($limit);
+                
+                $em->persist($productprice);
+                $em->flush();
+                
+                $context = new Container('context');
+                if(isset($context->route)) {
+                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
+                } else {
+                    return $this->redirect()->toRoute('admin/product');
+                }
             } else {
                 $messages = $form->getMessages();
                 error_log('got '.count($messages).' messages.');
@@ -83,17 +116,42 @@ class ProductPriceController extends AbstractActionController {
 
     public function editAction()
     {
+        
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('admin/product-price', array(
                 'action' => 'add'
             ));
         }
-        $productprice = $this->getTable('ProductPrice')->getById($id);
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $productprice = $em->getRepository("ersEntity\Entity\ProductPrice")
+                ->findOneBy(array('id' => $id));
 
-        #$form = $this->getServiceLocator()->get('Form\ProductPriceForm');
+        error_log('PriceLimits');
+        foreach($productprice->getLimits() as $limit) {
+            error_log('found limit: '.$limit->getType().' '.$limit->getValue());
+        }
         $form = new Form\ProductPriceForm();
+        
         $form->bind($productprice);
+        
+        $limits = $em->getRepository("ersEntity\Entity\PriceLimit")
+                ->findBy(array('type' => 'deadline'));
+        $options = array();
+        foreach($limits as $limit) {
+            $options[] = array(
+                'value' => $limit->getId(),
+                'label' => $limit->getType().': '.$limit->getValue(),
+                'selected' => false,
+            );
+            #$options[$limit->getId()] = $limit->getType().': '.$limit->getValue();
+        }
+        $form->get('limit')->setAttribute('options', $options);
+        
+        
         $form->get('submit')->setAttribute('value', 'Edit');
 
         $request = $this->getRequest();
@@ -101,14 +159,17 @@ class ProductPriceController extends AbstractActionController {
             $form->setInputFilter($productprice->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $data = $form->getData();
-                error_log('charge: '.$data->charge);
-                error_log(var_export($data, true));
-                if(!$this->getTable('ProductPrice')->save($data)) {
-                    error_log('saved product price');
-                }
+                $productprice->exchangeArray($form->getData());
+                
+                $em->persist($productprice);
+                $em->flush();
 
-                return $this->redirect()->toRoute('admin/product');
+                $context = new Container('context');
+                if(isset($context->route)) {
+                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
+                } else {
+                    return $this->redirect()->toRoute('admin/product');
+                }
             }
         }
 
@@ -124,6 +185,9 @@ class ProductPriceController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -131,20 +195,30 @@ class ProductPriceController extends AbstractActionController {
 
             error_log('In POST');
             if ($del == 'Yes') {
-                error_log('delete: yes');
+                
                 $id = (int) $request->getPost('id');
-                $this->getTable('ProductPrice')->removeById($id);
+                $productprice = $em->getRepository("ersEntity\Entity\ProductPrice")
+                        ->findOneBy(array('id' => $id));
+                $em->remove($productprice);
+                $em->flush();
             }
 
-            // Redirect to list of productprices
-            return $this->redirect()->toRoute('admin/product');
-        } else {
-            error_log('No POST');
+            $context = new Container('context');
+            if(isset($context->route)) {
+                return $this->redirect()->toRoute($context->route, $context->params, $context->options);
+            } else {
+                return $this->redirect()->toRoute('admin/product');
+            }
         }
 
+        $productprice = $em->getRepository("ersEntity\Entity\ProductPrice")
+                        ->findOneBy(array('id' => $id));
+        
+        error_log(var_export($productprice, true));
+        
         return array(
             'id'    => $id,
-            'price' => $this->getTable('ProductPrice')->getById($id),
+            'price' => $productprice,
         );
     }
 }

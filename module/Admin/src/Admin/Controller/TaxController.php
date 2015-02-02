@@ -10,12 +10,11 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Admin\Model\Entity;
-#use RegistrationSystem\Form\UserForm;
+use ersEntity\Entity;
 use Admin\Form;
 
 class TaxController extends AbstractActionController {
-    protected $table;
+    /*protected $table;
     
     public function getTable()
     {
@@ -24,12 +23,15 @@ class TaxController extends AbstractActionController {
             $this->table = $sm->get('Admin\Model\TaxTable');
         }
         return $this->table;
-    }
+    }*/
     public function indexAction()
     {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
-             'taxes' => $this->getTable()->fetchAll('percentage ASC'),
-         ));
+            'taxes' => $em->getRepository("ersEntity\Entity\Tax")->findBy(array(), array('percentage' => 'ASC')),
+        ));
     }
 
     public function addAction()
@@ -45,18 +47,13 @@ class TaxController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $tax->exchangeArray($form->getData());
-                error_log('name: '.$tax->name);
-                error_log('percentage: '.$tax->percentage);
-                foreach($form->getData() as $message) {
-                    if(is_array($message)) {
-                        foreach($message as $k => $v) {
-                            error_log($k.' -> '.$v);
-                        }
-                    } else {
-                        error_log($message);
-                    }
-                }
-                $this->getTable()->save($tax);
+
+                $em = $this
+                    ->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                $em->persist($tax);
+                $em->flush();
+                #$this->getTable()->save($tax);
 
                 // Redirect to list of taxes
                 return $this->redirect()->toRoute('admin/tax');
@@ -73,7 +70,11 @@ class TaxController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $tax = $this->getTable()->getById($id);
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $tax = $em->getRepository("ersEntity\Entity\Tax")->findOneBy(array('id' => $id));
+        #$tax = $this->getTable()->getById($id);
 
         $form  = new Form\TaxForm();
         $form->bind($tax);
@@ -85,7 +86,10 @@ class TaxController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $this->getTable()->save($form->getData());
+                $tax->exchangeArray($form->getData());
+                $em->persist($tax);
+                $em->flush();
+                #$this->getTable()->save($form->getData());
 
                 // Redirect to list of taxes
                 return $this->redirect()->toRoute('admin/tax');
@@ -110,8 +114,17 @@ class TaxController extends AbstractActionController {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
+                $em = $this
+                    ->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
                 $id = (int) $request->getPost('id');
-                $this->getTable()->removeById($id);
+                $tax = $em->getRepository("ersEntity\Entity\Tax")
+                        ->findOneBy(array('id' => $id));
+                $em->remove($tax);
+                $em->flush();
+                
+                /*$id = (int) $request->getPost('id');
+                $this->getTable()->removeById($id);*/
             }
 
             // Redirect to list of taxes
@@ -120,7 +133,8 @@ class TaxController extends AbstractActionController {
 
         return array(
             'id'    => $id,
-            'tax' => $this->getTable()->getById($id),
+            'tax' => $tax = $em->getRepository("ersEntity\Entity\Tax")
+                ->findOneBy(array('id' => $id)),
         );
     }
 }

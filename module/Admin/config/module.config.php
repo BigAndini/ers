@@ -23,7 +23,8 @@ return array(
             'admin' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/admin[/]',
+                    #'route' => '/admin[/]',
+                    'route' => '/admin',
                     'defaults' => array(
                         'controller' => 'Admin\Controller\Admin',
                         'action' => 'index',

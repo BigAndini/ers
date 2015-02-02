@@ -9,7 +9,8 @@
 //  module/PreReg/Module.php
 namespace PreReg;
 
-use PreReg\Model;
+#use PreReg\Model;
+use ersEntity\Entity;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Session\SessionManager;
 use Zend\Session\Container;
@@ -75,7 +76,7 @@ class Module
         #$session_cart->getManager()->getStorage()->clear('cart');
         if(!isset($session_cart->init) || $session_cart->init != 1) {
             $session_cart->getManager()->getStorage()->clear('cart');
-            $session_cart->order = new Model\Entity\Order();
+            $session_cart->order = new Entity\Order();
             $session_cart->init = 1;
         } else {
             error_log('CART is already initialized'); 
@@ -107,34 +108,6 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(
-                /*
-                 * MySQL Factories
-                 */
-                'PreReg\Model\UserTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\UserTable($dbAdapter);
-                    return $table;
-                },
-                'PreReg\Model\RoleTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\RoleTable($dbAdapter);
-                    return $table;
-                },
-                'PreReg\Model\ProductTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\ProductTable($dbAdapter);
-                    return $table;
-                },
-                'PreReg\Model\ProductVariantTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\ProductVariantTable($dbAdapter);
-                    return $table;
-                },
-                'PreReg\Model\ProductVariantValueTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\ProductVariantValueTable($dbAdapter);
-                    return $table;
-                },
                 /* 
                  * Form Factories
                  */

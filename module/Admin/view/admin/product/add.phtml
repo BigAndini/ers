@@ -1,5 +1,4 @@
 <?php
-// module/Album/view/album/album/add.phtml:
 
 $title = 'Add new Product';
 $this->headTitle($title);
@@ -12,7 +11,7 @@ $form->prepare();
 
 echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('id'));
-echo $this->formRow($form->get('order'));
+echo $this->formRow($form->get('ordering'));
 echo $this->formRow($form->get('name'));
 echo $this->formRow($form->get('shortDescription'));
 echo $this->formRow($form->get('longDescription'));

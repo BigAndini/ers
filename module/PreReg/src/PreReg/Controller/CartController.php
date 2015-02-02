@@ -11,11 +11,12 @@ namespace PreReg\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
-use PreReg\Model;
+#use PreReg\Model;
+use ersEntity\Entity;
 use PreReg\Form;
 
 class CartController extends AbstractActionController {
-    protected $table;
+    /*protected $table;
     
     public function getTable($name)
     {
@@ -27,7 +28,7 @@ class CartController extends AbstractActionController {
             $this->table[$name]->setServiceLocator($sm);
         }
         return $this->table[$name];
-    }
+    }*/
     
     /*
      * initialize shopping cart
@@ -36,7 +37,7 @@ class CartController extends AbstractActionController {
     private function initialize() {
         $session_cart = new Container('cart');
         if(!isset($session_cart->init) && $session_cart->init == 1) {
-            $session_cart->order = new Model\Entity\Order();
+            $session_cart->order = new Entity\Order();
             $session_cart->init = 1;
         } else {
             error_log('Cart is already initialized'); 
@@ -71,8 +72,12 @@ class CartController extends AbstractActionController {
                 unset($data['participant_id']);
             }
             
-            $item = new Model\Entity\Item();
-            $product = $this->getTable('Product')->getById($data['Product_id']);
+            $item = new Entity\Item();
+            $em = $this
+                ->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+            $product = $em->getRepository("ersEntity\Entity\Product")->findBy(array('id' => $data['Product_id']));
+            #$product = $this->getTable('Product')->getById($data['Product_id']);
             $item->fromProduct($product);
             $item->setServiceLocator($this->getServiceLocator());
             $item->exchangeArray($data);

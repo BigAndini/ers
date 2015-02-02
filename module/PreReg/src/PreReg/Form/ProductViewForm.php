@@ -9,7 +9,7 @@
 namespace PreReg\Form;
 
 use Zend\Form\Form;
-
+use ersEntity\Entity;
 
 class ProductViewForm extends Form
 {
@@ -73,22 +73,17 @@ class ProductViewForm extends Form
         $variant_count = count($variants);
         $variant_add = 1;
         foreach($variants as $v) {
-            if(is_object($v)) {
-                if(get_class($v) == 'PreReg\Model\Entity\ProductVariant') {
-                    if(isset($v->order) && $v->order != 0) {
-                        $this->variants[$v->order] = $v;
-                    } else {
-                        # Make sure the variants without order number or 
-                        # order number == 0 will be shown last.
-                        $this->variants[$variant_count+$variant_add] = $v;
-                        $variant_add++;
-                    }
+            if(is_object($v) && $v instanceof Entity\ProductVariant) {
+                if(isset($v->order) && $v->order != 0) {
+                    $this->variants[$v->order] = $v;
                 } else {
-                    error_log('object is of class '.get_class($v));
+                    # Make sure the variants without order number or 
+                    # order number == 0 will be shown last.
+                    $this->variants[$variant_count+$variant_add] = $v;
+                    $variant_add++;
                 }
-                
             } else {
-                error_log('ERROR: Unable to add ProductVariant to Form');
+                error_log('object is of class '.get_class($v));
             }
         }
         $this->addVariants();

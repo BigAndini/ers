@@ -10,13 +10,13 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Admin\Model\Entity;
-#use RegistrationSystem\Form\UserForm;
+use ersEntity\Entity;
+use Zend\Session\Container;
 use Admin\Form;
 use Zend\Form\Element;
 
 class ProductVariantController extends AbstractActionController {
-    protected $table;
+    /*protected $table;
     
     public function getTable($name)
     {
@@ -26,12 +26,15 @@ class ProductVariantController extends AbstractActionController {
             $this->table[$name] = $sm->get($className);
         }
         return $this->table[$name];
-    }
+    }*/
     public function indexAction()
     {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
-            'productvariants' => $this->getTable('ProductVariant')->fetchAll(),
-         ));
+            'productvariants' => $em->getRepository("ersEntity\Entity\ProductVariant")->findAll(),
+        ));
     }
 
     public function addAction()
@@ -56,11 +59,24 @@ class ProductVariantController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $productvariant->exchangeArray($form->getData());
-                $this->getTable('ProductVariant')->save($productvariant);
+                #$productvariant->exchangeArray($form->getData());
+                #$this->getTable('ProductVariant')->save($productvariant);
 
-                // Redirect to list of productvariants
-                return $this->redirect()->toRoute('admin/product');
+                $em = $this
+                    ->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+
+                $productvariant->exchangeArray($form->getData());
+                
+                $em->persist($productvariant);
+                $em->flush();
+                
+                $context = new Container('context');
+                if(isset($context->route)) {
+                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
+                } else {
+                    return $this->redirect()->toRoute('admin/product');
+                }
             } else {
                 $messages = $form->getMessages();
                 error_log('got '.count($messages).' messages.');
@@ -84,7 +100,12 @@ class ProductVariantController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $productvariant = $this->getTable('ProductVariant')->getById($id);
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $productvariant = $em->getRepository("ersEntity\Entity\ProductVariant")->findOneBy(array('id' => $id));
+        #$productvariant = $this->getTable('ProductVariant')->getById($id);
 
         #$form  = new Form\ProductVariantForm();
         $form = $this->getServiceLocator()->get('Admin\Form\ProductVariantForm');
@@ -97,10 +118,19 @@ class ProductVariantController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $this->getTable('ProductVariant')->save($form->getData());
+                #$this->getTable('ProductVariant')->save($form->getData());       
 
-                // Redirect to list of productvariants
-                return $this->redirect()->toRoute('admin/product');
+                $productvariant->exchangeArray($form->getData());
+                
+                $em->persist($productvariant);
+                $em->flush();
+                
+                $context = new Container('context');
+                if(isset($context->route)) {
+                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
+                } else {
+                    return $this->redirect()->toRoute('admin/product');
+                }
             }
         }
 
@@ -122,17 +152,28 @@ class ProductVariantController extends AbstractActionController {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
+                $em = $this
+                    ->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
                 $id = (int) $request->getPost('id');
-                $this->getTable('ProductVariant')->removeById($id);
+                $productprice = $em->getRepository("ersEntity\Entity\ProductVariant")
+                        ->findBy(array('id' => $id));
+                $em->remove($productprice);
+                $em->flush();
             }
 
-            // Redirect to list of productvariants
-            return $this->redirect()->toRoute('admin/product');
+            $context = new Container('context');
+            if(isset($context->route)) {
+                return $this->redirect()->toRoute($context->route, $context->params, $context->options);
+            } else {
+                return $this->redirect()->toRoute('admin/product');
+            }
         }
 
         return array(
             'id'    => $id,
-            'productvariant' => $this->getTable('ProductVariant')->getById($id),
+            'productvariant' => $em->getRepository("ersEntity\Entity\ProductVariant")
+                        ->findBy(array('id' => $id)),
         );
     }
 }

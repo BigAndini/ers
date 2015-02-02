@@ -10,15 +10,15 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Admin\Model\Entity;
-#use RegistrationSystem\Form\UserForm;
+use ersEntity\Entity;
+use Zend\Session\Container;
 use Admin\Form;
 use Zend\Form\Element;
 
 class ProductController extends AbstractActionController {
     protected $table;
     
-    public function getTable($name)
+    /*public function getTable($name)
     {
         if (!isset($this->table[$name])) {
             $sm = $this->getServiceLocator();
@@ -27,14 +27,33 @@ class ProductController extends AbstractActionController {
             $this->table[$name]->setServiceLocator($sm);
         }
         return $this->table[$name];
-    }
+    }*/
     public function indexAction()
     {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $products = $em->getRepository("ersEntity\Entity\Product")->findBy(array(), array('ordering' => 'ASC'));
+        foreach($products as $product) {
+            $variants = $em->getRepository("ersEntity\Entity\ProductVariant")->findBy(array('Product_id' => $product->getId()));
+            $product->setVariants($variants);
+            $prices = $em->getRepository("ersEntity\Entity\ProductPrice")->findBy(array('Product_id' => $product->getId()));
+            $product->setPrices($prices);
+        }
+        
+        $context = new Container('context');
+        $context->route = 'admin/product';
+        $context->params = array();
+        $context->options = array();
+        
         return new ViewModel(array(
+            'products' => $products,
+            ));
+        /*return new ViewModel(array(
             'products' => $this->getTable('Product')->fetchAll('order ASC'),
             'prices' => $this->getTable('ProductPrice')->fetchAll(),
             'variants' => $this->getTable('ProductVariant')->fetchAll('order ASC'),
-         ));
+         ));*/
     }
 
     public function addAction()
@@ -50,8 +69,14 @@ class ProductController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
+                $em = $this
+                    ->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+
                 $product->exchangeArray($form->getData());
-                $this->getTable('Product')->save($product);
+                
+                $em->persist($product);
+                $em->flush();
 
                 // Redirect to list of products
                 return $this->redirect()->toRoute('admin/product');
@@ -69,6 +94,38 @@ class ProductController extends AbstractActionController {
         );
     }
 
+    public function viewAction()
+    {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/product', array(
+                'action' => 'add'
+            ));
+        }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $product = $em->getRepository("ersEntity\Entity\Product")
+                ->findOneBy(array('id' => $id));
+        
+        $variants = $em->getRepository("ersEntity\Entity\ProductVariant")
+                ->findBy(array('Product_id' => $id));
+        $product->setVariants($variants);
+
+        $prices = $em->getRepository("ersEntity\Entity\ProductPrice")
+                ->findBy(array('Product_id' => $id));
+        $product->setPrices($prices);
+        
+        $context = new Container('context');
+        $context->route = 'admin/product';
+        $context->params = array('action' => 'view', 'id' => $id);
+        $context->options = array();
+        
+        return array(
+            'product' => $product,
+        );
+    }
+    
     public function editAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
@@ -77,10 +134,12 @@ class ProductController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $product = $this->getTable('Product')->getById($id);
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
 
         $form = $this->getServiceLocator()->get('Admin\Form\ProductForm');
-        error_log('personalized: '.$product->personalized);
         $form->bind($product);
         $form->get('submit')->setAttribute('value', 'Edit');
 
@@ -90,7 +149,10 @@ class ProductController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $this->getTable('Product')->save($form->getData());
+                $product->exchangeArray($form->getData());
+                
+                $em->persist($product);
+                $em->flush();
 
                 // Redirect to list of products
                 return $this->redirect()->toRoute('admin/product');
@@ -111,7 +173,12 @@ class ProductController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $product = $this->getTable('Product')->getById($id);
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $old_product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
+        
+        $product = clone $old_product;
 
         $form = $this->getServiceLocator()->get('Admin\Form\ProductForm');
         $form->bind($product);
@@ -123,35 +190,19 @@ class ProductController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $new_id = $this->getTable('Product')->save($form->getData());
-                error_log('saved product: '.$id);
+                $em->persist($product);
+                $em->flush();
+                $new_id = $product->getId();
                 
-                # foreach ProductPrices where Product_id = copied Product_id do:
-                # copy ProductVariant to new Product_id
-                $ProductPrices = $this->getTable('ProductPrice')->getByField('Product_id', $id);
-                foreach($ProductPrices as $price) {
-                    $price->id = 0;
-                    $price->Product_id = $new_id;
-                    $this->getTable('ProductPrice')->save($price);
-                }
-                
-                # foreach ProductVariants where Product_id = copied Product_id 
-                # do: copy ProductVariant to new Product_id (with ProductVariantValues)
-                $ProductVariants = $this->getTable('ProductVariant')->getByField('Product_id', $id);
-                foreach($ProductVariants as $variant) {
-                    $variant->id = 0;
-                    $variant->Product_id = $new_id;
-                    $new_v_id = $this->getTable('ProductVariant')->save($variant);
-                    $ProductVariantValues = $this->getTable('ProductVariantValue')->getByField('ProductVariant_id', $variant->id);
-                    foreach($ProductVariantValues as $value) {
-                        $value->id = 0;
-                        $value->ProductVariant_id = $new_v_id;
-                        $this->getTable('ProductVariantValue')->save($value);
-                    }
-                }
+                $this->copyProductPrices($id, $new_id);   
+                $this->copyProductVariants($id, $new_id);
 
-                // Redirect to list of products
-                return $this->redirect()->toRoute('admin/product');
+                $context = new Container('context');
+                if(isset($context->route)) {
+                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
+                } else {
+                    return $this->redirect()->toRoute('admin/product');
+                }
             } else {
                 $messages = $form->getMessages();
                 error_log('got '.count($messages).' messages.');
@@ -168,6 +219,49 @@ class ProductController extends AbstractActionController {
             'form' => $form,
         );
     }
+    
+    private function copyProductPrices($src_id, $dst_id) {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $ProductPrices = $em->getRepository("ersEntity\Entity\ProductPrice")
+                ->findBy(array('Product_id' => $src_id));
+        # foreach ProductPrices where Product_id = copied Product_id do:
+        # copy ProductVariant to new Product_id
+        foreach($ProductPrices as $price) {
+            $price->setId(null);
+            $price->setProductId($dst_id);
+            #$this->getTable('ProductPrice')->save($price);
+            $em->persist($price);
+        }
+        $em->flush();
+    }
+    
+    private function copyProductVariants($src_id, $dst_id) {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        # foreach ProductVariants where Product_id = copied Product_id 
+        # do: copy ProductVariant to new Product_id (with ProductVariantValues)
+        $ProductVariants = $em->getRepository("ersEntity\Entity\ProductVariant")
+                ->findBy(array('Product_id' => $src_id));
+        foreach($ProductVariants as $variant) {
+            $variant->setId(null);
+            $variant->ProductId($dst_id);
+            $em->persist($variant);
+            $em->flush();
+            $variant_id = $variant->getId();
+            #$ProductVariantValues = $this->getTable('ProductVariantValue')->getByField('ProductVariant_id', $variant->id);
+            $ProductVariantValues = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                    ->findBy(array('ProductVariant_id' => $variant->getId()));
+            foreach($ProductVariantValues as $value) {
+                $value->setId(null);
+                $value->setProductVariantId($variant_id);
+                $em->persist($value);
+            }
+            $em->flush();
+        }
+    }
 
     public function deleteAction()
     {
@@ -175,6 +269,11 @@ class ProductController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $Product = $em->getRepository("ersEntity\Entity\Product")
+                ->findOneBy(array('id' => $id));
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -182,28 +281,47 @@ class ProductController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $ProductPrices = $this->getTable('ProductPrice')->getByField('Product_id', $id);
-                foreach($ProductPrices as $price) {
-                    $this->getTable('ProductPrice')->removeById($price->id);
-                }
-                $ProductVariants = $this->getTable('ProductVariant')->getByField('Product_id', $id);
-                foreach($ProductVariants as $variant) {
-                    $ProductVariantValues = $this->getTable('ProductVariantValue')->getByField('ProductVariant_id', $variant->id);
-                    foreach($ProductVariantValues as $value) {
-                        $this->getTable('ProductVariantValue')->removeById($value->id);
-                    }
-                    $this->getTable('ProductVariant')->removeById($variant->id);
-                }
-                $this->getTable('Product')->removeById($id);
+                $Product = $em->getRepository("ersEntity\Entity\Product")
+                    ->findOneBy(array('id' => $id));
+                
+                $this->removeProductPrices($Product);
+                $this->removeProductVariants($Product);
+                
+                $em->remove($Product);
+                $em->flush();
             }
 
-            // Redirect to list of products
             return $this->redirect()->toRoute('admin/product');
         }
 
         return array(
             'id'    => $id,
-            'product' => $this->getTable('Product')->getById($id),
+            'product' => $Product,
         );
+    }
+    private function removeProductPrices(Entity\Product $Product) {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $ProductPrices = $em->getRepository("ersEntity\Entity\ProductPrice")
+                ->findBy(array('Product_id' => $Product->getId()));
+        foreach($ProductPrices as $price) {
+            $em->remove($price);
+        }
+    }
+    private function removeProductVariants(Entity\Product $Product) {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $ProductVariants = $em->getRepository("ersEntity\Entity\ProductVariant")
+                ->findBy(array('Product_id' => $Product->getId()));
+        foreach($ProductVariants as $variant) {
+            $ProductVariantValues = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                    ->findBy(array('ProductVariant_id' => $variant->getId()));
+            foreach($ProductVariantValues as $value) {
+                $em->remove($value);
+            }
+            $em->remove($variant);
+        }
     }
 }

@@ -1,5 +1,4 @@
 <?php
-// module/Admin/view/admin/product/delete.phtml:
 
 $title = 'Delete Product';
 $this->headTitle($title);
@@ -7,7 +6,7 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
 <p>Are you sure that you want to delete product
-    <strong><?php echo $this->escapeHtml($product->name); ?></strong>?
+    <strong><?php echo $this->escapeHtml($product->getName()); ?></strong>?
 </p>
 <?php
 $url = $this->url('admin/product', array(
@@ -17,7 +16,7 @@ $url = $this->url('admin/product', array(
 ?>
 <form action="<?php echo $url; ?>" method="post">
 <div>
-    <input type="hidden" name="id" value="<?php echo (int) $product->id; ?>" />
+    <input type="hidden" name="id" value="<?php echo (int) $product->getId(); ?>" />
     <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
     <a href="<?php echo $this->url('admin/product');?>">Cancel</a>
 </div>

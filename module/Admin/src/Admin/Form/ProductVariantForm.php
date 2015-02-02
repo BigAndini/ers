@@ -25,12 +25,12 @@ class ProductVariantForm extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'order',
+            'name' => 'ordering',
             'attributes' => array(
                 'type'  => 'text',
             ),
             'options' => array(
-                'label' => 'Order',
+                'label' => 'Sorting',
             ),
         ));
         $this->add(array(

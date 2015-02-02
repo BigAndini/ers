@@ -25,7 +25,7 @@ class ProductForm extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'order',
+            'name' => 'ordering',
             'attributes' => array(
                 'type'  => 'text',
             ),

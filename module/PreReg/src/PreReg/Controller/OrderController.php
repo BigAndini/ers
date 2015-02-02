@@ -68,6 +68,11 @@ class OrderController extends AbstractActionController {
     }
     
     public function generatepdfAction() {
+        
+        if(!extension_loaded('gd')) {
+            die('PHP Extension gd needs to be loaded.');
+        }
+        
         /*
          * PDF creation
          */
@@ -140,14 +145,5 @@ class OrderController extends AbstractActionController {
         ));
         $pdf->setOption("filename", "EJC2015_eTicket_".preg_replace('/\ /', '_', $name));
         return $pdf;
-    }
-    
-    public function qrcodeAction() {
-        $qr = $this->getServiceLocator()->get('QRCode');
-        $qr->isHttps(); // or $qr->isHttp();
-        $qr->setData('Lorem Ipsum');
-        $qr->setCorrectionLevel('H', 0);
-        $qr->setDimensions(100, 100);
-        return new ViewModel(array('img'=> $qr->getResult()));
     }
 }

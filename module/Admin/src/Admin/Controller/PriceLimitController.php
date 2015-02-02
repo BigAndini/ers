@@ -10,54 +10,84 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Admin\Model\Entity;
+use ersEntity\Entity;
 #use RegistrationSystem\Form\UserForm;
 use Admin\Form;
 use Zend\Form\Element;
 
 class PriceLimitController extends AbstractActionController {
-    protected $table;
     
-    public function getTable($name)
-    {
-        if (!isset($this->table[$name])) {
-            $sm = $this->getServiceLocator();
-            $className = "Admin\Model\\".$name."Table";
-            $this->table[$name] = $sm->get($className);
-            $this->table[$name]->setServiceLocator($sm);
-        }
-        return $this->table[$name];
-    }
     public function indexAction()
     {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
         return new ViewModel(array(
-            'limits' => $this->getTable('PriceLimit')->fetchAll(),
+            'limits' => $em->getRepository("ersEntity\Entity\PriceLimit")->findAll(),
          ));
     }
 
-    public function addAction()
+    /*
+     * Agegroup
+     */
+    public function addAgegroupAction()
     {
-        $form = $this->getServiceLocator()->get('Form\PriceLimitForm');
+        return new ViewModel();
+    }
+    public function editAgegroupAction()
+    {
+        return new ViewModel();
+    }
+    public function copyAgegroupAction()
+    {
+        return new ViewModel();
+    }
+    
+    /*
+     * Counter
+     */
+    public function addCounterAction()
+    {
+        return new ViewModel();
+    }
+    
+    public function editCounterAction()
+    {
+        return new ViewModel();
+    }
+    public function copyCounterAction()
+    {
+        return new ViewModel();
+    }
+    
+    /*
+     * Deadline
+     */
+    public function addDeadlineAction()
+    {
+        $form = new Form\PriceLimitDeadlineForm();
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $product = new Entity\Product();
-            $form->setInputFilter($product->getInputFilter());
+            $pricelimit = new Entity\PriceLimit();
+            $form->setInputFilter($pricelimit->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $product->exchangeArray($form->getData());
-                $this->getTable('Product')->save($product);
+                $em = $this
+                    ->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                $pricelimit->exchangeArray($form->getData());
+                $pricelimit->setType('deadline');
+                
+                $em->persist($pricelimit);
+                $em->flush();
 
-                // Redirect to list of products
                 return $this->redirect()->toRoute('admin/price-limit');
             } else {
-                $messages = $form->getMessages();
-                error_log('got '.count($messages).' messages.');
-                foreach($messages as $m) {
-                    error_log($m);
-                }
+                error_log(var_export($form->getMessages(), true));
             }
         }
         
@@ -66,29 +96,34 @@ class PriceLimitController extends AbstractActionController {
         );
     }
 
-    public function editAction()
+    public function editDeadlineAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('admin/price-limit', array(
-                'action' => 'add'
+                'action' => 'addDeadline'
             ));
         }
-        $product = $this->getTable('Product')->getById($id);
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $pricelimit = $em->getRepository("ersEntity\Entity\PriceLimit")->findOneBy(array('id' => $id));
 
-        $form = $this->getServiceLocator()->get('Form\PriceLimitForm');
-        $form->bind($product);
+        $form = new Form\PriceLimitDeadlineForm();
+        $form->bind($pricelimit);
         $form->get('submit')->setAttribute('value', 'Edit');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($product->getInputFilter());
+            $form->setInputFilter($pricelimit->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $this->getTable('Product')->save($form->getData());
+                $pricelimit->exchangeArray($form->getData());
+                
+                $em->persist($pricelimit);
+                $em->flush();
 
-                // Redirect to list of products
                 return $this->redirect()->toRoute('admin/price-limit');
             }
         }
@@ -99,12 +134,12 @@ class PriceLimitController extends AbstractActionController {
         );
     }
     
-    public function copyAction()
+    public function copyDeadlineAction()
     {   
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('admin/price-limit', array(
-                'action' => 'add'
+                'action' => 'addDeadline'
             ));
         }
         $product = $this->getTable('Product')->getById($id);
@@ -141,12 +176,20 @@ class PriceLimitController extends AbstractActionController {
         );
     }
 
+    /*
+     * The delete action is for Agegroups, Counters and Deadlines the same.
+     */
     public function deleteAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('admin/price-limit');
         }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $productprice = $em->getRepository("ersEntity\Entity\PriceLimit")
+                ->findOneBy(array('id' => $id));
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -154,7 +197,10 @@ class PriceLimitController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $this->getTable('PriceLimit')->removeById($id);
+                $productprice = $em->getRepository("ersEntity\Entity\PriceLimit")
+                    ->findOneBy(array('id' => $id));
+                $em->remove($productprice);
+                $em->flush();
             }
 
             // Redirect to list of products
@@ -163,7 +209,7 @@ class PriceLimitController extends AbstractActionController {
 
         return array(
             'id'    => $id,
-            'pricelimit' => $this->getTable('PriceLimit')->getById($id),
+            'pricelimit' => $productprice,
         );
     }
 }

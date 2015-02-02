@@ -9,7 +9,7 @@
 //  module/RegistrationSystem/Module.php
 namespace Admin;
 
-use Admin\Model;
+#use Admin\Model;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\ModuleRouteListener;
 
@@ -53,92 +53,7 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(
-                /* 
-                 * MySQL Table Factories
-                 */
-                'Admin\Model\UserTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\UserTable($dbAdapter);
-                    return $table;
-                },
-                'Admin\Model\RoleTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\RoleTable($dbAdapter);
-                    return $table;
-                },
-                'Admin\Model\TaxTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\TaxTable($dbAdapter);
-                    return $table;
-                },
-                'Admin\Model\ProductGroupTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\ProductGroupTable($dbAdapter);
-                    return $table;
-                },
-                'Admin\Model\ProductVariantTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\ProductVariantTable($dbAdapter);
-                    return $table;
-                },
-                'Admin\Model\ProductVariantValueTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\ProductVariantValueTable($dbAdapter);
-                    return $table;
-                },
-                'Admin\Model\ProductTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\ProductTable($dbAdapter);
-                    return $table;
-                },
-                'Admin\Model\ProductPriceTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\ProductPriceTable($dbAdapter);
-                    return $table;
-                },
-                'Admin\Model\PriceLimitTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new Model\PriceLimitTable($dbAdapter);
-                    return $table;
-                },
-                /*
-                 * Entity Factories
-                 */
-                'Admin\Model\Entity\Entity' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $entity = new Model\Entity\Entity($dbAdapter);
-                    return $entity;
-                },
-                'Admin\Model\Entity\Tax' => function($sm) {
-                    $entity = new Model\Entity\Tax();
-                    #$entity->setServiceLocator($sm);
-                    return $entity;
-                },
-                'Admin\Model\Entity\Product' => function($sm) {
-                    $entity = new Model\Entity\Product();
-                    $entity->setServiceLocator($sm);
-                    return $entity;
-                },
-                'Admin\Model\Entity\ProductPrice' => function($sm) {
-                    $entity = new Model\Entity\ProductPrice();
-                    #$entity->setServiceLocator($sm);
-                    return $entity;
-                },
-                'Admin\Model\Entity\ProductVariant' => function($sm) {
-                    $entity = new Model\Entity\ProductVariant();
-                    $entity->setServiceLocator($sm);
-                    return $entity;
-                },
-                'Admin\Model\Entity\ProductVariantValue' => function($sm) {
-                    $entity = new Model\Entity\ProductVariantValue();
-                    $entity->setServiceLocator($sm);
-                    return $entity;
-                },
-                'Admin\Model\Entity\PriceLimit' => function($sm) {
-                    $entity = new Model\Entity\PriceLimit();
-                    $entity->setServiceLocator($sm);
-                    return $entity;
-                },
+                'doctrine.entitymanager'  => new \DoctrineORMModule\Service\EntityManagerFactory('orm_default'),
                 /* 
                  * Form Factories
                  */
@@ -154,11 +69,15 @@ class Module
 
                     $form->get('ProductGroup_id')->setValueOptions($options);*/
                     
-                    $TaxTable = $sm->get('Admin\Model\TaxTable');
-                    $taxes = $TaxTable->fetchAll();
+                    $em = $sm->get('doctrine.entitymanager');
+                    /*$em = $this
+                        ->getServiceLocator()
+                        ->get('Doctrine\ORM\EntityManager');*/
+                    $taxes = $em->getRepository("ersEntity\Entity\Tax")->findAll();
+                    
                     $options = array();
                     foreach($taxes as $tax) {
-                        $options[$tax->id] = $tax->name.' - '.$tax->percentage.'%';
+                        $options[$tax->getId()] = $tax->getName().' - '.$tax->getPercentage().'%';
                     }
 
                     $form->get('Tax_id')->setValueOptions($options);

@@ -140,6 +140,9 @@ return [
                 
                 /* ZfcUser */
                 ['controller' => 'zfcuser', 'roles' => ['guest']],
+                
+                /* Doctrine ORM */
+                ['controller' => 'DoctrineORMModule\Yuml\YumlController', 'roles' => ['admin']],
             ],
 
             /* If this guard is specified here (i.e. it is enabled], it will block

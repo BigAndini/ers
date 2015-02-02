@@ -15,7 +15,7 @@ use PreReg\Form;
 use PreReg\Model\Entity;
 
 class ParticipantController extends AbstractActionController {
-    protected $table;
+    /*protected $table;
     
     public function getTable($name)
     {
@@ -26,7 +26,7 @@ class ParticipantController extends AbstractActionController {
             $this->table[$name]->setServiceLocator($sm);
         }
         return $this->table[$name];
-    }
+    }*/
     
     /*
      * - Show list of participants of this session

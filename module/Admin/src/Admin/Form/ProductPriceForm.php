@@ -31,7 +31,18 @@ class ProductPriceForm extends Form
                 'type'  => 'text',
             ),
             'options' => array(
-                'label' => 'charge',
+                'label' => 'Charge',
+            ),
+        ));
+        
+        $this->add(array(
+            'name' => 'limit',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required', 
+            ),
+            'options' => array(
+                'label' => 'Limit',
             ),
         ));
         

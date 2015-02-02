@@ -17,11 +17,11 @@
  </tr>
  <?php foreach ($taxes as $tax) : ?>
  <tr>
-     <td><?php echo $this->escapeHtml($tax->name);?></td>
-     <td><?php echo $this->escapeHtml($tax->percentage);?></td>
+     <td><?php echo $this->escapeHtml($tax->getName());?></td>
+     <td><?php echo $this->escapeHtml($tax->getPercentage());?></td>
      <td>
-         <a href="<?php echo $this->url('admin/tax', array('action'=>'edit', 'id' => $tax->id));?>">Edit</a>
-         <a href="<?php echo $this->url('admin/tax', array('action'=>'delete', 'id' => $tax->id));?>">Delete</a>
+         <a href="<?php echo $this->url('admin/tax', array('action'=>'edit', 'id' => $tax->getId()));?>">Edit</a>
+         <a href="<?php echo $this->url('admin/tax', array('action'=>'delete', 'id' => $tax->getId()));?>">Delete</a>
      </td>
  </tr>
  <?php endforeach; ?>

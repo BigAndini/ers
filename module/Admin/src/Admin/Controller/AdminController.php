@@ -10,7 +10,6 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-#use StickyNotes\Model\User;
 use Admin\Form;
 
 class AdminController extends AbstractActionController {
@@ -19,4 +18,6 @@ class AdminController extends AbstractActionController {
     {
         return new ViewModel();
     }
+    
+    
 }
