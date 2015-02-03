@@ -11,3 +11,7 @@ vendor/bin
 vendor/*
 
 *.swp
+
+*.pyc
+test/secret.py
+
