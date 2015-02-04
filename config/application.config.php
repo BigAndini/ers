@@ -4,6 +4,7 @@ return array(
     'modules' => array(
         'ZfcBase',
         'ZfcUser',
+        'ZfcUserDoctrineORM',
         'BjyAuthorize',
         'ZendDeveloperTools',
         'BjyProfiler',

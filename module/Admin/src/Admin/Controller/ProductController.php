@@ -36,9 +36,9 @@ class ProductController extends AbstractActionController {
         $products = $em->getRepository("ersEntity\Entity\Product")->findBy(array(), array('ordering' => 'ASC'));
         foreach($products as $product) {
             $variants = $em->getRepository("ersEntity\Entity\ProductVariant")->findBy(array('Product_id' => $product->getId()));
-            $product->setVariants($variants);
+            $product->setProductVariants($variants);
             $prices = $em->getRepository("ersEntity\Entity\ProductPrice")->findBy(array('Product_id' => $product->getId()));
-            $product->setPrices($prices);
+            $product->setProductPrices($prices);
         }
         
         $context = new Container('context');
@@ -69,12 +69,19 @@ class ProductController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $product->populate($form->getData());
+                
                 $em = $this
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-
-                $product->exchangeArray($form->getData());
                 
+                error_log('taxId1: '.$product->getTaxId());
+                error_log(var_export($product->getArrayCopy(),true));
+                $tax = $em->getRepository("ersEntity\Entity\Tax")->findOneBy(array('id' => $product->getTaxId()));
+                $product->setTax($tax);
+                error_log('taxId_orig: '.$tax->getId());
                 $em->persist($product);
                 $em->flush();
 
@@ -110,11 +117,11 @@ class ProductController extends AbstractActionController {
         
         $variants = $em->getRepository("ersEntity\Entity\ProductVariant")
                 ->findBy(array('Product_id' => $id));
-        $product->setVariants($variants);
+        $product->setProductVariants($variants);
 
         $prices = $em->getRepository("ersEntity\Entity\ProductPrice")
                 ->findBy(array('Product_id' => $id));
-        $product->setPrices($prices);
+        $product->setProductPrices($prices);
         
         $context = new Container('context');
         $context->route = 'admin/product';
@@ -147,9 +154,10 @@ class ProductController extends AbstractActionController {
         if ($request->isPost()) {
             $form->setInputFilter($product->getInputFilter());
             $form->setData($request->getPost());
-
+            
             if ($form->isValid()) {
-                $product->exchangeArray($form->getData());
+                
+                $product->populate($form->getData());
                 
                 $em->persist($product);
                 $em->flush();

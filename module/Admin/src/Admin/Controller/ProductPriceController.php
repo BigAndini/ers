@@ -159,7 +159,7 @@ class ProductPriceController extends AbstractActionController {
             $form->setInputFilter($productprice->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $productprice->exchangeArray($form->getData());
+                $productprice->populate($form->getData());
                 
                 $em->persist($productprice);
                 $em->flush();

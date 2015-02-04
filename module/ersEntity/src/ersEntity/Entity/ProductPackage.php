@@ -11,20 +11,19 @@
 namespace ersEntity\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * Entity\Tax
+ * Entity\ProductPackage
  *
  * @ORM\Entity()
- * @ORM\Table(name="Tax")
+ * @ORM\Table(name="ProductPackage", indexes={@ORM\Index(name="fk_ProductPackage_Product1_idx", columns={"Product_id"}), @ORM\Index(name="fk_ProductPackage_Product2_idx", columns={"SubProduct_id"})})
  * @ORM\HasLifecycleCallbacks()
  */
-class Tax implements InputFilterAwareInterface
+class ProductPackage implements InputFilterAwareInterface
 {
     /**
      * Instance of InputFilterInterface.
@@ -36,57 +35,45 @@ class Tax implements InputFilterAwareInterface
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
-     * @ORM\Column(name="`name`", type="string", length=45, nullable=true)
+     * @ORM\Column(type="integer")
      */
-    protected $name;
+    protected $Product_id;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="integer")
      */
-    protected $percentage;
+    protected $SubProduct_id;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="boolean", nullable=true)
      */
-    protected $updated;
+    protected $active;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="productPackageRelatedByProductIds")
+     * @ORM\JoinColumn(name="Product_id", referencedColumnName="id")
      */
-    protected $created;
+    protected $productRelatedByProductId;
 
     /**
-     * @ORM\OneToMany(targetEntity="Product", mappedBy="tax")
-     * @ORM\JoinColumn(name="id", referencedColumnName="taxId")
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="productPackageRelatedBySubProductIds")
+     * @ORM\JoinColumn(name="SubProduct_id", referencedColumnName="id")
      */
-    protected $products;
+    protected $productRelatedBySubProductId;
 
     public function __construct()
     {
-        $this->products = new ArrayCollection();
-    }
-    
-    /**
-     * @ORM\PrePersist
-     */
-    public function PrePersist()
-    {
-        if(!isset($this->created)) {
-            $this->created = new \DateTime();
-        }
-        $this->updated = new \DateTime();
     }
 
     /**
      * Set the value of id.
      *
      * @param integer $id
-     * @return \Entity\Tax
+     * @return \Entity\ProductPackage
      */
     public function setId($id)
     {
@@ -106,131 +93,118 @@ class Tax implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of name.
+     * Set the value of Product_id.
      *
-     * @param string $name
-     * @return \Entity\Tax
+     * @param integer $Product_id
+     * @return \Entity\ProductPackage
      */
-    public function setName($name)
+    public function setProductId($Product_id)
     {
-        $this->name = $name;
+        $this->Product_id = $Product_id;
 
         return $this;
     }
 
     /**
-     * Get the value of name.
+     * Get the value of Product_id.
      *
-     * @return string
+     * @return integer
      */
-    public function getName()
+    public function getProductId()
     {
-        return $this->name;
+        return $this->Product_id;
     }
 
     /**
-     * Set the value of percentage.
+     * Set the value of SubProduct_id.
      *
-     * @param float $percentage
-     * @return \Entity\Tax
+     * @param integer $SubProduct_id
+     * @return \Entity\ProductPackage
      */
-    public function setPercentage($percentage)
+    public function setSubProductId($SubProduct_id)
     {
-        $this->percentage = $percentage;
+        $this->SubProduct_id = $SubProduct_id;
 
         return $this;
     }
 
     /**
-     * Get the value of percentage.
+     * Get the value of SubProduct_id.
      *
-     * @return float
+     * @return integer
      */
-    public function getPercentage()
+    public function getSubProductId()
     {
-        return $this->percentage;
+        return $this->SubProduct_id;
     }
 
     /**
-     * Set the value of updated.
+     * Set the value of active.
      *
-     * @param datetime $updated
-     * @return \Entity\Tax
+     * @param boolean $active
+     * @return \Entity\ProductPackage
      */
-    public function setUpdated($updated)
+    public function setActive($active)
     {
-        $this->updated = $updated;
+        $this->active = $active;
 
         return $this;
     }
 
     /**
-     * Get the value of updated.
+     * Get the value of active.
      *
-     * @return datetime
+     * @return boolean
      */
-    public function getUpdated()
+    public function getActive()
     {
-        return $this->updated;
+        return $this->active;
     }
 
     /**
-     * Set the value of created.
-     *
-     * @param datetime $created
-     * @return \Entity\Tax
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of created.
-     *
-     * @return datetime
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Add Product entity to collection (one to many).
+     * Set Product entity related by `Product_id` (many to one).
      *
      * @param \Entity\Product $product
-     * @return \Entity\Tax
+     * @return \Entity\ProductPackage
      */
-    public function addProduct(Product $product)
+    public function setProductRelatedByProductId(Product $product = null)
     {
-        $this->products[] = $product;
+        $this->productRelatedByProductId = $product;
 
         return $this;
     }
 
     /**
-     * Remove Product entity from collection (one to many).
+     * Get Product entity related by `Product_id` (many to one).
+     *
+     * @return \Entity\Product
+     */
+    public function getProductRelatedByProductId()
+    {
+        return $this->productRelatedByProductId;
+    }
+
+    /**
+     * Set Product entity related by `SubProduct_id` (many to one).
      *
      * @param \Entity\Product $product
-     * @return \Entity\Tax
+     * @return \Entity\ProductPackage
      */
-    public function removeProduct(Product $product)
+    public function setProductRelatedBySubProductId(Product $product = null)
     {
-        $this->products->removeElement($product);
+        $this->productRelatedBySubProductId = $product;
 
         return $this;
     }
 
     /**
-     * Get Product entity collection (one to many).
+     * Get Product entity related by `SubProduct_id` (many to one).
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Entity\Product
      */
-    public function getProducts()
+    public function getProductRelatedBySubProductId()
     {
-        return $this->products;
+        return $this->productRelatedBySubProductId;
     }
 
     /**
@@ -259,50 +233,23 @@ class Tax implements InputFilterAwareInterface
             array(
                 'name' => 'id',
                 'required' => true,
-                'filters' => array(
-                    array('name' => 'Int'),
-                ),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'name',
-                'required' => false,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-                'validators' => array(
-                    array(
-                        'name'    => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                            'min'      => 1,
-                            'max'      => 100,
-                        ),
-                    ),
-                ),
-            ),
-            array(
-                'name' => 'percentage',
-                'required' => false,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-                'validators' => array(
-                    array(
-                        'name'    => 'Float',
-                    ),
-                ),
-            ),
-            array(
-                'name' => 'updated',
-                'required' => false,
                 'filters' => array(),
                 'validators' => array(),
             ),
             array(
-                'name' => 'created',
+                'name' => 'Product_id',
+                'required' => true,
+                'filters' => array(),
+                'validators' => array(),
+            ),
+            array(
+                'name' => 'SubProduct_id',
+                'required' => true,
+                'filters' => array(),
+                'validators' => array(),
+            ),
+            array(
+                'name' => 'active',
                 'required' => false,
                 'filters' => array(),
                 'validators' => array(),
@@ -343,8 +290,8 @@ class Tax implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'name', 'percentage', 'updated', 'created');
-        $relationFields = array();
+        $dataFields = array('id', 'Product_id', 'SubProduct_id', 'active');
+        $relationFields = array('product', 'product');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
             $map = null;
@@ -376,6 +323,6 @@ class Tax implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'name', 'percentage', 'updated', 'created');
+        return array('id', 'Product_id', 'SubProduct_id', 'active');
     }
 }

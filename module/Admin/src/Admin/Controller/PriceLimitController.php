@@ -79,7 +79,7 @@ class PriceLimitController extends AbstractActionController {
                 $em = $this
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-                $pricelimit->exchangeArray($form->getData());
+                $pricelimit->populate($form->getData());
                 $pricelimit->setType('deadline');
                 
                 $em->persist($pricelimit);
@@ -119,7 +119,7 @@ class PriceLimitController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $pricelimit->exchangeArray($form->getData());
+                $pricelimit->populate($form->getData());
                 
                 $em->persist($pricelimit);
                 $em->flush();

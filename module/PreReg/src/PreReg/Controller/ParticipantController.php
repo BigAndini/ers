@@ -67,7 +67,7 @@ class ParticipantController extends AbstractActionController {
                 
             if($form->isValid())
             { 
-                $user->exchangeArray($form->getData()); 
+                $user->populate($form->getData()); 
                 $session_cart = new Container('cart');
                 $session_cart->order->addParticipant($user);
                 

@@ -59,14 +59,14 @@ class ProductVariantController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                #$productvariant->exchangeArray($form->getData());
+                #$productvariant->populate($form->getData());
                 #$this->getTable('ProductVariant')->save($productvariant);
 
                 $em = $this
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
 
-                $productvariant->exchangeArray($form->getData());
+                $productvariant->populate($form->getData());
                 
                 $em->persist($productvariant);
                 $em->flush();
@@ -120,7 +120,7 @@ class ProductVariantController extends AbstractActionController {
             if ($form->isValid()) {
                 #$this->getTable('ProductVariant')->save($form->getData());       
 
-                $productvariant->exchangeArray($form->getData());
+                $productvariant->populate($form->getData());
                 
                 $em->persist($productvariant);
                 $em->flush();

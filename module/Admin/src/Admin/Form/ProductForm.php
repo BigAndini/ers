@@ -63,7 +63,7 @@ class ProductForm extends Form
         
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',
-            'name' => 'Tax_id',
+            'name' => 'taxId',
             'options' => array(
                     'label' => 'Tax Group',
             ),

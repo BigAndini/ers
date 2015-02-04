@@ -15,7 +15,8 @@
         "heartsentwined/zf2-cron": "2.*",
         "doctrine/doctrine-orm-module": "0.*",
         "zendframework/zend-developer-tools": "dev-master",
-        "bjyoungblood/bjy-profiler": "dev-master"
+        "bjyoungblood/bjy-profiler": "dev-master",
+        "zf-commons/zfc-user-doctrine-orm": "~1.0"
     },
     "require-dev": {
         "zf-commons/zfc-base": "0.*",

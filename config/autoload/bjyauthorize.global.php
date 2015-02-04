@@ -14,14 +14,16 @@ return [
 
         // set the 'guest' role as default (must be defined in a role provider)
         'default_role' => 'guest',
+        
+        'new_user_default_role' => 'user',
 
         /* this module uses a meta-role that inherits from any roles that should
          * be applied to the active user. the identity provider tells us which
          * roles the "identity role" should inherit from.
          * for ZfcUser, this will be your default identity provider
         */
-        'identity_provider' => \BjyAuthorize\Provider\Identity\ZfcUserZendDb::class,
-        #'identity_provider' => \ErsAuthorize\Provider\Identity\ErsUserZendDb::class,
+        #'identity_provider' => \BjyAuthorize\Provider\Identity\ZfcUserZendDb::class,
+        'identity_provider' => 'BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider',
 
         /* If you only have a default role and an authenticated role, you can
          * use the 'AuthenticationIdentityProvider' to allow/restrict access
@@ -56,12 +58,12 @@ return [
 
             // this will load roles from the user_role table in a database
             // format: user_role(role_id(varchar], parent(varchar))
-            \BjyAuthorize\Provider\Role\ZendDb::class => [
+            /*\BjyAuthorize\Provider\Role\ZendDb::class => [
                 'table'                 => 'user_role',
                 'identifier_field_name' => 'id',
                 'role_id_field'         => 'roleId',
                 'parent_role_field'     => 'parent_id',
-            ],
+            ],*/
 
             // this will load roles from
             // the 'BjyAuthorize\Provider\Role\ObjectRepositoryProvider' service
@@ -77,6 +79,16 @@ return [
                 // service name of the object manager
                 #'object_manager'    => 'My\Doctrine\Common\Persistence\ObjectManager',
             ],*/
+            /*\BjyAuthorize\Provider\Role\ObjectRepositoryProvider::class => [
+                // class name of the entity representing the role
+                'role_entity_class' => 'ersEntity\Entity\Role',
+                // service name of the object manager
+                'object_manager'    => 'Doctrine\ORM\EntityManager',
+            ],*/
+            'BjyAuthorize\Provider\Role\ObjectRepositoryProvider' => array(
+                'object_manager'    => 'doctrine.entitymanager.orm_default',
+                'role_entity_class' => 'ersEntity\Entity\Role',
+             ),
         ],
 
         // resource providers provide a list of resources that will be tracked

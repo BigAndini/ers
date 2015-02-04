@@ -11,20 +11,18 @@
 namespace ersEntity\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * Entity\Tax
+ * Entity\Setting
  *
  * @ORM\Entity()
- * @ORM\Table(name="Tax")
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\Table(name="Settings")
  */
-class Tax implements InputFilterAwareInterface
+class Setting implements InputFilterAwareInterface
 {
     /**
      * Instance of InputFilterInterface.
@@ -41,14 +39,14 @@ class Tax implements InputFilterAwareInterface
     protected $id;
 
     /**
-     * @ORM\Column(name="`name`", type="string", length=45, nullable=true)
+     * @ORM\Column(name="`key`", type="string", length=45, nullable=true)
      */
-    protected $name;
+    protected $key;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(name="`value`", type="text", nullable=true)
      */
-    protected $percentage;
+    protected $value;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -60,33 +58,15 @@ class Tax implements InputFilterAwareInterface
      */
     protected $created;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Product", mappedBy="tax")
-     * @ORM\JoinColumn(name="id", referencedColumnName="taxId")
-     */
-    protected $products;
-
     public function __construct()
     {
-        $this->products = new ArrayCollection();
-    }
-    
-    /**
-     * @ORM\PrePersist
-     */
-    public function PrePersist()
-    {
-        if(!isset($this->created)) {
-            $this->created = new \DateTime();
-        }
-        $this->updated = new \DateTime();
     }
 
     /**
      * Set the value of id.
      *
      * @param integer $id
-     * @return \Entity\Tax
+     * @return \Entity\Setting
      */
     public function setId($id)
     {
@@ -106,56 +86,56 @@ class Tax implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of name.
+     * Set the value of key.
      *
-     * @param string $name
-     * @return \Entity\Tax
+     * @param string $key
+     * @return \Entity\Setting
      */
-    public function setName($name)
+    public function setKey($key)
     {
-        $this->name = $name;
+        $this->key = $key;
 
         return $this;
     }
 
     /**
-     * Get the value of name.
+     * Get the value of key.
      *
      * @return string
      */
-    public function getName()
+    public function getKey()
     {
-        return $this->name;
+        return $this->key;
     }
 
     /**
-     * Set the value of percentage.
+     * Set the value of value.
      *
-     * @param float $percentage
-     * @return \Entity\Tax
+     * @param string $value
+     * @return \Entity\Setting
      */
-    public function setPercentage($percentage)
+    public function setValue($value)
     {
-        $this->percentage = $percentage;
+        $this->value = $value;
 
         return $this;
     }
 
     /**
-     * Get the value of percentage.
+     * Get the value of value.
      *
-     * @return float
+     * @return string
      */
-    public function getPercentage()
+    public function getValue()
     {
-        return $this->percentage;
+        return $this->value;
     }
 
     /**
      * Set the value of updated.
      *
      * @param datetime $updated
-     * @return \Entity\Tax
+     * @return \Entity\Setting
      */
     public function setUpdated($updated)
     {
@@ -178,7 +158,7 @@ class Tax implements InputFilterAwareInterface
      * Set the value of created.
      *
      * @param datetime $created
-     * @return \Entity\Tax
+     * @return \Entity\Setting
      */
     public function setCreated($created)
     {
@@ -195,42 +175,6 @@ class Tax implements InputFilterAwareInterface
     public function getCreated()
     {
         return $this->created;
-    }
-
-    /**
-     * Add Product entity to collection (one to many).
-     *
-     * @param \Entity\Product $product
-     * @return \Entity\Tax
-     */
-    public function addProduct(Product $product)
-    {
-        $this->products[] = $product;
-
-        return $this;
-    }
-
-    /**
-     * Remove Product entity from collection (one to many).
-     *
-     * @param \Entity\Product $product
-     * @return \Entity\Tax
-     */
-    public function removeProduct(Product $product)
-    {
-        $this->products->removeElement($product);
-
-        return $this;
-    }
-
-    /**
-     * Get Product entity collection (one to many).
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getProducts()
-    {
-        return $this->products;
     }
 
     /**
@@ -259,41 +203,20 @@ class Tax implements InputFilterAwareInterface
             array(
                 'name' => 'id',
                 'required' => true,
-                'filters' => array(
-                    array('name' => 'Int'),
-                ),
+                'filters' => array(),
                 'validators' => array(),
             ),
             array(
-                'name' => 'name',
+                'name' => 'key',
                 'required' => false,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-                'validators' => array(
-                    array(
-                        'name'    => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                            'min'      => 1,
-                            'max'      => 100,
-                        ),
-                    ),
-                ),
+                'filters' => array(),
+                'validators' => array(),
             ),
             array(
-                'name' => 'percentage',
+                'name' => 'value',
                 'required' => false,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-                'validators' => array(
-                    array(
-                        'name'    => 'Float',
-                    ),
-                ),
+                'filters' => array(),
+                'validators' => array(),
             ),
             array(
                 'name' => 'updated',
@@ -343,7 +266,7 @@ class Tax implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'name', 'percentage', 'updated', 'created');
+        $dataFields = array('id', 'key', 'value', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -376,6 +299,6 @@ class Tax implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'name', 'percentage', 'updated', 'created');
+        return array('id', 'key', 'value', 'updated', 'created');
     }
 }

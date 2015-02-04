@@ -46,7 +46,7 @@ class TaxController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $tax->exchangeArray($form->getData());
+                $tax->populate($form->getData());
 
                 $em = $this
                     ->getServiceLocator()
@@ -86,7 +86,7 @@ class TaxController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $tax->exchangeArray($form->getData());
+                $tax->populate($form->getData());
                 $em->persist($tax);
                 $em->flush();
                 #$this->getTable()->save($form->getData());

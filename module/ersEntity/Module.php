@@ -15,7 +15,9 @@ class Module
 {
     public function onBootstrap(MvcEvent $e)
     {
-        $eventManager        = $e->getApplication()->getEventManager();
+        $app = $e->getApplication();
+        $eventManager = $app->getEventManager();
+        #$eventManager        = $e->getApplication()->getEventManager();
         $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($e) {
             $controller      = $e->getTarget();
             $controllerClass = get_class($controller);
@@ -27,6 +29,30 @@ class Module
         }, 100);
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+        
+        
+        $shared = $eventManager->getSharedManager();
+        $sm = $app->getServiceManager();
+
+        $shared->attach('ZfcUser\Service\User', 'register.post', function ($e) use ($sm) {
+            $userService = $e->getTarget();
+            $sm = $userService->getServiceManager();
+            $em = $sm->get('doctrine.entitymanager.orm_default');
+            $newUser = $e->getParam('user');
+            $registrationForm = $e->getParam('form');
+            $config = $sm->get('config');
+            $criteria = array('roleId' => $config['bjyauthorize']['new_user_default_role']);
+            $defaultUserRole = $em->getRepository('ersEntity\Entity\Role')->findOneBy($criteria);
+            
+            error_log('in register.post');
+            
+            if ($defaultUserRole !== null)
+            {
+                $newUser->addRole($defaultUserRole);
+                $em->persist($newUser);
+                $em->flush();
+            }
+        });
     }
     
     public function getAutoloaderConfig()

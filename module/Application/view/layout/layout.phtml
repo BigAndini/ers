@@ -63,7 +63,7 @@
                         <a href="<?php echo $this->url('order') ?>"><?php echo $this->translate('My Shopping Cart') ?></a>
                         <?php if(!$this->zfcUserIdentity()): ?>
                             <a href="<?php echo $this->url('zfcuser') ?>"><?php echo $this->translate('Login') ?></a>
-                            <a href="<?php echo $this->url('zfcuser', array('action' => 'register')) ?>"><?php echo $this->translate('Register') ?></a>
+                            <a href="<?php echo $this->url('zfcuser/register'); ?>"><?php echo $this->translate('Register') ?></a>
                         <?php else: ?>
                             <a href="<?php echo $this->url('zfcuser') ?>"><?php echo $this->zfcUserIdentity()->getEmail(); ?></a>
                         <?php endif?>
@@ -81,7 +81,7 @@
             <footer>
                 <p style="float:right;">
                     <a href="https://github.com/inbaz/ers/issues" target="_blank">report a bug</a><br />
-                    <a href="#" target="_blank">participant counter</a>
+                    <!--<a href="#" target="_blank">participant counter</a>-->
                 </p>
                 <p>&copy; 2014 - <?php echo date('Y') ?> by European Juggling Association <?php echo $this->translate('All rights reserved.') ?></p>
             </footer>

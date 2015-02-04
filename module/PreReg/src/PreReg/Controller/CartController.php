@@ -80,7 +80,7 @@ class CartController extends AbstractActionController {
             #$product = $this->getTable('Product')->getById($data['Product_id']);
             $item->fromProduct($product);
             $item->setServiceLocator($this->getServiceLocator());
-            $item->exchangeArray($data);
+            $item->populate($data);
             
             $session_cart = new Container('cart');
             $session_cart->order->addItem($item, $participant_id);
