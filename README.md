@@ -28,9 +28,14 @@ mysql> CREATE DATABASE ers CHARACTER SET utf8 COLLATE utf8_bin;
 mysql> GRANT ALL PRIVILEGES ON ers.* TO 'ers'@'localhost' IDENTIFIED BY 'CHANGE_ME';
 mysql> exit;
 ```
-    
 
-4. load database scheme
+4. install other components via composer
+
+```
+$ php composer.phar install
+```    
+
+5. load database scheme
 
 ```
 $ php vendor/bin/doctrine-module orm:validate-schema
@@ -38,16 +43,10 @@ $ php vendor/bin/doctrine-module orm:schema-tool:create
 $ php vendor/bin/doctrine-module orm:schema-tool:update --force
 ```
 
-5. load database example data
+6. load database example data (optional)
 
 ```
 mysql < install/ers-insterts.sql
-```
-
-6. install other components via composer
-
-```
-php composer.phar install
 ```
 
 Server Administration Information
