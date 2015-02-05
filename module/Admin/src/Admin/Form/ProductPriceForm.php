@@ -36,13 +36,13 @@ class ProductPriceForm extends Form
         ));
         
         $this->add(array(
-            'name' => 'limit',
+            'name' => 'Deadline_id',
             'type'  => 'Zend\Form\Element\Select',
             'attributes' => array(
                 'required' => 'required', 
             ),
             'options' => array(
-                'label' => 'Limit',
+                'label' => 'Deadline',
             ),
         ));
         

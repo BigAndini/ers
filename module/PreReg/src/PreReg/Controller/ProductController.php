@@ -34,7 +34,13 @@ class ProductController extends AbstractActionController {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $products = $em->getRepository("ersEntity\Entity\Product")->findBy(array('active' => 1));
+        $products = $em->getRepository("ersEntity\Entity\Product")
+                ->findBy(
+                        array(
+                            'active' => 1,
+                            'deleted' => 0,
+                        )
+                    );
         
         return new ViewModel(array(
             'products' => $products,
@@ -60,7 +66,7 @@ class ProductController extends AbstractActionController {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $products = $em->getRepository("ersEntity\Entity\Product")->findBy(array('id' => $id));
+        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
         #$product = $this->getTable('Product')->getById($id);
         
         #$form = $this->getServiceLocator()->get('Form\ProductForm');
@@ -72,7 +78,7 @@ class ProductController extends AbstractActionController {
         $variants = $em->getRepository("ersEntity\Entity\ProductVariant")->findBy(array('Product_id' => $id));
         foreach($variants as $v) {
             #$values = $this->getTable('ProductVariantValue')->getByField('ProductVariant_id', $v->getId(), 'order ASC');
-            $values = $em->getRepository("ersEntity\Entity\ProductVariantValue")->findBy(array('ProductVariant_id' => $v->getId()), array('order' => 'ASC'));
+            $values = $em->getRepository("ersEntity\Entity\ProductVariantValue")->findBy(array('ProductVariant_id' => $v->getId()), array('ordering' => 'ASC'));
             foreach($values as $val) {
                 $v->addValue($val);
             }
@@ -86,14 +92,14 @@ class ProductController extends AbstractActionController {
         $session_cart = new Container('cart');
         
         $options = array();
-        if(!$product->isPersonalized()) {
+        if(!$product->getPersonalized()) {
             $options[0] = 'do not assign this product';
         }
         foreach($session_cart->order->getParticipants() as $k => $v) {
             $options[$k] = $v->getPrename().' '.$v->getSurname();
         }
         
-        if(count($options) <= 0 && $product->isPersonalized()) {
+        if(count($options) <= 0 && $product->getPersonalized()) {
             $form->get('submit')->setAttribute('disabled', 'disabled');
         }
         

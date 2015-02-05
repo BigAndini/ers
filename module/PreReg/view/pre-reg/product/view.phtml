@@ -1,20 +1,20 @@
 <?php
 
-$this->headTitle($product->name);
+$this->headTitle($product->getName());
 ?>
 <a href="<?php echo $this->url('product');?>"><?php echo $this->translate('back to Overview'); ?></a>
-<h1><?php echo $this->escapeHtml($product->name); ?></h1>
+<h1><?php echo $this->escapeHtml($product->getName()); ?></h1>
 <?php
-if(count($product->getPrices()) == 0):
+if(count($product->getProductPrices()) == 0):
 ?>
 <p class="desc-short">This product is unavailable</p>
 <?php
 else:
 ?>
-<p class="desc-short"><?php echo $product->shortDescription; ?></p>
+<p class="desc-short"><?php echo $product->getShortDescription(); ?></p>
 <div class="product-view">
     <div class="product-image"><img src="/img/no-available-image.png" alt="No available image" width="200"></div>
-    <div class="desc-long"><?php echo $product->longDescription; ?></div>
+    <div class="desc-long"><?php echo $product->getLongDescription(); ?></div>
     <div class="clearfix"></div>
     <?php
     $form = $this->form;
@@ -22,14 +22,14 @@ else:
 
     echo $this->form()->openTag($form);
     
-    if($product->isPersonalized() || count($participants) > 0) {
+    if($product->getPersonalized() || count($participants) > 0) {
         
         echo $this->formRow($form->get('participant_id'));
         echo $this->formRow($form->get('addParticipant'));
     }
-    $form->get('Product_id')->setAttribute('value', $product->id);
+    $form->get('Product_id')->setAttribute('value', $product->getId());
     echo $this->formHidden($form->get('Product_id'));
-    $price = $product->getPrice();
+    $prices = $product->getProductPrices();
     
     for($i = 0; $i<$form->getVariantCounter(); $i++) {
         echo $this->formHidden($form->get('variant_id_'.$i));
@@ -38,7 +38,9 @@ else:
     }
     ?>
     <div class="product-price-div">
-        <span class="product-price"><?php echo $this->currencyFormat($price->charge, 'EUR', null, 'de_DE'); ?></span>    
+        <?php #foreach($prices as $price): ?>
+        <span class="product-price"><?php echo $this->currencyFormat($product->getPrice()->getCharge(), 'EUR', null, 'de_DE'); ?></span>    
+        <?php #endforeach; ?>
         <?php 
             echo $this->formSubmit($form->get('submit'));
         ?>

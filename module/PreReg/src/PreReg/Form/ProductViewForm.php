@@ -52,7 +52,7 @@ class ProductViewForm extends Form
             'name' => 'addParticipant',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Add new Participant',
+                'value' => 'Add Participant',
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),
@@ -74,8 +74,8 @@ class ProductViewForm extends Form
         $variant_add = 1;
         foreach($variants as $v) {
             if(is_object($v) && $v instanceof Entity\ProductVariant) {
-                if(isset($v->order) && $v->order != 0) {
-                    $this->variants[$v->order] = $v;
+                if($v->getOrder() != 0) {
+                    $this->variants[$v->getOrder()] = $v;
                 } else {
                     # Make sure the variants without order number or 
                     # order number == 0 will be shown last.
@@ -123,7 +123,7 @@ class ProductViewForm extends Form
             
             $formElementValue = array();
             $formElementValue['name'] = 'variant_value_'.$this->variantCounter;
-            switch(strtolower($variant->type)) {
+            switch(strtolower($variant->getType())) {
                 case 'text':
                     $formElementValue['attributes'] = array();
                     $formElementValue['attributes']['type'] = $variant->getType();
@@ -142,7 +142,7 @@ class ProductViewForm extends Form
                 case 'select':
                     $formElementValue['type'] = 'Zend\Form\Element\Select';
                     $options = array();
-                    foreach($variant->getValues() as $v) {
+                    foreach($variant->getProductVariantValues() as $v) {
                         $options[$v->getId()] = $v->getValue();
                     }
                     $formElementValue['attributes'] = array();

@@ -1,0 +1,29 @@
+<?php
+// module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+$title = 'Price Limit Overview';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('admin/deadline', array('action'=>'add'));?>">Add deadline</a>
+</p>
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>&nbsp;</th>
+    </tr>
+<?php foreach ($deadlines as $deadline) : ?>
+    <tr>
+        <td><?php 
+            echo $deadline->getDeadline()->format('Y-m-d H:i:s'); 
+        ?></td>
+        <td>
+            <a href="<?php echo $this->url('admin/deadline', array('action'=>'edit', 'id' => $deadline->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
+            <a href="<?php echo $this->url('admin/deadline', array('action'=>'copy', 'id' => $deadline->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
+            <a href="<?php echo $this->url('admin/deadline', array('action'=>'delete', 'id' => $deadline->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

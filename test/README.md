@@ -4,6 +4,21 @@ ERS Tests
 
 These are the tests for the EJC 2015 PreRegistration System.
 
+Setup
+-----
+
+Install selenium via easy_install
+
+```
+easy_install selenium
+```
+
+Install Firefox (CentOS)
+
+```
+yum install firefox
+```
+
 Testuser
 --------
 

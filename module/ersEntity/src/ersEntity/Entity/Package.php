@@ -56,12 +56,12 @@ class Package implements InputFilterAwareInterface
     protected $Barcode_id;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $created;
 
@@ -105,6 +105,13 @@ class Package implements InputFilterAwareInterface
             $this->created = new \DateTime();
         }
         $this->updated = new \DateTime();
+    }
+    
+    /**
+     * Set id of this object to null if it's cloned
+     */
+    public function __clone() {
+        $this->id = null;
     }
 
     /**
@@ -490,6 +497,6 @@ class Package implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Order_id', 'Participant_id', 'Barcode_id', 'updated', 'created');
+        return array('id', 'Order_id', 'Participant_id', 'Barcode_id', 'participant', 'items', 'updated', 'created');
     }
 }

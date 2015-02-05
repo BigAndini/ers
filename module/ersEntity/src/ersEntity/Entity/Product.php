@@ -66,14 +66,14 @@ class Product implements InputFilterAwareInterface
     protected $longDescription;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="boolean")
      */
-    protected $active;
+    protected $active = 1;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="boolean")
      */
-    protected $deleted;
+    protected $deleted = 0;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -115,13 +115,13 @@ class Product implements InputFilterAwareInterface
     protected $productPackageRelatedBySubProductIds;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProductPrice", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="ProductPrice", mappedBy="product", cascade={"persist"})
      * @ORM\JoinColumn(name="id", referencedColumnName="Product_id")
      */
     protected $productPrices;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProductVariant", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="ProductVariant", mappedBy="product", cascade={"persist"})
      * @ORM\JoinColumn(name="id", referencedColumnName="Product_id")
      */
     protected $productVariants;
@@ -153,6 +153,29 @@ class Product implements InputFilterAwareInterface
         $this->updated = new \DateTime();
     }
 
+    /**
+     * Set id of this object to null if it's cloned
+     */
+    public function __clone() {
+        $this->id = null;
+        
+        $prices = $this->getProductPrices();
+        $this->productPrices = new ArrayCollection();
+        foreach ($prices as $price) {
+            $clonePrice = clone $price;
+            $this->addProductPrice($clonePrice);
+            $clonePrice->setProduct($this);
+        }
+        
+        $variants = $this->getProductVariants();
+        $this->productVariants = new ArrayCollection();
+        foreach ($variants as $variant) {
+            $cloneVariant = clone $variant;
+            $this->addProductVariant($cloneVariant);
+            $cloneVariant->setProduct($this);
+        }
+    }
+    
     /**
      * Set the value of id.
      *
@@ -606,6 +629,9 @@ class Product implements InputFilterAwareInterface
      */
     public function getProductPrices()
     {
+        if (!is_object($this->productPrices)) { 
+            $this->productPrices = new ArrayCollection();
+        }
         return $this->productPrices;
     }
 
@@ -657,6 +683,9 @@ class Product implements InputFilterAwareInterface
      */
     public function getProductVariants()
     {
+        if (!is_object($this->productVariants)) { 
+            $this->productVariants = new ArrayCollection();
+        }
         return $this->productVariants;
     }
 
@@ -681,6 +710,59 @@ class Product implements InputFilterAwareInterface
     public function getTax()
     {
         return $this->tax;
+    }
+    
+    /**
+     * Get actual price for this product
+     * 
+     * @return \Entity\ProductPrice
+     */
+    public function getPrice()
+    {
+        $now = new \DateTime();
+        $ret = new ProductPrice();
+        foreach($this->getProductPrices() as $price) {
+            $newDiff = $now->getTimestamp() - $price->getDeadline()->getDeadline()->getTimestamp();
+            if(
+                !isset($diff) ||
+                ($diff - $newDiff) < 0
+            )
+            {
+                $diff = $newDiff;
+                $ret = $price;
+            }
+        }
+        return $ret;
+    }
+    
+    /**
+     * Get former prices for this product
+     * 
+     * @return array of \Entity\ProductPrice
+     */
+    public function getFormerPrices()
+    {
+        $now = new \DateTime();
+        $diff = 0;
+        $ret = new ArrayCollection();
+        foreach($this->getProductPrices() as $price) {
+            if($now > $price->getDeadline()->getDeadline()) {
+                $ret[] = $price; 
+            }
+        }
+        return $ret;
+    }
+    public function getFuturePrices()
+    {
+        $now = new \DateTime();
+        $diff = 0;
+        $ret = new ArrayCollection();
+        foreach($this->getProductPrices() as $price) {
+            if($now < $price->getDeadline()->getDeadline()) {
+                $ret[] = $price; 
+            }
+        }
+        return $ret;
     }
 
     /**

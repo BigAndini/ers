@@ -6,10 +6,8 @@
  * and open the template in the editor.
  */
 
-//  module/PreReg/Module.php
 namespace PreReg;
 
-#use PreReg\Model;
 use ersEntity\Entity;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Session\SessionManager;
@@ -42,22 +40,19 @@ class Module
                      ->get('Zend\Session\SessionManager');
         $session->start();
         
-        if($session->isValid()) {
-            error_log('Session is valid');
-        } else {
+        if(!$session->isValid()) {
             error_log('Session is not valid');
         }
         
-        error_log($_SESSION['__ZF']['_REQUEST_ACCESS_TIME']);
+        /*error_log($_SESSION['__ZF']['_REQUEST_ACCESS_TIME']);
         if(isset($_SESSION['__ZF']['_REQUEST_ACCESS_TIME'])) {
             $filename = $_SESSION['__ZF']['_REQUEST_ACCESS_TIME'].".txt";
             $publicDir = getcwd() . '/sessions';
             file_put_contents($publicDir.'/'.$filename, var_export($_SESSION,true));
-        }
+        }*/
         #error_log(var_export($_SESSION, true));
         
         $container = new Container('initialized');
-        error_log($container->lifetime.' vs. '.(time()-3600));
         if (!isset($container->init) || $container->lifetime < (time()-3600)) {
             error_log('Reset Session');
             #$_SESSION = array();
@@ -78,12 +73,7 @@ class Module
             $session_cart->getManager()->getStorage()->clear('cart');
             $session_cart->order = new Entity\Order();
             $session_cart->init = 1;
-        } else {
-            error_log('CART is already initialized'); 
         }
-
-        
-        
     }
     
     public function getAutoloaderConfig()

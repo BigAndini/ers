@@ -8,22 +8,23 @@ $this->headTitle($title);
 
 <?php 
 foreach ($products as $product) : 
-    if(count($product->getPrices()) == 0):
-        error_log('VIEW: got '.count($product->getPrices()).' prices for product id: '.$product->id);
+    if(count($product->getProductPrices()) == 0):
         continue;
     endif;
 ?>
 <div class="product-container">
     <div class="add-to-cart">
         <p class="price">
-            <?php echo $this->currencyFormat($product->getPrice()->charge, 'EUR', null, 'de_DE'); ?>
+            <?php #foreach($product->getProductPrices() as $price): ?>
+                <?php echo $this->currencyFormat($product->getPrice()->getCharge(), 'EUR', null, 'de_DE'); ?><br />
+            <?php #endforeach; ?>
         </p>
         <p class="product-detail">
-            <a href="<?php echo $this->url('product', array('action'=>'view','id' => $product->id));?>"><?php echo $this->translate('product detail'); ?></a>
+            <a href="<?php echo $this->url('product', array('action'=>'view','id' => $product->getId()));?>"><?php echo $this->translate('product detail'); ?></a>
         </p>
     </div>
-    <h3><?php echo $product->name; ?></h3>
-    <p><?php echo $product->shortDescription; ?></p>
+    <h3><?php echo $product->getName(); ?></h3>
+    <p><?php echo $product->getShortDescription(); ?></p>
     
     <?php #$NextPriceDate = \DateTime::createFromFormat('Y-m-d H:i:s', $product->getNextPrice()->validFrom); ?>
     

@@ -15,7 +15,7 @@ return array(
             'Admin\Controller\ProductVariant'       => 'Admin\Controller\ProductVariantController',
             'Admin\Controller\ProductVariantValue'  => 'Admin\Controller\ProductVariantValueController',
             'Admin\Controller\ProductPrice'         => 'Admin\Controller\ProductPriceController',
-            'Admin\Controller\PriceLimit'           => 'Admin\Controller\PriceLimitController',
+            'Admin\Controller\Deadline'             => 'Admin\Controller\DeadlineController',
         ),
     ),
     'router' => array(
@@ -60,16 +60,16 @@ return array(
                             ),
                         ),
                     ),
-                    'price-limit' => array(
+                    'deadline' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route'    => '/price-limit[/:action][/:id]',
+                            'route'    => '/deadline[/:action][/:id]',
                             'constraints' => array(
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id'     => '[0-9]+',
                             ),
                             'defaults' => array(
-                                'controller' => 'Admin\Controller\PriceLimit',
+                                'controller' => 'Admin\Controller\Deadline',
                                 'action' => 'index',
                             ),
                         ),
@@ -98,6 +98,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\ProductVariant',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'product-variant-value' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/product-variant-value[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\ProductVariantValue',
                                 'action' => 'index',
                             ),
                         ),

@@ -65,12 +65,12 @@ class Counter implements InputFilterAwareInterface
     protected $value;
 
     /**
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $created;
 
@@ -99,6 +99,13 @@ class Counter implements InputFilterAwareInterface
             $this->created = new \DateTime();
         }
         $this->updated = new \DateTime();
+    }
+    
+    /**
+     * Set id of this object to null if it's cloned
+     */
+    public function __clone() {
+        $this->id = null;
     }
 
     /**

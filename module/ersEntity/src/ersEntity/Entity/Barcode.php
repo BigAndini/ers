@@ -43,6 +43,16 @@ class Barcode implements InputFilterAwareInterface
      * @ORM\Column(type="string", length=45, nullable=true)
      */
     protected $barcode;
+    
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $updated;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $created;
 
     /**
      * @ORM\OneToOne(targetEntity="Item", mappedBy="barcode")
@@ -76,6 +86,13 @@ class Barcode implements InputFilterAwareInterface
             $this->created = new \DateTime();
         }
         $this->updated = new \DateTime();
+    }
+    
+    /**
+     * Set id of this object to null if it's cloned
+     */
+    public function __clone() {
+        $this->id = null;
     }
 
     /**

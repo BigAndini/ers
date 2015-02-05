@@ -46,9 +46,9 @@ class ProductVariant implements InputFilterAwareInterface
     protected $Product_id;
 
     /**
-     * @ORM\Column(name="`order`", type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    protected $order;
+    protected $ordering;
 
     /**
      * @ORM\Column(name="`name`", type="string", length=45, nullable=true)
@@ -66,17 +66,17 @@ class ProductVariant implements InputFilterAwareInterface
     protected $preselection;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProductVariantValue", mappedBy="productVariant")
+     * @ORM\OneToMany(targetEntity="ProductVariantValue", mappedBy="productVariant", cascade={"persist"})
      * @ORM\JoinColumn(name="id", referencedColumnName="ProductVariant_id")
      */
     protected $productVariantValues;
@@ -101,6 +101,21 @@ class ProductVariant implements InputFilterAwareInterface
             $this->created = new \DateTime();
         }
         $this->updated = new \DateTime();
+    }
+    
+    /**
+     * Set id of this object to null if it's cloned
+     */
+    public function __clone() {
+        $this->id = null;
+        
+        $values = $this->getProductVariantValues();
+        $this->productVariants = new ArrayCollection();
+        foreach ($values as $value) {
+            $cloneVariant = clone $value;
+            $this->addProductVariantValue($cloneVariant);
+            $cloneVariant->setProductVariant($this);
+        }
     }
 
     /**
@@ -157,9 +172,13 @@ class ProductVariant implements InputFilterAwareInterface
      */
     public function setOrder($order)
     {
-        $this->order = $order;
+        $this->ordering = $order;
 
         return $this;
+    }
+    public function setOrdering($order)
+    {
+        return $this->setOrder($order);
     }
 
     /**
@@ -169,7 +188,11 @@ class ProductVariant implements InputFilterAwareInterface
      */
     public function getOrder()
     {
-        return $this->order;
+        return $this->ordering;
+    }
+    public function getOrdering()
+    {
+        return $this->getOrder();
     }
 
     /**
@@ -320,6 +343,9 @@ class ProductVariant implements InputFilterAwareInterface
      */
     public function getProductVariantValues()
     {
+        if (!is_object($this->productVariantValues)) { 
+            $this->productVariantValues = new ArrayCollection();
+        }
         return $this->productVariantValues;
     }
 
@@ -388,7 +414,7 @@ class ProductVariant implements InputFilterAwareInterface
                 ),
             ),
             array(
-                'name' => 'order',
+                'name' => 'ordering',
                 'required' => false,
                 'filters' => array(
                     array('name' => 'Int'),
@@ -489,7 +515,7 @@ class ProductVariant implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Product_id', 'order', 'name', 'type', 'preselection', 'updated', 'created');
+        $dataFields = array('id', 'Product_id', 'ordering', 'name', 'type', 'preselection', 'updated', 'created');
         $relationFields = array('product');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -522,6 +548,6 @@ class ProductVariant implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Product_id', 'order', 'name', 'type', 'preselection', 'updated', 'created');
+        return array('id', 'Product_id', 'ordering', 'name', 'type', 'preselection', 'updated', 'created');
     }
 }

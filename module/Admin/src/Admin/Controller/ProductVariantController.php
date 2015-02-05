@@ -15,18 +15,8 @@ use Zend\Session\Container;
 use Admin\Form;
 use Zend\Form\Element;
 
-class ProductVariantController extends AbstractActionController {
-    /*protected $table;
-    
-    public function getTable($name)
-    {
-        if (!isset($this->table[$name])) {
-            $sm = $this->getServiceLocator();
-            $className = "Admin\Model".$name."Table";
-            $this->table[$name] = $sm->get($className);
-        }
-        return $this->table[$name];
-    }*/
+class ProductVariantController extends AbstractActionController 
+{    
     public function indexAction()
     {
         $em = $this
@@ -37,6 +27,20 @@ class ProductVariantController extends AbstractActionController {
         ));
     }
 
+    public function viewAction()
+    {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/product');
+        }
+        
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        return new ViewModel(array(
+            'productvariant' => $em->getRepository("ersEntity\Entity\ProductVariant")->findOneBy(array('id' => $id)),
+        ));
+    }
+    
     public function addAction()
     {
         $product_id = (int) $this->params()->fromRoute('id', 0);
@@ -67,6 +71,8 @@ class ProductVariantController extends AbstractActionController {
                     ->get('Doctrine\ORM\EntityManager');
 
                 $productvariant->populate($form->getData());
+                $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $productvariant->getProductId()));
+                $productvariant->setProduct($product);
                 
                 $em->persist($productvariant);
                 $em->flush();
@@ -118,9 +124,7 @@ class ProductVariantController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                #$this->getTable('ProductVariant')->save($form->getData());       
-
-                $productvariant->populate($form->getData());
+                $productvariant = $form->getData();
                 
                 $em->persist($productvariant);
                 $em->flush();
@@ -146,19 +150,19 @@ class ProductVariantController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
-                $em = $this
-                    ->getServiceLocator()
-                    ->get('Doctrine\ORM\EntityManager');
+                
                 $id = (int) $request->getPost('id');
-                $productprice = $em->getRepository("ersEntity\Entity\ProductVariant")
-                        ->findBy(array('id' => $id));
-                $em->remove($productprice);
+                $productvariant = $em->getRepository("ersEntity\Entity\ProductVariant")
+                        ->findOneBy(array('id' => $id));
+                $em->remove($productvariant);
                 $em->flush();
             }
 
@@ -169,11 +173,11 @@ class ProductVariantController extends AbstractActionController {
                 return $this->redirect()->toRoute('admin/product');
             }
         }
-
+        
         return array(
             'id'    => $id,
             'productvariant' => $em->getRepository("ersEntity\Entity\ProductVariant")
-                        ->findBy(array('id' => $id)),
+                        ->findOneBy(array('id' => $id)),
         );
     }
 }

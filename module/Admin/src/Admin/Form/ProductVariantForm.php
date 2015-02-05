@@ -30,7 +30,7 @@ class ProductVariantForm extends Form
                 'type'  => 'text',
             ),
             'options' => array(
-                'label' => 'Sorting',
+                'label' => 'Order',
             ),
         ));
         $this->add(array(
@@ -40,14 +40,6 @@ class ProductVariantForm extends Form
             ),
             'options' => array(
                 'label' => 'Name',
-            ),
-        ));
-        
-        $this->add(array(
-            'type' => 'Zend\Form\Element\Select',
-            'name' => 'type',
-            'options' => array(
-                'label' => 'Type',
             ),
         ));
         

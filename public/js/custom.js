@@ -74,10 +74,10 @@ jQuery(function($) {
         yearRange: '1900:2015',
 	sliderAccessArgs: { touchonly: false }
     });
-    /*$('.datetimepicker').datetimepicker({
+    $('.datetimepicker').datetimepicker({
         timeFormat: "HH:mm:ss",
         dateFormat: "yy-mm-dd",
         addSliderAccess: true,
 	sliderAccessArgs: { touchonly: false }
-    });*/
+    });
 });

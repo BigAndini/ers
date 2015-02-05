@@ -46,9 +46,9 @@ class ProductVariantValue implements InputFilterAwareInterface
     protected $ProductVariant_id;
 
     /**
-     * @ORM\Column(name="`order`", type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    protected $order;
+    protected $ordering;
 
     /**
      * @ORM\Column(name="`value`", type="string", length=45, nullable=true)
@@ -56,12 +56,12 @@ class ProductVariantValue implements InputFilterAwareInterface
     protected $value;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $created;
 
@@ -91,6 +91,13 @@ class ProductVariantValue implements InputFilterAwareInterface
             $this->created = new \DateTime();
         }
         $this->updated = new \DateTime();
+    }
+    
+    /**
+     * Set id of this object to null if it's cloned
+     */
+    public function __clone() {
+        $this->id = null;
     }
 
     /**
@@ -140,16 +147,20 @@ class ProductVariantValue implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of order.
+     * Set the value of ordering.
      *
      * @param integer $order
      * @return \Entity\ProductVariantValue
      */
     public function setOrder($order)
     {
-        $this->order = $order;
+        $this->ordering = $order;
 
         return $this;
+    }
+    public function setOrdering($order)
+    {
+        return $this->setOrder($order);
     }
 
     /**
@@ -159,7 +170,11 @@ class ProductVariantValue implements InputFilterAwareInterface
      */
     public function getOrder()
     {
-        return $this->order;
+        return $this->ordering;
+    }
+    public function getOrdering()
+    {
+        return $this->getOrder();
     }
 
     /**
@@ -326,7 +341,7 @@ class ProductVariantValue implements InputFilterAwareInterface
                 'validators' => array(),
             ),
             array(
-                'name' => 'order',
+                'name' => 'ordering',
                 'required' => false,
                 'filters' => array(),
                 'validators' => array(),
@@ -385,7 +400,7 @@ class ProductVariantValue implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'ProductVariant_id', 'order', 'value', 'updated', 'created');
+        $dataFields = array('id', 'ProductVariant_id', 'ordering', 'value', 'updated', 'created');
         $relationFields = array('productVariant');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -418,6 +433,6 @@ class ProductVariantValue implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'ProductVariant_id', 'order', 'value', 'updated', 'created');
+        return array('id', 'ProductVariant_id', 'ordering', 'value', 'updated', 'created');
     }
 }

@@ -12,7 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use PreReg\Form;
-use PreReg\Model\Entity;
+use ersEntity\Entity;
 
 class ParticipantController extends AbstractActionController {
     /*protected $table;
@@ -70,6 +70,8 @@ class ParticipantController extends AbstractActionController {
                 $user->populate($form->getData()); 
                 $session_cart = new Container('cart');
                 $session_cart->order->addParticipant($user);
+                
+                error_log('adding participant to order.');
                 
                 $context = new Container('context');
                 if(isset($context->route)) {

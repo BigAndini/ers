@@ -16,24 +16,9 @@ use ersEntity\Entity;
 use PreReg\Form;
 
 class CartController extends AbstractActionController {
-    /*protected $table;
-    
-    public function getTable($name)
-    {
-        if (!isset($this->table[$name])) {
-            
-            $sm = $this->getServiceLocator();
-            $className = "PreReg\Model\\".$name."Table";
-            $this->table[$name] = $sm->get($className);
-            $this->table[$name]->setServiceLocator($sm);
-        }
-        return $this->table[$name];
-    }*/
-    
     /*
      * initialize shopping cart
      */
-    
     private function initialize() {
         $session_cart = new Container('cart');
         if(!isset($session_cart->init) && $session_cart->init == 1) {
@@ -76,11 +61,11 @@ class CartController extends AbstractActionController {
             $em = $this
                 ->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
-            $product = $em->getRepository("ersEntity\Entity\Product")->findBy(array('id' => $data['Product_id']));
-            #$product = $this->getTable('Product')->getById($data['Product_id']);
-            $item->fromProduct($product);
-            $item->setServiceLocator($this->getServiceLocator());
-            $item->populate($data);
+            $product = $em->getRepository("ersEntity\Entity\Product")
+                    ->findOneBy(array('id' => $data['Product_id']));
+            #error_log(var_export($product->getArrayCopy(),true));
+            $item->populate($product->getArrayCopy());
+            $item->populate((array) $data);
             
             $session_cart = new Container('cart');
             $session_cart->order->addItem($item, $participant_id);

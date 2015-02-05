@@ -51,7 +51,7 @@
                         <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Main Site') ?></a></li>
                         <li class="active"><a href="<?php echo $this->url('admin/tax') ?>"><?php echo $this->translate('Tax') ?></a></li>
                         <li class="active"><a href="<?php echo $this->url('admin/product') ?>"><?php echo $this->translate('Product') ?></a></li>
-                        <li class="active"><a href="<?php echo $this->url('admin/price-limit') ?>"><?php echo $this->translate('Price Limit') ?></a></li>
+                        <li class="active"><a href="<?php echo $this->url('admin/deadline') ?>"><?php echo $this->translate('Deadline') ?></a></li>
 
                     </ul>
                 </div><!--/.nav-collapse -->
@@ -61,6 +61,9 @@
             <?php echo $this->content; ?>
             <hr>
             <footer>
+                <p style="float:right;">
+                    <a href="https://github.com/inbaz/ers/issues" target="_blank">report a bug</a><br />
+                </p>
                 <p>&copy; <!--2014 - --><?php echo date('Y') ?> by European Juggling Association <?php echo $this->translate('All rights reserved.') ?></p>
             </footer>
         </div> <!-- /container -->

@@ -11,7 +11,7 @@
 namespace ersEntity\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
+#use Doctrine\Common\Collections\ArrayCollection;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilterAwareInterface;
@@ -51,12 +51,22 @@ class ProductPrice implements InputFilterAwareInterface
     protected $charge;
 
     /**
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $Deadline_id;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $Counter_id;
+    
+    /**
+     * @ORM\Column(type="datetime")
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $created;
 
@@ -67,17 +77,13 @@ class ProductPrice implements InputFilterAwareInterface
     protected $product;
 
     /**
-     * @ORM\ManyToMany(targetEntity="PriceLimit", inversedBy="productPrices")
-     * @ORM\JoinTable(name="Limitation",
-     *     joinColumns={@ORM\JoinColumn(name="ProductPrice_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="PriceLimit_id", referencedColumnName="id")}
-     * )
+     * @ORM\ManyToOne(targetEntity="Deadline", inversedBy="productPrices")
+     * @ORM\JoinColumn(name="Deadline_id", referencedColumnName="id", nullable=true)
      */
-    protected $priceLimits;
+    protected $deadline;
 
     public function __construct()
     {
-        $this->priceLimits = new ArrayCollection();
     }
     
     /**
@@ -89,6 +95,13 @@ class ProductPrice implements InputFilterAwareInterface
             $this->created = new \DateTime();
         }
         $this->updated = new \DateTime();
+    }
+    
+    /**
+     * Set id of this object to null if it's cloned
+     */
+    public function __clone() {
+        $this->id = null;
     }
 
     /**
@@ -160,6 +173,98 @@ class ProductPrice implements InputFilterAwareInterface
         return $this->charge;
     }
 
+    /**
+     * Set the value of Deadline_id.
+     *
+     * @param integer $Deadline_id
+     * @return \Entity\ProductPrice
+     */
+    public function setDeadlineId($Deadline_id)
+    {
+        $this->Deadline_id = $Deadline_id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Deadline_id.
+     *
+     * @return integer
+     */
+    public function getDeadlineId()
+    {
+        return $this->Deadline_id;
+    }
+
+    /**
+     * Set the value of Counter_id.
+     *
+     * @param integer $Counter_id
+     * @return \Entity\ProductPrice
+     */
+    public function setCounterId($Counter_id)
+    {
+        $this->Counter_id = $Counter_id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Counter_id.
+     *
+     * @return integer
+     */
+    public function getCounterId()
+    {
+        return $this->Counter_id;
+    }
+
+    /**
+     * Set Deadline entity (many to one).
+     *
+     * @param \Entity\Deadline $deadline
+     * @return \Entity\ProductPrice
+     */
+    public function setDeadline(Deadline $deadline = null)
+    {
+        $this->deadline = $deadline;
+
+        return $this;
+    }
+
+    /**
+     * Get Deadline entity (many to one).
+     *
+     * @return \Entity\Deadline
+     */
+    public function getDeadline()
+    {
+        return $this->deadline;
+    }
+
+    /**
+     * Set Counter entity (many to one).
+     *
+     * @param \Entity\Counter $counter
+     * @return \Entity\ProductPrice
+     */
+    public function setCounter(Counter $counter = null)
+    {
+        $this->counter = $counter;
+
+        return $this;
+    }
+
+    /**
+     * Get Counter entity (many to one).
+     *
+     * @return \Entity\Counter
+     */
+    public function getCounter()
+    {
+        return $this->counter;
+    }
+    
     /**
      * Set the value of updated.
      *
@@ -266,6 +371,29 @@ class ProductPrice implements InputFilterAwareInterface
     {
         return $this->priceLimits;
     }
+    
+    /**
+     * Set the value of priceLimit_id.
+     *
+     * @param string $id
+     * @return \Entity\ProductPrice
+     */
+    public function setPriceLimitId($id)
+    {
+        $this->priceLimitId = (int) $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of priceLimit_id.
+     *
+     * @return integer
+     */
+    public function getPriceLimitId()
+    {
+        return $this->priceLimitId;
+    }
 
     /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
@@ -330,6 +458,18 @@ class ProductPrice implements InputFilterAwareInterface
             ),
             array(
                 'name' => 'created',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+            ),
+            array(
+                'name' => 'Deadline_id',
+                'required' => false,
+                'filters' => array(),
+                'validators' => array(),
+            ),
+            array(
+                'name' => 'Counter_id',
                 'required' => false,
                 'filters' => array(),
                 'validators' => array(),

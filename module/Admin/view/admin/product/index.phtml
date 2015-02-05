@@ -41,7 +41,12 @@ $this->headTitle($title);
             <a href="<?php echo $this->url('admin/product-price', array('action'=>'add', 'id' => $product->getId()));?>"><?php echo $this->translate('Add Product Price'); ?></a>
             <?php foreach($product->getProductPrices() as $price) : ?>
             <p>
-                <span><?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?></span>
+                <span>
+                    <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
+                    (<?php echo $price->getDeadline()->getDeadline()->format('Y-m-d'); ?>)
+                </span>
+                
+                <?php #error_log(var_export($price->getDeadline()->getDeadline()->format('Y-m-d'),true));?>
                 <a href="<?php echo $this->url('admin/product-price', array('action' => 'view', 'id' => $price->getId()));?>">detail</a>
                 <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId()));?>">edit</a>
                 <a href="<?php echo $this->url('admin/product-price', array('action' => 'copy', 'id' => $price->getId()));?>">copy</a>

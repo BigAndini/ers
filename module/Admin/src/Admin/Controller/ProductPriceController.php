@@ -55,19 +55,18 @@ class ProductPriceController extends AbstractActionController {
         #$form = $this->getServiceLocator()->get('Form\ProductPriceForm');
         $form = new Form\ProductPriceForm();
         
-        $limits = $em->getRepository("ersEntity\Entity\PriceLimit")
-                ->findBy(array('type' => 'deadline'));
+        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                ->findAll();
         $options = array();
-        foreach($limits as $limit) {
+        foreach($deadlines as $deadline) {
             
             $options[] = array(
-                'value' => $limit->getId(),
-                'label' => $limit->getType().': '.$limit->getValue(),
+                'value' => $deadline->getId(),
+                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
                 'selected' => false,
             );
-            #$options[$limit->getId()] = $limit->getType().': '.$limit->getValue();
         }
-        $form->get('limit')->setAttribute('options', $options);
+        $form->get('Deadline_id')->setAttribute('options', $options);
         
         $form->bind($productprice);
         
@@ -83,10 +82,14 @@ class ProductPriceController extends AbstractActionController {
             if ($form->isValid()) {
                 $productprice = $form->getData();
                 
-                $limit = $em->getRepository("ersEntity\Entity\PriceLimit")
-                    ->findOneBy(array('id' => $productprice->getData('limit')));
+                $deadline = $em->getRepository("ersEntity\Entity\Deadline")
+                    ->findOneBy(array('id' => $productprice->getDeadlineId()));
+                $productprice->setDeadline($deadline);
                 
-                $productprice->addLimit($limit);
+                $product = $em->getRepository("ersEntity\Entity\Product")
+                    ->findOneBy(array('id' => $productprice->getProductId()));
+                $productprice->setProduct($product);
+                
                 
                 $em->persist($productprice);
                 $em->flush();
@@ -130,26 +133,21 @@ class ProductPriceController extends AbstractActionController {
         $productprice = $em->getRepository("ersEntity\Entity\ProductPrice")
                 ->findOneBy(array('id' => $id));
 
-        error_log('PriceLimits');
-        foreach($productprice->getLimits() as $limit) {
-            error_log('found limit: '.$limit->getType().' '.$limit->getValue());
-        }
         $form = new Form\ProductPriceForm();
         
         $form->bind($productprice);
         
-        $limits = $em->getRepository("ersEntity\Entity\PriceLimit")
-                ->findBy(array('type' => 'deadline'));
+        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                ->findAll();
         $options = array();
-        foreach($limits as $limit) {
+        foreach($deadlines as $deadline) {
             $options[] = array(
-                'value' => $limit->getId(),
-                'label' => $limit->getType().': '.$limit->getValue(),
+                'value' => $deadline->getId(),
+                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
                 'selected' => false,
             );
-            #$options[$limit->getId()] = $limit->getType().': '.$limit->getValue();
         }
-        $form->get('limit')->setAttribute('options', $options);
+        $form->get('Deadline_id')->setAttribute('options', $options);
         
         
         $form->get('submit')->setAttribute('value', 'Edit');
@@ -159,9 +157,7 @@ class ProductPriceController extends AbstractActionController {
             $form->setInputFilter($productprice->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $productprice->populate($form->getData());
-                
-                $em->persist($productprice);
+                $em->persist($form->getData());
                 $em->flush();
 
                 $context = new Container('context');

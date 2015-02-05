@@ -61,12 +61,12 @@ class Order implements InputFilterAwareInterface
     protected $invoiceDetail;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $created;
 
@@ -120,6 +120,13 @@ class Order implements InputFilterAwareInterface
             $this->created = new \DateTime();
         }
         $this->updated = new \DateTime();
+    }
+    
+    /**
+     * Set id of this object to null if it's cloned
+     */
+    public function __clone() {
+        $this->id = null;
     }
 
     /**
@@ -354,7 +361,27 @@ class Order implements InputFilterAwareInterface
 
         return $this;
     }
-
+    
+    /**
+     * Add Item to the according package with the correct Purchaser_id
+     * 
+     * @param \Entity\Item $item
+     * @param integer $Purchaser_id
+     * @return \Entity\Order
+     */
+    public function addItem($item, $Purchaser_id)
+    {
+        
+        error_log('Purchaser_id: '.$Purchaser_id);
+        if(isset($this->packages[$Purchaser_id])) {
+            $this->packages[$Purchaser_id]->addItem($item);
+        } else {
+            throw new \Exception("Unable to add item to your shopping cart.");
+        }
+        
+        return $this;
+    }
+    
     /**
      * Remove Package entity from collection (one to many).
      *
@@ -385,9 +412,10 @@ class Order implements InputFilterAwareInterface
      */
     public function getParticipants() {
         $participants = array();
-        for($i = 0; $i < count($this->packages); $i++) {
-            if($this->packages[$i]->getParticipant()->getPrename() != '' && $this->packages[$i]->getParticipant()->getSurname() != '') {
-                $participants[$i] = $this->packages[$i]->getParticipant();
+        $packages = $this->getPackages();
+        for($i = 0; $i < count($packages); $i++) {
+            if($packages[$i]->getParticipant()->getPrename() != '' && $packages[$i]->getParticipant()->getSurname() != '') {
+                $participants[$i] = $packages[$i]->getParticipant();
             }
         }
         
@@ -621,6 +649,6 @@ class Order implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Purchaser_id', 'PaymentType_id', 'matchKey', 'invoiceDetail', 'updated', 'created', 'Barcode_id');
+        return array('id', 'Purchaser_id', 'PaymentType_id', 'matchKey', 'invoiceDetail', 'packages', 'updated', 'created', 'Barcode_id');
     }
 }

@@ -137,14 +137,15 @@ return [
                 ['controller' => 'Admin\Controller\Product', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\ProductPrice', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\ProductVariant', 'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\ProductVariantValue', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Tax', 'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\Deadline', 'roles' => ['admin']],
                 
                 /* Application */
                 ['controller' => 'Application\Controller\Index', 'roles' => ['guest', 'user']],
                 
                 /* PreReg */
-                ['controller' => 'PreReg\Controller\Cart', 'action' => 'reset', 'roles' => ['user']],
-                #['controller' => 'PreReg\Controller\Cart', 'roles' => ['guest']],
+                ['controller' => 'PreReg\Controller\Cart', 'roles' => ['guest']],
                 ['controller' => 'PreReg\Controller\Order', 'roles' => ['guest']],
                 ['controller' => 'PreReg\Controller\Package', 'roles' => ['guest']],
                 ['controller' => 'PreReg\Controller\Product', 'roles' => ['guest']],

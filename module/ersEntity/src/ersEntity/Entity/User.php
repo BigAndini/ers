@@ -157,6 +157,13 @@ class User implements UserInterface, ProviderInterface
         }
         $this->updated = new \DateTime();
     }
+    
+    /**
+     * Set id of this object to null if it's cloned
+     */
+    public function __clone() {
+        $this->id = null;
+    }
 
     /**
      * Get id.
@@ -626,7 +633,7 @@ class User implements UserInterface, ProviderInterface
         $factory = new InputFactory();
         $filters = array(
             array(
-                'name' => 'user_id',
+                'name' => 'id',
                 'required' => true,
                 'filters' => array(),
                 'validators' => array(),
@@ -644,7 +651,7 @@ class User implements UserInterface, ProviderInterface
                 'validators' => array(),
             ),
             array(
-                'name' => 'display_name',
+                'name' => 'displayName',
                 'required' => false,
                 'filters' => array(),
                 'validators' => array(),
@@ -733,7 +740,7 @@ class User implements UserInterface, ProviderInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'username', 'email', 'display_name', 'password', 'state', 'prename', 'surname', 'active', 'birthday', 'updated', 'created');
+        $dataFields = array('id', 'username', 'email', 'displayName', 'password', 'state', 'prename', 'surname', 'active', 'birthday', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -766,6 +773,6 @@ class User implements UserInterface, ProviderInterface
 
     public function __sleep()
     {
-        return array('user_id', 'username', 'email', 'display_name', 'password', 'state', 'prename', 'surname', 'emailCopy', 'active', 'birthday', 'updated', 'created');
+        return array('id', 'username', 'email', 'displayName', 'password', 'state', 'prename', 'surname', 'emailCopy', 'active', 'birthday', 'updated', 'created');
     }
 }

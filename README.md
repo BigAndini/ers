@@ -15,27 +15,30 @@ Installation instructions
 
 1. get a copy of the project:
 
-	$ git clone https://github.com/inbaz/ers
+    $ git clone https://github.com/inbaz/ers
 
 2. create a VirtualHost running PHP (We tested on PHP 5.5, maybe 5.4 is working aswell, 5.3 doesn't)
 
 3. create a mysql database and user
 
-	mysql> CREATE DATABASE ers CHARACTER SET utf8 COLLATE utf8_bin;
-	mysql> GRANT ALL PRIVILEGES ON ers.* TO 'ers'@'localhost' IDENTIFIED BY 'CHANGE_ME';
-	mysql> exit;
+    mysql> CREATE DATABASE ers CHARACTER SET utf8 COLLATE utf8_bin;
+    mysql> GRANT ALL PRIVILEGES ON ers.* TO 'ers'@'localhost' IDENTIFIED BY 'CHANGE_ME';
+    mysql> exit;
+    
 
 4. load database scheme
 
-	mysql < install/ers.sql
+    $ php vendor/bin/doctrine-module orm:validate-schema
+    $ php vendor/bin/doctrine-module orm:schema-tool:create
+    $ php vendor/bin/doctrine-module orm:schema-tool:update --force
 
 5. load database example data
 
-	mysql < install/ers-insterts.sql
+    mysql < install/ers-insterts.sql
 
 6. install other components via composer
 
-        php composer.phar install
+    php composer.phar install
 
 Server Administration Information
 ---------------------------------

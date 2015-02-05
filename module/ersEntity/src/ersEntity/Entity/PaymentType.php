@@ -86,12 +86,12 @@ class PaymentType implements InputFilterAwareInterface
     protected $days2pay;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     protected $created;
 
@@ -104,6 +104,24 @@ class PaymentType implements InputFilterAwareInterface
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+    }
+    
+    /**
+     * @ORM\PrePersist
+     */
+    public function PrePersist()
+    {
+        if(!isset($this->created)) {
+            $this->created = new \DateTime();
+        }
+        $this->updated = new \DateTime();
+    }
+    
+    /**
+     * Set id of this object to null if it's cloned
+     */
+    public function __clone() {
+        $this->id = null;
     }
 
     /**

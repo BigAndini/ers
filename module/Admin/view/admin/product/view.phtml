@@ -17,7 +17,7 @@ $this->headTitle($title);
     <p>order: <?php echo $product->getOrder(); ?></p>
     <p>short description: <?php echo $product->getShortDescription(); ?></p>
     <p>long description: <?php echo $product->getLongDescription(); ?></p>
-    <p>is personalized: <?php if($product->isPersonalized()) : echo "yes"; else: echo "no"; endif; ?></p>
+    <p>is personalized: <?php if($product->getPersonalized()) : echo "yes"; else: echo "no"; endif; ?></p>
     <p>tax: <?php echo $product->getTaxId(); ?></p>
 </div>
 <div>
@@ -27,7 +27,7 @@ $this->headTitle($title);
             <a href="<?php echo $this->url('admin/product-variant', array('action' => 'add', 'id' => $product->getId())); ?>"><?php echo $this->translate('Add'); ?></a>
         </span>
     </h2>
-    <?php foreach($product->getVariants() as $variant): ?>
+    <?php foreach($product->getProductVariants() as $variant): ?>
         <div>
             <h3>
                 <?php echo $variant->getName(); ?>
@@ -49,10 +49,15 @@ $this->headTitle($title);
             <a href="<?php echo $this->url('admin/product-price', array('action' => 'add', 'id' => $product->getId())); ?>"><?php echo $this->translate('Add'); ?></a>
         </span>
     </h2>
-    <?php foreach($product->getPrices() as $price): ?>
+    <?php foreach($product->getProductPrices() as $price): ?>
         <div>
             <h3>
-                <span><?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?></span>
+                <span>
+                    <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
+                </span>
+                <span style="font-size: 14px;">
+                    (valid until: <?php echo $price->getDeadline()->getDeadline()->format('Y-m-d H:i:s'); ?>)
+                </span>
                 <span style="font-size: 14px;">
                     <a href="<?php echo $this->url('admin/product-price', array('action'=>'edit', 'id' => $price->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
                     <a href="<?php echo $this->url('admin/product-price', array('action'=>'copy', 'id' => $price->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
