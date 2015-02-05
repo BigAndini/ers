@@ -34,6 +34,11 @@ class ProductVariantController extends AbstractActionController
             return $this->redirect()->toRoute('admin/product');
         }
         
+        $context = new Container('context');
+        $context->route = 'admin/product-variant';
+        $context->params = array('action' => 'view', 'id' => $id);
+        $context->options = array();
+        
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
@@ -48,13 +53,14 @@ class ProductVariantController extends AbstractActionController
             return $this->redirect()->toRoute('admin/product');
         }
         
-        #$form = new Form\ProductVariantForm();
-        $form = $this->getServiceLocator()->get('Admin\Form\ProductVariantForm');
+        $form = new Form\ProductVariantForm();
         $form->get('submit')->setValue('Add');
         $form->get('Product_id')->setValue($product_id);
-
-        #$productvariant = new Entity\ProductVariant();
-        #$form->bind($productvariant);
+        $options['text'] = 'Text';
+        $options['select'] = 'Select';
+        $options['date'] = 'Date';
+        $options['datetime'] = 'Datetime';
+        $form->get('type')->setAttribute('options', $options);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -63,9 +69,6 @@ class ProductVariantController extends AbstractActionController
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                #$productvariant->populate($form->getData());
-                #$this->getTable('ProductVariant')->save($productvariant);
-
                 $em = $this
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
@@ -84,16 +87,16 @@ class ProductVariantController extends AbstractActionController
                     return $this->redirect()->toRoute('admin/product');
                 }
             } else {
-                $messages = $form->getMessages();
-                error_log('got '.count($messages).' messages.');
-                foreach($messages as $m) {
-                    error_log($m);
-                }
+                error_log(var_export($form->getMessages()));
             }
         }
         
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $product_id));
         return array(
-            'product_id' => $product_id,
+            'product' => $product,
             'form' => $form,                
         );
     }
@@ -137,9 +140,12 @@ class ProductVariantController extends AbstractActionController
                 }
             }
         }
+        
+        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $productvariant->getProductId()));
 
         return array(
             'id' => $id,
+            'product' => $product,
             'form' => $form,
         );
     }
@@ -174,10 +180,15 @@ class ProductVariantController extends AbstractActionController
             }
         }
         
+        $productvariant = $em->getRepository("ersEntity\Entity\ProductVariant")
+                        ->findOneBy(array('id' => $id));
+        $product = $em->getRepository("ersEntity\Entity\Product")
+                ->findOneBy(array('id' => $productvariant->getProductId()));
+        
         return array(
             'id'    => $id,
-            'productvariant' => $em->getRepository("ersEntity\Entity\ProductVariant")
-                        ->findOneBy(array('id' => $id)),
+            'product' => $product,
+            'productvariant' => $productvariant,
         );
     }
 }

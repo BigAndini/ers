@@ -16,6 +16,7 @@ return array(
             'Admin\Controller\ProductVariantValue'  => 'Admin\Controller\ProductVariantValueController',
             'Admin\Controller\ProductPrice'         => 'Admin\Controller\ProductPriceController',
             'Admin\Controller\Deadline'             => 'Admin\Controller\DeadlineController',
+            'Admin\Controller\PaymentType'          => 'Admin\Controller\PaymentTypeController',
         ),
     ),
     'router' => array(
@@ -70,6 +71,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Deadline',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'payment-type' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/payment-type[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\PaymentType',
                                 'action' => 'index',
                             ),
                         ),

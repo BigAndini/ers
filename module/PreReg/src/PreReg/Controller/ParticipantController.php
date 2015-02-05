@@ -15,19 +15,6 @@ use PreReg\Form;
 use ersEntity\Entity;
 
 class ParticipantController extends AbstractActionController {
-    /*protected $table;
-    
-    public function getTable($name)
-    {
-        if (!isset($this->table[$name])) {
-            $sm = $this->getServiceLocator();
-            $className = "PreReg\Model\\".$name."Table";
-            $this->table[$name] = $sm->get($className);
-            $this->table[$name]->setServiceLocator($sm);
-        }
-        return $this->table[$name];
-    }*/
-    
     /*
      * - Show list of participants of this session
      * - inclufde participant for which this user already bought products, if 
@@ -81,22 +68,16 @@ class ParticipantController extends AbstractActionController {
                 }
                 
             } else {
-                error_log('Form is not valid!');
-                $messages = $form->getMessages();
-                error_log('got '.count($messages).' messages.');
-                foreach($messages as $m) {
-                    if(is_array($m)) {
-                        foreach($m as $n) {
-                            error_log($n);
-                        }
-                    } else {
-                        error_log($m);
-                    }
-                }
+                error_log(var_export($form->getMessages()));
             } 
         }
         
         $context = new Container('context');
+        if(empty($context->route)) {
+            $context->route = 'participant';
+            $context->params = array();
+            $context->options = array();
+        }
         return [
             'form' => $form,
             'context' => $context,

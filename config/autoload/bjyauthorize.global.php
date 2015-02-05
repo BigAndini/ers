@@ -140,6 +140,7 @@ return [
                 ['controller' => 'Admin\Controller\ProductVariantValue', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Tax', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Deadline', 'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\PaymentType', 'roles' => ['admin']],
                 
                 /* Application */
                 ['controller' => 'Application\Controller\Index', 'roles' => ['guest', 'user']],

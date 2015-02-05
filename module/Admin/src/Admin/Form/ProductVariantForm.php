@@ -44,6 +44,14 @@ class ProductVariantForm extends Form
         ));
         
         $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
+            'name' => 'type',
+            'options' => array(
+                'label' => 'Type',
+            ),
+        ));
+        
+        $this->add(array(
             'name' => 'preselection',
             'attributes' => array(
                 'type'  => 'text',

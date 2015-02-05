@@ -15,7 +15,7 @@ use ersEntity\Entity;
 use Admin\Form;
 use Zend\Form\Element;
 
-class DeadlineController extends AbstractActionController {
+class PaymentTypeController extends AbstractActionController {
     
     public function indexAction()
     {
@@ -24,18 +24,75 @@ class DeadlineController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'deadlines' => $em->getRepository("ersEntity\Entity\Deadline")->findAll(),
+            'paymenttypes' => $em->getRepository("ersEntity\Entity\PaymentType")->findAll(),
          ));
     }
 
+    public function enableAction() {}
+    
+    public function disableAction() {}
+    
+    public function addBankTransferAction() {
+        $form = new Form\PaymentTypeBankTransferForm();
+        $form->get('submit')->setValue('Add');
+    
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            // Make certain to merge the files info!
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
+            $form->setData($post);
+            if ($form->isValid()) {
+                $data = $form->getData();
+                error_log(var_export($data, true));
+                // Form is valid, save the form!
+                return $this->redirect()->toRoute('admin/payment-type');
+            } else {
+                error_log(var_export($form->getMessages(), true));
+            }
+        }
+
+        return array('form' => $form);
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $paymenttype = new Entity\PaymentType();
+            
+            $form->setInputFilter($paymenttype->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $paymenttype->populate($form->getData());
+                
+                $em = $this
+                    ->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                
+                $em->persist($paymenttype);
+                $em->flush();
+
+                return $this->redirect()->toRoute('admin/payment-type');
+            } else {
+                error_log(var_export($form->getMessages(), true));
+            }
+        }
+        
+        return array(
+            'form' => $form,                
+        );
+    }
+    
     public function addAction()
     {
-        $form = new Form\DeadlineForm();
+        $form = new Form\PaymentTypeForm();
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $deadline = new Entity\Deadline();
+            $deadline = new Entity\PaymentType();
             
             $form->setInputFilter($deadline->getInputFilter());
             $form->setData($request->getPost());
@@ -47,7 +104,7 @@ class DeadlineController extends AbstractActionController {
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                error_log('deadline: '.get_class($deadline->getDeadline()));
+                error_log('deadline: '.get_class($deadline->getPaymentType()));
                 
                 $em->persist($deadline);
                 $em->flush();
@@ -74,9 +131,9 @@ class DeadlineController extends AbstractActionController {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $deadline = $em->getRepository("ersEntity\Entity\Deadline")->findOneBy(array('id' => $id));
+        $deadline = $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id));
 
-        $form = new Form\DeadlineForm();
+        $form = new Form\PaymentTypeForm();
         $form->bind($deadline);
         $form->get('submit')->setAttribute('value', 'Edit');
 
@@ -101,46 +158,7 @@ class DeadlineController extends AbstractActionController {
             'form' => $form,
         );
     }
-    
-    public function copyAction()
-    {   
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/deadline', array(
-                'action' => 'add'
-            ));
-        }
-        $product = $this->getTable('Product')->getById($id);
 
-        $form = $this->getServiceLocator()->get('Form\DeadlineForm');
-        $form->bind($product);
-        $form->get('submit')->setAttribute('value', 'Copy');
-
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $form->setInputFilter($product->getInputFilter());
-            $form->setData($request->getPost());
-
-            if ($form->isValid()) {
-                $new_id = $this->getTable('Deadline')->save($form->getData());
-                error_log('saved price limit: '.$id);
-
-                // Redirect to list of products
-                return $this->redirect()->toRoute('admin/deadline');
-            } else {
-                error_log(var_export($form->getMessages()));
-            }
-        }
-
-        return array(
-            'id' => $id,
-            'form' => $form,
-        );
-    }
-
-    /*
-     * The delete action is for Agegroups, Counters and Deadlines the same.
-     */
     public function deleteAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
@@ -150,7 +168,7 @@ class DeadlineController extends AbstractActionController {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $productprice = $em->getRepository("ersEntity\Entity\Deadline")
+        $productprice = $em->getRepository("ersEntity\Entity\PaymentType")
                 ->findOneBy(array('id' => $id));
 
         $request = $this->getRequest();
@@ -159,7 +177,7 @@ class DeadlineController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $productprice = $em->getRepository("ersEntity\Entity\Deadline")
+                $productprice = $em->getRepository("ersEntity\Entity\PaymentType")
                     ->findOneBy(array('id' => $id));
                 $em->remove($productprice);
                 $em->flush();

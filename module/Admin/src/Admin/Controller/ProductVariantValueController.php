@@ -34,6 +34,8 @@ class ProductVariantValueController extends AbstractActionController
             return $this->redirect()->toRoute('admin/product');
         }
         
+        
+        
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
@@ -45,7 +47,7 @@ class ProductVariantValueController extends AbstractActionController
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('admin/product-variant');
+            return $this->redirect()->toRoute('admin/product-variant-value');
         }
         
         $form = new Form\ProductVariantValueForm;
@@ -78,16 +80,20 @@ class ProductVariantValueController extends AbstractActionController
                     return $this->redirect()->toRoute('admin/product');
                 }
             } else {
-                $messages = $form->getMessages();
-                error_log('got '.count($messages).' messages.');
-                foreach($messages as $m) {
-                    error_log($m);
-                }
+                error_log(var_export($form->getMessages(),true));
             }
+        }
+        
+        $context = new Container('context');
+        if(empty($context->route)) {
+            $context->route = 'admin/product';
+            $context->params = array();
+            $context->options = array();
         }
         
         return array(
             'productvariant_id' => $id,
+            'context' => $context,
             'form' => $form,                
         );
     }

@@ -1,7 +1,6 @@
 <?php
-// module/Album/view/album/album/add.phtml:
 
-$title = 'Add Product Variant';
+$title = 'Add Product Variant for '.$product->getName();
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -11,7 +10,7 @@ $form->setAttribute('action', $this->url(
     'admin/product-variant',
     array(
         'action' => 'add',
-        'id'     => $this->product_id,
+        'id'     => $this->product->getId(),
     )
 ));
 $form->prepare();
@@ -25,6 +24,6 @@ echo $this->formRow($form->get('preselection'));
 echo $this->formRow($form->get('Product_id'));
 echo $this->formSubmit($form->get('submit'));
 ?>
-<a href="<?php echo $this->url('admin/product');?>">Cancel</a>
+<a href="<?php echo $this->url($context->route, $context->params, $context->options); ?>">Cancel</a>
 <?php
 echo $this->form()->closeTag();

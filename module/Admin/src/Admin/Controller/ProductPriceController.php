@@ -17,17 +17,6 @@ use Admin\Form;
 use Zend\Form\Element;
 
 class ProductPriceController extends AbstractActionController {
-    /*protected $table;
-    
-    public function getTable($name)
-    {
-        if (!isset($this->table[$name])) {
-            $sm = $this->getServiceLocator();
-            $className = "Admin\Model\\".$name."Table";
-            $this->table[$name] = $sm->get($className);
-        }
-        return $this->table[$name];
-    }*/
     public function indexAction()
     {
         $em = $this
@@ -101,18 +90,14 @@ class ProductPriceController extends AbstractActionController {
                     return $this->redirect()->toRoute('admin/product');
                 }
             } else {
-                $messages = $form->getMessages();
-                error_log('got '.count($messages).' messages.');
-                foreach($messages as $message) {
-                    foreach($message as $m) {
-                        error_log($m);
-                    }
-                }
+                error_log(var_export($form->getMessages()));
             }
         }
         
+        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
+        
         return array(
-            'id' => $id,
+            'product' => $product,
             'form' => $form,                
         );
     }
@@ -168,9 +153,12 @@ class ProductPriceController extends AbstractActionController {
                 }
             }
         }
-
+        
+        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $productprice->getProductId()));
+        
         return array(
             'id' => $id,
+            'product' => $product,
             'form' => $form,
         );
     }
@@ -210,10 +198,11 @@ class ProductPriceController extends AbstractActionController {
         $productprice = $em->getRepository("ersEntity\Entity\ProductPrice")
                         ->findOneBy(array('id' => $id));
         
-        error_log(var_export($productprice, true));
+        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $productprice->getProductId()));
         
         return array(
             'id'    => $id,
+            'product' => $product,
             'price' => $productprice,
         );
     }

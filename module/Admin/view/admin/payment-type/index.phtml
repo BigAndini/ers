@@ -1,0 +1,31 @@
+<?php
+// module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+$title = 'Payment Type Overview';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('admin/payment-type', array('action'=>'addBankTransfer'));?>">Add Payment Type (Bank Transfer)</a><br />
+    <a href="<?php echo $this->url('admin/payment-type', array('action'=>'addCreditCard'));?>">Add Payment Type (Credit Card)</a><br />
+    <a href="<?php echo $this->url('admin/payment-type', array('action'=>'addPayPal'));?>">Add Payment Type (PayPal)</a>
+</p>
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>&nbsp;</th>
+    </tr>
+<?php foreach ($paymenttypes as $paymenttype) : ?>
+    <tr>
+        <td><?php 
+            echo $paymenttype->getDeadline()->format('Y-m-d H:i:s'); 
+        ?></td>
+        <td>
+            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'edit', 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
+            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'copy', 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
+            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'delete', 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

@@ -1,7 +1,7 @@
 <?php
 // module/Album/view/album/album/add.phtml:
 
-$title = 'Add Product Price';
+$title = 'Add Product Price for '.$product->getName();
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -12,7 +12,7 @@ $form->setAttribute('action', $this->url(
     'admin/product-price',
     array(
         'action' => 'add',
-        'id'     => $this->id,
+        'id'     => $this->product->getId(),
     )
 ));
 $form->prepare();
