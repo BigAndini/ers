@@ -22,7 +22,7 @@ class Pages(unittest.TestCase):
             '/': 'EJC 2015 Pre Registration',
             '/product': 'EJC 2015 Pre Registration',
             '/participant': 'My Participants',
-            '/participant/add': 'Add new Participant',
+            '/participant/add': 'Add Participant',
             '/order': 'My Shopping Cart',
             # '/user/login': 'Sign In',
             }
@@ -36,27 +36,37 @@ class Pages(unittest.TestCase):
         self.driver = webdriver.Firefox(firefox_profile=profile)
 
         self.base_url = secret.base_url_template % (secret.username, secret.password)
+        # get cookie and use it for further requests
+        self.goto(self.base_url)
+        cookies = self.driver.get_cookies()
+        self.driver.add_cookie(cookies[0])
+
+    def goto(self, route='/'):
+        self.driver.get(urlparse.urljoin(self.base_url, route))
 
     def test_title_in_routes(self):
         """ test that the route contains the expected title """
         driver = self.driver
         for route, expected_title in self.routes.items():
-            driver.get(urlparse.urljoin(self.base_url, route))
+            self.goto(route)
             self.assertIn(expected_title, driver.title)
 
     def test_add_participant(self):
         driver = self.driver
-        uri = urlparse.urljoin(self.base_url, 'participant/add')
-        driver.get(uri)
+        # necessary for unknown reason
+        self.goto('participant/')
+        self.goto('participant/add')
         form = driver.find_element_by_id('Participant')
         elem = driver.find_element_by_name("prename")
         elem.send_keys("Heinz")
         elem = driver.find_element_by_name("surname")
-        elem.send_keys("Müller")
+        elem.send_keys("Lehmann")
+        elem = driver.find_element_by_name("birthday")
+        elem.send_keys("1234")
         elem = driver.find_element_by_name("email")
         elem.send_keys("hat-keine@example.com")
         x = form.submit()
-        assert "Hello, World!" in driver.get_page_source()
+        # TODO assert whatever
 
     def tearDown(self):
         self.driver.close()
