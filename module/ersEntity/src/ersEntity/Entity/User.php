@@ -773,6 +773,6 @@ class User implements UserInterface, ProviderInterface
 
     public function __sleep()
     {
-        return array('id', 'username', 'email', 'displayName', 'password', 'state', 'prename', 'surname', 'emailCopy', 'active', 'birthday', 'updated', 'created');
+        return array('id', 'username', 'email', 'displayName', 'password', 'state', 'prename', 'surname', 'active', 'birthday', 'updated', 'created');
     }
 }

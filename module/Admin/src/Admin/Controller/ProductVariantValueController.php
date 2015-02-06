@@ -51,7 +51,6 @@ class ProductVariantValueController extends AbstractActionController
         }
         
         $form = new Form\ProductVariantValueForm;
-        #$form = $this->getServiceLocator()->get('Admin\Form\ProductVariantValueForm');
         $form->get('submit')->setValue('Add');
         $form->get('ProductVariant_id')->setValue($id);
         
@@ -67,7 +66,7 @@ class ProductVariantValueController extends AbstractActionController
                     ->get('Doctrine\ORM\EntityManager');
 
                 $value->populate($form->getData());
-                $productvariant = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $value->getProductVariantId()));
+                $productvariant = $em->getRepository("ersEntity\Entity\ProductVariant")->findOneBy(array('id' => $value->getProductVariantId()));
                 $value->setProductVariant($productvariant);
                 
                 $em->persist($value);

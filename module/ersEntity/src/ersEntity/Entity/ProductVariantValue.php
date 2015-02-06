@@ -331,13 +331,17 @@ class ProductVariantValue implements InputFilterAwareInterface
             array(
                 'name' => 'id',
                 'required' => true,
-                'filters' => array(),
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
                 'validators' => array(),
             ),
             array(
                 'name' => 'ProductVariant_id',
                 'required' => true,
-                'filters' => array(),
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
                 'validators' => array(),
             ),
             array(

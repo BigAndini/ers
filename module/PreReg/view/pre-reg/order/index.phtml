@@ -34,35 +34,41 @@
         </tr>
         <?php 
         $sum = 0;
-        foreach ($packages as $package) : 
+        error_log('found '.count($order->getPackages()).' package in this order');
+        foreach ($order->getPackages() as $package) : 
+            error_log(var_export($package,true));
             $participant = $package->getParticipant();
-        ?>
-        <?php 
+            
             if($participant->getPrename() == '' && $participant->getSurname() == '') :
                 $participant = 'unassigned items';
             else:
                 $participant = $participant->getPrename().' '.$participant->getSurname();
             endif;
-        ?>
         
-            <?php if(count($package->getItems()) != 0 && $participant != 'unassigned items'): ?>
-                <?php foreach ($package->getItems() as $item) : ?>
+            #if(count($package->getItems()) != 0 && $participant != 'unassigned items'): 
+            if(count($package->getItems()) != 0): 
+                foreach ($package->getItems() as $item) : 
+                    error_log(var_export($item, true));
+        ?>
         <tr>
             <td><?php echo $item->getName(); ?></td>
             <td><?php echo $participant; ?></td>
             <td class="col-price"><?php 
-                echo $item->getPrice()->charge;
-                $sum += $item->getPrice()->charge;
-            ?> €</td>
+                #echo $item->getPrice();
+                $sum += $item->getPrice();
+                echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); 
+            ?>
+            </td>
             <td><a href="#">edit</a><a href="#">delete</a></td>
         </tr>
-                <?php endforeach; ?>    
-            <?php endif; ?>
-        <?php endforeach; ?>
+        <?php 
+                endforeach;     
+            endif;
+        endforeach; ?>
         <tr>
             <td></td>
             <td class="sum-desc">Sum:</td>
-            <td class="sum-price"><?php echo $sum; ?> €</td>
+            <td class="sum-price"><?php echo $this->currencyFormat($sum, 'EUR', null, 'de_DE'); ?></td>
             <td></td>
         </tr>
     </table>

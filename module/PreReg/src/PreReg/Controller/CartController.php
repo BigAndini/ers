@@ -34,7 +34,10 @@ class CartController extends AbstractActionController {
      */
     public function indexAction() {
         $this->initialize();
-        return new ViewModel();
+        #return new ViewModel();
+        return $this->redirect()->toRoute('order', array(
+            'action' => 'index',
+        ));
     }
     
     /*
@@ -63,9 +66,13 @@ class CartController extends AbstractActionController {
                 ->get('Doctrine\ORM\EntityManager');
             $product = $em->getRepository("ersEntity\Entity\Product")
                     ->findOneBy(array('id' => $data['Product_id']));
-            #error_log(var_export($product->getArrayCopy(),true));
+            
             $item->populate($product->getArrayCopy());
+            $item->setPrice($product->getPrice()->getCharge());
+            $item->setAmount(1);
+            #error_log(get_class().': '.var_export($item, true));
             $item->populate((array) $data);
+            #error_log(get_class().': '.var_export($item, true));
             
             $session_cart = new Container('cart');
             $session_cart->order->addItem($item, $participant_id);

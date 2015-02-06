@@ -27,12 +27,115 @@ class PaymentTypeBankTransferForm extends Form
         ));
         
         
+ 
+        $this->add(array( 
+            'name' => 'name', 
+            'type' => 'Zend\Form\Element\Text', 
+            'attributes' => array( 
+                'placeholder' => 'Payment Type Name...', 
+                'required' => 'required', 
+            ), 
+            'options' => array( 
+                'label' => 'Name', 
+            ), 
+        )); 
+ 
+        $this->add(array( 
+            'name' => 'logo-upload', 
+            'type' => 'file', 
+            'attributes' => array( 
+                'required' => 'required', 
+            ), 
+            'options' => array( 
+                'label' => 'Logo', 
+            ), 
+        ));
         
-        $file = new Element\File('image-file');
+        /*$file = new Element\File('image-file');
         $file->setLabel('Payment Type Logo')
              ->setAttribute('id', 'image-file');
-        $this->add($file);
+        $this->add($file);*/
  
+        $this->add(array( 
+            'name' => 'shortDescription', 
+            'type' => 'Zend\Form\Element\Text', 
+            'attributes' => array( 
+                'placeholder' => 'Short Description...', 
+                'required' => 'required', 
+            ), 
+            'options' => array( 
+                'label' => 'Short Description', 
+            ), 
+        )); 
+ 
+        $this->add(array( 
+            'name' => 'longDescription', 
+            'type' => 'Zend\Form\Element\Textarea', 
+            'attributes' => array( 
+                'placeholder' => 'Long Description...', 
+            ), 
+            'options' => array( 
+                'label' => 'Long Description', 
+            ), 
+        )); 
+ 
+        $this->add(array( 
+            'name' => 'fixFee', 
+            'type' => 'Zend\Form\Element\Text', 
+            'attributes' => array( 
+                'placeholder' => 'Fix Fee...', 
+            ), 
+            'options' => array( 
+                'label' => 'Fix Fee (default: 0)', 
+            ), 
+        )); 
+ 
+        $this->add(array( 
+            'name' => 'percentageFee', 
+            'type' => 'Zend\Form\Element\Text', 
+            'attributes' => array( 
+                'placeholder' => 'Percentage Fee...', 
+            ), 
+            'options' => array( 
+                'label' => 'Percentage Fee (default: 0)', 
+            ), 
+        )); 
+ 
+        $this->add(array( 
+            'name' => 'activeFrom', 
+            'type' => 'Zend\Form\Element\Text', 
+            'attributes' => array( 
+                'placeholder' => 'Active From...', 
+                'required' => 'required', 
+            ), 
+            'options' => array( 
+                'label' => 'Active From', 
+            ), 
+        )); 
+ 
+        $this->add(array( 
+            'name' => 'activeUntil', 
+            'type' => 'Zend\Form\Element\Text', 
+            'attributes' => array( 
+                'placeholder' => 'Active Until...', 
+                'required' => 'required', 
+            ), 
+            'options' => array( 
+                'label' => 'Active Until', 
+            ), 
+        )); 
+ 
+        $this->add(array( 
+            'name' => 'days2pay', 
+            'type' => 'Zend\Form\Element\Text', 
+            'attributes' => array( 
+                'placeholder' => 'Days until Payment...', 
+            ), 
+            'options' => array( 
+                'label' => 'Days until Payment (default: 0)', 
+            ), 
+        )); 
+        
         $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 

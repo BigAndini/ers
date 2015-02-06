@@ -95,7 +95,14 @@ class ProductVariantController extends AbstractActionController
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $product_id));
+        
+        $context = new Container('context');
+        $context->route = 'admin/product';
+        $context->params = array();
+        $context->options = array();
+        
         return array(
+            'context' => $context,
             'product' => $product,
             'form' => $form,                
         );

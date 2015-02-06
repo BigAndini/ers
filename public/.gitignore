@@ -6,9 +6,6 @@ nbproject
 .idea
 .project
 .settings
-*.swp
-*.pyc
 composer.lock
-test/secret.py
-vendor/bin
-vendor/*
+*.swp
+upload/*

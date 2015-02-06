@@ -7,8 +7,8 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
 <p>Are you sure that you want to delete tax group
-    <strong><?php echo $this->escapeHtml($tax->name); ?></strong> with
-    <strong><?php echo $this->escapeHtml($tax->percentage); ?>%</strong>?
+    <strong><?php echo $this->escapeHtml($tax->getName()); ?></strong> with
+    <strong><?php echo $this->escapeHtml($tax->getPercentage()); ?>%</strong>?
 </p>
 <?php
 $url = $this->url('admin/tax', array(
@@ -18,7 +18,7 @@ $url = $this->url('admin/tax', array(
 ?>
 <form action="<?php echo $url; ?>" method="post">
 <div>
-    <input type="hidden" name="id" value="<?php echo (int) $tax->id; ?>" />
+    <input type="hidden" name="id" value="<?php echo (int) $tax->getId(); ?>" />
     <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
     <a href="<?php echo $this->url('admin/tax');?>">Cancel</a>
 </div>

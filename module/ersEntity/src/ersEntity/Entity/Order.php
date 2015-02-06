@@ -373,10 +373,14 @@ class Order implements InputFilterAwareInterface
     {
         
         error_log('Purchaser_id: '.$Purchaser_id);
+        error_log(var_export($item,true));
         if(isset($this->packages[$Purchaser_id])) {
             $this->packages[$Purchaser_id]->addItem($item);
         } else {
-            throw new \Exception("Unable to add item to your shopping cart.");
+            $this->packages[$Purchaser_id] = new Package();
+            $this->packages[$Purchaser_id]->setParticipant(new User());
+            $this->packages[$Purchaser_id]->addItem($item);
+            #throw new \Exception("Unable to add item to your shopping cart.");
         }
         
         return $this;

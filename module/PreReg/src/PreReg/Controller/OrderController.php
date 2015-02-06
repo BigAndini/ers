@@ -25,10 +25,10 @@ class OrderController extends AbstractActionController {
     public function indexAction() {
         $session_cart = new Container('cart');
         $packages = $session_cart->order->getPackages();
-        error_log('got '.count($packages).' packages.');
         
         return new ViewModel(array(
-            'packages' => $packages,
+            'order' => $session_cart->order,
+            #'packages' => $packages,
         ));
     }
     

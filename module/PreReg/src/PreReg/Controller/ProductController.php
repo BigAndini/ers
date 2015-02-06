@@ -80,7 +80,7 @@ class ProductController extends AbstractActionController {
             #$values = $this->getTable('ProductVariantValue')->getByField('ProductVariant_id', $v->getId(), 'order ASC');
             $values = $em->getRepository("ersEntity\Entity\ProductVariantValue")->findBy(array('ProductVariant_id' => $v->getId()), array('ordering' => 'ASC'));
             foreach($values as $val) {
-                $v->addValue($val);
+                $v->addProductVariantValue($val);
             }
         }
         $form->setVariants($variants);

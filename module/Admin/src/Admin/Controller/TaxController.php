@@ -108,15 +108,16 @@ class TaxController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/tax');
         }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
-                $em = $this
-                    ->getServiceLocator()
-                    ->get('Doctrine\ORM\EntityManager');
+                
                 $id = (int) $request->getPost('id');
                 $tax = $em->getRepository("ersEntity\Entity\Tax")
                         ->findOneBy(array('id' => $id));
