@@ -17,6 +17,9 @@ return array(
             'Admin\Controller\ProductPrice'         => 'Admin\Controller\ProductPriceController',
             'Admin\Controller\Deadline'             => 'Admin\Controller\DeadlineController',
             'Admin\Controller\PaymentType'          => 'Admin\Controller\PaymentTypeController',
+            'Admin\Controller\Counter'              => 'Admin\Controller\CounterController',
+            'Admin\Controller\User'                 => 'Admin\Controller\UserController',
+            'Admin\Controller\Role'                 => 'Admin\Controller\RoleController',
         ),
     ),
     'router' => array(
@@ -85,6 +88,48 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\PaymentType',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'counter' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/counter[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Counter',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'user' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/user[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\User',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'role' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/role[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Role',
                                 'action' => 'index',
                             ),
                         ),

@@ -1,0 +1,36 @@
+<?php
+/* I'd like to have a banana! */
+
+$title = 'User Overview';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('admin/user', array('action'=>'add'));?>">Add User</a>
+</p>
+
+<table class="table">
+    <tr>
+        <th>email</th>
+        <th>roles</th>
+        <th>&nbsp;</th>
+    </tr>
+<?php foreach ($users as $user) : ?>
+    <?php error_log(var_export($user, true)); ?>
+    <tr>
+        <td><?php 
+            echo $user->getEmail();
+        ?></td>
+        <td>
+            <?php foreach($user->getRoles() as $role) : ?>
+            <p><?php echo $role->getRoleId(); ?></p>
+            <?php endforeach; ?>
+        </td>
+        <td>
+            <a href="<?php echo $this->url('admin/user', array('action'=>'edit', 'id' => $user->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
+            <a href="<?php echo $this->url('admin/user', array('action'=>'copy', 'id' => $user->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
+            <a href="<?php echo $this->url('admin/user', array('action'=>'delete', 'id' => $user->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

@@ -1,0 +1,37 @@
+<?php
+/* pizza would be really nice */
+
+$title = 'Role Overview';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('admin/role', array('action'=>'add'));?>">Add Role</a>
+</p>
+
+<table class="table">
+    <tr>
+        <th>RoleId</th>
+        <th>Parent</th>
+        <th>&nbsp;</th>
+    </tr>
+<?php foreach ($roles as $role) : ?>
+    <tr>
+        <td>
+            <?php echo $role->getRoleId();?>
+        </td>
+        <td>
+            <?php 
+            if($role->getParent() != null) {
+                echo $role->getParent()->getRoleId();
+            }
+            ?>
+        </td>
+        <td>
+            <a href="<?php echo $this->url('admin/role', array('action'=>'edit', 'id' => $role->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
+            <a href="<?php echo $this->url('admin/role', array('action'=>'copy', 'id' => $role->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
+            <a href="<?php echo $this->url('admin/role', array('action'=>'delete', 'id' => $role->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

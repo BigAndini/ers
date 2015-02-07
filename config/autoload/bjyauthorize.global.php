@@ -141,6 +141,9 @@ return [
                 ['controller' => 'Admin\Controller\Tax', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Deadline', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\PaymentType', 'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\Counter', 'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\User', 'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\Role', 'roles' => ['admin']],
                 
                 /* Application */
                 ['controller' => 'Application\Controller\Index', 'roles' => ['guest', 'user']],

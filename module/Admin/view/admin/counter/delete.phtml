@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Delete Deadline';
+$title = 'Delete Counter';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -9,7 +9,7 @@ $this->headTitle($title);
     <strong><?php echo $pricelimit->getType().' '.$pricelimit->getValue(); ?></strong>?
 </p>
 <?php
-$url = $this->url('admin/deadline', array(
+$url = $this->url('admin/counter', array(
     'action' => 'delete',
     'id'     => $this->id,
 ));
@@ -18,6 +18,6 @@ $url = $this->url('admin/deadline', array(
 <div>
     <input type="hidden" name="id" value="<?php echo (int) $pricelimit->getId(); ?>" />
     <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
-    <a href="<?php echo $this->url('admin/deadline');?>">Cancel</a>
+    <a href="<?php echo $this->url('admin/counter');?>">Cancel</a>
 </div>
 </form>
