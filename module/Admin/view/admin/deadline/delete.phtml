@@ -6,7 +6,7 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
 <p>Are you sure that you want to delete price limit
-    <strong><?php echo $pricelimit->getType().' '.$pricelimit->getValue(); ?></strong>?
+    <strong><?php echo $deadline->getDeadline()->format('Y-m-d H:i:s'); ?></strong>?
 </p>
 <?php
 $url = $this->url('admin/deadline', array(
@@ -16,7 +16,7 @@ $url = $this->url('admin/deadline', array(
 ?>
 <form action="<?php echo $url; ?>" method="post">
 <div>
-    <input type="hidden" name="id" value="<?php echo (int) $pricelimit->getId(); ?>" />
+    <input type="hidden" name="id" value="<?php echo (int) $deadline->getId(); ?>" />
     <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
     <a href="<?php echo $this->url('admin/deadline');?>">Cancel</a>
 </div>

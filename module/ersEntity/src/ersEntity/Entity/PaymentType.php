@@ -41,7 +41,7 @@ class PaymentType implements InputFilterAwareInterface
     protected $id;
 
     /**
-     * @ORM\Column(name="`name`", type="string", length=45, nullable=true)
+     * @ORM\Column(name="`name`", type="string", length=100)
      */
     protected $name;
 
@@ -51,24 +51,24 @@ class PaymentType implements InputFilterAwareInterface
     protected $logo;
 
     /**
-     * @ORM\Column(type="string", length=127, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     protected $shortDescription;
 
     /**
-     * @ORM\Column(type="string", length=1023, nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $longDescription;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="float")
      */
-    protected $fixFee;
+    protected $fixFee = 0;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="float")
      */
-    protected $percentageFee;
+    protected $percentageFee = 0;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -81,9 +81,14 @@ class PaymentType implements InputFilterAwareInterface
     protected $activeUntil;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer")
      */
-    protected $days2pay;
+    protected $days2pay = 0;
+    
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    protected $type;
 
     /**
      * @ORM\Column(type="datetime")
@@ -293,7 +298,11 @@ class PaymentType implements InputFilterAwareInterface
      */
     public function setActiveFrom($activeFrom)
     {
-        $this->activeFrom = $activeFrom;
+        if($activeFrom instanceof \DateTime) {
+            $this->activeFrom = $activeFrom;
+        } elseif(is_string($activeFrom)) {
+            $this->activeFrom = new \DateTime($activeFrom);
+        }
 
         return $this;
     }
@@ -316,7 +325,13 @@ class PaymentType implements InputFilterAwareInterface
      */
     public function setActiveUntil($activeUntil)
     {
-        $this->activeUntil = $activeUntil;
+        if($activeUntil instanceof \DateTime) {
+            $this->activeUntil = $activeUntil;
+        } elseif(is_string($activeUntil)) {
+            $this->activeUntil = new \DateTime($activeUntil);
+        }
+
+        return $this;
 
         return $this;
     }
@@ -354,6 +369,29 @@ class PaymentType implements InputFilterAwareInterface
         return $this->days2pay;
     }
 
+    /**
+     * Set the value of type.
+     *
+     * @param string $type
+     * @return \Entity\PaymentType
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of type.
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+    
     /**
      * Set the value of updated.
      *
@@ -462,7 +500,9 @@ class PaymentType implements InputFilterAwareInterface
             array(
                 'name' => 'id',
                 'required' => true,
-                'filters' => array(),
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
                 'validators' => array(),
             ),
             array(

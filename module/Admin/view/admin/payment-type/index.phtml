@@ -14,16 +14,22 @@ $this->headTitle($title);
 <table class="table">
     <tr>
         <th>Name</th>
+        <th>Logo</th>
+        <th>Period</th>
         <th>&nbsp;</th>
     </tr>
 <?php foreach ($paymenttypes as $paymenttype) : ?>
     <tr>
+        <td><?php echo $paymenttype->getName(); ?></td>
+        <td><img src="<?php echo $paymenttype->getLogo(); ?>" alt="no logo" /></td>
         <td><?php 
-            echo $paymenttype->getDeadline()->format('Y-m-d H:i:s'); 
+            echo $paymenttype->getActiveFrom()->format('Y-m-d H:i:s');
+            echo ' - ';
+            echo $paymenttype->getActiveUntil()->format('Y-m-d H:i:s');
         ?></td>
         <td>
-            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'edit', 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'copy', 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
+            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'edit'.$paymenttype->getType(), 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
+            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'copy'.$paymenttype->getType(), 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
             <a href="<?php echo $this->url('admin/payment-type', array('action'=>'delete', 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
         </td>
     </tr>

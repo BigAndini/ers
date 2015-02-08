@@ -8,7 +8,7 @@ $this->headTitle($title);
 <?php
 $form = $this->form;
 $form->setAttribute('action', $this->url(
-    'admin/deadline',
+    'admin/payment-type',
     array(
         'action' => 'copy',
         'id'     => $this->id,
@@ -25,6 +25,6 @@ echo $this->formRow($form->get('name'));
 echo $this->formHidden($form->get('csrf'));
 echo $this->formSubmit($form->get('submit'));
 ?>
-<a href="<?php echo $this->url('admin/deadline');?>">Cancel</a>
+<a href="<?php echo $this->url('admin/payment-type');?>">Cancel</a>
 <?php
 echo $this->form()->closeTag();

@@ -39,15 +39,12 @@ class DeadlineController extends AbstractActionController {
             
             $form->setInputFilter($deadline->getInputFilter());
             $form->setData($request->getPost());
-
             if ($form->isValid()) {
                 $deadline->populate($form->getData());
                 
                 $em = $this
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-                
-                error_log('deadline: '.get_class($deadline->getDeadline()));
                 
                 $em->persist($deadline);
                 $em->flush();
@@ -165,7 +162,6 @@ class DeadlineController extends AbstractActionController {
                 $em->flush();
             }
 
-            // Redirect to list of products
             return $this->redirect()->toRoute('admin/deadline');
         }
 

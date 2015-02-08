@@ -43,8 +43,7 @@ class PaymentTypeBankTransferForm extends Form
         $this->add(array( 
             'name' => 'logo-upload', 
             'type' => 'file', 
-            'attributes' => array( 
-                'required' => 'required', 
+            'attributes' => array(
             ), 
             'options' => array( 
                 'label' => 'Logo', 
@@ -103,27 +102,31 @@ class PaymentTypeBankTransferForm extends Form
  
         $this->add(array( 
             'name' => 'activeFrom', 
-            'type' => 'Zend\Form\Element\Text', 
+            'type' => 'Zend\Form\Element\DateTime', 
             'attributes' => array( 
                 'placeholder' => 'Active From...', 
                 'required' => 'required', 
+                'class' => 'datetimepicker',
             ), 
             'options' => array( 
                 'label' => 'Active From', 
             ), 
-        )); 
+        ));
+        $this->get('activeFrom')->setFormat('Y-m-d H:i:s');
  
         $this->add(array( 
             'name' => 'activeUntil', 
-            'type' => 'Zend\Form\Element\Text', 
+            'type' => 'Zend\Form\Element\DateTime', 
             'attributes' => array( 
                 'placeholder' => 'Active Until...', 
                 'required' => 'required', 
+                'class' => 'datetimepicker',
             ), 
             'options' => array( 
                 'label' => 'Active Until', 
             ), 
-        )); 
+        ));
+        $this->get('activeUntil')->setFormat('Y-m-d H:i:s');
  
         $this->add(array( 
             'name' => 'days2pay', 

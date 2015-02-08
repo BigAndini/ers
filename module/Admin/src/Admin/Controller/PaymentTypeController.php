@@ -36,6 +36,9 @@ class PaymentTypeController extends AbstractActionController {
         $form = new Form\PaymentTypeBankTransferForm();
         $form->get('submit')->setValue('Add');
     
+        $paymenttype = new Entity\PaymentType();
+        $form->setInputFilter($paymenttype->getInputFilter());
+        
         $request = $this->getRequest();
         if ($request->isPost()) {
             // Make certain to merge the files info!
@@ -48,7 +51,16 @@ class PaymentTypeController extends AbstractActionController {
             if ($form->isValid()) {
                 $data = $form->getData();
                 error_log(var_export($data, true));
-                // Form is valid, save the form!
+                $paymenttype->populate($data);
+                $paymenttype->setType('BankTransfer');
+                
+                $em = $this
+                    ->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                
+                $em->persist($paymenttype);
+                $em->flush();
+                
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
                 error_log(var_export($form->getMessages(), true));
@@ -56,6 +68,12 @@ class PaymentTypeController extends AbstractActionController {
         }
 
         return array('form' => $form);
+    }
+    
+    public function addAction()
+    {
+        $form = new Form\PaymentTypeForm();
+        $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -71,6 +89,8 @@ class PaymentTypeController extends AbstractActionController {
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
+                error_log('paymenttype: '.get_class($paymenttype->getPaymentType()));
+                
                 $em->persist($paymenttype);
                 $em->flush();
 
@@ -84,72 +104,77 @@ class PaymentTypeController extends AbstractActionController {
             'form' => $form,                
         );
     }
-    
-    public function addAction()
-    {
-        $form = new Form\PaymentTypeForm();
-        $form->get('submit')->setValue('Add');
-        
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $deadline = new Entity\PaymentType();
-            
-            $form->setInputFilter($deadline->getInputFilter());
-            $form->setData($request->getPost());
 
-            if ($form->isValid()) {
-                $deadline->populate($form->getData());
-                
-                $em = $this
-                    ->getServiceLocator()
-                    ->get('Doctrine\ORM\EntityManager');
-                
-                error_log('deadline: '.get_class($deadline->getPaymentType()));
-                
-                $em->persist($deadline);
-                $em->flush();
-
-                return $this->redirect()->toRoute('admin/deadline');
-            } else {
-                error_log(var_export($form->getMessages(), true));
-            }
-        }
-        
-        return array(
-            'form' => $form,                
-        );
-    }
-
-    public function editAction()
-    {
+    public function editBankTransferAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('admin/deadline', array(
+            return $this->redirect()->toRoute('admin/payment-type', array(
                 'action' => 'add'
             ));
         }
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $deadline = $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id));
+        $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id));
+        
+        $form = new Form\PaymentTypeBankTransferForm();
+        $form->bind($paymenttype);
+        $form->get('submit')->setValue('Edit');
+    
+        $form->setInputFilter($paymenttype->getInputFilter());
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            // Make certain to merge the files info!
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
+            $form->setData($post);
+            if ($form->isValid()) {
+                $em->persist($form->getData());
+                $em->flush();
+                
+                return $this->redirect()->toRoute('admin/payment-type');
+            } else {
+                error_log(var_export($form->getMessages(), true));
+            }
+        }
+
+        return array('form' => $form);
+    }
+    
+    public function editAction()
+    {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/payment-type', array(
+                'action' => 'add'
+            ));
+        }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id));
 
         $form = new Form\PaymentTypeForm();
-        $form->bind($deadline);
+        $form->bind($paymenttype);
         $form->get('submit')->setAttribute('value', 'Edit');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($deadline->getInputFilter());
+            $form->setInputFilter($paymenttype->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                #$deadline->populate($form->getData());
+                #$paymenttype->populate($form->getData());
                 
                 $em->persist($form->getData());
-                #$em->persist($deadline);
+                #$em->persist($paymenttype);
                 $em->flush();
 
-                return $this->redirect()->toRoute('admin/deadline');
+                return $this->redirect()->toRoute('admin/payment-type');
             }
         }
 
@@ -163,12 +188,12 @@ class PaymentTypeController extends AbstractActionController {
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('admin/deadline');
+            return $this->redirect()->toRoute('admin/payment-type');
         }
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $productprice = $em->getRepository("ersEntity\Entity\PaymentType")
+        $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
                 ->findOneBy(array('id' => $id));
 
         $request = $this->getRequest();
@@ -177,19 +202,19 @@ class PaymentTypeController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $productprice = $em->getRepository("ersEntity\Entity\PaymentType")
+                $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
                     ->findOneBy(array('id' => $id));
-                $em->remove($productprice);
+                $em->remove($paymenttype);
                 $em->flush();
             }
 
             // Redirect to list of products
-            return $this->redirect()->toRoute('admin/deadline');
+            return $this->redirect()->toRoute('admin/payment-type');
         }
 
         return array(
             'id'    => $id,
-            'deadline' => $productprice,
+            'paymenttype' => $paymenttype,
         );
     }
 }
