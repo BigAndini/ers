@@ -35,10 +35,12 @@ class Module
         $sm   = $e->getApplication()->getServiceManager();
         $auth = $sm->get('BjyAuthorize\Service\Authorize');
 
-        $acl  = $auth->getAcl();
-        $role = $auth->getIdentity();
-        \Zend\View\Helper\Navigation::setDefaultAcl($acl);
-        \Zend\View\Helper\Navigation::setDefaultRole($role);
+        if(!Console::isConsole()) {
+            $acl  = $auth->getAcl();
+            $role = $auth->getIdentity();
+            \Zend\View\Helper\Navigation::setDefaultAcl($acl);
+            \Zend\View\Helper\Navigation::setDefaultRole($role);
+        }
         
     }
 
