@@ -35,7 +35,7 @@ class Module
         $sm   = $e->getApplication()->getServiceManager();
         $auth = $sm->get('BjyAuthorize\Service\Authorize');
 
-        if(!Console::isConsole()) {
+        if(!\Zend\Console\Console::isConsole()) {
             $acl  = $auth->getAcl();
             $role = $auth->getIdentity();
             \Zend\View\Helper\Navigation::setDefaultAcl($acl);
