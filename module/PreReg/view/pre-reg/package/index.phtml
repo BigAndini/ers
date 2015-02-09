@@ -1,0 +1,27 @@
+<?php
+
+$title = 'My Packages';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<div>
+    <table>
+        <tr>
+            <td>Prename:</td>
+            <td><?php echo $user->getPrename(); ?></td>
+        </tr>
+        <tr>
+            <td>Surname:</td>
+            <td><?php echo $user->getSurname(); ?></td>
+        </tr>
+        <tr>
+            <td>E-Mail:</td>
+            <td><?php echo $user->getEmail(); ?></td>
+        </tr>
+        <tr>
+            <td>Birthdate:</td>
+            <td><?php echo $user->getBirthday(); ?></td>
+        </tr>
+    </table>
+</div>

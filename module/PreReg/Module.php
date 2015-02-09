@@ -31,6 +31,15 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
         $this->bootstrapSession($e);
+        
+        $sm   = $e->getApplication()->getServiceManager();
+        $auth = $sm->get('BjyAuthorize\Service\Authorize');
+
+        $acl  = $auth->getAcl();
+        $role = $auth->getIdentity();
+        \Zend\View\Helper\Navigation::setDefaultAcl($acl);
+        \Zend\View\Helper\Navigation::setDefaultRole($role);
+        
     }
 
     public function bootstrapSession($e)

@@ -14,16 +14,6 @@ use ersEntity\Entity;
 use Admin\Form;
 
 class TaxController extends AbstractActionController {
-    /*protected $table;
-    
-    public function getTable()
-    {
-        if (!$this->table) {
-            $sm = $this->getServiceLocator();
-            $this->table = $sm->get('Admin\Model\TaxTable');
-        }
-        return $this->table;
-    }*/
     public function indexAction()
     {
         $em = $this
@@ -86,12 +76,11 @@ class TaxController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $tax->populate($form->getData());
-                $em->persist($tax);
+                #$tax->populate($form->getData());
+                #$em->persist($tax);
+                $em->persist($form->getData());
                 $em->flush();
-                #$this->getTable()->save($form->getData());
 
-                // Redirect to list of taxes
                 return $this->redirect()->toRoute('admin/tax');
             }
         }

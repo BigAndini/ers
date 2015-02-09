@@ -82,9 +82,9 @@ class User implements UserInterface, ProviderInterface
     protected $state;
     
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="boolean")
      */
-    protected $active;
+    protected $active = 1;
 
     /**
      * @ORM\Column(type="date", nullable=true)
@@ -444,13 +444,13 @@ class User implements UserInterface, ProviderInterface
     }
     
     /**
-     * Get role.
+     * Get roles.
      *
-     * @return array
+     * @return array of \Entity\Role
      */
     public function getRoles()
     {
-        return $this->roles->getValues();
+        return $this->roles;
     }
 
     /**
@@ -460,7 +460,7 @@ class User implements UserInterface, ProviderInterface
      *
      * @return void
      */
-    public function addRole($role)
+    public function addRole(Role $role)
     {
         $this->roles[] = $role;
     }

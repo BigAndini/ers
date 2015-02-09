@@ -1,5 +1,4 @@
 <?php
-// module/RegistrationSystem/view/registration-system/admin/index.phtml:
 
 $title = 'My Shopping Cart';
 $this->headTitle($title);
@@ -8,10 +7,10 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
  
 <div class="order-steps">
-    <div class="order-step">1: <a href="<?php echo $this->url('order'); ?>">My cart</a></div>
-    <div class="order-step active">2: <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">Register</a></div>
-    <div class="order-step">3: <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">Payment</a></div>
-    <div class="order-step">4: <a href="<?php echo $this->url('order', array('action' => 'checkout')); ?>">Checkout</a></div>
+    <div class="order-step"><span class="order-step-no">1</span> <a href="<?php echo $this->url('order'); ?>">My cart</a></div>
+    <div class="order-step active"><span class="order-step-no">2</span> <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">Register</a></div>
+    <div class="order-step"><span class="order-step-no">3</span> <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">Payment</a></div>
+    <div class="order-step"><span class="order-step-no">4</span> <a href="<?php echo $this->url('order', array('action' => 'checkout')); ?>">Checkout</a></div>
 </div>
 <div class="clear-both"></div>
 <div class="checkout">

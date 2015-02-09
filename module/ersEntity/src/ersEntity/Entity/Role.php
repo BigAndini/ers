@@ -47,6 +47,11 @@ class Role implements HierarchicalRoleInterface
     protected $roleId;
     
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $active = 1;
+    
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $updated;
@@ -126,6 +131,29 @@ class Role implements HierarchicalRoleInterface
     public function setRoleId($roleId)
     {
         $this->roleId = (string) $roleId;
+    }
+    
+    /**
+     * Set the value of active.
+     *
+     * @param boolean $active
+     * @return \Entity\Role
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of active.
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
     }
     
     /**

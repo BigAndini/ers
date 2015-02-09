@@ -5,6 +5,18 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
+<?php if(count($productprices) != 0): ?>
+<p>Please delete these ProductPrices according to this deadline first.</p>
+
+
+<?php foreach($productprices as $price): ?>
+<p>
+    <?php echo $price->getProduct()->getName().': ';?>
+    <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
+</p>
+<?php endforeach; ?>
+    
+<?php else: ?>
 <p>Are you sure that you want to delete price limit
     <strong><?php echo $deadline->getDeadline()->format('Y-m-d H:i:s'); ?></strong>?
 </p>
@@ -21,3 +33,4 @@ $url = $this->url('admin/deadline', array(
     <a href="<?php echo $this->url('admin/deadline');?>">Cancel</a>
 </div>
 </form>
+<?php endif; ?>

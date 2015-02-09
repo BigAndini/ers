@@ -155,6 +155,7 @@ $settings = array(
      *
      */
     //'login_redirect_route' => 'zfcuser',
+    'login_redirect_route' => 'profile',
 
     /**
      * Logout Redirect Route

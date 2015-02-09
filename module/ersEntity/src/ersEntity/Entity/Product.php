@@ -68,12 +68,12 @@ class Product implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $active = 1;
+    protected $active;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $deleted = 0;
+    protected $deleted;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -140,6 +140,8 @@ class Product implements InputFilterAwareInterface
         $this->productPackageRelatedBySubProductIds = new ArrayCollection();
         $this->productPrices = new ArrayCollection();
         $this->productVariants = new ArrayCollection();
+        $this->setActive(1);
+        $this->setDeleted(0);
     }
     
     /**

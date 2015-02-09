@@ -24,7 +24,7 @@ class DeadlineController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'deadlines' => $em->getRepository("ersEntity\Entity\Deadline")->findAll(),
+            'deadlines' => $em->getRepository("ersEntity\Entity\Deadline")->findBy(array(), array('deadline' => 'ASC')),
          ));
     }
 
@@ -98,46 +98,7 @@ class DeadlineController extends AbstractActionController {
             'form' => $form,
         );
     }
-    
-    public function copyAction()
-    {   
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/deadline', array(
-                'action' => 'add'
-            ));
-        }
-        $product = $this->getTable('Product')->getById($id);
 
-        $form = $this->getServiceLocator()->get('Form\DeadlineForm');
-        $form->bind($product);
-        $form->get('submit')->setAttribute('value', 'Copy');
-
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $form->setInputFilter($product->getInputFilter());
-            $form->setData($request->getPost());
-
-            if ($form->isValid()) {
-                $new_id = $this->getTable('Deadline')->save($form->getData());
-                error_log('saved price limit: '.$id);
-
-                // Redirect to list of products
-                return $this->redirect()->toRoute('admin/deadline');
-            } else {
-                error_log(var_export($form->getMessages()));
-            }
-        }
-
-        return array(
-            'id' => $id,
-            'form' => $form,
-        );
-    }
-
-    /*
-     * The delete action is for Agegroups, Counters and Deadlines the same.
-     */
     public function deleteAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
@@ -147,8 +108,9 @@ class DeadlineController extends AbstractActionController {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $productprice = $em->getRepository("ersEntity\Entity\Deadline")
+        $deadline = $em->getRepository("ersEntity\Entity\Deadline")
                 ->findOneBy(array('id' => $id));
+        $productprices = $deadline->getProductPrices();
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -156,9 +118,9 @@ class DeadlineController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $productprice = $em->getRepository("ersEntity\Entity\Deadline")
+                $deadline = $em->getRepository("ersEntity\Entity\Deadline")
                     ->findOneBy(array('id' => $id));
-                $em->remove($productprice);
+                $em->remove($deadline);
                 $em->flush();
             }
 
@@ -167,7 +129,8 @@ class DeadlineController extends AbstractActionController {
 
         return array(
             'id'    => $id,
-            'deadline' => $productprice,
+            'deadline' => $deadline,
+            'productprices' => $productprices,
         );
     }
 }

@@ -25,6 +25,20 @@ class ProductForm extends Form
             ),
         ));
         $this->add(array(
+            'name' => 'active',
+            'attributes' => array(
+                'type'  => 'hidden',
+                'value' => '1',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'deleted',
+            'attributes' => array(
+                'type'  => 'hidden',
+                'value' => '0',
+            ),
+        ));
+        $this->add(array(
             'name' => 'ordering',
             'attributes' => array(
                 'type'  => 'text',

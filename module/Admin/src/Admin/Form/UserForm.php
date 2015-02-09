@@ -15,7 +15,7 @@ class UserForm extends Form
 {
     public function __construct($name = null)
     {
-        parent::__construct('Deadline');
+        parent::__construct('User');
         $this->setAttribute('method', 'post');
         
         $this->add(array(
@@ -24,20 +24,71 @@ class UserForm extends Form
                 'type'  => 'hidden',
             ),
         ));
- 
+        
         $this->add(array( 
-            'name' => 'deadline', 
-            'type' => 'Zend\Form\Element\DateTime', 
+            'name' => 'email', 
+            'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Deadline...', 
-                'required' => 'required',
-                'class' => 'datetimepicker',
+                'placeholder' => 'E-Mail Address...', 
+                'required' => 'required', 
             ), 
             'options' => array( 
-                'label' => 'Deadline', 
+                'label' => 'E-Mail Address', 
+            ), 
+        )); 
+ 
+        $this->add(array( 
+            'name' => 'prename', 
+            'type' => 'Zend\Form\Element\Text', 
+            'attributes' => array( 
+                'placeholder' => 'Prename...', 
+            ), 
+            'options' => array( 
+                'label' => 'Prename', 
+            ), 
+        )); 
+ 
+        $this->add(array( 
+            'name' => 'surname', 
+            'type' => 'Zend\Form\Element\Text', 
+            'attributes' => array( 
+                'placeholder' => 'Surname...', 
+            ), 
+            'options' => array( 
+                'label' => 'Surname', 
+            ), 
+        )); 
+ 
+        $this->add(array( 
+            'name' => 'roles', 
+            'type' => 'Zend\Form\Element\MultiCheckbox', 
+            /*'attributes' => array(
+                'required' => 'required',
+            ),*/ 
+            'options' => array( 
+                'label' => 'Roles', 
+                'value_options' => array(
+                    /*array(
+                        'value' => '0',
+                        'label' => 'user',
+                        'selected' => false,
+                        'disabled' => false,
+                    ),
+                    array(
+                        'value' => '1',
+                        'label' => 'admin',
+                        'selected' => false,
+                        'disabled' => false,
+                    ),
+                    array(
+                        'value' => '2',
+                        'label' => 'participant',
+                        'selected' => true,
+                        'disabled' => false,
+                    ),*/
+                ),
             ), 
         ));
-        $this->get('deadline')->setFormat('Y-m-d H:i:s');
  
         $this->add(array( 
             'name' => 'csrf', 

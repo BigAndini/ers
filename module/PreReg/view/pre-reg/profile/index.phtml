@@ -1,0 +1,33 @@
+<?php
+
+$title = 'My Profile';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<div>
+    <table>
+        <tr>
+            <td>Prename:</td>
+            <td><?php echo $user->getPrename(); ?></td>
+        </tr>
+        <tr>
+            <td>Surname:</td>
+            <td><?php echo $user->getSurname(); ?></td>
+        </tr>
+        <tr>
+            <td>E-Mail:</td>
+            <td><?php echo $user->getEmail(); ?></td>
+        </tr>
+        <tr>
+            <td>Birthdate:</td>
+            <td><?php echo $user->getBirthday(); ?></td>
+        </tr>
+    </table>
+</div>
+<div>
+    <a href="<?php echo $this->url('profile', array('action' => 'change-data')); ?>">Change user data</a> | 
+    <a href="<?php echo $this->url('profile', array('action' => 'reset-password')); ?>">Change password</a> | 
+    <a href="<?php echo $this->url('package'); ?>">View tickets</a> | 
+    <a href="<?php echo $this->url('profile', array('action' => 'participant')); ?>">Update participant data</a>
+</div>

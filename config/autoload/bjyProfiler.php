@@ -7,9 +7,9 @@
  */
 
 $dbParams = array(
-    'database'  => 'ers',
-    'username'  => 'ers',
-    'password'  => '5nW3HZZhGnPRf8Cn',
+    'database'  => 'ers2',
+    'username'  => 'ers2',
+    'password'  => '59zQB27ET8UEjXeJ',
     'hostname'  => 'localhost',
     // buffer_results - only for mysqli buffered queries, skip for others
     'options' => array('buffer_results' => true)

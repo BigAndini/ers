@@ -75,11 +75,24 @@ class UserController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $user = $em->getRepository("ersEntity\Entity\User")->findOneBy(array('id' => $id));
-
+        
         $form = new Form\UserForm();
         $form->bind($user);
         $form->get('submit')->setAttribute('value', 'Edit');
 
+        $roles = $em->getRepository("ersEntity\Entity\Role")->findAll();
+        $userRoles = $user->getRoles();
+        $roleValue = array();
+        foreach($roles as $role) {
+            $roleValue[] = array(
+                'value' => $role->getId(),
+                'label' => $role->getRoleId(),
+                'selected' => is_numeric($userRoles->indexOf($role)) ? true : false,
+                'disabled' => $role->getActive() ? true : false,
+            );
+        }
+        $form->get('roles')->setValueOptions($roleValue);
+        
         $request = $this->getRequest();
         if ($request->isPost()) {
             $form->setInputFilter($user->getInputFilter());
@@ -88,11 +101,15 @@ class UserController extends AbstractActionController {
             if ($form->isValid()) {
                 #$user->populate($form->getData());
                 
+                error_log(var_export($form->getData(), true));
+                
                 $em->persist($form->getData());
                 #$em->persist($user);
                 $em->flush();
 
                 return $this->redirect()->toRoute('admin/user');
+            } else {
+                error_log(var_export($form->getMessages(), true));
             }
         }
 

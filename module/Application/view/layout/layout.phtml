@@ -48,25 +48,24 @@
                 </div>
                 <div class="collapse navbar-collapse">
                     <?php 
-                    #echo $this->navigation('navigation')->menu(); 
                     echo $this->navigation()
                             ->menu('main_nav')
                             ->setUlClass('nav navbar-nav');
-                    /*echo $this->navigation('navigation')
-                        ->menu()
-                        ->setMinDepth(0)
-                        ->setMaxDepth(0)
-                        ->setUlClass('nav navbar-nav');*/
                     ?>
                     
                     <div id="cart-widget">
-                        <a href="<?php echo $this->url('order') ?>"><?php echo $this->translate('My Shopping Cart') ?></a>
+                        <?php 
+                            echo $this->navigation()
+                                ->menu('top_nav')
+                                ->setUlClass('');
+                        ?>
+                        <!--<a href="<?php echo $this->url('order') ?>"><?php echo $this->translate('My Shopping Cart') ?></a>
                         <?php if(!$this->zfcUserIdentity()): ?>
                             <a href="<?php echo $this->url('zfcuser') ?>"><?php echo $this->translate('Login') ?></a>
                             <a href="<?php echo $this->url('zfcuser/register'); ?>"><?php echo $this->translate('Register') ?></a>
                         <?php else: ?>
                             <a href="<?php echo $this->url('zfcuser') ?>"><?php echo $this->zfcUserIdentity()->getEmail(); ?></a>
-                        <?php endif?>
+                        <?php endif?>-->
                     </div>
                 </div><!--/.nav-collapse -->
             </div>

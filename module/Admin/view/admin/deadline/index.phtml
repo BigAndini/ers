@@ -21,7 +21,6 @@ $this->headTitle($title);
         ?></td>
         <td>
             <a href="<?php echo $this->url('admin/deadline', array('action'=>'edit', 'id' => $deadline->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-            <a href="<?php echo $this->url('admin/deadline', array('action'=>'copy', 'id' => $deadline->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
             <a href="<?php echo $this->url('admin/deadline', array('action'=>'delete', 'id' => $deadline->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
         </td>
     </tr>

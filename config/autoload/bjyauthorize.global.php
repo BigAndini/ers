@@ -149,14 +149,20 @@ return [
                 ['controller' => 'Application\Controller\Index', 'roles' => ['guest', 'user']],
                 
                 /* PreReg */
-                ['controller' => 'PreReg\Controller\Cart', 'roles' => ['guest']],
-                ['controller' => 'PreReg\Controller\Order', 'roles' => ['guest']],
-                ['controller' => 'PreReg\Controller\Package', 'roles' => ['guest']],
-                ['controller' => 'PreReg\Controller\Product', 'roles' => ['guest']],
-                ['controller' => 'PreReg\Controller\Participant', 'roles' => ['guest']],
+                ['controller' => 'PreReg\Controller\Cart', 'action' => 'add', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Cart', 'action' => 'reset', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Order', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Package', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Product', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Participant', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Profile', 'action' => 'index', 'roles' => ['user']],
                 
                 /* ZfcUser */
-                ['controller' => 'zfcuser', 'roles' => ['guest']],
+                #['controller' => 'zfcuser', 'roles' => ['guest']],
+                ['controller' => 'zfcuser', 'action' => 'login', 'roles' => ['guest']],
+                ['controller' => 'zfcuser', 'action' => 'register', 'roles' => ['guest']],
+                ['controller' => 'zfcuser', 'action' => 'index', 'roles' => ['user']],
+                ['controller' => 'zfcuser', 'action' => 'logout', 'roles' => ['user']],
                 
                 /* Doctrine ORM */
                 ['controller' => 'DoctrineORMModule\Yuml\YumlController', 'roles' => ['admin']],

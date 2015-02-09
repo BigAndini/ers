@@ -16,18 +16,6 @@ use Admin\Form;
 use Zend\Form\Element;
 
 class ProductController extends AbstractActionController {
-    protected $table;
-    
-    /*public function getTable($name)
-    {
-        if (!isset($this->table[$name])) {
-            $sm = $this->getServiceLocator();
-            $className = "Admin\Model\\".$name."Table";
-            $this->table[$name] = $sm->get($className);
-            $this->table[$name]->setServiceLocator($sm);
-        }
-        return $this->table[$name];
-    }*/
     public function indexAction()
     {
         $em = $this
@@ -54,11 +42,13 @@ class ProductController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $product = new Entity\Product();
+            error_log('active: '.$product->getActive());
             $form->setInputFilter($product->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {                
                 $product->populate($form->getData());
+                error_log('active: '.$product->getActive());
                 
                 $em = $this
                     ->getServiceLocator()
@@ -66,6 +56,9 @@ class ProductController extends AbstractActionController {
                 
                 $tax = $em->getRepository("ersEntity\Entity\Tax")->findOneBy(array('id' => $product->getTaxId()));
                 $product->setTax($tax);
+                $product->setActive(1);
+                
+                #error_log('active: '.var_export($product, true));
                 
                 $em->persist($product);
                 $em->flush();
@@ -79,30 +72,6 @@ class ProductController extends AbstractActionController {
         
         return array(
             'form' => $form,                
-        );
-    }
-
-    public function viewAction()
-    {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/product', array(
-                'action' => 'add'
-            ));
-        }
-        $em = $this
-            ->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $product = $em->getRepository("ersEntity\Entity\Product")
-                ->findOneBy(array('id' => $id));
-        
-        $context = new Container('context');
-        $context->route = 'admin/product';
-        $context->params = array('action' => 'view', 'id' => $id);
-        $context->options = array();
-        
-        return array(
-            'product' => $product,
         );
     }
     
@@ -146,6 +115,30 @@ class ProductController extends AbstractActionController {
             'form' => $form,
         );
     }
+
+    public function viewAction()
+    {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/product', array(
+                'action' => 'add'
+            ));
+        }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $product = $em->getRepository("ersEntity\Entity\Product")
+                ->findOneBy(array('id' => $id));
+        
+        $context = new Container('context');
+        $context->route = 'admin/product';
+        $context->params = array('action' => 'view', 'id' => $id);
+        $context->options = array();
+        
+        return array(
+            'product' => $product,
+        );
+    }   
     
     public function copyAction()
     {   
