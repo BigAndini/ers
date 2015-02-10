@@ -29,7 +29,8 @@ class RoleController extends AbstractActionController {
 
     public function addAction()
     {
-        $form = new Form\RoleForm();
+        #$form = new Form\RoleForm();
+        $form = $this->getServiceLocator()->get('Admin\Form\RoleForm');
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -46,7 +47,8 @@ class RoleController extends AbstractActionController {
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                error_log('role: '.get_class($role->getRole()));
+                #$em->getRepository("ersEntity\Entity\Role")->findBy();
+                error_log('role: '.get_class($role->getRoleId()));
                 
                 $em->persist($role);
                 $em->flush();
@@ -75,7 +77,8 @@ class RoleController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $role = $em->getRepository("ersEntity\Entity\Role")->findOneBy(array('id' => $id));
 
-        $form = new Form\RoleForm();
+        #$form = new Form\RoleForm();
+        $form = $this->getServiceLocator()->get('Admin\Form\RoleForm');
         $form->bind($role);
         $form->get('submit')->setAttribute('value', 'Edit');
 
@@ -85,10 +88,7 @@ class RoleController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                #$role->populate($form->getData());
-                
                 $em->persist($form->getData());
-                #$em->persist($role);
                 $em->flush();
 
                 return $this->redirect()->toRoute('admin/role');

@@ -25,20 +25,24 @@ class RoleForm extends Form
             ),
         ));
  
-        $this->add(array( 
-            'name' => 'deadline', 
-            'type' => 'Zend\Form\Element\DateTime', 
-            'attributes' => array( 
-                'placeholder' => 'Deadline...', 
-                'required' => 'required',
-                'class' => 'datetimepicker',
-            ), 
-            'options' => array( 
-                'label' => 'Deadline', 
-            ), 
+        $this->add(array(
+            'name' => 'roleId',
+            'attributes' => array(
+                'type'  => 'text',
+            ),
+            'options' => array(
+                'label' => 'Name',
+            ),
         ));
-        $this->get('deadline')->setFormat('Y-m-d H:i:s');
- 
+        
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
+            'name' => 'parent_id',
+            'options' => array(
+                    'label' => 'Parent',
+            ),
+        ));
+        
         $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 

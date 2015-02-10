@@ -39,9 +39,12 @@ class ProductController extends AbstractActionController {
         #$form = new Form\ProductForm();
         $form->get('submit')->setValue('Add');
         
+        $product = new Entity\Product();
+        #$form->bind($product);
+        
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $product = new Entity\Product();
+            
             error_log('active: '.$product->getActive());
             $form->setInputFilter($product->getInputFilter());
             $form->setData($request->getPost());
@@ -56,9 +59,6 @@ class ProductController extends AbstractActionController {
                 
                 $tax = $em->getRepository("ersEntity\Entity\Tax")->findOneBy(array('id' => $product->getTaxId()));
                 $product->setTax($tax);
-                $product->setActive(1);
-                
-                #error_log('active: '.var_export($product, true));
                 
                 $em->persist($product);
                 $em->flush();

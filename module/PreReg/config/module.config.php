@@ -16,6 +16,7 @@ return array(
             'PreReg\Controller\Participant' => 'PreReg\Controller\ParticipantController',
             'PreReg\Controller\Product'     => 'PreReg\Controller\ProductController',
             'PreReg\Controller\Profile'     => 'PreReg\Controller\ProfileController',
+            'PreReg\Controller\Home'     => 'PreReg\Controller\HomeController',
         ),
     ),
     'navigation' => array(
@@ -35,18 +36,23 @@ return array(
                 'route' => 'participant',
                 'resource'  => 'controller/PreReg\Controller\Participant',
             ),
-            'cart-reset' => array(
+            /*'cart-reset' => array(
                 'label' => 'Reset Shopping Cart',
                 'route' => 'cart',
                 'action' => 'reset',
                 'resource'  => 'controller/PreReg\Controller\Cart:reset',
-            ),
+            ),*/
         ),
         'top_nav' => array(
+            'admin' => array(
+                'label' => 'AdminPanel',
+                'route' => 'admin',
+                'resource'  => 'controller/Admin\Controller\Admin',
+            ),
             'order' => array(
                 'label' => 'My Shopping Cart',
                 'route' => 'order',
-                'resource'  => 'controller/PreReg\Controller\Order:index',
+                'resource'  => 'controller/PreReg\Controller\Order',
             ),
             'login' => array(
                 'label' => 'Login',
@@ -81,7 +87,7 @@ return array(
                 'options' => array(
                     'route'    => '/',
                     'defaults' => array(
-                        'controller' => 'PreReg\Controller\Product',
+                        'controller' => 'PreReg\Controller\Home',
                         'action'     => 'index',
                     ),
                 ),

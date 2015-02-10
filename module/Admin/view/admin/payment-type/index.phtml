@@ -21,7 +21,7 @@ $this->headTitle($title);
 <?php foreach ($paymenttypes as $paymenttype) : ?>
     <tr>
         <td><?php echo $paymenttype->getName(); ?></td>
-        <td><img src="<?php echo $paymenttype->getLogo(); ?>" alt="no logo" /></td>
+        <td><img src="<?php echo $this->serverUrl('/media/'); ?><?php echo $paymenttype->getLogo(); ?>" alt="no logo" /></td>
         <td><?php 
             echo $paymenttype->getActiveFrom()->format('Y-m-d H:i:s');
             echo ' - ';

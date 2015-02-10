@@ -275,3 +275,33 @@ label {
 .order-info-right {
     margin-left: 10px;
 }
+
+.nav-top-right {
+    margin-top: 5px;
+    float:right;
+}
+
+.navbar-nav > li > a {
+    line-height: 30px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #85b32a;
+}
+
+body {
+    padding-top: 0;
+}
+
+.main-container {
+    min-height: 500px;
+}
+
+.green {
+    color: #85b32a;
+}
+.green-bg {
+    background: #85b32a;
+}

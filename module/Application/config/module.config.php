@@ -10,25 +10,25 @@
 return array(
     
 
-    'router' => array(
+    /*'router' => array(
         'routes' => array(
             'home' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
                     'route'    => '/',
                     'defaults' => array(
-                        'controller' => 'PreReg\Controller\Product',
+                        'controller' => 'PreReg\Controller\Home',
                         'action'     => 'index',
                     ),
                 ),
             ),
         ),
-    ),
+    ),*/
     'service_manager' => array(
-        'factories' => array(
+        /*'factories' => array(
             'main_nav' => 'Zend\Navigation\Service\DefaultNavigationFactory',
             'top_nav' => 'Zend\Navigation\Service\DefaultNavigationFactory',
-        ),
+        ),*/
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',

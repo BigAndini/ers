@@ -60,19 +60,7 @@ class Module
                 'Admin\Form\ProductForm' => function($sm){
                     $form   = new Form\ProductForm();
                     
-                    /*$ProductGroupTable = $sm->get('Admin\Model\ProductGroupTable');
-                    $productgroups = $ProductGroupTable->fetchAll();
-                    $options = array();
-                    foreach($productgroups as $group) {
-                        $options[$group->id] = $group->name;
-                    }
-
-                    $form->get('ProductGroup_id')->setValueOptions($options);*/
-                    
                     $em = $sm->get('doctrine.entitymanager');
-                    /*$em = $this
-                        ->getServiceLocator()
-                        ->get('Doctrine\ORM\EntityManager');*/
                     $taxes = $em->getRepository("ersEntity\Entity\Tax")->findAll();
                     
                     $options = array();
@@ -81,6 +69,22 @@ class Module
                     }
 
                     $form->get('taxId')->setValueOptions($options);
+                    
+                    return $form;
+                },
+                'Admin\Form\RoleForm' => function($sm){
+                    $form = new Form\RoleForm();
+                    
+                    $em = $sm->get('doctrine.entitymanager');
+                    $roles = $em->getRepository("ersEntity\Entity\Role")->findAll();
+                    
+                    $options = array();
+                    $options[null] = '';
+                    foreach($roles as $role) {
+                        $options[$role->getId()] = $role->getRoleId();
+                    }
+
+                    $form->get('parent_id')->setValueOptions($options);
                     
                     return $form;
                 },

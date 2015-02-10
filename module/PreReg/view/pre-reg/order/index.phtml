@@ -14,8 +14,12 @@ $this->headTitle($title);
     <div class="order-step"><span class="order-step-no">4</span> <a href="<?php echo $this->url('order', array('action' => 'checkout')); ?>">Checkout</a></div>
 </div>
 <div class="clear-both"></div>
+
 <div class="checkout">
     <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'register')) ?>">Checkout this Cart</a>
+</div>
+<div class="reset-cart">
+    <a href="<?php echo $this->url('cart', array('action' => 'reset')) ?>">Reset shopping cart</a>
 </div>
 <div>
     <?php if(count($packages) == 1 && count($packages[0]->getItems()) == 0): ?>

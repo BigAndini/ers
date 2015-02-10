@@ -11,9 +11,10 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
-#use RegistrationSystem\Form\UserForm;
 use Admin\Form;
-use Zend\Form\Element;
+
+# for file upload
+use Zend\InputFilter;
 
 class PaymentTypeController extends AbstractActionController {
     
@@ -37,7 +38,23 @@ class PaymentTypeController extends AbstractActionController {
         $form->get('submit')->setValue('Add');
     
         $paymenttype = new Entity\PaymentType();
-        $form->setInputFilter($paymenttype->getInputFilter());
+        
+        $inputFilter = $paymenttype->getInputFilter();
+        
+        // File Input
+        $fileInput = new InputFilter\FileInput('logo-upload');
+        $fileInput->setRequired(true);
+        $fileInput->getFilterChain()->attachByName(
+            'filerenameupload',
+            array(
+                #'target'    => './data/tmpuploads/payment.jpg',
+                'target'    => getcwd().'/public/media/payment.jpg',
+                'randomize' => true,
+            )
+        );
+        $inputFilter->add($fileInput);
+        
+        $form->setInputFilter($inputFilter);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -57,6 +74,8 @@ class PaymentTypeController extends AbstractActionController {
                 $em = $this
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
+                
+                $paymenttype->setLogo(\basename($data['logo-upload']['tmp_name']));
                 
                 $em->persist($paymenttype);
                 $em->flush();

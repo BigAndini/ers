@@ -131,7 +131,29 @@ return [
              * You may omit the 'action' index to allow access to the entire controller
              */
             \BjyAuthorize\Guard\Controller::class => [
+                /* Application */
+                #['controller' => 'Application\Controller\Index', 'roles' => ['guest', 'user']],
+                
+                /* PreReg */
+                ['controller' => 'PreReg\Controller\Home', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Cart', 'action' => 'add', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Cart', 'action' => 'reset', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Order', 'roles' => ['guest', 'user']],
+                #['controller' => 'PreReg\Controller\Order', 'action' => 'index', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Package', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Product', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Participant', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Profile', 'action' => 'index', 'roles' => ['user']],
+                
+                /* ZfcUser */
+                #['controller' => 'zfcuser', 'roles' => ['guest']],
+                ['controller' => 'zfcuser', 'action' => 'login', 'roles' => ['guest']],
+                ['controller' => 'zfcuser', 'action' => 'register', 'roles' => ['guest']],
+                ['controller' => 'zfcuser', 'action' => 'index', 'roles' => ['user']],
+                ['controller' => 'zfcuser', 'action' => 'logout', 'roles' => ['user']],
+                
                 /* Admin */
+                #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Admin', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\PriceLimit', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Product', 'roles' => ['admin']],
@@ -144,25 +166,6 @@ return [
                 ['controller' => 'Admin\Controller\Counter', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\User', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Role', 'roles' => ['admin']],
-                
-                /* Application */
-                ['controller' => 'Application\Controller\Index', 'roles' => ['guest', 'user']],
-                
-                /* PreReg */
-                ['controller' => 'PreReg\Controller\Cart', 'action' => 'add', 'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Cart', 'action' => 'reset', 'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Order', 'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Package', 'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Product', 'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Participant', 'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Profile', 'action' => 'index', 'roles' => ['user']],
-                
-                /* ZfcUser */
-                #['controller' => 'zfcuser', 'roles' => ['guest']],
-                ['controller' => 'zfcuser', 'action' => 'login', 'roles' => ['guest']],
-                ['controller' => 'zfcuser', 'action' => 'register', 'roles' => ['guest']],
-                ['controller' => 'zfcuser', 'action' => 'index', 'roles' => ['user']],
-                ['controller' => 'zfcuser', 'action' => 'logout', 'roles' => ['user']],
                 
                 /* Doctrine ORM */
                 ['controller' => 'DoctrineORMModule\Yuml\YumlController', 'roles' => ['admin']],

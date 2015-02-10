@@ -47,6 +47,12 @@ class Role implements HierarchicalRoleInterface
     protected $roleId;
     
     /**
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $Parent_id;
+    
+    /**
      * @ORM\Column(type="boolean")
      */
     protected $active = 1;
@@ -60,10 +66,10 @@ class Role implements HierarchicalRoleInterface
      * @ORM\Column(type="datetime")
      */
     protected $created;
-
+    
     /**
-     * @var Role
      * @ORM\ManyToOne(targetEntity="Role")
+     * @ORM\JoinColumn(name="Parent_id", referencedColumnName="id")
      */
     protected $parent;
     
@@ -225,6 +231,30 @@ class Role implements HierarchicalRoleInterface
     }
     
     /**
+     * get Parent_id
+     * 
+     * @return integer
+     */
+    public function getParentId() {
+        return $this->Parent_id;
+    }
+    
+    /**
+     * set Parent_id
+     * 
+     * @return \Entity\Role
+     */
+    public function setParentId($parent_id) {
+        if(!is_numeric($parent_id)) {
+            $this->Parent_id = null;
+        } else {
+            $this->Parent_id = $parent_id;
+        }
+        
+        return $this;
+    }
+    
+    /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
      * 
      * @param \Zend\InputFilter\InputFilterInterface $inputFilter
@@ -250,7 +280,9 @@ class Role implements HierarchicalRoleInterface
             array(
                 'name' => 'id',
                 'required' => true,
-                'filters' => array(),
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
                 'validators' => array(),
             ),
             array(
