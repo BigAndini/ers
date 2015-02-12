@@ -58,10 +58,12 @@ class PaymentTypeController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
+            $files = $request->getFiles()->toArray();
+            error_log(var_export($files, true));
             // Make certain to merge the files info!
             $post = array_merge_recursive(
                 $request->getPost()->toArray(),
-                $request->getFiles()->toArray()
+                $files
             );
 
             $form->setData($post);

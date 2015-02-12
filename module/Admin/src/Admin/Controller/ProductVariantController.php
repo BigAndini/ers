@@ -175,6 +175,11 @@ class ProductVariantController extends AbstractActionController
                 $id = (int) $request->getPost('id');
                 $productvariant = $em->getRepository("ersEntity\Entity\ProductVariant")
                         ->findOneBy(array('id' => $id));
+                $values = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                        ->findBy(array('ProductVariant_id' => $productvariant->getId()));
+                foreach($values as $value) {
+                    $em->remove($value);
+                }
                 $em->remove($productvariant);
                 $em->flush();
             }

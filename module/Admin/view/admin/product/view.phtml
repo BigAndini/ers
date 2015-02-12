@@ -18,7 +18,7 @@ $this->headTitle($title);
     <p>short description: <?php echo $product->getShortDescription(); ?></p>
     <p>long description: <?php echo $product->getLongDescription(); ?></p>
     <p>is personalized: <?php if($product->getPersonalized()) : echo "yes"; else: echo "no"; endif; ?></p>
-    <p>tax: <?php echo $product->getTaxId(); ?></p>
+    <p>tax: <?php echo $product->getTax()->getName().' '.$product->getTax()->getPercentage().'%'; ?></p>
 </div>
 <div>
     <h2>

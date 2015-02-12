@@ -126,10 +126,14 @@ class ProductPriceController extends AbstractActionController {
                 ->findAll();
         $options = array();
         foreach($deadlines as $deadline) {
+            $selected = false;
+            if($productprice->getDeadlineId() == $deadline->getId()) {
+                $selected = true;
+            }
             $options[] = array(
                 'value' => $deadline->getId(),
                 'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => false,
+                'selected' => $selected,
             );
         }
         $form->get('Deadline_id')->setAttribute('options', $options);
