@@ -1,0 +1,39 @@
+<?php
+
+$title = 'Delete Participant';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Are you sure that you want to delete participant
+    <strong><?php echo $this->escapeHtml($participant->getPrename().' '.$participant->getSurname()); ?></strong>?
+</p>
+<?php if(count($package->getItems()) > 0): ?>
+    <h2>These items will be deleted with this participant:</h2>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+    
+    <?php foreach($package->getItems() as $item): ?>
+        <tr>
+            <td><?php echo $item->getName(); ?></td>
+            <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </table>
+<?php endif; ?>
+<?php
+$url = $this->url('participant', array(
+    'action' => 'delete',
+    'id'     => $this->id,
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $participant->getSessionId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+    <a href="<?php echo $this->url($context->route, $context->params, $context->options); ?>">Cancel</a>
+</div>
+</form>

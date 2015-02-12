@@ -357,6 +357,10 @@ class Order implements InputFilterAwareInterface
      */
     public function addPackage(Package $package)
     {
+        if(!is_numeric($package->getSessionId())) {
+            $id = \count($this->getPackages())+1;
+            $package->setSessionId($id);
+        }
         $this->packages[] = $package;
 
         return $this;
@@ -369,11 +373,8 @@ class Order implements InputFilterAwareInterface
      * @param integer $Purchaser_id
      * @return \Entity\Order
      */
-    public function addItem($item, $Purchaser_id)
+    public function addItem(Item $item, $Purchaser_id)
     {
-        
-        error_log('Purchaser_id: '.$Purchaser_id);
-        error_log(var_export($item,true));
         if(isset($this->packages[$Purchaser_id])) {
             $this->packages[$Purchaser_id]->addItem($item);
         } else {
@@ -408,6 +409,20 @@ class Order implements InputFilterAwareInterface
     {
         return $this->packages;
     }
+    
+    /**
+     * Get Package by participant session id.
+     * 
+     * @return Entity\Package
+     */
+    public function getPackageByParticipantSessionId($id) {
+        foreach($this->getPackages() as $package) {
+            if($package->getParticipant()->getSessionId() == $id) {
+                return $package;
+            }
+        }
+        return false;
+    }
 
     /**
      * Get Participants of Packages
@@ -416,14 +431,51 @@ class Order implements InputFilterAwareInterface
      */
     public function getParticipants() {
         $participants = array();
-        $packages = $this->getPackages();
-        for($i = 0; $i < count($packages); $i++) {
-            if($packages[$i]->getParticipant()->getPrename() != '' && $packages[$i]->getParticipant()->getSurname() != '') {
-                $participants[$i] = $packages[$i]->getParticipant();
+        foreach($this->getPackages() as $package) {
+            if($package->getParticipant()->getPrename() != '' && $package->getParticipant()->getSurname() != '') {
+                $id = $package->getParticipant()->getSessionId();
+                $participants[$id] = $package->getParticipant();
             }
         }
         
         return $participants;
+    }
+    
+    /**
+     * Get Participant by session_id
+     * 
+     * @return Entity\User
+     * @return false
+     */
+    public function getParticipantBySessionId($id) {
+        /*$packages = $this->getPackages();
+        for($i = 0; $i < count($packages); $i++) {
+            if($packages[$i]->getParticipant()->getSessionId() == $id) {
+                return $packages[$i]->getParticipant();
+            }
+        }*/
+        foreach($this->getPackages() as $package) {
+            if($package->getParticipant()->getSessionId() == $id) {
+                return $package->getParticipant();
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Set Participant by session_id
+     * 
+     * @return boolean
+     */
+    public function setParticipantBySessionId(User $user, $id) {
+        $packages = $this->getPackages();
+        for($i = 0; $i < count($packages); $i++) {
+            if($packages[$i]->getParticipant()->getSessionId() == $id) {
+                $packages[$i]->setParticipant($user);
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -435,9 +487,29 @@ class Order implements InputFilterAwareInterface
     
     public function addParticipant($participant) {
         $package = new Package();
+        $id = \count($this->getPackages())+1;
+        $participant->setSessionId($id);
         $package->setParticipant($participant);
+        
         $this->packages[] = $package;
         
+        return $this;
+    }
+    
+    /**
+     * Remove Package entity by participant
+     *
+     * @param int
+     * @return \Entity\Order
+     */
+    public function removeParticipantBySessionId($id)
+    {
+        foreach($this->getPackages() as $package) {
+            if($package->getParticipant()->getSessionId() == $id) {
+                $this->packages->removeElement($package);
+            }
+        }
+
         return $this;
     }
     

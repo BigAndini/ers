@@ -23,6 +23,13 @@ class ParticipantForm extends Form
         
         $this->setAttribute('method', 'post'); 
         
+        $this->add(array(
+            'name' => 'session_id',
+            'attributes' => array(
+                'type'  => 'hidden',
+            ),
+        ));
+        
         $this->add(array( 
             'name' => 'prename', 
             'type' => 'Zend\Form\Element\Text', 
@@ -49,7 +56,7 @@ class ParticipantForm extends Form
  
         $this->add(array( 
             'name' => 'birthday', 
-            'type' => 'Zend\Form\Element\Text',
+            'type' => 'Zend\Form\Element\DateTime',
             'attributes' => array( 
                 'placeholder' => 'Birthday...', 
                 'required' => 'required',
@@ -61,14 +68,15 @@ class ParticipantForm extends Form
             'options' => array( 
                 'label' => 'Birthday', 
             ), 
-        )); 
+        ));
+        $this->get('birthday')->setFormat('Y-m-d H:i:s');
  
         $this->add(array( 
             'name' => 'email', 
             'type' => 'Zend\Form\Element\Email', 
             'attributes' => array( 
                 'placeholder' => 'Email Address...', 
-                'required' => 'required', 
+                #'required' => 'required', 
             ), 
             'options' => array( 
                 'label' => 'Email', 

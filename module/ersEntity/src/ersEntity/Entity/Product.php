@@ -721,13 +721,23 @@ class Product implements InputFilterAwareInterface
      */
     public function getPrice()
     {
+        $diff = null;
         $now = new \DateTime();
         $ret = new ProductPrice();
         foreach($this->getProductPrices() as $price) {
+            /*
+             * continue when deadline is in future
+             */
+            if($now->getTimestamp() < $price->getDeadline()->getDeadline()->getTimestamp()) {
+                continue;
+            }
             $newDiff = $now->getTimestamp() - $price->getDeadline()->getDeadline()->getTimestamp();
+            /*
+             * If diff is not set or this deadline is nearer to now.
+             */
             if(
-                !isset($diff) ||
-                ($diff - $newDiff) < 0
+                $diff == null ||
+                ($diff - $newDiff) > 0
             )
             {
                 $diff = $newDiff;

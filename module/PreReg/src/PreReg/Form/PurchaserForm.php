@@ -23,6 +23,22 @@ class PurchaserForm extends Form
         
         $this->setAttribute('method', 'post'); 
         
+        
+        $this->add(array( 
+            'name' => 'purchaser', 
+            'type' => 'Zend\Form\Element\Radio', 
+            'attributes' => array( 
+                'required' => 'required',
+            ), 
+            'options' => array( 
+                'label' => 'Choose Purchaser', 
+                /*'value_options' => array(
+                    '1' => 'foobar', 
+                    '0' => 'Add a Purchaser', 
+                ),*/
+            ), 
+        ));
+        
         $this->add(array( 
             'name' => 'prename', 
             'type' => 'Zend\Form\Element\Text', 
@@ -33,7 +49,7 @@ class PurchaserForm extends Form
             'options' => array( 
                 'label' => 'Prename', 
             ), 
-        )); 
+        ));
  
         $this->add(array( 
             'name' => 'surname', 
@@ -45,23 +61,7 @@ class PurchaserForm extends Form
             'options' => array( 
                 'label' => 'Surname', 
             ), 
-        )); 
- 
-        $this->add(array( 
-            'name' => 'birthday', 
-            'type' => 'Zend\Form\Element\Text',
-            'attributes' => array( 
-                'placeholder' => 'Birthday...', 
-                'required' => 'required',
-                'class' => 'datepicker',
-                'min' => '1900-01-01', 
-                'max' => 2015-08-09, 
-                'step' => '1', 
-            ), 
-            'options' => array( 
-                'label' => 'Birthday', 
-            ), 
-        )); 
+        ));
  
         $this->add(array( 
             'name' => 'email', 
@@ -84,9 +84,9 @@ class PurchaserForm extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Ok',
+                'value' => 'Save Purchaser',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-primary btn-lg',
             ),
         ));
     }
@@ -97,7 +97,7 @@ class PurchaserForm extends Form
         { 
             $inputFilter = new InputFilter(); 
             $factory = new InputFactory();             
-
+            
             $inputFilter->add($factory->createInput([ 
                 'name' => 'prename', 
                 'required' => true, 
@@ -105,7 +105,43 @@ class PurchaserForm extends Form
                     array('name' => 'StripTags'), 
                     array('name' => 'StringTrim'), 
                 ), 
-                'validators' => array( 
+                'validators' => array(
+                    array(
+                        'name' => 'Callback',
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The Prename cannot be empty.',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                /* 
+                                 * If no participant and not even the add 
+                                 * purchaser is chosen the form is invalid.
+                                 */
+                                if(!isset($context['participant'])) {
+                                    return false;
+                                }
+                                /*
+                                 * If the participant is not 0 the user adds an 
+                                 * already existing participant as purchaser.
+                                 */
+                                if($context['participant'] != 0) {
+                                    return true;
+                                }
+                                
+                                if(strlen($value) == 0) {
+                                    return false;
+                                }
+                            },
+                            array(
+                                'name'    => 'StringLength',
+                                'options' => array(
+                                    'encoding' => 'UTF-8',
+                                    'min'      => 0,
+                                    'max'      => 100,
+                                ),
+                            ),
+                        ),
+                    ),
                 ), 
             ])); 
 

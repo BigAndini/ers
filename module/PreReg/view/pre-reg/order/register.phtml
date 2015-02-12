@@ -6,6 +6,13 @@ $this->headTitle($title);
 
 <h1><?php echo $this->escapeHtml($title); ?></h1>
  
+<?php
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('order', array('action' => 'register')));
+    $form->prepare();
+
+    echo $this->form()->openTag($form);
+?>
 <div class="order-steps">
     <div class="order-step"><span class="order-step-no">1</span> <a href="<?php echo $this->url('order'); ?>">My cart</a></div>
     <div class="order-step active"><span class="order-step-no">2</span> <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">Register</a></div>
@@ -14,31 +21,30 @@ $this->headTitle($title);
 </div>
 <div class="clear-both"></div>
 <div class="checkout">
-    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'payment')) ?>">Save purchaser</a>
+    <?php echo $this->formSubmit($form->get('submit')); ?>
 </div>
 <div>
-    <table class="table">
-        <tr>
-            <td>It's me:</td>
-            <td>
-                <input style="display: inline;" type='radio' name='userid' value='42' /> Andreas Nitsche<br />
-                <input style="display: inline;" type='radio' name='userid' value='42' /> Tim Adams<br />
-                <input style="display: inline;" type='radio' name='userid' value='42' /> Christian Bross<br />
-            </td>
-        </tr>
-        <tr>
-            <td>I will not take part myself:</td>
-            <td>
-                <input type="text" name="prename" value="prename" />
-                <input type="text" name="surname" value="surname" />
-                <input type="text" name="email" value="email" />
-            </td>
-        </tr>
-    </table>
+    <h1>Register</h1>
+    <?php if(count($order->getPackages()) > 1): ?>
+    <p>Every participant who has an email set will receive his own eTicket. The <strong>purchaser</strong> you choose will receive <strong>all eTickets</strong>.</p>
+    <?php
+        echo $this->formRow($form->get('purchaser'));
+    else: 
+        $form->get('purchaser')->setAttribute('value', 0);
+        echo $this->formHidden($form->get('purchaser'));
+    endif;
     
+    echo $this->formRow($form->get('prename'));
+    echo $this->formRow($form->get('surname'));
+    echo $this->formRow($form->get('email'));
+    ?>
 </div>
 
 <div class="clear-both"></div>
 <div class="checkout">
-    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'payment')) ?>">Save purchaser</a>
+    <?php 
+        echo $this->formSubmit($form->get('submit'));
+        echo $this->formHidden($form->get('csrf'));
+    ?>
 </div>
+<?php echo $this->form()->closeTag(); ?>

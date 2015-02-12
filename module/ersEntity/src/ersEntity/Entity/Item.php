@@ -39,6 +39,14 @@ class Item implements InputFilterAwareInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+    
+    /**
+     *
+     * @var int
+     * variable to keep an id which is only used while this entity is hold in 
+     * a session container.
+     */
+    protected $session_id;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -132,6 +140,7 @@ class Item implements InputFilterAwareInterface
 
     public function __construct()
     {
+        $this->session_id = null;
         $this->itemVariants = new ArrayCollection();
     }
     
@@ -174,6 +183,27 @@ class Item implements InputFilterAwareInterface
     public function getId()
     {
         return $this->id;
+    }
+    
+    /**
+     * Get session_id
+     * 
+     * @return int
+     */
+    public function getSessionId()
+    {
+        return $this->session_id;
+    }
+    
+    /**
+     * Set session_id.
+     *
+     * @param int $id
+     *
+     * @return void
+     */
+    public function setSessionId($id) {
+        $this->session_id = $id;
     }
 
     /**
@@ -723,7 +753,7 @@ class Item implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Product_id', 'Package_id', 'Package_Order_id', 'Barcode_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'updated', 'created');
+        $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 'Package_Order_id', 'Barcode_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'updated', 'created');
         $relationFields = array('product', 'package', 'barcode');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -756,6 +786,6 @@ class Item implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Product_id', 'Package_id', 'Package_Order_id', 'Barcode_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'updated', 'created');
+        return array('id', 'session_id', 'Product_id', 'Package_id', 'Package_Order_id', 'Barcode_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'updated', 'created');
     }
 }

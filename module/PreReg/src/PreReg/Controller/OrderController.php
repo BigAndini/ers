@@ -29,11 +29,15 @@ class OrderController extends AbstractActionController {
      */
     public function indexAction() {
         $session_cart = new Container('cart');
-        $packages = $session_cart->order->getPackages();
+        
+        $context = new Container('context');
+        $context->route = 'order';
+        $context->params = array();
+        $context->options = array();
         
         return new ViewModel(array(
             'order' => $session_cart->order,
-            #'packages' => $packages,
+            'context' => $context,
         ));
     }
     
@@ -41,7 +45,36 @@ class OrderController extends AbstractActionController {
      * collect data for the purchaser
      */
     public function registerAction() {
-        return new ViewModel();
+        $form = new Form\PurchaserForm();
+        
+        $session_cart = new Container('cart');
+        
+        if(count($session_cart->order->getPackages()) > 1) {
+            $participants = $session_cart->order->getParticipants();
+            $purchaser = array();
+            foreach($participants as $participant) {
+                $purchaser[] = array(
+                    'value' => $participant->getSessionId(),
+                    'label' => $participant->getPrename().' '.$participant->getSurname(),
+                    #'selected' => is_numeric($userRoles->indexOf($role)) ? true : false,
+                    /*
+                     * Participant who buys the tickets needs to be over 18, or not?
+                     */
+                    #'disabled' => $role->getActive() ? true : false,
+                );
+                error_log(var_export($participant->getBirthday()->diff(new \DateTime()), true));
+            }
+            $purchaser[] = array(
+                'value' => 0,
+                'label' => 'Add purchaser',
+            );
+            $form->get('purchaser')->setValueOptions($purchaser);
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'order' => $session_cart->order,
+        ));
     }
     
     /*

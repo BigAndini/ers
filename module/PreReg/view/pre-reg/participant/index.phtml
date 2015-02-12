@@ -6,16 +6,24 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <a href="<?php echo $this->url('participant', array('action'=>'add'));?>">Add participant</a>
 
-<?php foreach ($participants as $participant) : ?>
-<div class="product-container">
-    <div class="add-to-cart">
-        <h3><?php echo $participant->getPrename()." ".$participant->getSurname(); ?></h3>
-        <p class="product-detail">
-            <?php echo $participant->getBirthday();?>
-            <a href="mailto:<?php echo $participant->getEmail();?>"><?php echo $participant->getEmail();?></a>
-        </p>
-    </div>
-</div>
-<hr />
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Birthday</th>
+        <th>Email</th>
+        <th></th>
+    </tr>
 
+<?php foreach ($participants as $participant) : ?>
+    <tr>
+        <td><?php echo $participant->getPrename()." ".$participant->getSurname(); ?></td>
+        <td><?php echo $participant->getBirthday()->format('d.m.Y'); ?></td>
+        <td><a href="mailto:<?php echo $participant->getEmail();?>"><?php echo $participant->getEmail();?></a></td>
+        <td>
+            <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>
+            <a href="<?php echo $this->url('participant', array('action' => 'delete', 'id' => $participant->getSessionId())); ?>">delete</a>
+        </td>
+        <?php error_log(var_export($participant, true)); ?>
+    </tr>
 <?php endforeach; ?>
+</table>

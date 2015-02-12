@@ -39,6 +39,14 @@ class Package implements InputFilterAwareInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+    
+    /**
+     *
+     * @var int
+     * variable to keep an id which is only used while this entity is hold in 
+     * a session container.
+     */
+    protected $session_id;
 
     /**
      * @ORM\Column(type="integer")
@@ -93,6 +101,7 @@ class Package implements InputFilterAwareInterface
 
     public function __construct()
     {
+        $this->session_id = null;
         $this->items = new ArrayCollection();
     }
     
@@ -135,6 +144,27 @@ class Package implements InputFilterAwareInterface
     public function getId()
     {
         return $this->id;
+    }
+    
+    /**
+     * Get session_id
+     * 
+     * @return int
+     */
+    public function getSessionId()
+    {
+        return $this->session_id;
+    }
+    
+    /**
+     * Set session_id.
+     *
+     * @param int $id
+     *
+     * @return void
+     */
+    public function setSessionId($id) {
+        $this->session_id = $id;
     }
 
     /**
@@ -260,6 +290,10 @@ class Package implements InputFilterAwareInterface
      */
     public function addItem(Item $item)
     {
+        if(!is_numeric($item->getSessionId())) {
+            $id = \count($this->getItems())+1;
+            $item->setSessionId($id);
+        }
         $this->items[] = $item;
 
         return $this;
@@ -464,7 +498,7 @@ class Package implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Order_id', 'Participant_id', 'Barcode_id', 'updated', 'created');
+        $dataFields = array('id', 'session_id', 'Order_id', 'Participant_id', 'Barcode_id', 'updated', 'created');
         $relationFields = array('order', 'user', 'barcode');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -497,6 +531,6 @@ class Package implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Order_id', 'Participant_id', 'Barcode_id', 'participant', 'items', 'updated', 'created');
+        return array('id', 'session_id', 'Order_id', 'Participant_id', 'Barcode_id', 'participant', 'items', 'updated', 'created');
     }
 }
