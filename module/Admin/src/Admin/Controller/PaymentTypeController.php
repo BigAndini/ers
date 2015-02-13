@@ -110,8 +110,6 @@ class PaymentTypeController extends AbstractActionController {
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                error_log('paymenttype: '.get_class($paymenttype->getPaymentType()));
-                
                 $em->persist($paymenttype);
                 $em->flush();
 
@@ -229,7 +227,6 @@ class PaymentTypeController extends AbstractActionController {
                 $em->flush();
             }
 
-            // Redirect to list of products
             return $this->redirect()->toRoute('admin/payment-type');
         }
 

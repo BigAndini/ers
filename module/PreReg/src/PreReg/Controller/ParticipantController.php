@@ -58,8 +58,6 @@ class ParticipantController extends AbstractActionController {
                 $session_cart = new Container('cart');
                 $session_cart->order->addParticipant($user);
                 
-                error_log('adding participant to order.');
-                
                 $context = new Container('context');
                 if(isset($context->route)) {
                     return $this->redirect()->toRoute($context->route, $context->params, $context->options);

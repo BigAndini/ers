@@ -43,9 +43,7 @@ class TaxController extends AbstractActionController {
                     ->get('Doctrine\ORM\EntityManager');
                 $em->persist($tax);
                 $em->flush();
-                #$this->getTable()->save($tax);
 
-                // Redirect to list of taxes
                 return $this->redirect()->toRoute('admin/tax');
             }
         }
@@ -64,7 +62,6 @@ class TaxController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $tax = $em->getRepository("ersEntity\Entity\Tax")->findOneBy(array('id' => $id));
-        #$tax = $this->getTable()->getById($id);
 
         $form  = new Form\TaxForm();
         $form->bind($tax);
@@ -112,12 +109,8 @@ class TaxController extends AbstractActionController {
                         ->findOneBy(array('id' => $id));
                 $em->remove($tax);
                 $em->flush();
-                
-                /*$id = (int) $request->getPost('id');
-                $this->getTable()->removeById($id);*/
             }
 
-            // Redirect to list of taxes
             return $this->redirect()->toRoute('admin/tax');
         }
 

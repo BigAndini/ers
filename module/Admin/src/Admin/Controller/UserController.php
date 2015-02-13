@@ -47,8 +47,6 @@ class UserController extends AbstractActionController {
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                error_log('user: '.get_class($user->getUser()));
-                
                 $em->persist($user);
                 $em->flush();
 
@@ -99,57 +97,12 @@ class UserController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                #$user->populate($form->getData());
-                
-                error_log(var_export($form->getData(), true));
-                
                 $em->persist($form->getData());
-                #$em->persist($user);
                 $em->flush();
 
                 return $this->redirect()->toRoute('admin/user');
             } else {
                 error_log(var_export($form->getMessages(), true));
-            }
-        }
-
-        return array(
-            'id' => $id,
-            'form' => $form,
-        );
-    }
-    
-    /*
-     * We don't need this function, but we could use it as copy roles 
-     * from another user.
-     */
-    public function copyAction()
-    {   
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/user', array(
-                'action' => 'add'
-            ));
-        }
-        $product = $this->getTable('Product')->getById($id);
-
-        $form = $this->getServiceLocator()->get('Form\UserForm');
-        $form->bind($product);
-        $form->get('submit')->setAttribute('value', 'Copy');
-
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $form->setInputFilter($product->getInputFilter());
-            $form->setData($request->getPost());
-
-            if ($form->isValid()) {
-                $new_id = $this->getTable('User')->save($form->getData());
-                error_log('saved price limit: '.$id);
-
-                // Redirect to list of products
-                return $this->redirect()->toRoute('admin/user');
-            } else {
-                error_log(var_export($form->getMessages()));
             }
         }
 
@@ -186,7 +139,6 @@ class UserController extends AbstractActionController {
                 $em->flush();
             }
 
-            // Redirect to list of products
             return $this->redirect()->toRoute('admin/user');
         }
 

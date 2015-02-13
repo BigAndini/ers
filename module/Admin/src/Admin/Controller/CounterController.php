@@ -46,8 +46,6 @@ class CounterController extends AbstractActionController {
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                error_log('counter: '.get_class($counter->getCounter()));
-                
                 $em->persist($counter);
                 $em->flush();
 
@@ -100,42 +98,6 @@ class CounterController extends AbstractActionController {
             'form' => $form,
         );
     }
-    
-    public function copyAction()
-    {   
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/counter', array(
-                'action' => 'add'
-            ));
-        }
-        $product = $this->getTable('Product')->getById($id);
-
-        $form = $this->getServiceLocator()->get('Form\CounterForm');
-        $form->bind($product);
-        $form->get('submit')->setAttribute('value', 'Copy');
-
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $form->setInputFilter($product->getInputFilter());
-            $form->setData($request->getPost());
-
-            if ($form->isValid()) {
-                $new_id = $this->getTable('Counter')->save($form->getData());
-                error_log('saved price limit: '.$id);
-
-                // Redirect to list of products
-                return $this->redirect()->toRoute('admin/counter');
-            } else {
-                error_log(var_export($form->getMessages()));
-            }
-        }
-
-        return array(
-            'id' => $id,
-            'form' => $form,
-        );
-    }
 
     /*
      * The delete action is for Agegroups, Counters and Counters the same.
@@ -164,7 +126,6 @@ class CounterController extends AbstractActionController {
                 $em->flush();
             }
 
-            // Redirect to list of products
             return $this->redirect()->toRoute('admin/counter');
         }
 

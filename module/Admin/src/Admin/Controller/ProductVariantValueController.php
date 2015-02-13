@@ -110,10 +110,8 @@ class ProductVariantValueController extends AbstractActionController
             ->get('Doctrine\ORM\EntityManager');
         
         $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")->findOneBy(array('id' => $id));
-        #$value = $this->getTable('ProductVariantValue')->getById($id);
 
         $form  = new Form\ProductVariantValueForm();
-        #$form = $this->getServiceLocator()->get('Admin\Form\ProductVariantValueForm');
         $form->bind($value);
         $form->get('submit')->setAttribute('value', 'Edit');
 

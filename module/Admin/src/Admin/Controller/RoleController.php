@@ -138,7 +138,6 @@ class RoleController extends AbstractActionController {
                 $em->flush();
             }
 
-            // Redirect to list of products
             return $this->redirect()->toRoute('admin/role');
         }
 

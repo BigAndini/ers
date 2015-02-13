@@ -10,7 +10,6 @@ namespace PreReg\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-#use StickyNotes\Model\User;
 use PreReg\Form;
 use Zend\Session\Container;
 
@@ -62,7 +61,6 @@ class OrderController extends AbstractActionController {
                      */
                     #'disabled' => $role->getActive() ? true : false,
                 );
-                error_log(var_export($participant->getBirthday()->diff(new \DateTime()), true));
             }
             $purchaser[] = array(
                 'value' => 0,
@@ -166,7 +164,6 @@ class OrderController extends AbstractActionController {
         $qr->setData('https://prereg.eja.net/onsite/register/'.  \urlencode($code));
         $qr->setCorrectionLevel('H', 0);
         $qr->setDimensions(200, 200);
-        #error_log('QR-Code: '.$qr->getResult());
         $config = array(
             'adapter'      => 'Zend\Http\Client\Adapter\Socket',
             'ssltransport' => 'tls',
@@ -214,7 +211,7 @@ class OrderController extends AbstractActionController {
         $base64_barcode = "data:image/png;base64,".  \base64_encode($contents);
         
         /*
-         * PDF generation
+         * PDF generation to view
          */
         /*
         $pdf->setVariables(array(

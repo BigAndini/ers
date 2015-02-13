@@ -44,14 +44,11 @@ class ProductController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            
-            error_log('active: '.$product->getActive());
             $form->setInputFilter($product->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {                
                 $product->populate($form->getData());
-                error_log('active: '.$product->getActive());
                 
                 $em = $this
                     ->getServiceLocator()
@@ -63,7 +60,6 @@ class ProductController extends AbstractActionController {
                 $em->persist($product);
                 $em->flush();
 
-                // Redirect to list of products
                 return $this->redirect()->toRoute('admin/product');
             } else {
                 error_log(var_export($form->getMessages()));

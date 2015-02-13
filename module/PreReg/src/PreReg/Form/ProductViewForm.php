@@ -83,7 +83,7 @@ class ProductViewForm extends Form
                     $variant_add++;
                 }
             } else {
-                error_log('object is of class '.get_class($v));
+                error_log(get_class().': object is of class '.get_class($v));
             }
         }
         $this->addVariants();
@@ -152,7 +152,7 @@ class ProductViewForm extends Form
                     $formElementValue['options']['label'] = $variant->getName();
                     break;
                 default:
-                    error_log('Don\'t know what to do with type '.$variant->getType());
+                    error_log(get_class().': Don\'t know what to do with type '.$variant->getType());
                     break;
             }
             

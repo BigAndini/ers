@@ -14,23 +14,8 @@ use PreReg\Form;
 use Zend\Session\Container;
 
 class ProductController extends AbstractActionController {
-    /*protected $table;
-    
-    public function getTable($name)
-    {
-        if (!isset($this->table[$name])) {
-            $sm = $this->getServiceLocator();
-            $className = "PreReg\Model\\".$name."Table";
-            $this->table[$name] = $sm->get($className);
-            $this->table[$name]->setServiceLocator($sm);
-        }
-        return $this->table[$name];
-    }*/
     public function indexAction()
     {
-        # TODO: only fetch the ones that are active.
-        #$products = $this->getTable('Product')->fetchAll('order ASC');
-        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -73,17 +58,14 @@ class ProductController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
-        #$product = $this->getTable('Product')->getById($id);
         
         #$form = $this->getServiceLocator()->get('Form\ProductForm');
         $form = new Form\ProductViewForm();
         $url = $this->url()->fromRoute('cart', array('action' => 'add'));
         $form->setAttribute('action', $url);
         
-        #$variants = $this->getTable('ProductVariant')->getByField('Product_id', $id, 'order ASC');
         $variants = $em->getRepository("ersEntity\Entity\ProductVariant")->findBy(array('Product_id' => $id));
         foreach($variants as $v) {
-            #$values = $this->getTable('ProductVariantValue')->getByField('ProductVariant_id', $v->getId(), 'order ASC');
             $values = $em->getRepository("ersEntity\Entity\ProductVariantValue")->findBy(array('ProductVariant_id' => $v->getId()), array('ordering' => 'ASC'));
             foreach($values as $val) {
                 $v->addProductVariantValue($val);

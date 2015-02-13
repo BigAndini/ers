@@ -44,8 +44,6 @@ class Module
             $criteria = array('roleId' => $config['bjyauthorize']['new_user_default_role']);
             $defaultUserRole = $em->getRepository('ersEntity\Entity\Role')->findOneBy($criteria);
             
-            error_log('in register.post');
-            
             if ($defaultUserRole !== null)
             {
                 $newUser->addRole($defaultUserRole);

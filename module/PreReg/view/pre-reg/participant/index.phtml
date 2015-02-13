@@ -23,7 +23,6 @@ $this->headTitle($title);
             <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>
             <a href="<?php echo $this->url('participant', array('action' => 'delete', 'id' => $participant->getSessionId())); ?>">delete</a>
         </td>
-        <?php error_log(var_export($participant, true)); ?>
     </tr>
 <?php endforeach; ?>
 </table>

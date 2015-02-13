@@ -37,7 +37,6 @@ class ProductPriceController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        #$product = $this->getTable('Product')->getById($id);
         $productprice = new Entity\ProductPrice();
         $productprice->setProductId($id);
 
@@ -204,7 +203,6 @@ class ProductPriceController extends AbstractActionController {
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
-            error_log('In POST');
             if ($del == 'Yes') {
                 
                 $id = (int) $request->getPost('id');

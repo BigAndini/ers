@@ -24,8 +24,6 @@ class CartController extends AbstractActionController {
         if(!isset($session_cart->init) && $session_cart->init == 1) {
             $session_cart->order = new Entity\Order();
             $session_cart->init = 1;
-        } else {
-            error_log('Cart is already initialized'); 
         }
     }
     
@@ -34,7 +32,6 @@ class CartController extends AbstractActionController {
      */
     public function indexAction() {
         $this->initialize();
-        #return new ViewModel();
         return $this->redirect()->toRoute('order', array(
             'action' => 'index',
         ));
@@ -70,9 +67,7 @@ class CartController extends AbstractActionController {
             $item->populate($product->getArrayCopy());
             $item->setPrice($product->getPrice()->getCharge());
             $item->setAmount(1);
-            #error_log(get_class().': '.var_export($item, true));
             $item->populate((array) $data);
-            #error_log(get_class().': '.var_export($item, true));
             
             $session_cart = new Container('cart');
             $session_cart->order->addItem($item, $participant_id);

@@ -16,7 +16,6 @@ $this->headTitle($title);
         <th>&nbsp;</th>
     </tr>
 <?php foreach ($users as $user) : ?>
-    <?php error_log(var_export($user, true)); ?>
     <tr>
         <td><?php 
             echo $user->getEmail();

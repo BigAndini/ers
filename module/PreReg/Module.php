@@ -51,21 +51,12 @@ class Module
                      ->get('Zend\Session\SessionManager');
         $session->start();
         
-        if(!$session->isValid()) {
+        /*if(!$session->isValid()) {
             error_log('Session is not valid');
-        }
-        
-        /*error_log($_SESSION['__ZF']['_REQUEST_ACCESS_TIME']);
-        if(isset($_SESSION['__ZF']['_REQUEST_ACCESS_TIME'])) {
-            $filename = $_SESSION['__ZF']['_REQUEST_ACCESS_TIME'].".txt";
-            $publicDir = getcwd() . '/sessions';
-            file_put_contents($publicDir.'/'.$filename, var_export($_SESSION,true));
         }*/
-        #error_log(var_export($_SESSION, true));
         
         $container = new Container('initialized');
         if (!isset($container->init) || $container->lifetime < (time()-3600)) {
-            error_log('Reset Session');
             #$_SESSION = array();
             /*$session = $e->getApplication()
                      ->getServiceManager()

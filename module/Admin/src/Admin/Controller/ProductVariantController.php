@@ -102,7 +102,6 @@ class ProductVariantController extends AbstractActionController
             ->get('Doctrine\ORM\EntityManager');
         
         $productvariant = $em->getRepository("ersEntity\Entity\ProductVariant")->findOneBy(array('id' => $id));
-        #$productvariant = $this->getTable('ProductVariant')->getById($id);
 
         #$form  = new Form\ProductVariantForm();
         $form = $this->getServiceLocator()->get('Admin\Form\ProductVariantForm');
