@@ -6,18 +6,18 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-<p>Are you sure that you want to delete product variant
-    <strong><?php echo $this->escapeHtml($productvariant->getName()); ?></strong>?
+<p>Are you sure that you want to delete product variant value
+    <strong><?php echo $this->escapeHtml($value->getValue()); ?></strong>?
 </p>
 <?php
-$url = $this->url('admin/product-variant', array(
+$url = $this->url('admin/product-variant-value', array(
     'action' => 'delete',
     'id'     => $this->id,
 ));
 ?>
 <form action="<?php echo $url; ?>" method="post">
 <div>
-    <input type="hidden" name="id" value="<?php echo (int) $productvariant->getId(); ?>" />
+    <input type="hidden" name="id" value="<?php echo (int) $value->getId(); ?>" />
     <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
     <a href="<?php echo $this->url('admin/product');?>">Cancel</a>
 </div>

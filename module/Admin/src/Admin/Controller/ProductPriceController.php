@@ -45,16 +45,20 @@ class ProductPriceController extends AbstractActionController {
         $form = new Form\ProductPriceForm();
         
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
-                ->findAll();
+                ->findBy(array(), array('deadline' => 'ASC'));
         $options = array();
         foreach($deadlines as $deadline) {
-            
             $options[] = array(
                 'value' => $deadline->getId(),
                 'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
                 'selected' => false,
             );
         }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'no Deadline',
+            'selected' => false,
+        );
         $form->get('Deadline_id')->setAttribute('options', $options);
         
         $form->bind($productprice);
@@ -71,9 +75,13 @@ class ProductPriceController extends AbstractActionController {
             if ($form->isValid()) {
                 $productprice = $form->getData();
                 
-                $deadline = $em->getRepository("ersEntity\Entity\Deadline")
-                    ->findOneBy(array('id' => $productprice->getDeadlineId()));
-                $productprice->setDeadline($deadline);
+                if($productprice->getDeadlineId() == 0) {
+                    $productprice->setDeadline(null);
+                } else {
+                    $deadline = $em->getRepository("ersEntity\Entity\Deadline")
+                        ->findOneBy(array('id' => $productprice->getDeadlineId()));
+                    $productprice->setDeadline($deadline);
+                }
                 
                 $product = $em->getRepository("ersEntity\Entity\Product")
                     ->findOneBy(array('id' => $productprice->getProductId()));
@@ -123,7 +131,7 @@ class ProductPriceController extends AbstractActionController {
         $form->bind($productprice);
         
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
-                ->findAll();
+                ->findBy(array(), array('deadline' => 'ASC'));
         $options = array();
         foreach($deadlines as $deadline) {
             $selected = false;
@@ -136,6 +144,15 @@ class ProductPriceController extends AbstractActionController {
                 'selected' => $selected,
             );
         }
+        $selected = false;
+        if($productprice->getDeadlineId() == null) {
+            $selected = true;
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'no Deadline',
+            'selected' => $selected,
+        );
         $form->get('Deadline_id')->setAttribute('options', $options);
         
         
@@ -146,7 +163,13 @@ class ProductPriceController extends AbstractActionController {
             $form->setInputFilter($productprice->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $em->persist($form->getData());
+                $productprice = $form->getData();
+                
+                if($productprice->getDeadlineId() == 0) {
+                    $productprice->setDeadlineId(null);
+                }
+                
+                $em->persist($productprice);
                 $em->flush();
 
                 $context = new Container('context');

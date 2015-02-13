@@ -27,25 +27,6 @@ class ProductVariantController extends AbstractActionController
         ));
     }
 
-    public function viewAction()
-    {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/product');
-        }
-        
-        $context = new Container('context');
-        $context->route = 'admin/product-variant';
-        $context->params = array('action' => 'view', 'id' => $id);
-        $context->options = array();
-        
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        return new ViewModel(array(
-            'productvariant' => $em->getRepository("ersEntity\Entity\ProductVariant")->findOneBy(array('id' => $id)),
-        ));
-    }
-    
     public function addAction()
     {
         $product_id = (int) $this->params()->fromRoute('id', 0);

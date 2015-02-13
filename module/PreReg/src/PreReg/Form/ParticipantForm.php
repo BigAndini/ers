@@ -69,7 +69,7 @@ class ParticipantForm extends Form
                 'label' => 'Birthday', 
             ), 
         ));
-        $this->get('birthday')->setFormat('Y-m-d H:i:s');
+        $this->get('birthday')->setFormat('Y-m-d');
  
         $this->add(array( 
             'name' => 'email', 

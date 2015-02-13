@@ -112,8 +112,8 @@ class ProductVariantValueController extends AbstractActionController
         $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")->findOneBy(array('id' => $id));
         #$value = $this->getTable('ProductVariantValue')->getById($id);
 
-        #$form  = new Form\ProductVariantValueForm();
-        $form = $this->getServiceLocator()->get('Admin\Form\ProductVariantValueForm');
+        $form  = new Form\ProductVariantValueForm();
+        #$form = $this->getServiceLocator()->get('Admin\Form\ProductVariantValueForm');
         $form->bind($value);
         $form->get('submit')->setAttribute('value', 'Edit');
 
@@ -123,11 +123,7 @@ class ProductVariantValueController extends AbstractActionController
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                #$this->getTable('ProductVariantValue')->save($form->getData());       
-
-                $value->populate($form->getData());
-                
-                $em->persist($value);
+                $em->persist($form->getData());
                 $em->flush();
                 
                 $context = new Container('context');
@@ -177,7 +173,7 @@ class ProductVariantValueController extends AbstractActionController
         
         return array(
             'id'    => $id,
-            'productvariant' => $em->getRepository("ersEntity\Entity\ProductVariantValue")
+            'value' => $em->getRepository("ersEntity\Entity\ProductVariantValue")
                         ->findOneBy(array('id' => $id)),
         );
     }

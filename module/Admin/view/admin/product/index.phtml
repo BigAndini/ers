@@ -32,7 +32,6 @@ $this->headTitle($title);
             <?php foreach($product->getProductVariants() as $variant) : ?>
             <p>
                 <span><?php echo $variant->getName(); ?></span>
-                <a href="<?php echo $this->url('admin/product-variant', array('action' => 'view', 'id' => $variant->getId()));?>">detail</a>
                 <a href="<?php echo $this->url('admin/product-variant', array('action' => 'edit', 'id' => $variant->getId()));?>">edit</a>
                 <a href="<?php echo $this->url('admin/product-variant', array('action' => 'copy', 'id' => $variant->getId()));?>">copy</a>
                 <a href="<?php echo $this->url('admin/product-variant', array('action' => 'delete', 'id' => $variant->getId()));?>">delete</a></p>
@@ -44,13 +43,14 @@ $this->headTitle($title);
             <p>
                 <span>
                     <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
-                    (<?php echo $price->getDeadline()->getDeadline()->format('Y-m-d'); ?>)
+                    <?php if($price->getDeadlineId() != null) : ?>
+                    (<?php echo $price->getDeadline()->getDeadline()->format('Y-m-d H:i:s'); ?>)
+                    <?php else : ?>
+                    (no Deadline)
+                    <?php endif; ?>
+                    
                 </span>
-                
-                <?php #error_log(var_export($price->getDeadline()->getDeadline()->format('Y-m-d'),true));?>
-                <a href="<?php echo $this->url('admin/product-price', array('action' => 'view', 'id' => $price->getId()));?>">detail</a>
                 <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId()));?>">edit</a>
-                <a href="<?php echo $this->url('admin/product-price', array('action' => 'copy', 'id' => $price->getId()));?>">copy</a>
                 <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId()));?>">delete</a></p>
             <?php endforeach; ?>
         </td>

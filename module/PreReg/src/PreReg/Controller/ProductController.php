@@ -34,13 +34,19 @@ class ProductController extends AbstractActionController {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $products = $em->getRepository("ersEntity\Entity\Product")
+        $tmp = $em->getRepository("ersEntity\Entity\Product")
                 ->findBy(
                         array(
                             'active' => 1,
                             'deleted' => 0,
                         )
                     );
+        $products = array();
+        foreach($tmp as $product) {
+            if($product->getPrice()->getCharge() != null) {
+                $products[] = $product;
+            }
+        }
         
         return new ViewModel(array(
             'products' => $products,

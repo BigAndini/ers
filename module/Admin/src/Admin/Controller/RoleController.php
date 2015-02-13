@@ -47,10 +47,15 @@ class RoleController extends AbstractActionController {
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                $parent = $em->getRepository("ersEntity\Entity\Role")
+                if(is_numeric($role->getParentId()) && $role->getParentId() > 0) {
+                    $parent = $em->getRepository("ersEntity\Entity\Role")
                         ->findOneBy(array('id' => $role->getParentId()));
                 
-                $role->setParent($parent);
+                    $role->setParent($parent);
+                } else {
+                    $role->setParentId(null);
+                }
+                
                 $em->persist($role);
                 $em->flush();
 
