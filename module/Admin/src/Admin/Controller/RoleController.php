@@ -49,10 +49,8 @@ class RoleController extends AbstractActionController {
                 
                 $parent = $em->getRepository("ersEntity\Entity\Role")
                         ->findOneBy(array('id' => $role->getParentId()));
-                error_log(var_export($parent, true));
-                $role->setParent($parent);
-                #error_log('role: '.get_class($role->getRoleId()));
                 
+                $role->setParent($parent);
                 $em->persist($role);
                 $em->flush();
 
@@ -84,6 +82,10 @@ class RoleController extends AbstractActionController {
         $form = $this->getServiceLocator()->get('Admin\Form\RoleForm');
         $form->bind($role);
         $form->get('submit')->setAttribute('value', 'Edit');
+        
+        $options = $form->get('parent_id')->getValueOptions();
+        unset($options[$role->getId()]);
+        $form->get('parent_id')->setValueOptions($options);
 
         $request = $this->getRequest();
         if ($request->isPost()) {

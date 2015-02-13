@@ -132,14 +132,15 @@ class PurchaserForm extends Form
                                     return false;
                                 }
                             },
-                            array(
-                                'name'    => 'StringLength',
-                                'options' => array(
-                                    'encoding' => 'UTF-8',
-                                    'min'      => 0,
-                                    'max'      => 100,
-                                ),
-                            ),
+                            
+                        ),
+                    ),
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 0,
+                            'max'      => 100,
                         ),
                     ),
                 ), 

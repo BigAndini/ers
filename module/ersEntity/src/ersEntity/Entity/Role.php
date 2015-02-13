@@ -301,7 +301,22 @@ class Role implements HierarchicalRoleInterface
                 'name' => 'parent_id',
                 'required' => false,
                 'filters' => array(),
-                'validators' => array(),
+                'validators' => array(
+                    array(
+                        'name' => 'Callback',
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => "It\'s not possible to choose this parent role.",
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                if($value != $context['id']) {
+                                    return true;
+                                }
+                                return false;
+                            },
+                        ),
+                    ),
+                ),
             ),
             array(
                 'name' => 'updated',
