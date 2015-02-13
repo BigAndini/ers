@@ -728,7 +728,7 @@ class Product implements InputFilterAwareInterface
             /*
              * continue when deadline is in future
              */
-            if($now->getTimestamp() < $price->getDeadline()->getDeadline()->getTimestamp()) {
+            if($price->getDeadlineId() == null || $now->getTimestamp() < $price->getDeadline()->getDeadline()->getTimestamp()) {
                 continue;
             }
             $newDiff = $now->getTimestamp() - $price->getDeadline()->getDeadline()->getTimestamp();

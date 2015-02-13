@@ -40,7 +40,6 @@ class ProductPriceController extends AbstractActionController {
         $productprice = new Entity\ProductPrice();
         $productprice->setProductId($id);
 
-        #$form = $this->getServiceLocator()->get('Form\ProductPriceForm');
         $form = new Form\ProductPriceForm();
         
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
