@@ -20,7 +20,7 @@ foreach ($products as $product) :
             <?php #endforeach; ?>
         </p>
         <p class="product-detail">
-            <a href="<?php echo $this->url('product', array('action'=>'view','id' => $product->getId()));?>"><?php echo $this->translate('product detail'); ?></a>
+            <a href="<?php echo $this->url('product', array('action' => 'view', 'product_id' => $product->getId()));?>"><?php echo $this->translate('product detail'); ?></a>
         </p>
     </div>
     <h3><?php echo $product->getName(); ?></h3>

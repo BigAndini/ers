@@ -109,10 +109,11 @@ return array(
             'cart' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/cart[/:action][/:id]',
+                    'route' => '/cart[/:action][/:participant_id/:item_id]',
                     'constraints' => array(
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
+                        'action'             => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'participant_id'     => '[0-9]+',
+                        'item_id'            => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'PreReg\Controller\Cart',
@@ -137,10 +138,12 @@ return array(
             'product' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route'    => '/product[/][:action][/:id]',
+                    'route'    => '/product[/][:action][/:product_id][/:participant_id][/:item_id]',
                     'constraints' => array(
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
+                        'action'            => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'product_id'        => '[0-9]+',
+                        'participant_id'    => '[0-9]+',
+                        'item_id'           => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'PreReg\Controller\Product',

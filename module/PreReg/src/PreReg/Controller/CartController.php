@@ -11,9 +11,8 @@ namespace PreReg\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
-#use PreReg\Model;
 use ersEntity\Entity;
-use PreReg\Form;
+#use PreReg\Form;
 
 class CartController extends AbstractActionController {
     /*
@@ -41,6 +40,12 @@ class CartController extends AbstractActionController {
      * add Item to cart
      */
     public function addAction() {
+        $param_participant_id = (int) $this->params()->fromRoute('participant_id', 0);
+        $param_item_id = (int) $this->params()->fromRoute('item_id', 0);
+        /*if (!$participant_id) {
+            return $this->redirect()->toRoute('order');
+        }*/
+        
         $this->initialize();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -70,11 +75,20 @@ class CartController extends AbstractActionController {
             $item->populate((array) $data);
             
             $session_cart = new Container('cart');
+            if($param_participant_id && $param_item_id) {
+                $session_cart->order->removeItem($param_participant_id, $param_item_id);
+            }
             $session_cart->order->addItem($item, $participant_id);
         }
-        return $this->redirect()->toRoute('product', array(
-            'action' => 'index',
-        ));
+        
+        $forrest = new Container('forrest');
+        $breadcrumb = $forrest->trace->cart;
+        
+        return $this->redirect()->toRoute(
+                $breadcrumb->route, 
+                $breadcrumb->params, 
+                $breadcrumb->options
+            );
     }
     
     public function resetAction() {
@@ -87,19 +101,6 @@ class CartController extends AbstractActionController {
      * remove Item from cart
      */
     public function removeAction() {
-        
-    }
-    
-    /*
-     * delete a Item from Cart
-     */
-    public function delitemAction() {
-        
-    }
-    /*
-     * delete a Package from Cart
-     */
-    public function delpackageAction() {
         
     }
 }

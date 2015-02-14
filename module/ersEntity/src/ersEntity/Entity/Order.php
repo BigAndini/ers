@@ -367,27 +367,6 @@ class Order implements InputFilterAwareInterface
     }
     
     /**
-     * Add Item to the according package with the correct Purchaser_id
-     * 
-     * @param \Entity\Item $item
-     * @param integer $Purchaser_id
-     * @return \Entity\Order
-     */
-    public function addItem(Item $item, $Purchaser_id)
-    {
-        if(isset($this->packages[$Purchaser_id])) {
-            $this->packages[$Purchaser_id]->addItem($item);
-        } else {
-            $this->packages[$Purchaser_id] = new Package();
-            $this->packages[$Purchaser_id]->setParticipant(new User());
-            $this->packages[$Purchaser_id]->addItem($item);
-            #throw new \Exception("Unable to add item to your shopping cart.");
-        }
-        
-        return $this;
-    }
-    
-    /**
      * Remove Package entity from collection (one to many).
      *
      * @param \Entity\Package $package
@@ -423,6 +402,61 @@ class Order implements InputFilterAwareInterface
         }
         return false;
     }
+    
+    /**
+     * Add Item to the according package with the correct Purchaser_id
+     * 
+     * @param \Entity\Item $item
+     * @param integer $Purchaser_id
+     * @return \Entity\Order
+     */
+    public function addItem(Item $item, $Purchaser_id)
+    {
+        if(isset($this->packages[$Purchaser_id])) {
+            $this->packages[$Purchaser_id]->addItem($item);
+        } else {
+            $this->packages[$Purchaser_id] = new Package();
+            $this->packages[$Purchaser_id]->setParticipant(new User());
+            $this->packages[$Purchaser_id]->addItem($item);
+            #throw new \Exception("Unable to add item to your shopping cart.");
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * get Item by participant_id and item_id
+     * 
+     * @param integer $participant_id
+     * @param integer $item_id
+     * 
+     * @return \Entity\Item
+     * @return false
+     */
+    public function getItem($participant_id, $item_id) {
+        $package = $this->getPackageByParticipantSessionId($participant_id);
+        if($package) {
+            return $package->getItemBySessionId($item_id);    
+        }
+        return false;
+    }
+    
+    /**
+     * remove Item by participant_id and item_id
+     * 
+     * @param integer $participant_id
+     * @param integer $item_id
+     * 
+     * @return \Entity\Order
+     */
+    public function removeItem($participant_id, $item_id) {
+        $package = $this->getPackageByParticipantSessionId($participant_id);
+        if($package) {
+            $package->removeItemBySessionId($item_id);    
+        }
+        
+        return $this;
+    }
 
     /**
      * Get Participants of Packages
@@ -448,12 +482,6 @@ class Order implements InputFilterAwareInterface
      * @return false
      */
     public function getParticipantBySessionId($id) {
-        /*$packages = $this->getPackages();
-        for($i = 0; $i < count($packages); $i++) {
-            if($packages[$i]->getParticipant()->getSessionId() == $id) {
-                return $packages[$i]->getParticipant();
-            }
-        }*/
         foreach($this->getPackages() as $package) {
             if($package->getParticipant()->getSessionId() == $id) {
                 return $package->getParticipant();
@@ -468,14 +496,21 @@ class Order implements InputFilterAwareInterface
      * @return boolean
      */
     public function setParticipantBySessionId(User $user, $id) {
-        $packages = $this->getPackages();
+        foreach($this->getPackages() as $package) {
+            if($package->getParticipant()->getSessionId() == $id) {
+                $package->setParticipant($user);
+                return true;
+            }
+        }
+        return false;
+        /*$packages = $this->getPackages();
         for($i = 0; $i < count($packages); $i++) {
             if($packages[$i]->getParticipant()->getSessionId() == $id) {
                 $packages[$i]->setParticipant($user);
                 return true;
             }
         }
-        return false;
+        return false;*/
     }
     
     /**

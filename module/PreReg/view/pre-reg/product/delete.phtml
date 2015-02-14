@@ -1,0 +1,32 @@
+<?php
+
+$title = 'Delete Item from shopping cart';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Are you sure that you want to delete 
+    <strong><?php echo $this->escapeHtml($item->getName()); ?></strong> for 
+    <strong><?php echo $this->escapeHtml($participant->getPrename().' '.$participant->getSurname()); ?></strong>?
+</p>
+<?php
+$url = $this->url('product', array(
+    'action' => 'delete',
+    'product_id'     => $product->getId(),
+    'participant_id'     => $participant->getSessionId(),
+    'item_id'     => $item->getSessionId(),
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="participant_id" value="<?php echo (int) $participant->getSessionId(); ?>" />
+    <input type="hidden" name="item_id" value="<?php echo (int) $item->getSessionId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+    <?php $breadcrumb = $forrest->trace->product; ?>
+    <a href="<?php echo $this->url(
+            $breadcrumb->route, 
+            $breadcrumb->params->getArrayCopy(), 
+            $breadcrumb->options->getArrayCopy()); 
+    ?>">Cancel</a>
+</div>
+</form>

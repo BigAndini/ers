@@ -27,16 +27,25 @@ class OrderController extends AbstractActionController {
      * overview of this order
      */
     public function indexAction() {
-        $session_cart = new Container('cart');
+        $clearance = new Container('forrest');
+        $clearance->getManager()->getStorage()->clear('forrest');
+        $forrest = new Container('forrest');
+        $forrest->trace = new \ArrayObject();
         
-        $context = new Container('context');
-        $context->route = 'order';
-        $context->params = array();
-        $context->options = array();
+        
+        $breadcrumb = new \ArrayObject();
+        $breadcrumb->route = 'order';
+        $breadcrumb->params = new \ArrayObject();
+        $breadcrumb->options = new \ArrayObject();
+        $forrest->trace->product = $breadcrumb;
+        $forrest->trace->participant = $breadcrumb;
+        $forrest->trace->cart = $breadcrumb;
+        
+        $session_cart = new Container('cart');
         
         return new ViewModel(array(
             'order' => $session_cart->order,
-            'context' => $context,
+            'forrest' => $forrest,
         ));
     }
     

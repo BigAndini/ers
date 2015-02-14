@@ -34,6 +34,11 @@ $url = $this->url('participant', array(
 <div>
     <input type="hidden" name="id" value="<?php echo (int) $participant->getSessionId(); ?>" />
     <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
-    <a href="<?php echo $this->url($context->route, $context->params, $context->options); ?>">Cancel</a>
+    <?php $breadcrumb = $forrest->trace->participant; ?>
+    <a href="<?php echo $this->url(
+            $breadcrumb->route, 
+            $breadcrumb->params->getArrayCopy(), 
+            $breadcrumb->options->getArrayCopy()); 
+    ?>">Cancel</a>
 </div>
 </form>

@@ -16,6 +16,17 @@ use Zend\Session\Container;
 class ProductController extends AbstractActionController {
     public function indexAction()
     {
+        $clearance = new Container('forrest');
+        $clearance->getManager()->getStorage()->clear('forrest');
+        $forrest = new Container('forrest');
+        $forrest->trace = new \ArrayObject();
+        
+        $breadcrumb = new \ArrayObject();
+        $breadcrumb->route = 'product';
+        $breadcrumb->params = new \ArrayObject();
+        $breadcrumb->options = new \ArrayObject();
+        $forrest->trace->participant = $breadcrumb;
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -39,32 +50,56 @@ class ProductController extends AbstractActionController {
     }
     
     public function viewAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $product_id = (int) $this->params()->fromRoute('product_id', 0);
+        $participant_id = (int) $this->params()->fromRoute('participant_id', 0);
+        $item_id = (int) $this->params()->fromRoute('item_id', 0);
+        if (!$product_id) {
             return $this->redirect()->toRoute('product', array(
                 'action' => 'index'
             ));
         }
         
-        $context = new Container('context');
-        $context->route = 'product';
-        $context->params = array(
-            'action' => 'view',
-            'id' => $id,
-        );
-        $context->options = array();
+        error_log('adding breadcrumb: product/view/'.$product_id.'/'.$participant_id.'/'.$item_id);
+        $breadcrumb = new \ArrayObject();
+        $breadcrumb->route = 'product';
+        if($participant_id) {
+            $breadcrumb->params = new \ArrayObject();
+            $breadcrumb->paramy->action = 'view';
+            $breadcrumb->paramy->product_id = $product_id;
+            $breadcrumb->paramy->participant_id = $participant_id;
+            if($item_id) {
+                $breadcrumb->paramy->item_id = $item_id;    
+            }
+        } else {
+            $breadcrumb->params = new \ArrayObject();
+            $breadcrumb->params->action = 'view';
+            $breadcrumb->params->product_id = $product_id;
+        }
+        $breadcrumb->options = new \ArrayObject();
+        $forrest = new Container('forrest');
+        $forrest->trace->participant = $breadcrumb;
         
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
+        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $product_id));
         
         #$form = $this->getServiceLocator()->get('Form\ProductForm');
         $form = new Form\ProductViewForm();
-        $url = $this->url()->fromRoute('cart', array('action' => 'add'));
+
+        if($participant_id && $item_id) {
+            $url = $this->url()->fromRoute('cart', 
+                    array(
+                        'action' => 'add', 
+                        'participant_id' => $participant_id, 
+                        'item_id' => $item_id
+                    ));
+        } else {
+            $url = $this->url()->fromRoute('cart', array('action' => 'add'));
+        }
         $form->setAttribute('action', $url);
         
-        $variants = $em->getRepository("ersEntity\Entity\ProductVariant")->findBy(array('Product_id' => $id));
+        $variants = $em->getRepository("ersEntity\Entity\ProductVariant")->findBy(array('Product_id' => $product_id));
         foreach($variants as $v) {
             $values = $em->getRepository("ersEntity\Entity\ProductVariantValue")->findBy(array('ProductVariant_id' => $v->getId()), array('ordering' => 'ASC'));
             foreach($values as $val) {
@@ -78,13 +113,29 @@ class ProductController extends AbstractActionController {
         $question = 0;
         
         $session_cart = new Container('cart');
+        $participant = '';
+        $item = '';
+        if($participant_id) { 
+            $participant = $session_cart->order->getParticipantBySessionId($participant_id);
+            if($item_id) {
+                $item = $session_cart->order->getItem($participant_id, $item_id);
+            }
+        }
         
         $options = array();
         if(!$product->getPersonalized()) {
             $options[0] = 'do not assign this product';
         }
         foreach($session_cart->order->getParticipants() as $k => $v) {
-            $options[$k] = $v->getPrename().' '.$v->getSurname();
+            $selected = false;
+            if($k == $participant_id) {
+                $selected = true;
+            }
+            $options[] = array(
+                'value' => $k,
+                'label' => $v->getPrename().' '.$v->getSurname(),
+                'selected' => $selected,
+            );
         }
         
         if(count($options) <= 0 && $product->getPersonalized()) {
@@ -97,7 +148,65 @@ class ProductController extends AbstractActionController {
             'question' => $question,
             'participants' => $options,
             'product' => $product,
+            'participant' => $participant,
+            'item' => $item,
             'form' => $form,
         ));
+    }
+    
+    public function deleteAction() {
+        $product_id = (int) $this->params()->fromRoute('product_id', 0);
+        $participant_id = (int) $this->params()->fromRoute('participant_id', 0);
+        $item_id = (int) $this->params()->fromRoute('item_id', 0);
+        if (!$product_id || !$participant_id || !$item_id) {
+            return $this->redirect()->toRoute('order');
+        }
+        
+        $forrest = new Container('forrest');
+        
+        if($forrest->count() === 0) {
+            $breadcrumb = new \ArrayObject();
+            $breadcrumb->route = 'order';
+            $breadcrumb->params = new \ArrayObject();
+            $breadcrumb->options = new \ArrayObject();
+            $forrest->trace->product = $breadcrumb;
+        }
+
+        $session_cart = new Container('cart');
+        $participant = $session_cart->order->getParticipantBySessionId($participant_id);
+        error_log(var_export($participant, true));
+        $item = $session_cart->order->getItem($participant_id, $item_id);
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $product_id));
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $del = $request->getPost('del', 'No');
+
+            if ($del == 'Yes') {
+                $participant_id = (int) $request->getPost('participant_id');
+                $item_id = (int) $request->getPost('item_id');
+                
+                $session_cart->order->removeItem($participant_id, $item_id);
+            }
+
+            $breadcrumb = $forrest->trace->product;
+            return $this->redirect()->toRoute(
+                    $breadcrumb->route, 
+                    $breadcrumb->params->getArrayCopy(), 
+                    $breadcrumb->options->getArrayCopy()
+                );
+        }
+        
+        return array(
+            'id'    => $product_id,
+            'participant' => $participant,
+            'item' => $item,
+            'product' => $product,
+            'forrest' => $forrest,
+        );
     }
 }

@@ -22,13 +22,19 @@ class ParticipantController extends AbstractActionController {
      */
     public function indexAction()
     {
+        $clearance = new Container('forrest');
+        $clearance->getManager()->getStorage()->clear('forrest');
+        $forrest = new Container('forrest');
+        $forrest->trace = new \ArrayObject();
+        
         $session_cart = new Container('cart');
         $participants = $session_cart->order->getParticipants();
         
-        $context = new Container('context');
-        $context->route = 'participant';
-        $context->params = array();
-        $context->options = array();
+        $breadcrumb = new \ArrayObject();
+        $breadcrumb->route = 'participant';
+        $breadcrumb->params = new \ArrayObject();
+        $breadcrumb->options = new \ArrayObject();
+        $forrest->trace->participant = $breadcrumb;
         
         return new ViewModel(array(
             'participants' => $participants,
@@ -58,27 +64,35 @@ class ParticipantController extends AbstractActionController {
                 $session_cart = new Container('cart');
                 $session_cart->order->addParticipant($user);
                 
-                $context = new Container('context');
-                if(isset($context->route)) {
-                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-                } else {
-                    return $this->redirect()->toRoute('participant');
+                $forrest = new Container('forrest');
+                $breadcrumb = $forrest->trace->participant;
+                error_log('route: '.$breadcrumb->route);
+                error_log('action: '.$breadcrumb->params->action);
+                if($breadcrumb->route == 'product' && $breadcrumb->params->action == 'view') {
+                    $breadcrumb->params->participant_id = $user->getSessionId();
                 }
-                
+                return $this->redirect()->toRoute(
+                    $breadcrumb->route, 
+                    $breadcrumb->params->getArrayCopy(), 
+                    $breadcrumb->options->getArrayCopy()
+                );
             } else {
                 error_log(var_export($form->getMessages()));
             } 
         }
         
-        $context = new Container('context');
-        if(empty($context->route)) {
-            $context->route = 'participant';
-            $context->params = array();
-            $context->options = array();
+        $forrest = new Container('forrest');
+        if(!isset($forrest->trace->participant)) {
+            $breadcrumb = new \ArrayObject();
+            $breadcrumb->route = 'participant';
+            $breadcrumb->params = new \ArrayObject();
+            $breadcrumb->options = new \ArrayObject();
+            $forrest->trace->participant = $breadcrumb;
         }
+
         return [
             'form' => $form,
-            'context' => $context,
+            'forrest' => $forrest,
         ];
     }
     
@@ -111,33 +125,34 @@ class ParticipantController extends AbstractActionController {
                 
             if($form->isValid())
             { 
-                #$participant->populate($form->getData());
                 $participant = $form->getData();
                 $session_cart = new Container('cart');
                 $session_cart->order->setParticipantBySessionId($participant, $id);
                 
-                $context = new Container('context');
-                if(isset($context->route)) {
-                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-                } else {
-                    return $this->redirect()->toRoute('participant');
-                }
-                
+                $forrest = new Container('forrest');
+                $breadcrumb = $forrest->trace->participant;
+                return $this->redirect()->toRoute(
+                    $breadcrumb->route, 
+                    $breadcrumb->params->getArrayCopy(), 
+                    $breadcrumb->options->getArrayCopy()
+                );
             } else {
                 error_log(var_export($form->getMessages()));
             } 
         }
         
-        $context = new Container('context');
-        if(empty($context->route)) {
-            $context->route = 'participant';
-            $context->params = array();
-            $context->options = array();
+        $forrest = new Container('forrest');
+        if(!isset($forrest->trace->participant)) {
+            $breadcrumb = ArrayObject();
+            $breadcrumb->route = 'participant';
+            $breadcrumb->params = new \ArrayObject();
+            $breadcrumb->options = new \ArrayObject();
+            $forrest->trace->participant = $breadcrumb;
         }
         return [
             'id' => $id,
             'form' => $form,
-            'context' => $context,
+            'forrest' => $forrest,
         ];
     }
     
@@ -150,11 +165,13 @@ class ParticipantController extends AbstractActionController {
             return $this->redirect()->toRoute('participant');
         }
         
-        $context = new Container('context');
-        if(empty($context->route)) {
-            $context->route = 'participant';
-            $context->params = array();
-            $context->options = array();
+        $forrest = new Container('forrest');
+        if(!isset($forrest->trace->participant)) {
+            $breadcrumb = new \ArrayObject();
+            $breadcrumb->route = 'participant';
+            $breadcrumb->params = new \ArrayObject();
+            $breadcrumb->options = new \ArrayObject();
+            $forrest->trace->participant = $breadcrumb;
         }
         
         $session_cart = new Container('cart');
@@ -167,11 +184,16 @@ class ParticipantController extends AbstractActionController {
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $participant = $session_cart->order->removeParticipantBySessionId($id);
+                $session_cart->order->removeParticipantBySessionId($id);
             }
 
-            #return $this->redirect()->toRoute('participant');
-            return $this->redirect()->toRoute($context->route, $context->params, $context->options);
+            $forrest = new Container('forrest');
+            $breadcrumb = $forrest->trace->participant;
+            return $this->redirect()->toRoute(
+                    $breadcrumb->route, 
+                    $breadcrumb->params->getArrayCopy(), 
+                    $breadcrumb->options->getArrayCopy()
+                );
         }
 
         $package = $session_cart->order->getPackageByParticipantSessionId($id);
@@ -181,7 +203,7 @@ class ParticipantController extends AbstractActionController {
             'id'    => $id,
             'participant' => $participant,
             'package' => $package,
-            'context' => $context,
+            'forrest' => $forrest,
         );
     }
 }

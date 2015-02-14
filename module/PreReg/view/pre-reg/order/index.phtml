@@ -22,7 +22,7 @@ $this->headTitle($title);
     <a href="<?php echo $this->url('cart', array('action' => 'reset')) ?>">Reset shopping cart</a>
 </div>
 
-    <?php if(!isset($packages) || (count($packages) === 1 && count($packages[0]->getItems()) === 0)): ?>
+    <?php if(count($packages) === 1 && count($packages[0]->getItems()) === 0): ?>
         <h2>Your Shopping Cart is empty</h2>
     <?php else: ?>
     <div>
@@ -65,8 +65,27 @@ $this->headTitle($title);
                             <td><?php echo $item->getAmount(); ?></td>
                             <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
                             <td>
-                                <a href="#">edit</a>
-                                <a href="#">delete</a>
+                                <?php 
+                                if($user->getSessionId() === null) {
+                                    $user_id = 0;
+                                } else {
+                                    $user_id = $user->getSessionId();
+                                }
+                                ?>
+                                <a href="<?php echo $this->url('product', 
+                                        array(
+                                            'action' => 'view', 
+                                            'product_id' => $item->getProductId(), 
+                                            'participant_id' => $user_id,
+                                            'item_id' => $item->getSessionId()
+                                        )) ?>">edit</a>
+                                <a href="<?php echo $this->url('product', 
+                                        array(
+                                            'action' => 'delete', 
+                                            'product_id' => $item->getProductId(), 
+                                            'participant_id' => $user_id,
+                                            'item_id' => $item->getSessionId()
+                                        )) ?>">delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

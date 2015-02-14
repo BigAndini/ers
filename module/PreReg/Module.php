@@ -41,7 +41,6 @@ class Module
             \Zend\View\Helper\Navigation::setDefaultAcl($acl);
             \Zend\View\Helper\Navigation::setDefaultRole($role);
         }
-        
     }
 
     public function bootstrapSession($e)

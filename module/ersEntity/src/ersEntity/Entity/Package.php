@@ -311,6 +311,16 @@ class Package implements InputFilterAwareInterface
 
         return $this;
     }
+    
+    /**
+     * Remove Item entity by session id
+     * 
+     * @param type $id
+     */
+    public function removeItemBySessionId($id) {
+        $item = $this->getItemBySessionId($id);
+        return $this->removeItem($item);
+    }
 
     /**
      * Get Item entity collection (one to many).
@@ -333,7 +343,22 @@ class Package implements InputFilterAwareInterface
         }
         return false;
     }
-
+    
+    /**
+     * Get Item entity by session id
+     * 
+     * @return \Entity\Item
+     * @return false
+     */
+    public function getItemBySessionId($id) {
+        foreach($this->getItems() as $item) {
+            if($item->getSessionId() == $id) {
+                return $item;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Set Order entity (many to one).
      *
