@@ -35,8 +35,8 @@ class OrderController extends AbstractActionController {
         
         $breadcrumb = new \ArrayObject();
         $breadcrumb->route = 'order';
-        $breadcrumb->params = new \ArrayObject();
-        $breadcrumb->options = new \ArrayObject();
+        $breadcrumb->params = array();
+        $breadcrumb->options = array();
         $forrest->trace->product = $breadcrumb;
         $forrest->trace->participant = $breadcrumb;
         $forrest->trace->cart = $breadcrumb;

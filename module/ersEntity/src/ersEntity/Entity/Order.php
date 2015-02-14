@@ -407,18 +407,21 @@ class Order implements InputFilterAwareInterface
      * Add Item to the according package with the correct Purchaser_id
      * 
      * @param \Entity\Item $item
-     * @param integer $Purchaser_id
+     * @param integer $Participant_id
      * @return \Entity\Order
      */
-    public function addItem(Item $item, $Purchaser_id)
+    public function addItem(Item $item, $Participant_id)
     {
-        if(isset($this->packages[$Purchaser_id])) {
-            $this->packages[$Purchaser_id]->addItem($item);
+        
+        if($Participant_id != 0) {
+            $package = $this->getPackageByParticipantSessionId($Participant_id);
+            $package->addItem($item);
         } else {
-            $this->packages[$Purchaser_id] = new Package();
-            $this->packages[$Purchaser_id]->setParticipant(new User());
-            $this->packages[$Purchaser_id]->addItem($item);
-            #throw new \Exception("Unable to add item to your shopping cart.");
+            $package = new Package();
+            $package->setParticipant(new User());
+            
+            $package->addItem($item);
+            $this->addPackage($package);
         }
         
         return $this;
@@ -503,14 +506,6 @@ class Order implements InputFilterAwareInterface
             }
         }
         return false;
-        /*$packages = $this->getPackages();
-        for($i = 0; $i < count($packages); $i++) {
-            if($packages[$i]->getParticipant()->getSessionId() == $id) {
-                $packages[$i]->setParticipant($user);
-                return true;
-            }
-        }
-        return false;*/
     }
     
     /**

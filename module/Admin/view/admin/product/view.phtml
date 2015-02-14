@@ -54,8 +54,8 @@ $this->headTitle($title);
             
             <?php foreach($variant->getProductVariantValues() as $value): ?>
                 <tr>
-                    <td><?php echo $value->getValue(); ?></td>
                     <td><?php echo $value->getOrder(); ?></td>
+                    <td><?php echo $value->getValue(); ?></td>
                     <td>
                         <a href="<?php echo $this->url('admin/product-variant-value', array('action'=>'edit', 'id' => $value->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
                         <a href="<?php echo $this->url('admin/product-variant-value', array('action'=>'delete', 'id' => $value->getId()));?>"><?php echo $this->translate('Delete'); ?></a>

@@ -78,6 +78,7 @@ class CartController extends AbstractActionController {
             if($param_participant_id && $param_item_id) {
                 $session_cart->order->removeItem($param_participant_id, $param_item_id);
             }
+            error_log('adding item to participant: '.$participant_id);
             $session_cart->order->addItem($item, $participant_id);
         }
         

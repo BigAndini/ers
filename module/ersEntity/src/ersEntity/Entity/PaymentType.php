@@ -41,6 +41,11 @@ class PaymentType implements InputFilterAwareInterface
     protected $id;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $ordering;
+    
+    /**
      * @ORM\Column(name="`name`", type="string", length=100)
      */
     protected $name;
@@ -71,14 +76,14 @@ class PaymentType implements InputFilterAwareInterface
     protected $percentageFee = 0;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    protected $activeFrom;
+    protected $activeFrom_id;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    protected $activeUntil;
+    protected $activeUntil_id;
 
     /**
      * @ORM\Column(type="integer")
@@ -99,7 +104,19 @@ class PaymentType implements InputFilterAwareInterface
      * @ORM\Column(type="datetime")
      */
     protected $created;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Deadline")
+     * @ORM\JoinColumn(name="activeFrom_id", referencedColumnName="id", nullable=true)
+     */
+    protected $activeFrom;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Deadline")
+     * @ORM\JoinColumn(name="activeUntil_id", referencedColumnName="id", nullable=true)
+     */
+    protected $activeUntil;
+    
     /**
      * @ORM\OneToMany(targetEntity="Order", mappedBy="paymentType")
      * @ORM\JoinColumn(name="id", referencedColumnName="PaymentType_id")
@@ -150,6 +167,37 @@ class PaymentType implements InputFilterAwareInterface
     public function getId()
     {
         return $this->id;
+    }
+    
+    /**
+     * Set the value of order.
+     *
+     * @param integer $order
+     * @return \Entity\ProductVariant
+     */
+    public function setOrder($order)
+    {
+        $this->ordering = $order;
+
+        return $this;
+    }
+    public function setOrdering($order)
+    {
+        return $this->setOrder($order);
+    }
+
+    /**
+     * Get the value of order.
+     *
+     * @return integer
+     */
+    public function getOrder()
+    {
+        return $this->ordering;
+    }
+    public function getOrdering()
+    {
+        return $this->getOrder();
     }
 
     /**
@@ -291,18 +339,35 @@ class PaymentType implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of activeFrom.
+     * Set the value of activeFrom_id.
      *
-     * @param datetime $activeFrom
+     * @param integer $id
      * @return \Entity\PaymentType
      */
-    public function setActiveFrom($activeFrom)
+    public function setActiveFromId($id) {
+        $this->activeFrom_id = $id;
+        
+        return $this;
+    }
+    
+    /**
+     * Get the value of activeFrom_id.
+     *
+     * @return integer
+     */
+    public function getActiveFromId() {
+        return $this->activeFrom_id;
+    }
+    
+    /**
+     * Set the value of activeFrom.
+     *
+     * @param \Entity\Deadline $activeFrom
+     * @return \Entity\PaymentType
+     */
+    public function setActiveFrom(Deadline $activeFrom)
     {
-        if($activeFrom instanceof \DateTime) {
-            $this->activeFrom = $activeFrom;
-        } elseif(is_string($activeFrom)) {
-            $this->activeFrom = new \DateTime($activeFrom);
-        }
+        $this->activeFrom = $activeFrom;
 
         return $this;
     }
@@ -310,7 +375,7 @@ class PaymentType implements InputFilterAwareInterface
     /**
      * Get the value of activeFrom.
      *
-     * @return datetime
+     * @return \Entity\Deadline
      */
     public function getActiveFrom()
     {
@@ -318,28 +383,43 @@ class PaymentType implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of activeUntil.
+     * Set the value of activeFrom_id.
      *
-     * @param datetime $activeUntil
+     * @param integer $id
      * @return \Entity\PaymentType
      */
-    public function setActiveUntil($activeUntil)
-    {
-        if($activeUntil instanceof \DateTime) {
-            $this->activeUntil = $activeUntil;
-        } elseif(is_string($activeUntil)) {
-            $this->activeUntil = new \DateTime($activeUntil);
-        }
-
+    public function setActiveUntilId($id) {
+        $this->activeUntil_id = $id;
+        
         return $this;
-
+    }
+    
+    /**
+     * Get the value of activeUntil_id.
+     *
+     * @return integer
+     */
+    public function getActiveUntilId() {
+        return $this->activeUntil_id;
+    }
+    
+    /**
+     * Set the value of activeUntil.
+     *
+     * @param \Entity\Deadline $activeUntil
+     * @return \Entity\PaymentType
+     */
+    public function setActiveUntil(Deadline $activeUntil)
+    {
+        $this->activeUntil = $activeUntil;
+     
         return $this;
     }
 
     /**
      * Get the value of activeUntil.
      *
-     * @return datetime
+     * @return \Entity\Deadline
      */
     public function getActiveUntil()
     {
@@ -482,7 +562,8 @@ class PaymentType implements InputFilterAwareInterface
      */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
-        throw new \Exception("Not used.");
+        $this->inputFilter = $inputFilter;
+        #throw new \Exception("Not used.");
     }
 
     /**
@@ -607,7 +688,7 @@ class PaymentType implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'name', 'logo', 'shortDescription', 'longDescription', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'updated', 'created');
+        $dataFields = array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -640,6 +721,6 @@ class PaymentType implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'name', 'logo', 'shortDescription', 'longDescription', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'updated', 'created');
+        return array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'updated', 'created');
     }
 }

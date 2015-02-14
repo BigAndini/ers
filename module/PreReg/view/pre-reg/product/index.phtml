@@ -15,9 +15,7 @@ foreach ($products as $product) :
 <div class="product-container">
     <div class="add-to-cart">
         <p class="price">
-            <?php #foreach($product->getProductPrices() as $price): ?>
-                <?php echo $this->currencyFormat($product->getPrice()->getCharge(), 'EUR', null, 'de_DE'); ?><br />
-            <?php #endforeach; ?>
+            <?php echo $this->currencyFormat($product->getPrice()->getCharge(), 'EUR', null, 'de_DE'); ?><br />
         </p>
         <p class="product-detail">
             <a href="<?php echo $this->url('product', array('action' => 'view', 'product_id' => $product->getId()));?>"><?php echo $this->translate('product detail'); ?></a>

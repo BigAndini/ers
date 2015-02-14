@@ -724,10 +724,16 @@ class Product implements InputFilterAwareInterface
         $diff = null;
         $now = new \DateTime();
         $ret = new ProductPrice();
+        $null_ret = new ProductPrice();
         foreach($this->getProductPrices() as $price) {
             /*
              * continue when deadline is in future
              */
+            if($price->getDeadlineId() == null) {
+                if($null_ret->getCharge() < $price->getCharge()) {
+                    $null_ret = $price;
+                }
+            }
             if($price->getDeadlineId() == null || $now->getTimestamp() < $price->getDeadline()->getDeadline()->getTimestamp()) {
                 continue;
             }
@@ -743,6 +749,9 @@ class Product implements InputFilterAwareInterface
                 $diff = $newDiff;
                 $ret = $price;
             }
+        }
+        if($ret->getCharge() == null) {
+            $ret = $null_ret;
         }
         return $ret;
     }

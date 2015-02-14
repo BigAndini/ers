@@ -23,8 +23,8 @@ class ProductController extends AbstractActionController {
         
         $breadcrumb = new \ArrayObject();
         $breadcrumb->route = 'product';
-        $breadcrumb->params = new \ArrayObject();
-        $breadcrumb->options = new \ArrayObject();
+        $breadcrumb->params = array();
+        $breadcrumb->options = array();
         $forrest->trace->participant = $breadcrumb;
         
         $em = $this
@@ -63,21 +63,29 @@ class ProductController extends AbstractActionController {
         $breadcrumb = new \ArrayObject();
         $breadcrumb->route = 'product';
         if($participant_id) {
-            $breadcrumb->params = new \ArrayObject();
-            $breadcrumb->paramy->action = 'view';
-            $breadcrumb->paramy->product_id = $product_id;
-            $breadcrumb->paramy->participant_id = $participant_id;
+            $breadcrumb->params = array(
+                'action' => 'view',
+                'product_id' => $product_id,
+                'participant_id' => $participant_id
+            );
             if($item_id) {
-                $breadcrumb->paramy->item_id = $item_id;    
+                $breadcrumb->params['item_id'] = $item_id;    
             }
         } else {
-            $breadcrumb->params = new \ArrayObject();
-            $breadcrumb->params->action = 'view';
-            $breadcrumb->params->product_id = $product_id;
+            $breadcrumb->params = array(
+                'action' => 'view',
+                'product_id' => $product_id,
+            );
         }
-        $breadcrumb->options = new \ArrayObject();
+        $breadcrumb->options = array();
         $forrest = new Container('forrest');
         $forrest->trace->participant = $breadcrumb;
+        
+        $breadcrumb = new \ArrayObject();
+        $breadcrumb->route = 'product';
+        $breadcrumb->params = array();
+        $breadcrumb->options = array();
+        $forrest->trace->cart = $breadcrumb;
         
         $em = $this
             ->getServiceLocator()
@@ -167,8 +175,8 @@ class ProductController extends AbstractActionController {
         if($forrest->count() === 0) {
             $breadcrumb = new \ArrayObject();
             $breadcrumb->route = 'order';
-            $breadcrumb->params = new \ArrayObject();
-            $breadcrumb->options = new \ArrayObject();
+            $breadcrumb->params = array();
+            $breadcrumb->options = array();
             $forrest->trace->product = $breadcrumb;
         }
 
@@ -196,8 +204,8 @@ class ProductController extends AbstractActionController {
             $breadcrumb = $forrest->trace->product;
             return $this->redirect()->toRoute(
                     $breadcrumb->route, 
-                    $breadcrumb->params->getArrayCopy(), 
-                    $breadcrumb->options->getArrayCopy()
+                    $breadcrumb->params, 
+                    $breadcrumb->options
                 );
         }
         

@@ -21,8 +21,8 @@ echo $this->formSubmit($form->get('submit'));
 <?php $breadcrumb = $forrest->trace->participant; ?>
 <a href="<?php echo $this->url(
             $breadcrumb->route, 
-            $breadcrumb->params->getArrayCopy(), 
-            $breadcrumb->options->getArrayCopy()); 
+            $breadcrumb->params, 
+            $breadcrumb->options); 
     ?>">Cancel</a>
 <?php
 echo $this->form()->closeTag();

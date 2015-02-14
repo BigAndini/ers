@@ -26,8 +26,17 @@ class PaymentTypeBankTransferForm extends Form
             ),
         ));
         
+        $this->add(array( 
+            'name' => 'ordering', 
+            'type' => 'Zend\Form\Element\Text', 
+            'attributes' => array( 
+                'placeholder' => 'Order...',
+            ), 
+            'options' => array( 
+                'label' => 'Order', 
+            ), 
+        )); 
         
- 
         $this->add(array( 
             'name' => 'name', 
             'type' => 'Zend\Form\Element\Text', 
@@ -39,22 +48,7 @@ class PaymentTypeBankTransferForm extends Form
                 'label' => 'Name', 
             ), 
         )); 
- 
-        $this->add(array( 
-            'name' => 'logo-upload', 
-            'type' => 'file', 
-            'attributes' => array(
-            ), 
-            'options' => array( 
-                'label' => 'Logo', 
-            ), 
-        ));
         
-        /*$file = new Element\File('image-file');
-        $file->setLabel('Payment Type Logo')
-             ->setAttribute('id', 'image-file');
-        $this->add($file);*/
- 
         $this->add(array( 
             'name' => 'shortDescription', 
             'type' => 'Zend\Form\Element\Text', 
@@ -100,7 +94,27 @@ class PaymentTypeBankTransferForm extends Form
             ), 
         )); 
  
-        $this->add(array( 
+        $this->add(array(
+            'name' => 'activeFrom_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required', 
+            ),
+            'options' => array(
+                'label' => 'active from',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'activeUntil_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required', 
+            ),
+            'options' => array(
+                'label' => 'active until',
+            ),
+        ));
+        /*$this->add(array( 
             'name' => 'activeFrom', 
             'type' => 'Zend\Form\Element\DateTime', 
             'attributes' => array( 
@@ -126,7 +140,7 @@ class PaymentTypeBankTransferForm extends Form
                 'label' => 'Active Until', 
             ), 
         ));
-        $this->get('activeUntil')->setFormat('Y-m-d H:i:s');
+        $this->get('activeUntil')->setFormat('Y-m-d H:i:s');*/
  
         $this->add(array( 
             'name' => 'days2pay', 
