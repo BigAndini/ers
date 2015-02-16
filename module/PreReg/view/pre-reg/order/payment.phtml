@@ -13,14 +13,6 @@ echo $this->navigation()
 ?>
 <div class="clear-both"></div>
 
-<!--<div class="order-steps">
-    <div class="order-step"><span class="order-step-no">1</span> <a href="<?php echo $this->url('order'); ?>">My cart</a></div>
-    <div class="order-step"><span class="order-step-no">2</span> <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">Register</a></div>
-    <div class="order-step active"><span class="order-step-no">3</span> <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">Payment</a></div>
-    <div class="order-step"><span class="order-step-no">4</span> <a href="<?php echo $this->url('order', array('action' => 'checkout')); ?>">Checkout</a></div>
-</div>
-<div class="clear-both"></div>-->
-
 <?php
     $form = $this->form;
     $form->setAttribute('action', $this->url('order', array('action' => 'payment')));

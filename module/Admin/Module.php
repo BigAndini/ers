@@ -57,8 +57,8 @@ class Module
                 /* 
                  * Form Factories
                  */
-                'Admin\Form\ProductForm' => function($sm){
-                    $form   = new Form\ProductForm();
+                'Admin\Form\Product' => function($sm){
+                    $form   = new Form\Product();
                     
                     $em = $sm->get('doctrine.entitymanager');
                     $taxes = $em->getRepository("ersEntity\Entity\Tax")->findAll();
@@ -72,8 +72,8 @@ class Module
                     
                     return $form;
                 },
-                'Admin\Form\RoleForm' => function($sm){
-                    $form = new Form\RoleForm();
+                'Admin\Form\Role' => function($sm){
+                    $form = new Form\Role();
                     
                     $em = $sm->get('doctrine.entitymanager');
                     $roles = $em->getRepository("ersEntity\Entity\Role")->findAll();
@@ -88,8 +88,8 @@ class Module
                     
                     return $form;
                 },
-                'Admin\Form\ProductVariantForm' => function($sm){
-                    $form   = new Form\ProductVariantForm();
+                'Admin\Form\ProductVariant' => function($sm){
+                    $form   = new Form\ProductVariant();
                     
                     $options = array();
                     $options['text'] = 'Text';

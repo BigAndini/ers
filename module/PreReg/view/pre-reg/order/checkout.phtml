@@ -13,14 +13,6 @@ echo $this->navigation()
 ?>
 <div class="clear-both"></div>
 
-<!--<div class="order-steps">
-    <div class="order-step"><span class="order-step-no">1</span> <a href="<?php echo $this->url('order'); ?>">My cart</a></div>
-    <div class="order-step"><span class="order-step-no">2</span> <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">Register</a></div>
-    <div class="order-step"><span class="order-step-no">3</span> <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">Payment</a></div>
-    <div class="order-step active"><span class="order-step-no">4</span> <a href="<?php echo $this->url('order', array('action' => 'checkout')); ?>">Checkout</a></div>
-</div>
-<div class="clear-both"></div>-->
-
 <?php
     $form = $this->form;
     $form->setAttribute('action', $this->url('order', array('action' => 'checkout')));
@@ -30,7 +22,6 @@ echo $this->navigation()
     <h1>Purchaser</h1>
     <?php $purchaser = $order->getPurchaser(); ?>
     <?php if($purchaser) : ?>
-        <h3>Payment type: <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a></h3>
         <h2><?php echo $purchaser->getPrename().' '.$purchaser->getSurname(); ?></h2>
         <p>The purchaser will receive all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is payed and will be able to download the eTicket on his own aswell.</p>
         <h3>We will send all information to: <?php echo $purchaser->getEmail(); ?></h3>
