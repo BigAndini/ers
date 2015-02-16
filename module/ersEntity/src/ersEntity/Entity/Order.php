@@ -109,6 +109,13 @@ class Order implements InputFilterAwareInterface
     {
         $this->matches = new ArrayCollection();
         $this->packages = new ArrayCollection();
+        
+        $package = new Package();
+        $unassigned = new User();
+        $unassigned->setSessionId(0);
+        $package->setParticipant($unassigned);
+
+        $this->addPackage($package);
     }
     
     /**
@@ -412,17 +419,19 @@ class Order implements InputFilterAwareInterface
      */
     public function addItem(Item $item, $Participant_id)
     {
+        $package = $this->getPackageByParticipantSessionId($Participant_id);
+        $package->addItem($item);
         
-        if($Participant_id != 0) {
-            $package = $this->getPackageByParticipantSessionId($Participant_id);
-            $package->addItem($item);
+        /*if($Participant_id != 0) {
+            
+            
         } else {
             $package = new Package();
             $package->setParticipant(new User());
             
             $package->addItem($item);
             $this->addPackage($package);
-        }
+        }*/
         
         return $this;
     }
@@ -575,6 +584,9 @@ class Order implements InputFilterAwareInterface
     public function setPaymentType(PaymentType $paymentType = null)
     {
         $this->paymentType = $paymentType;
+        if($paymentType) {
+            $this->setPaymentTypeId($paymentType->getId());
+        }
 
         return $this;
     }
@@ -722,7 +734,7 @@ class Order implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Purchaser_id', 'PaymentType_id', 'matchKey', 'invoiceDetail', 'updated', 'created', 'Barcode_id');
+        $dataFields = array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'invoiceDetail', 'updated', 'created', 'Barcode_id');
         $relationFields = array('user', 'paymentType', 'barcode');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -755,6 +767,6 @@ class Order implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Purchaser_id', 'PaymentType_id', 'matchKey', 'invoiceDetail', 'packages', 'updated', 'created', 'Barcode_id');
+        return array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'invoiceDetail', 'packages', 'updated', 'created', 'Barcode_id');
     }
 }

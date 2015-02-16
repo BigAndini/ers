@@ -11,8 +11,7 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
-use Admin\Form;
-use Zend\Form\Element;
+#use Admin\Form;
 
 class RoleController extends AbstractActionController {
     
@@ -29,8 +28,8 @@ class RoleController extends AbstractActionController {
 
     public function addAction()
     {
-        #$form = new Form\RoleForm();
-        $form = $this->getServiceLocator()->get('Admin\Form\RoleForm');
+        #$form = new Form\Role();
+        $form = $this->getServiceLocator()->get('Admin\Form\Role');
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -83,8 +82,8 @@ class RoleController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $role = $em->getRepository("ersEntity\Entity\Role")->findOneBy(array('id' => $id));
 
-        #$form = new Form\RoleForm();
-        $form = $this->getServiceLocator()->get('Admin\Form\RoleForm');
+        #$form = new Form\Role();
+        $form = $this->getServiceLocator()->get('Admin\Form\Role');
         $form->bind($role);
         $form->get('submit')->setAttribute('value', 'Edit');
         

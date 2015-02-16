@@ -11,7 +11,7 @@ namespace Admin\Form;
 use Zend\Form\Form;
 
 
-class PaymentTypePayPalForm extends Form
+class PaymentTypePayPal extends Form
 {
     public function __construct($name = null)
     {

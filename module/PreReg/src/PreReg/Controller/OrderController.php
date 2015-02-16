@@ -11,7 +11,9 @@ namespace PreReg\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use PreReg\Form;
+use PreReg\InputFilter;
 use Zend\Session\Container;
+use ersEntity\Entity;
 
 # for pdf generation
 use DOMPDFModule\View\Model\PdfModel;
@@ -48,39 +50,77 @@ class OrderController extends AbstractActionController {
             'forrest' => $forrest,
         ));
     }
+    public function overviewAction() {
+        $view = $this->indexAction();
+        $view->setTemplate('pre-reg/order/index.phtml');
+        return $view;
+    }
     
     /*
      * collect data for the purchaser
      */
     public function registerAction() {
-        $form = new Form\PurchaserForm();
+        $form = new Form\Purchaser();
         
         $session_cart = new Container('cart');
         
+        # even if it's not displayed, this is needed to recognize the possible 
+        # values.
         if(count($session_cart->order->getPackages()) > 1) {
-            $participants = $session_cart->order->getParticipants();
+            $users = $session_cart->order->getParticipants();
             $purchaser = array();
-            foreach($participants as $participant) {
+            foreach($users as $participant) {
                 $purchaser[] = array(
                     'value' => $participant->getSessionId(),
-                    'label' => $participant->getPrename().' '.$participant->getSurname(),
-                    #'selected' => is_numeric($userRoles->indexOf($role)) ? true : false,
-                    /*
-                     * Participant who buys the tickets needs to be over 18, or not?
-                     */
-                    #'disabled' => $role->getActive() ? true : false,
+                    'label' => $participant->getPrename().' '.$participant->getSurname().' ('.$participant->getEmail().')',
                 );
             }
             $purchaser[] = array(
                 'value' => 0,
                 'label' => 'Add purchaser',
             );
-            $form->get('purchaser')->setValueOptions($purchaser);
+            $form->get('purchaser_id')->setValueOptions($purchaser);
         }
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $inputFilter = new InputFilter\Purchaser();
+            $form->setInputFilter($inputFilter->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                if($data['purchaser_id'] == 0) {
+                    $purchaser = new Entity\User();
+                    $purchaser->populate($data);
+                } else {
+                    $purchaser = $session_cart->order->getParticipantBySessionId($data['purchaser_id']);
+                }
+                        
+                # add purchser to order
+                $session_cart->order->setPurchaser($purchaser);
+                
+                return $this->redirect()->toRoute('order', array('action' => 'payment'));
+            } else {
+                error_log(var_export($form->getMessages(), true));
+            }
+        }
+        
+        $forrest = new Container('forrest');
+        $breadcrumb = new \ArrayObject();
+        $breadcrumb->route = 'order';
+        $breadcrumb->params = array(
+            'action' => 'register'
+        );
+        $breadcrumb->options = array();
+        $forrest->trace->participant = $breadcrumb;
+        
+        $participants = $session_cart->order->getParticipants();
         
         return new ViewModel(array(
             'form' => $form,
             'order' => $session_cart->order,
+            'participants' => $participants,
         ));
     }
     
@@ -88,13 +128,161 @@ class OrderController extends AbstractActionController {
      * collect payment data and complete purchase
      */
     public function paymentAction() {
-        return new ViewModel();
+        $forrest = new Container('forrest');
+        $breadcrumb = new \ArrayObject();
+        $breadcrumb->route = 'order';
+        $breadcrumb->params = array(
+            'action' => 'payment'
+        );
+        $breadcrumb->options = array();
+        $forrest->trace->paymenttype = $breadcrumb;
+        
+        $form = new Form\PaymentType();
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        # even if it's not displayed, this is needed to recognize the possible 
+        # values.
+        $paymenttypes = $em->getRepository("ersEntity\Entity\PaymentType")->findBy(array(), array('ordering' => 'ASC'));
+        $types = array();
+        foreach($paymenttypes as $paymenttype) {
+            $types[] = array(
+                'value' => $paymenttype->getId(),
+                'label' => $paymenttype->getName(),
+            );
+        }
+        $form->get('paymenttype_id')->setValueOptions($types);
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $inputFilter = new InputFilter\PaymentType();
+            $form->setInputFilter($inputFilter->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
+                        ->findOneBy(array('id' => $data['paymenttype_id']));
+                
+                $session_cart = new Container('cart');
+                $session_cart->order->setPaymentType($paymenttype);
+                
+                return $this->redirect()->toRoute('order', array('action' => 'checkout'));
+            } else {
+                error_log(var_export($form->getMessages(), true));
+            }
+        }
+        
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'paymenttypes' => $paymenttypes,
+        ));
+        #return new ViewModel();
     }
     
     /*
      * last check and checkout
      */
     public function checkoutAction() {
+        $session_cart = new Container('cart');
+        
+        $form = new Form\Checkout();
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            #$inputFilter = new InputFilter\PaymentType();
+            #$form->setInputFilter($inputFilter->getInputFilter());
+            $form->setData($request->getPost());
+
+            # check if the session cart container has all data to finish this order
+            $em = $this
+                ->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+            
+            $purchaser = $session_cart->order->getPurchaser();
+            $user = $em->getRepository("ersEntity\Entity\User")
+                    ->findOneBy(array('email' => $purchaser->getEmail()));
+            if($user instanceof Entity\User) {
+                $session_cart->order->setPurchaser($user);
+                $session_cart->order->setPurchaserId($user->getId());
+            } else {
+                $em->persist($purchaser);
+                $session_cart->order->setPurchaser($purchaser);
+                $session_cart->order->setPurchaserId($purchaser->getId());
+            }
+            
+            $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
+                    ->findOneBy(array('id' => $session_cart->order->getPaymentTypeId()));
+            $session_cart->order->setPaymentType($paymenttype);
+            $session_cart->order->setPaymentTypeId($paymenttype->getId());
+            
+            # get the order_id
+            $barcode = new Entity\Barcode();
+            $em->persist($barcode);
+            $session_cart->order->setBarcode($barcode);
+            $session_cart->order->setBarcodeId($barcode->getId());
+            
+            $packages = $session_cart->order->getPackages();
+            foreach($packages as $package) {
+                if(count($package->getItems()) <= 0) {
+                    $session_cart->order->removePackage($package);
+                    continue;
+                }
+                $package->setOrder($session_cart->order);
+                $package->setOrderId($session_cart->order->getId());
+                
+                $participant = $package->getParticipant();
+                
+                if($participant->getPrename() == '' || $participant->getSurname() == '') {
+                    $participant = $purchaser;
+                }
+                
+                $user = $em->getRepository("ersEntity\Entity\User")
+                        ->findOneBy(array('email' => $participant->getEmail()));
+                if($user instanceof Entity\User) {
+                    $package->setParticipant($user);
+                    $package->setParticipantId($user->getId());
+                } else {
+                    $em->persist($participant);
+                    $package->setParticipant($participant);
+                    $package->setParticipantId($participant->getId());
+                }
+                $barcode = new Entity\Barcode();
+                $em->persist($barcode);
+                $package->setBarcode($barcode);
+                $package->setBarcodeId($barcode->getId());
+                
+                foreach($package->getItems() as $item) {
+                    $product = $em->getRepository("ersEntity\Entity\Product")
+                        ->findOneBy(array('id' => $item->getProductId()));
+                    $item->setProduct($product);
+                    $item->setPackage($package);
+                    $barcode = new Entity\Barcode();
+                    $item->setBarcode($barcode);
+                }
+                
+                $em->persist($package);
+            }
+            
+            $em->persist($session_cart->order);
+            $em->flush();
+            
+            $session_cart->init = 0;
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'order' => $session_cart->order,
+        ));
+    }
+    /*
+     * say thank you after purchaser
+     */
+    public function thankyouAction() {
         return new ViewModel();
     }
     

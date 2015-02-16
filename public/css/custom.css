@@ -305,3 +305,34 @@ body {
 .green-bg {
     background: #85b32a;
 }
+
+.purchaser {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+}
+.purchaser input[type=radio] {
+    display: inline;
+}
+
+.navbar-checkout {
+    margin-bottom: 1em;
+}
+.navbar-checkout li {
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    float: left;
+    font-size: 25px;
+    /*line-height: 30px;*/
+    margin-right: 20px;
+    /*padding: 10px 15px;*/
+    width: 265px;
+}
+.navbar-checkout > li > a {
+    font-size: 25px;
+    line-height: 20px;
+}
+.navbar-checkout > li.active > a {
+    font-weight: bold;
+}

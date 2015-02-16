@@ -75,6 +75,26 @@ class Module
             $session_cart->order = new Entity\Order();
             $session_cart->init = 1;
         }
+        /*
+         * shopping cart debugging
+         */
+        error_log('=== Order Info ===');
+        error_log('paymenttype_id: '.$session_cart->order->getPaymentTypeId());
+        error_log('purchaser_id: '.$session_cart->order->getPurchaserId());
+        $purchaser = $session_cart->order->getPurchaser();
+        if($purchaser) {
+            error_log('purchaser email: '.$session_cart->order->getPurchaser()->getEmail());
+        }
+        foreach($session_cart->order->getPackages() as $package) {
+            error_log('  --- Package Info ---');
+            error_log('  participant_id: '.$package->getParticipantId());
+            $items = $package->getItems();
+            foreach($items as $item) {
+                error_log(' - '.$item->getName().' (Product_id: '.$item->getProductId().')');
+            }
+            error_log('  --------------------');
+        }
+        error_log('==================');
     }
     
     public function getAutoloaderConfig()
@@ -98,25 +118,7 @@ class Module
     
     public function getServiceConfig() {
         return array(
-            'factories' => array(
-                /* 
-                 * Form Factories
-                 */
-                'PreReg\Form\ProductViewForm' => function($sm){
-                    $form   = new Form\ProductViewForm();
-                    
-                    /*$TaxTable = $sm->get('Admin\Model\TaxTable');
-                    $taxes = $TaxTable->fetchAll();
-                    $options = array();
-                    foreach($taxes as $tax) {
-                        $options[$tax->id] = $tax->name.' - '.$tax->percentage.'%';
-                    }
-
-                    $form->get('taxId')->setValueOptions($options);*/
-                    
-                    return $form;
-                },
-                        
+            'factories' => array(        
                 'Zend\Session\SessionManager' => function ($sm) {
                     $config = $sm->get('config');
                     if (isset($config['session'])) {

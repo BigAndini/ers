@@ -12,8 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Zend\Session\Container;
-use Admin\Form;
-use Zend\Form\Element;
+#use Admin\Form;
 
 class ProductController extends AbstractActionController {
     public function indexAction()
@@ -35,12 +34,11 @@ class ProductController extends AbstractActionController {
 
     public function addAction()
     {
-        $form = $this->getServiceLocator()->get('Admin\Form\ProductForm');
-        #$form = new Form\ProductForm();
+        $form = $this->getServiceLocator()->get('Admin\Form\Product');
+        #$form = new Form\Product();
         $form->get('submit')->setValue('Add');
         
         $product = new Entity\Product();
-        #$form->bind($product);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -62,7 +60,7 @@ class ProductController extends AbstractActionController {
 
                 return $this->redirect()->toRoute('admin/product');
             } else {
-                error_log(var_export($form->getMessages()));
+                error_log(var_export($form->getMessages(), true));
             }
         }
         
@@ -84,7 +82,7 @@ class ProductController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
 
-        $form = $this->getServiceLocator()->get('Admin\Form\ProductForm');
+        $form = $this->getServiceLocator()->get('Admin\Form\Product');
         $form->bind($product);
         $form->get('submit')->setAttribute('value', 'Edit');
 
@@ -151,7 +149,7 @@ class ProductController extends AbstractActionController {
         
         $product = clone $old_product;
 
-        $form = $this->getServiceLocator()->get('Admin\Form\ProductForm');
+        $form = $this->getServiceLocator()->get('Admin\Form\Product');
         $form->bind($product);
         $form->get('submit')->setAttribute('value', 'Copy');
 
@@ -175,7 +173,7 @@ class ProductController extends AbstractActionController {
                     return $this->redirect()->toRoute('admin/product');
                 }
             } else {
-                error_log(var_export($form->getMessages()));
+                error_log(var_export($form->getMessages(), true));
             }
         }
 

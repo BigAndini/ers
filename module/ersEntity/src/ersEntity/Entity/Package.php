@@ -21,7 +21,11 @@ use Zend\InputFilter\InputFilterInterface;
  * Entity\Package
  *
  * @ORM\Entity()
- * @ORM\Table(name="Package", indexes={@ORM\Index(name="fk_Package_Order1_idx", columns={"Order_id"}), @ORM\Index(name="fk_Package_User1_idx", columns={"Participant_id"}), @ORM\Index(name="fk_Package_Barcode1_idx", columns={"Barcode_id"})})
+ * @ORM\Table(name="Package", indexes={
+ *   @ORM\Index(name="fk_Package_Order1_idx", columns={"Order_id"}), 
+ *   @ORM\Index(name="fk_Package_User1_idx", columns={"Participant_id"}), 
+ *   @ORM\Index(name="fk_Package_Barcode1_idx", columns={"Barcode_id"})
+ * })
  * @ORM\HasLifecycleCallbacks()
  */
 class Package implements InputFilterAwareInterface
@@ -74,10 +78,8 @@ class Package implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="Item", mappedBy="package")
-     * @ORM\JoinColumns({@ORM\JoinColumn(name="id", referencedColumnName="Package_id"),
-     *     @ORM\JoinColumn(name="Order_id", referencedColumnName="Package_Order_id")
-     * })
+     * @ORM\OneToMany(targetEntity="Item", mappedBy="package",cascade={"persist"})
+     * @ORM\JoinColumn(name="id", referencedColumnName="Package_id")
      */
     protected $items;
 
@@ -94,7 +96,7 @@ class Package implements InputFilterAwareInterface
     protected $participant;
 
     /**
-     * @ORM\OneToOne(targetEntity="Barcode", inversedBy="package")
+     * @ORM\OneToOne(targetEntity="Barcode", inversedBy="package",cascade={"persist"})
      * @ORM\JoinColumn(name="Barcode_id", referencedColumnName="id")
      */
     protected $barcode;
@@ -121,6 +123,13 @@ class Package implements InputFilterAwareInterface
      */
     public function __clone() {
         $this->id = null;
+    }
+    
+    /**
+     * implement __toString for debuggin
+     */
+    public function __toString() {
+        return $this->getParticipant()->__toString();
     }
 
     /**

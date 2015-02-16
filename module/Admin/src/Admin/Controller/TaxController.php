@@ -26,7 +26,7 @@ class TaxController extends AbstractActionController {
 
     public function addAction()
     {
-        $form = new Form\TaxForm();
+        $form = new Form\Tax();
         $form->get('submit')->setValue('Add');
 
         $request = $this->getRequest();
@@ -63,7 +63,7 @@ class TaxController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $tax = $em->getRepository("ersEntity\Entity\Tax")->findOneBy(array('id' => $id));
 
-        $form  = new Form\TaxForm();
+        $form  = new Form\Tax();
         $form->bind($tax);
         $form->get('submit')->setAttribute('value', 'Edit');
 

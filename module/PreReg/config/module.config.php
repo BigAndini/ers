@@ -17,6 +17,7 @@ return array(
             'PreReg\Controller\Product'     => 'PreReg\Controller\ProductController',
             'PreReg\Controller\Profile'     => 'PreReg\Controller\ProfileController',
             'PreReg\Controller\Home'     => 'PreReg\Controller\HomeController',
+            'PreReg\Controller\PaymentType'     => 'PreReg\Controller\PaymentTypeController',
         ),
     ),
     'navigation' => array(
@@ -35,6 +36,11 @@ return array(
                 'label' => 'My Participants',
                 'route' => 'participant',
                 'resource'  => 'controller/PreReg\Controller\Participant',
+            ),
+            'order' => array(
+                'label' => 'My Shopping Cart',
+                'route' => 'order',
+                'resource'  => 'controller/PreReg\Controller\Order',
             ),
             /*'cart-reset' => array(
                 'label' => 'Reset Shopping Cart',
@@ -79,6 +85,32 @@ return array(
                 'resource'  => 'controller/zfcuser:logout',
             ),
         ),
+        'checkout_nav' => array(
+            'mycart' => array(
+                'label' => 'My Cart',
+                'route' => 'order',
+                'action' => 'overview',
+                'resource' => 'controller/PreReg\Controller\Order',
+            ),
+            'register' => array(
+                'label' => 'Register',
+                'route' => 'order',
+                'action' => 'register',
+                'resource' => 'controller/PreReg\Controller\Order',
+            ),
+            'payment' => array(
+                'label' => 'Payment',
+                'route' => 'order',
+                'action' => 'payment',
+                'resource' => 'controller/PreReg\Controller\Order',
+            ),
+            'checkout' => array(
+                'label' => 'Checkout',
+                'route' => 'order',
+                'action' => 'checkout',
+                'resource' => 'controller/PreReg\Controller\Order',
+            ),
+        ),
     ),
     'router' => array(
         'routes' => array(
@@ -103,6 +135,20 @@ return array(
                     'defaults' => array(
                         'controller' => 'PreReg\Controller\Order',
                         'action' => 'index',
+                    ),
+                ),
+            ),
+            'paymenttype' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/paymenttype[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'PreReg\Controller\Paymenttype',
+                        'action'     => 'index',
                     ),
                 ),
             ),
@@ -199,6 +245,7 @@ return array(
         'factories' => array(
             'main_nav' => 'PreReg\Service\MainNavigationFactory',
             'top_nav' => 'PreReg\Service\TopNavigationFactory',
+            'checkout_nav' => 'PreReg\Service\CheckoutNavigationFactory',
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',

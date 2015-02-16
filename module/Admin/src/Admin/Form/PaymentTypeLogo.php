@@ -11,7 +11,7 @@ namespace Admin\Form;
 use Zend\Form\Form;
 
 
-class PaymentTypeCreditCardForm extends Form
+class PaymentTypeCreditCard extends Form
 {
     public function __construct($name = null)
     {

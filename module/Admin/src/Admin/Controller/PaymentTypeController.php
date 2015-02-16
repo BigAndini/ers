@@ -12,7 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Admin\Form;
-use Admin\Validator;
+use Admin\InputFilter;
 
 # for file upload
 use Zend\InputFilter;
@@ -41,7 +41,7 @@ class PaymentTypeController extends AbstractActionController {
     }
     
     public function addBankTransferAction() {
-        $form = new Form\PaymentTypeBankTransferForm();
+        $form = new Form\PaymentTypeBankTransfer();
         $form->get('submit')->setValue('Add');
 
         $em = $this
@@ -70,10 +70,10 @@ class PaymentTypeController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $validator = new Validator\PaymentTypeBankTransferValidator();
-            $validator->setEntityManager($em);
+            $inputFilter = new InputFilter\PaymentTypeBankTransfer();
+            $inputFilter->setEntityManager($em);
             
-            $form->setInputFilter($validator->getInputFilter());
+            $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $paymenttype->populate($form->getData());
@@ -110,7 +110,7 @@ class PaymentTypeController extends AbstractActionController {
     
     public function addAction()
     {
-        $form = new Form\PaymentTypeForm();
+        $form = new Form\PaymentType();
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -198,27 +198,22 @@ class PaymentTypeController extends AbstractActionController {
             'selected' => $until_selected,
         );
         
-        $form = new Form\PaymentTypeBankTransferForm();
+        $form = new Form\PaymentTypeBankTransfer();
         
         $form->get('activeFrom_id')->setAttribute('options', $from_options);
         $form->get('activeUntil_id')->setAttribute('options', $until_options);
 
-        $validator = new Validator\PaymentTypeBankTransferValidator();
-        $validator->setEntityManager($em);
+        $inputFilter = new InputFilter\PaymentTypeBankTransfer();
+        $inputFilter->setEntityManager($em);
 
-        $paymenttype->setInputFilter($validator->getInputFilter());
+        $paymenttype->setInputFilter($inputFilter->getInputFilter());
         $form->bind($paymenttype);
         $form->get('submit')->setValue('Edit');
     
         $request = $this->getRequest();
         if ($request->isPost()) {
-            /*$validator = new Validator\PaymentTypeBankTransferValidator();
-            $validator->setEntityManager($em);
-
-            $form->setInputFilter($validator->getInputFilter());*/
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                error_log('payment type is valid!');
                 $paymenttype = $form->getData();
                 
                 if($paymenttype->getActiveFromId() == 0) {
@@ -262,7 +257,7 @@ class PaymentTypeController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id));
 
-        $form = new Form\PaymentTypeForm();
+        $form = new Form\PaymentType();
         $form->bind($paymenttype);
         $form->get('submit')->setAttribute('value', 'Edit');
 
@@ -272,10 +267,7 @@ class PaymentTypeController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                #$paymenttype->populate($form->getData());
-                
                 $em->persist($form->getData());
-                #$em->persist($paymenttype);
                 $em->flush();
 
                 return $this->redirect()->toRoute('admin/payment-type');

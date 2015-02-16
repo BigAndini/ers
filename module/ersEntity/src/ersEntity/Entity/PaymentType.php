@@ -688,7 +688,7 @@ class PaymentType implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'updated', 'created');
+        $dataFields = array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'type', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -721,6 +721,6 @@ class PaymentType implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'updated', 'created');
+        return array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'type', 'updated', 'created');
     }
 }

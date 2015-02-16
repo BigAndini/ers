@@ -11,7 +11,6 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
-#use RegistrationSystem\Form\UserForm;
 use Admin\Form;
 
 class CounterController extends AbstractActionController {
@@ -29,7 +28,7 @@ class CounterController extends AbstractActionController {
 
     public function addAction()
     {
-        $form = new Form\CounterForm();
+        $form = new Form\Counter();
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -73,7 +72,7 @@ class CounterController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $counter = $em->getRepository("ersEntity\Entity\Counter")->findOneBy(array('id' => $id));
 
-        $form = new Form\CounterForm();
+        $form = new Form\Counter();
         $form->bind($counter);
         $form->get('submit')->setAttribute('value', 'Edit');
 
@@ -83,8 +82,6 @@ class CounterController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                #$counter->populate($form->getData());
-                
                 $em->persist($form->getData());
                 #$em->persist($counter);
                 $em->flush();

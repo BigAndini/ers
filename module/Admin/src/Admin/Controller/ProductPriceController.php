@@ -12,9 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Zend\Session\Container;
-#use RegistrationSystem\Form\UserForm;
 use Admin\Form;
-use Zend\Form\Element;
 
 class ProductPriceController extends AbstractActionController {
     public function indexAction()
@@ -40,7 +38,7 @@ class ProductPriceController extends AbstractActionController {
         $productprice = new Entity\ProductPrice();
         $productprice->setProductId($id);
 
-        $form = new Form\ProductPriceForm();
+        $form = new Form\ProductPrice();
         
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
                 ->findBy(array(), array('deadline' => 'ASC'));
@@ -58,9 +56,7 @@ class ProductPriceController extends AbstractActionController {
             'selected' => false,
         );
         $form->get('Deadline_id')->setAttribute('options', $options);
-        
         $form->bind($productprice);
-        
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -96,7 +92,7 @@ class ProductPriceController extends AbstractActionController {
                     return $this->redirect()->toRoute('admin/product');
                 }
             } else {
-                error_log(var_export($form->getMessages()));
+                error_log(var_export($form->getMessages(), true));
             }
         }
         
@@ -124,7 +120,7 @@ class ProductPriceController extends AbstractActionController {
         $productprice = $em->getRepository("ersEntity\Entity\ProductPrice")
                 ->findOneBy(array('id' => $id));
 
-        $form = new Form\ProductPriceForm();
+        $form = new Form\ProductPrice();
         
         $form->bind($productprice);
         

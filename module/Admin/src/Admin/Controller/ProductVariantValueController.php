@@ -13,7 +13,6 @@ use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Zend\Session\Container;
 use Admin\Form;
-use Zend\Form\Element;
 
 class ProductVariantValueController extends AbstractActionController 
 {    
@@ -50,7 +49,7 @@ class ProductVariantValueController extends AbstractActionController
             return $this->redirect()->toRoute('admin/product-variant-value');
         }
         
-        $form = new Form\ProductVariantValueForm;
+        $form = new Form\ProductVariantValue();
         $form->get('submit')->setValue('Add');
         $form->get('ProductVariant_id')->setValue($id);
         
@@ -111,7 +110,7 @@ class ProductVariantValueController extends AbstractActionController
         
         $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")->findOneBy(array('id' => $id));
 
-        $form  = new Form\ProductVariantValueForm();
+        $form  = new Form\ProductVariantValue();
         $form->bind($value);
         $form->get('submit')->setAttribute('value', 'Edit');
 

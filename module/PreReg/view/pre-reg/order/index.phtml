@@ -6,14 +6,20 @@ $this->headTitle($title);
 
 <h1><?php echo $this->escapeHtml($title); ?></h1>
  
+<?php 
+echo $this->navigation()
+    ->menu('checkout_nav')
+    ->setUlClass('nav navbar-nav navbar-checkout');
+?>
+<div class="clear-both"></div>
 
-<div class="order-steps">
+<!--<div class="order-steps">
     <div class="order-step active"><span class="order-step-no">1</span> <a href="<?php echo $this->url('order'); ?>">My cart</a></div>
     <div class="order-step"><span class="order-step-no">2</span> <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">Register</a></div>
     <div class="order-step"><span class="order-step-no">3</span> <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">Payment</a></div>
     <div class="order-step"><span class="order-step-no">4</span> <a href="<?php echo $this->url('order', array('action' => 'checkout')); ?>">Checkout</a></div>
 </div>
-<div class="clear-both"></div>
+<div class="clear-both"></div>-->
 
 <div class="checkout">
     <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'register')) ?>">Checkout this Cart</a>
@@ -21,14 +27,13 @@ $this->headTitle($title);
 <div class="reset-cart">
     <a href="<?php echo $this->url('cart', array('action' => 'reset')) ?>">Reset shopping cart</a>
 </div>
-
-    <?php if(count($packages) === 1 && count($packages[0]->getItems()) === 0): ?>
-        <h2>Your Shopping Cart is empty</h2>
-    <?php else: ?>
     <div>
         <?php 
             $sum = 0;
-            foreach ($order->getPackages() as $package) :  
+            foreach ($order->getPackages() as $package) : 
+                if(count($package->getItems()) == 0) {
+                    continue;
+                }
                 $user = $package->getParticipant();
             
                 if($user->getPrename() == '' && $user->getSurname() == '') :
@@ -103,7 +108,6 @@ $this->headTitle($title);
             <h3>Total Amount: <?php echo $this->currencyFormat($sum, 'EUR', null, 'de_DE'); ?></h3>
         </div>
     </div>
-    <?php endif; ?>
  
  <div class="clear-both"></div>
  <div class="checkout">

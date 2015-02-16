@@ -13,7 +13,6 @@ use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Zend\Session\Container;
 use Admin\Form;
-use Zend\Form\Element;
 
 class ProductVariantController extends AbstractActionController 
 {    
@@ -34,7 +33,7 @@ class ProductVariantController extends AbstractActionController
             return $this->redirect()->toRoute('admin/product');
         }
         
-        $form = new Form\ProductVariantForm();
+        $form = new Form\ProductVariant();
         $form->get('submit')->setValue('Add');
         $form->get('Product_id')->setValue($product_id);
         $options['text'] = 'Text';
@@ -68,7 +67,7 @@ class ProductVariantController extends AbstractActionController
                     return $this->redirect()->toRoute('admin/product');
                 }
             } else {
-                error_log(var_export($form->getMessages()));
+                error_log(var_export($form->getMessages(), true));
             }
         }
         
@@ -103,8 +102,8 @@ class ProductVariantController extends AbstractActionController
         
         $productvariant = $em->getRepository("ersEntity\Entity\ProductVariant")->findOneBy(array('id' => $id));
 
-        #$form  = new Form\ProductVariantForm();
-        $form = $this->getServiceLocator()->get('Admin\Form\ProductVariantForm');
+        #$form  = new Form\ProductVariant();
+        $form = $this->getServiceLocator()->get('Admin\Form\ProductVariant');
         $form->bind($productvariant);
         $form->get('submit')->setAttribute('value', 'Edit');
 

@@ -59,41 +59,39 @@ class ProductController extends AbstractActionController {
             ));
         }
         
-        error_log('adding breadcrumb: product/view/'.$product_id.'/'.$participant_id.'/'.$item_id);
-        $breadcrumb = new \ArrayObject();
-        $breadcrumb->route = 'product';
+        $bc_participant = new \ArrayObject();
+        $bc_participant->route = 'product';
         if($participant_id) {
-            $breadcrumb->params = array(
+            $bc_participant->params = array(
                 'action' => 'view',
                 'product_id' => $product_id,
                 'participant_id' => $participant_id
             );
             if($item_id) {
-                $breadcrumb->params['item_id'] = $item_id;    
+                $bc_participant->params['item_id'] = $item_id;    
             }
         } else {
-            $breadcrumb->params = array(
+            $bc_participant->params = array(
                 'action' => 'view',
                 'product_id' => $product_id,
             );
         }
-        $breadcrumb->options = array();
+        $bc_participant->options = array();
         $forrest = new Container('forrest');
-        $forrest->trace->participant = $breadcrumb;
+        $forrest->trace->participant = $bc_participant;
         
-        $breadcrumb = new \ArrayObject();
-        $breadcrumb->route = 'product';
-        $breadcrumb->params = array();
-        $breadcrumb->options = array();
-        $forrest->trace->cart = $breadcrumb;
+        $bc_cart = new \ArrayObject();
+        $bc_cart->route = 'product';
+        $bc_cart->params = array();
+        $bc_cart->options = array();
+        $forrest->trace->cart = $bc_cart;
         
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $product_id));
         
-        #$form = $this->getServiceLocator()->get('Form\ProductForm');
-        $form = new Form\ProductViewForm();
+        $form = new Form\ProductView();
 
         if($participant_id && $item_id) {
             $url = $this->url()->fromRoute('cart', 
@@ -173,16 +171,15 @@ class ProductController extends AbstractActionController {
         $forrest = new Container('forrest');
         
         if($forrest->count() === 0) {
-            $breadcrumb = new \ArrayObject();
-            $breadcrumb->route = 'order';
-            $breadcrumb->params = array();
-            $breadcrumb->options = array();
-            $forrest->trace->product = $breadcrumb;
+            $bc_product = new \ArrayObject();
+            $bc_product->route = 'order';
+            $bc_product->params = array();
+            $bc_product->options = array();
+            $forrest->trace->product = $bc_product;
         }
 
         $session_cart = new Container('cart');
         $participant = $session_cart->order->getParticipantBySessionId($participant_id);
-        error_log(var_export($participant, true));
         $item = $session_cart->order->getItem($participant_id, $item_id);
         
         $em = $this
@@ -202,11 +199,7 @@ class ProductController extends AbstractActionController {
             }
 
             $breadcrumb = $forrest->trace->product;
-            return $this->redirect()->toRoute(
-                    $breadcrumb->route, 
-                    $breadcrumb->params, 
-                    $breadcrumb->options
-                );
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
         return array(

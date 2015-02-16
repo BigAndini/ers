@@ -58,7 +58,7 @@ class User implements UserInterface, ProviderInterface
 
     /**
      * @var string
-     * @ORM\Column(type="string", unique=true,  length=255)
+     * @ORM\Column(type="string", unique=true,  length=255, nullable=true)
      */
     protected $email;
 
@@ -172,6 +172,13 @@ class User implements UserInterface, ProviderInterface
      */
     public function __clone() {
         $this->id = null;
+    }
+    
+    /**
+     * implement __toString for error reporting
+     */
+    public function __toString() {
+        return $this->getPrename().' '.$this->getSurname().' ('.$this->getEmail().')';
     }
 
     /**

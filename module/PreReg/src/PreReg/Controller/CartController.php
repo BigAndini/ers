@@ -12,7 +12,6 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use ersEntity\Entity;
-#use PreReg\Form;
 
 class CartController extends AbstractActionController {
     /*
@@ -69,7 +68,12 @@ class CartController extends AbstractActionController {
             $product = $em->getRepository("ersEntity\Entity\Product")
                     ->findOneBy(array('id' => $data['Product_id']));
             
-            $item->populate($product->getArrayCopy());
+            # prepare product data to populate item
+            $data = $product->getArrayCopy();
+            $data['Product_id'] = $data['id'];
+            unset($data['id']);
+            
+            $item->populate($data);
             $item->setPrice($product->getPrice()->getCharge());
             $item->setAmount(1);
             $item->populate((array) $data);
@@ -78,7 +82,6 @@ class CartController extends AbstractActionController {
             if($param_participant_id && $param_item_id) {
                 $session_cart->order->removeItem($param_participant_id, $param_item_id);
             }
-            error_log('adding item to participant: '.$participant_id);
             $session_cart->order->addItem($item, $participant_id);
         }
         

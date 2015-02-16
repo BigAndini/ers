@@ -5,35 +5,63 @@ $this->headTitle($title);
 ?>
 
 <h1><?php echo $this->escapeHtml($title); ?></h1>
- 
-<div class="order-steps">
+
+<?php 
+echo $this->navigation()
+    ->menu('checkout_nav')
+    ->setUlClass('nav navbar-nav navbar-checkout');
+?>
+<div class="clear-both"></div>
+
+<!--<div class="order-steps">
     <div class="order-step"><span class="order-step-no">1</span> <a href="<?php echo $this->url('order'); ?>">My cart</a></div>
     <div class="order-step"><span class="order-step-no">2</span> <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">Register</a></div>
     <div class="order-step active"><span class="order-step-no">3</span> <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">Payment</a></div>
     <div class="order-step"><span class="order-step-no">4</span> <a href="<?php echo $this->url('order', array('action' => 'checkout')); ?>">Checkout</a></div>
 </div>
-<div class="clear-both"></div>
+<div class="clear-both"></div>-->
+
+<?php
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('order', array('action' => 'payment')));
+    $form->prepare();
+
+    echo $this->form()->openTag($form);
+?>
 <div class="checkout">
-    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'checkout')) ?>">Save payment type</a>
+    <?php echo $this->formSubmit($form->get('submit')); ?>
 </div>
 <div>
     <h1>Choose Paymenttype</h1>
+    <?php foreach($paymenttypes as $paymenttype): ?>
     <p>
-        <h3><input style="display: inline;" type='radio' name='paymenttype' value='1' /> Bank Transfer</h3>
+        <h3>
+            <input style="display: inline;" type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
+            <?php echo $paymenttype->getName(); ?>
+        </h3>
+        <p class="payment-desc"><?php echo $paymenttype->getShortDescription(); ?> <a href="<?php echo $this->url('paymenttype', array('action' => 'info', 'id' => $paymenttype->getId()))?>">more info...</a></p>
+    </p>
+    <?php endforeach; ?>
+    <p>
+        <h3><input style="display: inline;" type='radio' name='paymenttype_id' value='42' /> Bank Transfer</h3>
         <p class="payment-desc">When your bank transfer has been arrived at our bank account you will be informed by E-Mail when your eTicket is ready for download. <a href="#">more info...</a></p>
         <!-- put some more information on the information page like the bank account -->
     </p>
     <p>
-        <h3><input style="display: inline;" type='radio' name='paymenttype' value='2' /> <img src="<?php echo $this->basePath('img/paymenttypes/paypal.jpg') ?>" alt="PayPal" /></h3>
+        <h3><input style="display: inline;" type='radio' name='paymenttype_id' value='43' /> <img src="<?php echo $this->basePath('img/paymenttypes/paypal.jpg') ?>" alt="PayPal" /></h3>
         <p class="payment-desc">Secure, easy and fast payment with credit card, direct debit or giropay. PayPal-Account needed. <a href="#">more info...</a></p>
     </p>
     <p>
-        <h3><input style="display: inline;" type='radio' name='paymenttype' value='3' /> <img src="<?php echo $this->basePath('img/paymenttypes/creditcard.jpg') ?>" alt="VISA" /></h3>
+        <h3><input style="display: inline;" type='radio' name='paymenttype_id' value='44' /> <img src="<?php echo $this->basePath('img/paymenttypes/creditcard.jpg') ?>" alt="VISA" /></h3>
         <p class="payment-desc">Pay with your credit card. <a href="#">more info...</a></p>
     </p>
 </div>
 
 <div class="clear-both"></div>
 <div class="checkout">
-    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'checkout')) ?>">Save payment type</a>
+    <?php 
+        echo $this->formSubmit($form->get('submit'));
+        echo $this->formHidden($form->get('csrf'));
+    ?>
 </div>
+<?php echo $this->form()->closeTag(); ?>

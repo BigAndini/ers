@@ -11,9 +11,7 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
-#use RegistrationSystem\Form\UserForm;
 use Admin\Form;
-use Zend\Form\Element;
 
 class DeadlineController extends AbstractActionController {
     
@@ -30,7 +28,7 @@ class DeadlineController extends AbstractActionController {
 
     public function addAction()
     {
-        $form = new Form\DeadlineForm();
+        $form = new Form\Deadline();
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -73,7 +71,7 @@ class DeadlineController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $deadline = $em->getRepository("ersEntity\Entity\Deadline")->findOneBy(array('id' => $id));
 
-        $form = new Form\DeadlineForm();
+        $form = new Form\Deadline();
         $form->bind($deadline);
         $form->get('submit')->setAttribute('value', 'Edit');
 
@@ -83,10 +81,7 @@ class DeadlineController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                #$deadline->populate($form->getData());
-                
                 $em->persist($form->getData());
-                #$em->persist($deadline);
                 $em->flush();
 
                 return $this->redirect()->toRoute('admin/deadline');

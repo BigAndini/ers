@@ -139,6 +139,7 @@ return [
                 ['controller' => 'PreReg\Controller\Cart', 'action' => 'add', 'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Cart', 'action' => 'reset', 'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Order', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Paymenttype', 'roles' => ['guest', 'user']],
                 #['controller' => 'PreReg\Controller\Order', 'action' => 'index', 'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Package', 'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Product', 'roles' => ['guest', 'user']],

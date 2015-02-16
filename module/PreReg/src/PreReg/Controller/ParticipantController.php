@@ -47,7 +47,7 @@ class ParticipantController extends AbstractActionController {
      */
     public function addAction() {
         
-        $form = new Form\ParticipantForm(); 
+        $form = new Form\Participant(); 
         $request = $this->getRequest(); 
 
         if($request->isPost()) 
@@ -66,28 +66,18 @@ class ParticipantController extends AbstractActionController {
                 
                 $forrest = new Container('forrest');
                 $breadcrumb = $forrest->trace->participant;
-                error_log('route: '.$breadcrumb->route);
-                error_log('action: '.$breadcrumb->params->action);
                 if($breadcrumb->route == 'product' && $breadcrumb->params['action'] == 'view') {
                     $breadcrumb->params['participant_id'] = $user->getSessionId();
                 }
-                error_log('route: '.$breadcrumb->route);
-                error_log('action: '.$breadcrumb->params->action);
-                error_log('participant_id: '.$breadcrumb->params->participant_id);
 
-                return $this->redirect()->toRoute(
-                    $breadcrumb->route, 
-                    $breadcrumb->params, 
-                    $breadcrumb->options
-                );
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                error_log(var_export($form->getMessages()));
+                error_log(var_export($form->getMessages(), true));
             } 
         }
         
         $forrest = new Container('forrest');
         if(!isset($forrest->trace->participant)) {
-            error_log('adding default trace');
             $breadcrumb = new \ArrayObject();
             $breadcrumb->route = 'participant';
             $breadcrumb->params = array();
@@ -118,7 +108,7 @@ class ParticipantController extends AbstractActionController {
         $session_cart = new Container('cart');
         $participant = $session_cart->order->getParticipantBySessionId($id);
         
-        $form = new Form\ParticipantForm(); 
+        $form = new Form\Participant(); 
         $request = $this->getRequest(); 
         
         $form->bind($participant);
@@ -142,7 +132,7 @@ class ParticipantController extends AbstractActionController {
                     $breadcrumb->options
                 );
             } else {
-                error_log(var_export($form->getMessages()));
+                error_log(var_export($form->getMessages(), true));
             } 
         }
         

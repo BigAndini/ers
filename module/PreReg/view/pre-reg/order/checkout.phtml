@@ -1,32 +1,58 @@
 <?php
-// module/RegistrationSystem/view/registration-system/admin/index.phtml:
 
 $title = 'My Shopping Cart';
 $this->headTitle($title);
 ?>
 
 <h1><?php echo $this->escapeHtml($title); ?></h1>
- 
-<div class="order-steps">
+
+<?php 
+echo $this->navigation()
+    ->menu('checkout_nav')
+    ->setUlClass('nav navbar-nav navbar-checkout');
+?>
+<div class="clear-both"></div>
+
+<!--<div class="order-steps">
     <div class="order-step"><span class="order-step-no">1</span> <a href="<?php echo $this->url('order'); ?>">My cart</a></div>
     <div class="order-step"><span class="order-step-no">2</span> <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">Register</a></div>
     <div class="order-step"><span class="order-step-no">3</span> <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">Payment</a></div>
     <div class="order-step active"><span class="order-step-no">4</span> <a href="<?php echo $this->url('order', array('action' => 'checkout')); ?>">Checkout</a></div>
 </div>
-<div class="clear-both"></div>
+<div class="clear-both"></div>-->
+
+<?php
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('order', array('action' => 'checkout')));
+    $form->prepare();
+?>
 <div class="order-info order-info-left">
     <h1>Purchaser</h1>
-    <h2>Prename Surname</h2>
-    <p>The purchaser will be able to download all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is payed and will be able to download the eTicket on his own aswell.</p>
-    <h3>We will send all information to: purchaser@email.com</h3>
+    <?php $purchaser = $order->getPurchaser(); ?>
+    <?php if($purchaser) : ?>
+        <h3>Payment type: <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a></h3>
+        <h2><?php echo $purchaser->getPrename().' '.$purchaser->getSurname(); ?></h2>
+        <p>The purchaser will receive all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is payed and will be able to download the eTicket on his own aswell.</p>
+        <h3>We will send all information to: <?php echo $purchaser->getEmail(); ?></h3>
+    <?php else: ?>
+        <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+        <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose Purchaser</a>
+    <?php endif; ?>
 </div>
 <div class="order-info order-info-right">
     <h1>Payment</h1>
-    <h3>You have chosen payment type: Bank Transfer</h3>
+    <?php $paymenttype = $order->getPaymentType(); ?>
+    <?php if($paymenttype) : ?>
+        <h3><?php echo $paymenttype->getName(); ?></h3>
+    <?php else: ?>
+        <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+        <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
+    <?php endif; ?>
+    <h3>Bank Transfer</h3>
     <p>After successfull purchase you will see the bank account data to transfer the money to. When we matched your payment to your order you will be informed and can download your eTickets.</p>
-    <h3>You have chosen payment type: Credit Card</h3>
+    <h3>Credit Card</h3>
     <p>After purchase you will see the credit card formular. After successful payment you will be able to download your eTickets.</p>
-    <h3>You have chosen payment type: PayPal</h3>
+    <h3>PayPal</h3>
     <p>After purchase you will be redirected to a PayPal page. After successful payment you will be able to download your eTickets.</p>
     
     
@@ -34,41 +60,107 @@ $this->headTitle($title);
 <div class="clear-both"></div>
 <div>
     <h1>Shopping cart</h1>
-    <table class="table table-bordered">
-        <tr>
-            <th class="col-description">Description</th>
-            <th class="col-belongsto">belongs to</th>
-            <!--<th>amount</th>-->
-            <th>price</th>
-            <th class="col-tools"></th>
-        </tr>
-        <tr>
-            <td>Week Ticket Adult</td>
-            <td>Andreas Nitsche (29.03.1985)</td>
-            <td class="col-price">120,00 €</td>
-            <td>
-            </td>
-        </tr>
-    </table>
+        <div>
+        <?php 
+            $sum = 0;
+            foreach ($order->getPackages() as $package) : 
+                if(count($package->getItems()) == 0) {
+                    continue;
+                }
+                $user = $package->getParticipant();
+            
+                if($user->getPrename() == '' && $user->getSurname() == '') :
+                    $participant = 'unassigned items';
+                else:
+                    $participant = $user->getPrename().' '.$user->getSurname();
+                endif;
+        ?>
+            <div class="package">
+                <h3>
+                    <?php echo $participant; ?>
+                    <span style="font-size: 14px;">
+                        <a href="<?php echo $this->url('participant', array('action'=>'edit', 'id' => $user->getSessionId()));?>"><?php echo $this->translate('Edit'); ?></a>
+                        <a href="<?php echo $this->url('participant', array('action'=>'delete', 'id' => $user->getSessionId()));?>"><?php echo $this->translate('Delete'); ?></a>
+                    </span>
+                </h3>
+                
+                <?php if(count($package->getItems()) != 0): ?>
+                <table class="table">
+                    <tr>
+                        <th>Product</th>
+                        <th>Amount</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                    <?php
+                    $subtotal = 0;
+                    foreach ($package->getItems() as $item) : 
+                        $subtotal += $item->getPrice();
+                        $sum += $item->getPrice();
+                        ?>
+                        <tr>
+                            <td><?php echo $item->getName(); ?></td>
+                            <td><?php echo $item->getAmount(); ?></td>
+                            <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+                            <td>
+                                <?php 
+                                if($user->getSessionId() === null) {
+                                    $user_id = 0;
+                                } else {
+                                    $user_id = $user->getSessionId();
+                                }
+                                ?>
+                                <a href="<?php echo $this->url('product', 
+                                        array(
+                                            'action' => 'view', 
+                                            'product_id' => $item->getProductId(), 
+                                            'participant_id' => $user_id,
+                                            'item_id' => $item->getSessionId()
+                                        )) ?>">edit</a>
+                                <a href="<?php echo $this->url('product', 
+                                        array(
+                                            'action' => 'delete', 
+                                            'product_id' => $item->getProductId(), 
+                                            'participant_id' => $user_id,
+                                            'item_id' => $item->getSessionId()
+                                        )) ?>">delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <tr>
+                        <td></td>
+                        <td>Subtotal:</td>
+                        <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+        <div>
+            <h3>Total Amount: <?php echo $this->currencyFormat($sum, 'EUR', null, 'de_DE'); ?></h3>
+        </div>
+    </div>
  </div>
- <div class="cart-sum">
-     <table class="table sum-table">
-         <tr>
-             <td class="col-sumdesc  total-sum">Sum</td>
-             <td class="col-sum total-sum">122,04 €</td>
-         </tr>
-         <tr>
-             <td>Payment cost included (PayPal)</td>
-             <td class="col-sum">2,04 €</td>
-         </tr>
-         <tr>
-             <td>VAT included (22%)</td>
-             <td class="col-sum">26,40 €</td>
-         </tr>
-     </table>
- </div>
+
 
 <div class="clear-both"></div>
 <div class="checkout">
-    <a class="btn btn-lg btn-primary" href="#">Buy now</a>
+    <?php
+        if($sum == 0) {
+            $form->get('submit')->setAttribute('disabled', 'disabled');
+        }
+        echo $this->form()->openTag($form);
+    
+        if($form->get('submit')->getAttribute('disabled') == 'disabled'):
+    ?>
+    <div>
+        <h4>Please add all needed information to checkout.</h4>
+    </div>
+    <?php
+        endif;
+        echo $this->formSubmit($form->get('submit'));
+        echo $this->formHidden($form->get('csrf'));
+        echo $this->form()->closeTag(); 
+    ?>
 </div>

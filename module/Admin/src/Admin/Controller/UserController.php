@@ -11,9 +11,7 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
-#use RegistrationSystem\Form\UserForm;
 use Admin\Form;
-use Zend\Form\Element;
 
 class UserController extends AbstractActionController {
     
@@ -30,7 +28,7 @@ class UserController extends AbstractActionController {
 
     public function addAction()
     {
-        $form = new Form\UserForm();
+        $form = new Form\User();
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -74,7 +72,7 @@ class UserController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $user = $em->getRepository("ersEntity\Entity\User")->findOneBy(array('id' => $id));
         
-        $form = new Form\UserForm();
+        $form = new Form\User();
         $form->bind($user);
         $form->get('submit')->setAttribute('value', 'Edit');
 

@@ -21,7 +21,11 @@ use Zend\InputFilter\InputFilterInterface;
  * Entity\Item
  *
  * @ORM\Entity()
- * @ORM\Table(name="Item", indexes={@ORM\Index(name="fk_Item_Product1_idx", columns={"Product_id"}), @ORM\Index(name="fk_Item_Package1_idx", columns={"Package_id", "Package_Order_id"}), @ORM\Index(name="fk_Item_Barcode1_idx", columns={"Barcode_id"})})
+ * @ORM\Table(name="Item", indexes={
+ *   @ORM\Index(name="fk_Item_Product1_idx", columns={"Product_id"}), 
+ *   @ORM\Index(name="fk_Item_Package1_idx", columns={"Package_id"}), 
+ *   @ORM\Index(name="fk_Item_Barcode1_idx", columns={"Barcode_id"})
+ * })
  * @ORM\HasLifecycleCallbacks()
  */
 class Item implements InputFilterAwareInterface
@@ -49,7 +53,7 @@ class Item implements InputFilterAwareInterface
     protected $session_id;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer")
      */
     protected $Product_id;
 
@@ -57,11 +61,6 @@ class Item implements InputFilterAwareInterface
      * @ORM\Column(type="integer")
      */
     protected $Package_id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    protected $Package_Order_id;
 
     /**
      * @ORM\Column(type="integer")
@@ -84,12 +83,12 @@ class Item implements InputFilterAwareInterface
     protected $longDescription;
 
     /**
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(type="string", length=45)
      */
     protected $price;
 
     /**
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(type="string", length=45)
      */
     protected $amount;
 
@@ -133,7 +132,7 @@ class Item implements InputFilterAwareInterface
     protected $package;
 
     /**
-     * @ORM\OneToOne(targetEntity="Barcode", inversedBy="item")
+     * @ORM\OneToOne(targetEntity="Barcode", inversedBy="item", cascade={"persist"})
      * @ORM\JoinColumn(name="Barcode_id", referencedColumnName="id")
      */
     protected $barcode;
@@ -250,29 +249,6 @@ class Item implements InputFilterAwareInterface
     public function getPackageId()
     {
         return $this->Package_id;
-    }
-
-    /**
-     * Set the value of Package_Order_id.
-     *
-     * @param integer $Package_Order_id
-     * @return \Entity\Item
-     */
-    public function setPackageOrderId($Package_Order_id)
-    {
-        $this->Package_Order_id = $Package_Order_id;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Package_Order_id.
-     *
-     * @return integer
-     */
-    public function getPackageOrderId()
-    {
-        return $this->Package_Order_id;
     }
 
     /**
@@ -652,12 +628,6 @@ class Item implements InputFilterAwareInterface
                 'validators' => array(),
             ),
             array(
-                'name' => 'Package_Order_id',
-                'required' => true,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
                 'name' => 'Barcode_id',
                 'required' => true,
                 'filters' => array(),
@@ -753,7 +723,7 @@ class Item implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 'Package_Order_id', 'Barcode_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'updated', 'created');
+        $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 'Barcode_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'updated', 'created');
         $relationFields = array('product', 'package', 'barcode');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -786,6 +756,6 @@ class Item implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'session_id', 'Product_id', 'Package_id', 'Package_Order_id', 'Barcode_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'updated', 'created');
+        return array('id', 'session_id', 'Product_id', 'Package_id', 'Barcode_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'updated', 'created');
     }
 }
