@@ -38,17 +38,21 @@ echo $this->navigation()
             
                 if($user->getPrename() == '' && $user->getSurname() == '') :
                     $participant = 'unassigned items';
+                    $edit_participant = false;
                 else:
                     $participant = $user->getPrename().' '.$user->getSurname();
+                    $edit_participant = true;
                 endif;
         ?>
             <div class="package">
                 <h3>
                     <?php echo $participant; ?>
+                    <?php if($edit_participant): ?>
                     <span style="font-size: 14px;">
                         <a href="<?php echo $this->url('participant', array('action'=>'edit', 'id' => $user->getSessionId()));?>"><?php echo $this->translate('Edit'); ?></a>
                         <a href="<?php echo $this->url('participant', array('action'=>'delete', 'id' => $user->getSessionId()));?>"><?php echo $this->translate('Delete'); ?></a>
                     </span>
+                    <?php endif; ?>
                 </h3>
                 
                 <?php if(count($package->getItems()) != 0): ?>

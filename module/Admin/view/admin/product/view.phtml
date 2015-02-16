@@ -33,7 +33,6 @@ $this->headTitle($title);
                 <?php echo $variant->getName(); ?>
                 <span style="font-size: 14px;">
                     <a href="<?php echo $this->url('admin/product-variant', array('action'=>'edit', 'id' => $variant->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-                    <a href="<?php echo $this->url('admin/product-variant', array('action'=>'copy', 'id' => $variant->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
                     <a href="<?php echo $this->url('admin/product-variant', array('action'=>'delete', 'id' => $variant->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
                 </span>
             </h3>
