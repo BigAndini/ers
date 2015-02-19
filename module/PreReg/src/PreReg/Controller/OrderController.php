@@ -220,6 +220,13 @@ class OrderController extends AbstractActionController {
             
             # get the order_id
             $barcode = new Entity\Barcode();
+            $barcode->genBarcode();
+            $code = 1;
+            while($code != null) {
+                $barcode->genBarcode();
+                $code = $em->getRepository("ersEntity\Entity\Barcode")
+                    ->findOneBy(array('barcode' => $barcode->getBarcode()));
+            }
             $em->persist($barcode);
             $session_cart->order->setBarcode($barcode);
             $session_cart->order->setBarcodeId($barcode->getId());
@@ -257,6 +264,13 @@ class OrderController extends AbstractActionController {
                     $package->setParticipantId($participant->getId());
                 }
                 $barcode = new Entity\Barcode();
+                $barcode->genBarcode();
+                $code = 1;
+                while($code != null) {
+                    $barcode->genBarcode();
+                    $code = $em->getRepository("ersEntity\Entity\Barcode")
+                        ->findOneBy(array('barcode' => $barcode->getBarcode()));
+                }
                 $em->persist($barcode);
                 $package->setBarcode($barcode);
                 $package->setBarcodeId($barcode->getId());
@@ -267,6 +281,13 @@ class OrderController extends AbstractActionController {
                     $item->setProduct($product);
                     $item->setPackage($package);
                     $barcode = new Entity\Barcode();
+                    $barcode->genBarcode();
+                    $code = 1;
+                    while($code != null) {
+                        $barcode->genBarcode();
+                        $code = $em->getRepository("ersEntity\Entity\Barcode")
+                            ->findOneBy(array('barcode' => $barcode->getBarcode()));
+                    }
                     $item->setBarcode($barcode);
                 }
                 
