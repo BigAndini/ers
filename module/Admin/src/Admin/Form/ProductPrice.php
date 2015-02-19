@@ -44,6 +44,7 @@ class ProductPrice extends Form
             'type'  => 'Zend\Form\Element\Select',
             'attributes' => array(
                 'required' => 'required', 
+                'class' => 'form-control form-element',
             ),
             'options' => array(
                 'label' => 'Deadline',

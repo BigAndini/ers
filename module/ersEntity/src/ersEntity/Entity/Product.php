@@ -734,7 +734,7 @@ class Product implements InputFilterAwareInterface
                     $null_ret = $price;
                 }
             }
-            if($price->getDeadlineId() == null || $now->getTimestamp() < $price->getDeadline()->getDeadline()->getTimestamp()) {
+            if($price->getDeadlineId() == null || $now->getTimestamp() > $price->getDeadline()->getDeadline()->getTimestamp()) {
                 continue;
             }
             $newDiff = $now->getTimestamp() - $price->getDeadline()->getDeadline()->getTimestamp();
@@ -743,7 +743,7 @@ class Product implements InputFilterAwareInterface
              */
             if(
                 $diff == null ||
-                ($diff - $newDiff) > 0
+                ($diff - $newDiff) < 0
             )
             {
                 $diff = $newDiff;
