@@ -31,7 +31,7 @@ class PaymentTypePayPal extends Form
             'attributes' => array( 
                 'placeholder' => 'Deadline...', 
                 'required' => 'required',
-                'class' => 'datetimepicker',
+                'class' => 'form-control form-element datetimepicker',
             ), 
             'options' => array( 
                 'label' => 'Deadline', 

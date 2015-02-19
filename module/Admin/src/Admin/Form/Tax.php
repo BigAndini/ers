@@ -27,18 +27,28 @@ class Tax extends Form
             'name' => 'name',
             'attributes' => array(
                 'type'  => 'text',
+                'placeholder' => 'Name...',
+                'class' => 'form-control form-element',
             ),
             'options' => array(
                 'label' => 'Name',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         $this->add(array(
             'name' => 'percentage',
             'attributes' => array(
                 'type'  => 'int',
+                'placeholder' => 'Percentage...',
+                'class' => 'form-control form-element',
             ),
             'options' => array(
                 'label' => 'Percentage',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         $this->add(array(

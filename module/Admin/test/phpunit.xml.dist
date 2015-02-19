@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="Bootstrap.php">
+<phpunit bootstrap="Bootstrap.php" colors="true">
     <testsuites>
-        <testsuite name="PreReg Admin Testsuite">
+        <testsuite name="AdminPanel Testsuite">
             <directory phpVersion="5.5.0" phpVersionOperator=">=">./AdminTest</directory>
         </testsuite>
     </testsuites>

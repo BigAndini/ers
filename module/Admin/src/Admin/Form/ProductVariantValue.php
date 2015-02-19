@@ -28,18 +28,26 @@ class ProductVariantValue extends Form
             'name' => 'ordering',
             'attributes' => array(
                 'type'  => 'text',
+                'class' => 'form-control form-element',
             ),
             'options' => array(
                 'label' => 'Order',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         $this->add(array(
             'name' => 'value',
             'attributes' => array(
                 'type'  => 'text',
+                'class' => 'form-control form-element',
             ),
             'options' => array(
                 'label' => 'Value',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         

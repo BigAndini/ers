@@ -149,6 +149,17 @@ echo $this->navigation()
         <h4>Please add all needed information to checkout.</h4>
     </div>
     <?php
+        else:
+            ?>
+            <p>
+            <?php
+                #echo $this->formLabel($form->get('terms'));
+                echo $this->formElement($form->get('terms'));
+            ?>
+                I accept the <a href="<?php echo $this->url('info', array('action' => 'terms')) ?>">terms and conditions</a>
+            </p>
+        <?php 
+            echo $this->formElementErrors($form->get('terms')); 
         endif;
         echo $this->formSubmit($form->get('submit'));
         echo $this->formHidden($form->get('csrf'));

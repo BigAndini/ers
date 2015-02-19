@@ -44,8 +44,12 @@ class ProductView extends Form
         $formElement['name'] = 'participant_id';
         $formElement['type'] = 'Zend\Form\Element\Select';
 
+        $formElement['attributes']['class'] = 'form-control form-element';
         $formElement['options'] = array();
         $formElement['options']['label'] = 'Participant';
+        $formElement['options']['label_attributes'] = array(
+                    'class'  => 'media-object',
+                );
         $this->add($formElement);
         
         $this->add(array(
@@ -127,17 +131,24 @@ class ProductView extends Form
                 case 'text':
                     $formElementValue['attributes'] = array();
                     $formElementValue['attributes']['type'] = $variant->getType();
+                    $formElementValue['attributes']['class'] = 'form-control form-element';
             
                     $formElementValue['options'] = array();
                     $formElementValue['options']['label'] = $variant->getName();
+                    $formElementValue['options']['label_attributes'] = array(
+                            'class'  => 'media-object',
+                        );
                     break;
                 case 'date':
                     $formElementValue['attributes'] = array();
                     $formElementValue['attributes']['type'] = 'text';
-                    $formElementValue['attributes']['class'] = 'datepicker';
+                    $formElementValue['attributes']['class'] = 'form-control form-element datepicker';
             
                     $formElementValue['options'] = array();
                     $formElementValue['options']['label'] = $variant->getName();
+                    $formElementValue['options']['label_attributes'] = array(
+                            'class'  => 'media-object',
+                        );
                     break;
                 case 'select':
                     $formElementValue['type'] = 'Zend\Form\Element\Select';
@@ -147,9 +158,13 @@ class ProductView extends Form
                     }
                     $formElementValue['attributes'] = array();
                     $formElementValue['attributes']['options'] = $options;
+                    $formElementValue['attributes']['class'] = 'form-control form-element';
             
                     $formElementValue['options'] = array();
                     $formElementValue['options']['label'] = $variant->getName();
+                    $formElementValue['options']['label_attributes'] = array(
+                            'class'  => 'media-object',
+                        );
                     break;
                 default:
                     error_log(get_class().': Don\'t know what to do with type '.$variant->getType());

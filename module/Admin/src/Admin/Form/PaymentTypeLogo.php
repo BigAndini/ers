@@ -29,9 +29,13 @@ class PaymentTypeCreditCard extends Form
             'name' => 'logo-upload', 
             'type' => 'file', 
             'attributes' => array(
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Logo', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         ));
         

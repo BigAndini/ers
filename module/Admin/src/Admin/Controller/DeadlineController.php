@@ -22,7 +22,8 @@ class DeadlineController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'deadlines' => $em->getRepository("ersEntity\Entity\Deadline")->findBy(array(), array('deadline' => 'ASC')),
+            'deadlines' => $em->getRepository("ersEntity\Entity\Deadline")
+                ->findBy(array(), array('deadline' => 'ASC')),
          ));
     }
 

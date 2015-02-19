@@ -1,0 +1,102 @@
+<?php
+
+$title = 'Order No. '.$order->getId().' ('.$order->getStatus().')';
+$this->headTitle($title);
+?>
+
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<div class="clear-both">
+    <a href="<?php echo $this->url('admin/order'); ?>">back to Overview</a>    
+</div>
+
+<div class="order-info order-info-left">
+    <h1>Purchaser</h1>
+    <?php $purchaser = $order->getPurchaser(); ?>
+    <?php if($purchaser) : ?>
+        <h3>
+            <?php echo $purchaser->getPrename().' '.$purchaser->getSurname(); ?>
+            (<a href="mailto:<?php echo $purchaser->getEmail(); ?>"><?php echo $purchaser->getEmail(); ?></a>)
+        </h3>
+    <?php else: ?>
+        <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+        <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose Purchaser</a>
+    <?php endif; ?>
+</div>
+<div class="order-info order-info-right">
+    <h1>Payment</h1>
+    <?php $paymenttype = $order->getPaymentType(); ?>
+    <?php if($paymenttype) : ?>
+        <h3><?php echo $paymenttype->getName(); ?></h3>
+    <?php else: ?>
+        <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+        <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
+    <?php endif; ?>    
+</div>
+<div class="clear-both"></div>
+<div>
+    <h1>Participants / Tickets</h1>
+        <div>
+        <?php 
+            $sum = 0;
+            foreach ($order->getPackages() as $package) : 
+                if(count($package->getItems()) == 0) {
+                    continue;
+                }
+                $user = $package->getParticipant();
+            
+                if($user->getPrename() == '' && $user->getSurname() == '') :
+                    $participant = 'unassigned items';
+                else:
+                    $participant = $user->getPrename().' '.$user->getSurname();
+                endif;
+        ?>
+            <div class="package">
+                <h3>
+                    <?php echo $participant; ?>
+                </h3>
+                
+                <?php if(count($package->getItems()) != 0): ?>
+                <table class="table">
+                    <tr>
+                        <th>Product</th>
+                        <th>Amount</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                    <?php
+                    $subtotal = 0;
+                    foreach ($package->getItems() as $item) : 
+                        $subtotal += $item->getPrice();
+                        $sum += $item->getPrice();
+                        ?>
+                        <tr>
+                            <td><?php echo $item->getName(); ?></td>
+                            <td><?php echo $item->getAmount(); ?></td>
+                            <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+                            <td>
+                                <?php 
+                                if($user->getSessionId() === null) {
+                                    $user_id = 0;
+                                } else {
+                                    $user_id = $user->getSessionId();
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <tr>
+                        <td></td>
+                        <td>Subtotal:</td>
+                        <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+        <div>
+            <h3>Total Amount: <?php echo $this->currencyFormat($sum, 'EUR', null, 'de_DE'); ?></h3>
+        </div>
+    </div>
+ </div>

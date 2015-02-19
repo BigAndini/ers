@@ -36,9 +36,13 @@ class Participant extends Form
             'attributes' => array( 
                 'placeholder' => 'Prename...', 
                 'required' => 'required', 
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Prename', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
  
@@ -48,25 +52,32 @@ class Participant extends Form
             'attributes' => array( 
                 'placeholder' => 'Surname...', 
                 'required' => 'required', 
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Surname', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
  
         $this->add(array( 
             'name' => 'birthday', 
-            'type' => 'Zend\Form\Element\DateTime',
+            'type' => 'Zend\Form\Element\Date',
             'attributes' => array( 
                 'placeholder' => 'Birthday...', 
                 'required' => 'required',
-                'class' => 'datepicker',
+                'class' => 'form-control form-element datepicker',
                 'min' => '1900-01-01', 
                 'max' => 2015-08-09, 
                 'step' => '1', 
             ), 
             'options' => array( 
                 'label' => 'Birthday', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         ));
         $this->get('birthday')->setFormat('Y-m-d');
@@ -77,9 +88,13 @@ class Participant extends Form
             'attributes' => array( 
                 'placeholder' => 'Email Address...', 
                 #'required' => 'required', 
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Email', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
  

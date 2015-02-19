@@ -29,6 +29,7 @@ class PaymentType extends Form
             'type' => 'Zend\Form\Element\Radio', 
             'attributes' => array( 
                 #'required' => 'required',
+                'class' => 'checkbox-inline',
             ), 
             'options' => array( 
                 'label' => 'Choose Paymenttype', 

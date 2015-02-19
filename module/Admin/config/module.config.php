@@ -20,17 +20,40 @@ return array(
             'Admin\Controller\Counter'              => 'Admin\Controller\CounterController',
             'Admin\Controller\User'                 => 'Admin\Controller\UserController',
             'Admin\Controller\Role'                 => 'Admin\Controller\RoleController',
+            'Admin\Controller\Order'                => 'Admin\Controller\OrderController',
         ),
     ),
     'navigation' => array(
         'admin_nav' => array(
             'home' => array(
-                'label' => 'Home',
+                'label' => 'Frontend',
                 'route' => 'home',
                 'target' => '_blank',
                 'resource'  => 'controller/PreReg\Controller\Product',
             ),
-            'tax' => array(
+            'shop' => array(
+                'label' => 'Shop',
+                'route' => 'admin',
+                'pages' => array(
+                    'tax' => array(
+                        'label' => 'Tax',
+                        'route' => 'admin/tax',
+                        'resource'  => 'controller/Admin\Controller\Tax',
+                    ),
+                    'deadline' => array(
+                        'label' => 'Deadline',
+                        'route' => 'admin/deadline',
+                        'resource'  => 'controller/Admin\Controller\Deadline',
+                    ),
+                    'paymenttype' => array(
+                        'label' => 'Payment Type',
+                        'route' => 'admin/payment-type',
+                        'resource'  => 'controller/Admin\Controller\PaymentType',
+                    ),
+                ),
+            ),
+            
+            /*'tax' => array(
                 'label' => 'Tax',
                 'route' => 'admin/tax',
                 'resource'  => 'controller/Admin\Controller\Tax',
@@ -39,18 +62,18 @@ return array(
                 'label' => 'Deadline',
                 'route' => 'admin/deadline',
                 'resource'  => 'controller/Admin\Controller\Deadline',
-            ),
+            ),*/
             'product' => array(
                 'label' => 'Product',
                 'route' => 'admin/product',
                 #'action' => 'reset',
                 'resource'  => 'controller/Admin\Controller\Product',
             ),
-            'paymenttype' => array(
+            /*'paymenttype' => array(
                 'label' => 'Payment Type',
                 'route' => 'admin/payment-type',
                 'resource'  => 'controller/Admin\Controller\PaymentType',
-            ),
+            ),*/
             'counter' => array(
                 'label' => 'Counter',
                 'route' => 'admin/counter',
@@ -60,11 +83,19 @@ return array(
                 'label' => 'User',
                 'route' => 'admin/user',
                 'resource'  => 'controller/Admin\Controller\User',
+                'pages' => array(
+                    'role' => array(
+                        'label' => 'Role',
+                        'route' => 'admin/role',
+                        'resource'  => 'controller/Admin\Controller\Role',
+                    ),
+                ),
             ),
-            'role' => array(
-                'label' => 'Role',
-                'route' => 'admin/role',
-                'resource'  => 'controller/Admin\Controller\Role',
+            
+            'order' => array(
+                'label' => 'Order',
+                'route' => 'admin/order',
+                'resource'  => 'controller/Admin\Controller\Order',
             ),
         ),
         'top_nav' => array(
@@ -212,6 +243,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Role',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'order' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/order[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Order',
                                 'action' => 'index',
                             ),
                         ),

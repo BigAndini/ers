@@ -31,10 +31,13 @@ class Counter extends Form
             'attributes' => array( 
                 'placeholder' => 'Deadline...', 
                 'required' => 'required',
-                'class' => 'datetimepicker',
+                'class' => 'form-control form-element datetimepicker',
             ), 
             'options' => array( 
                 'label' => 'Deadline', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         ));
         $this->get('deadline')->setFormat('Y-m-d H:i:s');

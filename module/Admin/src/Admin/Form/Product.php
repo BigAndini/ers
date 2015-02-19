@@ -42,52 +42,84 @@ class Product extends Form
             'name' => 'ordering',
             'attributes' => array(
                 'type'  => 'text',
+                'class' => 'form-control form-element',
+                'placeholder' => 'Order...',
             ),
             'options' => array(
                 'label' => 'Order',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         $this->add(array(
             'name' => 'name',
             'attributes' => array(
                 'type'  => 'text',
+                'class' => 'form-control form-element',
+                'placeholder' => 'Name...',
             ),
             'options' => array(
                 'label' => 'Name',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         $this->add(array(
             'name' => 'shortDescription',
             'attributes' => array(
                 'type'  => 'text',
+                'class' => 'form-control form-element',
+                'placeholder' => 'Short description...',
             ),
             'options' => array(
                 'label' => 'Short Description',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         $this->add(array(
             'name' => 'longDescription',
             'attributes' => array(
                 'type'  => 'textarea',
+                'class' => 'form-control form-element',
+                'placeholder' => 'Long description...',
             ),
             'options' => array(
                 'label' => 'Long Description',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',
             'name' => 'taxId',
+            'attributes' => array(
+                'class' => 'form-control form-element',
+            ),
             'options' => array(
-                    'label' => 'Tax Group',
+                'label' => 'Tax Group',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         
         $this->add(array(
             'type' => 'checkbox',
             'name' => 'personalized',
+            'attributes' => array(
+                'class' => 'checkbox',
+            ),
             'options' => array(
-                    'label' => 'Personalized',
+                'label' => 'Personalized',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         

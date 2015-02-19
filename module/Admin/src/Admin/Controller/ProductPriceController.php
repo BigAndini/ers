@@ -15,7 +15,7 @@ use Zend\Session\Container;
 use Admin\Form;
 
 class ProductPriceController extends AbstractActionController {
-    public function indexAction()
+    /*public function indexAction()
     {
         $em = $this
             ->getServiceLocator()
@@ -23,7 +23,7 @@ class ProductPriceController extends AbstractActionController {
         return new ViewModel(array(
             'productprices' => $em->getRepository("ersEntity\Entity\ProductPrice")->findAll(),
          ));
-    }
+    }*/
 
     public function addAction()
     {

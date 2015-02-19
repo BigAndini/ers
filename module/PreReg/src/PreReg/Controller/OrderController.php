@@ -34,11 +34,11 @@ class OrderController extends AbstractActionController {
         $forrest = new Container('forrest');
         $forrest->trace = new \ArrayObject();
         
-        
         $breadcrumb = new \ArrayObject();
         $breadcrumb->route = 'order';
         $breadcrumb->params = array();
         $breadcrumb->options = array();
+        
         $forrest->trace->product = $breadcrumb;
         $forrest->trace->participant = $breadcrumb;
         $forrest->trace->cart = $breadcrumb;
@@ -47,7 +47,6 @@ class OrderController extends AbstractActionController {
         
         return new ViewModel(array(
             'order' => $session_cart->order,
-            'forrest' => $forrest,
         ));
     }
     public function overviewAction() {
@@ -105,7 +104,7 @@ class OrderController extends AbstractActionController {
                 error_log(var_export($form->getMessages(), true));
             }
         }
-        
+       
         $forrest = new Container('forrest');
         $breadcrumb = new \ArrayObject();
         $breadcrumb->route = 'order';
@@ -181,7 +180,6 @@ class OrderController extends AbstractActionController {
             'form' => $form,
             'paymenttypes' => $paymenttypes,
         ));
-        #return new ViewModel();
     }
     
     /*
@@ -194,8 +192,8 @@ class OrderController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            #$inputFilter = new InputFilter\PaymentType();
-            #$form->setInputFilter($inputFilter->getInputFilter());
+            $inputFilter = new InputFilter\Checkout();
+            $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             # check if the session cart container has all data to finish this order
@@ -243,9 +241,16 @@ class OrderController extends AbstractActionController {
                 
                 $user = $em->getRepository("ersEntity\Entity\User")
                         ->findOneBy(array('email' => $participant->getEmail()));
+                $role = $em->getRepository("ersEntity\Entity\Role")
+                        ->findOneBy(array('roleId' => 'participant'));
                 if($user instanceof Entity\User) {
                     $package->setParticipant($user);
+                    if(!$user->hasRole($role)) {
+                        $user->addRole($role);
+                        $em->persist($user);
+                    }
                     $package->setParticipantId($user->getId());
+                    
                 } else {
                     $em->persist($participant);
                     $package->setParticipant($participant);
@@ -270,8 +275,23 @@ class OrderController extends AbstractActionController {
             
             $em->persist($session_cart->order);
             $em->flush();
+        
+            $session_order = new Container('order');
+            $session_order->order_id = $session_cart->order->getId();
             
-            $session_cart->init = 0;
+            error_log('paymenttype:'.$session_cart->order->getPaymentType()->getType());
+            switch(strtolower($session_cart->order->getPaymentType()->getType())) {
+                case 'banktransfer':
+                    return $this->redirect()->toRoute('payment', array('action' => 'banktransfer'));
+                    break;
+                case 'creditcard':
+                    return $this->redirect()->toRoute('payment', array('action' => 'creditcard'));
+                    break;
+                case 'paypal':
+                    break;
+                default:
+            }
+            
         }
         
         return new ViewModel(array(
@@ -283,7 +303,12 @@ class OrderController extends AbstractActionController {
      * say thank you after purchaser
      */
     public function thankyouAction() {
-        return new ViewModel();
+        $session_cart = new Container('cart');
+        #$session_cart->getManager()->getStorage()->clear('cart');
+        $session_cart->init = 0;
+        return new ViewModel(array(
+            'order' => $session_cart->order,
+        ));
     }
     
     /*
@@ -298,6 +323,50 @@ class OrderController extends AbstractActionController {
      */
     public function deleteAction() {
         
+    }
+    
+    public function barcodetestAction() {
+        $start = microtime(true);
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $barcodes = array();
+        $count = 0;
+        $found = 0;
+        while(true) {
+            $barcode = new Entity\Barcode();
+            $barcode->genBarcode();
+            
+            $code = $em->getRepository("ersEntity\Entity\Barcode")->findOneBy(array('barcode' => $barcode->getBarcode()));
+            #if(in_array($barcode->getBarcode(), $barcodes)) {
+            if($code) {
+                error_log('found existing barcode after '.$count.' tries.');
+                error_log('time spend: '.(microtime(true)-$start));
+                $found++;
+                return new ViewModel();                    
+                if($found >= 5) {
+                    return new ViewModel();                    
+                }
+            }
+            if(!$barcode->checkBarcode()) {
+                error_log('BARCODE IS NOT VALID');
+                error_log('time spend: '.(microtime(true)-$start));
+                return new ViewModel();
+            }
+            #$barcodes[] = $barcode->getBarcode();
+            #error_log('added barcode: '.$barcode->getBarcode().' '.(microtime(true)-$start));
+            $em->persist($barcode);
+            $em->flush();
+            
+            $count++;
+            if(($count%1000) == 0) {
+                error_log('time spend: '.(microtime(true)-$start));
+            }
+        }
+        
+        return new ViewModel();
     }
     
     public function mailtestAction() {

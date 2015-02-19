@@ -16,7 +16,7 @@ use Admin\Form;
 
 class ProductVariantValueController extends AbstractActionController 
 {    
-    public function indexAction()
+    /*public function indexAction()
     {
         $em = $this
             ->getServiceLocator()
@@ -24,7 +24,7 @@ class ProductVariantValueController extends AbstractActionController
         return new ViewModel(array(
             'productvariants' => $em->getRepository("ersEntity\Entity\ProductVariantValue")->findAll(),
         ));
-    }
+    }*/
 
     public function viewAction()
     {

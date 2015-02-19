@@ -16,14 +16,6 @@ use Zend\InputFilter\InputFilterInterface;
 class PaymentType implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
-    /*protected $em;
-    
-    public function setEntityManager(\Doctrine\ORM\EntityManager $em) {
-        $this->em = $em;
-    }
-    public function getEntityManager() {
-        return $this->em;
-    }*/
     
     public function setInputFilter(InputFilterInterface $inputFilter) 
     { 

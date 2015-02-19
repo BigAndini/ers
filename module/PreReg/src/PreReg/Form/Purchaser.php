@@ -40,6 +40,7 @@ class Purchaser extends Form
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
                 'placeholder' => 'Prename...',
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Prename', 
@@ -51,6 +52,7 @@ class Purchaser extends Form
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
                 'placeholder' => 'Surname...',
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Surname', 
@@ -62,6 +64,7 @@ class Purchaser extends Form
             'type' => 'Zend\Form\Element\Email', 
             'attributes' => array( 
                 'placeholder' => 'Email Address...', 
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Email', 

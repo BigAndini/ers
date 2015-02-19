@@ -1,0 +1,36 @@
+<?php
+// module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+$title = 'Order Overview';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<table class="table">
+    <tr>
+        <th>Purchaser</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>&nbsp;</th>
+    </tr>
+<?php foreach ($orders as $order) : ?>
+    <tr>
+        <td>
+            <?php echo $order->getPurchaser()->getPrename().' '.$order->getPurchaser()->getSurname(); ?>
+            <br />
+            <a href="mailto:<?php echo $order->getPurchaser()->getEmail(); ?>"><?php echo $order->getPurchaser()->getEmail(); ?></a>
+        </td>
+        <td>
+            <?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?>
+        </td>
+        <td>
+            <?php echo $order->getStatus(); ?>
+        </td>
+        <td>
+            <a href="<?php echo $this->url('admin/order', array('action'=>'detail', 'id' => $order->getId()));?>"><?php echo $this->translate('Detail'); ?></a>
+            <!--<a href="<?php echo $this->url('admin/order', array('action'=>'edit', 'id' => $order->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
+            <a href="<?php echo $this->url('admin/order', array('action'=>'delete', 'id' => $order->getId()));?>"><?php echo $this->translate('Delete'); ?></a>-->
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

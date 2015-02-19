@@ -31,9 +31,13 @@ class User extends Form
             'attributes' => array( 
                 'placeholder' => 'E-Mail Address...', 
                 'required' => 'required', 
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'E-Mail Address', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
  
@@ -42,9 +46,13 @@ class User extends Form
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
                 'placeholder' => 'Prename...', 
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Prename', 
+                'label' => 'Prename',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
  
@@ -53,39 +61,27 @@ class User extends Form
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
                 'placeholder' => 'Surname...', 
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Surname', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
  
         $this->add(array( 
             'name' => 'roles', 
             'type' => 'Zend\Form\Element\MultiCheckbox', 
-            /*'attributes' => array(
-                'required' => 'required',
-            ),*/ 
+            'attributes' => array(
+                #'required' => 'required',
+                'class' => 'form-control form-element',
+            ),
             'options' => array( 
                 'label' => 'Roles', 
-                'value_options' => array(
-                    /*array(
-                        'value' => '0',
-                        'label' => 'user',
-                        'selected' => false,
-                        'disabled' => false,
-                    ),
-                    array(
-                        'value' => '1',
-                        'label' => 'admin',
-                        'selected' => false,
-                        'disabled' => false,
-                    ),
-                    array(
-                        'value' => '2',
-                        'label' => 'participant',
-                        'selected' => true,
-                        'disabled' => false,
-                    ),*/
+                'label_attributes' => array(
+                    'class'  => 'media-object',
                 ),
             ), 
         ));

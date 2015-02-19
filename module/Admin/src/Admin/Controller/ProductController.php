@@ -244,4 +244,14 @@ class ProductController extends AbstractActionController {
             $em->remove($variant);
         }
     }
+    
+    public function addLogoAction() {
+        
+    }
+    public function editLogoAction() {
+        
+    }
+    public function deleteLogoAction() {
+        
+    }
 }

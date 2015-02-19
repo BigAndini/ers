@@ -22,7 +22,6 @@ $settings = array(
      * The entity class should implement ZfcUser\Entity\UserInterface
      */
     //'user_entity_class' => 'Application\Entity\User',
-    #'user_entity_class' => 'ErsUser\Entity\User',
 
     /**
      * Enable registration

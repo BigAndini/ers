@@ -135,16 +135,16 @@ return [
                 #['controller' => 'Application\Controller\Index', 'roles' => ['guest', 'user']],
                 
                 /* PreReg */
-                ['controller' => 'PreReg\Controller\Home', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Info', 'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Cart', 'action' => 'add', 'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Cart', 'action' => 'reset', 'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Order', 'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Paymenttype', 'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Payment', 'roles' => ['guest', 'user']],
                 #['controller' => 'PreReg\Controller\Order', 'action' => 'index', 'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Package', 'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Product', 'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Participant', 'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Profile', 'action' => 'index', 'roles' => ['user']],
+                #['controller' => 'PreReg\Controller\Profile', 'action' => 'index', 'roles' => ['user']],
                 
                 /* ZfcUser */
                 #['controller' => 'zfcuser', 'roles' => ['guest']],
@@ -152,6 +152,10 @@ return [
                 ['controller' => 'zfcuser', 'action' => 'register', 'roles' => ['guest']],
                 ['controller' => 'zfcuser', 'action' => 'index', 'roles' => ['user']],
                 ['controller' => 'zfcuser', 'action' => 'logout', 'roles' => ['user']],
+                ['controller' => 'zfcuser', 'roles' => ['user']],
+                
+                /* Profile */
+                ['controller' => 'PreReg\Controller\Profile', 'roles' => ['user']],
                 
                 /* Admin */
                 #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],
@@ -167,6 +171,7 @@ return [
                 ['controller' => 'Admin\Controller\Counter', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\User', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Role', 'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\Order', 'roles' => ['admin']],
                 
                 /* Doctrine ORM */
                 ['controller' => 'DoctrineORMModule\Yuml\YumlController', 'roles' => ['admin']],

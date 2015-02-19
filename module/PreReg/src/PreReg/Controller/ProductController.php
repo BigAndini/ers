@@ -49,7 +49,7 @@ class ProductController extends AbstractActionController {
         ));
     }
     
-    public function viewAction() {
+    public function addAction() {
         $product_id = (int) $this->params()->fromRoute('product_id', 0);
         $participant_id = (int) $this->params()->fromRoute('participant_id', 0);
         $item_id = (int) $this->params()->fromRoute('item_id', 0);
@@ -63,7 +63,7 @@ class ProductController extends AbstractActionController {
         $bc_participant->route = 'product';
         if($participant_id) {
             $bc_participant->params = array(
-                'action' => 'view',
+                'action' => 'edit',
                 'product_id' => $product_id,
                 'participant_id' => $participant_id
             );
@@ -72,7 +72,7 @@ class ProductController extends AbstractActionController {
             }
         } else {
             $bc_participant->params = array(
-                'action' => 'view',
+                'action' => 'add',
                 'product_id' => $product_id,
             );
         }
@@ -158,6 +158,13 @@ class ProductController extends AbstractActionController {
             'item' => $item,
             'form' => $form,
         ));
+    }
+    
+    public function editAction() {
+        $viewModel = $this->addAction();
+        $viewModel->setTemplate('pre-reg/product/edit');
+        
+        return $viewModel;
     }
     
     public function deleteAction() {

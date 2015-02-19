@@ -79,7 +79,7 @@ class Module
                     $roles = $em->getRepository("ersEntity\Entity\Role")->findAll();
                     
                     $options = array();
-                    $options[null] = '';
+                    $options[null] = 'no parent';
                     foreach($roles as $role) {
                         $options[$role->getId()] = $role->getRoleId();
                     }

@@ -88,13 +88,8 @@ a.delete-sticky {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
-input, button, select, textarea {
-    display: block;
-}
-
-label {
-    margin-bottom: 10px;
-    display: block;
+.form-element {
+    width: 250px;
 }
 
 .product-view {
@@ -335,4 +330,50 @@ body {
 }
 .navbar-checkout > li.active > a {
     font-weight: bold;
+}
+
+/*.ers-dropdown {
+    width: 960px;
+}*/
+ul.ers-dropdown {
+    padding: 0px;
+    margin: 0px;
+}
+ul.ers-dropdown:after {
+    clear: both;
+    content: " ";
+    display: block;
+    font-size: 0;
+    height: 0;
+    visibility: hidden;
+}
+/*ul.ers-dropdown,ul.ers-dropdown li{
+    background-color: #FAFAFA;
+}*/
+ul.ers-dropdown li {
+    list-style: none;
+    float:left;
+}
+ul.ers-dropdown li a {
+    text-decoration: none;
+    display: block;
+    /*color: #333;*/
+    padding: 14px 34px 14px 34px;
+}
+ul.ers-dropdown li:hover > ul {
+    visibility: visible;
+}
+ul.ers-dropdown li ul{
+    display: inline;
+    visibility: hidden;
+    position: absolute;
+    padding:0px;
+}
+ul.ers-dropdown li ul li{
+    float: none;
+    background-color: #f1f1f1;
+}
+ul.ers-dropdown li ul li a:hover{
+    /*color: #333;*/
+    background-color: #ddd;
 }

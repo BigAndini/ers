@@ -1,0 +1,17 @@
+<?php
+
+$title = 'Pay by Credit Card';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<div>
+    <h4>Amount: <?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></h4>
+    <?php
+    $form = $this->form;
+    $form->prepare();
+    
+    echo $this->form()->openTag($form);
+    echo $this->formCollection($form);
+    echo $this->form()->closeTag();
+?>
+</div>

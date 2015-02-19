@@ -14,9 +14,6 @@ use ersEntity\Entity;
 use Admin\Form;
 use Admin\InputFilter;
 
-# for file upload
-use Zend\InputFilter;
-
 class PaymentTypeController extends AbstractActionController {
     
     public function indexAction()

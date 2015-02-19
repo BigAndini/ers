@@ -29,17 +29,28 @@ class Role extends Form
             'name' => 'roleId',
             'attributes' => array(
                 'type'  => 'text',
+                'class' => 'form-control form-element',
+                'placeholder' => 'Role...'
             ),
             'options' => array(
                 'label' => 'Name',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',
             'name' => 'parent_id',
+            'attributes' => array(
+                'class' => 'form-control form-element',
+            ),
             'options' => array(
-                    'label' => 'Parent',
+                'label' => 'Parent',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         

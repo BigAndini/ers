@@ -21,13 +21,13 @@ $this->headTitle($title);
         </tr>
         <tr>
             <td>Birthdate:</td>
-            <td><?php echo $user->getBirthday(); ?></td>
+            <td><?php echo $user->getBirthday()->format('d.m.Y'); ?></td>
         </tr>
     </table>
 </div>
 <div>
-    <a href="<?php echo $this->url('profile', array('action' => 'change-data')); ?>">Change user data</a> | 
-    <a href="<?php echo $this->url('profile', array('action' => 'reset-password')); ?>">Change password</a> | 
+    <a href="<?php echo $this->url('zfcuser/changeemail', array()); ?>">Change user data</a> | 
+    <a href="<?php echo $this->url('zfcuser/changepassword', array()); ?>">Change password</a> | 
     <a href="<?php echo $this->url('package'); ?>">View tickets</a> | 
     <a href="<?php echo $this->url('profile', array('action' => 'participant')); ?>">Update participant data</a>
 </div>

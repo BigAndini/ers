@@ -29,9 +29,13 @@ class ProductPrice extends Form
             'name' => 'charge',
             'attributes' => array(
                 'type'  => 'text',
+                'class' => 'form-control form-element',
             ),
             'options' => array(
                 'label' => 'Charge',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         
@@ -43,6 +47,9 @@ class ProductPrice extends Form
             ),
             'options' => array(
                 'label' => 'Deadline',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         

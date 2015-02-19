@@ -16,8 +16,8 @@ return array(
             'PreReg\Controller\Participant' => 'PreReg\Controller\ParticipantController',
             'PreReg\Controller\Product'     => 'PreReg\Controller\ProductController',
             'PreReg\Controller\Profile'     => 'PreReg\Controller\ProfileController',
-            'PreReg\Controller\Home'     => 'PreReg\Controller\HomeController',
-            'PreReg\Controller\PaymentType'     => 'PreReg\Controller\PaymentTypeController',
+            'PreReg\Controller\Info'     => 'PreReg\Controller\InfoController',
+            'PreReg\Controller\Payment'     => 'PreReg\Controller\PaymentController',
         ),
     ),
     'navigation' => array(
@@ -74,9 +74,9 @@ return array(
             ),
             'profile' => array(
                 'label' => 'My Profile',
-                'route' => 'zfcuser',
+                'route' => 'profile',
                 'action' => '',
-                'resource'  => 'controller/zfcuser:index',
+                'resource'  => 'controller/PreReg\Controller\Profile',
             ),
             'logout' => array(
                 'label' => 'Logout',
@@ -119,8 +119,22 @@ return array(
                 'options' => array(
                     'route'    => '/',
                     'defaults' => array(
-                        'controller' => 'PreReg\Controller\Home',
+                        'controller' => 'PreReg\Controller\Info',
                         'action'     => 'index',
+                    ),
+                ),
+            ),
+            'info' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/info[/:action]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'PreReg\Controller\Info',
+                        'action' => 'index',
                     ),
                 ),
             ),
@@ -138,16 +152,16 @@ return array(
                     ),
                 ),
             ),
-            'paymenttype' => array(
+            'payment' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route'    => '/paymenttype[/:action][/:id]',
+                    'route'    => '/payment[/:action][/:id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id'     => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'PreReg\Controller\Paymenttype',
+                        'controller' => 'PreReg\Controller\Payment',
                         'action'     => 'index',
                     ),
                 ),

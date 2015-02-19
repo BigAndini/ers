@@ -31,9 +31,13 @@ class PaymentTypeBankTransfer extends Form
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
                 'placeholder' => 'Order...',
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Order', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
         
@@ -43,9 +47,13 @@ class PaymentTypeBankTransfer extends Form
             'attributes' => array( 
                 'placeholder' => 'Payment Type Name...', 
                 'required' => 'required', 
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Name', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
         
@@ -55,9 +63,13 @@ class PaymentTypeBankTransfer extends Form
             'attributes' => array( 
                 'placeholder' => 'Short Description...', 
                 'required' => 'required', 
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Short Description', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
  
@@ -65,10 +77,14 @@ class PaymentTypeBankTransfer extends Form
             'name' => 'longDescription', 
             'type' => 'Zend\Form\Element\Textarea', 
             'attributes' => array( 
-                'placeholder' => 'Long Description...', 
+                'placeholder' => 'Long Description...',
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Long Description', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
  
@@ -76,10 +92,14 @@ class PaymentTypeBankTransfer extends Form
             'name' => 'fixFee', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Fix Fee...', 
+                'placeholder' => 'Fix Fee...',
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Fix Fee (default: 0)', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
  
@@ -87,10 +107,14 @@ class PaymentTypeBankTransfer extends Form
             'name' => 'percentageFee', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Percentage Fee...', 
+                'placeholder' => 'Percentage Fee...',
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Percentage Fee (default: 0)', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
  
@@ -98,58 +122,43 @@ class PaymentTypeBankTransfer extends Form
             'name' => 'activeFrom_id',
             'type'  => 'Zend\Form\Element\Select',
             'attributes' => array(
-                'required' => 'required', 
+                'required' => 'required',
+                'class' => 'form-control form-element',
             ),
             'options' => array(
                 'label' => 'active from',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         $this->add(array(
             'name' => 'activeUntil_id',
             'type'  => 'Zend\Form\Element\Select',
             'attributes' => array(
-                'required' => 'required', 
+                'required' => 'required',
+                'class' => 'form-control form-element',
             ),
             'options' => array(
                 'label' => 'active until',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
-        /*$this->add(array( 
-            'name' => 'activeFrom', 
-            'type' => 'Zend\Form\Element\DateTime', 
-            'attributes' => array( 
-                'placeholder' => 'Active From...', 
-                'required' => 'required', 
-                'class' => 'datetimepicker',
-            ), 
-            'options' => array( 
-                'label' => 'Active From', 
-            ), 
-        ));
-        $this->get('activeFrom')->setFormat('Y-m-d H:i:s');
- 
-        $this->add(array( 
-            'name' => 'activeUntil', 
-            'type' => 'Zend\Form\Element\DateTime', 
-            'attributes' => array( 
-                'placeholder' => 'Active Until...', 
-                'required' => 'required', 
-                'class' => 'datetimepicker',
-            ), 
-            'options' => array( 
-                'label' => 'Active Until', 
-            ), 
-        ));
-        $this->get('activeUntil')->setFormat('Y-m-d H:i:s');*/
- 
+        
         $this->add(array( 
             'name' => 'days2pay', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
                 'placeholder' => 'Days until Payment...', 
+                'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Days until Payment (default: 0)', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
         

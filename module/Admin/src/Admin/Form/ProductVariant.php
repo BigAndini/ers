@@ -28,26 +28,40 @@ class ProductVariant extends Form
             'name' => 'ordering',
             'attributes' => array(
                 'type'  => 'text',
+                'class' => 'form-control form-element',
             ),
             'options' => array(
                 'label' => 'Order',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         $this->add(array(
             'name' => 'name',
             'attributes' => array(
                 'type'  => 'text',
+                'class' => 'form-control form-element',
             ),
             'options' => array(
                 'label' => 'Name',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',
             'name' => 'type',
+            'attributes' => array(
+                'class' => 'form-control form-element',
+            ),
             'options' => array(
                 'label' => 'Type',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         
@@ -55,9 +69,13 @@ class ProductVariant extends Form
             'name' => 'preselection',
             'attributes' => array(
                 'type'  => 'text',
+                'class' => 'form-control form-element',
             ),
             'options' => array(
                 'label' => 'Preselection',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ),
         ));
         

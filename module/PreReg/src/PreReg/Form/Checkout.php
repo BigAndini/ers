@@ -24,6 +24,22 @@ class Checkout extends Form
         $this->setAttribute('method', 'post'); 
         
         $this->add(array( 
+            'name' => 'terms', 
+            'type' => 'Zend\Form\Element\Checkbox', 
+            'attributes' => array( 
+                'required' => 'required', 
+                'value' => '0', 
+                'class' => 'checkbox-inline',
+            ), 
+            'options' => array( 
+                'label' => 'I agree to all terms and conditions',
+                'use_hidden_element' => true,
+                'checked_value' => 1,
+                'unchecked_value' => 'no',
+            ), 
+        )); 
+        
+        $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 
         )); 

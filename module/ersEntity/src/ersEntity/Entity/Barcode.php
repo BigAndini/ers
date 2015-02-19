@@ -41,7 +41,7 @@ class Barcode implements InputFilterAwareInterface
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(type="string", unique=true, length=45, nullable=true)
      */
     protected $barcode;
     
@@ -70,12 +70,16 @@ class Barcode implements InputFilterAwareInterface
      * @ORM\OneToOne(targetEntity="Package", mappedBy="barcode")
      */
     protected $package;
+    
+    protected $length;
 
     public function __construct()
     {
         $this->items = new ArrayCollection();
         $this->orders = new ArrayCollection();
         $this->packages = new ArrayCollection();
+        
+        $this->length = 6;
     }
     
     /**
@@ -140,6 +144,121 @@ class Barcode implements InputFilterAwareInterface
     public function getBarcode()
     {
         return $this->barcode;
+    }
+    
+    public function genBarcode() {
+        /*
+         * Alphabet for barcodes:
+         * 0 <- O Q
+         * 1 <- I J L
+         * 2 <- Z
+         * 3 <- E
+         * 4
+         * 5 <- S
+         * 6 <- G
+         * 7 <- T
+         * 8 <- B
+         * 9
+         * A
+         * C
+         * D
+         * F
+         * H
+         * K
+         * M
+         * N
+         * P
+         * R
+         * U
+         * V
+         * W
+         * X
+         * Y
+         */
+        $alphabet = "0123456789ACDFGHKMNPRUVWXY";
+        $memory = '';
+        $n = '';
+        #srand(mktime()); 
+        srand(rand()*mktime());
+        for ($i = 0; $i < $this->length; $i++) {
+            
+            while($n == '' || $memory == $alphabet[$n]) {
+                $n = rand(0, strlen($alphabet)-1);
+            }
+            $memory = $alphabet[$n];
+            $barcode[$i] = $alphabet[$n];
+        }
+        
+        $this->barcode = implode($barcode).$this->genChecksum(implode($barcode));
+        
+        return $this;
+    }
+    private function genChecksum($barcode) {
+        $chars = str_split($barcode);
+        $nums = array();
+        foreach($chars as $char) {
+            $nums[] = ord($char);
+        }
+        $cross_sum = array_sum($nums);
+        $checksum = $cross_sum % 100;
+        return sprintf('%02d', $checksum);
+    }
+    
+    /**
+     * Check if barcode checksum is valid
+     * 
+     * @return boolean
+     */
+    public function checkBarcode() {
+        $checksum = substr($this->getBarcode(),$this->length);
+        $code = substr($this->getBarcode(),0,$this->length);
+        if($this->genChecksum($code) == $checksum) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function normalizeText(string $text) {
+        $text = strtoupper($text);
+        $matrix = array(
+            '0' => array(
+                'O',
+                'Q',
+            ),
+            '1' => array(
+                'I',
+                'J',
+                'L',
+            ),
+            '2' => array(
+                'Z',
+            ),
+            '3' => array(
+                'E',
+            ),
+            '5' => array(
+                'S',
+            ),
+            '6' => array(
+                'G',
+            ),
+            '7' => array(
+                'T',
+            ),
+            '8' => array(
+                'B',
+            ),
+        );
+        $pattern = array();
+        $replace = array();
+        foreach($matrix as $key => $values) {
+            foreach($values as $value) {
+                $pattern[] = '/'.$value.'/';
+                $replace[] = $key;
+            }
+        }
+        return preg_replace($pattern, $replace, $text);
     }
 
     /**

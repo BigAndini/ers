@@ -59,6 +59,11 @@ class Order implements InputFilterAwareInterface
      * @ORM\Column(type="text", nullable=true)
      */
     protected $invoiceDetail;
+    
+    /**
+     * @ORM\Column(type="string", length=45)
+     */
+    protected $status = 'unpaid';
 
     /**
      * @ORM\Column(type="datetime")
@@ -250,6 +255,29 @@ class Order implements InputFilterAwareInterface
     {
         return $this->invoiceDetail;
     }
+    
+    /**
+     * Set the value of status.
+     *
+     * @param string $stauts
+     * @return \Entity\Order
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of status.
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
 
     /**
      * Set the value of updated.
@@ -422,17 +450,6 @@ class Order implements InputFilterAwareInterface
         $package = $this->getPackageByParticipantSessionId($Participant_id);
         $package->addItem($item);
         
-        /*if($Participant_id != 0) {
-            
-            
-        } else {
-            $package = new Package();
-            $package->setParticipant(new User());
-            
-            $package->addItem($item);
-            $this->addPackage($package);
-        }*/
-        
         return $this;
     }
     
@@ -451,6 +468,20 @@ class Order implements InputFilterAwareInterface
             return $package->getItemBySessionId($item_id);    
         }
         return false;
+    }
+    
+    /**
+     * get Items of this order
+     * 
+     * @return array
+     */
+    public function getItems() {
+        $items = array();
+        foreach($this->getPackages() as $package) {
+            $items = array_merge($items, $package->getItems());
+        }
+        
+        return $items;
     }
     
     /**
@@ -622,6 +653,22 @@ class Order implements InputFilterAwareInterface
     public function getBarcode()
     {
         return $this->barcode;
+    }
+    
+    /**
+     * Get price of the complete order
+     * 
+     * @return string
+     */
+    public function getPrice() {
+        $price = 0;
+        foreach($this->getPackages() as $package) {
+            foreach($package->getItems() as $item) {
+                $price += $item->getPrice();
+            }
+        }
+        
+        return $price;
     }
 
     /**

@@ -75,6 +75,7 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(
+                'ersEntity\Service\BarcodeService' => 'ersEntity\ServiceFactory\BarcodeServiceFactory',
             ),
         );
     }

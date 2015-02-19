@@ -1,0 +1,40 @@
+<?php
+
+$title = 'Pay via Bank Transfer';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<div>
+    <p>Please transfer the amount by SEPA bank transfer to the following account:</p>
+    <p>To <strong>make the orgas live easy</strong>, please add the reason for payment: <strong><?php echo 'AA-BB-CC-DD'; ?></strong></p>
+    <table class="table">
+        <tr>
+            <th>Owner</th>
+            <td>STICHTING EUROPEAN JUGGLING ASSOCIATION</td>
+        </tr>
+        <tr>
+            <th>IBAN</th>
+            <td>NL84 INGB 0007 8721 92</td>
+        </tr>
+        <tr>
+            <th>BIC</th>
+            <td>INGBNL2A</td>
+        </tr>
+        <tr>
+            <th>Amount</th>
+            <td><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+        </tr>
+        <tr>
+            <th>reason for payment</th>
+            <td><?php echo 'AA-BB-CC-DD'; ?></td>
+        </tr>
+    </table>
+    <p>We send this information to your email address: <strong><?php echo $order->getPurchaser()->getEmail(); ?></strong></p>
+    <p>You can request this information again:</p>
+    <ul>
+        <li><strong>Setup a password</strong> for your account with your email address <?php echo $order->getPurchaser()->getEmail(); ?>.</li>
+        <li><strong>Login</strong> to your account.</li>
+        <li>View your <strong>order detail</strong>.</li>
+        <li>View your <strong>payment detail</strong>.</li>
+    </ul>
+</div>
