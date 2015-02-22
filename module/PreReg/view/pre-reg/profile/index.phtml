@@ -21,7 +21,11 @@ $this->headTitle($title);
         </tr>
         <tr>
             <td>Birthdate:</td>
-            <td><?php echo $user->getBirthday()->format('d.m.Y'); ?></td>
+            <td>
+                <?php if($user->getBirthday() instanceof \DateTime): ?>
+                    <?php echo $user->getBirthday()->format('d.m.Y'); ?>
+                <?php endif; ?>
+            </td>
         </tr>
     </table>
 </div>
