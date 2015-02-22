@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit bootstrap="Bootstrap.php">
-    <testsuites>
-        <testsuite name="PreReg Admin Testsuite">
-            <directory phpVersion="5.5.0" phpVersionOperator=">=">./AdminTest</directory>
-        </testsuite>
-    </testsuites>
-</phpunit>
