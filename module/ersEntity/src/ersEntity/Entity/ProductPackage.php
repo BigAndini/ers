@@ -54,6 +54,11 @@ class ProductPackage implements InputFilterAwareInterface
     protected $active;
     
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $quantity = 1;
+    
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $updated;
@@ -189,6 +194,29 @@ class ProductPackage implements InputFilterAwareInterface
         return $this->active;
     }
 
+    /**
+     * Set the value of quantity.
+     *
+     * @param boolean $quantity
+     * @return \Entity\ProductPackage
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of active.
+     *
+     * @return boolean
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+    
     /**
      * Set Product entity related by `Product_id` (many to one).
      *

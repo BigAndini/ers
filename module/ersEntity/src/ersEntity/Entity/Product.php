@@ -73,6 +73,11 @@ class Product implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="boolean")
      */
+    protected $visible;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
     protected $deleted;
 
     /**
@@ -347,6 +352,29 @@ class Product implements InputFilterAwareInterface
         return $this->active;
     }
 
+    /**
+     * Set the value of visible.
+     *
+     * @param boolean $visible
+     * @return \Entity\Product
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of visible.
+     *
+     * @return boolean
+     */
+    public function getVisible()
+    {
+        return $this->visible;
+    }
+    
     /**
      * Set the value of deleted.
      *
@@ -955,7 +983,7 @@ class Product implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'taxId', 'ordering', 'name', 'shortDescription', 'longDescription', 'active', 'deleted', 'personalized', 'updated', 'created');
+        $dataFields = array('id', 'taxId', 'ordering', 'visible', 'name', 'shortDescription', 'longDescription', 'active', 'deleted', 'personalized', 'updated', 'created');
         $relationFields = array('tax');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -988,6 +1016,6 @@ class Product implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'taxId', 'ordering', 'name', 'shortDescription', 'longDescription', 'active', 'deleted', 'personalized', 'updated', 'created');
+        return array('id', 'taxId', 'ordering', 'visible', 'name', 'shortDescription', 'longDescription', 'active', 'deleted', 'personalized', 'updated', 'created');
     }
 }

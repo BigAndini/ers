@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ZfcUser\Entity\UserInterface;
 
 use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Factory as InputFactory;
 
 /**

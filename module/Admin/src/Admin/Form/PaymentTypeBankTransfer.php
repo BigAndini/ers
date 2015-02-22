@@ -75,7 +75,8 @@ class PaymentTypeBankTransfer extends Form
  
         $this->add(array( 
             'name' => 'longDescription', 
-            'type' => 'Zend\Form\Element\Textarea', 
+            #'type' => 'Zend\Form\Element\Textarea', 
+            'type' => 'CKEditorModule\Form\Element\CKEditor',
             'attributes' => array( 
                 'placeholder' => 'Long Description...',
                 'class' => 'form-control form-element',
@@ -85,9 +86,35 @@ class PaymentTypeBankTransfer extends Form
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
+                'ckeditor' => array(
+                    // add anny config you would normaly add via CKEDITOR.editorConfig
+                    'language' => 'en',
+                    #'uiColor' => '#428bca',
+                ),
             ), 
         )); 
  
+        $this->add(array( 
+            'name' => 'explanation', 
+            #'type' => 'Zend\Form\Element\Textarea', 
+            'type' => 'CKEditorModule\Form\Element\CKEditor',
+            'attributes' => array( 
+                'placeholder' => 'Explanation...',
+                /*'class' => 'form-control form-element',*/
+            ), 
+            'options' => array( 
+                'label' => 'Explanation', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                'ckeditor' => array(
+                    // add anny config you would normaly add via CKEDITOR.editorConfig
+                    'language' => 'en',
+                    #'uiColor' => '#428bca',
+                ),
+            ), 
+        )); 
+        
         $this->add(array( 
             'name' => 'fixFee', 
             'type' => 'Zend\Form\Element\Text', 

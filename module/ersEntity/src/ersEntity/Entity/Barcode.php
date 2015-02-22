@@ -219,7 +219,7 @@ class Barcode implements InputFilterAwareInterface
         }
     }
 
-    public function normalizeText(string $text) {
+    public function normalizeText($text) {
         $text = strtoupper($text);
         $matrix = array(
             '0' => array(

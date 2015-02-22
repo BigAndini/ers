@@ -12,6 +12,7 @@ return array(
         'DoctrineORMModule',
         'DOMPDFModule',
         'QRCode',
+        'CKEditorModule',
         'Application',
         'ersEntity',
         'Admin',

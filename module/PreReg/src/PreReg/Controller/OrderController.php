@@ -300,9 +300,11 @@ class OrderController extends AbstractActionController {
             $session_order = new Container('order');
             $session_order->order_id = $session_cart->order->getId();
             
-            error_log('paymenttype:'.$session_cart->order->getPaymentType()->getType());
+            $session_cart->init = 0;
+            
             switch(strtolower($session_cart->order->getPaymentType()->getType())) {
                 case 'banktransfer':
+                    $this->sendBankTransferEmail();
                     return $this->redirect()->toRoute('payment', array('action' => 'banktransfer'));
                     break;
                 case 'creditcard':
@@ -320,6 +322,55 @@ class OrderController extends AbstractActionController {
             'order' => $session_cart->order,
         ));
     }
+    
+    private function sendBankTransferEmail() {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $session_order = new Container('order');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $session_order->order_id));
+        $purchaser = $order->getPurchaser();
+        
+        $content  = new Mime\Message();
+        
+        $textContent = 'This is the text of the email.';
+        $textPart = new Mime\Part($textContent);
+        $textPart->type = 'text/plain';
+        
+        $htmlMarkup = '<html><body><h1>This is the text of the email.</h1></body></html>';
+        $htmlPart = new Mime\Part($htmlMarkup);
+        $htmlPart->type = 'text/html';
+        
+        $content->setParts(array($textPart, $htmlPart));
+
+        $contentPart = new Mime\Part($content->generateMessage());        
+        $contentPart->type = 'multipart/alternative;' . PHP_EOL . ' boundary="' . $content->getMime()->boundary() . '"';
+
+        $pathToImage = getcwd() . '/public/img/logo.jpg';
+        $attachment = new Mime\Part(fopen($pathToImage, 'r'));
+        #$attachment->type = 'application/pdf';
+        $attachment->type = 'image/jpeg';
+        $attachment->filename = 'logo.jpg';
+        $attachment->encoding    = Mime\Mime::ENCODING_BASE64;
+        $attachment->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
+
+        $body = new Mime\Message();
+        $body->setParts(array($contentPart, $attachment));
+        #$body->setParts(array($contentPart));
+
+        $message = new Message();
+        $message->setEncoding('utf-8');
+        $message->addTo($purchaser->getEmail());
+        $message->addFrom('prereg@eja.net');
+        $message->setSubject('Testmail');
+        $message->setBody($body);
+
+        $transport = new Transport\Sendmail();
+        $transport->send($message);
+    }
+    
     /*
      * say thank you after purchaser
      */

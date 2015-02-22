@@ -87,7 +87,7 @@ return array(
         ),
         'checkout_nav' => array(
             'mycart' => array(
-                'label' => 'My Cart',
+                'label' => 'Shopping Cart',
                 'route' => 'order',
                 'action' => 'overview',
                 'resource' => 'controller/PreReg\Controller\Order',

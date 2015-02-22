@@ -35,22 +35,21 @@ echo $this->navigation()
     <?php $paymenttype = $order->getPaymentType(); ?>
     <?php if($paymenttype) : ?>
         <h3><?php echo $paymenttype->getName(); ?></h3>
+        <p><?php echo $paymenttype->getExplanation(); ?></p>
     <?php else: ?>
         <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
         <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
     <?php endif; ?>
-    <h3>Bank Transfer</h3>
+    <!--<h3>Bank Transfer</h3>
     <p>After successfull purchase you will see the bank account data to transfer the money to. When we matched your payment to your order you will be informed and can download your eTickets.</p>
     <h3>Credit Card</h3>
     <p>After purchase you will see the credit card formular. After successful payment you will be able to download your eTickets.</p>
     <h3>PayPal</h3>
-    <p>After purchase you will be redirected to a PayPal page. After successful payment you will be able to download your eTickets.</p>
-    
-    
+    <p>After purchase you will be redirected to a PayPal page. After successful payment you will be able to download your eTickets.</p>-->    
 </div>
 <div class="clear-both"></div>
 <div>
-    <h1>Shopping cart</h1>
+    <h1>Shopping Cart</h1>
         <div>
         <?php 
             $sum = 0;
@@ -138,15 +137,25 @@ echo $this->navigation()
 <div class="clear-both"></div>
 <div class="checkout">
     <?php
-        if($sum == 0) {
+        if(count($order->getItems()) == 0):
             $form->get('submit')->setAttribute('disabled', 'disabled');
-        }
+        endif;
         echo $this->form()->openTag($form);
     
         if($form->get('submit')->getAttribute('disabled') == 'disabled'):
     ?>
-    <div>
-        <h4>Please add all needed information to checkout.</h4>
+    <div class="alert alert-danger">
+        <h4>Please add needed information to checkout</h4>
+        <?php if(count($order->getItems()) == 0) : ?>
+            <p><a href="<?php echo $this->url('product'); ?>">Add products</a> to your shopping cart first.</p>
+        <?php endif; ?>
+        <?php if(!$order->getPurchaser()) : ?>
+            <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose/add a purchaser</a>.</p>
+        <?php endif; ?>
+        <?php if(!$order->getPaymentType()) : ?>
+            <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose a paymenttype</a>.</p>
+        <?php endif; ?>
+        
     </div>
     <?php
         else:

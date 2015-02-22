@@ -66,7 +66,7 @@ class ParticipantController extends AbstractActionController {
                 
                 $forrest = new Container('forrest');
                 $breadcrumb = $forrest->trace->participant;
-                if($breadcrumb->route == 'product' && $breadcrumb->params['action'] == 'view') {
+                if($breadcrumb->route == 'product' && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
                     $breadcrumb->params['participant_id'] = $user->getSessionId();
                 }
 

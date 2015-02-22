@@ -66,6 +66,11 @@ class PaymentType implements InputFilterAwareInterface
     protected $longDescription;
 
     /**
+     * @ORM\Column(type="string", length=1000, nullable=true)
+     */
+    protected $explanation;
+    
+    /**
      * @ORM\Column(type="float")
      */
     protected $fixFee = 0;
@@ -292,6 +297,29 @@ class PaymentType implements InputFilterAwareInterface
         return $this->longDescription;
     }
 
+    /**
+     * Set the value of explanation.
+     *
+     * @param string $explanation
+     * @return \Entity\PaymentType
+     */
+    public function setExplanation($explanation)
+    {
+        $this->explanation = $explanation;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of explanation.
+     *
+     * @return string
+     */
+    public function getExplanation()
+    {
+        return $this->explanation;
+    }
+    
     /**
      * Set the value of fixFee.
      *
@@ -688,7 +716,7 @@ class PaymentType implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'type', 'updated', 'created');
+        $dataFields = array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'explanation', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'type', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -721,6 +749,6 @@ class PaymentType implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'type', 'updated', 'created');
+        return array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'explanation', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'type', 'updated', 'created');
     }
 }

@@ -473,12 +473,12 @@ class Order implements InputFilterAwareInterface
     /**
      * get Items of this order
      * 
-     * @return array
+     * @return ArrayCollection
      */
     public function getItems() {
-        $items = array();
+        $items = new ArrayCollection();
         foreach($this->getPackages() as $package) {
-            $items = array_merge($items, $package->getItems());
+            $items = new ArrayCollection(array_merge($items->toArray(), $package->getItems()->toArray()));
         }
         
         return $items;

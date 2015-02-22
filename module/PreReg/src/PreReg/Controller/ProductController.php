@@ -34,6 +34,7 @@ class ProductController extends AbstractActionController {
                 ->findBy(
                         array(
                             'active' => 1,
+                            'visible' => 1,
                             'deleted' => 0,
                         )
                     );
