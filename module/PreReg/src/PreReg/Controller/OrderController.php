@@ -12,6 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use PreReg\Form;
 use PreReg\InputFilter;
+use PreReg\Service;
 use Zend\Session\Container;
 use ersEntity\Entity;
 
@@ -442,6 +443,24 @@ class OrderController extends AbstractActionController {
     }
     
     public function mailtestAction() {
+        $emailService = new Service\EmailFactory();
+        #$emailService->setFrom('prereg@eja.net');
+        $emailService->setFrom('prereg@inbaz.org');
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $user = $em->getRepository("ersEntity\Entity\User")->findOneBy(array('email' => 'andi@sixhop.net'));
+        $user = new Entity\User();
+        $user->setEmail('web-vtR4MV@mail-tester.com');
+        $emailService->addTo($user);
+        $emailService->setSubject('Testmail');
+        $emailService->setHtmlMessage('<h1>Testmail</h1>');
+        #$emailService->setTextMessage('Testmail');
+        $emailService->addAttachment('public/img/logo.jpg');
+        $emailService->send();
+        
+        return true;
         $content  = new Mime\Message();
         
         $textContent = 'This is the text of the email.';

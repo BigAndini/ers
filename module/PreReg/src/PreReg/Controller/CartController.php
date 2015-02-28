@@ -83,6 +83,7 @@ class CartController extends AbstractActionController {
                 $session_cart->order->removeItem($param_participant_id, $param_item_id);
             }
             $session_cart->order->addItem($item, $participant_id);
+            $session_cart->chooser = true;
         }
         
         $forrest = new Container('forrest');

@@ -9,6 +9,7 @@
         "payment matching"
     ],
     "homepage": "http://prereg.eja.net/",
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
         "zendframework/zendframework": "2.3.*",
@@ -17,7 +18,9 @@
         "zendframework/zend-developer-tools": "dev-master",
         "bjyoungblood/bjy-profiler": "dev-master",
         "zf-commons/zfc-user-doctrine-orm": "~1.0",
-        "ckeditor/ckeditor": "dev-stable"
+        "ckeditor/ckeditor": "dev-stable",
+        "soundasleep/html2text": "~0.2",
+        "fastnloud/zf2-dkim": "1.*"
     },
     "require-dev": {
         "zf-commons/zfc-base": "0.*",

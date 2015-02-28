@@ -377,3 +377,27 @@ ul.ers-dropdown li ul li a:hover{
     /*color: #333;*/
     background-color: #ddd;
 }
+
+.p_overlay {
+    position:absolute;
+    top: 0;
+    left: 0;
+    right:0;
+    bottom:0;
+    background: url("/img/transparence50.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    z-index: 100;
+}
+.p_overlay_inner {
+    background: #fff;
+    width: 500px;
+    margin: 100px auto;
+    border: 1px solid #ddd;
+    padding: 15px;
+}
+
+div.floatLeft {
+    float: left;
+}
+div.floatRight {
+    float: right;
+}

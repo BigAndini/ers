@@ -31,13 +31,13 @@ class ProductController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $tmp = $em->getRepository("ersEntity\Entity\Product")
-                ->findBy(
-                        array(
-                            'active' => 1,
-                            'visible' => 1,
-                            'deleted' => 0,
-                        )
-                    );
+            ->findBy(
+                    array(
+                        'active' => 1,
+                        'visible' => 1,
+                        'deleted' => 0,
+                    )
+                );
         $products = array();
         foreach($tmp as $product) {
             if($product->getPrice()->getCharge() != null) {
@@ -45,8 +45,16 @@ class ProductController extends AbstractActionController {
             }
         }
         
+        
+        $session_cart = new Container('cart');
+        
+        $chooser = $session_cart->chooser;
+        $session_cart->chooser = false;
+        
         return new ViewModel(array(
             'products' => $products,
+            'order' => $session_cart->order,
+            'chooser' => $chooser,
         ));
     }
     
