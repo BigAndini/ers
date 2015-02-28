@@ -9,24 +9,21 @@
         "payment matching"
     ],
     "homepage": "http://prereg.eja.net/",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": ">=5.4.0",
         "zendframework/zendframework": "2.3.*",
         "heartsentwined/zf2-cron": "2.*",
         "doctrine/doctrine-orm-module": "0.*",
         "zendframework/zend-developer-tools": "dev-master",
-        "bjyoungblood/bjy-profiler": "dev-master",
         "zf-commons/zfc-user-doctrine-orm": "~1.0",
         "ckeditor/ckeditor": "dev-stable",
         "soundasleep/html2text": "~0.2",
-        "fastnloud/zf2-dkim": "1.*"
-    },
-    "require-dev": {
+        "fastnloud/zf2-dkim": "1.*",
         "zf-commons/zfc-base": "0.*",
 	"zf-commons/zfc-user": "1.*",
         "bjyoungblood/bjy-authorize": "1.4.*",
-        "dino/dompdf-module": "dev-master",
+        "dino/dompdf-module": "0.3.*",
         "adminweb/qrcode-zf2-module": "0.0.10",
         "satsume/ckeditor-module": "dev-master"
     }
