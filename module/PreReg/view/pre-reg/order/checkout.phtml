@@ -127,11 +127,12 @@ echo $this->navigation()
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>
-      
+        <?php if($paymenttype) : ?>
         <div>
             <p>Payment Type Cost: <?php echo $this->currencyFormat($paymenttype->calcFee($sum), 'EUR', null, 'de_DE'); ?></p>
             <h3>Total Amount: <?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></h3>
         </div>
+        <?php endif; ?>
     </div>
  </div>
 
