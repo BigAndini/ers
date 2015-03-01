@@ -54,7 +54,9 @@ class EmailFactory
     public function setHtmlMessage($html) {
         $this->htmlMessage = new Mime\Part($html);
         $this->htmlMessage->type = 'text/html';
-        $this->setTextMessage(\Html2Text\Html2Text::convert($html));
+        $convert_html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        $text = \Html2Text\Html2Text::convert($convert_html);
+        $this->setTextMessage($text);
         $this->isHtml = true;
     }
     

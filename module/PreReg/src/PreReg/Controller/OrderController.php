@@ -335,6 +335,26 @@ class OrderController extends AbstractActionController {
                     ->findOneBy(array('id' => $session_order->order_id));
         $purchaser = $order->getPurchaser();
         
+        $emailService = new Service\EmailFactory();
+        #$emailService->setFrom('prereg@eja.net');
+        $emailService->setFrom('prereg@inbaz.org');
+        
+        $emailService->addTo($purchaser);
+        $emailService->setSubject('EJC Registration System: Payment Information');
+        
+        $viewModel = new ViewModel(array(
+            'order' => $order,
+        ));
+        $viewModel->setTemplate('email/purchase-info.phtml');
+        $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+        $html = $viewRender->render($viewModel);
+        
+        $emailService->setHtmlMessage($html);
+        #$emailService->setTextMessage('Testmail');
+        $emailService->send();
+        
+        return true;
+        
         $content  = new Mime\Message();
         
         $textContent = 'This is the text of the email.';

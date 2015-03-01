@@ -1,0 +1,26 @@
+<div>
+    <p>Please transfer the amount by SEPA bank transfer to the following account:</p>
+    <p>To <strong>make the orgas live easy</strong>, please add the reason for payment: <strong><?php echo $order->getCode()->getValue(); ?></strong></p>
+    <table class="table">
+        <tr>
+            <td>Owner</td>
+            <td>STICHTING EUROPEAN JUGGLING ASSOCIATION</td>
+        </tr>
+        <tr>
+            <td>IBAN</td>
+            <td>NL84 INGB 0007 8721 92</td>
+        </tr>
+        <tr>
+            <td>BIC</td>
+            <td>INGBNL2A</td>
+        </tr>
+        <tr>
+            <td>Amount</td>
+            <td><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+        </tr>
+        <tr>
+            <td>reason for payment</td>
+            <td><?php echo $order->getCode()->getValue(); ?></td>
+        </tr>
+    </table>
+</div>
