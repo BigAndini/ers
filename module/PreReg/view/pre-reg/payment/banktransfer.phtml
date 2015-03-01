@@ -6,7 +6,7 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <div>
     <p>Please transfer the amount by SEPA bank transfer to the following account:</p>
-    <p>To <strong>make the orgas live easy</strong>, please add the reason for payment: <strong><?php echo 'AA-BB-CC-DD'; ?></strong></p>
+    <p>To <strong>make the orgas live easy</strong>, please add the reason for payment: <strong><?php echo $order->getCode()->getValue(); ?></strong></p>
     <table class="table">
         <tr>
             <th>Owner</th>
@@ -26,11 +26,12 @@ $this->headTitle($title);
         </tr>
         <tr>
             <th>reason for payment</th>
-            <td><?php echo 'AA-BB-CC-DD'; ?></td>
+            <td><?php echo $order->getCode()->getValue(); ?></td>
         </tr>
     </table>
     <p>We send this information to your email address: <strong><?php echo $order->getPurchaser()->getEmail(); ?></strong></p>
-    <p>You can request this information again:</p>
+    <h3>You can request this information again</h3>
+    <p>All you need to do is:</p>
     <ul>
         <li><strong>Setup a password</strong> for your account with your email address <?php echo $order->getPurchaser()->getEmail(); ?>.</li>
         <li><strong>Login</strong> to your account.</li>

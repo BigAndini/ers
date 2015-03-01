@@ -189,7 +189,7 @@ class Code implements InputFilterAwareInterface
             $code[$i] = $alphabet[$n];
         }
         
-        $this->code = implode($code).$this->genChecksum(implode($code));
+        $this->setValue(implode($code).$this->genChecksum(implode($code)));
         
         return $this;
     }

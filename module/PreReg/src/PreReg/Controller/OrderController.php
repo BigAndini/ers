@@ -222,10 +222,11 @@ class OrderController extends AbstractActionController {
             # get the order_id
             $code = new Entity\Code();
             $code->genCode();
-            $code = 1;
-            while($code != null) {
+            $codecheck = 1;
+            while($codecheck != null) {
                 $code->genCode();
-                $code = $em->getRepository("ersEntity\Entity\Code")
+                error_log('found code: '.$code->getValue());
+                $codecheck = $em->getRepository("ersEntity\Entity\Code")
                     ->findOneBy(array('value' => $code->getValue()));
             }
             $em->persist($code);
@@ -266,10 +267,10 @@ class OrderController extends AbstractActionController {
                 }
                 $code = new Entity\Code();
                 $code->genCode();
-                $code = 1;
-                while($code != null) {
+                $codecheck = 1;
+                while($codecheck != null) {
                     $code->genCode();
-                    $code = $em->getRepository("ersEntity\Entity\Code")
+                    $codecheck = $em->getRepository("ersEntity\Entity\Code")
                         ->findOneBy(array('value' => $code->getValue()));
                 }
                 $em->persist($code);
@@ -283,10 +284,10 @@ class OrderController extends AbstractActionController {
                     $item->setPackage($package);
                     $code = new Entity\Code();
                     $code->genCode();
-                    $code = 1;
-                    while($code != null) {
+                    $codecheck = 1;
+                    while($codecheck != null) {
                         $code->genCode();
-                        $code = $em->getRepository("ersEntity\Entity\Code")
+                        $codecheck = $em->getRepository("ersEntity\Entity\Code")
                             ->findOneBy(array('value' => $code->getValue()));
                     }
                     $item->setCode($code);
