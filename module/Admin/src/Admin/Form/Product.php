@@ -93,7 +93,7 @@ class Product extends Form
                 ),
             ),
         ));
-        $this->add(array(
+        /*$this->add(array(
             'name' => 'longDescription',
             'attributes' => array(
                 'type'  => 'textarea',
@@ -106,6 +106,27 @@ class Product extends Form
                     'class'  => 'media-object',
                 ),
             ),
+        ));*/
+        
+        $this->add(array( 
+            'name' => 'longDescription', 
+            #'type' => 'Zend\Form\Element\Textarea', 
+            'type' => 'CKEditorModule\Form\Element\CKEditor',
+            'attributes' => array( 
+                'placeholder' => 'Long Description...',
+                'class' => 'form-control form-element',
+            ), 
+            'options' => array( 
+                'label' => 'Long Description', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                'ckeditor' => array(
+                    // add anny config you would normaly add via CKEDITOR.editorConfig
+                    'language' => 'en',
+                    #'uiColor' => '#428bca',
+                ),
+            ), 
         ));
         
         $this->add(array(

@@ -24,7 +24,7 @@ use Zend\InputFilter\InputFilterInterface;
  * @ORM\Table(name="Package", indexes={
  *   @ORM\Index(name="fk_Package_Order1_idx", columns={"Order_id"}), 
  *   @ORM\Index(name="fk_Package_User1_idx", columns={"Participant_id"}), 
- *   @ORM\Index(name="fk_Package_Barcode1_idx", columns={"Barcode_id"})
+ *   @ORM\Index(name="fk_Package_Code1_idx", columns={"Code_id"})
  * })
  * @ORM\HasLifecycleCallbacks()
  */
@@ -65,7 +65,7 @@ class Package implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="integer")
      */
-    protected $Barcode_id;
+    protected $Code_id;
 
     /**
      * @ORM\Column(type="datetime")
@@ -96,10 +96,10 @@ class Package implements InputFilterAwareInterface
     protected $participant;
 
     /**
-     * @ORM\OneToOne(targetEntity="Barcode", inversedBy="package",cascade={"persist"})
-     * @ORM\JoinColumn(name="Barcode_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="Code", inversedBy="package",cascade={"persist"})
+     * @ORM\JoinColumn(name="Code_id", referencedColumnName="id")
      */
-    protected $barcode;
+    protected $code;
 
     public function __construct()
     {
@@ -223,26 +223,26 @@ class Package implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of Barcode_id.
+     * Set the value of Code_id.
      *
-     * @param integer $Barcode_id
+     * @param integer $Code_id
      * @return \Entity\Package
      */
-    public function setBarcodeId($Barcode_id)
+    public function setCodeId($Code_id)
     {
-        $this->Barcode_id = $Barcode_id;
+        $this->Code_id = $Code_id;
 
         return $this;
     }
 
     /**
-     * Get the value of Barcode_id.
+     * Get the value of Code_id.
      *
      * @return integer
      */
-    public function getBarcodeId()
+    public function getCodeId()
     {
-        return $this->Barcode_id;
+        return $this->Code_id;
     }
 
     /**
@@ -415,26 +415,26 @@ class Package implements InputFilterAwareInterface
     }
 
     /**
-     * Set Barcode entity (one to one).
+     * Set Code entity (one to one).
      *
-     * @param \Entity\Barcode $barcode
+     * @param \Entity\Code $code
      * @return \Entity\Package
      */
-    public function setBarcode(Barcode $barcode)
+    public function setCode(Code $code)
     {
-        $this->barcode = $barcode;
+        $this->code = $code;
 
         return $this;
     }
 
     /**
-     * Get Barcode entity (one to one).
+     * Get Code entity (one to one).
      *
-     * @return \Entity\Barcode
+     * @return \Entity\Code
      */
-    public function getBarcode()
+    public function getCode()
     {
-        return $this->barcode;
+        return $this->code;
     }
 
     /**
@@ -479,7 +479,7 @@ class Package implements InputFilterAwareInterface
                 'validators' => array(),
             ),
             array(
-                'name' => 'Barcode_id',
+                'name' => 'Code_id',
                 'required' => true,
                 'filters' => array(),
                 'validators' => array(),
@@ -532,8 +532,8 @@ class Package implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'session_id', 'Order_id', 'Participant_id', 'Barcode_id', 'updated', 'created');
-        $relationFields = array('order', 'user', 'barcode');
+        $dataFields = array('id', 'session_id', 'Order_id', 'Participant_id', 'Code_id', 'updated', 'created');
+        $relationFields = array('order', 'user', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
             $map = null;
@@ -565,6 +565,6 @@ class Package implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'session_id', 'Order_id', 'Participant_id', 'Barcode_id', 'participant', 'items', 'updated', 'created');
+        return array('id', 'session_id', 'Order_id', 'Participant_id', 'Code_id', 'participant', 'items', 'updated', 'created');
     }
 }

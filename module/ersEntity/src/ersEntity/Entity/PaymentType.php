@@ -365,6 +365,18 @@ class PaymentType implements InputFilterAwareInterface
     {
         return $this->percentageFee;
     }
+    
+    /**
+     * Calculates fees for this payment type for a given amount
+     * 
+     * @return float
+     */
+    public function calcFee($amount) {
+        $fixFee = $this->getFixFee();
+        $percentageFee = $amount*$this->getPercentageFee()/100;
+        error_log('amount: '.$amount.' percentageFee: '.$percentageFee);
+        return $fixFee+$percentageFee;
+    }
 
     /**
      * Set the value of activeFrom_id.

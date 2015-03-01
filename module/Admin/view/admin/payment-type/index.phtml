@@ -15,6 +15,7 @@ $this->headTitle($title);
     <tr>
         <th>Order</th>
         <th>Name</th>
+        <th>Type</th>
         <th>Logo</th>
         <th>Period</th>
         <th>&nbsp;</th>
@@ -23,6 +24,7 @@ $this->headTitle($title);
     <tr>
         <td><?php echo $paymenttype->getOrder(); ?></td>
         <td><?php echo $paymenttype->getName(); ?></td>
+        <td><?php echo $paymenttype->getType(); ?></td>
         <td>
             
             <?php if($paymenttype->getLogo() != ''): ?>

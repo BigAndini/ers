@@ -74,7 +74,6 @@ class CreditCard extends Form
             'name' => 'trx_amount',
             'attributes' => array(
                 'type'  => 'hidden',
-                #'value' => '12989',
             ),
         ));
         
@@ -82,7 +81,6 @@ class CreditCard extends Form
             'name' => 'trx_currency',
             'attributes' => array(
                 'type'  => 'hidden',
-                'value' => 'EUR',
             ),
         ));
         
@@ -105,7 +103,7 @@ class CreditCard extends Form
             'name' => 'silent',
             'attributes' => array(
                 'type'  => 'hidden',
-                'value' => '0'
+                'value' => '1'
             ),
         ));
         
@@ -113,6 +111,35 @@ class CreditCard extends Form
             'name' => 'silent_error_url',
             'attributes' => array(
                 'type'  => 'hidden',
+            ),
+        ));
+        
+        /*$this->add(array(
+            'name' => 'hidden_trigger_url',
+            'attributes' => array(
+                'type'  => 'hidden',
+            ),
+        ));*/
+        
+        $this->add(array(
+            'name' => 'trx_securityhash',
+            'attributes' => array(
+                'type'  => 'hidden',
+            ),
+        ));
+        
+        $this->add(array(
+            'name' => 'shopper_id',
+            'attributes' => array(
+                'type'  => 'hidden',
+            ),
+        ));
+        
+        $this->add(array(
+            'name' => 'advanced_strict_id_check',
+            'attributes' => array(
+                'type'  => 'hidden',
+                'value' => '1',
             ),
         ));
         

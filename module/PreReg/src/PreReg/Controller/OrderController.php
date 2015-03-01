@@ -220,17 +220,17 @@ class OrderController extends AbstractActionController {
             $session_cart->order->setPaymentTypeId($paymenttype->getId());
             
             # get the order_id
-            $barcode = new Entity\Barcode();
-            $barcode->genBarcode();
+            $code = new Entity\Code();
+            $code->genCode();
             $code = 1;
             while($code != null) {
-                $barcode->genBarcode();
-                $code = $em->getRepository("ersEntity\Entity\Barcode")
-                    ->findOneBy(array('barcode' => $barcode->getBarcode()));
+                $code->genCode();
+                $code = $em->getRepository("ersEntity\Entity\Code")
+                    ->findOneBy(array('value' => $code->getValue()));
             }
-            $em->persist($barcode);
-            $session_cart->order->setBarcode($barcode);
-            $session_cart->order->setBarcodeId($barcode->getId());
+            $em->persist($code);
+            $session_cart->order->setCode($code);
+            $session_cart->order->setCodeId($code->getId());
             
             $packages = $session_cart->order->getPackages();
             foreach($packages as $package) {
@@ -264,32 +264,32 @@ class OrderController extends AbstractActionController {
                     $package->setParticipant($participant);
                     $package->setParticipantId($participant->getId());
                 }
-                $barcode = new Entity\Barcode();
-                $barcode->genBarcode();
+                $code = new Entity\Code();
+                $code->genCode();
                 $code = 1;
                 while($code != null) {
-                    $barcode->genBarcode();
-                    $code = $em->getRepository("ersEntity\Entity\Barcode")
-                        ->findOneBy(array('barcode' => $barcode->getBarcode()));
+                    $code->genCode();
+                    $code = $em->getRepository("ersEntity\Entity\Code")
+                        ->findOneBy(array('value' => $code->getValue()));
                 }
-                $em->persist($barcode);
-                $package->setBarcode($barcode);
-                $package->setBarcodeId($barcode->getId());
+                $em->persist($code);
+                $package->setCode($code);
+                $package->setCodeId($code->getId());
                 
                 foreach($package->getItems() as $item) {
                     $product = $em->getRepository("ersEntity\Entity\Product")
                         ->findOneBy(array('id' => $item->getProductId()));
                     $item->setProduct($product);
                     $item->setPackage($package);
-                    $barcode = new Entity\Barcode();
-                    $barcode->genBarcode();
+                    $code = new Entity\Code();
+                    $code->genCode();
                     $code = 1;
                     while($code != null) {
-                        $barcode->genBarcode();
-                        $code = $em->getRepository("ersEntity\Entity\Barcode")
-                            ->findOneBy(array('barcode' => $barcode->getBarcode()));
+                        $code->genCode();
+                        $code = $em->getRepository("ersEntity\Entity\Code")
+                            ->findOneBy(array('value' => $code->getValue()));
                     }
-                    $item->setBarcode($barcode);
+                    $item->setCode($code);
                 }
                 
                 $em->persist($package);
@@ -405,17 +405,17 @@ class OrderController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $barcodes = array();
+        $codes = array();
         $count = 0;
         $found = 0;
         while(true) {
-            $barcode = new Entity\Barcode();
-            $barcode->genBarcode();
+            $code = new Entity\Code();
+            $code->genCode();
             
-            $code = $em->getRepository("ersEntity\Entity\Barcode")->findOneBy(array('barcode' => $barcode->getBarcode()));
-            #if(in_array($barcode->getBarcode(), $barcodes)) {
+            $code = $em->getRepository("ersEntity\Entity\Code")->findOneBy(array('value' => $code->getValue()));
+            #if(in_array($code->getValue(), $codes)) {
             if($code) {
-                error_log('found existing barcode after '.$count.' tries.');
+                error_log('found existing code after '.$count.' tries.');
                 error_log('time spend: '.(microtime(true)-$start));
                 $found++;
                 return new ViewModel();                    
@@ -423,14 +423,14 @@ class OrderController extends AbstractActionController {
                     return new ViewModel();                    
                 }
             }
-            if(!$barcode->checkBarcode()) {
+            if(!$code->checkCode()) {
                 error_log('BARCODE IS NOT VALID');
                 error_log('time spend: '.(microtime(true)-$start));
                 return new ViewModel();
             }
-            #$barcodes[] = $barcode->getBarcode();
-            #error_log('added barcode: '.$barcode->getBarcode().' '.(microtime(true)-$start));
-            $em->persist($barcode);
+            #$codes[] = $code->getValue();
+            #error_log('added code: '.$code->getValue().' '.(microtime(true)-$start));
+            $em->persist($code);
             $em->flush();
             
             $count++;
@@ -540,7 +540,7 @@ class OrderController extends AbstractActionController {
         #file_put_contents(getcwd().'/public/img/qrcode.png', $qr_content);
         
         /*
-         * Barcode creation
+         * Code creation
          */
         
         // Only the text to draw is required
@@ -606,5 +606,8 @@ class OrderController extends AbstractActionController {
         
         return new ViewModel();
         
+    }
+    public function ccErrorAction() {
+        return new ViewModel();
     }
 }

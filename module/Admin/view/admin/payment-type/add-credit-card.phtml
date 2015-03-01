@@ -1,25 +1,18 @@
 <?php
 // module/Album/view/album/album/add.phtml:
 
-$title = 'Edit Payment Type';
+$title = 'Add Payment Type';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <?php
 $form = $this->form;
-$form->setAttribute('action', $this->url(
-    'admin/payment-type',
-    array(
-        'action' => 'editBankTransfer',
-        'id'     => $this->id,
-    )
-));
+$form->setAttribute('action', $this->url('admin/payment-type', array('action' => 'addCreditCard')));
 $form->prepare();
 
 echo $this->form()->openTag($form);
 
 echo $this->formHidden($form->get('id'));
-
 echo $this->formRow($form->get('ordering'));
 echo $this->formRow($form->get('name'));
 echo $this->formRow($form->get('shortDescription'));

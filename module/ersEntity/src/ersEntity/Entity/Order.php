@@ -21,7 +21,7 @@ use Zend\InputFilter\InputFilterInterface;
  * Entity\Order
  *
  * @ORM\Entity()
- * @ORM\Table(name="`Order`", indexes={@ORM\Index(name="fk_Order_User1_idx", columns={"Purchaser_id"}), @ORM\Index(name="fk_Order_PaymentType1_idx", columns={"PaymentType_id"}), @ORM\Index(name="fk_Order_Barcode1_idx", columns={"Barcode_id"})})
+ * @ORM\Table(name="`Order`", indexes={@ORM\Index(name="fk_Order_User1_idx", columns={"Purchaser_id"}), @ORM\Index(name="fk_Order_PaymentType1_idx", columns={"PaymentType_id"}), @ORM\Index(name="fk_Order_Code1_idx", columns={"Code_id"})})
  * @ORM\HasLifecycleCallbacks()
  */
 class Order implements InputFilterAwareInterface
@@ -78,7 +78,7 @@ class Order implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="integer")
      */
-    protected $Barcode_id;
+    protected $Code_id;
 
     /**
      * @ORM\OneToMany(targetEntity="Match", mappedBy="order")
@@ -105,10 +105,10 @@ class Order implements InputFilterAwareInterface
     protected $paymentType;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Barcode", inversedBy="orders")
-     * @ORM\JoinColumn(name="Barcode_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Code", inversedBy="orders")
+     * @ORM\JoinColumn(name="Code_id", referencedColumnName="id")
      */
-    protected $barcode;
+    protected $code;
 
     public function __construct()
     {
@@ -326,26 +326,26 @@ class Order implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of Barcode_id.
+     * Set the value of Code_id.
      *
-     * @param integer $Barcode_id
+     * @param integer $Code_id
      * @return \Entity\Order
      */
-    public function setBarcodeId($Barcode_id)
+    public function setCodeId($Code_id)
     {
-        $this->Barcode_id = $Barcode_id;
+        $this->Code_id = $Code_id;
 
         return $this;
     }
 
     /**
-     * Get the value of Barcode_id.
+     * Get the value of Code_id.
      *
      * @return integer
      */
-    public function getBarcodeId()
+    public function getCodeId()
     {
-        return $this->Barcode_id;
+        return $this->Code_id;
     }
 
     /**
@@ -633,32 +633,32 @@ class Order implements InputFilterAwareInterface
     }
 
     /**
-     * Set Barcode entity (many to one).
+     * Set Code entity (many to one).
      *
-     * @param \Entity\Barcode $barcode
+     * @param \Entity\Code $code
      * @return \Entity\Order
      */
-    public function setBarcode(Barcode $barcode = null)
+    public function setCode(Code $code = null)
     {
-        $this->barcode = $barcode;
+        $this->code = $code;
 
         return $this;
     }
 
     /**
-     * Get Barcode entity (many to one).
+     * Get Code entity (many to one).
      *
-     * @return \Entity\Barcode
+     * @return \Entity\Code
      */
-    public function getBarcode()
+    public function getCode()
     {
-        return $this->barcode;
+        return $this->code;
     }
     
     /**
-     * Get price of the complete order
+     * Get price of the complete order (excluding price fees)
      * 
-     * @return string
+     * @return float
      */
     public function getPrice() {
         $price = 0;
@@ -669,6 +669,17 @@ class Order implements InputFilterAwareInterface
         }
         
         return $price;
+    }
+    
+    /**
+     * Get total sum of the order (including price fees)
+     * 
+     * @return float
+     */
+    public function getSum() {
+        $sum = $this->getPrice();
+        $sum += $this->getPaymentType()->calcFee($sum);
+        return $sum;
     }
 
     /**
@@ -737,7 +748,7 @@ class Order implements InputFilterAwareInterface
                 'validators' => array(),
             ),
             array(
-                'name' => 'Barcode_id',
+                'name' => 'Code_id',
                 'required' => true,
                 'filters' => array(),
                 'validators' => array(),
@@ -781,8 +792,8 @@ class Order implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'invoiceDetail', 'updated', 'created', 'Barcode_id');
-        $relationFields = array('user', 'paymentType', 'barcode');
+        $dataFields = array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'invoiceDetail', 'updated', 'created', 'Code_id');
+        $relationFields = array('user', 'paymentType', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
             $map = null;
@@ -814,6 +825,6 @@ class Order implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'invoiceDetail', 'packages', 'updated', 'created', 'Barcode_id');
+        return array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'invoiceDetail', 'packages', 'updated', 'created', 'Code_id');
     }
 }

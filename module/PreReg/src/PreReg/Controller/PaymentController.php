@@ -20,6 +20,9 @@ class PaymentController extends AbstractActionController {
      */
     public function infoAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('product');
+        }
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -56,9 +59,16 @@ class PaymentController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")->findOneBy(array('id' => $session_order->order_id));
         
+        $trxuser_id = '99999';
+        $trx_amount = $order->getSum()*100; # amount in cents
+        $trx_currency = 'EUR';
+        $trxpassword = '0';
+        $sec_key = 'ohPinei6chahnahcoesh';
+        
+        
         $form = new Form\CreditCard();
         
-        $form->setAttribute('action', 'https://ipayment.de/merchant/99999/processor/2.0/');
+        $form->setAttribute('action', 'https://ipayment.de/merchant/'.$trxuser_id.'/processor/2.0/');
         
         $years = array();
         for($i=date('Y'); $i<=(date('Y')+15); $i++) {
@@ -79,10 +89,61 @@ class PaymentController extends AbstractActionController {
         }
         $form->get('cc_expdate_month')->setAttribute('options', $months);
         
+        $form->get('silent_error_url')->setValue(
+                $this->url()->fromRoute(
+                        'order', 
+                        array('action' => 'cc-error'), 
+                        array('force_canonical' => true)
+                ));
+        $form->get('redirect_url')->setValue(
+                $this->url()->fromRoute(
+                        'order', 
+                        array('action' => 'thankyou'), 
+                        array('force_canonical' => true)
+                ));
+        $form->get('trx_amount')->setValue($trx_amount);
+        $form->get('trx_currency')->setValue($trx_currency);
+        
+        $form->get('trx_securityhash')->setValue(
+                    md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key)
+                );
+        $form->get('shopper_id')->setValue($order->getCode()->getValue());
+        
         return new ViewModel(array(
             'order' => $order,
             'form' => $form,
         ));
+    }
+    
+    public function checkCCPaymentAction() {
+        $security_key= "qundhft67dnft";
+        $return_checksum="";
+        if (isset($_GET["trxuser_id "]))
+            $return_checksum.= $_GET["trxuser_id"];
+        if (isset($_GET["trx_amount "]))
+            $return_checksum.= $_GET["trx_amount"];
+        if (isset($_GET["trx_currency "]))
+            $return_checksum.= $_GET["trx_currency"];
+        if (isset($_GET["ret_authcode "]))
+            $return_checksum.= $_GET["ret_authcode"];
+        if (isset($_GET["ret_trx_number "]))
+            $return_checksum.= $_GET["ret_trx_number"];
+        $return_checksum.= $security_key;
+        if ($_GET["ret_param_checksum "]!=md5($return_checksum)) {
+            // Error because hash do not match!
+            exit;
+        }
+        
+        $security_key= "qundhft67dnft";
+        $url= "https://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+        $url_without_checksum=
+        substr($url, 0, strpos($url, "&ret_url_checksum") + 1);
+        if ($_REQUEST['ret_url_checksum'] != md5($url_without_checksum.$security_key)) {
+            // Error because hash does not match
+        }
+        else {
+            // URL ok
+        }
     }
     
     /**

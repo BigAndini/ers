@@ -92,7 +92,7 @@ class PaymentTypeBankTransfer extends Form
                     #'uiColor' => '#428bca',
                 ),
             ), 
-        )); 
+        ));
  
         $this->add(array( 
             'name' => 'explanation', 
