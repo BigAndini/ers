@@ -15,6 +15,9 @@ use Zend\Session\Container;
 use PreReg\Form;
 
 class PaymentController extends AbstractActionController { 
+    public function indexAction() {
+        $this->getResponse()->setStatusCode(404);
+    }
     /*
      * display long description of payment type
      */
