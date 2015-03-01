@@ -36,6 +36,9 @@ class ProductController extends AbstractActionController {
                         'active' => 1,
                         'visible' => 1,
                         'deleted' => 0,
+                    ),
+                    array(
+                        'ordering' => 'ASC'
                     )
                 );
         $products = array();
