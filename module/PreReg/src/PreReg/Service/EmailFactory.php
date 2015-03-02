@@ -51,11 +51,13 @@ class EmailFactory
         return $this->isText;
     }
     
-    public function setHtmlMessage($html) {
-        $this->htmlMessage = new Mime\Part($html);
+    public function setHtmlMessage($markup) {
+        $this->htmlMessage = new Mime\Part($markup);
         $this->htmlMessage->type = 'text/html';
-        $convert_html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
-        $text = \Html2Text\Html2Text::convert($convert_html);
+        #$convert_html = mb_convert_encoding($markup, 'HTML-ENTITIES', 'UTF-8');
+        #$text = \Html2Text\Html2Text::convert($convert_html);
+        $html = new \Html2Text\Html2Text($markup);
+        $text = $html->getText();
         $this->setTextMessage($text);
         $this->isHtml = true;
     }

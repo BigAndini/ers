@@ -18,7 +18,7 @@
         "zendframework/zend-developer-tools": "dev-master",
         "zf-commons/zfc-user-doctrine-orm": "~1.0",
         "ckeditor/ckeditor": "dev-stable",
-        "soundasleep/html2text": "~0.2",
+        "html2text/html2text": "2.0.1",
         "fastnloud/zf2-dkim": "1.*",
         "zf-commons/zfc-base": "0.*",
 	"zf-commons/zfc-user": "1.*",
