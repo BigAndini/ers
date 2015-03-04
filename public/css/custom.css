@@ -9,72 +9,32 @@ and open the template in the editor.
 */
 
 /** /public/css/StickyNotes.css */
-@import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);
+/*@import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);*/
 
 * { box-sizing:border-box; }
 
 body { 
-    /*background:url(http://subtlepatterns.com/patterns/little_pluses.png) #cacaca;*/
     background: #fff;
+    padding-top: 0;
 }
 
-#sticky-notes {
-    float: left;
-}
-/*#create, textarea  {
-    float:left;
-    padding:25px 25px 40px;
-    margin:0 20px 20px 0;
-    width:250px;
-    height:250px;
-}*/
+/* CSS colors */
 
-#create {
-    user-select:none;
-    padding:20px;
-    border-radius:20px;
-    text-align:center;
-    border:15px solid rgba(0,0,0,0.1);
-    cursor:pointer;
-    color:rgba(0,0,0,0.1);
-    font:220px "Helvetica", sans-serif;
-    line-height:185px;
+.green {
+    color: #85b32a;
+}
+.green-bg {
+    background: #85b32a;
 }
 
-#create:hover { border-color:rgba(0,0,0,0.2); color:rgba(0,0,0,0.2); }
+.light-green {
+    color: #d6f29d;
+}
 
-/*textarea {
-    font:20px 'Gloria Hallelujah', cursive;
-    line-height:1.5;
-    border:0;
-    border-radius:3px;
-    background: linear-gradient(#F9EFAF, #F7E98D);
-    background: -webkit-linear-gradient(#F9EFAF, #F7E98D);
-    box-shadow:0 4px 6px rgba(0,0,0,0.1);
-    overflow:hidden;
-    transition:box-shadow 0.5s ease;
-    transition:-webkit-box-shadow 0.5s ease;
-    font-smoothing:subpixel-antialiased;
-    max-width:520px;
-    max-height:250px;
+.light-green-bg {
+    background-color: #d6f29d;
 }
-textarea:hover { box-shadow:0 5px 8px rgba(0,0,0,0.15); }
-textarea:focus { box-shadow:0 5px 12px rgba(0,0,0,0.2); outline:none; }*/
 
-.delete-sticky{
-    float: left;
-    margin: 5px 0 0 -35px;
-    display: none;
-}
-a.delete-sticky {
-    color: red;
-}
-.sticky-note{
-    float: left;
-}
-.sticky-note:hover .delete-sticky{
-    display: block;
-}
 .clear-both {
     clear: both;
 }
@@ -98,9 +58,6 @@ a.delete-sticky {
     margin-bottom: 1em;
     position: relative;
 }
-.clearfix {
-    clear:both;
-}
 
 .product-image {
     float: left;
@@ -108,17 +65,9 @@ a.delete-sticky {
 
 .desc-long {
     width: 300px;
-}
-
-.next-price {
-    position: absolute;
-    top: .5em;
-    right: .5em;
-}
-
-.desc-long {
     float: left;
 }
+
 .product-price-div {
     text-align: right;
     height: 100px;
@@ -159,64 +108,9 @@ a.delete-sticky {
     text-align: right;
 }
 
-#cart-widget {
-    padding: .5em 0;
-    text-align: right;
-    
-}
-
-#cart-widget a {
-    margin: 0 5px;
-}
-
-.order-step {
-    border: 1px solid #ddd;
-    border-radius: 7px;
-    /* 
-     * width of 390px 
-     */
-    width: 265px;
-    margin-right: 20px;
-    padding: 10px 15px;
-    line-height: 40px;
-    font-size: 25px;
-    float: left;
-}
-.order-step-no {
-    border: 1px solid #000;
-    border-radius:30px;
-    font-weight: normal;
-    padding: 3px 10px;
-}
-.order-steps .active {
-    font-weight: bold;
-}
-
 .checkout {
     text-align: right;
     margin: 20px 0;
-}
-
-.col-description {
-    width: 320px;
-}
-.col-belongsto {
-    width: 230px;
-}
-.col-price {
-    width: 80px;
-    text-align: right;
-}
-.col-tools {
-    width: 50px;
-}
-
-.cart-sum {
-    float: right;
-    margin-right: 85px;
-}
-.sum-table {
-    /*width: 300px;*/
 }
 
 .col-sum {
@@ -281,19 +175,8 @@ a.delete-sticky {
     color: #85b32a;
 }
 
-body {
-    padding-top: 0;
-}
-
 .main-container {
     min-height: 500px;
-}
-
-.green {
-    color: #85b32a;
-}
-.green-bg {
-    background: #85b32a;
 }
 
 .purchaser {
@@ -342,9 +225,6 @@ ul.ers-dropdown:after {
     height: 0;
     visibility: hidden;
 }
-/*ul.ers-dropdown,ul.ers-dropdown li{
-    background-color: #FAFAFA;
-}*/
 ul.ers-dropdown li {
     list-style: none;
     float:left;
@@ -409,7 +289,8 @@ a.product-item {
 }
 a.product-item:hover {
     text-decoration: none;
-    background-color: #f9f9f9;
+    /*background-color: #f1f1f1;*/
+    background-color: #d6f29d;
 }
 a.product-item span.product-title {
     font-size: 24px;
