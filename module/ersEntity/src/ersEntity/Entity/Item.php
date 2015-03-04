@@ -101,6 +101,11 @@ class Item implements InputFilterAwareInterface
      * @ORM\Column(name="`status`", type="string", nullable=true)
      */
     protected $status;
+    
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    protected $personalized;
 
     /**
      * @ORM\Column(type="datetime")
@@ -436,6 +441,29 @@ class Item implements InputFilterAwareInterface
     }
 
     /**
+     * Set the value of personalized.
+     *
+     * @param boolean $personalized
+     * @return \Entity\Product
+     */
+    public function setPersonalized($personalized)
+    {
+        $this->personalized = $personalized;
+        
+        return $this;
+    }
+
+    /**
+     * Get the value of personalized.
+     *
+     * @return boolean
+     */
+    public function getPersonalized()
+    {
+        return $this->personalized;
+    }
+    
+    /**
      * Set the value of updated.
      *
      * @param datetime $updated
@@ -723,7 +751,7 @@ class Item implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'updated', 'created');
+        $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'updated', 'created');
         $relationFields = array('product', 'package', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -756,6 +784,6 @@ class Item implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'updated', 'created');
+        return array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'updated', 'created');
     }
 }

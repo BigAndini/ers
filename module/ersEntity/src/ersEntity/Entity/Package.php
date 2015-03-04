@@ -369,6 +369,20 @@ class Package implements InputFilterAwareInterface
     }
     
     /**
+     * Check if this package already contains a personalized ticket
+     * 
+     * @return boolean
+     */
+    public function hasPersonalizedItem() {
+        foreach($this->getItems() as $item) {
+            if($item->getPersonalized()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
      * Set Order entity (many to one).
      *
      * @param \Entity\Order $order

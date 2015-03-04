@@ -61,6 +61,13 @@ class CartController extends AbstractActionController {
                 unset($data['participant_id']);
             }
             
+            # check if participant already has a personalized ticket
+            $session_cart = new Container('cart');
+            $package = $session_cart->order->getPackageByParticipantSessionId($participant_id);
+            if($package->hasPersonalizedItem()) {
+                error_log('Package for participant '.$participant_id.' already has a personalized item. What should I do?');
+            }
+            
             $item = new Entity\Item();
             $em = $this
                 ->getServiceLocator()
@@ -69,17 +76,20 @@ class CartController extends AbstractActionController {
                     ->findOneBy(array('id' => $data['Product_id']));
             
             # prepare product data to populate item
-            $data = $product->getArrayCopy();
-            $data['Product_id'] = $data['id'];
-            unset($data['id']);
+            $product_data = $product->getArrayCopy();
+            $product_data['Product_id'] = $product_data['id'];
+            unset($product_data['id']);
             
-            $item->populate($data);
+            $item->populate($product_data);
             $item->setPrice($product->getPrice()->getCharge());
             $item->setAmount(1);
-            $item->populate((array) $data);
+            $item->populate((array) $product_data);
             
-            $session_cart = new Container('cart');
-            if($param_participant_id && $param_item_id) {
+            
+            error_log('param_participant_id: '.$param_participant_id.', param_item_id: '.$param_item_id);
+            if(
+                isset($param_participant_id) && is_numeric($param_participant_id) && 
+                $param_item_id) {
                 $session_cart->order->removeItem($param_participant_id, $param_item_id);
             }
             $session_cart->order->addItem($item, $participant_id);

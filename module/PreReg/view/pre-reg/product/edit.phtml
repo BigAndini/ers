@@ -25,7 +25,6 @@ else:
     echo $this->form()->openTag($form);
     
     if($product->getPersonalized() || count($participants) > 0) {
-        
         echo $this->formRow($form->get('participant_id'));
         echo $this->formRow($form->get('addParticipant'));
     }

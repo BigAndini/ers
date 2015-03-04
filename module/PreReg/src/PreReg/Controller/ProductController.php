@@ -105,7 +105,7 @@ class ProductController extends AbstractActionController {
         
         $form = new Form\ProductView();
 
-        if($participant_id && $item_id) {
+        if(isset($participant_id) && is_numeric($participant_id) && $item_id) {
             $url = $this->url()->fromRoute('cart', 
                     array(
                         'action' => 'add', 
