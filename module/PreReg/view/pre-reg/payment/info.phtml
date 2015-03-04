@@ -8,6 +8,5 @@ $this->headTitle($title);
     <?php echo $paymenttype->getLongDescription(); ?>
 </div>
 <div>
-    <?php $breadcrumb = $forrest->trace->paymenttype; ?>
     <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">back to Checkout</a>
 </div>

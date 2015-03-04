@@ -13,6 +13,7 @@ use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use PreReg\Form;
 use ersEntity\Entity;
+use PreReg\Service;
 
 class ParticipantController extends AbstractActionController {
     /*
@@ -22,17 +23,9 @@ class ParticipantController extends AbstractActionController {
      */
     public function indexAction()
     {
-        $clearance = new Container('forrest');
-        $clearance->getManager()->getStorage()->clear('forrest');
-       
-        $forrest = new Container('forrest');
-        $forrest->trace = new \ArrayObject();
-        
-        $breadcrumb = new \ArrayObject();
-        $breadcrumb->route = 'participant';
-        $breadcrumb->params = array();
-        $breadcrumb->options = array();
-        $forrest->trace->participant = $breadcrumb;
+        $forrest = new Service\BreadcrumbFactory(); 
+        $forrest->reset();
+        $forrest->set('participant', 'participant');
         
         $session_cart = new Container('cart');
         $participants = $session_cart->order->getParticipants();
@@ -50,6 +43,7 @@ class ParticipantController extends AbstractActionController {
         $form = new Form\Participant(); 
         $request = $this->getRequest(); 
 
+        $forrest = new Service\BreadcrumbFactory();
         if($request->isPost()) 
         { 
             $user = new Entity\User();
@@ -64,8 +58,7 @@ class ParticipantController extends AbstractActionController {
                 $session_cart = new Container('cart');
                 $session_cart->order->addParticipant($user);
                 
-                $forrest = new Container('forrest');
-                $breadcrumb = $forrest->trace->participant;
+                $breadcrumb = $forrest->get('participant');
                 if($breadcrumb->route == 'product' && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
                     $breadcrumb->params['participant_id'] = $user->getSessionId();
                 }
@@ -76,18 +69,10 @@ class ParticipantController extends AbstractActionController {
             } 
         }
         
-        $forrest = new Container('forrest');
-        if(isset($forrest->trace) && isset($forrest->trace->participant)) {
-            $breadcrumb = $forrest->trace->participant;
-        } else {
-            $breadcrumb = new \ArrayObject();
-            $breadcrumb->route = 'participant';
-            $breadcrumb->params = array();
-            $breadcrumb->options = array();
-            if(isset($forrest->trace)) {
-                $forrest->trace->participant = $breadcrumb;
-            }
+        if(!$forrest->exists('participant')) {
+            $forrest->set('participant', 'participant');
         }
+        $breadcrumb = $forrest->get('participant');
 
         return [
             'form' => $form,
@@ -114,6 +99,7 @@ class ParticipantController extends AbstractActionController {
         
         $form = new Form\Participant(); 
         $request = $this->getRequest(); 
+        $forrest = new Service\BreadcrumbFactory();
         
         $form->bind($participant);
         
@@ -128,26 +114,17 @@ class ParticipantController extends AbstractActionController {
                 $session_cart = new Container('cart');
                 $session_cart->order->setParticipantBySessionId($participant, $id);
                 
-                $forrest = new Container('forrest');
-                $breadcrumb = $forrest->trace->participant;
+                $breadcrumb = $forrest->get('participant');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 error_log(var_export($form->getMessages(), true));
             } 
         }
         
-        $forrest = new Container('forrest');
-        if(isset($forrest->trace) && isset($forrest->trace->participant)) {
-            $breadcrumb = $forrest->trace->participant;
-        } else {
-            $breadcrumb = new \ArrayObject();
-            $breadcrumb->route = 'participant';
-            $breadcrumb->params = array();
-            $breadcrumb->options = array();
-            if(isset($forrest->trace)) {
-                $forrest->trace->participant = $breadcrumb;
-            }
+        if(!$forrest->exists('participant')) {
+            $forrest->set('participant', 'participant');
         }
+        $breadcrumb = $forrest->get('participant');
         return [
             'id' => $id,
             'form' => $form,
@@ -164,27 +141,12 @@ class ParticipantController extends AbstractActionController {
             return $this->redirect()->toRoute('participant');
         }
         
-        $forrest = new Container('forrest');
-        if(isset($forrest->trace) && isset($forrest->trace->participant)) {
-            $breadcrumb = $forrest->trace->participant;
-        } else {
-            $breadcrumb = new \ArrayObject();
-            $breadcrumb->route = 'participant';
-            $breadcrumb->params = array();
-            $breadcrumb->options = array();
-            if(isset($forrest->trace)) {
-                $forrest->trace->participant = $breadcrumb;
-            }
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('participant')) {
+            $forrest->set('participant', 'participant');
         }
         
-        /*$forrest = new Container('forrest');
-        if(!isset($forrest->trace->participant)) {
-            $breadcrumb = new \ArrayObject();
-            $breadcrumb->route = 'participant';
-            $breadcrumb->params = array();
-            $breadcrumb->options = array();
-            $forrest->trace->participant = $breadcrumb;
-        }*/
+        $breadcrumb = $forrest->get('participant');
         
         $session_cart = new Container('cart');
         $participant = $session_cart->order->getParticipantBySessionId($id);
@@ -199,8 +161,6 @@ class ParticipantController extends AbstractActionController {
                 $session_cart->order->removeParticipantBySessionId($id);
             }
 
-            $forrest = new Container('forrest');
-            $breadcrumb = $forrest->trace->participant;
             return $this->redirect()->toRoute(
                     $breadcrumb->route, 
                     $breadcrumb->params, 

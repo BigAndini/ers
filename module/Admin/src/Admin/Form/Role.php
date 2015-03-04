@@ -42,7 +42,7 @@ class Role extends Form
         
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',
-            'name' => 'parent_id',
+            'name' => 'Parent_id',
             'attributes' => array(
                 'class' => 'form-control form-element',
             ),

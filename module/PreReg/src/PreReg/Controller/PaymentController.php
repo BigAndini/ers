@@ -11,6 +11,7 @@ namespace PreReg\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
+use PreReg\Service;
 
 use PreReg\Form;
 
@@ -30,11 +31,12 @@ class PaymentController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $forrest = new Container('forrest');
+        $forrest = new Service\BreadcrumbFactory();
+        $breadcrumb = $forrest->get('paymenttype');
         
         return new ViewModel(array(
             'paymenttype' => $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id)),
-            'forrest' => $forrest,
+            'breadcrumb' => $breadcrumb,
         ));
     }
     

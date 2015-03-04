@@ -87,9 +87,9 @@ class RoleController extends AbstractActionController {
         $form->bind($role);
         $form->get('submit')->setAttribute('value', 'Edit');
         
-        $options = $form->get('parent_id')->getValueOptions();
+        $options = $form->get('Parent_id')->getValueOptions();
         unset($options[$role->getId()]);
-        $form->get('parent_id')->setValueOptions($options);
+        $form->get('Parent_id')->setValueOptions($options);
 
         $request = $this->getRequest();
         if ($request->isPost()) {

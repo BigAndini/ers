@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilterInterface;
 
 /**
  * An example entity that represents a role.
@@ -244,11 +245,11 @@ class Role implements HierarchicalRoleInterface
      * 
      * @return \Entity\Role
      */
-    public function setParentId($parent_id) {
-        if(!is_numeric($parent_id)) {
+    public function setParentId($Parent_id) {
+        if(!is_numeric($Parent_id)) {
             $this->Parent_id = null;
         } else {
-            $this->Parent_id = $parent_id;
+            $this->Parent_id = $Parent_id;
         }
         
         return $this;
@@ -309,6 +310,7 @@ class Role implements HierarchicalRoleInterface
                                 \Zend\Validator\Callback::INVALID_VALUE => "It\'s not possible to choose this parent role.",
                             ),
                             'callback' => function($value, $context=array()) {
+                                error_log('value: '.$value);
                                 if($value != $context['id']) {
                                     return true;
                                 }

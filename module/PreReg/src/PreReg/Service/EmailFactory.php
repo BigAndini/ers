@@ -13,7 +13,7 @@ use Zend\Mime;
 use ersEntity\Entity;
 
 /**
- * Top navigation factory.
+ * email factory.
  */
 class EmailFactory
 {

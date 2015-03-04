@@ -30,19 +30,11 @@ class OrderController extends AbstractActionController {
      * overview of this order
      */
     public function indexAction() {
-        $clearance = new Container('forrest');
-        $clearance->getManager()->getStorage()->clear('forrest');
-        $forrest = new Container('forrest');
-        $forrest->trace = new \ArrayObject();
-        
-        $breadcrumb = new \ArrayObject();
-        $breadcrumb->route = 'order';
-        $breadcrumb->params = array();
-        $breadcrumb->options = array();
-        
-        $forrest->trace->product = $breadcrumb;
-        $forrest->trace->participant = $breadcrumb;
-        $forrest->trace->cart = $breadcrumb;
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->reset();
+        $forrest->set('product', 'order');
+        $forrest->set('participant', 'order');
+        $forrest->set('cart', 'order');
         
         $session_cart = new Container('cart');
         
@@ -106,14 +98,17 @@ class OrderController extends AbstractActionController {
             }
         }
        
-        $forrest = new Container('forrest');
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->set('participant', 'order', array('action' => 'register'));
+        
+        /*$forrest = new Container('forrest');
         $breadcrumb = new \ArrayObject();
         $breadcrumb->route = 'order';
         $breadcrumb->params = array(
             'action' => 'register'
         );
         $breadcrumb->options = array();
-        $forrest->trace->participant = $breadcrumb;
+        $forrest->trace->participant = $breadcrumb;*/
         
         $participants = $session_cart->order->getParticipants();
         
@@ -128,14 +123,17 @@ class OrderController extends AbstractActionController {
      * collect payment data and complete purchase
      */
     public function paymentAction() {
-        $forrest = new Container('forrest');
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->set('paymenttype', 'order', array('action' => 'payment'));
+        
+        /*$forrest = new Container('forrest');
         $breadcrumb = new \ArrayObject();
         $breadcrumb->route = 'order';
         $breadcrumb->params = array(
             'action' => 'payment'
         );
         $breadcrumb->options = array();
-        $forrest->trace->paymenttype = $breadcrumb;
+        $forrest->trace->paymenttype = $breadcrumb;*/
         
         $form = new Form\PaymentType();
         
@@ -354,43 +352,6 @@ class OrderController extends AbstractActionController {
         $emailService->send();
         
         return true;
-        
-        $content  = new Mime\Message();
-        
-        $textContent = 'This is the text of the email.';
-        $textPart = new Mime\Part($textContent);
-        $textPart->type = 'text/plain';
-        
-        $htmlMarkup = '<html><body><h1>This is the text of the email.</h1></body></html>';
-        $htmlPart = new Mime\Part($htmlMarkup);
-        $htmlPart->type = 'text/html';
-        
-        $content->setParts(array($textPart, $htmlPart));
-
-        $contentPart = new Mime\Part($content->generateMessage());        
-        $contentPart->type = 'multipart/alternative;' . PHP_EOL . ' boundary="' . $content->getMime()->boundary() . '"';
-
-        $pathToImage = getcwd() . '/public/img/logo.jpg';
-        $attachment = new Mime\Part(fopen($pathToImage, 'r'));
-        #$attachment->type = 'application/pdf';
-        $attachment->type = 'image/jpeg';
-        $attachment->filename = 'logo.jpg';
-        $attachment->encoding    = Mime\Mime::ENCODING_BASE64;
-        $attachment->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
-
-        $body = new Mime\Message();
-        $body->setParts(array($contentPart, $attachment));
-        #$body->setParts(array($contentPart));
-
-        $message = new Message();
-        $message->setEncoding('utf-8');
-        $message->addTo($purchaser->getEmail());
-        $message->addFrom('prereg@eja.net');
-        $message->setSubject('Testmail');
-        $message->setBody($body);
-
-        $transport = new Transport\Sendmail();
-        $transport->send($message);
     }
     
     /*

@@ -84,7 +84,7 @@ class Module
                         $options[$role->getId()] = $role->getRoleId();
                     }
 
-                    $form->get('parent_id')->setValueOptions($options);
+                    $form->get('Parent_id')->setValueOptions($options);
                     
                     return $form;
                 },

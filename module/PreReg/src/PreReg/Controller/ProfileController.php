@@ -10,7 +10,6 @@ namespace PreReg\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\Session\Container;
 use PreReg\Form;
 use PreReg\InputFilter;
 use ersEntity\Entity;

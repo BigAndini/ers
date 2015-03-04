@@ -105,11 +105,6 @@ return array(
             ),
         ),
         'top_nav' => array(
-            'order' => array(
-                'label' => 'My Shopping Cart',
-                'route' => 'order',
-                'resource'  => 'controller/Admin\Controller\Order:index',
-            ),
             'login' => array(
                 'label' => 'Login',
                 'route' => 'zfcuser/login',
@@ -134,7 +129,7 @@ return array(
                 #'action' => 'logout',
                 'resource'  => 'controller/zfcuser:logout',
             ),
-            'order' => array(
+            'admin' => array(
                 'label' => 'AdminPanel',
                 'route' => 'admin',
                 'resource'  => 'controller/Admin\Controller\Admin',

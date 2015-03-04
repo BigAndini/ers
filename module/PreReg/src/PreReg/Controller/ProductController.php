@@ -11,21 +11,15 @@ namespace PreReg\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use PreReg\Form;
+use PreReg\Service;
 use Zend\Session\Container;
 
 class ProductController extends AbstractActionController {
     public function indexAction()
     {
-        $clearance = new Container('forrest');
-        $clearance->getManager()->getStorage()->clear('forrest');
-        $forrest = new Container('forrest');
-        $forrest->trace = new \ArrayObject();
-        
-        $breadcrumb = new \ArrayObject();
-        $breadcrumb->route = 'product';
-        $breadcrumb->params = array();
-        $breadcrumb->options = array();
-        $forrest->trace->participant = $breadcrumb;
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->reset();
+        $forrest->set('participant', 'product');
         
         $em = $this
             ->getServiceLocator()
@@ -48,12 +42,11 @@ class ProductController extends AbstractActionController {
             }
         }
         
-        
         $session_cart = new Container('cart');
-        
+
         $chooser = $session_cart->chooser;
         $session_cart->chooser = false;
-        
+
         return new ViewModel(array(
             'products' => $products,
             'order' => $session_cart->order,
@@ -71,32 +64,27 @@ class ProductController extends AbstractActionController {
             ));
         }
         
-        $bc_participant = new \ArrayObject();
-        $bc_participant->route = 'product';
-        if($participant_id) {
-            $bc_participant->params = array(
-                'action' => 'edit',
-                'product_id' => $product_id,
-                'participant_id' => $participant_id
+        $forrest = new Service\BreadcrumbFactory();
+        if(is_numeric($participant_id)) {
+            $params = array(
+                'action'            => 'edit',
+                'product_id'        => $product_id,
+                'participant_id'    => $participant_id,
             );
             if($item_id) {
-                $bc_participant->params['item_id'] = $item_id;    
+                $params['item_id'] = $item_id;    
             }
+            $forrest->set('participant', 'product', $params);
         } else {
-            $bc_participant->params = array(
-                'action' => 'add',
-                'product_id' => $product_id,
-            );
+            $forrest->set('participant', 'product',
+                    array(
+                        'action' => 'add',
+                        'product_id' => $product_id
+                    )
+                );
         }
-        $bc_participant->options = array();
-        $forrest = new Container('forrest');
-        $forrest->trace->participant = $bc_participant;
         
-        $bc_cart = new \ArrayObject();
-        $bc_cart->route = 'product';
-        $bc_cart->params = array();
-        $bc_cart->options = array();
-        $forrest->trace->cart = $bc_cart;
+        $forrest->set('cart', 'product');
         
         $em = $this
             ->getServiceLocator()
@@ -161,7 +149,8 @@ class ProductController extends AbstractActionController {
         }
         
         $form->get('participant_id')->setAttribute('options', $options);
-        
+
+        $breadcrumb = $forrest->get('product');
         return new ViewModel(array(
             'question' => $question,
             'participants' => $options,
@@ -169,6 +158,7 @@ class ProductController extends AbstractActionController {
             'participant' => $participant,
             'item' => $item,
             'form' => $form,
+            'breadcrumb' => $breadcrumb,
         ));
     }
     
@@ -180,14 +170,10 @@ class ProductController extends AbstractActionController {
     }
     
     public function deleteAction() {
-        $forrest = new Container('forrest');
+        $forrest = new Service\BreadcrumbFactory();
         
-        if($forrest->count() === 0) {
-            $bc_product = new \ArrayObject();
-            $bc_product->route = 'order';
-            $bc_product->params = array();
-            $bc_product->options = array();
-            $forrest->trace->product = $bc_product;
+        if($forrest->exists('product')) {
+            $forrest->set('product', 'order');
         }
         
         $product_id = (int) $this->params()->fromRoute('product_id', 0);

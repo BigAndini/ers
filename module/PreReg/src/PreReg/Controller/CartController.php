@@ -12,6 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use ersEntity\Entity;
+use PreReg\Service;
 
 class CartController extends AbstractActionController {
     /*
@@ -96,8 +97,11 @@ class CartController extends AbstractActionController {
             $session_cart->chooser = true;
         }
         
-        $forrest = new Container('forrest');
-        $breadcrumb = $forrest->trace->cart;
+        $forrest = new Service\BreadcrumbFactory();
+        $breadcrumb = $forrest->get('cart');
+        
+        #$forrest = new Container('forrest');
+        #$breadcrumb = $forrest->trace->cart;
         
         return $this->redirect()->toRoute(
                 $breadcrumb->route, 

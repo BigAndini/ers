@@ -2,7 +2,7 @@
 
 $this->headTitle($product->getName());
 ?>
-<a href="<?php echo $this->url('product');?>"><?php echo $this->translate('back to Overview'); ?></a>
+<a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);?>"><?php echo $this->translate('back to Overview'); ?></a>
 <h1><?php echo $this->escapeHtml($product->getName()); ?></h1>
 <?php
 if(count($product->getProductPrices()) == 0):
