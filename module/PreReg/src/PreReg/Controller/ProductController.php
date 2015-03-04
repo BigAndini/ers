@@ -65,6 +65,9 @@ class ProductController extends AbstractActionController {
         }
         
         $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('product')) {
+            $forrest->set('product');
+        }
         if(is_numeric($participant_id)) {
             $params = array(
                 'action'            => 'edit',
