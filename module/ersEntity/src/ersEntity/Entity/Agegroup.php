@@ -46,6 +46,11 @@ class Agegroup implements InputFilterAwareInterface
     protected $agegroup;
 
     /**
+     * @ORM\Column(type="string", length=45)
+     */
+    protected $displayName;
+    
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $updated;
@@ -134,6 +139,29 @@ class Agegroup implements InputFilterAwareInterface
     public function getAgegroup()
     {
         return $this->agegroup;
+    }
+    
+    /**
+     * Set the value of name.
+     *
+     * @param string $name
+     * @return \Entity\Product
+     */
+    public function setName($name)
+    {
+        $this->displayName = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of name.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->displayName;
     }
 
     /**
@@ -303,7 +331,7 @@ class Agegroup implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'agegroup', 'updated', 'created');
+        $dataFields = array('id', 'agegroup', 'displayName', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -336,6 +364,6 @@ class Agegroup implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'agegroup', 'updated', 'created');
+        return array('id', 'agegroup', 'displayName', 'updated', 'created');
     }
 }

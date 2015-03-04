@@ -24,6 +24,6 @@ echo $this->formRow($form->get('preselection'));
 echo $this->formRow($form->get('Product_id'));
 echo $this->formSubmit($form->get('submit'));
 ?>
-<a href="<?php echo $this->url($context->route, $context->params, $context->options); ?>">Cancel</a>
+<a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
 <?php
 echo $this->form()->closeTag();

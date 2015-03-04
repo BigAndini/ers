@@ -502,9 +502,16 @@ class ProductPrice implements InputFilterAwareInterface
                     new \Zend\I18n\Filter\NumberFormat("en_US"),
                 ),
                 'validators' => array(
-                    array(
-                        'name'    => 'Float',
+                    array (
+                        'name' => 'NotEmpty',
+                        'options' => array(
+                            'messages' => array(
+                                'isEmpty' => '',
+                                #Validator\NotEmpty::IS_EMPTY => 'Please give a charge for this price.',
+                            )
+                        ),
                     ),
+                    array('name'    => 'Float'),
                 ),
             ),
             array(

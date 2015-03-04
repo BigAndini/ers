@@ -11,8 +11,8 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
-use Zend\Session\Container;
 use Admin\Form;
+use Admin\Service;
 
 class ProductVariantController extends AbstractActionController 
 {    
@@ -31,6 +31,11 @@ class ProductVariantController extends AbstractActionController
         $product_id = (int) $this->params()->fromRoute('id', 0);
         if (!$product_id) {
             return $this->redirect()->toRoute('admin/product');
+        }
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('product-variant')) {
+            $forrest->set('product-variant', 'product-variant');
         }
         
         $form = new Form\ProductVariant();
@@ -60,12 +65,12 @@ class ProductVariantController extends AbstractActionController
                 $em->persist($productvariant);
                 $em->flush();
                 
-                $context = new Container('context');
-                if(isset($context->route)) {
-                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-                } else {
-                    return $this->redirect()->toRoute('admin/product');
-                }
+                $breadcrumb = $forrest->get('product-variant');
+                return $this->redirect()->toRoute(
+                        $breadcrumb->route, 
+                        $breadcrumb->params, 
+                        $breadcrumb->options
+                        );
             } else {
                 error_log(var_export($form->getMessages(), true));
             }
@@ -76,16 +81,13 @@ class ProductVariantController extends AbstractActionController
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $product_id));
         
-        $context = new Container('context');
-        $context->route = 'admin/product';
-        $context->params = array();
-        $context->options = array();
         
-        return array(
-            'context' => $context,
+        $breadcrumb = $forrest->get('product-variant');
+        return new ViewModel(array(
+            'breadcrumb' => $breadcrumb,
             'product' => $product,
             'form' => $form,                
-        );
+        ));
     }
 
     public function editAction()
@@ -118,22 +120,20 @@ class ProductVariantController extends AbstractActionController
                 $em->persist($productvariant);
                 $em->flush();
                 
-                $context = new Container('context');
-                if(isset($context->route)) {
-                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-                } else {
-                    return $this->redirect()->toRoute('admin/product');
-                }
+                $forrest = new Service\BreadcrumbFactory();
+                $breadcrumb = $forrest->get('product-variant');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
         
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $productvariant->getProductId()));
 
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'product' => $product,
             'form' => $form,
-        );
+            'breadcrumb' => $forrest->get('product-variant'),
+        ));
     }
 
     public function deleteAction()
@@ -142,6 +142,8 @@ class ProductVariantController extends AbstractActionController
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
+        $forrest = new Service\BreadcrumbFactory();
+        
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
 
@@ -163,12 +165,8 @@ class ProductVariantController extends AbstractActionController
                 $em->flush();
             }
 
-            $context = new Container('context');
-            if(isset($context->route)) {
-                return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-            } else {
-                return $this->redirect()->toRoute('admin/product');
-            }
+            $breadcrumb = $forrest->get('product-variant');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
         $productvariant = $em->getRepository("ersEntity\Entity\ProductVariant")
@@ -176,10 +174,11 @@ class ProductVariantController extends AbstractActionController
         $product = $em->getRepository("ersEntity\Entity\Product")
                 ->findOneBy(array('id' => $productvariant->getProductId()));
         
-        return array(
+        return new ViewModel(array(
             'id'    => $id,
             'product' => $product,
             'productvariant' => $productvariant,
-        );
+            'breadcrumb' => $forrest->get('product-variant'),
+        ));
     }
 }

@@ -42,6 +42,20 @@ class Module
             \Zend\View\Helper\Navigation::setDefaultRole($role);
         }
     }
+    
+    public function preDispatch(Zend_Controller_Request_Abstract $request)
+    {
+        // get your user and your config
+        #if( $config->suspended && $user->role()->name != "admin"){
+        $maintenance = true;
+        if($maintenance) {
+            $request
+                ->setModuleName( 'PreReg' )
+                ->setControllerName( 'Maintenance' )
+                ->setActionName( 'index' )
+                ->setDispatched(true);
+        }
+    }
 
     public function bootstrapSession($e)
     {

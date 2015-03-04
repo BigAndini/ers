@@ -18,6 +18,6 @@ $url = $this->url('admin/product-variant', array(
 <div>
     <input type="hidden" name="id" value="<?php echo (int) $productvariant->getId(); ?>" />
     <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
-    <a href="<?php echo $this->url('admin/product');?>">Cancel</a>
+    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
 </div>
 </form>

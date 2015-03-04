@@ -27,7 +27,9 @@ class ProductPrice extends Form
         
         $this->add(array(
             'name' => 'charge',
+            'required' => true,
             'attributes' => array(
+                'required' => 'required',
                 'type'  => 'text',
                 'class' => 'form-control form-element',
             ),

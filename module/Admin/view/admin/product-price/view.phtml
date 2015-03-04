@@ -7,10 +7,9 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
 <p>
-    <a href="<?php echo $this->url('admin/deadline', array('action'=>'add'));?>">Add deadline</a>
-    <br />
-    <a href="<?php echo $this->url('admin/agegroup', array('action'=>'add'));?>">Add agegroup</a>
-    <br />
+    <a href="<?php echo $this->url('admin/product');?>">Back to Product Overview</a>
+</p>
+<p>
     <a href="<?php echo $this->url('admin/product-price', array('action'=>'add', 'id' => $product->getId()));?>">Add price</a>
 </p>
 

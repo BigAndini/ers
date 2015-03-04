@@ -12,13 +12,13 @@ $this->headTitle($title);
 <table class="table">
     <tr>
         <th>Name</th>
+        <th>Birthdate</th>
         <th>&nbsp;</th>
     </tr>
 <?php foreach ($agegroups as $agegroup) : ?>
     <tr>
-        <td><?php 
-            echo $agegroup->getAgegroup()->format('Y-m-d H:i:s'); 
-        ?></td>
+        <td><?php echo $agegroup->getName(); ?></td>
+        <td><?php echo $agegroup->getAgegroup()->format('Y-m-d H:i:s'); ?></td>
         <td>
             <a href="<?php echo $this->url('admin/agegroup', array('action'=>'edit', 'id' => $agegroup->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
             <a href="<?php echo $this->url('admin/agegroup', array('action'=>'delete', 'id' => $agegroup->getId()));?>"><?php echo $this->translate('Delete'); ?></a>

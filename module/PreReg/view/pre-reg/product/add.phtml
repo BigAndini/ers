@@ -38,9 +38,7 @@ else:
     }
     ?>
     <div class="product-price-div">
-        <?php #foreach($prices as $price): ?>
-        <span class="product-price"><?php echo $this->currencyFormat($product->getPrice()->getCharge(), 'EUR', null, 'de_DE'); ?></span>    
-        <?php #endforeach; ?>
+        <span class="product-price"><?php echo $this->currencyFormat($product->getPrice()->getCharge(), 'EUR', null, 'de_DE'); ?></span>
         <?php 
             echo $this->formSubmit($form->get('submit'));
         ?>

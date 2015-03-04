@@ -13,6 +13,7 @@ use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Zend\Session\Container;
 use Admin\Form;
+use Admin\Service;
 
 class ProductVariantValueController extends AbstractActionController 
 {    
@@ -49,6 +50,11 @@ class ProductVariantValueController extends AbstractActionController
             return $this->redirect()->toRoute('admin/product-variant-value');
         }
         
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('product-variant-value')) {
+            $forrest->set('product-variant-value', 'product-variant-value');
+        }
+        
         $form = new Form\ProductVariantValue();
         $form->get('submit')->setValue('Add');
         $form->get('ProductVariant_id')->setValue($id);
@@ -71,27 +77,16 @@ class ProductVariantValueController extends AbstractActionController
                 $em->persist($value);
                 $em->flush();
                 
-                $context = new Container('context');
-                if(isset($context->route)) {
-                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-                } else {
-                    return $this->redirect()->toRoute('admin/product');
-                }
+                $breadcrumb = $forrest->get('product-variant-value');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 error_log(var_export($form->getMessages(),true));
             }
         }
         
-        $context = new Container('context');
-        if(empty($context->route)) {
-            $context->route = 'admin/product';
-            $context->params = array();
-            $context->options = array();
-        }
-        
         return array(
             'productvariant_id' => $id,
-            'context' => $context,
+            'breadcrum' => $forrest->get('product-variant-value'),
             'form' => $form,                
         );
     }
@@ -122,13 +117,10 @@ class ProductVariantValueController extends AbstractActionController
             if ($form->isValid()) {
                 $em->persist($form->getData());
                 $em->flush();
-                
-                $context = new Container('context');
-                if(isset($context->route)) {
-                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-                } else {
-                    return $this->redirect()->toRoute('admin/product');
-                }
+
+                $forrest = new Service\BreadcrumbFactory();
+                $breadcrumb = $forrest->get('product-variant-value');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
 
@@ -160,12 +152,9 @@ class ProductVariantValueController extends AbstractActionController
                 $em->flush();
             }
 
-            $context = new Container('context');
-            if(isset($context->route)) {
-                return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-            } else {
-                return $this->redirect()->toRoute('admin/product');
-            }
+            $forrest = new Service\BreadcrumbFactory();
+            $breadcrumb = $forrest->get('product-variant-value');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
         return array(

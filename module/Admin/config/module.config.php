@@ -22,6 +22,7 @@ return array(
             'Admin\Controller\User'                 => 'Admin\Controller\UserController',
             'Admin\Controller\Role'                 => 'Admin\Controller\RoleController',
             'Admin\Controller\Order'                => 'Admin\Controller\OrderController',
+            'Admin\Controller\Bankaccount'          => 'Admin\Controller\BankaccountController',
         ),
     ),
     'navigation' => array(
@@ -97,11 +98,23 @@ return array(
                     ),
                 ),
             ),
-            
             'order' => array(
                 'label' => 'Order',
                 'route' => 'admin/order',
                 'resource'  => 'controller/Admin\Controller\Order',
+            ),
+            'bankaccount' => array(
+                'label' => 'Bankaccount',
+                'route' => 'admin/bankaccount',
+                'resource'  => 'controller/Admin\Controller\Bankaccount',
+                'pages' => array(
+                    'role' => array(
+                        'label' => 'Upload CSV',
+                        'route' => 'admin/bankaccount',
+                        'action' => 'upload-csv',
+                        'resource'  => 'controller/Admin\Controller\Bankaccount',
+                    ),
+                ),
             ),
         ),
         'top_nav' => array(
@@ -272,6 +285,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Order',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'bankaccount' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/bankaccount[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Bankaccount',
                                 'action' => 'index',
                             ),
                         ),

@@ -13,23 +13,24 @@ use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Zend\Session\Container;
 use Admin\Form;
+use Admin\Service;
 
 class ProductPriceController extends AbstractActionController {
-    /*public function indexAction()
-    {
-        $em = $this
-            ->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        return new ViewModel(array(
-            'productprices' => $em->getRepository("ersEntity\Entity\ProductPrice")->findAll(),
-         ));
-    }*/
+    public function indexAction() {
+        return $this->notFoundAction();
+    }
     
     public function viewAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->set('product-price', 'admin/product-price', array(
+            'action' => 'view',
+            'id' => $id,
+            ));
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -86,7 +87,7 @@ class ProductPriceController extends AbstractActionController {
     /**
      * Gives an array of deadlines which can be handed over to a select form element
      * 
-     * @param type $deadlineId
+     * @param type $agegroupId
      * @return array
      */
     private function getAgegroupOptions($agegroupId = null) {
@@ -126,6 +127,8 @@ class ProductPriceController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
+        $forrest = new Service\BreadcrumbFactory();
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -158,6 +161,14 @@ class ProductPriceController extends AbstractActionController {
                     $productprice->setDeadline($deadline);
                 }
                 
+                if($productprice->getAgegroupId() == 0) {
+                    $productprice->setAgegroup(null);
+                } else {
+                    $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")
+                        ->findOneBy(array('id' => $productprice->getAgegroupId()));
+                    $productprice->setAgegroup($agegroup);
+                }
+                
                 $product = $em->getRepository("ersEntity\Entity\Product")
                     ->findOneBy(array('id' => $productprice->getProductId()));
                 $productprice->setProduct($product);
@@ -166,12 +177,8 @@ class ProductPriceController extends AbstractActionController {
                 $em->persist($productprice);
                 $em->flush();
                 
-                $context = new Container('context');
-                if(isset($context->route)) {
-                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-                } else {
-                    return $this->redirect()->toRoute('admin/product');
-                }
+                $breadcrumb = $forrest->get('product-price');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 error_log(var_export($form->getMessages(), true));
             }
@@ -182,18 +189,19 @@ class ProductPriceController extends AbstractActionController {
         return array(
             'product' => $product,
             'form' => $form,                
+            'breadcrumb' => $forrest->get('product-price'),
         );
     }
 
     public function editAction()
-    {
-        
+    {        
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('admin/product-price', array(
                 'action' => 'add'
             ));
         }
+        $forrest = new Service\BreadcrumbFactory();
         
         $em = $this
             ->getServiceLocator()
@@ -223,12 +231,8 @@ class ProductPriceController extends AbstractActionController {
                 $em->persist($productprice);
                 $em->flush();
 
-                $context = new Container('context');
-                if(isset($context->route)) {
-                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-                } else {
-                    return $this->redirect()->toRoute('admin/product');
-                }
+                $breadcrumb = $forrest->get('product-price');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
         
@@ -238,6 +242,7 @@ class ProductPriceController extends AbstractActionController {
             'id' => $id,
             'product' => $product,
             'form' => $form,
+            'breadcrumb' => $forrest->get('product-price'),
         );
     }
 
@@ -247,6 +252,8 @@ class ProductPriceController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
+        $forrest = new Service\BreadcrumbFactory();
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -264,12 +271,8 @@ class ProductPriceController extends AbstractActionController {
                 $em->flush();
             }
 
-            $context = new Container('context');
-            if(isset($context->route)) {
-                return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-            } else {
-                return $this->redirect()->toRoute('admin/product');
-            }
+            $breadcrumb = $forrest->get('product-price');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
 
         $productprice = $em->getRepository("ersEntity\Entity\ProductPrice")
@@ -281,6 +284,7 @@ class ProductPriceController extends AbstractActionController {
             'id'    => $id,
             'product' => $product,
             'price' => $productprice,
+            'breadcrumb' => $forrest->get('product-price'),
         );
     }
 }

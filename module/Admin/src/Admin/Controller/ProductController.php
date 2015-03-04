@@ -13,6 +13,7 @@ use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Zend\Session\Container;
 #use Admin\Form;
+use Admin\Service;
 
 class ProductController extends AbstractActionController {
     public function indexAction()
@@ -22,14 +23,14 @@ class ProductController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $products = $em->getRepository("ersEntity\Entity\Product")->findBy(array(), array('ordering' => 'ASC'));
         
-        $context = new Container('context');
-        $context->route = 'admin/product';
-        $context->params = array();
-        $context->options = array();
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->set('product', 'admin/product');
+        $forrest->set('product-variant', 'admin/product');
+        $forrest->set('product-price', 'admin/product');
         
         return new ViewModel(array(
             'products' => $products,
-            ));
+        ));
     }
 
     public function addAction()
@@ -95,12 +96,9 @@ class ProductController extends AbstractActionController {
                 $em->persist($form->getData());
                 $em->flush();
 
-                $context = new Container('context');
-                if(isset($context->route)) {
-                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-                } else {
-                    return $this->redirect()->toRoute('admin/product');
-                }
+                $forrest = new Service\BreadcrumbFactory();
+                $breadcrumb = $forrest->get('product');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
 
@@ -124,10 +122,8 @@ class ProductController extends AbstractActionController {
         $product = $em->getRepository("ersEntity\Entity\Product")
                 ->findOneBy(array('id' => $id));
         
-        $context = new Container('context');
-        $context->route = 'admin/product';
-        $context->params = array('action' => 'view', 'id' => $id);
-        $context->options = array();
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->set('product', 'admin/product', array('action' => 'view', 'id' => $id));
         
         return array(
             'product' => $product,
@@ -166,12 +162,9 @@ class ProductController extends AbstractActionController {
                 #$this->copyProductPrices($id, $new_id);   
                 #$this->copyProductVariants($id, $new_id);
 
-                $context = new Container('context');
-                if(isset($context->route)) {
-                    return $this->redirect()->toRoute($context->route, $context->params, $context->options);
-                } else {
-                    return $this->redirect()->toRoute('admin/product');
-                }
+                $forrest = new Service\BreadcrumbFactory();
+                $breadcrumb = $forrest->get('product');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 error_log(var_export($form->getMessages(), true));
             }

@@ -41,6 +41,21 @@ class Agegroup extends Form
             ), 
         ));
         $this->get('agegroup')->setFormat('Y-m-d H:i:s');
+        
+        $this->add(array(
+            'name' => 'name',
+            'attributes' => array(
+                'type'  => 'text',
+                'class' => 'form-control form-element',
+                'placeholder' => 'Name...',
+            ),
+            'options' => array(
+                'label' => 'Name',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
  
         $this->add(array( 
             'name' => 'csrf', 

@@ -100,15 +100,7 @@ class User implements InputFilterAwareInterface
                                 'emailAddressInvalidFormat' => 'Email address format is not invalid', 
                             ) 
                         ), 
-                    ), 
-                    array ( 
-                        'name' => 'NotEmpty', 
-                        'options' => array( 
-                            'messages' => array( 
-                                'isEmpty' => '', 
-                            ) 
-                        ), 
-                    ), 
+                    ),
                 ), 
             ])); 
  

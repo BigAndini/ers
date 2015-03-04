@@ -173,6 +173,7 @@ return [
                 ['controller' => 'Admin\Controller\User', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Role', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Order', 'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\Bankaccount', 'roles' => ['admin']],
                 
                 /* Doctrine ORM */
                 ['controller' => 'DoctrineORMModule\Yuml\YumlController', 'roles' => ['admin']],
