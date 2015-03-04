@@ -5,19 +5,30 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-<p>Are you sure that you want to delete price limit
-    <strong><?php echo $role->getRoleId(); ?></strong>?
-</p>
-<?php
-$url = $this->url('admin/role', array(
-    'action' => 'delete',
-    'id'     => $this->id,
-));
-?>
-<form action="<?php echo $url; ?>" method="post">
-<div>
-    <input type="hidden" name="id" value="<?php echo (int) $role->getId(); ?>" />
-    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+<?php if(count($childs) != 0): ?>
+    <p>The role <strong><?php echo $role->getRoleId(); ?></strong> cannot be deleted. There are roles which use this role as parent. Delete them first:</p>
+    <ul>
+    <?php foreach($childs as $child): ?>
+        <li><strong><?php echo $child->getRoleId(); ?></strong></li>
+    <?php endforeach; ?>
+    </ul>
     <a href="<?php echo $this->url('admin/role');?>">Cancel</a>
-</div>
-</form>
+<?php else: ?>
+    <p>Are you sure that you want to delete the role
+        <strong><?php echo $role->getRoleId(); ?></strong>?
+    </p>
+    <?php
+    $url = $this->url('admin/role', array(
+        'action' => 'delete',
+        'id'     => $this->id,
+    ));
+    ?>
+
+    <form action="<?php echo $url; ?>" method="post">
+    <div>
+        <input type="hidden" name="id" value="<?php echo (int) $role->getId(); ?>" />
+        <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+        <a href="<?php echo $this->url('admin/role');?>">Cancel</a>
+    </div>
+    </form>
+<?php endif; ?>

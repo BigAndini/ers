@@ -163,13 +163,14 @@ echo $this->navigation()
     <?php
         else:
             ?>
-            <p>
+            <p id="TnC">
             <?php
                 #echo $this->formLabel($form->get('terms'));
                 echo $this->formElement($form->get('terms'));
             ?>
-                I accept the <a href="<?php echo $this->url('info', array('action' => 'terms')) ?>">terms and conditions</a>
+                I accept the <a href="<?php echo $this->url('info', array('action' => 'terms')) ?>" class="TnC-show">terms and conditions</a>
             </p>
+            <div id="TnC-container"></div>
         <?php 
             echo $this->formElementErrors($form->get('terms')); 
         endif;

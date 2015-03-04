@@ -119,11 +119,6 @@ a.delete-sticky {
 .desc-long {
     float: left;
 }
-.product-price {
-    font-size: 3em;
-    font-weight: bold;
-    display: block;
-}
 .product-price-div {
     text-align: right;
     height: 100px;
@@ -400,4 +395,31 @@ div.floatLeft {
 }
 div.floatRight {
     float: right;
+}
+
+#TnC-container {
+    display: none;
+}
+
+a.product-item {
+    display: block;
+    color: #000;
+    text-decoration: none;
+    padding: 15px;
+}
+a.product-item:hover {
+    text-decoration: none;
+    background-color: #f9f9f9;
+}
+a.product-item span.product-title {
+    font-size: 24px;
+    display: block;
+}
+a.product-item span.product-short-description {
+    display: block;
+}
+span.product-price {
+    font-size: 36px;
+    text-align: right;
+    display: block;
 }

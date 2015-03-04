@@ -64,7 +64,16 @@ class PaymentTypeBankTransfer implements InputFilterAwareInterface
             'name' => 'longDescription', 
             'required' => false, 
             'filters' => array( 
-                array('name' => 'StripTags'), 
+                array('name' => 'StringTrim'), 
+            ), 
+            'validators' => array( 
+            ), 
+        ])); 
+        
+        $inputFilter->add($factory->createInput([ 
+            'name' => 'explanation', 
+            'required' => false, 
+            'filters' => array( 
                 array('name' => 'StringTrim'), 
             ), 
             'validators' => array( 

@@ -16,6 +16,7 @@ return array(
             'Admin\Controller\ProductVariantValue'  => 'Admin\Controller\ProductVariantValueController',
             'Admin\Controller\ProductPrice'         => 'Admin\Controller\ProductPriceController',
             'Admin\Controller\Deadline'             => 'Admin\Controller\DeadlineController',
+            'Admin\Controller\Agegroup'             => 'Admin\Controller\AgegroupController',
             'Admin\Controller\PaymentType'          => 'Admin\Controller\PaymentTypeController',
             'Admin\Controller\Counter'              => 'Admin\Controller\CounterController',
             'Admin\Controller\User'                 => 'Admin\Controller\UserController',
@@ -44,6 +45,11 @@ return array(
                         'label' => 'Deadline',
                         'route' => 'admin/deadline',
                         'resource'  => 'controller/Admin\Controller\Deadline',
+                    ),
+                    'agegroup' => array(
+                        'label' => 'Agegroup',
+                        'route' => 'admin/agegroup',
+                        'resource'  => 'controller/Admin\Controller\Agegroup',
                     ),
                     'paymenttype' => array(
                         'label' => 'Payment Type',
@@ -187,6 +193,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Deadline',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'agegroup' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/agegroup[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Agegroup',
                                 'action' => 'index',
                             ),
                         ),

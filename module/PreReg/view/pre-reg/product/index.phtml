@@ -30,21 +30,11 @@ foreach ($products as $product) :
         continue;
     endif;
 ?>
-<div class="product-container">
-    <div class="add-to-cart">
-        <p class="price">
-            <?php echo $this->currencyFormat($product->getPrice()->getCharge(), 'EUR', null, 'de_DE'); ?><br />
-        </p>
-        <p class="product-detail">
-            <a href="<?php echo $this->url('product', array('action' => 'add', 'product_id' => $product->getId()));?>"><?php echo $this->translate('product detail'); ?></a>
-        </p>
-    </div>
-    <h3><?php echo $product->getName(); ?></h3>
-    <p><?php echo $product->getShortDescription(); ?></p>
-    
-    <?php #$NextPriceDate = \DateTime::createFromFormat('Y-m-d H:i:s', $product->getNextPrice()->validFrom); ?>
-    
-</div>
+<a class="product-item" href="<?php echo $this->url('product', array('action' => 'add', 'product_id' => $product->getId()));?>">
+    <span class="product-title"><?php echo $product->getName(); ?></span>
+    <span class="product-short-description"><?php echo $product->getShortDescription(); ?></span>
+    <span class="product-price"><?php echo $this->currencyFormat($product->getPrice()->getCharge(), 'EUR', null, 'de_DE'); ?></span>
+</a>
 <hr />
 
 <?php endforeach; ?>

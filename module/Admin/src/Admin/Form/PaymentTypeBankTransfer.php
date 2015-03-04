@@ -79,7 +79,7 @@ class PaymentTypeBankTransfer extends Form
             'type' => 'CKEditorModule\Form\Element\CKEditor',
             'attributes' => array( 
                 'placeholder' => 'Long Description...',
-                'class' => 'form-control form-element',
+                /*'class' => 'form-control form-element',*/
             ), 
             'options' => array( 
                 'label' => 'Long Description', 
@@ -87,7 +87,7 @@ class PaymentTypeBankTransfer extends Form
                     'class'  => 'media-object',
                 ),
                 'ckeditor' => array(
-                    // add anny config you would normaly add via CKEDITOR.editorConfig
+                    // add any config you would normaly add via CKEDITOR.editorConfig
                     'language' => 'en',
                     #'uiColor' => '#428bca',
                 ),
@@ -108,7 +108,7 @@ class PaymentTypeBankTransfer extends Form
                     'class'  => 'media-object',
                 ),
                 'ckeditor' => array(
-                    // add anny config you would normaly add via CKEDITOR.editorConfig
+                    // add any config you would normaly add via CKEDITOR.editorConfig
                     'language' => 'en',
                     #'uiColor' => '#428bca',
                 ),

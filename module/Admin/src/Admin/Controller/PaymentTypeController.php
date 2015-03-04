@@ -86,7 +86,7 @@ class PaymentTypeController extends AbstractActionController {
                 if($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $activeFrom = $em->getRepository("ersEntity\Entity\Deadline")
+                    $activeUntil = $em->getRepository("ersEntity\Entity\Deadline")
                         ->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
                     $paymenttype->setActiveUntil($activeUntil);
                 }
@@ -154,7 +154,7 @@ class PaymentTypeController extends AbstractActionController {
                 if($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $activeFrom = $em->getRepository("ersEntity\Entity\Deadline")
+                    $activeUntil = $em->getRepository("ersEntity\Entity\Deadline")
                         ->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
                     $paymenttype->setActiveUntil($activeUntil);
                 }
@@ -277,6 +277,9 @@ class PaymentTypeController extends AbstractActionController {
     
         $request = $this->getRequest();
         if ($request->isPost()) {
+            error_log('longDescription: '.$_POST['longDescription']);
+            $data = $request->getPost();
+            error_log('longDescription: '.$data['longDescription']);
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $paymenttype = $form->getData();
@@ -293,6 +296,8 @@ class PaymentTypeController extends AbstractActionController {
                     $activeUntil = $em->getRepository("ersEntity\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
                     $paymenttype->setActiveUntil($activeUntil);
                 }
+                
+                error_log('longDescription: '.$paymenttype->getLongDescription());
                 
                 $em->persist($paymenttype);
                 $em->flush();

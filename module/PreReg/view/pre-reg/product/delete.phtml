@@ -25,8 +25,8 @@ $url = $this->url('product', array(
     <?php $breadcrumb = $forrest->trace->product; ?>
     <a href="<?php echo $this->url(
             $breadcrumb->route, 
-            $breadcrumb->params->getArrayCopy(), 
-            $breadcrumb->options->getArrayCopy()); 
+            $breadcrumb->params, 
+            $breadcrumb->options); 
     ?>">Cancel</a>
 </div>
 </form>

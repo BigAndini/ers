@@ -903,7 +903,6 @@ class Product implements InputFilterAwareInterface
                 'name' => 'longDescription',
                 'required' => false,
                 'filters' => array(
-                    array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
                 ),
                 'validators' => array(

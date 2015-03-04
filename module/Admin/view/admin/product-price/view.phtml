@@ -1,0 +1,87 @@
+<?php
+// module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+$title = 'Product Price for '.$product->getName();
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>
+    <a href="<?php echo $this->url('admin/deadline', array('action'=>'add'));?>">Add deadline</a>
+    <br />
+    <a href="<?php echo $this->url('admin/agegroup', array('action'=>'add'));?>">Add agegroup</a>
+    <br />
+    <a href="<?php echo $this->url('admin/product-price', array('action'=>'add', 'id' => $product->getId()));?>">Add price</a>
+</p>
+
+
+ 
+<table class="table">
+<tr>
+    <th></th>
+    <?php foreach($agegroups as $agegroup) : ?>
+        <th><?php echo $agegroup->getAgegroup()->format('Y-m-d H:i:s'); ?></th>
+    <?php endforeach; ?>
+    <th>no Agegroup</th>
+</tr>
+<?php foreach ($deadlines as $deadline) : ?>
+<tr>
+    <th>
+        <?php echo $deadline->getDeadline()->format('Y-m-d H:i:s'); ?>
+    </th>
+    <?php foreach($agegroups as $agegroup) : ?>
+        <td>
+        <?php foreach($product->getProductPrices() as $price):
+            if(
+                $price->getAgegroup() != null && 
+                $price->getAgegroup()->getId() == $agegroup->getId() && 
+                $price->getDeadline() != null && 
+                $price->getDeadline()->getId() == $deadline->getId()): ?>
+                <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
+                <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
+                <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+            <?php endif;
+        endforeach; ?>
+        </td>
+    <?php endforeach; ?>
+    <td>
+    <?php foreach($product->getProductPrices() as $price):
+        if(
+            $price->getAgegroup() == null &&
+            $price->getDeadline() != null && 
+            $price->getDeadline()->getId() == $deadline->getId()): ?>
+            <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
+            <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
+            <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+        <?php endif; 
+    endforeach;?>
+    </td>
+</tr>
+<?php endforeach; ?>
+<tr>
+    <th>no Deadline</th>
+    <?php foreach($agegroups as $agegroup) : ?>
+        <td>
+        <?php foreach($product->getProductPrices() as $price):
+            if(
+                $price->getAgegroup() != null && 
+                $price->getAgegroup()->getId() == $agegroup->getId() && 
+                $price->getDeadline() == null): ?>
+                <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
+                <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
+                <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+            <?php endif;
+        endforeach; ?>
+        </td>
+    <?php endforeach; ?>
+    <td>
+    <?php if(
+        $price->getAgegroup() == null && 
+        $price->getDeadline() == null): ?>
+        <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
+        <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
+        <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+    <?php endif; ?>
+    </td>
+</tr>
+</table>

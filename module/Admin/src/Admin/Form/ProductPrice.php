@@ -55,6 +55,21 @@ class ProductPrice extends Form
         ));
         
         $this->add(array(
+            'name' => 'Agegroup_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required', 
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Agegroup',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
+        $this->add(array(
             'name' => 'Product_id',
             'attributes' => array(
                 'type'  => 'hidden',

@@ -41,6 +41,8 @@ jQuery(function($) {
             }
         }, 'json');
     });
+    
+    
 
     $('#sticky-notes').on('keyup', 'textarea', function(event){
         var $stickynote = $(this);
@@ -80,4 +82,13 @@ jQuery(function($) {
         addSliderAccess: true,
 	sliderAccessArgs: { touchonly: false }
     });
+    
+    /*$('#TnC').on('click', 'a.TnC-show', function(event) {
+        event.preventDefault();
+        $.get("/info/terms", function(data) {
+            $("#TnC-container").html(data);
+            $("#TnC-container").show();
+            alert( "Load was performed.");
+        });
+    });*/
 });

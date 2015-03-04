@@ -24,7 +24,102 @@ class ProductPriceController extends AbstractActionController {
             'productprices' => $em->getRepository("ersEntity\Entity\ProductPrice")->findAll(),
          ));
     }*/
+    
+    public function viewAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/product');
+        }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $product = $em->getRepository("ersEntity\Entity\Product")
+                ->findOneBy(array('id' => $id));
+        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                ->findBy(array(), array('deadline' => 'ASC'));
+        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                ->findBy(array(), array('agegroup' => 'ASC'));
+        
+        return new ViewModel(array(
+            'product' => $product,
+            'deadlines' => $deadlines,
+            'agegroups' => $agegroups,
+        ));
+    }
 
+    /**
+     * Gives an array of deadlines which can be handed over to a select form element
+     * 
+     * @param type $deadlineId
+     * @return array
+     */
+    private function getDeadlineOptions($deadlineId = null) {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                ->findBy(array(), array('deadline' => 'ASC'));
+        $options = array();
+        foreach($deadlines as $deadline) {
+            $selected = false;
+            if($deadlineId == $deadline->getId()) {
+                $selected = true;
+            }
+            $options[] = array(
+                'value' => $deadline->getId(),
+                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
+                'selected' => $selected,
+            );
+        }
+        $selected = false;
+        if($deadlineId == null) {
+            $selected = true;
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'no Deadline',
+            'selected' => $selected,
+        );
+        return $options;
+    }
+    
+    /**
+     * Gives an array of deadlines which can be handed over to a select form element
+     * 
+     * @param type $deadlineId
+     * @return array
+     */
+    private function getAgegroupOptions($agegroupId = null) {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                ->findBy(array(), array('agegroup' => 'ASC'));
+        $options = array();
+        foreach($agegroups as $agegroup) {
+            $selected = false;
+            if($agegroupId == $agegroup->getId()) {
+                $selected = true;
+            }
+            $options[] = array(
+                'value' => $agegroup->getId(),
+                'label' => 'Agegroup: '.$agegroup->getAgegroup()->format('Y-m-d H:i:s'),
+                'selected' => $selected,
+            );
+        }
+        $selected = false;
+        if($agegroupId == null) {
+            $selected = true;
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'no Agegroup',
+            'selected' => $selected,
+        );
+        return $options;
+    }
+    
+    
     public function addAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
@@ -40,22 +135,8 @@ class ProductPriceController extends AbstractActionController {
 
         $form = new Form\ProductPrice();
         
-        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $options = array();
-        foreach($deadlines as $deadline) {
-            $options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => false,
-            );
-        }
-        $options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => false,
-        );
-        $form->get('Deadline_id')->setAttribute('options', $options);
+        $form->get('Deadline_id')->setAttribute('options', $this->getDeadlineOptions());
+        $form->get('Agegroup_id')->setAttribute('options', $this->getAgegroupOptions());
         $form->bind($productprice);
         $form->get('submit')->setValue('Add');
         
@@ -121,34 +202,10 @@ class ProductPriceController extends AbstractActionController {
                 ->findOneBy(array('id' => $id));
 
         $form = new Form\ProductPrice();
-        
         $form->bind($productprice);
         
-        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $options = array();
-        foreach($deadlines as $deadline) {
-            $selected = false;
-            if($productprice->getDeadlineId() == $deadline->getId()) {
-                $selected = true;
-            }
-            $options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => $selected,
-            );
-        }
-        $selected = false;
-        if($productprice->getDeadlineId() == null) {
-            $selected = true;
-        }
-        $options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => $selected,
-        );
-        $form->get('Deadline_id')->setAttribute('options', $options);
-        
+        $form->get('Deadline_id')->setAttribute('options', $this->getDeadlineOptions($productprice->getDeadlineId()));
+        $form->get('Agegroup_id')->setAttribute('options', $this->getAgegroupOptions($productprice->getAgegroupId()));
         
         $form->get('submit')->setAttribute('value', 'Edit');
 

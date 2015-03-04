@@ -58,6 +58,11 @@ class ProductPrice implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
+    protected $Agegroup_id;
+    
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
     protected $Counter_id;
     
     /**
@@ -82,6 +87,12 @@ class ProductPrice implements InputFilterAwareInterface
      */
     protected $deadline;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Agegroup", inversedBy="productPrices")
+     * @ORM\JoinColumn(name="Agegroup_id", referencedColumnName="id", nullable=true)
+     */
+    protected $agegroup;
+    
     public function __construct()
     {
     }
@@ -195,6 +206,29 @@ class ProductPrice implements InputFilterAwareInterface
     {
         return $this->Deadline_id;
     }
+    
+    /**
+     * Set the value of Agegroup_id.
+     *
+     * @param integer $Agegroup_id
+     * @return \Entity\ProductPrice
+     */
+    public function setAgegroupId($Agegroup_id)
+    {
+        $this->Agegroup_id = $Agegroup_id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Agegroup_id.
+     *
+     * @return integer
+     */
+    public function getAgegroupId()
+    {
+        return $this->Agegroup_id;
+    }
 
     /**
      * Set the value of Counter_id.
@@ -240,6 +274,29 @@ class ProductPrice implements InputFilterAwareInterface
     public function getDeadline()
     {
         return $this->deadline;
+    }
+    
+    /**
+     * Set Agegroup entity (many to one).
+     *
+     * @param \Entity\Agegroup $agegroup
+     * @return \Entity\ProductPrice
+     */
+    public function setAgegroup(Agegroup $agegroup = null)
+    {
+        $this->agegroup = $agegroup;
+
+        return $this;
+    }
+
+    /**
+     * Get Agegroup entity (many to one).
+     *
+     * @return \Entity\Agegroup
+     */
+    public function getAgegroup()
+    {
+        return $this->agegroup;
     }
 
     /**
@@ -510,7 +567,7 @@ class ProductPrice implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Product_id', 'charge', 'updated', 'created');
+        $dataFields = array('id', 'Product_id', 'charge', 'Deadline_id', 'Agegroup_id', 'updated', 'created');
         $relationFields = array('product');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -543,6 +600,6 @@ class ProductPrice implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Product_id', 'charge', 'updated', 'created');
+        return array('id', 'Product_id', 'charge', 'Deadline_id', 'Agegroup_id', 'updated', 'created');
     }
 }

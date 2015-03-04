@@ -180,13 +180,6 @@ class ProductController extends AbstractActionController {
     }
     
     public function deleteAction() {
-        $product_id = (int) $this->params()->fromRoute('product_id', 0);
-        $participant_id = (int) $this->params()->fromRoute('participant_id', 0);
-        $item_id = (int) $this->params()->fromRoute('item_id', 0);
-        if (!$product_id || !$participant_id || !$item_id) {
-            return $this->redirect()->toRoute('order');
-        }
-        
         $forrest = new Container('forrest');
         
         if($forrest->count() === 0) {
@@ -196,7 +189,16 @@ class ProductController extends AbstractActionController {
             $bc_product->options = array();
             $forrest->trace->product = $bc_product;
         }
-
+        
+        $product_id = (int) $this->params()->fromRoute('product_id', 0);
+        $participant_id = (int) $this->params()->fromRoute('participant_id', 0);
+        $item_id = (int) $this->params()->fromRoute('item_id', 0);
+        error_log('delete product '.$product_id.' '.$participant_id.' '.$item_id);
+        if (!is_numeric($product_id) || !is_numeric($participant_id) || !is_numeric($item_id)) {
+            $breadcrumb = $forrest->trace->product;
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+        }
+        
         $session_cart = new Container('cart');
         $participant = $session_cart->order->getParticipantBySessionId($participant_id);
         $item = $session_cart->order->getItem($participant_id, $item_id);

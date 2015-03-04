@@ -11,9 +11,9 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
-#use Admin\Form;
+use Admin\Form;
 
-class RoleController extends AbstractActionController {
+class AgegroupController extends AbstractActionController {
     
     public function indexAction()
     {
@@ -22,43 +22,33 @@ class RoleController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'roles' => $em->getRepository("ersEntity\Entity\Role")->findAll(),
+            'agegroups' => $em->getRepository("ersEntity\Entity\Agegroup")
+                ->findBy(array(), array('agegroup' => 'ASC')),
          ));
     }
 
     public function addAction()
     {
-        #$form = new Form\Role();
-        $form = $this->getServiceLocator()->get('Admin\Form\Role');
+        $form = new Form\Agegroup();
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $role = new Entity\Role();
+            $agegroup = new Entity\Agegroup();
             
-            $form->setInputFilter($role->getInputFilter());
+            $form->setInputFilter($agegroup->getInputFilter());
             $form->setData($request->getPost());
-
             if ($form->isValid()) {
-                $role->populate($form->getData());
+                $agegroup->populate($form->getData());
                 
                 $em = $this
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                if(is_numeric($role->getParentId()) && $role->getParentId() > 0) {
-                    $parent = $em->getRepository("ersEntity\Entity\Role")
-                        ->findOneBy(array('id' => $role->getParentId()));
-                
-                    $role->setParent($parent);
-                } else {
-                    $role->setParentId(null);
-                }
-                
-                $em->persist($role);
+                $em->persist($agegroup);
                 $em->flush();
 
-                return $this->redirect()->toRoute('admin/role');
+                return $this->redirect()->toRoute('admin/agegroup');
             } else {
                 error_log(var_export($form->getMessages(), true));
             }
@@ -73,34 +63,29 @@ class RoleController extends AbstractActionController {
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('admin/role', array(
+            return $this->redirect()->toRoute('admin/agegroup', array(
                 'action' => 'add'
             ));
         }
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $role = $em->getRepository("ersEntity\Entity\Role")->findOneBy(array('id' => $id));
+        $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")->findOneBy(array('id' => $id));
 
-        #$form = new Form\Role();
-        $form = $this->getServiceLocator()->get('Admin\Form\Role');
-        $form->bind($role);
+        $form = new Form\Agegroup();
+        $form->bind($agegroup);
         $form->get('submit')->setAttribute('value', 'Edit');
-        
-        $options = $form->get('parent_id')->getValueOptions();
-        unset($options[$role->getId()]);
-        $form->get('parent_id')->setValueOptions($options);
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($role->getInputFilter());
+            $form->setInputFilter($agegroup->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
                 $em->persist($form->getData());
                 $em->flush();
 
-                return $this->redirect()->toRoute('admin/role');
+                return $this->redirect()->toRoute('admin/agegroup');
             }
         }
 
@@ -110,20 +95,18 @@ class RoleController extends AbstractActionController {
         );
     }
 
-    /*
-     * The delete action is for Agegroups, Counters and Roles the same.
-     */
     public function deleteAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('admin/role');
+            return $this->redirect()->toRoute('admin/agegroup');
         }
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $role = $em->getRepository("ersEntity\Entity\Role")
+        $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")
                 ->findOneBy(array('id' => $id));
+        $productprices = $agegroup->getProductPrices();
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -131,22 +114,19 @@ class RoleController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $role = $em->getRepository("ersEntity\Entity\Role")
+                $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")
                     ->findOneBy(array('id' => $id));
-                $em->remove($role);
+                $em->remove($agegroup);
                 $em->flush();
             }
 
-            return $this->redirect()->toRoute('admin/role');
+            return $this->redirect()->toRoute('admin/agegroup');
         }
-        
-        $childs = $em->getRepository("ersEntity\Entity\Role")
-                ->findBy(array('Parent_id' => $id));
-        
-        return new ViewModel(array(
-            'id'     => $id,
-            'role'   => $role,
-            'childs' => $childs,
-        ));
+
+        return array(
+            'id'    => $id,
+            'agegroup' => $agegroup,
+            'productprices' => $productprices,
+        );
     }
 }
