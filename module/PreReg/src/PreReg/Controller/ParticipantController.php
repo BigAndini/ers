@@ -72,11 +72,10 @@ class ParticipantController extends AbstractActionController {
         if(!$forrest->exists('participant')) {
             $forrest->set('participant', 'participant');
         }
-        $breadcrumb = $forrest->get('participant');
 
         return [
             'form' => $form,
-            'breadcrumb' => $breadcrumb,
+            'breadcrumb' => $forrest->get('participant'),
         ];
     }
     

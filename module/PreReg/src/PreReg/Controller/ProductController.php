@@ -66,15 +66,17 @@ class ProductController extends AbstractActionController {
         
         $forrest = new Service\BreadcrumbFactory();
         if(!$forrest->exists('product')) {
-            $forrest->set('product');
+            $forrest->set('product', 'product');
         }
+        
         if(is_numeric($participant_id)) {
-            $params = array(
-                'action'            => 'edit',
-                'product_id'        => $product_id,
-                'participant_id'    => $participant_id,
-            );
+            #$params = $forrest->get('product')->params;
+            $params['action'] = 'add';
+            $params['product_id'] = $product_id;
+            $params['participant_id'] = $participant_id;
+
             if($item_id) {
+                $params['action'] = 'edit';
                 $params['item_id'] = $item_id;    
             }
             $forrest->set('participant', 'product', $params);
@@ -166,6 +168,12 @@ class ProductController extends AbstractActionController {
     }
     
     public function editAction() {
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('product')) {
+            $forrest->set('product', 'product', array('action' => 'edit'));
+        }
+        $forrest->set('participant', 'product', array('action' => 'edit'));
+        
         $viewModel = $this->addAction();
         $viewModel->setTemplate('pre-reg/product/edit');
         
