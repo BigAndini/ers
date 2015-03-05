@@ -56,7 +56,7 @@ class ProductView extends Form
             'name' => 'addParticipant',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Add Participant',
+                'value' => 'create Person',
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),

@@ -192,7 +192,7 @@ class ProductController extends AbstractActionController {
         $item_id = (int) $this->params()->fromRoute('item_id', 0);
         error_log('delete product '.$product_id.' '.$participant_id.' '.$item_id);
         if (!is_numeric($product_id) || !is_numeric($participant_id) || !is_numeric($item_id)) {
-            $breadcrumb = $forrest->trace->product;
+            $breadcrumb = $forrest->get('product');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
@@ -216,16 +216,19 @@ class ProductController extends AbstractActionController {
                 $session_cart->order->removeItem($participant_id, $item_id);
             }
 
-            $breadcrumb = $forrest->trace->product;
+            $breadcrumb = $forrest->get('product');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
+        
+        error_log(var_export($forrest->get('product'), true));
         
         return array(
             'id'    => $product_id,
             'participant' => $participant,
             'item' => $item,
             'product' => $product,
-            'forrest' => $forrest,
+            #'forrest' => $forrest,
+            'breadcrumb' => $forrest->get('product'),
         );
     }
 }

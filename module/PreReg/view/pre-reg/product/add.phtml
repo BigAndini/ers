@@ -40,9 +40,18 @@ else:
     <div class="product-price-div">
         <span class="product-price"><?php echo $this->currencyFormat($product->getPrice()->getCharge(), 'EUR', null, 'de_DE'); ?></span>
         <?php 
+        if($form->get('submit')->getAttribute('disabled') == 'disabled'):
+        ?>
+            <div class="alert alert-warning">
+                <h4>Please choose a participant</h4>
+                <p>This is a personalized ticket. You have to choose a participant for whom this ticket will be valid.</p>
+            </div>
+        <?php
+        endif;
             echo $this->formSubmit($form->get('submit'));
         ?>
     </div>
+    <div class="clear-both"></div>
     <?php
     echo $this->form()->closeTag();
     ?>

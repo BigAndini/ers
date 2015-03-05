@@ -22,11 +22,6 @@ $url = $this->url('product', array(
     <input type="hidden" name="participant_id" value="<?php echo (int) $participant->getSessionId(); ?>" />
     <input type="hidden" name="item_id" value="<?php echo (int) $item->getSessionId(); ?>" />
     <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
-    <?php $breadcrumb = $forrest->trace->product; ?>
-    <a href="<?php echo $this->url(
-            $breadcrumb->route, 
-            $breadcrumb->params, 
-            $breadcrumb->options); 
-    ?>">Cancel</a>
+    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
 </div>
 </form>

@@ -107,7 +107,7 @@ class Participant extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Ok',
+                'value' => 'Save',
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),
