@@ -12,6 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 #use Admin\Form;
+use Admin\Service;
 
 class RoleController extends AbstractActionController {
     
@@ -28,6 +29,12 @@ class RoleController extends AbstractActionController {
 
     public function addAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('role')) {
+            $forrest->set('role', 'admin/role');
+        }
+        $breadcrumb = $forrest->get('role');
+        
         #$form = new Form\Role();
         $form = $this->getServiceLocator()->get('Admin\Form\Role');
         $form->get('submit')->setValue('Add');
@@ -58,19 +65,26 @@ class RoleController extends AbstractActionController {
                 $em->persist($role);
                 $em->flush();
 
-                return $this->redirect()->toRoute('admin/role');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 error_log(var_export($form->getMessages(), true));
             }
         }
         
-        return array(
-            'form' => $form,                
-        );
+        return new ViewModel(array(
+            'form' => $form,
+            'breadcrumb' => $breadcrumb,
+        ));
     }
 
     public function editAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('role')) {
+            $forrest->set('role', 'admin/role');
+        }
+        $breadcrumb = $forrest->get('role');
+        
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('admin/role', array(
@@ -100,24 +114,27 @@ class RoleController extends AbstractActionController {
                 $em->persist($form->getData());
                 $em->flush();
 
-                return $this->redirect()->toRoute('admin/role');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
 
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
-        );
+        ));
     }
 
-    /*
-     * The delete action is for Agegroups, Counters and Roles the same.
-     */
     public function deleteAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('role')) {
+            $forrest->set('role', 'admin/role');
+        }
+        $breadcrumb = $forrest->get('role');
+        
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('admin/role');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         $em = $this
             ->getServiceLocator()
@@ -137,7 +154,7 @@ class RoleController extends AbstractActionController {
                 $em->flush();
             }
 
-            return $this->redirect()->toRoute('admin/role');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
         $childs = $em->getRepository("ersEntity\Entity\Role")
@@ -147,6 +164,7 @@ class RoleController extends AbstractActionController {
             'id'     => $id,
             'role'   => $role,
             'childs' => $childs,
+            'breadcrumb' => $breadcrumb,
         ));
     }
 }

@@ -65,9 +65,9 @@ class ProductController extends AbstractActionController {
             }
         }
         
-        return array(
+        return new ViewModel(array(
             'form' => $form,                
-        );
+        ));
     }
     
     public function editAction()
@@ -102,10 +102,10 @@ class ProductController extends AbstractActionController {
             }
         }
 
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
-        );
+        ));
     }
 
     public function viewAction()
@@ -116,6 +116,7 @@ class ProductController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -124,10 +125,19 @@ class ProductController extends AbstractActionController {
         
         $forrest = new Service\BreadcrumbFactory();
         $forrest->set('product', 'admin/product', array('action' => 'view', 'id' => $id));
+        $forrest->set('product-package', 'admin/product', array('action' => 'view', 'id' => $id));
+        $forrest->set('product-price', 'admin/product', array('action' => 'view', 'id' => $id));
         
-        return array(
+        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                ->findBy(array(), array('deadline' => 'ASC'));
+        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                ->findBy(array(), array('agegroup' => 'ASC'));
+        
+        return new ViewModel(array(
             'product' => $product,
-        );
+            'agegroups' => $agegroups,
+            'deadlines' => $deadlines,
+        ));
     }   
     
     public function copyAction()
@@ -170,10 +180,10 @@ class ProductController extends AbstractActionController {
             }
         }
 
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
-        );
+        ));
     }
 
     public function deleteAction()
@@ -207,10 +217,10 @@ class ProductController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/product');
         }
 
-        return array(
+        return new ViewModel(array(
             'id'    => $id,
             'product' => $Product,
-        );
+        ));
     }
     private function removeProductPrices(Entity\Product $Product) {
         $em = $this

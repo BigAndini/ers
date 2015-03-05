@@ -28,11 +28,14 @@ $this->headTitle($title);
                 <i class="fa fa-eye-slash"></i>
             <?php endif; ?>
         <td><?php 
-            echo $this->escapeHtml($product->getName());
             if($product->getPersonalized()) : ?> 
                 <!--<img src="/img/icons/32px/user.png" alt="(personalized)" title="This product needs to be linked to a user" />-->
                 <i class="fa fa-user"></i>
             <?php endif;?>
+            <?php if(count($product->getProductPackageRelatedByProductIds()) > 0): ?>
+                <i class="fa fa-archive"></i>
+            <?php endif; ?>
+            <?php echo $this->escapeHtml($product->getName()); ?>
         </td>
         <td>
             <a href="<?php echo $this->url('admin/product-variant', array('action'=>'add', 'id' => $product->getId()));?>"><?php echo $this->translate('Add Product Variant'); ?></a>

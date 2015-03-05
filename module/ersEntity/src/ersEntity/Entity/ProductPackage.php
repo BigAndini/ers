@@ -35,6 +35,7 @@ class ProductPackage implements InputFilterAwareInterface
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
@@ -56,7 +57,7 @@ class ProductPackage implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    protected $quantity = 1;
+    protected $amount = 1;
     
     /**
      * @ORM\Column(type="datetime")
@@ -69,16 +70,16 @@ class ProductPackage implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Product", inversedBy="productPackageRelatedByProductIds")
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="parentProduct")
      * @ORM\JoinColumn(name="Product_id", referencedColumnName="id")
      */
-    protected $productRelatedByProductId;
+    protected $product;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Product", inversedBy="productPackageRelatedBySubProductIds")
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="childProduct")
      * @ORM\JoinColumn(name="SubProduct_id", referencedColumnName="id")
      */
-    protected $productRelatedBySubProductId;
+    protected $subproduct;
 
     public function __construct()
     {
@@ -195,14 +196,14 @@ class ProductPackage implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of quantity.
+     * Set the value of amount.
      *
-     * @param boolean $quantity
+     * @param boolean $amount
      * @return \Entity\ProductPackage
      */
-    public function setQuantity($quantity)
+    public function setAmount($amount)
     {
-        $this->quantity = $quantity;
+        $this->amount = $amount;
 
         return $this;
     }
@@ -212,9 +213,9 @@ class ProductPackage implements InputFilterAwareInterface
      *
      * @return boolean
      */
-    public function getQuantity()
+    public function getAmount()
     {
-        return $this->quantity;
+        return $this->amount;
     }
     
     /**
@@ -223,9 +224,9 @@ class ProductPackage implements InputFilterAwareInterface
      * @param \Entity\Product $product
      * @return \Entity\ProductPackage
      */
-    public function setProductRelatedByProductId(Product $product = null)
+    public function setProduct(Product $product = null)
     {
-        $this->productRelatedByProductId = $product;
+        $this->product = $product;
 
         return $this;
     }
@@ -235,9 +236,9 @@ class ProductPackage implements InputFilterAwareInterface
      *
      * @return \Entity\Product
      */
-    public function getProductRelatedByProductId()
+    public function getProduct()
     {
-        return $this->productRelatedByProductId;
+        return $this->product;
     }
 
     /**
@@ -246,9 +247,9 @@ class ProductPackage implements InputFilterAwareInterface
      * @param \Entity\Product $product
      * @return \Entity\ProductPackage
      */
-    public function setProductRelatedBySubProductId(Product $product = null)
+    public function setSubProduct(Product $product = null)
     {
-        $this->productRelatedBySubProductId = $product;
+        $this->subproduct = $product;
 
         return $this;
     }
@@ -258,9 +259,9 @@ class ProductPackage implements InputFilterAwareInterface
      *
      * @return \Entity\Product
      */
-    public function getProductRelatedBySubProductId()
+    public function getSubProduct()
     {
-        return $this->productRelatedBySubProductId;
+        return $this->subproduct;
     }
 
     /**
@@ -288,7 +289,7 @@ class ProductPackage implements InputFilterAwareInterface
         $filters = array(
             array(
                 'name' => 'id',
-                'required' => true,
+                'required' => false,
                 'filters' => array(),
                 'validators' => array(),
             ),
@@ -300,6 +301,12 @@ class ProductPackage implements InputFilterAwareInterface
             ),
             array(
                 'name' => 'SubProduct_id',
+                'required' => true,
+                'filters' => array(),
+                'validators' => array(),
+            ),
+            array(
+                'name' => 'amount',
                 'required' => true,
                 'filters' => array(),
                 'validators' => array(),
@@ -346,7 +353,7 @@ class ProductPackage implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Product_id', 'SubProduct_id', 'active');
+        $dataFields = array('id', 'Product_id', 'SubProduct_id', 'amount', 'active');
         $relationFields = array('product', 'product');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -379,6 +386,6 @@ class ProductPackage implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Product_id', 'SubProduct_id', 'active');
+        return array('id', 'Product_id', 'SubProduct_id', 'amount', 'active');
     }
 }

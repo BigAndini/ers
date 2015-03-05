@@ -162,6 +162,7 @@ return [
                 ['controller' => 'Admin\Controller\Admin', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\PriceLimit', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Product', 'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\ProductPackage', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\ProductPrice', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\ProductVariant', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\ProductVariantValue', 'roles' => ['admin']],

@@ -17,15 +17,10 @@ use Admin\Service;
 
 class ProductVariantValueController extends AbstractActionController 
 {    
-    /*public function indexAction()
+    public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        return new ViewModel(array(
-            'productvariants' => $em->getRepository("ersEntity\Entity\ProductVariantValue")->findAll(),
-        ));
-    }*/
+        return $this->$this->notFoundAction();
+    }
 
     public function viewAction()
     {
@@ -33,8 +28,6 @@ class ProductVariantValueController extends AbstractActionController
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
-        
-        
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -84,11 +77,11 @@ class ProductVariantValueController extends AbstractActionController
             }
         }
         
-        return array(
+        return new ViewModel(array(
             'productvariant_id' => $id,
             'breadcrum' => $forrest->get('product-variant-value'),
             'form' => $form,                
-        );
+        ));
     }
 
     public function editAction()
@@ -124,10 +117,10 @@ class ProductVariantValueController extends AbstractActionController
             }
         }
 
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
-        );
+        ));
     }
 
     public function deleteAction()
@@ -157,10 +150,10 @@ class ProductVariantValueController extends AbstractActionController
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        return array(
+        return new ViewModel(array(
             'id'    => $id,
             'value' => $em->getRepository("ersEntity\Entity\ProductVariantValue")
                         ->findOneBy(array('id' => $id)),
-        );
+        ));
     }
 }

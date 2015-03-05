@@ -70,10 +70,10 @@ class ProfileController extends AbstractActionController {
             } 
         }
         
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
-        );
+        ));
     }
     public function passwordAction() {
         if (!$this->zfcUserAuthentication()->hasIdentity()) {
@@ -107,10 +107,10 @@ class ProfileController extends AbstractActionController {
             } 
         }
         
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
-        );
+        ));
     }
     public function forgotPasswordAction() {
         

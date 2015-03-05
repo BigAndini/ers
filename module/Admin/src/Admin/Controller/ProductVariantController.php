@@ -16,15 +16,10 @@ use Admin\Service;
 
 class ProductVariantController extends AbstractActionController 
 {    
-    /*public function indexAction()
+    public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        return new ViewModel(array(
-            'productvariants' => $em->getRepository("ersEntity\Entity\ProductVariant")->findAll(),
-        ));
-    }*/
+        return $this->$this->notFoundAction();
+    }
 
     public function addAction()
     {

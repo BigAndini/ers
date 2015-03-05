@@ -12,6 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Admin\Form;
+use Admin\Service;
 
 class UserController extends AbstractActionController {
     
@@ -28,6 +29,12 @@ class UserController extends AbstractActionController {
 
     public function addAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('user')) {
+            $forrest->set('user', 'admin/user');
+        }
+        $breadcrumb = $forrest->get('user');
+        
         $form = new Form\User();
         $form->get('submit')->setValue('Add');
         
@@ -48,19 +55,25 @@ class UserController extends AbstractActionController {
                 $em->persist($user);
                 $em->flush();
 
-                return $this->redirect()->toRoute('admin/user');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 error_log(var_export($form->getMessages(), true));
             }
         }
         
-        return array(
+        return new ViewModel(array(
             'form' => $form,                
-        );
+        ));
     }
 
     public function editAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('user')) {
+            $forrest->set('user', 'admin/user');
+        }
+        $breadcrumb = $forrest->get('user');
+        
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('admin/user', array(
@@ -98,16 +111,16 @@ class UserController extends AbstractActionController {
                 $em->persist($form->getData());
                 $em->flush();
 
-                return $this->redirect()->toRoute('admin/user');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 error_log(var_export($form->getMessages(), true));
             }
         }
 
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
-        );
+        ));
     }
 
     /*
@@ -115,9 +128,16 @@ class UserController extends AbstractActionController {
      */
     public function deleteAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('user')) {
+            $forrest->set('user', 'admin/user');
+        }
+        $breadcrumb = $forrest->get('user');
+        
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('admin/user');
+            #return $this->redirect()->toRoute('admin/user');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         $em = $this
             ->getServiceLocator()
@@ -137,12 +157,14 @@ class UserController extends AbstractActionController {
                 $em->flush();
             }
 
-            return $this->redirect()->toRoute('admin/user');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            #return $this->redirect()->toRoute('admin/user');
         }
 
-        return array(
+        return new ViewModel(array(
             'id'    => $id,
             'user' => $user,
-        );
+            'breadcrumb' => $breadcrumb,
+        ));
     }
 }

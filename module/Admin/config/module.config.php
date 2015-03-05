@@ -12,6 +12,7 @@ return array(
             'Admin\Controller\Admin'                => 'Admin\Controller\AdminController',
             'Admin\Controller\Tax'                  => 'Admin\Controller\TaxController',
             'Admin\Controller\Product'              => 'Admin\Controller\ProductController',
+            'Admin\Controller\ProductPackage'       => 'Admin\Controller\ProductPackageController',
             'Admin\Controller\ProductVariant'       => 'Admin\Controller\ProductVariantController',
             'Admin\Controller\ProductVariantValue'  => 'Admin\Controller\ProductVariantValueController',
             'Admin\Controller\ProductPrice'         => 'Admin\Controller\ProductPriceController',
@@ -26,7 +27,7 @@ return array(
         ),
     ),
     'navigation' => array(
-        'admin_nav' => array(
+        'admin_main_nav' => array(
             'home' => array(
                 'label' => 'Frontend',
                 'route' => 'home',
@@ -59,28 +60,12 @@ return array(
                     ),
                 ),
             ),
-            
-            /*'tax' => array(
-                'label' => 'Tax',
-                'route' => 'admin/tax',
-                'resource'  => 'controller/Admin\Controller\Tax',
-            ),
-            'deadline' => array(
-                'label' => 'Deadline',
-                'route' => 'admin/deadline',
-                'resource'  => 'controller/Admin\Controller\Deadline',
-            ),*/
             'product' => array(
                 'label' => 'Product',
                 'route' => 'admin/product',
                 #'action' => 'reset',
                 'resource'  => 'controller/Admin\Controller\Product',
             ),
-            /*'paymenttype' => array(
-                'label' => 'Payment Type',
-                'route' => 'admin/payment-type',
-                'resource'  => 'controller/Admin\Controller\PaymentType',
-            ),*/
             'counter' => array(
                 'label' => 'Counter',
                 'route' => 'admin/counter',
@@ -117,7 +102,7 @@ return array(
                 ),
             ),
         ),
-        'top_nav' => array(
+        'admin_top_nav' => array(
             'login' => array(
                 'label' => 'Login',
                 'route' => 'zfcuser/login',
@@ -345,14 +330,28 @@ return array(
                             ),
                         ),
                     ),
+                    'product-package' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/product-package[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\ProductPackage',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),
     ),
     'service_manager' => array(
         'factories' => array(
-            'admin_nav' => 'Admin\Service\AdminNavigationFactory',
-            'top_nav' => 'Admin\Service\TopNavigationFactory',
+            'admin_main_nav' => 'Admin\Service\AdminNavigationFactory',
+            'admin_top_nav' => 'Admin\Service\TopNavigationFactory',
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',

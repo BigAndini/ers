@@ -20,6 +20,6 @@ class AdminNavigationFactory extends AbstractNavigationFactory
      */
     protected function getName()
     {
-        return 'admin_nav';
+        return 'admin_main_nav';
     }
 }

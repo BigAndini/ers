@@ -108,16 +108,16 @@ class Product implements InputFilterAwareInterface
     protected $items;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProductPackage", mappedBy="productRelatedByProductId")
+     * @ORM\OneToMany(targetEntity="ProductPackage", mappedBy="product")
      * @ORM\JoinColumn(name="id", referencedColumnName="Product_id")
      */
-    protected $productPackageRelatedByProductIds;
+    protected $childProducts;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProductPackage", mappedBy="productRelatedBySubProductId")
+     * @ORM\OneToMany(targetEntity="ProductPackage", mappedBy="subproduct")
      * @ORM\JoinColumn(name="id", referencedColumnName="SubProduct_id")
      */
-    protected $productPackageRelatedBySubProductIds;
+    protected $parentProducts;
 
     /**
      * @ORM\OneToMany(targetEntity="ProductPrice", mappedBy="product", cascade={"persist"})
@@ -141,8 +141,8 @@ class Product implements InputFilterAwareInterface
     {
         $this->counters = new ArrayCollection();
         $this->items = new ArrayCollection();
-        $this->productPackageRelatedByProductIds = new ArrayCollection();
-        $this->productPackageRelatedBySubProductIds = new ArrayCollection();
+        $this->childProducts = new ArrayCollection();
+        $this->parentProducts = new ArrayCollection();
         $this->productPrices = new ArrayCollection();
         $this->productVariants = new ArrayCollection();
         $this->setActive(1);
@@ -545,9 +545,9 @@ class Product implements InputFilterAwareInterface
      * @param \Entity\ProductPackage $productPackage
      * @return \Entity\Product
      */
-    public function addProductPackageRelatedByProductId(ProductPackage $productPackage)
+    public function addChildProduct(ProductPackage $productPackage)
     {
-        $this->productPackageRelatedByProductIds[] = $productPackage;
+        $this->childProducts[] = $productPackage;
 
         return $this;
     }
@@ -558,9 +558,9 @@ class Product implements InputFilterAwareInterface
      * @param \Entity\ProductPackage $productPackage
      * @return \Entity\Product
      */
-    public function removeProductPackageRelatedByProductId(ProductPackage $productPackage)
+    public function removeChildProduct(ProductPackage $productPackage)
     {
-        $this->productPackageRelatedByProductIds->removeElement($productPackage);
+        $this->childProducts->removeElement($productPackage);
 
         return $this;
     }
@@ -570,9 +570,9 @@ class Product implements InputFilterAwareInterface
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getProductPackageRelatedByProductIds()
+    public function getChildProducts()
     {
-        return $this->productPackageRelatedByProductIds;
+        return $this->childProducts;
     }
 
     /**
@@ -581,9 +581,9 @@ class Product implements InputFilterAwareInterface
      * @param \Entity\ProductPackage $productPackage
      * @return \Entity\Product
      */
-    public function addProductPackageRelatedBySubProductId(ProductPackage $productPackage)
+    public function addParentProduct(ProductPackage $productPackage)
     {
-        $this->productPackageRelatedBySubProductIds[] = $productPackage;
+        $this->parentProducts[] = $productPackage;
 
         return $this;
     }
@@ -594,9 +594,9 @@ class Product implements InputFilterAwareInterface
      * @param \Entity\ProductPackage $productPackage
      * @return \Entity\Product
      */
-    public function removeProductPackageRelatedBySubProductId(ProductPackage $productPackage)
+    public function removeParentProduct(ProductPackage $productPackage)
     {
-        $this->productPackageRelatedBySubProductIds->removeElement($productPackage);
+        $this->parentProducts->removeElement($productPackage);
 
         return $this;
     }
@@ -606,9 +606,9 @@ class Product implements InputFilterAwareInterface
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getProductPackageRelatedBySubProductIds()
+    public function getParentProducts()
     {
-        return $this->productPackageRelatedBySubProductIds;
+        return $this->parentProducts;
     }
 
     /**

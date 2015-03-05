@@ -73,10 +73,10 @@ class ParticipantController extends AbstractActionController {
             $forrest->set('participant', 'participant');
         }
 
-        return [
+        return new ViewModel(array(
             'form' => $form,
             'breadcrumb' => $forrest->get('participant'),
-        ];
+        ));
     }
     
     /*
@@ -124,11 +124,11 @@ class ParticipantController extends AbstractActionController {
             $forrest->set('participant', 'participant');
         }
         $breadcrumb = $forrest->get('participant');
-        return [
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
             'breadcrumb' => $breadcrumb,
-        ];
+        ));
     }
     
     public function deleteAction() {
@@ -170,11 +170,11 @@ class ParticipantController extends AbstractActionController {
         $package = $session_cart->order->getPackageByParticipantSessionId($id);
         
         
-        return array(
+        return new ViewModel(array(
             'id'    => $id,
             'participant' => $participant,
             'package' => $package,
             'breadcrumb' => $breadcrumb,
-        );
+        ));
     }
 }

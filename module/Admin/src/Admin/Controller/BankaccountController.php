@@ -43,8 +43,8 @@ class BankaccountController extends AbstractActionController {
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('id' => $id));
         
-        return array(
+        return new ViewModel(array(
             'order' => $order,
-        );
+        ));
     }   
 }

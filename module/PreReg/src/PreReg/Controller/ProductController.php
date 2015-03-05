@@ -220,15 +220,12 @@ class ProductController extends AbstractActionController {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        error_log(var_export($forrest->get('product'), true));
-        
-        return array(
+        return new ViewModel(array(
             'id'    => $product_id,
             'participant' => $participant,
             'item' => $item,
             'product' => $product,
-            #'forrest' => $forrest,
             'breadcrumb' => $forrest->get('product'),
-        );
+        ));
     }
 }

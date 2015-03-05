@@ -201,9 +201,9 @@ class PaymentTypeController extends AbstractActionController {
             }
         }
         
-        return array(
+        return new ViewModel(array(
             'form' => $form,                
-        );
+        ));
     }
 
     public function editBankTransferAction() {
@@ -447,10 +447,10 @@ class PaymentTypeController extends AbstractActionController {
             }
         }
 
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
-        );
+        ));
     }
 
     public function deleteAction()
@@ -480,9 +480,9 @@ class PaymentTypeController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/payment-type');
         }
 
-        return array(
+        return new ViewModel(array(
             'id'    => $id,
             'paymenttype' => $paymenttype,
-        );
+        ));
     }
 }

@@ -304,3 +304,9 @@ span.product-price {
     text-align: right;
     display: block;
 }
+
+div.product-info-field {
+    border: 1px solid #ddd;
+    margin: 10px 0;
+    padding: 15px;
+}

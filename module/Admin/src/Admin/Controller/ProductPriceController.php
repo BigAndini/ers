@@ -138,9 +138,10 @@ class ProductPriceController extends AbstractActionController {
 
         $form = new Form\ProductPrice();
         
-        $form->get('Deadline_id')->setAttribute('options', $this->getDeadlineOptions());
-        $form->get('Agegroup_id')->setAttribute('options', $this->getAgegroupOptions());
         $form->bind($productprice);
+        
+        $form->get('Deadline_id')->setValueOptions($this->getDeadlineOptions());
+        $form->get('Agegroup_id')->setValueOptions($this->getAgegroupOptions());
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -186,11 +187,11 @@ class ProductPriceController extends AbstractActionController {
         
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
         
-        return array(
+        return new ViewModel(array(
             'product' => $product,
             'form' => $form,                
             'breadcrumb' => $forrest->get('product-price'),
-        );
+        ));
     }
 
     public function editAction()
@@ -238,12 +239,12 @@ class ProductPriceController extends AbstractActionController {
         
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $productprice->getProductId()));
         
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'product' => $product,
             'form' => $form,
             'breadcrumb' => $forrest->get('product-price'),
-        );
+        ));
     }
 
     public function deleteAction()
@@ -280,11 +281,11 @@ class ProductPriceController extends AbstractActionController {
         
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $productprice->getProductId()));
         
-        return array(
+        return new ViewModel(array(
             'id'    => $id,
             'product' => $product,
             'price' => $productprice,
             'breadcrumb' => $forrest->get('product-price'),
-        );
+        ));
     }
 }

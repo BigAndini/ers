@@ -54,9 +54,9 @@ class CounterController extends AbstractActionController {
             }
         }
         
-        return array(
+        return new ViewModel(array(
             'form' => $form,                
-        );
+        ));
     }
 
     public function editAction()
@@ -90,10 +90,10 @@ class CounterController extends AbstractActionController {
             }
         }
 
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
-        );
+        ));
     }
 
     /*
@@ -126,9 +126,9 @@ class CounterController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/counter');
         }
 
-        return array(
+        return new ViewModel(array(
             'id'    => $id,
             'counter' => $productprice,
-        );
+        ));
     }
 }

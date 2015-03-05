@@ -12,6 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Admin\Form;
+use Admin\Service;
 
 class TaxController extends AbstractActionController {
     public function indexAction()
@@ -26,6 +27,12 @@ class TaxController extends AbstractActionController {
 
     public function addAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('tax')) {
+            $forrest->set('tax', 'admin/tax');
+        }
+        $breadcrumb = $forrest->get('tax');
+        
         $form = new Form\Tax();
         $form->get('submit')->setValue('Add');
 
@@ -44,14 +51,23 @@ class TaxController extends AbstractActionController {
                 $em->persist($tax);
                 $em->flush();
 
-                return $this->redirect()->toRoute('admin/tax');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
-        return array('form' => $form);
+        return new ViewModel(array(
+            'form' => $form,
+            'breadcrumb' => $breadcrumb,
+        ));
     }
 
     public function editAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        $breadcrumb = $forrest->get('tax');
+        if(!$forrest->exists('tax')) {
+            $forrest->set('tax', 'admin/tax');
+        }
+        
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('admin/tax', array(
@@ -78,21 +94,28 @@ class TaxController extends AbstractActionController {
                 $em->persist($form->getData());
                 $em->flush();
 
-                return $this->redirect()->toRoute('admin/tax');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
 
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
-        );
+            'breadcrumb' => $breadcrumb,
+        ));
     }
 
     public function deleteAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('tax')) {
+            $forrest->set('tax', 'admin/tax');
+        }
+        $breadcrumb = $forrest->get('tax');
+        
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('admin/tax');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         $em = $this
             ->getServiceLocator()
@@ -111,13 +134,14 @@ class TaxController extends AbstractActionController {
                 $em->flush();
             }
 
-            return $this->redirect()->toRoute('admin/tax');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
 
-        return array(
+        return new ViewModel(array(
             'id'    => $id,
             'tax' => $tax = $em->getRepository("ersEntity\Entity\Tax")
                 ->findOneBy(array('id' => $id)),
-        );
+            'breadcrumb' => $breadcrumb,
+        ));
     }
 }

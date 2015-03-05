@@ -50,11 +50,6 @@ return array(
             ),*/
         ),
         'top_nav' => array(
-            'admin' => array(
-                'label' => 'AdminPanel',
-                'route' => 'admin',
-                'resource'  => 'controller/Admin\Controller\Admin',
-            ),
             'order' => array(
                 'label' => 'My Shopping Cart',
                 'route' => 'order',
@@ -83,6 +78,11 @@ return array(
                 'route' => 'zfcuser/logout',
                 #'action' => 'logout',
                 'resource'  => 'controller/zfcuser:logout',
+            ),
+            'admin' => array(
+                'label' => 'AdminPanel',
+                'route' => 'admin',
+                'resource'  => 'controller/Admin\Controller\Admin',
             ),
         ),
         'checkout_nav' => array(

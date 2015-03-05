@@ -54,9 +54,9 @@ class AgegroupController extends AbstractActionController {
             }
         }
         
-        return array(
+        return new ViewModel(array(
             'form' => $form,                
-        );
+        ));
     }
 
     public function editAction()
@@ -89,10 +89,10 @@ class AgegroupController extends AbstractActionController {
             }
         }
 
-        return array(
+        return new ViewModel(array(
             'id' => $id,
             'form' => $form,
-        );
+        ));
     }
 
     public function deleteAction()
@@ -123,10 +123,10 @@ class AgegroupController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/agegroup');
         }
 
-        return array(
+        return new ViewModel(array(
             'id'    => $id,
             'agegroup' => $agegroup,
             'productprices' => $productprices,
-        );
+        ));
     }
 }
