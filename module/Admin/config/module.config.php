@@ -333,10 +333,11 @@ return array(
                     'product-package' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route'    => '/product-package[/:action][/:id]',
+                            'route'    => '/product-package[/:action][/:id][/:subproduct_id]',
                             'constraints' => array(
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id'     => '[0-9]+',
+                                'subproduct_id'     => '[0-9]+',
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\ProductPackage',

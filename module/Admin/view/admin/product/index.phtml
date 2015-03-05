@@ -32,7 +32,7 @@ $this->headTitle($title);
                 <!--<img src="/img/icons/32px/user.png" alt="(personalized)" title="This product needs to be linked to a user" />-->
                 <i class="fa fa-user"></i>
             <?php endif;?>
-            <?php if(count($product->getProductPackageRelatedByProductIds()) > 0): ?>
+            <?php if(count($product->getChildProducts()) > 0): ?>
                 <i class="fa fa-archive"></i>
             <?php endif; ?>
             <?php echo $this->escapeHtml($product->getName()); ?>
