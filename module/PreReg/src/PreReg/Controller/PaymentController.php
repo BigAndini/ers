@@ -17,7 +17,7 @@ use PreReg\Form;
 
 class PaymentController extends AbstractActionController { 
     public function indexAction() {
-        $this->$this->notFoundAction();
+        $this->notFoundAction();
     }
     /*
      * display long description of payment type

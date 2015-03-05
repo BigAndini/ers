@@ -18,7 +18,7 @@ class ProductVariantController extends AbstractActionController
 {    
     public function indexAction()
     {
-        return $this->$this->notFoundAction();
+        return $this->notFoundAction();
     }
 
     public function addAction()

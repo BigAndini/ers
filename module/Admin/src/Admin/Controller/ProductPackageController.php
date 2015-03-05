@@ -18,7 +18,7 @@ class ProductPackageController extends AbstractActionController {
     
     public function indexAction()
     {
-        return $this->$this->notFoundAction();
+        return $this->notFoundAction();
     }
 
     /**

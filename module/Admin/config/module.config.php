@@ -24,6 +24,7 @@ return array(
             'Admin\Controller\Role'                 => 'Admin\Controller\RoleController',
             'Admin\Controller\Order'                => 'Admin\Controller\OrderController',
             'Admin\Controller\Bankaccount'          => 'Admin\Controller\BankaccountController',
+            'Admin\Controller\Test'                 => 'Admin\Controller\TestController',
         ),
     ),
     'navigation' => array(
@@ -148,6 +149,20 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
+                    'test' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/test[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Test',
+                                'action'     => 'index',
+                            ),
+                        ),
+                    ),
                     'tax' => array(
                         'type' => 'segment',
                         'options' => array(

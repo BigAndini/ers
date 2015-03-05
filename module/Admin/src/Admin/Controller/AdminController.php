@@ -17,6 +17,4 @@ class AdminController extends AbstractActionController {
     {
         return new ViewModel();
     }
-    
-    
 }

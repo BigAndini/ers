@@ -159,6 +159,7 @@ return [
                 
                 /* Admin */
                 #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\Test', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Admin', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\PriceLimit', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Product', 'roles' => ['admin']],
