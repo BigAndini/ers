@@ -45,9 +45,14 @@ echo $this->navigation()
         else:
             $disabled = false;
         endif; ?>
+        <?php if($order->getPurchaser() != null && $order->getPurchaser()->getEmail() == $participant->getEmail()) :
+            $checked = true;
+        else:
+            $chhecked = false;
+        endif; ?>
         <div class="purchaser">
             <h4>
-                <input type="radio" <?php echo $disabled ? 'disabled="disabled"' : ''; ?> name="purchaser_id" value="<?php echo $participant->getSessionId() ?>" />
+                <input type="radio" <?php echo $checked ? 'checked="checked"' : '' ?> <?php echo $disabled ? 'disabled="disabled"' : ''; ?> name="purchaser_id" value="<?php echo $participant->getSessionId() ?>" />
                 <?php echo $participant->getPrename().' '.$participant->getSurname(); ?>
                 <span style="font-size: 14px;">
                     <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>

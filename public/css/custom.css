@@ -310,3 +310,8 @@ div.product-info-field {
     margin: 10px 0;
     padding: 15px;
 }
+
+.sum-table {
+    width: 300px;
+    float: right;
+}

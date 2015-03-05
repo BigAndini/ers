@@ -26,9 +26,15 @@ echo $this->navigation()
 <div>
     <h1>Choose Paymenttype</h1>
     <?php foreach($paymenttypes as $paymenttype): ?>
+    <?php error_log($order->getPaymentType()->getId().' == '.$paymenttype->getId()); ?>
+    <?php if($order->getPaymentType() != null && $order->getPaymentType()->getId() == $paymenttype->getId()) :
+            $checked = true;
+        else:
+            $checked = false;
+        endif; ?>
     <p>
         <h3>
-            <input style="display: inline;" type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
+            <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
             <?php echo $paymenttype->getName(); ?>
         </h3>
         <p class="payment-desc"><?php echo $paymenttype->getShortDescription(); ?> <a href="<?php echo $this->url('payment', array('action' => 'info', 'id' => $paymenttype->getId()))?>">more info...</a></p>

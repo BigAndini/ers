@@ -126,23 +126,12 @@ class OrderController extends AbstractActionController {
         $forrest = new Service\BreadcrumbFactory();
         $forrest->set('paymenttype', 'order', array('action' => 'payment'));
         
-        /*$forrest = new Container('forrest');
-        $breadcrumb = new \ArrayObject();
-        $breadcrumb->route = 'order';
-        $breadcrumb->params = array(
-            'action' => 'payment'
-        );
-        $breadcrumb->options = array();
-        $forrest->trace->paymenttype = $breadcrumb;*/
-        
         $form = new Form\PaymentType();
         
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        # even if it's not displayed, this is needed to recognize the possible 
-        # values.
         $paymenttypes = $em->getRepository("ersEntity\Entity\PaymentType")->findBy(array(), array('ordering' => 'ASC'));
         $types = array();
         foreach($paymenttypes as $paymenttype) {
@@ -152,6 +141,8 @@ class OrderController extends AbstractActionController {
             );
         }
         $form->get('paymenttype_id')->setValueOptions($types);
+        
+        $session_cart = new Container('cart');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -165,7 +156,7 @@ class OrderController extends AbstractActionController {
                 $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
                         ->findOneBy(array('id' => $data['paymenttype_id']));
                 
-                $session_cart = new Container('cart');
+                
                 $session_cart->order->setPaymentType($paymenttype);
                 
                 return $this->redirect()->toRoute('order', array('action' => 'checkout'));
@@ -177,6 +168,7 @@ class OrderController extends AbstractActionController {
         
         return new ViewModel(array(
             'form' => $form,
+            'order' => $session_cart->order,
             'paymenttypes' => $paymenttypes,
         ));
     }
