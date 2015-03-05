@@ -8,6 +8,8 @@ $this->headTitle($title);
 
 <table class="table">
     <tr>
+        <th>Code</th>
+        <th>Date</th>
         <th>Purchaser</th>
         <th>Price</th>
         <th>Status</th>
@@ -15,6 +17,8 @@ $this->headTitle($title);
     </tr>
 <?php foreach ($orders as $order) : ?>
     <tr>
+        <td><?php echo $order->getCode()->getValue(); ?></td>
+        <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
         <td>
             <?php echo $order->getPurchaser()->getPrename().' '.$order->getPurchaser()->getSurname(); ?>
             <br />

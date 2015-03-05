@@ -107,7 +107,14 @@ class DeadlineController extends AbstractActionController {
         $deadline = $em->getRepository("ersEntity\Entity\Deadline")
                 ->findOneBy(array('id' => $id));
         $productprices = $deadline->getProductPrices();
-
+        
+        $qb = $em->getRepository("ersEntity\Entity\PaymentType")->createQueryBuilder('n');
+        $paymenttypes = $qb->where(
+                $qb->expr()->orX(
+                    $qb->expr()->eq('n.activeFrom_id', $id),
+                    $qb->expr()->eq('n.activeUntil_id', $id)
+            ))->getQuery()->getResult();
+        
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
@@ -127,6 +134,7 @@ class DeadlineController extends AbstractActionController {
             'id'    => $id,
             'deadline' => $deadline,
             'productprices' => $productprices,
+            'paymenttypes' => $paymenttypes,
         );
     }
 }

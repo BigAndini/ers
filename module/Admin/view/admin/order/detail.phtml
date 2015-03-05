@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Order No. '.$order->getId().' ('.$order->getStatus().')';
+$title = 'Order '.$order->getCode()->getValue().' ('.$order->getStatus().')';
 $this->headTitle($title);
 ?>
 

@@ -45,6 +45,7 @@ class Agegroup extends Form
         $this->add(array(
             'name' => 'name',
             'attributes' => array(
+                'required' => 'required',
                 'type'  => 'text',
                 'class' => 'form-control form-element',
                 'placeholder' => 'Name...',

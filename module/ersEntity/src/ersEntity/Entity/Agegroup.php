@@ -48,7 +48,7 @@ class Agegroup implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="string", length=45)
      */
-    protected $displayName;
+    protected $name;
     
     /**
      * @ORM\Column(type="datetime")
@@ -149,7 +149,7 @@ class Agegroup implements InputFilterAwareInterface
      */
     public function setName($name)
     {
-        $this->displayName = $name;
+        $this->name = $name;
 
         return $this;
     }
@@ -161,7 +161,7 @@ class Agegroup implements InputFilterAwareInterface
      */
     public function getName()
     {
-        return $this->displayName;
+        return $this->name;
     }
 
     /**
@@ -278,6 +278,12 @@ class Agegroup implements InputFilterAwareInterface
                 'validators' => array(),
             ),
             array(
+                'name' => 'name',
+                'required' => true,
+                'filters' => array(),
+                'validators' => array(),
+            ),
+            array(
                 'name' => 'agegroup',
                 'required' => false,
                 'filters' => array(),
@@ -331,7 +337,7 @@ class Agegroup implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'agegroup', 'displayName', 'updated', 'created');
+        $dataFields = array('id', 'agegroup', 'name', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -364,6 +370,6 @@ class Agegroup implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'agegroup', 'displayName', 'updated', 'created');
+        return array('id', 'agegroup', 'name', 'updated', 'created');
     }
 }
