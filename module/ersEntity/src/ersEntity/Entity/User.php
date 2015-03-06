@@ -80,6 +80,11 @@ class User implements UserInterface, ProviderInterface
     protected $surname;
     
     /**
+     * @ORM\Column(type="string", length=45, nullable=true)
+     */
+    protected $nationality;
+    
+    /**
      * @var string
      * @ORM\Column(type="string", length=128, nullable=true)
      */

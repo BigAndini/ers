@@ -315,3 +315,15 @@ div.product-info-field {
     width: 300px;
     float: right;
 }
+
+.p_overlay_close {
+    text-align: right;
+}
+.p_overlay_close_inner {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 2px 5px;
+}
+.p_overlay_close_inner a:hover {
+    text-decoration: none;
+}

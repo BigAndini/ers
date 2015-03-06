@@ -90,6 +90,7 @@ class ProductController extends AbstractActionController {
         }
         $bc_participant = $forrest->get('participant');
         $forrest->set('cart', $bc_participant->route, $bc_participant->params, $bc_participant->options);
+        $forrest->set('bc_stay', $bc_participant->route, $bc_participant->params, $bc_participant->options);
         
         $em = $this
             ->getServiceLocator()
@@ -168,6 +169,7 @@ class ProductController extends AbstractActionController {
             'item' => $item,
             'form' => $form,
             'breadcrumb' => $breadcrumb,
+            'bc_stay' => $forrest->get('bc_stay'),
             'chooser' => $chooser,
         ));
     }
