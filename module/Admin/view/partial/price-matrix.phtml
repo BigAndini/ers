@@ -58,6 +58,7 @@
     <?php endforeach; ?>
     <td>
     <?php if(
+        $price != null &&
         $price->getAgegroup() == null && 
         $price->getDeadline() == null): ?>
         <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>

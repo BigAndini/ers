@@ -24,7 +24,7 @@ echo $this->navigation()
     <?php echo $this->formSubmit($form->get('submit')); ?>
 </div>
 <div>
-    <h1>Choose Paymenttype</h1>
+    <h1>Choose Payment type</h1>
     <?php foreach($paymenttypes as $paymenttype): ?>
     <?php if($order->getPaymentType() != null && $order->getPaymentType()->getId() == $paymenttype->getId()) :
             $checked = true;
