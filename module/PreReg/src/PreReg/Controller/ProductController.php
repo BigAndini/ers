@@ -89,7 +89,9 @@ class ProductController extends AbstractActionController {
                 );
         }
         
-        $forrest->set('cart', 'product');
+        if(!$forrest->exists('cart')) {
+            $forrest->set('cart', 'product');
+        }
         
         $em = $this
             ->getServiceLocator()

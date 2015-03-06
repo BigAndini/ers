@@ -25,6 +25,7 @@ class BreadcrumbFactory
     }
     
     public function set($context, $route, $params=array(), $options=array()) {
+        #error_log($context. ' set routing to '.$route);
         $value = new \ArrayObject();
         $value->route   = $route;
         $value->params  = $params;

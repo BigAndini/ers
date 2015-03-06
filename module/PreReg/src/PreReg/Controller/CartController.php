@@ -86,8 +86,6 @@ class CartController extends AbstractActionController {
             $item->setAmount(1);
             $item->populate((array) $product_data);
             
-            
-            error_log('param_participant_id: '.$param_participant_id.', param_item_id: '.$param_item_id);
             if(
                 isset($param_participant_id) && is_numeric($param_participant_id) && 
                 $param_item_id) {
@@ -99,15 +97,9 @@ class CartController extends AbstractActionController {
         
         $forrest = new Service\BreadcrumbFactory();
         $breadcrumb = $forrest->get('cart');
+        error_log('cart routing to: '.$breadcrumb->route);
         
-        #$forrest = new Container('forrest');
-        #$breadcrumb = $forrest->trace->cart;
-        
-        return $this->redirect()->toRoute(
-                $breadcrumb->route, 
-                $breadcrumb->params, 
-                $breadcrumb->options
-            );
+        return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
     }
     
     public function resetAction() {

@@ -46,7 +46,7 @@ class ProductView extends Form
 
         $formElement['attributes']['class'] = 'form-control form-element';
         $formElement['options'] = array();
-        $formElement['options']['label'] = 'Participant';
+        $formElement['options']['label'] = 'Person';
         $formElement['options']['label_attributes'] = array(
                     'class'  => 'media-object',
                 );
