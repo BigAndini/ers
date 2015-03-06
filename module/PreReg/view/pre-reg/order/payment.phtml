@@ -26,7 +26,6 @@ echo $this->navigation()
 <div>
     <h1>Choose Paymenttype</h1>
     <?php foreach($paymenttypes as $paymenttype): ?>
-    <?php error_log($order->getPaymentType()->getId().' == '.$paymenttype->getId()); ?>
     <?php if($order->getPaymentType() != null && $order->getPaymentType()->getId() == $paymenttype->getId()) :
             $checked = true;
         else:
