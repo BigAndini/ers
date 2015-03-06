@@ -43,14 +43,10 @@ class ProductController extends AbstractActionController {
         }
         
         $session_cart = new Container('cart');
-
-        $chooser = $session_cart->chooser;
-        $session_cart->chooser = false;
-
+        
         return new ViewModel(array(
             'products' => $products,
             'order' => $session_cart->order,
-            'chooser' => $chooser,
         ));
     }
     
@@ -92,6 +88,8 @@ class ProductController extends AbstractActionController {
         if(!$forrest->exists('cart')) {
             $forrest->set('cart', 'product');
         }
+        $bc_participant = $forrest->get('participant');
+        $forrest->set('cart', $bc_participant->route, $bc_participant->params, $bc_participant->options);
         
         $em = $this
             ->getServiceLocator()
@@ -158,6 +156,10 @@ class ProductController extends AbstractActionController {
         $form->get('participant_id')->setAttribute('options', $options);
 
         $breadcrumb = $forrest->get('product');
+        
+        $chooser = $session_cart->chooser;
+        $session_cart->chooser = false;
+
         return new ViewModel(array(
             'question' => $question,
             'participants' => $options,
@@ -166,6 +168,7 @@ class ProductController extends AbstractActionController {
             'item' => $item,
             'form' => $form,
             'breadcrumb' => $breadcrumb,
+            'chooser' => $chooser,
         ));
     }
     

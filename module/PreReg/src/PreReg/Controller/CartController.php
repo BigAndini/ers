@@ -97,7 +97,6 @@ class CartController extends AbstractActionController {
         
         $forrest = new Service\BreadcrumbFactory();
         $breadcrumb = $forrest->get('cart');
-        error_log('cart routing to: '.$breadcrumb->route);
         
         return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
     }

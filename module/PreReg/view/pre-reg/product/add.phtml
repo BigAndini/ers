@@ -4,6 +4,24 @@ $this->headTitle($product->getName());
 ?>
 <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);?>"><?php echo $this->translate('back to Overview'); ?></a>
 <h1><?php echo $this->escapeHtml($product->getName()); ?></h1>
+
+<?php if($chooser): ?>
+<div class="p_overlay">
+    <div class="p_overlay_inner">
+        <h3>
+            Added <span class="green"><?php echo $product->getName(); ?></span> to your shopping cart.
+        </h3>
+        <div class="floatLeft">
+            <a class="btn btn-default" href="<?php echo $this->url('product'); ?>">&lt; products</a>
+        </div>
+        <div class="floatRight">
+            <a class="btn btn-primary" href="<?php echo $this->url('order'); ?>">shopping cart &gt;</a>
+        </div>
+        <div class="clear-both"></div>
+    </div>
+</div>
+<?php endif; ?>
+
 <?php
 if(count($product->getProductPrices()) == 0):
 ?>
