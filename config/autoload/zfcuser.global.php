@@ -232,5 +232,19 @@ return array(
         'aliases' => array(
             'zfcuser_zend_db_adapter' => (isset($settings['zend_db_adapter'])) ? $settings['zend_db_adapter']: 'Zend\Db\Adapter\Adapter',
         ),
+        /*'factories' => array(
+            // Configures the default SessionManager instance
+            'Zend\Session\ManagerInterface' => 'Zend\Session\Service\SessionManagerFactory',
+            // Provides session configuration to SessionManagerFactory
+            'Zend\Session\Config\ConfigInterface' => 'Zend\Session\Service\SessionConfigFactory',
+        ),*/
     ),
+    /*'session_manager' => array(
+        // SessionManager config: validators, etc
+    ),
+    'session_config' => array(
+        // Set the session and cookie expiries to 15 minutes
+        'cache_expire' => 30,
+        'cookie_lifetime' => 30,
+    ),*/
 );

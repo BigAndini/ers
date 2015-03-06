@@ -43,20 +43,6 @@ class Module
         }
     }
     
-    public function preDispatch(Zend_Controller_Request_Abstract $request)
-    {
-        // get your user and your config
-        #if( $config->suspended && $user->role()->name != "admin"){
-        $maintenance = true;
-        if($maintenance) {
-            $request
-                ->setModuleName( 'PreReg' )
-                ->setControllerName( 'Maintenance' )
-                ->setActionName( 'index' )
-                ->setDispatched(true);
-        }
-    }
-
     public function bootstrapSession($e)
     {
         $session = $e->getApplication()
@@ -64,27 +50,33 @@ class Module
                      ->get('Zend\Session\SessionManager');
         $session->start();
         
-        /*if(!$session->isValid()) {
-            error_log('Session is not valid');
-        }*/
+        #error_log(var_export($_SESSION, true));
         
         $container = new Container('initialized');
-        if (!isset($container->init) || $container->lifetime < (time()-3600)) {
-            #$_SESSION = array();
-            /*$session = $e->getApplication()
-                     ->getServiceManager()
-                     ->get('Zend\Session\SessionManager');
-            $session->start();*/
         
+        $expiration_time = 3600;
+        $container->setExpirationSeconds( $expiration_time, 'initialized' );
+        if(!$session->isValid()) {
+            error_log('Session is not valid');
+            $container->init = 0;
+        }
+        #$container->getManager()->getStorage()->clear('initialized');
+        if (!isset($container->init) || $container->lifetime < time()) {
+            error_log('reset session');
+            $container->getManager()->getStorage()->clear('initialized');
             $container = new Container('initialized');
             $container->init = 1;
-            # session is valid for one hour.
-            $container->lifetime = time()+3600;
+            $container->lifetime = time()+$expiration_time;
+            
+            $container->getManager()->getStorage()->clear('cart');
+        } else {
+            $container->lifetime = time()+$expiration_time;
         }
         
         $session_cart = new Container('cart');
         #$session_cart->getManager()->getStorage()->clear('cart');
         if(!isset($session_cart->init) || $session_cart->init != 1) {
+            error_log('reset cart');
             $session_cart->getManager()->getStorage()->clear('cart');
             $session_cart->order = new Entity\Order();
             $session_cart->init = 1;
@@ -92,7 +84,7 @@ class Module
         /*
          * shopping cart debugging
          */
-        error_log('=== Order Info ===');
+        /*error_log('=== Order Info ===');
         error_log('paymenttype_id: '.$session_cart->order->getPaymentTypeId());
         error_log('purchaser_id: '.$session_cart->order->getPurchaserId());
         $purchaser = $session_cart->order->getPurchaser();
@@ -108,7 +100,7 @@ class Module
             }
             error_log('  --------------------');
         }
-        error_log('==================');
+        error_log('==================');*/
     }
     
     public function getAutoloaderConfig()
