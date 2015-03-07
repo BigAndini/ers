@@ -145,6 +145,16 @@ class ProductController extends AbstractActionController {
             $options[0] = 'do not assign this product';
         }
         foreach($session_cart->order->getParticipants() as $k => $v) {
+            $disabled = false;
+            if($v->getFirstname() == '') {
+                $disabled = true;
+            }
+            if($v->getSurname() == '') {
+                $disabled = true;
+            }
+            if($v->getBirthday() == null) {
+                $disabled = true;
+            }
             $selected = false;
             if($k == $participant_id) {
                 $selected = true;
@@ -153,6 +163,7 @@ class ProductController extends AbstractActionController {
                 'value' => $k,
                 'label' => $v->getFirstname().' '.$v->getSurname(),
                 'selected' => $selected,
+                'disabled' => $disabled,
             );
         }
         

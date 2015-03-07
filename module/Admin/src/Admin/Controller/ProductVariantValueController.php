@@ -45,7 +45,7 @@ class ProductVariantValueController extends AbstractActionController
         
         $forrest = new Service\BreadcrumbFactory();
         if(!$forrest->exists('product-variant-value')) {
-            $forrest->set('product-variant-value', 'product-variant-value');
+            $forrest->set('product-variant-value', 'admin/product');
         }
         
         $form = new Form\ProductVariantValue();

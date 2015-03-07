@@ -405,6 +405,24 @@ class ItemVariant implements InputFilterAwareInterface
 
         return true;
     }
+    
+    /**
+     * populate entity from base entities
+     * 
+     * @param \ersEntity\Entity\ProductVariant $variant
+     * @param \ersEntity\Entity\ProductVariantValue $value
+     * @return \ersEntity\Entity\ItemVariant
+     */
+    public function populateFromEntity(ProductVariant $variant, ProductVariantValue $value) {
+        $this->setName($variant->getName());
+        $this->setProductVariantId($variant->getId());
+        
+        $this->setProductVariantValueId($value->getId());
+        
+        $this->setValue($value->getValue());
+        
+        return $this;
+    }
 
     /**
      * Return a array with all fields and data.

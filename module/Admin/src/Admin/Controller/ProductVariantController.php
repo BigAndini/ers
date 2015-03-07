@@ -30,7 +30,7 @@ class ProductVariantController extends AbstractActionController
         
         $forrest = new Service\BreadcrumbFactory();
         if(!$forrest->exists('product-variant')) {
-            $forrest->set('product-variant', 'product-variant');
+            $forrest->set('product-variant', 'admin/product-variant');
         }
         
         $form = new Form\ProductVariant();
@@ -93,6 +93,8 @@ class ProductVariantController extends AbstractActionController
                 'action' => 'add'
             ));
         }
+        $forrest = new Service\BreadcrumbFactory();
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');

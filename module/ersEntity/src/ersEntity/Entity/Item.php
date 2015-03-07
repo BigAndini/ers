@@ -751,7 +751,7 @@ class Item implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'updated', 'created');
+        $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'itemVariants', 'updated', 'created');
         $relationFields = array('product', 'package', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -784,6 +784,6 @@ class Item implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'updated', 'created');
+        return array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'itemVariants', 'updated', 'created');
     }
 }

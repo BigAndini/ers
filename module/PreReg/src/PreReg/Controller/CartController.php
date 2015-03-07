@@ -50,11 +50,6 @@ class CartController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $data = $request->getPost();
-            if(isset($data['addParticipant'])) {
-                return $this->redirect()->toRoute('participant', array(
-                    'action' => 'add',
-                ));        
-            }
             
             $participant_id = 0;
             if(isset($data['participant_id'])) {
@@ -85,6 +80,26 @@ class CartController extends AbstractActionController {
             $item->setPrice($product->getPrice()->getCharge());
             $item->setAmount(1);
             $item->populate((array) $product_data);
+            
+            for($i=0; $i < count($product->getProductVariants()); $i++) {
+                if(!isset($data['variant_id_'.$i])) {
+                    error_log('unable to find variant_id_'.$i.' in POST data.');
+                    continue;
+                }
+                if(!isset($data['variant_value_'.$i])) {
+                    error_log('unable to find variant_value_'.$i.' in POST data.');
+                    continue;
+                }
+                $variant = $em->getRepository("ersEntity\Entity\ProductVariant")
+                    ->findOneBy(array('id' => $data['variant_id_'.$i]));
+                $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                    ->findOneBy(array('id' => $data['variant_value_'.$i]));
+                error_log('found variant '.$variant->getName().' with value '.$value->getValue());
+                $itemVariant = new Entity\ItemVariant();
+                $itemVariant->populateFromEntity($variant, $value);
+                #$itemVariant->setItem($item);
+                $item->addItemVariant($itemVariant);
+            }
             
             if(
                 isset($param_participant_id) && is_numeric($param_participant_id) && 

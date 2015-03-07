@@ -281,6 +281,9 @@ class OrderController extends AbstractActionController {
                             ->findOneBy(array('value' => $code->getValue()));
                     }
                     $item->setCode($code);
+                    foreach($item->getItemVariants() as $variant) {
+                        $variant->setItem($item);
+                    }
                 }
                 
                 $em->persist($package);

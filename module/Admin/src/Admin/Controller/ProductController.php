@@ -127,6 +127,8 @@ class ProductController extends AbstractActionController {
         $forrest->set('product', 'admin/product', array('action' => 'view', 'id' => $id));
         $forrest->set('product-package', 'admin/product', array('action' => 'view', 'id' => $id));
         $forrest->set('product-price', 'admin/product', array('action' => 'view', 'id' => $id));
+        $forrest->set('product-variant', 'admin/product', array('action' => 'view', 'id' => $id));
+        $forrest->set('product-variant-value', 'admin/product', array('action' => 'view', 'id' => $id));
         
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
                 ->findBy(array(), array('deadline' => 'ASC'));
