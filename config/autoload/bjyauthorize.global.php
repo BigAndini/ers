@@ -144,6 +144,7 @@ return [
                 ['controller' => 'PreReg\Controller\Package',                       'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Product',                       'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Participant',                   'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Purchaser',                     'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Test',                          'roles' => ['guest', 'user']],
                 #['controller' => 'PreReg\Controller\Profile', 'action' => 'index', 'roles' => ['user']],
                 
@@ -176,6 +177,7 @@ return [
                 ['controller' => 'Admin\Controller\User',                'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Role',                'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Order',               'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\Country',             'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Bankaccount',         'roles' => ['admin']],
                 
                 /* Doctrine ORM */

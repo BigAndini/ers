@@ -24,6 +24,7 @@ return array(
             'Admin\Controller\Role'                 => 'Admin\Controller\RoleController',
             'Admin\Controller\Order'                => 'Admin\Controller\OrderController',
             'Admin\Controller\Bankaccount'          => 'Admin\Controller\BankaccountController',
+            'Admin\Controller\Country'              => 'Admin\Controller\CountryController',
             'Admin\Controller\Test'                 => 'Admin\Controller\TestController',
         ),
     ),
@@ -88,6 +89,11 @@ return array(
                 'label' => 'Order',
                 'route' => 'admin/order',
                 'resource'  => 'controller/Admin\Controller\Order',
+            ),
+            'country' => array(
+                'label' => 'Country',
+                'route' => 'admin/country',
+                'resource'  => 'controller/Admin\Controller\Country',
             ),
             'bankaccount' => array(
                 'label' => 'Bankaccount',
@@ -356,6 +362,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\ProductPackage',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'country' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/country[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Country',
                                 'action' => 'index',
                             ),
                         ),

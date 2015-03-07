@@ -107,6 +107,12 @@ class Country implements InputFilterAwareInterface
      */
     public function setOrder($order)
     {
+        $this->setOrdering($order);
+        
+        return $this;
+    }
+    public function setOrdering($order)
+    {
         $this->ordering = $order;
                 
         return $this;
@@ -118,6 +124,10 @@ class Country implements InputFilterAwareInterface
      * @return string
      */
     public function getOrder()
+    {
+        return $this->getOrdering();
+    }
+    public function getOrdering()
     {
         return $this->ordering;
     }

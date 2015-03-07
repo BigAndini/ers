@@ -52,7 +52,7 @@ class OrderController extends AbstractActionController {
      * collect data for the purchaser
      */
     public function registerAction() {
-        $form = new Form\Purchaser();
+        $form = new Form\Register();
         
         $session_cart = new Container('cart');
         
@@ -76,7 +76,7 @@ class OrderController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $inputFilter = new InputFilter\Purchaser();
+            $inputFilter = new InputFilter\Register();
             $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
@@ -100,6 +100,7 @@ class OrderController extends AbstractActionController {
        
         $forrest = new Service\BreadcrumbFactory();
         $forrest->set('participant', 'order', array('action' => 'register'));
+        $forrest->set('purchaser', 'order', array('action' => 'register'));
         
         /*$forrest = new Container('forrest');
         $breadcrumb = new \ArrayObject();

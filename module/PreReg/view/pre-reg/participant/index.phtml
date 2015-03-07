@@ -17,7 +17,11 @@ $this->headTitle($title);
 <?php foreach ($participants as $participant) : ?>
     <tr>
         <td><?php echo $participant->getFirstname()." ".$participant->getSurname(); ?></td>
-        <td><?php echo $participant->getBirthday()->format('d.m.Y'); ?></td>
+        <td>
+            <?php if($participant->getBirthday() != null):
+                echo $participant->getBirthday()->format('d.m.Y');
+            endif; ?>
+        </td>
         <td><a href="mailto:<?php echo $participant->getEmail();?>"><?php echo $participant->getEmail();?></a></td>
         <td>
             <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>

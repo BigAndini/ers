@@ -38,39 +38,6 @@ class Purchaser implements InputFilterAwareInterface
             $factory = new InputFactory();             
             
             $inputFilter->add($factory->createInput([ 
-                'name' => 'purchaser_id', 
-                'required' => true, 
-                'filters' => array( 
-                    array('name' => 'Int'), 
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'Callback',
-                        'options' => array(
-                            'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'To add a new purchaser please set firstname, surname and email.',
-                            ),
-                            'callback' => function($value, $context=array()) {
-                                /*
-                                 * If the purchaser_id is not 0 the user adds an 
-                                 * already existing participant as purchaser.
-                                 */
-                                if($context['purchaser_id'] != 0) {
-                                    return true;
-                                }
-                                
-                                if($context['firstname'] != '' && $context['surname'] != '' && $context['email'] != '') {
-                                    return true;
-                                }
-                                return false;
-                            },
-                            
-                        ),
-                    ),
-                ),
-            ]));
-            
-            $inputFilter->add($factory->createInput([ 
                 'name' => 'firstname', 
                 'required' => false, 
                 'filters' => array( 

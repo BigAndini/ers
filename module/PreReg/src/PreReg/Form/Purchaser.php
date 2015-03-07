@@ -24,50 +24,50 @@ class Purchaser extends Form
         $this->setAttribute('method', 'post'); 
         
         $this->add(array( 
-            'name' => 'purchaser_id', 
-            #'disable_inarray_validator' => false,
-            'type' => 'Zend\Form\Element\Radio', 
-            'attributes' => array( 
-                'required' => 'required',
-            ), 
-            'options' => array( 
-                'label' => 'Choose Purchaser', 
-            ), 
-        ));
-        
-        $this->add(array( 
             'name' => 'firstname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Firstname...',
+                'placeholder' => 'Firstname...', 
+                'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Firstname', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
-        ));
+        )); 
  
         $this->add(array( 
             'name' => 'surname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Surname...',
+                'placeholder' => 'Surname...', 
+                'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Surname', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
-        ));
+        )); 
  
         $this->add(array( 
             'name' => 'email', 
             'type' => 'Zend\Form\Element\Email', 
             'attributes' => array( 
                 'placeholder' => 'Email Address...', 
+                #'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
                 'label' => 'Email', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
             ), 
         )); 
  
@@ -82,7 +82,7 @@ class Purchaser extends Form
                 'type'  => 'submit',
                 'value' => 'Save Purchaser',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-primary btn-lg',
+                'class' => 'btn btn-primary',
             ),
         ));
     }

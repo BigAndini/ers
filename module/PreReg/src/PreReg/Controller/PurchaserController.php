@@ -14,111 +14,53 @@ use Zend\Session\Container;
 use PreReg\Form;
 use ersEntity\Entity;
 use PreReg\Service;
+use PreReg\InputFilter;
 
-class ParticipantController extends AbstractActionController {
-    /*
-     * - Show list of participants of this session
-     * - inclufde participant for which this user already bought products, if 
-     *   the user is logged in.
-     */
+class PurchaserController extends AbstractActionController {
     public function indexAction()
     {
-        $forrest = new Service\BreadcrumbFactory(); 
-        $forrest->reset();
-        $forrest->set('participant', 'participant');
-        
-        $session_cart = new Container('cart');
-        $participants = $session_cart->order->getParticipants();
-       
-        return new ViewModel(array(
-            'participants' => $participants,
-        ));
+        return $this->notFoundAction();
     }
     
-    private function getCountryOptions($countryId = null) {
-        $em = $this
-            ->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $qb1 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
-        $qb1->where($qb1->expr()->isNotNull('n.ordering'));
-        $qb1->orderBy('n.ordering', 'ASC');
-        $result1 = $qb1->getQuery()->getResult();
-        
-        $qb2 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
-        $qb2->where($qb2->expr()->isNull('n.ordering'));
-        $qb2->orderBy('n.name', 'ASC');
-        $result2 = $qb2->getQuery()->getResult();
-
-        $countries = array_merge($result1, $result2);
-
-        $options = array();
-        foreach($countries as $country) {
-            $selected = false;
-            if($countryId == $country->getId()) {
-                $selected = true;
-            }
-            $options[] = array(
-                'value' => $country->getId(),
-                'label' => $country->getName(),
-                'selected' => $selected,
-            );
-        }
-        /*$selected = false;
-        if($countryId == null) {
-            $selected = true;
-        }
-        $options[] = array(
-            'value' => 0,
-            'label' => 'no Country',
-            'selected' => $selected,
-        );*/
-        return $options;
-    }
     
     /*
-     * add a participant user object to the session for which the purchaser is 
-     * able to assign a product afterwards.
+     * add a purchaser user object to the session when none of the participants 
+     * is the purchaser
      */
     public function addAction() {
-        $form = new Form\Participant(); 
+        $form = new Form\Purchaser(); 
         $request = $this->getRequest(); 
 
-        $form->get('Country_id')->setValueOptions($this->getCountryOptions());
-        
         $forrest = new Service\BreadcrumbFactory();
         if($request->isPost()) 
         { 
             $user = new Entity\User();
 
-
-            $form->setInputFilter($form->getInputFilter()); 
+            $inputFilter = new InputFilter\Purchaser();
+            $form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
-                
+            
+            error_log('before isValid');
             if($form->isValid())
             { 
+                error_log('in isValid');
                 $user->populate($form->getData()); 
                 $session_cart = new Container('cart');
                 $session_cart->order->addParticipant($user);
+                $session_cart->order->setPurchaser($user);
                 
-                $breadcrumb = $forrest->get('participant');
-                if($breadcrumb->route == 'product' && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
-                    $breadcrumb->params['participant_id'] = $user->getSessionId();
-                }
+                $breadcrumb = $forrest->get('purchaser');
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 error_log(var_export($form->getMessages(), true));
             } 
+            error_log('after isValid');
         }
         
-        if(!$forrest->exists('participant')) {
-            $forrest->set('participant', 'participant');
-        }
-
         return new ViewModel(array(
             'form' => $form,
-            'breadcrumb' => $forrest->get('participant'),
+            'breadcrumb' => $forrest->get('purchaser'),
         ));
     }
     
@@ -129,19 +71,18 @@ class ParticipantController extends AbstractActionController {
      */
     public function editAction() 
     {
+        $forrest = new Service\BreadcrumbFactory();
+        $breadcrumb = $forrest->get('purchaser');
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('participant', array(
-                'action' => 'add'
-            ));
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
         $session_cart = new Container('cart');
         $participant = $session_cart->order->getParticipantBySessionId($id);
         
-        $form = new Form\Participant(); 
+        $form = new Form\Purchaser(); 
         $request = $this->getRequest(); 
-        $forrest = new Service\BreadcrumbFactory();
         
         $form->bind($participant);
         
@@ -163,10 +104,7 @@ class ParticipantController extends AbstractActionController {
             } 
         }
         
-        if(!$forrest->exists('participant')) {
-            $forrest->set('participant', 'participant');
-        }
-        $breadcrumb = $forrest->get('participant');
+        $breadcrumb = $forrest->get('purchaser');
         return new ViewModel(array(
             'id' => $id,
             'form' => $form,

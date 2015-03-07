@@ -55,7 +55,11 @@ echo $this->navigation()
                 <input type="radio" <?php echo $checked ? 'checked="checked"' : '' ?> <?php echo $disabled ? 'disabled="disabled"' : ''; ?> name="purchaser_id" value="<?php echo $participant->getSessionId() ?>" />
                 <?php echo $participant->getFirstname().' '.$participant->getSurname(); ?>
                 <span style="font-size: 14px;">
+                    <?php if($participant->getBirthday() != null): ?>
                     <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>
+                    <?php else: ?>
+                    <a href="<?php echo $this->url('purchaser', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>
+                    <?php endif; ?>
                 </span>
             </h4>
             <?php if($participant->getEmail() != ''): ?>
@@ -64,7 +68,9 @@ echo $this->navigation()
                 <p><a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">Add email address</a> to choose this participant as purchaser.</p>
             <?php endif; ?>
 
+            <?php if($participant->getBirthday() != null): ?>
             <p>Birthday: <?php echo $participant->getBirthday()->format('d.m.Y'); ?></p>
+            <?php endif; ?>
 
         </div>
     <?php endforeach; ?>
@@ -81,13 +87,13 @@ echo $this->navigation()
             Add Purchaser
         </h4>
         <?php
-            echo $this->formRow($form->get('firstname'));
-            echo $this->formRow($form->get('surname'));
-            echo $this->formRow($form->get('email'));
+            #echo $this->formRow($form->get('firstname'));
+            #echo $this->formRow($form->get('surname'));
+            #echo $this->formRow($form->get('email'));
         ?>
     </div>-->
     <div>
-        <a class="btn btn-primary" href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add Purchaser</a>
+        <a class="btn btn-primary" href="<?php echo $this->url('purchaser', array('action' => 'add')); ?>">add Purchaser</a>
     </div>
 </div>
 

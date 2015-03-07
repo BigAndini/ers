@@ -36,7 +36,9 @@ class BreadcrumbFactory
     }
     
     public function get($context) {
-        return $this->forrest->trace->offsetGet($context);
+        if($this->forrest->trace->offsetExists($context)) {
+            return $this->forrest->trace->offsetGet($context);
+        }
     }
     
     public function exists($context) {
