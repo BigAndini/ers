@@ -16,8 +16,9 @@ return array(
             'PreReg\Controller\Participant' => 'PreReg\Controller\ParticipantController',
             'PreReg\Controller\Product'     => 'PreReg\Controller\ProductController',
             'PreReg\Controller\Profile'     => 'PreReg\Controller\ProfileController',
-            'PreReg\Controller\Info'     => 'PreReg\Controller\InfoController',
+            'PreReg\Controller\Info'        => 'PreReg\Controller\InfoController',
             'PreReg\Controller\Payment'     => 'PreReg\Controller\PaymentController',
+            'PreReg\Controller\Test'        => 'PreReg\Controller\TestController',
         ),
     ),
     'navigation' => array(
@@ -114,6 +115,20 @@ return array(
     ),
     'router' => array(
         'routes' => array(
+            'test' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/test[/:action]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'PreReg\Controller\Test',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'maintenance' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(

@@ -39,7 +39,10 @@ class EmailFactory
     
     public function setTextMessage($text) {
         $this->textMessage = new Mime\Part($text);
-        $this->textMessage->type = 'text/plain';
+        $this->textMessage->type        = Mime\Mime::TYPE_TEXT;
+        $this->textMessage->charset     = 'utf-8';
+        $this->textMessage->encoding    = Mime\Mime::ENCODING_QUOTEDPRINTABLE;
+        $this->textMessage->disposition = Mime\Mime::DISPOSITION_INLINE;
         $this->isText = true;
     }
     
@@ -53,11 +56,14 @@ class EmailFactory
     
     public function setHtmlMessage($markup) {
         $this->htmlMessage = new Mime\Part($markup);
-        $this->htmlMessage->type = 'text/html';
+        $this->htmlMessage->type        = Mime\Mime::TYPE_HTML;
+        $this->htmlMessage->charset     = 'utf-8';
+        #$this->htmlMessage->encoding    = Mime\Mime::ENCODING_8BIT;
+        $this->textMessage->encoding    = Mime\Mime::ENCODING_QUOTEDPRINTABLE;
+        $this->htmlMessage->disposition = Mime\Mime::DISPOSITION_INLINE;
         #$convert_html = mb_convert_encoding($markup, 'HTML-ENTITIES', 'UTF-8');
-        #$text = \Html2Text\Html2Text::convert($convert_html);
-        $html = new \Html2Text\Html2Text($markup);
-        $text = $html->getText();
+        $html2text = new \Html2Text\Html2Text($markup);
+        $text = $html2text->getText();
         $this->setTextMessage($text);
         $this->isHtml = true;
     }
@@ -146,7 +152,7 @@ class EmailFactory
         # - plain text email with 1 or n attachments
         # - html email with text alternative
         # - html email with text alternative and 1 or n attachments
-        
+     
         $content  = new Mime\Message();
         
         if(!$this->isHtmlMessage()) {
@@ -154,7 +160,6 @@ class EmailFactory
         } else {
             $content->addPart($this->getTextMessage());
             $content->addPart($this->getHtmlMessage());
-            #$content->setParts(array($this->getTextMessage(), $this->getHtmlMessage()));
         }
         
         if(count($this->getAttachments()) == 0) {
@@ -172,6 +177,22 @@ class EmailFactory
 
         $message = new Mail\Message();
         $message->setEncoding('utf-8');
+        
+        $message->setBody($body);
+        if($this->isHtmlMessage()) {
+            $message->getHeaders()->get('content-type')
+                ->addParameter('charset', 'utf-8')
+                ->setType('multipart/alternative');
+            // Set UTF-8 charset
+            /*$headers = $message->getHeaders();
+            $headers->removeHeader('Content-Type');
+            $headers->addHeaderLine('Content-Type', 'text/html; charset=UTF-8');*/
+        } else {
+            $message->getHeaders()->get('content-type')
+                ->addParameter('charset', 'utf-8')
+                ->setType('text/plain');
+        }
+        
         foreach($this->getTo() as $user) {
             $message->addTo($user->getEmail());
         }
@@ -184,26 +205,8 @@ class EmailFactory
         
         $message->addFrom($this->getFrom());
         $message->setSubject($this->getSubject());
-        $message->setBody($body);
         
-        if($this->isHtmlMessage()) {
-            $message->getHeaders()->get('content-type')
-                ->addParameter('charset', 'UTF-8')
-                ->setType('multipart/alternative');
-        } else {
-            $message->getHeaders()->get('content-type')
-                ->addParameter('charset', 'UTF-8')
-                ->setType('text/plain');
-        }
-
         $transport = new Mail\Transport\Sendmail();
         $transport->send($message);
-    }
-    /**
-     * @return string
-     */
-    protected function getName()
-    {
-        return 'top_nav';
     }
 }

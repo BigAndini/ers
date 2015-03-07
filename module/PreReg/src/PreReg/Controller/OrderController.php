@@ -338,6 +338,7 @@ class OrderController extends AbstractActionController {
         $viewModel->setTemplate('email/purchase-info.phtml');
         $viewRender = $this->getServiceLocator()->get('ViewRenderer');
         $html = $viewRender->render($viewModel);
+        error_log('html: '.$html);
         
         $emailService->setHtmlMessage($html);
         #$emailService->setTextMessage('Testmail');
@@ -583,5 +584,29 @@ class OrderController extends AbstractActionController {
     }
     public function ccErrorAction() {
         return new ViewModel();
+    }
+    public function encodingAction() {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => '17'));
+        $viewModel = new ViewModel(array(
+            'order' => $order,
+        ));
+        $viewModel->setTemplate('email/purchase-info.phtml');
+        $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+        $html = $viewRender->render($viewModel);
+        
+        error_log('html: '.$html);
+        
+        $response = new \Zend\Http\Response();
+        $response->getHeaders();
+                #->addHeaderLine('Content-Type', 'charset=utf-8');
+                #->addHeaderLine('Content-Disposition', 'attachment; filename=orders-'.date('Ymd\THis').'.xls')
+                #->addHeaderLine('Content-Length', filesize($filename));
+        $response->setContent($html);
+        return $response;
     }
 }

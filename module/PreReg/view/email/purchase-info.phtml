@@ -1,5 +1,6 @@
 <html>
     <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
         <style type="text/css">
             * {
                 font-family: sans-serif;
@@ -10,6 +11,7 @@
         </style>
     </head>
     <body>
+        <p>Charset Test: äöüÄÖÜß€</p>
         <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
     </body>
 </html>

@@ -80,9 +80,9 @@ class User implements UserInterface, ProviderInterface
     protected $surname;
     
     /**
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    protected $nationality;
+    protected $Country_id;
     
     /**
      * @var string
@@ -124,6 +124,12 @@ class User implements UserInterface, ProviderInterface
      * )
      */
     protected $roles;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Country", inversedBy="users")
+     * @ORM\JoinColumn(name="Country_id", referencedColumnName="id", nullable=true)
+     */
+    protected $country;
     
     /**
      * @ORM\OneToMany(targetEntity="Log", mappedBy="user")
@@ -351,6 +357,30 @@ class User implements UserInterface, ProviderInterface
     }
     
     /**
+     * Set the value of Country_id.
+     *
+     * @param integer $Country_id
+     * @return \Entity\User
+     */
+    public function setCountryId($Country_id)
+    {
+        $this->Country_id = $Country_id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Country_id.
+     *
+     * @return integer
+     */
+    public function getCountryId()
+    {
+        return $this->Country_id;
+    }
+
+    
+    /**
      * Get password.
      *
      * @return string
@@ -517,6 +547,30 @@ class User implements UserInterface, ProviderInterface
         error_log('index: '.var_export($index));
         return is_numeric($index);
     }
+    
+    /**
+     * Set Country entity (many to one).
+     *
+     * @param \Entity\Country $country
+     * @return \Entity\User
+     */
+    public function setCountry(Country $country = null)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get Country entity (many to one).
+     *
+     * @return \Entity\Country
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
     
     /**
      * Add Log entity to collection (one to many).

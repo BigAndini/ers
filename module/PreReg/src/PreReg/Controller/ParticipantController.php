@@ -35,6 +35,43 @@ class ParticipantController extends AbstractActionController {
         ));
     }
     
+    private function getCountryOptions($countryId = null) {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $qb = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
+        $countries = $qb->orderBy('n.ordering', 'ASC')->getQuery()->getResult();
+        /*$paymenttypes = $qb->where(
+                $qb->expr()->orX(
+                    $qb->expr()->eq('n.activeFrom_id', $id),
+                    $qb->expr()->eq('n.activeUntil_id', $id)
+            ))->getQuery()->getResult();*/
+        /*$countries = $em->getRepository("ersEntity\Entity\Country")
+                ->findBy(array(), array('ordering' => 'ASC', 'name' => 'ASC'));*/
+        $options = array();
+        foreach($countries as $country) {
+            $selected = false;
+            if($countryId == $country->getId()) {
+                $selected = true;
+            }
+            $options[] = array(
+                'value' => $country->getId(),
+                'label' => $country->getName(),
+                'selected' => $selected,
+            );
+        }
+        /*$selected = false;
+        if($countryId == null) {
+            $selected = true;
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'no Country',
+            'selected' => $selected,
+        );*/
+        return $options;
+    }
+    
     /*
      * add a participant user object to the session for which the purchaser is 
      * able to assign a product afterwards.
@@ -43,6 +80,8 @@ class ParticipantController extends AbstractActionController {
         $form = new Form\Participant(); 
         $request = $this->getRequest(); 
 
+        $form->get('Country_id')->setValueOptions($this->getCountryOptions());
+        
         $forrest = new Service\BreadcrumbFactory();
         if($request->isPost()) 
         { 

@@ -43,7 +43,10 @@ else:
     
     if($product->getPersonalized() || count($participants) > 0) {
         echo $this->formRow($form->get('participant_id'));
-        echo $this->formRow($form->get('addParticipant'));
+    ?>
+    <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add person to this list</a>
+    <?php
+       #echo $this->formRow($form->get('addParticipant'));
     }
     $form->get('Product_id')->setAttribute('value', $product->getId());
     echo $this->formHidden($form->get('Product_id'));

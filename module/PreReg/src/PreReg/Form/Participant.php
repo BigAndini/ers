@@ -97,6 +97,21 @@ class Participant extends Form
                 ),
             ), 
         )); 
+        
+         $this->add(array(
+            'name' => 'Country_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Where are you from?',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
  
         $this->add(array( 
             'name' => 'csrf', 
