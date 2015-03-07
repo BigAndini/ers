@@ -16,7 +16,7 @@ $this->headTitle($title);
 
 <?php foreach ($participants as $participant) : ?>
     <tr>
-        <td><?php echo $participant->getPrename()." ".$participant->getSurname(); ?></td>
+        <td><?php echo $participant->getFirstname()." ".$participant->getSurname(); ?></td>
         <td><?php echo $participant->getBirthday()->format('d.m.Y'); ?></td>
         <td><a href="mailto:<?php echo $participant->getEmail();?>"><?php echo $participant->getEmail();?></a></td>
         <td>

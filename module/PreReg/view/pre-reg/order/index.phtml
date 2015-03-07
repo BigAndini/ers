@@ -28,11 +28,11 @@ echo $this->navigation()
                 }
                 $user = $package->getParticipant();
             
-                if($user->getPrename() == '' && $user->getSurname() == '') :
+                if($user->getFirstname() == '' && $user->getSurname() == '') :
                     $participant = 'unassigned items';
                     $edit_participant = false;
                 else:
-                    $participant = $user->getPrename().' '.$user->getSurname();
+                    $participant = $user->getFirstname().' '.$user->getSurname();
                     $edit_participant = true;
                 endif;
         ?>

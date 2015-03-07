@@ -64,7 +64,7 @@ class OrderController extends AbstractActionController {
             foreach($users as $participant) {
                 $purchaser[] = array(
                     'value' => $participant->getSessionId(),
-                    'label' => $participant->getPrename().' '.$participant->getSurname().' ('.$participant->getEmail().')',
+                    'label' => $participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getEmail().')',
                 );
             }
             $purchaser[] = array(
@@ -234,7 +234,7 @@ class OrderController extends AbstractActionController {
                 
                 $participant = $package->getParticipant();
                 
-                if($participant->getPrename() == '' || $participant->getSurname() == '') {
+                if($participant->getFirstname() == '' || $participant->getSurname() == '') {
                     $participant = $purchaser;
                 }
                 

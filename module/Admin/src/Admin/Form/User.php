@@ -42,14 +42,14 @@ class User extends Form
         )); 
  
         $this->add(array( 
-            'name' => 'prename', 
+            'name' => 'firstname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Prename...', 
+                'placeholder' => 'Firstname...', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Prename',
+                'label' => 'Firstname',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),

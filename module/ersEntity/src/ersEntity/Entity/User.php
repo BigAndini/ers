@@ -72,7 +72,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * @ORM\Column(type="string", length=45, nullable=true)
      */
-    protected $prename;
+    protected $firstname;
 
     /**
      * @ORM\Column(type="string", length=45, nullable=true)
@@ -190,7 +190,7 @@ class User implements UserInterface, ProviderInterface
      * implement __toString for error reporting
      */
     public function __toString() {
-        return $this->getPrename().' '.$this->getSurname().' ('.$this->getEmail().')';
+        return $this->getFirstname().' '.$this->getSurname().' ('.$this->getEmail().')';
     }
 
     /**
@@ -311,26 +311,26 @@ class User implements UserInterface, ProviderInterface
     }
 
     /**
-     * Set the value of prename.
+     * Set the value of firstname.
      *
-     * @param string $prename
+     * @param string $firstname
      * @return \Entity\User
      */
-    public function setPrename($prename)
+    public function setFirstname($firstname)
     {
-        $this->prename = $prename;
+        $this->firstname = $firstname;
 
         return $this;
     }
 
     /**
-     * Get the value of prename.
+     * Get the value of firstname.
      *
      * @return string
      */
-    public function getPrename()
+    public function getFirstname()
     {
-        return $this->prename;
+        return $this->firstname;
     }
 
     /**
@@ -776,7 +776,7 @@ class User implements UserInterface, ProviderInterface
                 'validators' => array(),
             ),
             array(
-                'name' => 'prename',
+                'name' => 'firstname',
                 'required' => true,
                 'filters' => array(),
                 'validators' => array(),
@@ -847,7 +847,7 @@ class User implements UserInterface, ProviderInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'state', 'prename', 'surname', 'active', 'birthday', 'updated', 'created');
+        $dataFields = array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'state', 'firstname', 'surname', 'active', 'birthday', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -880,6 +880,6 @@ class User implements UserInterface, ProviderInterface
 
     public function __sleep()
     {
-        return array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'state', 'prename', 'surname', 'active', 'birthday', 'updated', 'created');
+        return array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'state', 'firstname', 'surname', 'active', 'birthday', 'updated', 'created');
     }
 }

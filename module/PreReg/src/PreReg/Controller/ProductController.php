@@ -151,7 +151,7 @@ class ProductController extends AbstractActionController {
             }
             $options[] = array(
                 'value' => $k,
-                'label' => $v->getPrename().' '.$v->getSurname(),
+                'label' => $v->getFirstname().' '.$v->getSurname(),
                 'selected' => $selected,
             );
         }

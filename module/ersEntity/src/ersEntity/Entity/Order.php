@@ -509,7 +509,7 @@ class Order implements InputFilterAwareInterface
     public function getParticipants() {
         $participants = array();
         foreach($this->getPackages() as $package) {
-            if($package->getParticipant()->getPrename() != '' && $package->getParticipant()->getSurname() != '') {
+            if($package->getParticipant()->getFirstname() != '' && $package->getParticipant()->getSurname() != '') {
                 $id = $package->getParticipant()->getSessionId();
                 $participants[$id] = $package->getParticipant();
             }

@@ -268,7 +268,7 @@ class CreditCard extends Form
             $factory = new InputFactory();             
 
             $inputFilter->add($factory->createInput([ 
-                'name' => 'prename', 
+                'name' => 'firstname', 
                 'required' => true, 
                 'filters' => array( 
                     array('name' => 'StripTags'), 

@@ -48,7 +48,7 @@ class User implements InputFilterAwareInterface
             ]));
             
             $inputFilter->add($factory->createInput([ 
-                'name' => 'prename', 
+                'name' => 'firstname', 
                 'required' => true, 
                 'filters' => array( 
                     array('name' => 'StripTags'), 

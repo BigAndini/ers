@@ -31,15 +31,15 @@ class User extends Form
         ));
         
         $this->add(array( 
-            'name' => 'prename', 
+            'name' => 'firstname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Prename...', 
+                'placeholder' => 'Firstname...', 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Prename', 
+                'label' => 'Firstname', 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -123,7 +123,7 @@ class User extends Form
             $factory = new InputFactory();             
 
             $inputFilter->add($factory->createInput([ 
-                'name' => 'prename', 
+                'name' => 'firstname', 
                 'required' => true, 
                 'filters' => array( 
                     array('name' => 'StripTags'), 

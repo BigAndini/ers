@@ -15,7 +15,7 @@ $this->headTitle($title);
     <?php $purchaser = $order->getPurchaser(); ?>
     <?php if($purchaser) : ?>
         <h3>
-            <?php echo $purchaser->getPrename().' '.$purchaser->getSurname(); ?>
+            <?php echo $purchaser->getFirstname().' '.$purchaser->getSurname(); ?>
             (<a href="mailto:<?php echo $purchaser->getEmail(); ?>"><?php echo $purchaser->getEmail(); ?></a>)
         </h3>
     <?php else: ?>
@@ -45,10 +45,10 @@ $this->headTitle($title);
                 }
                 $user = $package->getParticipant();
             
-                if($user->getPrename() == '' && $user->getSurname() == '') :
+                if($user->getFirstname() == '' && $user->getSurname() == '') :
                     $participant = 'unassigned items';
                 else:
-                    $participant = $user->getPrename().' '.$user->getSurname();
+                    $participant = $user->getFirstname().' '.$user->getSurname();
                 endif;
         ?>
             <div class="package">

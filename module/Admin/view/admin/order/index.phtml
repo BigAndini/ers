@@ -20,7 +20,7 @@ $this->headTitle($title);
         <td><?php echo $order->getCode()->getValue(); ?></td>
         <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
         <td>
-            <?php echo $order->getPurchaser()->getPrename().' '.$order->getPurchaser()->getSurname(); ?>
+            <?php echo $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?>
             <br />
             <a href="mailto:<?php echo $order->getPurchaser()->getEmail(); ?>"><?php echo $order->getPurchaser()->getEmail(); ?></a>
         </td>

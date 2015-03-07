@@ -48,7 +48,7 @@ class Purchaser implements InputFilterAwareInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'To add a new purchaser please set prename, surname and email.',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'To add a new purchaser please set firstname, surname and email.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 /*
@@ -59,7 +59,7 @@ class Purchaser implements InputFilterAwareInterface
                                     return true;
                                 }
                                 
-                                if($context['prename'] != '' && $context['surname'] != '' && $context['email'] != '') {
+                                if($context['firstname'] != '' && $context['surname'] != '' && $context['email'] != '') {
                                     return true;
                                 }
                                 return false;
@@ -71,7 +71,7 @@ class Purchaser implements InputFilterAwareInterface
             ]));
             
             $inputFilter->add($factory->createInput([ 
-                'name' => 'prename', 
+                'name' => 'firstname', 
                 'required' => false, 
                 'filters' => array( 
                     array('name' => 'StripTags'), 
@@ -82,7 +82,7 @@ class Purchaser implements InputFilterAwareInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'The Prename of the purchaser cannot be empty.',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The Firstname of the purchaser cannot be empty.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 /*

@@ -42,7 +42,7 @@ class TestController extends AbstractActionController {
             $finalData[] = array(
                 utf8_decode($order->getId()),
                 utf8_decode($order->getCode()->getValue()),
-                utf8_decode($order->getPurchaser()->getPrename()),
+                utf8_decode($order->getPurchaser()->getFirstname()),
                 utf8_decode($order->getPurchaser()->getSurname()),
                 utf8_decode($order->getCreated()->format('d.m.Y H:i:s')),
             );
