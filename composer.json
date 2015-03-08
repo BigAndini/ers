@@ -25,6 +25,7 @@
         "bjyoungblood/bjy-authorize": "1.4.*",
         "dino/dompdf-module": "dev-master",
         "adminweb/qrcode-zf2-module": "0.0.10",
-        "satsume/ckeditor-module": "dev-master"
+        "satsume/ckeditor-module": "dev-master",
+        "dudapiotr/zftable": "3.*"
     }
 }

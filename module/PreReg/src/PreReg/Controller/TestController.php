@@ -251,8 +251,6 @@ class TestController extends AbstractActionController {
         $viewRender = $this->getServiceLocator()->get('ViewRenderer');
         $html = $viewRender->render($viewModel);
         
-        error_log('html: '.$html);
-        
         $response = new \Zend\Http\Response();
         $response->getHeaders();
                 #->addHeaderLine('Content-Type', 'charset=utf-8');

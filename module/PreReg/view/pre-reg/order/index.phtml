@@ -102,7 +102,7 @@ echo $this->navigation()
                                             'product_id' => $item->getProductId(), 
                                             'participant_id' => $user_id,
                                             'item_id' => $item->getSessionId(),
-                                            'variants' => urlencode(json_encode($variants)),
+                                            #'variants' => urlencode(json_encode($variants)),
                                         )) ?>">edit</a>
                                 <a href="<?php echo $this->url('product', 
                                         array(

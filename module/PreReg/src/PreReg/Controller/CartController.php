@@ -94,10 +94,8 @@ class CartController extends AbstractActionController {
                     ->findOneBy(array('id' => $data['variant_id_'.$i]));
                 $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
                     ->findOneBy(array('id' => $data['variant_value_'.$i]));
-                error_log('found variant '.$variant->getName().' with value '.$value->getValue());
                 $itemVariant = new Entity\ItemVariant();
                 $itemVariant->populateFromEntity($variant, $value);
-                #$itemVariant->setItem($item);
                 $item->addItemVariant($itemVariant);
             }
             

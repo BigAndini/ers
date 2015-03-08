@@ -310,7 +310,6 @@ class Role implements HierarchicalRoleInterface
                                 \Zend\Validator\Callback::INVALID_VALUE => "It\'s not possible to choose this parent role.",
                             ),
                             'callback' => function($value, $context=array()) {
-                                error_log('value: '.$value);
                                 if($value != $context['id']) {
                                     return true;
                                 }

@@ -40,10 +40,8 @@ class PurchaserController extends AbstractActionController {
             $form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
             
-            error_log('before isValid');
             if($form->isValid())
             { 
-                error_log('in isValid');
                 $user->populate($form->getData()); 
                 $cartContainer = new Container('cart');
                 $cartContainer->order->addParticipant($user);
@@ -54,8 +52,7 @@ class PurchaserController extends AbstractActionController {
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 error_log(var_export($form->getMessages(), true));
-            } 
-            error_log('after isValid');
+            }
         }
         
         return new ViewModel(array(

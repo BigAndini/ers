@@ -13,6 +13,7 @@ use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Admin\Form;
 use Admin\Service;
+use Admin\DataTables;
 
 class TestController extends AbstractActionController {
     public function indexAction() {
@@ -76,4 +77,32 @@ class TestController extends AbstractActionController {
         $response->setContent(file_get_contents($filename));
         return $response;
     } 
+    
+    public function datatablesAction()
+    {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('n');
+        
+        /*$em = $this->getEntityManager();
+        $queryBuilder = $em->createQueryBuilder();
+        
+        $queryBuilder->add('select', 'p , q')
+              ->add('from', '\ersEntity\Entity\Order q')
+              ->leftJoin('q.product', 'p');*/
+        
+        
+        $table = new DataTables\Order;
+        /*$table->setAdapter($this->getDbAdapter())
+                ->setSource($qb)
+                ->setParamAdapter($this->getRequest()->getPost());*/
+        $table->setSource($qb)
+                ->setParamAdapter($this->getRequest()->getPost());
+        
+        return new ViewModel(array(
+            'orderTable' => $table->render()
+        ));
+    }
 }

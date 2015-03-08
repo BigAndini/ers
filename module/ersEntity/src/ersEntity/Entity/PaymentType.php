@@ -374,7 +374,6 @@ class PaymentType implements InputFilterAwareInterface
     public function calcFee($amount) {
         $fixFee = $this->getFixFee();
         $percentageFee = $amount*$this->getPercentageFee()/100;
-        #error_log('amount: '.$amount.' percentageFee: '.$percentageFee);
         return $fixFee+$percentageFee;
     }
 

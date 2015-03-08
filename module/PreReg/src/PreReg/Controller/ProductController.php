@@ -121,7 +121,7 @@ class ProductController extends AbstractActionController {
         $form->setVariants($variants);
         $form->get('submit')->setAttribute('value', 'Add to Cart');
         if($product->getPersonalized()) {
-            $form->get('participant_id')->setOptions(array('label' => 'you need to assign this thicket to a person'));
+            $form->get('participant_id')->setOptions(array('label' => 'you need to assign this ticket to a person'));
         } else {
             $form->get('participant_id')->setOptions(array('label' => 'assign this ticket to a person'));
         }
