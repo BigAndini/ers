@@ -19,10 +19,10 @@ class CartController extends AbstractActionController {
      * initialize shopping cart
      */
     private function initialize() {
-        $session_cart = new Container('cart');
-        if(!isset($session_cart->init) && $session_cart->init == 1) {
-            $session_cart->order = new Entity\Order();
-            $session_cart->init = 1;
+        $cartContainer = new Container('cart');
+        if(!isset($cartContainer->init) && $cartContainer->init == 1) {
+            $cartContainer->order = new Entity\Order();
+            $cartContainer->init = 1;
         }
     }
     
@@ -58,8 +58,8 @@ class CartController extends AbstractActionController {
             }
             
             # check if participant already has a personalized ticket
-            $session_cart = new Container('cart');
-            $package = $session_cart->order->getPackageByParticipantSessionId($participant_id);
+            $cartContainer = new Container('cart');
+            $package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
             if($package->hasPersonalizedItem()) {
                 error_log('Package for participant '.$participant_id.' already has a personalized item. What should I do?');
             }
@@ -104,10 +104,10 @@ class CartController extends AbstractActionController {
             if(
                 isset($param_participant_id) && is_numeric($param_participant_id) && 
                 $param_item_id) {
-                $session_cart->order->removeItem($param_participant_id, $param_item_id);
+                $cartContainer->order->removeItem($param_participant_id, $param_item_id);
             }
-            $session_cart->order->addItem($item, $participant_id);
-            $session_cart->chooser = true;
+            $cartContainer->order->addItem($item, $participant_id);
+            $cartContainer->chooser = true;
         }
         
         $forrest = new Service\BreadcrumbFactory();
@@ -117,8 +117,8 @@ class CartController extends AbstractActionController {
     }
     
     public function resetAction() {
-        $session_cart = new Container('cart');
-        $session_cart->init = 0;
+        $cartContainer = new Container('cart');
+        $cartContainer->init = 0;
         return new ViewModel();
     }
     

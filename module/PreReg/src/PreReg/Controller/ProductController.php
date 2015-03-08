@@ -42,11 +42,11 @@ class ProductController extends AbstractActionController {
             }
         }
         
-        $session_cart = new Container('cart');
+        $cartContainer = new Container('cart');
         
         return new ViewModel(array(
             'products' => $products,
-            'order' => $session_cart->order,
+            'order' => $cartContainer->order,
         ));
     }
     
@@ -130,13 +130,13 @@ class ProductController extends AbstractActionController {
         
         $question = 0;
         
-        $session_cart = new Container('cart');
+        $cartContainer = new Container('cart');
         $participant = '';
         $item = '';
         if($participant_id) { 
-            $participant = $session_cart->order->getParticipantBySessionId($participant_id);
+            $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
             if($item_id) {
-                $item = $session_cart->order->getItem($participant_id, $item_id);
+                $item = $cartContainer->order->getItem($participant_id, $item_id);
             }
         }
         
@@ -144,7 +144,7 @@ class ProductController extends AbstractActionController {
         if(!$product->getPersonalized()) {
             $options[0] = 'do not assign this product';
         }
-        foreach($session_cart->order->getParticipants() as $k => $v) {
+        foreach($cartContainer->order->getParticipants() as $k => $v) {
             $disabled = false;
             if($v->getFirstname() == '') {
                 $disabled = true;
@@ -175,8 +175,8 @@ class ProductController extends AbstractActionController {
 
         $breadcrumb = $forrest->get('product');
         
-        $chooser = $session_cart->chooser;
-        $session_cart->chooser = false;
+        $chooser = $cartContainer->chooser;
+        $cartContainer->chooser = false;
 
         return new ViewModel(array(
             'question' => $question,
@@ -220,9 +220,9 @@ class ProductController extends AbstractActionController {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        $session_cart = new Container('cart');
-        $participant = $session_cart->order->getParticipantBySessionId($participant_id);
-        $item = $session_cart->order->getItem($participant_id, $item_id);
+        $cartContainer = new Container('cart');
+        $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
+        $item = $cartContainer->order->getItem($participant_id, $item_id);
         
         $em = $this
             ->getServiceLocator()
@@ -237,7 +237,7 @@ class ProductController extends AbstractActionController {
                 $participant_id = (int) $request->getPost('participant_id');
                 $item_id = (int) $request->getPost('item_id');
                 
-                $session_cart->order->removeItem($participant_id, $item_id);
+                $cartContainer->order->removeItem($participant_id, $item_id);
             }
 
             $breadcrumb = $forrest->get('product');

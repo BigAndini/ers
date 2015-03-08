@@ -847,7 +847,7 @@ class User implements UserInterface, ProviderInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'state', 'firstname', 'surname', 'active', 'birthday', 'updated', 'created');
+        $dataFields = array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'state', 'firstname', 'surname', 'Country_id', 'active', 'birthday', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -880,6 +880,6 @@ class User implements UserInterface, ProviderInterface
 
     public function __sleep()
     {
-        return array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'state', 'firstname', 'surname', 'active', 'birthday', 'updated', 'created');
+        return array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'state', 'firstname', 'surname', 'Country_id', 'active', 'birthday', 'updated', 'created');
     }
 }

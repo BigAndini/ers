@@ -17,6 +17,9 @@ use Admin\Service;
 class CountryController extends AbstractActionController {
     public function indexAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->set('country', 'admin/country');
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');

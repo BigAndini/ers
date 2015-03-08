@@ -36,10 +36,10 @@ class OrderController extends AbstractActionController {
         $forrest->set('participant', 'order');
         $forrest->set('cart', 'order');
         
-        $session_cart = new Container('cart');
+        $cartContainer = new Container('cart');
         
         return new ViewModel(array(
-            'order' => $session_cart->order,
+            'order' => $cartContainer->order,
         ));
     }
     public function overviewAction() {
@@ -54,12 +54,12 @@ class OrderController extends AbstractActionController {
     public function registerAction() {
         $form = new Form\Register();
         
-        $session_cart = new Container('cart');
+        $cartContainer = new Container('cart');
         
         # even if it's not displayed, this is needed to recognize the possible 
         # values.
-        if(count($session_cart->order->getPackages()) > 1) {
-            $users = $session_cart->order->getParticipants();
+        if(count($cartContainer->order->getPackages()) > 1) {
+            $users = $cartContainer->order->getParticipants();
             $purchaser = array();
             foreach($users as $participant) {
                 $purchaser[] = array(
@@ -86,11 +86,11 @@ class OrderController extends AbstractActionController {
                     $purchaser = new Entity\User();
                     $purchaser->populate($data);
                 } else {
-                    $purchaser = $session_cart->order->getParticipantBySessionId($data['purchaser_id']);
+                    $purchaser = $cartContainer->order->getParticipantBySessionId($data['purchaser_id']);
                 }
                         
                 # add purchser to order
-                $session_cart->order->setPurchaser($purchaser);
+                $cartContainer->order->setPurchaser($purchaser);
                 
                 return $this->redirect()->toRoute('order', array('action' => 'payment'));
             } else {
@@ -102,20 +102,11 @@ class OrderController extends AbstractActionController {
         $forrest->set('participant', 'order', array('action' => 'register'));
         $forrest->set('purchaser', 'order', array('action' => 'register'));
         
-        /*$forrest = new Container('forrest');
-        $breadcrumb = new \ArrayObject();
-        $breadcrumb->route = 'order';
-        $breadcrumb->params = array(
-            'action' => 'register'
-        );
-        $breadcrumb->options = array();
-        $forrest->trace->participant = $breadcrumb;*/
-        
-        $participants = $session_cart->order->getParticipants();
+        $participants = $cartContainer->order->getParticipants();
         
         return new ViewModel(array(
             'form' => $form,
-            'order' => $session_cart->order,
+            'order' => $cartContainer->order,
             'participants' => $participants,
         ));
     }
@@ -143,7 +134,7 @@ class OrderController extends AbstractActionController {
         }
         $form->get('paymenttype_id')->setValueOptions($types);
         
-        $session_cart = new Container('cart');
+        $cartContainer = new Container('cart');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -158,7 +149,7 @@ class OrderController extends AbstractActionController {
                         ->findOneBy(array('id' => $data['paymenttype_id']));
                 
                 
-                $session_cart->order->setPaymentType($paymenttype);
+                $cartContainer->order->setPaymentType($paymenttype);
                 
                 return $this->redirect()->toRoute('order', array('action' => 'checkout'));
             } else {
@@ -169,7 +160,7 @@ class OrderController extends AbstractActionController {
         
         return new ViewModel(array(
             'form' => $form,
-            'order' => $session_cart->order,
+            'order' => $cartContainer->order,
             'paymenttypes' => $paymenttypes,
         ));
     }
@@ -178,7 +169,7 @@ class OrderController extends AbstractActionController {
      * last check and checkout
      */
     public function checkoutAction() {
-        $session_cart = new Container('cart');
+        $cartContainer = new Container('cart');
         
         $form = new Form\Checkout();
         
@@ -193,22 +184,22 @@ class OrderController extends AbstractActionController {
                 ->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
             
-            $purchaser = $session_cart->order->getPurchaser();
+            $purchaser = $cartContainer->order->getPurchaser();
             $user = $em->getRepository("ersEntity\Entity\User")
                     ->findOneBy(array('email' => $purchaser->getEmail()));
             if($user instanceof Entity\User) {
-                $session_cart->order->setPurchaser($user);
-                $session_cart->order->setPurchaserId($user->getId());
+                $cartContainer->order->setPurchaser($user);
+                $cartContainer->order->setPurchaserId($user->getId());
             } else {
                 $em->persist($purchaser);
-                $session_cart->order->setPurchaser($purchaser);
-                $session_cart->order->setPurchaserId($purchaser->getId());
+                $cartContainer->order->setPurchaser($purchaser);
+                $cartContainer->order->setPurchaserId($purchaser->getId());
             }
             
             $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
-                    ->findOneBy(array('id' => $session_cart->order->getPaymentTypeId()));
-            $session_cart->order->setPaymentType($paymenttype);
-            $session_cart->order->setPaymentTypeId($paymenttype->getId());
+                    ->findOneBy(array('id' => $cartContainer->order->getPaymentTypeId()));
+            $cartContainer->order->setPaymentType($paymenttype);
+            $cartContainer->order->setPaymentTypeId($paymenttype->getId());
             
             # get the order_id
             $code = new Entity\Code();
@@ -221,17 +212,17 @@ class OrderController extends AbstractActionController {
                     ->findOneBy(array('value' => $code->getValue()));
             }
             $em->persist($code);
-            $session_cart->order->setCode($code);
-            $session_cart->order->setCodeId($code->getId());
+            $cartContainer->order->setCode($code);
+            $cartContainer->order->setCodeId($code->getId());
             
-            $packages = $session_cart->order->getPackages();
+            $packages = $cartContainer->order->getPackages();
             foreach($packages as $package) {
                 if(count($package->getItems()) <= 0) {
-                    $session_cart->order->removePackage($package);
+                    $cartContainer->order->removePackage($package);
                     continue;
                 }
-                $package->setOrder($session_cart->order);
-                $package->setOrderId($session_cart->order->getId());
+                $package->setOrder($cartContainer->order);
+                $package->setOrderId($cartContainer->order->getId());
                 
                 $participant = $package->getParticipant();
                 
@@ -256,6 +247,15 @@ class OrderController extends AbstractActionController {
                     $package->setParticipant($participant);
                     $package->setParticipantId($participant->getId());
                 }
+                
+                $country = $em->getRepository("ersEntity\Entity\Country")
+                        ->findOneBy(array('id' => $participant->getCountryId()));
+                if(!$country) {
+                    $participant->setCountry(null);
+                } else {
+                    $participant->setCountry($country);
+                }
+                
                 $code = new Entity\Code();
                 $code->genCode();
                 $codecheck = 1;
@@ -290,15 +290,15 @@ class OrderController extends AbstractActionController {
                 $em->persist($package);
             }
             
-            $em->persist($session_cart->order);
+            $em->persist($cartContainer->order);
             $em->flush();
         
             $session_order = new Container('order');
-            $session_order->order_id = $session_cart->order->getId();
+            $session_order->order_id = $cartContainer->order->getId();
             
-            $session_cart->init = 0;
+            $cartContainer->init = 0;
             
-            switch(strtolower($session_cart->order->getPaymentType()->getType())) {
+            switch(strtolower($cartContainer->order->getPaymentType()->getType())) {
                 case 'banktransfer':
                     $this->sendBankTransferEmail();
                     return $this->redirect()->toRoute('payment', array('action' => 'banktransfer'));
@@ -315,7 +315,7 @@ class OrderController extends AbstractActionController {
         
         return new ViewModel(array(
             'form' => $form,
-            'order' => $session_cart->order,
+            'order' => $cartContainer->order,
         ));
     }
     
@@ -355,11 +355,11 @@ class OrderController extends AbstractActionController {
      * say thank you after purchaser
      */
     public function thankyouAction() {
-        $session_cart = new Container('cart');
-        #$session_cart->getManager()->getStorage()->clear('cart');
-        $session_cart->init = 0;
+        $cartContainer = new Container('cart');
+        #$cartContainer->getManager()->getStorage()->clear('cart');
+        $cartContainer->init = 0;
         return new ViewModel(array(
-            'order' => $session_cart->order,
+            'order' => $cartContainer->order,
         ));
     }
     

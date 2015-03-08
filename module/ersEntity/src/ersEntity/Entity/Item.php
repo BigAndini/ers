@@ -118,7 +118,7 @@ class Item implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="ItemVariant", mappedBy="item")
+     * @ORM\OneToMany(targetEntity="ItemVariant", mappedBy="item", cascade={"persist"})
      * @ORM\JoinColumn(name="id", referencedColumnName="Item_id")
      */
     protected $itemVariants;

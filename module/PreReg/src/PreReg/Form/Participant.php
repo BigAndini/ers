@@ -157,6 +157,16 @@ class Participant extends Form
                 'validators' => array( 
                 ), 
             ])); 
+            
+            $inputFilter->add($factory->createInput([ 
+                'name' => 'Country_id', 
+                'required' => true, 
+                'filters' => array( 
+                    array('name' => 'Int'), 
+                ), 
+                'validators' => array( 
+                ), 
+            ])); 
 
             $inputFilter->add($factory->createInput([ 
                 'name' => 'birthday', 

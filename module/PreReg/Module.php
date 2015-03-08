@@ -73,25 +73,25 @@ class Module
             $container->lifetime = time()+$expiration_time;
         }
         
-        $session_cart = new Container('cart');
-        #$session_cart->getManager()->getStorage()->clear('cart');
-        if(!isset($session_cart->init) || $session_cart->init != 1) {
+        $cartContainer = new Container('cart');
+        #$cartContainer->getManager()->getStorage()->clear('cart');
+        if(!isset($cartContainer->init) || $cartContainer->init != 1) {
             error_log('reset cart');
-            $session_cart->getManager()->getStorage()->clear('cart');
-            $session_cart->order = new Entity\Order();
-            $session_cart->init = 1;
+            $cartContainer->getManager()->getStorage()->clear('cart');
+            $cartContainer->order = new Entity\Order();
+            $cartContainer->init = 1;
         }
         /*
          * shopping cart debugging
          */
         /*error_log('=== Order Info ===');
-        error_log('paymenttype_id: '.$session_cart->order->getPaymentTypeId());
-        error_log('purchaser_id: '.$session_cart->order->getPurchaserId());
-        $purchaser = $session_cart->order->getPurchaser();
+        error_log('paymenttype_id: '.$cartContainer->order->getPaymentTypeId());
+        error_log('purchaser_id: '.$cartContainer->order->getPurchaserId());
+        $purchaser = $cartContainer->order->getPurchaser();
         if($purchaser) {
-            error_log('purchaser email: '.$session_cart->order->getPurchaser()->getEmail());
+            error_log('purchaser email: '.$cartContainer->order->getPurchaser()->getEmail());
         }
-        foreach($session_cart->order->getPackages() as $package) {
+        foreach($cartContainer->order->getPackages() as $package) {
             error_log('  --- Package Info ---');
             error_log('  participant_id: '.$package->getParticipantId());
             $items = $package->getItems();

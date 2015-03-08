@@ -27,8 +27,8 @@ class ParticipantController extends AbstractActionController {
         $forrest->reset();
         $forrest->set('participant', 'participant');
         
-        $session_cart = new Container('cart');
-        $participants = $session_cart->order->getParticipants();
+        $cartContainer = new Container('cart');
+        $participants = $cartContainer->order->getParticipants();
        
         return new ViewModel(array(
             'participants' => $participants,
@@ -52,9 +52,24 @@ class ParticipantController extends AbstractActionController {
 
         $countries = array_merge($result1, $result2);
 
+        $cartContainer = new Container('cart');
+        $countryContainerId = $cartContainer->Country_id;
+        
         $options = array();
+        $selected = false;
+        if($countryId == null && $countryContainerId == null) {
+            $selected = true;
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'no Country',
+            'selected' => $selected,
+        );
         foreach($countries as $country) {
             $selected = false;
+            if($countryContainerId == $country->getId()) {
+                $selected = true;
+            }
             if($countryId == $country->getId()) {
                 $selected = true;
             }
@@ -64,15 +79,6 @@ class ParticipantController extends AbstractActionController {
                 'selected' => $selected,
             );
         }
-        /*$selected = false;
-        if($countryId == null) {
-            $selected = true;
-        }
-        $options[] = array(
-            'value' => 0,
-            'label' => 'no Country',
-            'selected' => $selected,
-        );*/
         return $options;
     }
     
@@ -98,8 +104,9 @@ class ParticipantController extends AbstractActionController {
             if($form->isValid())
             { 
                 $user->populate($form->getData()); 
-                $session_cart = new Container('cart');
-                $session_cart->order->addParticipant($user);
+                $cartContainer = new Container('cart');
+                $cartContainer->order->addParticipant($user);
+                $cartContainer->Country_id = $user->getCountryId();
                 
                 $breadcrumb = $forrest->get('participant');
                 if($breadcrumb->route == 'product' && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
@@ -136,8 +143,8 @@ class ParticipantController extends AbstractActionController {
             ));
         }
         
-        $session_cart = new Container('cart');
-        $participant = $session_cart->order->getParticipantBySessionId($id);
+        $cartContainer = new Container('cart');
+        $participant = $cartContainer->order->getParticipantBySessionId($id);
         
         $form = new Form\Participant(); 
         $request = $this->getRequest(); 
@@ -153,8 +160,8 @@ class ParticipantController extends AbstractActionController {
             if($form->isValid())
             { 
                 $participant = $form->getData();
-                $session_cart = new Container('cart');
-                $session_cart->order->setParticipantBySessionId($participant, $id);
+                $cartContainer = new Container('cart');
+                $cartContainer->order->setParticipantBySessionId($participant, $id);
                 
                 $breadcrumb = $forrest->get('participant');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
@@ -190,8 +197,8 @@ class ParticipantController extends AbstractActionController {
         
         $breadcrumb = $forrest->get('participant');
         
-        $session_cart = new Container('cart');
-        $participant = $session_cart->order->getParticipantBySessionId($id);
+        $cartContainer = new Container('cart');
+        $participant = $cartContainer->order->getParticipantBySessionId($id);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -200,7 +207,7 @@ class ParticipantController extends AbstractActionController {
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $session_cart->order->removeParticipantBySessionId($id);
+                $cartContainer->order->removeParticipantBySessionId($id);
             }
 
             return $this->redirect()->toRoute(
@@ -210,7 +217,7 @@ class ParticipantController extends AbstractActionController {
                 );
         }
 
-        $package = $session_cart->order->getPackageByParticipantSessionId($id);
+        $package = $cartContainer->order->getPackageByParticipantSessionId($id);
         
         
         return new ViewModel(array(

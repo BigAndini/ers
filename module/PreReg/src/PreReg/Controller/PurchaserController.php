@@ -45,9 +45,9 @@ class PurchaserController extends AbstractActionController {
             { 
                 error_log('in isValid');
                 $user->populate($form->getData()); 
-                $session_cart = new Container('cart');
-                $session_cart->order->addParticipant($user);
-                $session_cart->order->setPurchaser($user);
+                $cartContainer = new Container('cart');
+                $cartContainer->order->addParticipant($user);
+                $cartContainer->order->setPurchaser($user);
                 
                 $breadcrumb = $forrest->get('purchaser');
 
@@ -78,8 +78,8 @@ class PurchaserController extends AbstractActionController {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        $session_cart = new Container('cart');
-        $participant = $session_cart->order->getParticipantBySessionId($id);
+        $cartContainer = new Container('cart');
+        $participant = $cartContainer->order->getParticipantBySessionId($id);
         
         $form = new Form\Purchaser(); 
         $request = $this->getRequest(); 
@@ -94,8 +94,8 @@ class PurchaserController extends AbstractActionController {
             if($form->isValid())
             { 
                 $participant = $form->getData();
-                $session_cart = new Container('cart');
-                $session_cart->order->setParticipantBySessionId($participant, $id);
+                $cartContainer = new Container('cart');
+                $cartContainer->order->setParticipantBySessionId($participant, $id);
                 
                 $breadcrumb = $forrest->get('participant');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
@@ -128,8 +128,8 @@ class PurchaserController extends AbstractActionController {
         
         $breadcrumb = $forrest->get('participant');
         
-        $session_cart = new Container('cart');
-        $participant = $session_cart->order->getParticipantBySessionId($id);
+        $cartContainer = new Container('cart');
+        $participant = $cartContainer->order->getParticipantBySessionId($id);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -138,7 +138,7 @@ class PurchaserController extends AbstractActionController {
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $session_cart->order->removeParticipantBySessionId($id);
+                $cartContainer->order->removeParticipantBySessionId($id);
             }
 
             return $this->redirect()->toRoute(
@@ -148,7 +148,7 @@ class PurchaserController extends AbstractActionController {
                 );
         }
 
-        $package = $session_cart->order->getPackageByParticipantSessionId($id);
+        $package = $cartContainer->order->getPackageByParticipantSessionId($id);
         
         
         return new ViewModel(array(
