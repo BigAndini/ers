@@ -214,7 +214,6 @@ class ProductController extends AbstractActionController {
         $product_id = (int) $this->params()->fromRoute('product_id', 0);
         $participant_id = (int) $this->params()->fromRoute('participant_id', 0);
         $item_id = (int) $this->params()->fromRoute('item_id', 0);
-        error_log('delete product '.$product_id.' '.$participant_id.' '.$item_id);
         if (!is_numeric($product_id) || !is_numeric($participant_id) || !is_numeric($item_id)) {
             $breadcrumb = $forrest->get('product');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
