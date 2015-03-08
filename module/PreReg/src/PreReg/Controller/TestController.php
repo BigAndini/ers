@@ -271,7 +271,8 @@ class TestController extends AbstractActionController {
         $viewModel = new ViewModel(array(
             'order' => $order,
         ));
-        $viewModel->setTemplate('email/purchase-info.phtml');
+        #$viewModel->setTemplate('email/purchase-info.phtml');
+        $viewModel->setTemplate('email/order-confirmation.phtml');
         $viewRender = $this->getServiceLocator()->get('ViewRenderer');
         $html = $viewRender->render($viewModel);
         
@@ -282,13 +283,13 @@ class TestController extends AbstractActionController {
         $emailService->setFrom('prereg@inbaz.org');
         
         $purchaser = new Entity\User();
-        $purchaser->setEmail('andreas.nitsche@hotmail.com');
+        $purchaser->setEmail('andi@inbaz.org');
         $emailService->addTo($purchaser);
-        $emailService->setSubject('encoding example');
+        $emailService->setSubject('order confirmation');
         
         
-        #$emailService->setHtmlMessage($html);
-        $emailService->setTextMessage('Encoding Test: 42,- €');
+        $emailService->setHtmlMessage($html);
+        #$emailService->setTextMessage('Encoding Test: 42,- €');
         $emailService->send();
         
         return true;

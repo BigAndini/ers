@@ -334,12 +334,12 @@ class OrderController extends AbstractActionController {
         $emailService->setFrom('prereg@inbaz.org');
         
         $emailService->addTo($purchaser);
-        $emailService->setSubject('EJC Registration System: Payment Information');
+        $emailService->setSubject('EJC Registration System: Order Confirmation');
         
         $viewModel = new ViewModel(array(
             'order' => $order,
         ));
-        $viewModel->setTemplate('email/purchase-info.phtml');
+        $viewModel->setTemplate('email/order-confirmation.phtml');
         $viewRender = $this->getServiceLocator()->get('ViewRenderer');
         $html = $viewRender->render($viewModel);
         error_log('html: '.$html);

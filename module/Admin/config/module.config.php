@@ -60,6 +60,11 @@ return array(
                         'route' => 'admin/payment-type',
                         'resource'  => 'controller/Admin\Controller\PaymentType',
                     ),
+                    'country' => array(
+                        'label' => 'Country',
+                        'route' => 'admin/country',
+                        'resource'  => 'controller/Admin\Controller\Country',
+                    ),
                 ),
             ),
             'product' => array(
@@ -89,11 +94,6 @@ return array(
                 'label' => 'Order',
                 'route' => 'admin/order',
                 'resource'  => 'controller/Admin\Controller\Order',
-            ),
-            'country' => array(
-                'label' => 'Country',
-                'route' => 'admin/country',
-                'resource'  => 'controller/Admin\Controller\Country',
             ),
             'bankaccount' => array(
                 'label' => 'Bankaccount',
