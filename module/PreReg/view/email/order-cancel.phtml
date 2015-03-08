@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <style type="text/css">
+            * {
+                font-family: sans-serif;
+            }
+            .clear-both {
+                clear: both;
+            }
+        </style>
+    </head>
+    <body>
+        <p>Dear <?php $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?>,</p>
+
+        <p>unfortunately we haven't received any payment in conjunction with your order from <?php echo $order->getCreated()->format('d.m.Y') ?> with the order ID <?php echo $order->getCode()->getValue(); ?> yet. Thus, we cancelled your order.</p>
+
+        <p>We are still looking forward to welcoming you at the 38th European Juggling Convention. Please restart the ordering process.</p>
+
+        <p>Best regards,<br />
+        your European Juggling Association and the local EJC 2015 organizers</p>
+    </body>
+</html>
