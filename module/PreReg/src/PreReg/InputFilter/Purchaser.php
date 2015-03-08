@@ -56,7 +56,7 @@ class Purchaser implements InputFilterAwareInterface
                                  * If the purchaser_id is not 0 the user adds an 
                                  * already existing participant as purchaser.
                                  */
-                                if($context['purchaser_id'] != 0) {
+                                if(isset($context['purchaser_id']) && $context['purchaser_id'] != 0) {
                                     return true;
                                 }
                                 
@@ -90,7 +90,7 @@ class Purchaser implements InputFilterAwareInterface
                                  * If the purchaser_id is not 0 the user adds an 
                                  * already existing participant as purchaser.
                                  */
-                                if($context['purchaser_id'] != 0) {
+                                if(isset($context['purchaser_id']) && $context['purchaser_id'] != 0) {
                                     return true;
                                 }
                                 
@@ -124,7 +124,7 @@ class Purchaser implements InputFilterAwareInterface
                                  * If the purchaser_id is not 0 the user adds an 
                                  * already existing participant as purchaser.
                                  */
-                                if($context['purchaser_id'] != 0) {
+                                if(isset($context['purchaser_id']) && $context['purchaser_id'] != 0) {
                                     return true;
                                 }
                                 

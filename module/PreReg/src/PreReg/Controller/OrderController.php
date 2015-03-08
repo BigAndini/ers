@@ -207,7 +207,6 @@ class OrderController extends AbstractActionController {
             $codecheck = 1;
             while($codecheck != null) {
                 $code->genCode();
-                error_log('found code: '.$code->getValue());
                 $codecheck = $em->getRepository("ersEntity\Entity\Code")
                     ->findOneBy(array('value' => $code->getValue()));
             }
@@ -342,7 +341,6 @@ class OrderController extends AbstractActionController {
         $viewModel->setTemplate('email/order-confirmation.phtml');
         $viewRender = $this->getServiceLocator()->get('ViewRenderer');
         $html = $viewRender->render($viewModel);
-        error_log('html: '.$html);
         
         $emailService->setHtmlMessage($html);
         #$emailService->setTextMessage('Testmail');

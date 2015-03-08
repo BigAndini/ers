@@ -59,7 +59,7 @@ class EmailFactory
         $this->htmlMessage->type        = Mime\Mime::TYPE_HTML;
         $this->htmlMessage->charset     = 'utf-8';
         #$this->htmlMessage->encoding    = Mime\Mime::ENCODING_8BIT;
-        $this->textMessage->encoding    = Mime\Mime::ENCODING_QUOTEDPRINTABLE;
+        $this->htmlMessage->encoding    = Mime\Mime::ENCODING_QUOTEDPRINTABLE;
         $this->htmlMessage->disposition = Mime\Mime::DISPOSITION_INLINE;
         #$convert_html = mb_convert_encoding($markup, 'HTML-ENTITIES', 'UTF-8');
         $html2text = new \Html2Text\Html2Text($markup);

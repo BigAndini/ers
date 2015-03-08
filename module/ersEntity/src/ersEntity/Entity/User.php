@@ -544,7 +544,6 @@ class User implements UserInterface, ProviderInterface
     
     public function hasRole(Role $role) {
         $index = $this->roles->indexOf($role);
-        error_log('index: '.var_export($index));
         return is_numeric($index);
     }
     
