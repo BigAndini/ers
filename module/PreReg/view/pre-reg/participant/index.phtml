@@ -11,6 +11,7 @@ $this->headTitle($title);
         <th>Name</th>
         <th>Birthday</th>
         <th>Email</th>
+        <th>Country</th>
         <th></th>
     </tr>
 
@@ -23,6 +24,13 @@ $this->headTitle($title);
             endif; ?>
         </td>
         <td><a href="mailto:<?php echo $participant->getEmail();?>"><?php echo $participant->getEmail();?></a></td>
+        <td>
+            <?php if($participant->getCountry() == null):
+                echo 'no Country';
+            else:
+                echo $participant->getCountry()->getName(); 
+            endif; ?>
+        </td>
         <td>
             <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>
             <a href="<?php echo $this->url('participant', array('action' => 'delete', 'id' => $participant->getSessionId())); ?>">delete</a>

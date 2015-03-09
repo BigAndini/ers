@@ -68,7 +68,8 @@ jQuery(function($) {
 	sliderAccessArgs: { touchonly: false }
     });*/
     $('.datepicker').datepicker({
-        dateFormat: "yy-mm-dd",
+        /*dateFormat: "yy-mm-dd",*/
+        dateFormat: "dd.mm.yy",
         addSliderAccess: true,
         firstDay: 1,
         changeMonth: true, 

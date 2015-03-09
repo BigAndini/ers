@@ -64,7 +64,7 @@ class Country implements InputFilterAwareInterface
      * @ORM\Column(type="datetime")
      */
     protected $created;
-
+    
     /**
      * @ORM\OneToMany(targetEntity="User", mappedBy="country")
      * @ORM\JoinColumn(name="id", referencedColumnName="Country_id")

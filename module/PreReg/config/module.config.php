@@ -210,7 +210,7 @@ return array(
             'participant' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route'    => '/participant[/:action][/:id]',
+                    'route'    => '/participant[/][:action][/:id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id'     => '[0-9]+',
@@ -235,20 +235,6 @@ return array(
                     ),
                     'defaults' => array(
                         'controller' => 'PreReg\Controller\Product',
-                        'action'     => 'index',
-                    ),
-                ),
-            ),
-            'participant' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route'    => '/participant[/][:action][/:id]',
-                    'constraints' => array(
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'PreReg\Controller\Participant',
                         'action'     => 'index',
                     ),
                 ),

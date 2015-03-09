@@ -65,7 +65,8 @@ class Participant extends Form
         $this->add(array( 
             'name' => 'birthday', 
             #'type' => 'Zend\Form\Element\Date',
-            'type' => 'Zend\Form\Element\Text', 
+            #'type' => 'Zend\Form\Element\Text',
+            'type' => 'PreReg\Form\Element\DateText',
             'attributes' => array( 
                 'placeholder' => 'Birthday...', 
                 'required' => 'required',
@@ -82,6 +83,7 @@ class Participant extends Form
             ), 
         ));
         #$this->get('birthday')->setFormat('Y-m-d');
+        $this->get('birthday')->setFormat('d.m.Y');
  
         $this->add(array( 
             'name' => 'email', 
