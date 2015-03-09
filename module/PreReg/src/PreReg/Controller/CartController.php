@@ -90,27 +90,24 @@ class CartController extends AbstractActionController {
                     error_log('unable to find variant_value_'.$i.' in POST data.');
                     continue;
                 }
+                error_log('variant_id_'.$i.': '.$data['variant_id_'.$i]);
                 $variant = $em->getRepository("ersEntity\Entity\ProductVariant")
                     ->findOneBy(array('id' => $data['variant_id_'.$i]));
+                error_log('variant_value_'.$i.': '.$data['variant_value_'.$i]);
                 $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
                     ->findOneBy(array('id' => $data['variant_value_'.$i]));
-                $itemVariant = new Entity\ItemVariant();
-                $itemVariant->populateFromEntity($variant, $value);
-                $item->addItemVariant($itemVariant);
+                if($value) {
+                    $itemVariant = new Entity\ItemVariant();
+                    $itemVariant->populateFromEntity($variant, $value);
+                    $item->addItemVariant($itemVariant);
+                }
             }
             
-            
-            
-            if(isset($cartContainer->editItem)) {
-                error_log('editItem id: '.$cartContainer->editItem->getSessionId());
-            /*if(
-                isset($param_participant_id) && is_numeric($param_participant_id) && 
-                $param_item_id) {*/
-                #$cartContainer->order->removeItem($param_participant_id, $param_item_id);
-                #$participant = $cartContainer->editItem->getPackage()->getParticipant();
+            if(isset($cartContainer->editItem) && $cartContainer->editItem instanceof Entity\Item) {
                 $package = $cartContainer->order->findPackageByItem($cartContainer->editItem);
                 error_log($package->getSessionId().' ... '.$cartContainer->editItem->getSessionId());
                 $cartContainer->order->removeItem($package->getSessionId(), $cartContainer->editItem->getSessionId());
+                unset($cartContainer->editItem);
             }
             $cartContainer->order->addItem($item, $participant_id);
             $cartContainer->chooser = true;

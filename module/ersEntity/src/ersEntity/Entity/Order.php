@@ -118,6 +118,7 @@ class Order implements InputFilterAwareInterface
         $package = new Package();
         $unassigned = new User();
         $unassigned->setSessionId(0);
+        $package->setSessionId(0);
         $package->setParticipant($unassigned);
 
         $this->addPackage($package);
@@ -490,9 +491,12 @@ class Order implements InputFilterAwareInterface
     public function findPackageByItem(Item $item) {
         foreach($this->getPackages() as $package) {
             if($package->existItem($item)) {
+                error_log('found package');
+                error_log('package_id: '.$package->getSessionId());
                 return $package;
             }
         }
+        error_log('package not found');
         return false;
     }
     
@@ -583,9 +587,11 @@ class Order implements InputFilterAwareInterface
     
     public function addParticipant($participant) {
         $package = new Package();
-        $id = \count($this->getPackages())+1;
-        $participant->setSessionId($id);
+        $participant_id = \count($this->getPackages())+1;
+        $participant->setSessionId($participant_id);
         $package->setParticipant($participant);
+        $package_id = \count($this->getPackages())+1;
+        $package->setSessionId($package_id);
         
         $this->packages[] = $package;
         
