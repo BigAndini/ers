@@ -27,7 +27,7 @@ echo $this->navigation()
         <h3>We will send all information to: <?php echo $purchaser->getEmail(); ?></h3>
     <?php else: ?>
         <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-        <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose Purchaser</a>
+        <a href="<?php echo $this->url('order', array('action' => 'purchaser')); ?>">choose Purchaser</a>
     <?php endif; ?>
 </div>
 <div class="order-info order-info-right">
@@ -125,7 +125,7 @@ echo $this->navigation()
                                 ?>
                                 <a href="<?php echo $this->url('product', 
                                         array(
-                                            'action' => 'view', 
+                                            'action' => 'edit', 
                                             'product_id' => $item->getProductId(), 
                                             'participant_id' => $user_id,
                                             'item_id' => $item->getSessionId()
@@ -181,15 +181,15 @@ echo $this->navigation()
         if($form->get('submit')->getAttribute('disabled') == 'disabled'):
     ?>
     <div class="alert alert-danger">
-        <h4>Please add needed information to checkout</h4>
+        <h4>Please add missing information for checkout</h4>
         <?php if(count($order->getItems()) == 0) : ?>
             <p><a href="<?php echo $this->url('product'); ?>">Add products</a> to your shopping cart first.</p>
         <?php endif; ?>
         <?php if(!$order->getPurchaser()) : ?>
-            <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose/add a purchaser</a>.</p>
+            <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'purchaser')); ?>">choose/add a purchaser</a>.</p>
         <?php endif; ?>
         <?php if(!$order->getPaymentType()) : ?>
-            <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose a paymenttype</a>.</p>
+            <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose a payment type</a>.</p>
         <?php endif; ?>
         
     </div>

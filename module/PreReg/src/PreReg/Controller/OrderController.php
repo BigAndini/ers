@@ -51,7 +51,7 @@ class OrderController extends AbstractActionController {
     /*
      * collect data for the purchaser
      */
-    public function registerAction() {
+    public function purchaserAction() {
         $form = new Form\Register();
         
         $cartContainer = new Container('cart');
@@ -82,12 +82,13 @@ class OrderController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $data = $form->getData();
-                if($data['purchaser_id'] == 0) {
-                    $purchaser = new Entity\User();
-                    $purchaser->populate($data);
-                } else {
-                    $purchaser = $cartContainer->order->getParticipantBySessionId($data['purchaser_id']);
+                
+                foreach($cartContainer->order->getParticipants() as $participant) {
+                    error_log($participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getSessionId().')');
                 }
+                error_log('purchaser id: '.$data['purchaser_id']);
+                
+                $purchaser = $cartContainer->order->getParticipantBySessionId($data['purchaser_id']);
                         
                 # add purchser to order
                 $cartContainer->order->setPurchaser($purchaser);
@@ -99,8 +100,8 @@ class OrderController extends AbstractActionController {
         }
        
         $forrest = new Service\BreadcrumbFactory();
-        $forrest->set('participant', 'order', array('action' => 'register'));
-        $forrest->set('purchaser', 'order', array('action' => 'register'));
+        $forrest->set('participant', 'order', array('action' => 'purchaser'));
+        $forrest->set('purchaser', 'order', array('action' => 'purchaser'));
         
         $participants = $cartContainer->order->getParticipants();
         

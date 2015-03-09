@@ -37,7 +37,7 @@ else:
     $form = $this->form;
     $form->prepare();
     
-    $form->get('submit')->setAttribute('value', 'Edit Cart');
+    $form->get('submit')->setAttribute('value', 'save changes');
 
     echo $this->form()->openTag($form);
     
@@ -65,6 +65,7 @@ else:
         <?php 
             echo $this->formSubmit($form->get('submit'));
         ?>
+        <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
     </div>
     <?php
     echo $this->form()->closeTag();

@@ -150,6 +150,8 @@ class ParticipantController extends AbstractActionController {
         $request = $this->getRequest(); 
         $forrest = new Service\BreadcrumbFactory();
         
+        $form->get('Country_id')->setValueOptions($this->getCountryOptions());
+        
         $form->bind($participant);
         
         if($request->isPost()) 

@@ -99,10 +99,19 @@ class CartController extends AbstractActionController {
                 $item->addItemVariant($itemVariant);
             }
             
-            if(
+            
+            
+            if(isset($cartContainer->editItem)) {
+                error_log('editItem id: '.$cartContainer->editItem->getSessionId());
+            /*if(
                 isset($param_participant_id) && is_numeric($param_participant_id) && 
-                $param_item_id) {
-                $cartContainer->order->removeItem($param_participant_id, $param_item_id);
+                $param_item_id) {*/
+                #$cartContainer->order->removeItem($param_participant_id, $param_item_id);
+                #$participant = $cartContainer->editItem->getPackage()->getParticipant();
+                $package = $cartContainer->order->findPackageByItem($cartContainer->editItem);
+                $participant = $package->getParticipant();
+                error_log('found ids: '.$participant->getSessionId().', '.$cartContainer->editItem->getSessionId());
+                $cartContainer->order->removeItem($participant->getSessionId(), $cartContainer->editItem->getSessionId());
             }
             $cartContainer->order->addItem($item, $participant_id);
             $cartContainer->chooser = true;

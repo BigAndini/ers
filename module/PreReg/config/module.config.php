@@ -94,14 +94,14 @@ return array(
                 'action' => 'overview',
                 'resource' => 'controller/PreReg\Controller\Order',
             ),
-            'register' => array(
-                'label' => 'Register',
+            'purchaser' => array(
+                'label' => 'Purchaser',
                 'route' => 'order',
-                'action' => 'register',
+                'action' => 'purchaser',
                 'resource' => 'controller/PreReg\Controller\Order',
             ),
             'payment' => array(
-                'label' => 'Payment',
+                'label' => 'Payment type    ',
                 'route' => 'order',
                 'action' => 'payment',
                 'resource' => 'controller/PreReg\Controller\Order',

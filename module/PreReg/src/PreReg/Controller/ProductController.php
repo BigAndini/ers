@@ -65,15 +65,21 @@ class ProductController extends AbstractActionController {
             $forrest->set('product', 'product');
         }
         
+        $params = array();
+        $params2 = array();
         if(is_numeric($participant_id)) {
             #$params = $forrest->get('product')->params;
             $params['action'] = 'add';
             $params['product_id'] = $product_id;
             $params['participant_id'] = $participant_id;
-
+            $params2 = $params;
+            
             if($item_id) {
                 $params['action'] = 'edit';
-                $params['item_id'] = $item_id;    
+                # When we're in edit mode there may not be a item_id from 
+                # returning back from participant (#114)
+                $params2 = $params;
+                $params2['item_id'] = $item_id;    
             }
             $forrest->set('participant', 'product', $params);
         } else {
@@ -88,9 +94,8 @@ class ProductController extends AbstractActionController {
         if(!$forrest->exists('cart')) {
             $forrest->set('cart', 'product');
         }
-        $bc_participant = $forrest->get('participant');
-        $forrest->set('cart', $bc_participant->route, $bc_participant->params, $bc_participant->options);
-        $forrest->set('bc_stay', $bc_participant->route, $bc_participant->params, $bc_participant->options);
+        $forrest->set('cart', 'product', $params2);
+        $forrest->set('bc_stay', 'product', $params2);
         
         $em = $this
             ->getServiceLocator()
@@ -137,6 +142,8 @@ class ProductController extends AbstractActionController {
             $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
             if($item_id) {
                 $item = $cartContainer->order->getItem($participant_id, $item_id);
+                $cartContainer->editItem = $item;
+                error_log('saved editItem '.$item->getSessionId());
             }
         }
         

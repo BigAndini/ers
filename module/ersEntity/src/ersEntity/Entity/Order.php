@@ -470,6 +470,15 @@ class Order implements InputFilterAwareInterface
         return false;
     }
     
+    public function findPackageByItem(Item $item) {
+        foreach($this->getPackages() as $package) {
+            if($package->existItem($item)) {
+                return $package;
+            }
+        }
+        return false;
+    }
+    
     /**
      * get Items of this order
      * 
