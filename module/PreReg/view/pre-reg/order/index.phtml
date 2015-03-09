@@ -51,9 +51,9 @@ echo $this->navigation()
                 <table class="table">
                     <tr>
                         <th>Product</th>
-                        <th>Amount</th>
-                        <th>Price</th>
-                        <th></th>
+                        <th class="cart-amount">Amount</th>
+                        <th class="cart-price">Price</th>
+                        <th class="cart-tool"></th>
                     </tr>
                     <?php
                     $subtotal = 0;
@@ -125,7 +125,12 @@ echo $this->navigation()
             </div>
         <?php endforeach; ?>
         <div>
-            <h3>Total Amount: <?php echo $this->currencyFormat($sum, 'EUR', null, 'de_DE'); ?></h3>
+            <table class="table sum-table">
+                <tr>
+                    <th><span style="font-size: 18px;">Order amount:</span></th>
+                    <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></span></th>
+                </tr>
+            </table>
         </div>
     </div>
  

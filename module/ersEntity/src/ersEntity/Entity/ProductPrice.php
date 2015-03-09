@@ -16,6 +16,8 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Validator;
+
 
 /**
  * Entity\ProductPrice
@@ -503,11 +505,12 @@ class ProductPrice implements InputFilterAwareInterface
                 ),
                 'validators' => array(
                     array (
-                        'name' => 'NotEmpty',
+                        'name' => '\ersEntity\Validator\NotEmptyAllowZero',
+                        #'name' => 'NotEmptyAllowZero',
                         'options' => array(
                             'messages' => array(
                                 'isEmpty' => '',
-                                #Validator\NotEmpty::IS_EMPTY => 'Please give a charge for this price.',
+                                Validator\NotEmpty::IS_EMPTY => 'Please give a charge for this price.',
                             )
                         ),
                     ),

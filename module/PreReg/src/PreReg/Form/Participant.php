@@ -64,14 +64,15 @@ class Participant extends Form
  
         $this->add(array( 
             'name' => 'birthday', 
-            'type' => 'Zend\Form\Element\Date',
+            #'type' => 'Zend\Form\Element\Date',
+            'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
                 'placeholder' => 'Birthday...', 
                 'required' => 'required',
                 'class' => 'form-control form-element datepicker',
-                'min' => '1900-01-01', 
-                'max' => 2015-08-09, 
-                'step' => '1', 
+                #'min' => '1900-01-01', 
+                #'max' => 2015-08-09, 
+                #'step' => '1', 
             ), 
             'options' => array( 
                 'label' => 'Birthday', 
@@ -80,7 +81,7 @@ class Participant extends Form
                 ),
             ), 
         ));
-        $this->get('birthday')->setFormat('Y-m-d');
+        #$this->get('birthday')->setFormat('Y-m-d');
  
         $this->add(array( 
             'name' => 'email', 

@@ -104,7 +104,7 @@ class ProductPriceController extends AbstractActionController {
             }
             $options[] = array(
                 'value' => $agegroup->getId(),
-                'label' => 'Agegroup: '.$agegroup->getAgegroup()->format('Y-m-d H:i:s'),
+                'label' => 'Agegroup: '.$agegroup->getName().' ('.$agegroup->getAgegroup()->format('Y-m-d').')',
                 'selected' => $selected,
             );
         }

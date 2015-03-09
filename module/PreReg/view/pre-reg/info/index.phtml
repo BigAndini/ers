@@ -14,10 +14,15 @@ $this->headTitle('EJC Registration System');
 
     <p>This site provides a shop to purchase ticket for the EJC 2015.</p>
 
+    <div class="col-lg-7">
     <ul>
-        <li>You can choose your language at the top right.</li>
-        <li>You can login with your data to change your order.</li>
-        <li>Here you can look at the <a href="<?php echo $this->url('product') ?>">product list</a></li>
+        <li>You can <a href="<?php echo $this->url('zfcuser/login') ?>">login</a> with your data to change your order.</li>
+        <li>You can watch the <a href="<?php echo $this->url('product') ?>">product list</a></li>
         <li>Your <a href="<?php echo $this->url('order') ?>">shopping cart</a> shows the chosen products.</li>
     </ul>
+    </div>
+    <div class="col-lg-5 start-button">
+        <a class="btn btn-vlg btn-success" href="<?php echo $this->url('product') ?>">register now</a>
+    </div>
+    <div class="clear-both"></div>
 </div>

@@ -138,7 +138,7 @@ class ProductController extends AbstractActionController {
         $cartContainer = new Container('cart');
         $participant = '';
         $item = '';
-        if($participant_id) { 
+        if(is_numeric($participant_id)) { 
             $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
             if($item_id) {
                 $item = $cartContainer->order->getItem($participant_id, $item_id);
@@ -243,7 +243,9 @@ class ProductController extends AbstractActionController {
                 $participant_id = (int) $request->getPost('participant_id');
                 $item_id = (int) $request->getPost('item_id');
                 
-                $cartContainer->order->removeItem($participant_id, $item_id);
+                $package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
+                
+                $cartContainer->order->removeItem($package->getSessionId(), $item_id);
             }
 
             $breadcrumb = $forrest->get('product');

@@ -324,3 +324,26 @@ div.product-info-field {
 .p_overlay_close_inner a:hover {
     text-decoration: none;
 }
+
+.start-button {
+    padding-top: 1em;
+    padding-left: 4em;
+    
+}
+
+.btn-vlg {
+    border-radius: 6px;
+    font-size: 24px;
+    line-height: 1.5;
+    padding: 15px 26px;
+}
+
+.cart-amount {
+    width: 150px;
+}
+.cart-price {
+    width: 150px;
+}
+.cart-tool {
+    width: 150px;
+}

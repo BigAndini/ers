@@ -55,4 +55,9 @@ return array(
             ),
         ),
     ),
+    'validators' => array(
+        'invokables' => array(
+            'NotEmptyAllowZero'            => '\ersEntity\Validator\NotEmptyAllowZero'
+         ),
+    ),
 );

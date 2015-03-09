@@ -425,6 +425,20 @@ class Order implements InputFilterAwareInterface
     }
     
     /**
+     * Get Package by session id.
+     * 
+     * @return Entity\Package
+     */
+    public function getPackageBySessionId($id) {
+        foreach($this->getPackages() as $package) {
+            if($package->getSessionId() == $id) {
+                return $package;
+            }
+        }
+        return false;
+    }
+    
+    /**
      * Get Package by participant session id.
      * 
      * @return Entity\Package
@@ -463,9 +477,12 @@ class Order implements InputFilterAwareInterface
      * @return false
      */
     public function getItem($participant_id, $item_id) {
+        error_log('searching for item, participant_id: '.$participant_id.' item_id: '.$item_id);
         $package = $this->getPackageByParticipantSessionId($participant_id);
         if($package) {
             return $package->getItemBySessionId($item_id);    
+        } else {
+            error_log('unable to find package');
         }
         return false;
     }
@@ -501,8 +518,8 @@ class Order implements InputFilterAwareInterface
      * 
      * @return \Entity\Order
      */
-    public function removeItem($participant_id, $item_id) {
-        $package = $this->getPackageByParticipantSessionId($participant_id);
+    public function removeItem($package_id, $item_id) {
+        $package = $this->getPackageBySessionId($package_id);
         if($package) {
             $package->removeItemBySessionId($item_id);    
         }

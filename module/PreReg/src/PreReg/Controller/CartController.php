@@ -109,9 +109,8 @@ class CartController extends AbstractActionController {
                 #$cartContainer->order->removeItem($param_participant_id, $param_item_id);
                 #$participant = $cartContainer->editItem->getPackage()->getParticipant();
                 $package = $cartContainer->order->findPackageByItem($cartContainer->editItem);
-                $participant = $package->getParticipant();
-                error_log('found ids: '.$participant->getSessionId().', '.$cartContainer->editItem->getSessionId());
-                $cartContainer->order->removeItem($participant->getSessionId(), $cartContainer->editItem->getSessionId());
+                error_log($package->getSessionId().' ... '.$cartContainer->editItem->getSessionId());
+                $cartContainer->order->removeItem($package->getSessionId(), $cartContainer->editItem->getSessionId());
             }
             $cartContainer->order->addItem($item, $participant_id);
             $cartContainer->chooser = true;

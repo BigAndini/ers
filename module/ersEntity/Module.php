@@ -79,4 +79,20 @@ class Module
             ),
         );
     }
+    
+    public function getValidatorConfig() {
+        return array(
+            'factories' => array(
+                'NotEmptyAllowZero' => function() {
+                    $validator = new \ersEntity\Validator\NotEmptyAllowZero;
+                    return $validator;
+                }
+            ),
+            'validators' => array(
+                'invokables' => array(
+                    
+                ),
+            ),
+        );
+    }
 }

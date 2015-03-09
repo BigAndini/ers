@@ -7,7 +7,11 @@ $this->headTitle($product->getName());
 <?php if($chooser): ?>
 <div class="p_overlay">
     <div class="p_overlay_inner">
-        <p class="p_overlay_close"><span class="p_overlay_close_inner">X</span></p>
+        <p class="p_overlay_close">
+            <span class="p_overlay_close_inner">
+                <a href="<?php echo $this->url($bc_stay->route, $bc_stay->params, $bc_stay->options);?>">X</a>
+            </span>
+        </p>
         <h3>
             Changed <span class="green"><?php echo $product->getName(); ?></span> in your shopping cart.
         </h3>
