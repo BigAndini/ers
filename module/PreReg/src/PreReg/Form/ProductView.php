@@ -48,19 +48,10 @@ class ProductView extends Form
         $formElement['options'] = array();
         $formElement['options']['label'] = 'Person';
         $formElement['options']['label_attributes'] = array(
-                    'class'  => 'media-object',
-                );
+            'class'  => 'media-object',
+            'id' => 'participant',
+        );
         $this->add($formElement);
-        
-        $this->add(array(
-            'name' => 'addParticipant',
-            'attributes' => array(
-                'type'  => 'submit',
-                'value' => 'create Person',
-                'id' => 'submitbutton',
-                'class' => 'btn btn-primary',
-            ),
-        ));
         
         $this->add(array(
             'name' => 'submit',

@@ -458,7 +458,8 @@ class User implements UserInterface, ProviderInterface
         if($birthday instanceof \DateTime) {
             $this->birthday = $birthday;
         } elseif(is_string($birthday)) {
-            $this->birthday = new \DateTime($birthday);
+            $this->birthday = \DateTime::createFromFormat('d.m.Y', $birthday);
+            #$this->birthday = new \DateTime($birthday);
         }
 
         return $this;

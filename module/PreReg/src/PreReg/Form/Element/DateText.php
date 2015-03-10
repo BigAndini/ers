@@ -24,7 +24,7 @@ class DateText extends DateTimeElement
     /**
      * Date format to use for DateTime values. By default, this is RFC-3339,
      * full-date (Y-m-d), which is what HTML5 dictates.
-     *
+     * 
      * @var string
      */
     protected $format = 'Y-m-d';

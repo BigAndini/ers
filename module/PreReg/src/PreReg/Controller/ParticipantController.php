@@ -14,6 +14,7 @@ use Zend\Session\Container;
 use PreReg\Form;
 use ersEntity\Entity;
 use PreReg\Service;
+use PreReg\InputFilter;
 
 class ParticipantController extends AbstractActionController {
     /*
@@ -97,10 +98,11 @@ class ParticipantController extends AbstractActionController {
         { 
             $user = new Entity\User();
 
+            $inputFilter = new InputFilter\Participant();
 
-            $form->setInputFilter($form->getInputFilter()); 
+            $form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
-                
+            
             if($form->isValid())
             { 
                 $user->populate($form->getData()); 
@@ -156,7 +158,8 @@ class ParticipantController extends AbstractActionController {
         
         if($request->isPost()) 
         {
-            $form->setInputFilter($form->getInputFilter()); 
+            $inputFilter = new InputFilter\Participant();
+            $form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
                 
             if($form->isValid())

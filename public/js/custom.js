@@ -92,4 +92,7 @@ jQuery(function($) {
             alert( "Load was performed.");
         });
     });*/
+    /*$('#participant').change(function() {
+        location.reload();
+    });*/
 });
