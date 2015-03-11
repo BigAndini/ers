@@ -41,6 +41,20 @@ class Deadline extends Form
             ), 
         ));
         $this->get('deadline')->setFormat('Y-m-d H:i:s');
+        
+        $this->add(array(
+            'type' => 'checkbox',
+            'name' => 'priceChange',
+            'attributes' => array(
+                'class' => 'checkbox',
+            ),
+            'options' => array(
+                'label' => 'This deadline can change prices',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
  
         $this->add(array( 
             'name' => 'csrf', 

@@ -46,6 +46,11 @@ class Deadline implements InputFilterAwareInterface
     protected $deadline;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $priceChange;
+    
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $updated;
@@ -136,6 +141,29 @@ class Deadline implements InputFilterAwareInterface
         return $this->deadline;
     }
 
+    /**
+     * Set the value of priceChange.
+     *
+     * @param boolean $visible
+     * @return \Entity\Agegroup
+     */
+    public function setPriceChange($priceChange)
+    {
+        $this->priceChange = $priceChange;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of priceChange.
+     *
+     * @return boolean
+     */
+    public function getPriceChange()
+    {
+        return $this->priceChange;
+    }
+    
     /**
      * Set the value of updated.
      *
@@ -303,7 +331,7 @@ class Deadline implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'deadline', 'updated', 'created');
+        $dataFields = array('id', 'deadline', 'priceChange', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -336,6 +364,6 @@ class Deadline implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'deadline', 'updated', 'created');
+        return array('id', 'deadline', 'priceChange', 'updated', 'created');
     }
 }

@@ -51,6 +51,11 @@ class Agegroup implements InputFilterAwareInterface
     protected $name;
     
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $priceChange;
+    
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $updated;
@@ -164,6 +169,29 @@ class Agegroup implements InputFilterAwareInterface
         return $this->name;
     }
 
+    /**
+     * Set the value of priceChange.
+     *
+     * @param boolean $visible
+     * @return \Entity\Agegroup
+     */
+    public function setPriceChange($priceChange)
+    {
+        $this->priceChange = $priceChange;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of priceChange.
+     *
+     * @return boolean
+     */
+    public function getPriceChange()
+    {
+        return $this->priceChange;
+    }
+    
     /**
      * Set the value of updated.
      *
@@ -337,7 +365,7 @@ class Agegroup implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'agegroup', 'name', 'updated', 'created');
+        $dataFields = array('id', 'agegroup', 'name', 'updated', 'priceChange', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -370,6 +398,6 @@ class Agegroup implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'agegroup', 'name', 'updated', 'created');
+        return array('id', 'agegroup', 'name', 'updated', 'priceChange', 'created');
     }
 }

@@ -57,6 +57,20 @@ class Agegroup extends Form
                 ),
             ),
         ));
+        
+        $this->add(array(
+            'type' => 'checkbox',
+            'name' => 'priceChange',
+            'attributes' => array(
+                'class' => 'checkbox',
+            ),
+            'options' => array(
+                'label' => 'This agegroup can change prices',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
  
         $this->add(array( 
             'name' => 'csrf', 
