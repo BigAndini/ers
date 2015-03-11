@@ -36,90 +36,92 @@ $this->headTitle($title);
 <div class="clear-both"></div>
 <div>
     <h1>Participants / Tickets</h1>
-        <div>
-        <?php 
-            $sum = 0;
-            foreach ($order->getPackages() as $package) : 
-                if(count($package->getItems()) == 0) {
-                    continue;
-                }
-                $user = $package->getParticipant();
-            
-                if($user->getFirstname() == '' && $user->getSurname() == '') :
-                    $participant = 'unassigned items';
-                else:
-                    $participant = $user->getFirstname().' '.$user->getSurname();
-                endif;
-        ?>
-            <div class="package">
-                <h3>
-                    <?php echo $participant; ?>
-                </h3>
-                
-                <?php if(count($package->getItems()) != 0): ?>
-                <table class="table">
+    <div>
+    <?php 
+        $sum = 0;
+        foreach ($order->getPackages() as $package) : 
+            if(count($package->getItems()) == 0) {
+                continue;
+            }
+            $user = $package->getParticipant();
+
+            if($user->getFirstname() == '' && $user->getSurname() == '') :
+                $participant = 'unassigned items';
+            else:
+                $participant = $user->getFirstname().' '.$user->getSurname();
+            endif;
+    ?>
+        <div class="package">
+            <h3>
+                <?php echo $participant; ?>
+            </h3>
+
+            <?php if(count($package->getItems()) != 0): ?>
+            <table class="table">
+                <tr>
+                    <th>Product</th>
+                    <th class="cart-amount">Amount</th>
+                    <th class="cart-price">Price</th>
+                </tr>
+                <?php
+                $subtotal = 0;
+                foreach ($package->getItems() as $item) : 
+                    $subtotal += $item->getPrice();
+                    $sum += $item->getPrice();
+                    ?>
                     <tr>
-                        <th>Product</th>
-                        <th>Amount</th>
-                        <th>Price</th>
-                        <th></th>
-                    </tr>
-                    <?php
-                    $subtotal = 0;
-                    foreach ($package->getItems() as $item) : 
-                        $subtotal += $item->getPrice();
-                        $sum += $item->getPrice();
-                        ?>
-                        <tr>
-                            <td>
-                                <span class="product-name"><?php echo $item->getName(); ?></span>
-                                <span class="product-variants">
-                                    <?php if(count($item->getItemVariants()) > 0): ?>
-                                    (
-                                    <?php 
-                                    $numVariants = count($item->getItemVariants()); 
-                                    $i = 0;
-                                    $variants = array();
-                                    ?>
-                                    <?php foreach($item->getItemVariants() as $variant): 
-                                        echo $variant->getName().': '.$variant->getValue(); 
-                                        if(++$i != $numVariants):
-                                            echo '; ';
-                                        endif;
-                                        $variants[] = array(
-                                            'pv' => $variant->getProductVariantId(),
-                                            'pvv' => $variant->getProductVariantValueId(),
-                                            );
-                                    endforeach; ?>
-                                    )
-                                    <?php endif; ?>
-                                </span>
-                            </td>
-                            <td><?php echo $item->getAmount(); ?></td>
-                            <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
-                            <td>
+                        <td>
+                            <span class="product-name"><?php echo $item->getName(); ?></span>
+                            <span class="product-variants">
+                                <?php if(count($item->getItemVariants()) > 0): ?>
+                                (
                                 <?php 
-                                if($user->getSessionId() === null) {
-                                    $user_id = 0;
-                                } else {
-                                    $user_id = $user->getSessionId();
-                                }
+                                $numVariants = count($item->getItemVariants()); 
+                                $i = 0;
+                                $variants = array();
                                 ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                    <tr>
-                        <td></td>
-                        <td>Subtotal:</td>
-                        <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
-                        <td></td>
+                                <?php foreach($item->getItemVariants() as $variant): 
+                                    echo $variant->getName().': '.$variant->getValue(); 
+                                    if(++$i != $numVariants):
+                                        echo '; ';
+                                    endif;
+                                    $variants[] = array(
+                                        'pv' => $variant->getProductVariantId(),
+                                        'pvv' => $variant->getProductVariantValueId(),
+                                        );
+                                endforeach; ?>
+                                )
+                                <?php endif; ?>
+                            </span>
+                        </td>
+                        <td><?php echo $item->getAmount(); ?></td>
+                        <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
                     </tr>
-                </table>
-                <?php endif; ?>
-            </div>
-        <?php endforeach; ?>
-        <div>
-            <h3>Total Amount: <?php echo $this->currencyFormat($sum, 'EUR', null, 'de_DE'); ?></h3>
+                <?php endforeach; ?>
+                <tr>
+                    <td></td>
+                    <td>Subtotal:</td>
+                    <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
+                </tr>
+            </table>
+            <?php endif; ?>
         </div>
+    <?php endforeach; ?>
+    <div>
+        <table class="table sum-table">
+            <tr>
+                <td>Order amount:</td>
+                <td><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+            </tr>
+            <tr>
+                <td>Payment Charge:</td>
+                <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), 'EUR', null, 'de_DE'); ?></td>
+            </tr>
+            <tr>
+                <th><span style="font-size: 18px;">Total amount:</span></th>
+                <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
+            </tr>
+        </table>
     </div>
+    <div class="clear-both"></div>
  </div>

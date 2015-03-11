@@ -54,7 +54,7 @@ body {
 
 .product-view {
     border: 1px solid #aaa;
-    padding: .5em;
+    padding: 1em;
     margin-bottom: 1em;
     position: relative;
 }
@@ -297,9 +297,13 @@ a.product-item span.product-short-description {
     display: block;
 }
 span.product-price {
-    font-size: 36px;
+    font-size: 28px;
     text-align: right;
     display: block;
+    color: #ddd;
+}
+span.product-price-active {
+    color: #000;
 }
 
 div.product-info-field {
@@ -346,4 +350,31 @@ div.product-info-field {
 }
 .cart-tool {
     width: 150px;
+}
+
+.table-notbordered th,
+.table-notbordered td {
+    border: none !important;
+}
+
+.price-table {
+    border: none !important;
+    width: auto;
+    float: right;
+}
+
+.price-table th,
+.price-table td {
+    width: auto;
+    text-align: right;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+    /*line-height: 1.42857;*/
+    line-height: 1;
 }

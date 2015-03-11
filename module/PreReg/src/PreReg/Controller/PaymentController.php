@@ -49,6 +49,7 @@ class PaymentController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")->findOneBy(array('id' => $session_order->order_id));
+        
         return new ViewModel(array(
             'order' => $order,
         ));

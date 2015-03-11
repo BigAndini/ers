@@ -2,14 +2,14 @@
 <tr>
     <th></th>
     <?php foreach($agegroups as $agegroup) : ?>
-        <th><?php echo $agegroup->getAgegroup()->format('Y-m-d H:i:s'); ?></th>
+        <th><?php echo $agegroup->getName().' ('.$agegroup->getAgegroup()->format('d.m.Y').')'; ?></th>
     <?php endforeach; ?>
     <th>no Agegroup</th>
 </tr>
 <?php foreach ($deadlines as $deadline) : ?>
 <tr>
     <th>
-        <?php echo $deadline->getDeadline()->format('Y-m-d H:i:s'); ?>
+        <?php echo $deadline->getDeadline()->format('d.m.Y H:i:s'); ?>
     </th>
     <?php foreach($agegroups as $agegroup) : ?>
         <td>
@@ -57,14 +57,23 @@
         </td>
     <?php endforeach; ?>
     <td>
-    <?php if(
-        $price != null &&
-        $price->getAgegroup() == null && 
-        $price->getDeadline() == null): ?>
-        <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
-        <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
-        <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
-    <?php endif; ?>
+    <?php foreach($product->getProductPrices() as $price):
+        if($price->getAgegroup() == null):
+            error_log('agegroup is null for '.$price->getCharge());
+        endif; ?>
+        <?php if($price->getDeadline() == null):
+            error_log('deadline is null for '.$price->getCharge());
+        endif; ?>
+        <?php if(
+            $price != null &&
+            $price->getAgegroup() == null && 
+            $price->getDeadline() == null): ?>
+            <?php error_log('found charge with do agegroup and no deadline: '.$price->getCharge()); ?>
+            <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
+            <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
+            <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+        <?php endif; ?>
+    <?php endforeach; ?>
     </td>
 </tr>
 </table>

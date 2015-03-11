@@ -39,10 +39,10 @@ class ProductPriceController extends AbstractActionController {
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
                 ->findBy(array(), array('deadline' => 'ASC'));
         $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
-                ->findBy(array(), array('agegroup' => 'ASC'));
+                ->findBy(array(), array('agegroup' => 'DESC'));
         
         return new ViewModel(array(
-            'product' => $product,
+            'product'   => $product,
             'deadlines' => $deadlines,
             'agegroups' => $agegroups,
         ));
@@ -227,6 +227,10 @@ class ProductPriceController extends AbstractActionController {
                 
                 if($productprice->getDeadlineId() == 0) {
                     $productprice->setDeadlineId(null);
+                }
+                
+                if($productprice->getAgegroupId() == 0) {
+                    $productprice->setAgegroupId(null);
                 }
                 
                 $em->persist($productprice);

@@ -27,11 +27,11 @@ class Agegroup extends Form
  
         $this->add(array( 
             'name' => 'agegroup', 
-            'type' => 'Zend\Form\Element\DateTime', 
+            'type' => 'Zend\Form\Element\Date', 
             'attributes' => array( 
                 'placeholder' => 'Agegroup...', 
                 'required' => 'required',
-                'class' => 'form-control form-element datetimepicker',
+                'class' => 'form-control form-element datepicker',
             ), 
             'options' => array( 
                 'label' => 'Agegroup', 
@@ -40,7 +40,7 @@ class Agegroup extends Form
                 ),
             ), 
         ));
-        $this->get('agegroup')->setFormat('Y-m-d H:i:s');
+        $this->get('agegroup')->setFormat('d.m.Y');
         
         $this->add(array(
             'name' => 'name',

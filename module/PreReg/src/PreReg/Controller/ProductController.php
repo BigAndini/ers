@@ -116,9 +116,11 @@ class ProductController extends AbstractActionController {
         }
         $form->setAttribute('action', $url);
         
-        $variants = $em->getRepository("ersEntity\Entity\ProductVariant")->findBy(array('Product_id' => $product_id));
+        $variants = $em->getRepository("ersEntity\Entity\ProductVariant")
+                ->findBy(array('Product_id' => $product_id));
         foreach($variants as $v) {
-            $values = $em->getRepository("ersEntity\Entity\ProductVariantValue")->findBy(array('ProductVariant_id' => $v->getId()), array('ordering' => 'ASC'));
+            $values = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                    ->findBy(array('ProductVariant_id' => $v->getId()), array('ordering' => 'ASC'));
             foreach($values as $val) {
                 $v->addProductVariantValue($val);
             }
@@ -136,7 +138,7 @@ class ProductController extends AbstractActionController {
         $question = 0;
         
         $cartContainer = new Container('cart');
-        $participant = '';
+        $participant = null;
         $item = '';
         if(is_numeric($participant_id)) { 
             $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
@@ -185,6 +187,22 @@ class ProductController extends AbstractActionController {
         $chooser = $cartContainer->chooser;
         $cartContainer->chooser = false;
 
+        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    ->findBy(array(), array('agegroup' => 'DESC'));
+        
+        $agegroupService = new Service\AgegroupService();
+        $agegroupService->setAgegroups($agegroups);
+        $agegroup = $agegroupService->getAgegroupByUser($participant);
+        
+        error_log('got agegroup: '.var_export($agegroup, true));
+        error_log('participant: '.var_export($participant, true));
+        
+        $deadlineService = new Service\DeadlineService();
+        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                    ->findAll();
+        $deadlineService->setDeadlines($deadlines);
+        $deadline = $deadlineService->getDeadline();
+        
         return new ViewModel(array(
             'question' => $question,
             'participants' => $options,
@@ -195,6 +213,9 @@ class ProductController extends AbstractActionController {
             'breadcrumb' => $breadcrumb,
             'bc_stay' => $forrest->get('bc_stay'),
             'chooser' => $chooser,
+            'agegroups' => $agegroups,
+            'deadline' => $deadline,
+            'agegroup' => $agegroup,
         ));
     }
     
