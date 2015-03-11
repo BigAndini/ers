@@ -12,17 +12,34 @@ use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter; 
 use Zend\InputFilter\InputFilterAwareInterface; 
 use Zend\InputFilter\InputFilterInterface; 
+use Zend\Session\Container;
 
 class Register implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
     protected $em;
+    protected $loginEmail;
+    protected $email;
     
     public function setEntityManager(\Doctrine\ORM\EntityManager $em) {
         $this->em = $em;
     }
     public function getEntityManager() {
         return $this->em;
+    }
+    
+    public function setLoginEmail($loginEmail) {
+        $this->loginEmail = $loginEmail;
+    }
+    public function getLoginEmail() {
+        return $this->loginEmail;
+    }
+    
+    public function setEmail($email) {
+        $this->email = $email;
+    }
+    public function getEmail() {
+        return $this->email;
     }
     
     public function setInputFilter(InputFilterInterface $inputFilter) 
@@ -48,7 +65,7 @@ class Register implements InputFilterAwareInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'To add a new purchaser please set firstname, surname and email.',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'Please select a purchaser.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 /*
@@ -59,7 +76,31 @@ class Register implements InputFilterAwareInterface
                                     return true;
                                 }
                                 
-                                if($context['firstname'] != '' && $context['surname'] != '' && $context['email'] != '') {
+                                return false;
+                            },
+                            
+                        ),
+                    ),
+                    array(
+                        'name' => 'Callback',
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The email of this purchaser already exists. Please login with this account to continue.',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                $cartContainer = new Container('cart');
+                                $participant = $cartContainer->order->getParticipantBySessionId($context['purchaser_id']);
+                                
+                                $this->setEmail($participant->getEmail());
+                                
+                                if($this->getLoginEmail() == $participant->getEmail()) {
+                                    return true;
+                                }
+                                
+                                $em = $this->getEntityManager();
+                                
+                                $user = $em->getRepository("ersEntity\Entity\User")->findOneBy(array('email' => $participant->getEmail()));
+                                if($user == null) {
                                     return true;
                                 }
                                 return false;

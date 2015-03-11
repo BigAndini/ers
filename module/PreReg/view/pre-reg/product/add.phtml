@@ -77,8 +77,10 @@ else:
             }
             ?>
         </div>
-        <!--<div class="product-price-div">-->
         <div class="col-lg-7">
+            <?php if($agegroup == null):
+                error_log('agegroup is null :(');
+            endif; ?>
             <table class='table table-notbordered price-table'>
                 <?php foreach($agegroups as $ag): ?>
                 <?php $class = '';

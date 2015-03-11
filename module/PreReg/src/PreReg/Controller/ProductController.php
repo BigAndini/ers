@@ -133,10 +133,6 @@ class ProductController extends AbstractActionController {
             $form->get('participant_id')->setOptions(array('label' => 'assign this ticket to a person'));
         }
         
-        
-        
-        $question = 0;
-        
         $cartContainer = new Container('cart');
         $participant = null;
         $item = '';
@@ -201,8 +197,7 @@ class ProductController extends AbstractActionController {
         $deadline = $deadlineService->getDeadline();
         
         return new ViewModel(array(
-            'question' => $question,
-            'participants' => $options,
+            #'participants' => $options,
             'product' => $product,
             'participant' => $participant,
             'item' => $item,

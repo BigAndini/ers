@@ -76,8 +76,23 @@ class CartController extends AbstractActionController {
             $product_data['Product_id'] = $product_data['id'];
             unset($product_data['id']);
             
+            $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
+            
+            $agegroupService = new Service\AgegroupService();
+            $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    ->findAll();
+            $agegroupService->setAgegroups($agegroups);
+            $agegroup = $agegroupService->getAgegroupByUser($participant);
+            
+            $deadlineService = new Service\DeadlineService();
+            $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                    ->findAll();
+            $deadlineService->setDeadlines($deadlines);
+            $deadline = $deadlineService->getDeadline();
+            
             $item->populate($product_data);
-            $item->setPrice($product->getPrice()->getCharge());
+            #$item->setPrice($product->getPrice()->getCharge());
+            $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
             $item->setAmount(1);
             $item->populate((array) $product_data);
             

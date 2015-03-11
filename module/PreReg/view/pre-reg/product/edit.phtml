@@ -34,9 +34,14 @@ else:
 ?>
 <p class="desc-short"><?php echo $product->getShortDescription(); ?></p>
 <div class="product-view">
-    <div class="product-image"><img src="/img/no-available-image.png" alt="No image available" width="200"></div>
-    <div class="desc-long"><?php echo $product->getLongDescription(); ?></div>
-    <div class="clear-both"></div>
+    <div class="row">
+        <div class="col-lg-3">
+            <img src="/img/no-available-image.png" alt="No available image" width="200">
+        </div>
+        <div class="col-lg-5">
+            <?php echo $product->getLongDescription(); ?>
+        </div>
+    </div>
     <?php
     $form = $this->form;
     $form->prepare();
@@ -44,32 +49,65 @@ else:
     $form->get('submit')->setAttribute('value', 'save changes');
 
     echo $this->form()->openTag($form);
-    
-    if($product->getPersonalized() || count($participants) > 0) {
-        echo $this->formRow($form->get('participant_id'));
     ?>
-    <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add person to this list</a>
-    <?php
-       #echo $this->formRow($form->get('addParticipant'));
-    }
-    $form->get('Product_id')->setAttribute('value', $product->getId());
-    echo $this->formHidden($form->get('Product_id'));
-    $prices = $product->getProductPrices();
-    
-    for($i = 0; $i<$form->getVariantCounter(); $i++) {
-        echo $this->formHidden($form->get('variant_id_'.$i));
-        echo $this->formRow($form->get('variant_value_'.$i));
-        echo $this->formRow($form->get('variant_type_'.$i));
-    }
-    ?>
-    <div class="product-price-div">
-        <?php #foreach($prices as $price): ?>
-        <span class="product-price"><?php echo $this->currencyFormat($product->getPrice()->getCharge(), 'EUR', null, 'de_DE'); ?></span>    
-        <?php #endforeach; ?>
-        <?php 
-            echo $this->formSubmit($form->get('submit'));
-        ?>
-        <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+    <div class="row">
+        <div class="col-lg-5">
+            <?php if($product->getPersonalized() || count($participants) > 0) {
+                echo $this->formRow($form->get('participant_id'));
+            ?>
+            <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add person to this list</a>
+            <?php
+               #echo $this->formRow($form->get('addParticipant'));
+            }
+            $form->get('Product_id')->setAttribute('value', $product->getId());
+            echo $this->formHidden($form->get('Product_id'));
+            $prices = $product->getProductPrices();
+
+            for($i = 0; $i<$form->getVariantCounter(); $i++) {
+                echo $this->formHidden($form->get('variant_id_'.$i));
+                echo $this->formRow($form->get('variant_value_'.$i));
+                echo $this->formRow($form->get('variant_type_'.$i));
+            }
+            ?>
+        </div>
+        <div class="col-lg-7">
+            <?php if($agegroup == null):
+                error_log('agegroup is null :(');
+            endif; ?>
+            <table class='table table-notbordered price-table'>
+                <?php foreach($agegroups as $ag): ?>
+                <?php $class = '';
+                if($agegroup != null && $agegroup->getId() == $ag->getId()):
+                    $class = 'product-price-active';
+                endif; ?>
+                <tr>
+                    <td>
+                        <span class="product-price<?php echo ' '.$class ?>"><?php echo $ag->getName(); ?></span>
+                    </td>
+                    <td>
+                        <span class="product-price<?php echo ' '.$class ?>"><?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+                <?php $class = '';
+                if($participant->getSessionId() == 0 || $agegroup == null):
+                    $class = 'product-price-active';
+                endif; ?>
+                <tr>
+                    <td></td>
+                    <td>
+                        <span class="product-price<?php echo ' '.$class ?>"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
+                    </td>
+                </tr>
+                
+            </table>
+        </div>
+    </div>
+    <div class="row text-right">
+        <div class="col-sm-12">
+            <?php echo $this->formSubmit($form->get('submit')); ?>
+            <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+        </div>
     </div>
     <?php
     echo $this->form()->closeTag();

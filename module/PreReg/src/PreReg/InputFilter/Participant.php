@@ -12,6 +12,7 @@ use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter; 
 use Zend\InputFilter\InputFilterAwareInterface; 
 use Zend\InputFilter\InputFilterInterface; 
+use Zend\Session\Container;
 
 class Participant implements InputFilterAwareInterface 
 { 
@@ -101,15 +102,26 @@ class Participant implements InputFilterAwareInterface
                                 'emailAddressInvalidFormat' => 'Email address format is not invalid', 
                             ) 
                         ), 
-                    ), 
-                    /*array ( 
-                        'name' => 'NotEmpty', 
-                        'options' => array( 
-                            'messages' => array( 
-                                'isEmpty' => '', 
-                            ) 
-                        ), 
-                    ),*/ 
+                    ),
+                    array ( 
+                        'name' => 'Callback', 
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'There is already a person with this email address in your order',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                $cartContainer = new Container('cart');
+                                $participants = $cartContainer->order->getParticipants();
+                                foreach($participants as $participant) {
+                                    if($value == $participant->getEmail()) {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            },
+                            
+                        ),
+                    ),
                 ), 
             ])); 
  

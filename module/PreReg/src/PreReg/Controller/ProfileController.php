@@ -10,6 +10,7 @@ namespace PreReg\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Crypt\Password\Bcrypt;
 use PreReg\Form;
 use PreReg\InputFilter;
 use ersEntity\Entity;
@@ -86,17 +87,11 @@ class ProfileController extends AbstractActionController {
         $request = $this->getRequest();
         if($request->isPost()) 
         {
-            #$inputFilter = new InputFilter\User();
-            
             $form->setData($request->getPost()); 
             if($form->isValid())
             {
-                $data = $form->getData();
                 $change = $this->getServiceLocator()->get('zfcuser_user_service')
-                        ->changePassword(array(
-                            'credential' => $data['oldpassword'],
-                            'newCredential' => $data['newpassword'],
-                        ));
+                        ->changePassword($form->getData());
                 if(!$change) {
                     error_log('Unable to change password');
                 }
@@ -114,6 +109,11 @@ class ProfileController extends AbstractActionController {
     }
     public function forgotPasswordAction() {
         
+    }
+    public function changeAction() {
+        return new ViewModel(array(
+            
+        ));
     }
     public function packageAction() {
         

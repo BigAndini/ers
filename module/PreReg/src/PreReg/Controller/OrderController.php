@@ -77,6 +77,13 @@ class OrderController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = new InputFilter\Register();
+            $em = $this
+                ->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+            $inputFilter->setEntityManager($em);
+            if($this->zfcUserAuthentication()->hasIdentity()) {
+                $inputFilter->setLoginEmail($this->zfcUserAuthentication()->getIdentity()->getEmail());
+            }
             $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
