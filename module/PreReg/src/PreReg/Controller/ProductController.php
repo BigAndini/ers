@@ -194,9 +194,6 @@ class ProductController extends AbstractActionController {
         $agegroupService->setAgegroups($agegroups);
         $agegroup = $agegroupService->getAgegroupByUser($participant);
         
-        error_log('got agegroup: '.var_export($agegroup, true));
-        error_log('participant: '.var_export($participant, true));
-        
         $deadlineService = new Service\DeadlineService();
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
                     ->findAll();

@@ -27,7 +27,7 @@ class Agegroup extends Form
  
         $this->add(array( 
             'name' => 'agegroup', 
-            'type' => 'Zend\Form\Element\Date', 
+            'type' => 'Admin\Form\Element\DateText', 
             'attributes' => array( 
                 'placeholder' => 'Agegroup...', 
                 'required' => 'required',

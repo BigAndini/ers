@@ -41,7 +41,7 @@ class Agegroup implements InputFilterAwareInterface
     protected $id;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="date")
      */
     protected $agegroup;
 
