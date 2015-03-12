@@ -237,8 +237,14 @@ class OrderController extends AbstractActionController {
                     $participant = $purchaser;
                 }
                 
-                $user = $em->getRepository("ersEntity\Entity\User")
+                $user = null;
+                if($participant->getEmail() == '') {
+                    $participant->setEmail(null);
+                } else {
+                    $user = $em->getRepository("ersEntity\Entity\User")
                         ->findOneBy(array('email' => $participant->getEmail()));
+                }
+                
                 $role = $em->getRepository("ersEntity\Entity\Role")
                         ->findOneBy(array('roleId' => 'participant'));
                 if($user instanceof Entity\User) {
