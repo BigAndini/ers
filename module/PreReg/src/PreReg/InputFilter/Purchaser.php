@@ -68,6 +68,33 @@ class Purchaser implements InputFilterAwareInterface
                             
                         ),
                     ),
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 45,
+                        ),
+                    ),
+                    array ( 
+                        'name' => 'Callback', 
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The provided name contains invalid character. These charaters are not allowed: !"§$%()=<>|^;{}[]',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                $alphabet = '!"§$%()=<>|^;{}[]';
+                                $alpha = str_split($alphabet);
+                                foreach($alpha as $char) {
+                                    if(strstr($value, $char)) {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            },
+                            
+                        ),
+                    ),
                 ), 
             ])); 
 
@@ -98,6 +125,33 @@ class Purchaser implements InputFilterAwareInterface
                                     return true;
                                 }
                                 return false;
+                            },
+                            
+                        ),
+                    ),
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 45,
+                        ),
+                    ),
+                    array ( 
+                        'name' => 'Callback', 
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The provided name contains invalid character. These charaters are not allowed: !"§$%()=<>|^;{}[]',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                $alphabet = '!"§$%()=<>|^;{}[]';
+                                $alpha = str_split($alphabet);
+                                foreach($alpha as $char) {
+                                    if(strstr($value, $char)) {
+                                        return false;
+                                    }
+                                }
+                                return true;
                             },
                             
                         ),
