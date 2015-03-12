@@ -747,47 +747,47 @@ class Product implements InputFilterAwareInterface
      * 
      * @return \Entity\ProductPrice
      */
-    public function getPrice()
-    {
-        $diff = null;
-        $now = new \DateTime();
-        $ret = new ProductPrice();
-        $null_ret = new ProductPrice();
-        foreach($this->getProductPrices() as $price) {
-            /*
-             * continue when deadline is in the past
-             */
-            if($price->getDeadlineId() == null || $now->getTimestamp() > $price->getDeadline()->getDeadline()->getTimestamp()) {
-                continue;
-            }
-            /*
-             * save price when there's no deadline but the charge is greater 
-             * than what we already have.
-             */
-            if($price->getDeadlineId() == null) {
-                if($null_ret->getCharge() < $price->getCharge()) {
-                    $null_ret = $price;
-                }
-            }
-    
-            $newDiff = $now->getTimestamp() - $price->getDeadline()->getDeadline()->getTimestamp();
-            /*
-             * If diff is not set or this deadline is nearer to now.
-             */
-            if(
-                $diff == null ||
-                ($diff - $newDiff) < 0
-            )
-            {
-                $diff = $newDiff;
-                $ret = $price;
-            }
-        }
-        if($ret->getCharge() == null) {
-            $ret = $null_ret;
-        }
-        return $ret;
-    }
+    #public function getPrice()
+    #{
+    #    $diff = null;
+    #    $now = new \DateTime();
+    #    $ret = new ProductPrice();
+    #    $null_ret = new ProductPrice();
+    #    foreach($this->getProductPrices() as $price) {
+    #        /*
+    #         * continue when deadline is in the past
+    #         */
+    #        if($price->getDeadlineId() == null || $now->getTimestamp() > $price->getDeadline()->getDeadline()->getTimestamp()) {
+    #            continue;
+    #        }
+    #        /*
+    #         * save price when there's no deadline but the charge is greater 
+    #         * than what we already have.
+    #         */
+    #        if($price->getDeadlineId() == null) {
+    #            if($null_ret->getCharge() < $price->getCharge()) {
+    #                $null_ret = $price;
+    #            }
+    #        }
+    #
+    #        $newDiff = $now->getTimestamp() - $price->getDeadline()->getDeadline()->getTimestamp();
+    #        /*
+    #         * If diff is not set or this deadline is nearer to now.
+    #         */
+    #        if(
+    #            $diff == null ||
+    #            ($diff - $newDiff) < 0
+    #        )
+    #        {
+    #            $diff = $newDiff;
+    #            $ret = $price;
+    #        }
+    #    }
+    #    if($ret->getCharge() == null) {
+    #        $ret = $null_ret;
+    #    }
+    #    return $ret;
+    #}
     
     /**
      * Get prices by agegroup
@@ -846,7 +846,7 @@ class Product implements InputFilterAwareInterface
              * at this point we should only have the prices we want, take the highest one.
              */
             if($ret->getCharge() < $price->getCharge()) {
-                error_log('found price: '.$price->getCharge());
+                #error_log('found price: '.$price->getCharge());
                 $ret = $price;
             }
         }
@@ -855,124 +855,12 @@ class Product implements InputFilterAwareInterface
             /*
              * start searching only by agegroup
              */
-            error_log('==> start searching only by agegroup');
+            #error_log('==> start searching only by agegroup');
             $ret = $this->getProductPrice($agegroup, null, false);
             if($ret->getCharge() == null) {
-                error_log('==> start searching without params');
+                #error_log('==> start searching without params');
                 $ret = $this->getProductPrice(null, null, false);
             }
-        }
-        
-        return $ret;
-        
-        if($agegroup != null) {
-            error_log('start searching price for agegroup '.$agegroup->getName());
-        }
-        
-        $null_ret = new ProductPrice;
-        $ret = null;
-        error_log('found '.count($prices).' prices');
-        foreach($this->getProductPrices() as $price) {
-            if($agegroup == null && $price->getAgegroupId() != null) {
-                error_log('searching for no agegroup, this price has one');
-                continue;
-            }
-            if($agegroup != null && $price->getAgegroupId() == null) {
-                error_log('searching for agegroup, this price has none');
-                continue;
-            }
-            if($agegroup != null && $agegroup->getId() != $price->getAgegroupId()) {
-                error_log('this is not our agegroup: '.$price->getAgegroupId()->getName());
-                continue;
-            }
-            
-            if($agegroup == null) {
-                if($price->getDeadline() == null) {
-                    error_log('found price: '.$price->getCharge().' no Agegroup; no Deadline');
-                } else {
-                    error_log('found price: '.$price->getCharge().' no Agegroup; '.$price->getDeadline()->getDeadline()->format('d.m.Y H:i:s'));
-                }
-            } else {
-                if($price->getDeadline() == null) {
-                    error_log('found price: '.$price->getCharge().' '.$price->getAgegroup()->getName().'; no Deadline');
-                } else {
-                    error_log('found price: '.$price->getCharge().' no Agegroup; '.$price->getDeadline()->getDeadline()->format('d.m.Y H:i:s'));
-                }
-            }
-            
-            
-            if($price->getDeadlineId() == null && $price->getAgegroupId() == null) {
-                error_log('checking price '.$price->getCharge().' no Deadline; no Agegroup');
-            } elseif($price->getDeadlineId() == null && $price->getAgegroupId() != null) {
-                error_log('checking price '.$price->getCharge().' no Deadline; '.$price->getAgegroup()->getName());
-            } elseif($price->getDeadlineId() != null && $price->getAgegroupId() == null) {
-                error_log('checking price '.$price->getCharge().' '.$price->getDeadline()->getDeadline()->format('d.m.Y H:i:s').'; no Agegroup');
-            } else {
-                error_log('checking price '.$price->getCharge().' '.$price->getDeadline()->getDeadline()->format('d.m.Y H:i:s').'; '.$price->getAgegroup()->getName());
-            }
-            
-            /*
-             * save price when there's no deadline but the charge is greater 
-             * than what we already have.
-             */
-            if($price->getDeadline() == null) {
-                if($null_ret->getCharge() < $price->getCharge()) {
-                    $null_ret = $price;
-                }
-                error_log('no deadline for price: '.$price->getCharge());
-                continue;
-            }
-            
-
-            
-            error_log('found a price: '.$price->getCharge().', correct?');
-            $ret = $price;
-        }
-        if($ret == null) {
-            $ret = $null_ret;
-        }
-        return $ret;
-        
-        $diff = null;
-        $now = new \DateTime();
-        $ret = new ProductPrice();
-        $null_ret = new ProductPrice();
-        $prices = array();
-        foreach($this->getProductPrices() as $price) {
-            if($price->getDeadlineId() == null && $price->getAgegroupId() == null) {
-                error_log('checking price '.$price->getCharge().' no Deadline; no Agegroup');
-            } elseif($price->getDeadlineId() == null && $price->getAgegroupId() != null) {
-                error_log('checking price '.$price->getCharge().' no Deadline; '.$price->getAgegroup()->getName());
-            } elseif($price->getDeadlineId() != null && $price->getAgegroupId() == null) {
-                error_log('checking price '.$price->getCharge().' '.$price->getDeadline()->getDeadline()->format('d.m.Y H:i:s').'; no Agegroup');
-            } else {
-                error_log('checking price '.$price->getCharge().' '.$price->getDeadline()->getDeadline()->format('d.m.Y H:i:s').'; '.$price->getAgegroup()->getName());
-            }
-                
-            
-            
-            
-    
-            $newDiff = $now->getTimestamp() - $price->getDeadline()->getDeadline()->getTimestamp();
-            /*
-             * If diff is not set or this deadline is nearer to now.
-             */
-            if(
-                $diff == null ||
-                ($diff - $newDiff) < 0
-            )
-            {
-                error_log('found price for our agegroup: '.$price->getCharge());
-                $diff = $newDiff;
-                $ret = $price;
-                $prices[] = $price;
-            }
-        }
-        if($ret->getCharge() == null) {
-            $ret = $null_ret;
-        }
-        foreach($prices as $price) {
-            error_log('found price: '.$price->getCharge());
         }
         
         return $ret;

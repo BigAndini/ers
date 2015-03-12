@@ -37,15 +37,25 @@ class ProductController extends AbstractActionController {
                 );
         $products = array();
         foreach($tmp as $product) {
-            if($product->getPrice()->getCharge() != null) {
+            if($product->getProductPrice()->getCharge() != null) {
                 $products[] = $product;
             }
         }
+        
+        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    ->findBy(array(), array('agegroup' => 'DESC'));
+        $deadlineService = new Service\DeadlineService();
+        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+            ->findAll();
+        $deadlineService->setDeadlines($deadlines);
+        $deadline = $deadlineService->getDeadline();
         
         $cartContainer = new Container('cart');
         
         return new ViewModel(array(
             'products' => $products,
+            'agegroups' => $agegroups,
+            'deadline' => $deadline,
             'order' => $cartContainer->order,
         ));
     }

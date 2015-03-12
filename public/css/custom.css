@@ -296,13 +296,19 @@ a.product-item span.product-title {
 a.product-item span.product-short-description {
     display: block;
 }
-span.product-price {
+.product-price {
     font-size: 28px;
     text-align: right;
     display: block;
     color: #ddd;
 }
-span.product-price-active {
+.product-price-list {
+    font-size: 18px;
+    text-align: right;
+    display: block;
+    color: #ddd;
+}
+.product-price-active {
     color: #000;
 }
 
