@@ -64,11 +64,12 @@ class ProductView extends Form
         ));
     }
 
-    public function setVariants($variants) {
+    public function setVariants($variants, $defaults = array()) {
         $variant_count = count($variants);
         $variant_add = 1;
         foreach($variants as $v) {
             if(is_object($v) && $v instanceof Entity\ProductVariant) {
+                error_log('found '.count($v->getProductVariantValues()).' values');
                 if($v->getOrder() != 0) {
                     $this->variants[$v->getOrder()] = $v;
                 } else {
@@ -81,14 +82,14 @@ class ProductView extends Form
                 error_log(get_class().': object is of class '.get_class($v));
             }
         }
-        $this->addVariants();
+        $this->addVariants($defaults);
     }
     
     public function getVariantCounter() {
         return $this->variantCounter;
     }
     
-    private function addVariants() {
+    private function addVariants($defaults=array()) {
         $this->variantCounter = 0;
         foreach($this->variants as $variant) {
             /* Example array
@@ -123,6 +124,9 @@ class ProductView extends Form
                     $formElementValue['attributes'] = array();
                     $formElementValue['attributes']['type'] = $variant->getType();
                     $formElementValue['attributes']['class'] = 'form-control form-element';
+                    if(isset($defaults[$variant->getId()])) {
+                        $formElementValue['attributes']['value'] = $defaults[$variant->getId()];
+                    }
             
                     $formElementValue['options'] = array();
                     $formElementValue['options']['label'] = $variant->getName();
@@ -134,7 +138,10 @@ class ProductView extends Form
                     $formElementValue['attributes'] = array();
                     $formElementValue['attributes']['type'] = 'text';
                     $formElementValue['attributes']['class'] = 'form-control form-element datepicker';
-            
+                    if(isset($defaults[$variant->getId()])) {
+                        $formElementValue['attributes']['value'] = $defaults[$variant->getId()];
+                    }
+                    
                     $formElementValue['options'] = array();
                     $formElementValue['options']['label'] = $variant->getName();
                     $formElementValue['options']['label_attributes'] = array(
@@ -142,10 +149,23 @@ class ProductView extends Form
                         );
                     break;
                 case 'select':
+                    error_log('starting type select');
                     $formElementValue['type'] = 'Zend\Form\Element\Select';
                     $options = array();
-                    foreach($variant->getProductVariantValues() as $v) {
+                    /*foreach($variant->getProductVariantValues() as $v) {
                         $options[$v->getId()] = $v->getValue();
+                    }*/
+                    foreach($variant->getProductVariantValues() as $v) {
+                        $selected = false;
+                        if(isset($defaults[$variant->getName()]) &&  $v->getId() == $defaults[$variant->getName()]) {
+                            $selected = true;
+                        }
+                        $options[] = array(
+                            'value' => $v->getId(),
+                            'label' => $v->getValue(),
+                            'selected' => $selected,
+                        );
+                        error_log('added '.$v->getValue().' to variant '.$variant->getName());
                     }
                     $formElementValue['attributes'] = array();
                     $formElementValue['attributes']['options'] = $options;

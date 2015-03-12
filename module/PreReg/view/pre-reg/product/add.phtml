@@ -76,6 +76,13 @@ else:
                 echo $this->formRow($form->get('variant_type_'.$i));
             }
             ?>
+            <?php if(count($product->getChildProducts()) > 0): ?>
+            <h3>Included Items:</h3>
+            <?php foreach($product->getChildProducts() as $package): 
+                $child = $package->getSubProduct(); ?>
+                <h4><?php echo $child->getName(); ?></h4>
+            <?php endforeach; ?>
+            <?php endif; ?>
         </div>
         <div class="col-lg-7">
             <?php if($agegroup == null):

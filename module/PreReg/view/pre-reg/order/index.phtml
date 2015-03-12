@@ -77,10 +77,7 @@ echo $this->navigation()
                                         if(++$i != $numVariants):
                                             echo '; ';
                                         endif;
-                                        $variants[] = array(
-                                            'pv' => $variant->getProductVariantId(),
-                                            'pvv' => $variant->getProductVariantValueId(),
-                                            );
+                                        $variants[$variant->getName()] = $variant->getProductVariantValueId();
                                     endforeach; ?>
                                     )
                                     <?php endif; ?>
@@ -103,6 +100,9 @@ echo $this->navigation()
                                             'participant_id' => $user_id,
                                             'item_id' => $item->getSessionId(),
                                             #'variants' => urlencode(json_encode($variants)),
+                                        ),
+                                        array(
+                                            'query' => $variants,
                                         )) ?>">edit</a>
                                 <a href="<?php echo $this->url('product', 
                                         array(

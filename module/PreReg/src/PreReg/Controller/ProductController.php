@@ -128,14 +128,9 @@ class ProductController extends AbstractActionController {
         
         $variants = $em->getRepository("ersEntity\Entity\ProductVariant")
                 ->findBy(array('Product_id' => $product_id));
-        foreach($variants as $v) {
-            $values = $em->getRepository("ersEntity\Entity\ProductVariantValue")
-                    ->findBy(array('ProductVariant_id' => $v->getId()), array('ordering' => 'ASC'));
-            foreach($values as $val) {
-                $v->addProductVariantValue($val);
-            }
-        }
-        $form->setVariants($variants);
+        
+        $defaults = $this->params()->fromQuery();
+        $form->setVariants($variants, $defaults);
         $form->get('submit')->setAttribute('value', 'Add to Cart');
         if($product->getPersonalized()) {
             $form->get('participant_id')->setOptions(array('label' => 'you need to assign this ticket to a person'));
