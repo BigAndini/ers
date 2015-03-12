@@ -69,7 +69,6 @@ class ProductView extends Form
         $variant_add = 1;
         foreach($variants as $v) {
             if(is_object($v) && $v instanceof Entity\ProductVariant) {
-                error_log('found '.count($v->getProductVariantValues()).' values');
                 if($v->getOrder() != 0) {
                     $this->variants[$v->getOrder()] = $v;
                 } else {
@@ -149,7 +148,6 @@ class ProductView extends Form
                         );
                     break;
                 case 'select':
-                    error_log('starting type select');
                     $formElementValue['type'] = 'Zend\Form\Element\Select';
                     $options = array();
                     /*foreach($variant->getProductVariantValues() as $v) {
@@ -165,7 +163,6 @@ class ProductView extends Form
                             'label' => $v->getValue(),
                             'selected' => $selected,
                         );
-                        error_log('added '.$v->getValue().' to variant '.$variant->getName());
                     }
                     $formElementValue['attributes'] = array();
                     $formElementValue['attributes']['options'] = $options;

@@ -146,7 +146,6 @@ class ProductController extends AbstractActionController {
             if($item_id) {
                 $item = $cartContainer->order->getItem($participant_id, $item_id);
                 $cartContainer->editItem = $item;
-                #error_log('saved editItem '.$item->getSessionId());
             }
         }
         
