@@ -172,8 +172,16 @@ class ProductController extends AbstractActionController {
                 'disabled' => $disabled,
             );
         }
+        $selected = false;
+        if($participant_id == 0) {
+            $selected = true;
+        }
         if(!$product->getPersonalized() && count($options) > 0) {
-            $options[0] = 'do not assign this product';
+            array_unshift($options, array(
+                'value' => 0,
+                'label' => 'do not assign this product',
+                'selected' => $selected,
+                ));
         }
         
         if(count($options) <= 0 && $product->getPersonalized()) {

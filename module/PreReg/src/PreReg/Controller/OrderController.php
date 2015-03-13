@@ -161,9 +161,25 @@ class OrderController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $paymenttypes = $em->getRepository("ersEntity\Entity\PaymentType")->findBy(array(), array('ordering' => 'ASC'));
+        $paymenttypes = $em->getRepository("ersEntity\Entity\PaymentType")
+                ->findBy(array(), array('ordering' => 'ASC'));
         $types = array();
+        $now = new \DateTime();
+        
+        $pts = array();
         foreach($paymenttypes as $paymenttype) {
+            $activeFrom = $paymenttype->getActiveFrom();
+            $activeUntil = $paymenttype->getActiveUntil();
+            if(
+                    ($activeFrom == null || $activeFrom->getDeadline()->getTimestamp() <= $now->getTimestamp()) && 
+                    ($activeUntil == null || $activeUntil->getDeadline()->getTimestamp() >= $now->getTimestamp())
+            ) {
+                $pts[] = $paymenttype;
+                
+            }
+        }
+        
+        foreach($pts as $paymenttype) {
             $types[] = array(
                 'value' => $paymenttype->getId(),
                 'label' => $paymenttype->getName(),
@@ -194,11 +210,10 @@ class OrderController extends AbstractActionController {
             }
         }
         
-        
         return new ViewModel(array(
             'form' => $form,
             'order' => $cartContainer->order,
-            'paymenttypes' => $paymenttypes,
+            'paymenttypes' => $pts,
         ));
     }
     

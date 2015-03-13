@@ -70,7 +70,11 @@ class CountryController extends AbstractActionController {
             if ($form->isValid()) {
                 #$tax->populate($form->getData());
                 #$em->persist($tax);
-                $em->persist($form->getData());
+                $country = $form->getData();
+                if($country->getOrder() == 0) {
+                    $country->setOrder(null);
+                }
+                $em->persist($country);
                 $em->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);

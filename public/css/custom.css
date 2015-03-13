@@ -389,3 +389,10 @@ div.product-info-field {
 .dl-horizontal dd {
     margin-left: 0px;
 }
+
+.package {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+}

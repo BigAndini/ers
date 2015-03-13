@@ -23,7 +23,8 @@ class PaymentTypeController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'paymenttypes' => $em->getRepository("ersEntity\Entity\PaymentType")->findAll(),
+            'paymenttypes' => $em->getRepository("ersEntity\Entity\PaymentType")
+                ->findBy(array(), array('ordering' => 'ASC')),
         ));
     }
 

@@ -138,7 +138,27 @@ class Participant implements InputFilterAwareInterface
                             'format' => 'd.m.Y',
                         ),
                     ),
-                ), 
+                    array(
+                        'name' => 'Callback', 
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'Please choose a valid birthday',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                $min = \DateTime::createFromFormat('d.m.Y', '01.01.1900');
+                                $max = new \DateTime();
+                                $birthday = \DateTime::createFromFormat('d.m.Y', $value);
+                                if($min->getTimestamp() > $birthday->getTimestamp()) {
+                                    return false;
+                                }
+                                if($max->getTimestamp() < $birthday->getTimestamp()) {
+                                    return false;
+                                }
+                                return true;
+                            },
+                        ),
+                    ),
+                ),
             ])); 
 
             $inputFilter->add($factory->createInput([ 

@@ -182,8 +182,12 @@ class PaymentType implements InputFilterAwareInterface
      */
     public function setOrder($order)
     {
-        $this->ordering = $order;
-
+        if($order == 0) {
+            $this->ordering = null;
+        } else {
+            $this->ordering = $order;
+        }
+        
         return $this;
     }
     public function setOrdering($order)
