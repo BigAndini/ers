@@ -18,36 +18,41 @@ echo $this->navigation()
     $form->setAttribute('action', $this->url('order', array('action' => 'checkout')));
     $form->prepare();
 ?>
-<div class="order-info order-info-left">
-    <h1>Purchaser</h1>
-    <?php $purchaser = $order->getPurchaser(); ?>
-    <?php if($purchaser) : ?>
-        <h2><?php echo $purchaser->getFirstname().' '.$purchaser->getSurname(); ?></h2>
-        <p>The purchaser will receive all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is payed and will be able to download the eTicket on his own aswell.</p>
-        <h3>We will send all information to: <?php echo $purchaser->getEmail(); ?></h3>
-    <?php else: ?>
-        <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-        <a href="<?php echo $this->url('order', array('action' => 'purchaser')); ?>">choose Purchaser</a>
-    <?php endif; ?>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="order-info">
+            <h1>Purchaser</h1>
+            <?php $purchaser = $order->getPurchaser(); ?>
+            <?php if($purchaser) : ?>
+                <h2><?php echo $purchaser->getFirstname().' '.$purchaser->getSurname(); ?></h2>
+                <p>The purchaser will receive all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is payed and will be able to download the eTicket on his own aswell.</p>
+                <h3>We will send all information to: <?php echo $purchaser->getEmail(); ?></h3>
+            <?php else: ?>
+                <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+                <a href="<?php echo $this->url('order', array('action' => 'purchaser')); ?>">choose Purchaser</a>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="order-info">
+            <h1>Payment</h1>
+            <?php $paymenttype = $order->getPaymentType(); ?>
+            <?php if($paymenttype) : ?>
+                <h3><?php echo $paymenttype->getName(); ?></h3>
+                <p><?php echo $paymenttype->getExplanation(); ?></p>
+            <?php else: ?>
+                <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+                <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
+            <?php endif; ?>
+            <!--<h3>Bank Transfer</h3>
+            <p>After successfull purchase you will see the bank account data to transfer the money to. When we matched your payment to your order you will be informed and can download your eTickets.</p>
+            <h3>Credit Card</h3>
+            <p>After purchase you will see the credit card formular. After successful payment you will be able to download your eTickets.</p>
+            <h3>PayPal</h3>
+            <p>After purchase you will be redirected to a PayPal page. After successful payment you will be able to download your eTickets.</p>-->    
+        </div>
+    </div>
 </div>
-<div class="order-info order-info-right">
-    <h1>Payment</h1>
-    <?php $paymenttype = $order->getPaymentType(); ?>
-    <?php if($paymenttype) : ?>
-        <h3><?php echo $paymenttype->getName(); ?></h3>
-        <p><?php echo $paymenttype->getExplanation(); ?></p>
-    <?php else: ?>
-        <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-        <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
-    <?php endif; ?>
-    <!--<h3>Bank Transfer</h3>
-    <p>After successfull purchase you will see the bank account data to transfer the money to. When we matched your payment to your order you will be informed and can download your eTickets.</p>
-    <h3>Credit Card</h3>
-    <p>After purchase you will see the credit card formular. After successful payment you will be able to download your eTickets.</p>
-    <h3>PayPal</h3>
-    <p>After purchase you will be redirected to a PayPal page. After successful payment you will be able to download your eTickets.</p>-->    
-</div>
-<div class="clear-both"></div>
 <div>
     <h1>Shopping Cart</h1>
         <div>

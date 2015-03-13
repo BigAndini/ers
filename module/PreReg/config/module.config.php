@@ -167,10 +167,10 @@ return array(
             'order' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/order[/:action]',
+                    'route' => '/order[/:action][/:hashkey]',
                     'constraints' => array(
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
+                        'action'      => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'hashkey'     => '[A-Z0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'PreReg\Controller\Order',

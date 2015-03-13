@@ -48,6 +48,35 @@ class OrderController extends AbstractActionController {
         return $view;
     }
     
+    /**
+     * Action that allows viewing an order by the hash key
+     */
+    public function viewAction() {
+        $hashKey = $this->params()->fromRoute('hashkey', '');
+        
+        if($hashKey == '') {
+            error_log('no hashkey given');
+            return $this->notFoundAction();
+        }
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('hashKey' => $hashKey));
+        
+        if($order == null) {
+            error_log('order for hash key '.$hashKey.' not found');
+            return $this->notFoundAction();
+        }
+        
+        return new ViewModel(array(
+            'order' => $order,
+        ));
+        
+        
+    }
+    
     /*
      * collect data for the purchaser
      */
@@ -178,6 +207,24 @@ class OrderController extends AbstractActionController {
      */
     public function checkoutAction() {
         $cartContainer = new Container('cart');
+        $orderContainer = new Container('order');
+        
+        $em = $this
+                ->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        if(isset($orderContainer->order_id)) {
+            $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $orderContainer->order_id));
+            if($order) {
+                return $this->redirect()->toRoute(
+                        'order', 
+                        array(
+                            'action' => 'view',
+                            'hashkey' => $order->getHashKey(),
+                            ));
+            }
+        }
         
         $form = new Form\Checkout();
         
@@ -188,9 +235,7 @@ class OrderController extends AbstractActionController {
             $form->setData($request->getPost());
 
             # check if the session cart container has all data to finish this order
-            $em = $this
-                ->getServiceLocator()
-                ->get('Doctrine\ORM\EntityManager');
+            
             
             $purchaser = $cartContainer->order->getPurchaser();
             $user = $em->getRepository("ersEntity\Entity\User")
@@ -306,19 +351,16 @@ class OrderController extends AbstractActionController {
             $em->persist($cartContainer->order);
             $em->flush();
         
-            $session_order = new Container('order');
-            $session_order->order_id = $cartContainer->order->getId();
+            $orderContainer->order_id = $cartContainer->order->getId();
             
             $cartContainer->init = 0;
             
+            $this->sendConfirmationEmail();
             switch(strtolower($cartContainer->order->getPaymentType()->getType())) {
                 case 'banktransfer':
-                    $this->sendBankTransferEmail();
                     return $this->redirect()->toRoute('payment', array('action' => 'banktransfer'));
-                    break;
                 case 'creditcard':
                     return $this->redirect()->toRoute('payment', array('action' => 'creditcard'));
-                    break;
                 case 'paypal':
                     break;
                 default:
@@ -332,7 +374,7 @@ class OrderController extends AbstractActionController {
         ));
     }
     
-    private function sendBankTransferEmail() {
+    private function sendConfirmationEmail() {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -358,9 +400,36 @@ class OrderController extends AbstractActionController {
         
         $emailService->setHtmlMessage($html);
         #$emailService->setTextMessage('Testmail');
+        
+        $emailService->addAttachment($this->genTermsPDF());
+        
         $emailService->send();
         
         return true;
+    }
+    
+    private function genTermsPDF() {
+        $pdfView = new ViewModel();
+        $pdfView->setTemplate('pre-reg/info/terms');
+        /*$pdfView->setVariables(array(
+            'name' => $name,
+            'code' => $code,
+            'qrcode' => $base64_qrcode,
+            'barcode' => $base64_barcode,
+        ));*/
+        $pdfRenderer = $this->getServiceLocator()->get('ViewPdfRenderer');
+        $html = $pdfRenderer->getHtmlRenderer()->render($pdfView);
+        $pdfEngine = $pdfRenderer->getEngine();
+
+        $pdfEngine->load_html($html);
+        $pdfEngine->render();
+        $pdfContent = $pdfEngine->output();
+        
+        $filename = "EJC2015_Terms_and_Services.pdf";
+        $filepath = getcwd().'/tmp/'.$filename;
+        file_put_contents($filepath, $pdfContent);
+        
+        return $filepath;
     }
     
     /*

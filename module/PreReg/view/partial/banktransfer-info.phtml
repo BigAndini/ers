@@ -29,16 +29,5 @@
             <td><?php echo $order->getCode()->getValue(); ?></td>
         </tr>
     </table>
-    <div>
-        <p>We sent this information to your email address: <strong><?php echo $order->getPurchaser()->getEmail(); ?></strong></p>
-        <h3>You can request this information again</h3>
-        <p>All you need to do is:</p>
-        <ul>
-            <li><strong>Setup a password</strong> for your account with your email address <?php echo $order->getPurchaser()->getEmail(); ?>.</li>
-            <li><strong>Login</strong> to your account.</li>
-            <li>View your <strong>order detail</strong>.</li>
-            <li>View your <strong>payment detail</strong>.</li>
-        </ul>
-    </div>
     <?php endif; ?>
 </div>

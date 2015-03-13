@@ -1,9 +1,5 @@
-<?php
-
-$this->headTitle($product->getName());
-?>
+<?php $this->headTitle($product->getName()); ?>
 <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);?>"><?php echo $this->translate('back to Overview'); ?></a>
-<h1><?php echo $this->escapeHtml($product->getName()); ?></h1>
 <?php if($chooser): ?>
 <div class="p_overlay">
     <div class="p_overlay_inner">
@@ -25,94 +21,101 @@ $this->headTitle($product->getName());
     </div>
 </div>
 <?php endif; ?>
-<?php
-if(count($product->getProductPrices()) == 0):
-?>
-<p class="desc-short">This product is unavailable</p>
-<?php
-else:
-?>
+
+<?php if(count($product->getProductPrices()) == 0): ?>
+    <p class="desc-short">This product is unavailable</p>
+<?php else: ?>
 <p class="desc-short"><?php echo $product->getShortDescription(); ?></p>
 <div class="product-view">
-    <div class="row">
-        <div class="col-lg-3">
-            <img src="/img/no-available-image.png" alt="No available image" width="200">
-        </div>
-        <div class="col-lg-5">
-            <?php echo $product->getLongDescription(); ?>
-        </div>
-    </div>
     <?php
     $form = $this->form;
     $form->prepare();
-    
     $form->get('submit')->setAttribute('value', 'save changes');
 
-    echo $this->form()->openTag($form);
-    ?>
+    echo $this->form()->openTag($form); ?>
     <div class="row">
-        <div class="col-lg-5">
-            <?php if($product->getPersonalized() || count($participants) > 0) {
-                echo $this->formRow($form->get('participant_id'));
-            ?>
-            <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add person to this list</a>
-            <?php
-               #echo $this->formRow($form->get('addParticipant'));
-            }
-            $form->get('Product_id')->setAttribute('value', $product->getId());
-            echo $this->formHidden($form->get('Product_id'));
-            $prices = $product->getProductPrices();
-
-            for($i = 0; $i<$form->getVariantCounter(); $i++) {
-                echo $this->formHidden($form->get('variant_id_'.$i));
-                echo $this->formRow($form->get('variant_value_'.$i));
-                echo $this->formRow($form->get('variant_type_'.$i));
-            }
-            ?>
+        <div class="col-lg-5" style="text-align: center; margin: 20px 0;">
+            <!--<i class="fa fa-file-text-o product-icon-lg"></i>-->
+            <i class="fa fa-ticket product-icon-lg"></i>
+            <!--<img src="/img/no-available-image.png" alt="No available image" width="200">-->
         </div>
         <div class="col-lg-7">
-            <?php if($agegroup == null):
-                error_log('agegroup is null :(');
-            endif; ?>
-            <table class='table table-notbordered price-table'>
-                <?php foreach($agegroups as $ag): ?>
-                <?php $class = '';
-                if($agegroup != null && $agegroup->getId() == $ag->getId()):
-                    $class = 'product-price-active';
-                endif; ?>
-                <tr>
-                    <td>
-                        <span class="product-price<?php echo ' '.$class ?>"><?php echo $ag->getName(); ?></span>
-                    </td>
-                    <td>
-                        <span class="product-price<?php echo ' '.$class ?>"><?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-                <?php $class = '';
-                if($participant->getSessionId() == 0 || $agegroup == null):
-                    $class = 'product-price-active';
-                endif; ?>
-                <tr>
-                    <td></td>
-                    <td>
-                        <span class="product-price<?php echo ' '.$class ?>"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
-                    </td>
-                </tr>
-                
-            </table>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1><?php echo $this->escapeHtml($product->getName()); ?></h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <p class="desc-short"><?php echo $product->getShortDescription(); ?></p>
+                    <?php echo $product->getLongDescription(); ?>
+                </div>
+                <div class="col-lg-6">
+                    <p class="small text-right">prices do include <?php echo $product->getTax()->getName() ?> VAT</p>
+                    <dl class="dl-horizontal">
+                        <?php foreach($agegroups as $ag): ?>
+                        <?php $class = '';
+                        if($agegroup != null && $agegroup->getId() == $ag->getId()):
+                            $class = 'product-price-active';
+                        endif; ?>
+                        <dt class="product-price<?php echo ' '.$class ?>">
+                            <?php echo $ag->getName(); ?>
+                        </dt>
+                        <dd class="product-price<?php echo ' '.$class ?>">
+                            <?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?>
+                        </dd>
+                        <?php endforeach; ?>
+                        <?php $class = '';
+                        if($participant->getSessionId() == 0 || $agegroup == null):
+                            $class = 'product-price-active';
+                        endif; ?>
+                        <dt class="product-price<?php echo ' '.$class ?>">normal</dt>
+                        <dd class="product-price<?php echo ' '.$class ?>">
+                            <?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?>
+                        </dd>
+                    </dl>
+                    <p class="text-right">
+                        <?php echo $this->formSubmit($form->get('submit')); ?>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <?php if($product->getPersonalized() || count($participants) > 0):
+                        echo $this->formRow($form->get('participant_id')); ?>
+                        <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add person to this list</a>
+                        <?php if($form->get('submit')->getAttribute('disabled') == 'disabled'): ?>
+                            <div class="alert alert-warning">
+                                <h4>Please choose a person</h4>
+                                <p>This is a personalized ticket. You have to enter the person who will use the ticket for the event.</p>
+                                <div class="clear-both"></div>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php $form->get('Product_id')->setAttribute('value', $product->getId());
+                    echo $this->formHidden($form->get('Product_id'));
+                    $prices = $product->getProductPrices();
+
+                    for($i = 0; $i<$form->getVariantCounter(); $i++) {
+                        echo $this->formHidden($form->get('variant_id_'.$i));
+                        echo $this->formRow($form->get('variant_value_'.$i));
+                        echo $this->formRow($form->get('variant_type_'.$i));
+                    }
+                    ?>
+                </div>
+                <div class="col-lg-6">
+                    <?php if(count($product->getChildProducts()) > 0): ?>
+                    <h3>Included Items:</h3>
+                    <?php foreach($product->getChildProducts() as $package): 
+                        $child = $package->getSubProduct(); ?>
+                        <h4><?php echo $child->getName(); ?></h4>
+                    <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row text-right">
-        <div class="col-sm-12">
-            <?php echo $this->formSubmit($form->get('submit')); ?>
-            <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
-        </div>
-    </div>
-    <?php
-    echo $this->form()->closeTag();
-    ?>
+    <?php echo $this->form()->closeTag(); ?>
 </div>
-<?php
-endif;
-?>
+<?php endif; ?>

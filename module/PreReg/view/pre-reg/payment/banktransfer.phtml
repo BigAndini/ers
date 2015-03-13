@@ -5,3 +5,15 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
+<div>
+    <p>We sent this information to your email address: <strong><?php echo $order->getPurchaser()->getEmail(); ?></strong></p>
+    <h3>You can request this information again</h3>
+    <p>1. by clicking the link in your email</p>
+    <p>2. by logging in to your account:</p>
+    <ul>
+        <li><strong><a href="#">Setup a password</a></strong> for your account with your email address <?php echo $order->getPurchaser()->getEmail(); ?>.</li>
+        <li><strong><a href="<?php echo $this->url('zfcuser/login'); ?>">Login</a></strong> to your account.</li>
+        <li>View your <strong>order detail</strong>.</li>
+        <li>View your <strong>payment detail</strong>.</li>
+    </ul>
+</div>

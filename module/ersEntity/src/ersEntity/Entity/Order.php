@@ -32,6 +32,13 @@ class Order implements InputFilterAwareInterface
      * @var InputFilter
      */
     private $inputFilter;
+    
+    /**
+     * define length of hashKey
+     * 
+     * @var length
+     */
+    private $length = 30;
 
     /**
      * @ORM\Id
@@ -54,6 +61,11 @@ class Order implements InputFilterAwareInterface
      * @ORM\Column(type="string", length=45, nullable=true)
      */
     protected $matchKey;
+    
+    /**
+     * @ORM\Column(type="string", length=45)
+     */
+    protected $hashKey;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -115,6 +127,8 @@ class Order implements InputFilterAwareInterface
         $this->matches = new ArrayCollection();
         $this->packages = new ArrayCollection();
         
+        $this->genHash();
+        
         $package = new Package();
         $unassigned = new User();
         $unassigned->setSessionId(0);
@@ -122,6 +136,59 @@ class Order implements InputFilterAwareInterface
         $package->setParticipant($unassigned);
 
         $this->addPackage($package);
+    }
+    
+    /**
+     * Generate hashKey
+     */
+    private function genHash() {
+        $alphabet = "0123456789ACDFGHKMNPRUVWXY";
+        $memory = '';
+        $n = '';
+        #srand(mktime()); 
+        srand(rand()*mktime());
+        for ($i = 0; $i < $this->length; $i++) {
+            
+            while($n == '' || $memory == $alphabet[$n]) {
+                $n = rand(0, strlen($alphabet)-1);
+            }
+            $memory = $alphabet[$n];
+            $code[$i] = $alphabet[$n];
+        }
+        
+        $this->setHashKey(implode($code).$this->genChecksum(implode($code)));
+    }
+    
+    /**
+     * generate a two digits Checksum for a Code
+     * 
+     * @param type $code
+     * @return type
+     */
+    private function genChecksum($code) {
+        $chars = str_split($code);
+        $nums = array();
+        foreach($chars as $char) {
+            $nums[] = ord($char);
+        }
+        $cross_sum = array_sum($nums);
+        $checksum = $cross_sum % 100;
+        return sprintf('%02d', $checksum);
+    }
+    
+    /**
+     * Check if hashKey checksum is valid
+     * 
+     * @return boolean
+     */
+    public function checkHashKey() {
+        $checksum = substr($this->getHashKey(),$this->length);
+        $code = substr($this->getHashKey(),0,$this->length);
+        if($this->genChecksum($code) == $checksum) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     /**
@@ -234,6 +301,29 @@ class Order implements InputFilterAwareInterface
         return $this->matchKey;
     }
 
+    /**
+     * Set the value of hashKey.
+     *
+     * @param string $hashKey
+     * @return \Entity\Order
+     */
+    public function setHashKey($hashKey)
+    {
+        $this->hashKey = $hashKey;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of hashKey.
+     *
+     * @return string
+     */
+    public function getHashKey()
+    {
+        return $this->hashKey;
+    }
+    
     /**
      * Set the value of invoiceDetail.
      *
@@ -824,7 +914,7 @@ class Order implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'invoiceDetail', 'updated', 'created', 'Code_id');
+        $dataFields = array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'hashKey', 'invoiceDetail', 'updated', 'created', 'Code_id');
         $relationFields = array('user', 'paymentType', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -857,6 +947,6 @@ class Order implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'invoiceDetail', 'packages', 'updated', 'created', 'Code_id');
+        return array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'hashKey', 'invoiceDetail', 'packages', 'updated', 'created', 'Code_id');
     }
 }

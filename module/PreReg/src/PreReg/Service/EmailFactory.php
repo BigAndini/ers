@@ -120,10 +120,14 @@ class EmailFactory
         if($attachment instanceof Mime\Part) {
             $this->attachments[] = $attachment;
         } else {
-            $pathToAtt = getcwd() . '/' . $attachment;
-            if(!file_exists($pathToAtt)) {
-                throw new \Exception("Unable to add attachment");
+            $pathToAtt = $attachment;
+            if(!file_exists($attachment)) {
+                $pathToAtt = getcwd() . '/' . $attachment;
+                if(!file_exists($pathToAtt)) {
+                    throw new \Exception("Unable to add attachment");
+                }
             }
+            
             $att = new Mime\Part(fopen($pathToAtt, 'r'));
             #$attachment->type = 'image/jpeg';
             $att->type = \mime_content_type($pathToAtt);

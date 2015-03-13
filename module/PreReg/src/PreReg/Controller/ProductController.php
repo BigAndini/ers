@@ -150,9 +150,6 @@ class ProductController extends AbstractActionController {
         }
         
         $options = array();
-        if(!$product->getPersonalized()) {
-            $options[0] = 'do not assign this product';
-        }
         foreach($cartContainer->order->getParticipants() as $k => $v) {
             $disabled = false;
             if($v->getFirstname() == '') {
@@ -174,6 +171,9 @@ class ProductController extends AbstractActionController {
                 'selected' => $selected,
                 'disabled' => $disabled,
             );
+        }
+        if(!$product->getPersonalized() && count($options) > 0) {
+            $options[0] = 'do not assign this product';
         }
         
         if(count($options) <= 0 && $product->getPersonalized()) {
@@ -201,7 +201,7 @@ class ProductController extends AbstractActionController {
         $deadline = $deadlineService->getDeadline();
         
         return new ViewModel(array(
-            #'participants' => $options,
+            'participants' => $options,
             'product' => $product,
             'participant' => $participant,
             'item' => $item,
@@ -231,7 +231,7 @@ class ProductController extends AbstractActionController {
     public function deleteAction() {
         $forrest = new Service\BreadcrumbFactory();
         
-        if($forrest->exists('product')) {
+        if(!$forrest->exists('product')) {
             $forrest->set('product', 'order');
         }
         
