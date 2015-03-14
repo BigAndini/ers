@@ -254,10 +254,10 @@ return array(
             'profile' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route'    => '/profile[/][:action][/:id]',
+                    'route'    => '/profile[/][:action][/:hashkey]',
                     'constraints' => array(
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
+                        'action'   => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'hashkey'  => '[A-Z0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'PreReg\Controller\Profile',

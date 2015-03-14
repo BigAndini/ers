@@ -36,6 +36,13 @@ class User implements UserInterface, ProviderInterface
     private $inputFilter;
     
     /**
+     * Length of hashKey
+     * 
+     * @var length
+     */
+    private $length = 30;
+    
+    /**
      * @var int
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -90,6 +97,12 @@ class User implements UserInterface, ProviderInterface
      */
     protected $password;
 
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=45, nullable=true)
+     */
+    protected $hashKey;
+    
     /**
      * @var int
      */
@@ -402,6 +415,49 @@ class User implements UserInterface, ProviderInterface
         $this->password = $password;
     }
 
+    /**
+     * Get hashKey.
+     *
+     * @return string
+     */
+    public function getHashKey()
+    {
+        return $this->hashKey;
+    }
+    
+    /**
+     * Generate hashKey
+     */
+    public function genHashKey() {
+        $alphabet = "0123456789ACDFGHKMNPRUVWXY";
+        $memory = '';
+        $n = '';
+        #srand(mktime()); 
+        srand(rand()*mktime());
+        for ($i = 0; $i < $this->length; $i++) {
+            
+            while($n == '' || $memory == $alphabet[$n]) {
+                $n = rand(0, strlen($alphabet)-1);
+            }
+            $memory = $alphabet[$n];
+            $code[$i] = $alphabet[$n];
+        }
+        
+        $this->setHashKey(implode($code));
+    }
+
+    /**
+     * Set hashKey.
+     *
+     * @param string $hashKey
+     *
+     * @return void
+     */
+    public function setHashKey($hashKey)
+    {
+        $this->hashKey = $hashKey;
+    }
+    
     /**
      * Get state.
      *
@@ -847,7 +903,7 @@ class User implements UserInterface, ProviderInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'state', 'firstname', 'surname', 'Country_id', 'active', 'birthday', 'updated', 'created');
+        $dataFields = array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'hashKey', 'state', 'firstname', 'surname', 'Country_id', 'active', 'birthday', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -880,6 +936,6 @@ class User implements UserInterface, ProviderInterface
 
     public function __sleep()
     {
-        return array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'state', 'firstname', 'surname', 'Country_id', 'active', 'birthday', 'updated', 'created');
+        return array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'hashKey', 'state', 'firstname', 'surname', 'Country_id', 'active', 'birthday', 'updated', 'created');
     }
 }

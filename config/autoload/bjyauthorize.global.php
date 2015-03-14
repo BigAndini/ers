@@ -157,6 +157,8 @@ return [
                 ['controller' => 'zfcuser',                         'roles' => ['user']],
                 
                 /* Profile */
+                ['controller' => 'PreReg\Controller\Profile', 'action' => 'request-password', 'roles' => ['guest']],
+                ['controller' => 'PreReg\Controller\Profile', 'action' => 'password-reset',   'roles' => ['guest']],
                 ['controller' => 'PreReg\Controller\Profile', 'roles' => ['user']],
                 
                 /* Admin */
