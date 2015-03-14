@@ -196,6 +196,11 @@ class ProfileController extends AbstractActionController {
             return $this->redirect()->toRoute('zfcuser/login');
         }
         
+        $now = new \DateTime();
+        if(($user->getUpdated()->getTimestamp()+7200) <= $now->getTimestamp()) {
+            return $this->redirect()->toRoute('zfcuser/login');
+        }
+        
         $inputFilter = new InputFilter\ResetPassword();
         $form->setInputFilter($inputFilter->getInputFilter());
         $request = $this->getRequest();
