@@ -65,35 +65,27 @@ class PaymentController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")->findOneBy(array('id' => $session_order->order_id));
         
-        $trxuser_id = '99999';
+        $config = $this->getServiceLocator()->get('Config');
+        
+        $trxuser_id     = $config['ERS\iPayment']['trxuser_id'];
+        $trx_currency   = $config['ERS\iPayment']['trx_currency'];
+        $trxpassword    = $config['ERS\iPayment']['trxpassword'];
+        $sec_key        = $config['ERS\iPayment']['sec_key'];
+        $tmp_action     = $config['ERS\iPayment']['action'];
+        $action = preg_replace('/%trxuser_id%/', $trxuser_id, $tmp_action);
+        
+        #$trxuser_id = '99999';
+        #$trx_currency = 'EUR';
+        #$trxpassword = '0';
+        #$sec_key = 'ohPinei6chahnahcoesh';
+        
         $trx_amount = $order->getSum()*100; # amount in cents
-        $trx_currency = 'EUR';
-        $trxpassword = '0';
-        $sec_key = 'ohPinei6chahnahcoesh';
         
+        #$form = new Form\CreditCard();
+        $form = $this->getServiceLocator()->get('PreReg\Form\CreditCard');
         
-        $form = new Form\CreditCard();
-        
-        $form->setAttribute('action', 'https://ipayment.de/merchant/'.$trxuser_id.'/processor/2.0/');
-        
-        $years = array();
-        for($i=date('Y'); $i<=(date('Y')+15); $i++) {
-            #$years[$i] = $i;
-            $years[] = array(
-                'value' => $i,
-                'label' => $i,
-            );
-        }
-        $form->get('cc_expdate_year')->setAttribute('options', $years);
-        
-        $months = array();
-        for($i=1; $i<=12; $i++) {
-            $months[] = array(
-                'value' => $i,
-                'label' => sprintf('%02d', $i),
-            );
-        }
-        $form->get('cc_expdate_month')->setAttribute('options', $months);
+        #$form->setAttribute('action', 'https://ipayment.de/merchant/'.$trxuser_id.'/processor/2.0/');
+        $form->setAttribute('action', $action);
         
         $form->get('silent_error_url')->setValue(
                 $this->url()->fromRoute(

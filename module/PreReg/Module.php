@@ -170,6 +170,29 @@ class Module
                     $productView->setServiceLocator($sm);
                     return $productView;
                 },
+                'PreReg\Form\CreditCard' => function ($sm) {
+                    $form = new Form\CreditCard();
+                    
+                    $years = array();
+                    for($i=date('Y'); $i<=(date('Y')+15); $i++) {
+                        $years[] = array(
+                            'value' => $i,
+                            'label' => $i,
+                        );
+                    }
+                    $form->get('cc_expdate_year')->setAttribute('options', $years);
+
+                    $months = array();
+                    for($i=1; $i<=12; $i++) {
+                        $months[] = array(
+                            'value' => $i,
+                            'label' => sprintf('%02d', $i),
+                        );
+                    }
+                    $form->get('cc_expdate_month')->setAttribute('options', $months);
+                    
+                    return $form;
+                },
             ),
         );
     }
