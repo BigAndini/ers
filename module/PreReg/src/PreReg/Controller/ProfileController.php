@@ -207,14 +207,11 @@ class ProfileController extends AbstractActionController {
                 $data = $form->getData();
 
                 $bcrypt = new Bcrypt();
-                $bcrypt->setCost(14); // Needs to match password cost in ZfcUser options. Or better yet just pull that config setting.
+                #$bcrypt->setCost(14); // Needs to match password cost in ZfcUser options. Or better yet just pull that config setting.
+                $config = $this->getServiceLocator()->get('Config');
+                $bcrypt->setCost($config['zfcuser']['password_cost']);
                 $password = $bcrypt->create($data['newPassword']);
                 $user->setPassword($password);
-                if($bcrypt->verify($data['newPassword'], $user->getPassword())) {
-                    $logger->info('verification successful');
-                } else {
-                    $logger->info('verification failed');
-                }
                 $user->setHashKey(null);
                 $em->persist($user);
                 $em->flush();
