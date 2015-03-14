@@ -184,6 +184,13 @@ class Participant implements InputFilterAwareInterface
                                 \Zend\Validator\Callback::INVALID_VALUE => 'There is already a person with this email address in your order',
                             ),
                             'callback' => function($value, $context=array()) {
+                                if(
+                                    isset($context['session_id']) && 
+                                    is_numeric($context['session_id']) && 
+                                    $context['session_id'] != 0
+                                ) {
+                                    return true;
+                                }
                                 $cartContainer = new Container('cart');
                                 $participants = $cartContainer->order->getParticipants();
                                 foreach($participants as $participant) {

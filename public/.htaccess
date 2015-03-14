@@ -1,5 +1,15 @@
 RewriteEngine On
 
+#
+# Maintenance
+#
+#RewriteCond %{REQUEST_URI} !^/maintenance/?
+#RewriteCond %{REQUEST_URI} !^/css/?
+#RewriteCond %{REQUEST_URI} !^/img/?
+#RewriteCond %{REMOTE_ADDR} !^127\.0\.0\.1$
+#RewriteRule .* maintenance [R=302]
+
+
 # The following rule tells Apache that if the requested filename
 # exists, simply serve it.
 RewriteCond %{REQUEST_FILENAME} -s [OR]
