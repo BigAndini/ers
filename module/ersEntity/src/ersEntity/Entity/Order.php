@@ -568,7 +568,6 @@ class Order implements InputFilterAwareInterface
      * @return false
      */
     public function getItem($participant_id, $item_id) {
-        error_log('searching for item, participant_id: '.$participant_id.' item_id: '.$item_id);
         $package = $this->getPackageByParticipantSessionId($participant_id);
         if($package) {
             return $package->getItemBySessionId($item_id);    

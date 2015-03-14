@@ -26,6 +26,10 @@ use Zend\Mime;
 
 class TestController extends AbstractActionController {    
     public function barcodetestAction() {
+        $logger = $this
+            ->getServiceLocator()
+            ->get('Logger');
+        
         $start = microtime(true);
         
         $em = $this
@@ -42,8 +46,8 @@ class TestController extends AbstractActionController {
             $code = $em->getRepository("ersEntity\Entity\Code")->findOneBy(array('value' => $code->getValue()));
             #if(in_array($code->getValue(), $codes)) {
             if($code) {
-                error_log('found existing code after '.$count.' tries.');
-                error_log('time spend: '.(microtime(true)-$start));
+                $logger->info('found existing code after '.$count.' tries.');
+                $logger->info('time spend: '.(microtime(true)-$start));
                 $found++;
                 return new ViewModel();                    
                 if($found >= 5) {
@@ -51,18 +55,18 @@ class TestController extends AbstractActionController {
                 }
             }
             if(!$code->checkCode()) {
-                error_log('BARCODE IS NOT VALID');
-                error_log('time spend: '.(microtime(true)-$start));
+                $logger->info('BARCODE IS NOT VALID');
+                $logger->info('time spend: '.(microtime(true)-$start));
                 return new ViewModel();
             }
             #$codes[] = $code->getValue();
-            #error_log('added code: '.$code->getValue().' '.(microtime(true)-$start));
+            #$logger->info('added code: '.$code->getValue().' '.(microtime(true)-$start));
             $em->persist($code);
             $em->flush();
             
             $count++;
             if(($count%1000) == 0) {
-                error_log('time spend: '.(microtime(true)-$start));
+                $logger->info('time spend: '.(microtime(true)-$start));
             }
         }
         
@@ -264,6 +268,10 @@ class TestController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
+        /*$logger = $this
+            ->getServiceLocator()
+            ->get('Logger');*/
+        
         $order = $em->getRepository("ersEntity\Entity\Order")
                     ->findOneBy(array('id' => '17'));
         $viewModel = new ViewModel(array(
@@ -274,7 +282,7 @@ class TestController extends AbstractActionController {
         $viewRender = $this->getServiceLocator()->get('ViewRenderer');
         $html = $viewRender->render($viewModel);
         
-        #error_log('html: '.$html);
+        #$logger->info('html: '.$html);
         
         $emailService = new Service\EmailFactory();
         #$emailService->setFrom('prereg@eja.net');

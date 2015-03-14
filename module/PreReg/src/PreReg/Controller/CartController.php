@@ -40,6 +40,10 @@ class CartController extends AbstractActionController {
      * add Item to cart
      */
     public function addAction() {
+        $logger = $this
+            ->getServiceLocator()
+            ->get('Logger');
+        
         $param_participant_id = (int) $this->params()->fromRoute('participant_id', 0);
         $param_item_id = (int) $this->params()->fromRoute('item_id', 0);
         /*if (!$participant_id) {
@@ -61,7 +65,7 @@ class CartController extends AbstractActionController {
             $cartContainer = new Container('cart');
             $package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
             if($package->hasPersonalizedItem()) {
-                error_log('Package for participant '.$participant_id.' already has a personalized item. What should I do?');
+                $logger->warn('Package for participant '.$participant_id.' already has a personalized item. What should I do?');
             }
             
             $item = new Entity\Item();
@@ -98,17 +102,17 @@ class CartController extends AbstractActionController {
             
             for($i=0; $i < count($product->getProductVariants()); $i++) {
                 if(!isset($data['variant_id_'.$i])) {
-                    error_log('unable to find variant_id_'.$i.' in POST data.');
+                    $logger->notice('unable to find variant_id_'.$i.' in POST data.');
                     continue;
                 }
                 if(!isset($data['variant_value_'.$i])) {
-                    error_log('unable to find variant_value_'.$i.' in POST data.');
+                    $logger->notice('unable to find variant_value_'.$i.' in POST data.');
                     continue;
                 }
-                error_log('variant_id_'.$i.': '.$data['variant_id_'.$i]);
+                $logger->info('variant_id_'.$i.': '.$data['variant_id_'.$i]);
                 $variant = $em->getRepository("ersEntity\Entity\ProductVariant")
                     ->findOneBy(array('id' => $data['variant_id_'.$i]));
-                error_log('variant_value_'.$i.': '.$data['variant_value_'.$i]);
+                $logger->info('variant_value_'.$i.': '.$data['variant_value_'.$i]);
                 $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
                     ->findOneBy(array('id' => $data['variant_value_'.$i]));
                 if($value) {
@@ -120,7 +124,6 @@ class CartController extends AbstractActionController {
             
             if(isset($cartContainer->editItem) && $cartContainer->editItem instanceof Entity\Item) {
                 $package = $cartContainer->order->findPackageByItem($cartContainer->editItem);
-                error_log($package->getSessionId().' ... '.$cartContainer->editItem->getSessionId());
                 $cartContainer->order->removeItem($package->getSessionId(), $cartContainer->editItem->getSessionId());
                 unset($cartContainer->editItem);
             }

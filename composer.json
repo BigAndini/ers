@@ -26,6 +26,7 @@
         "dino/dompdf-module": "dev-master",
         "adminweb/qrcode-zf2-module": "0.0.10",
         "satsume/ckeditor-module": "dev-master",
-        "dudapiotr/zftable": "3.*"
+        "dudapiotr/zftable": "3.*",
+        "eddiejaoude/zf2-logger" : "0.*"
     }
 }

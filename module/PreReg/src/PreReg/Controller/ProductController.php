@@ -112,7 +112,7 @@ class ProductController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $product_id));
         
-        $form = new Form\ProductView();
+        $form = $this->getServiceLocator()->get('PreReg\Form\ProductView');
 
         if(isset($participant_id) && is_numeric($participant_id) && $item_id) {
             $url = $this->url()->fromRoute('cart', 
@@ -196,7 +196,7 @@ class ProductController extends AbstractActionController {
         $cartContainer->chooser = false;
 
         $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
-                    ->findBy(array(), array('agegroup' => 'DESC'));
+                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
         
         $agegroupService = new Service\AgegroupService();
         $agegroupService->setAgegroups($agegroups);

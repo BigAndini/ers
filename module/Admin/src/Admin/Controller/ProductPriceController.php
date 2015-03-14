@@ -59,7 +59,7 @@ class ProductPriceController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
-                ->findBy(array(), array('deadline' => 'ASC'));
+                ->findBy(array('priceChange' => '1'), array('deadline' => 'ASC'));
         $options = array();
         foreach($deadlines as $deadline) {
             $selected = false;
@@ -95,7 +95,7 @@ class ProductPriceController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
-                ->findBy(array(), array('agegroup' => 'ASC'));
+                ->findBy(array('priceChange' => '1'), array('agegroup' => 'ASC'));
         $options = array();
         foreach($agegroups as $agegroup) {
             $selected = false;
@@ -181,11 +181,18 @@ class ProductPriceController extends AbstractActionController {
                 $breadcrumb = $forrest->get('product-price');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
         
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
+        
+        if(!$forrest->exists('product-price')) {
+            $forrest->set('product-price', 'admin/product');
+        }
         
         return new ViewModel(array(
             'product' => $product,

@@ -165,6 +165,11 @@ class Module
                     Container::setDefaultManager($sessionManager);
                     return $sessionManager;
                 },
+                'PreReg\Form\ProductView' => function ($sm) {
+                    $productView = new Form\ProductView();
+                    $productView->setServiceLocator($sm);
+                    return $productView;
+                },
             ),
         );
     }

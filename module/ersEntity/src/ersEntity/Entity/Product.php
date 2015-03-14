@@ -796,49 +796,46 @@ class Product implements InputFilterAwareInterface
      * @return type
      */
     public function getProductPrice(Agegroup $agegroup = null, Deadline $deadline = null, $search = true) {
-        #error_log('--- start searching price ---');
         $ret = new ProductPrice();
+        if($agegroup != null) {
+            error_log('searching for agegroup: '.$agegroup->getAgegroup()->format('d.m.Y H:i:s'));
+        }
         foreach($this->getProductPrices() as $price) {
             /* 
              * if a agegroup is given but price has none
              */
             if($price->getAgegroup() == null && $agegroup != null) {
-                #error_log('Agegroup is null param is '.$agegroup->getId().': '.$price->getCharge());
                 continue;
             }
             /* 
              * if a deadline is given but price has none
              */
             if($price->getDeadline() == null && $deadline != null) {
-                #error_log('Deadline is null param is '.$deadline->getId().': '.$price->getCharge());
                 continue;
             }
             /*
              * if no agegroup is given but price has one
              */
             if($price->getAgegroup() != null && $agegroup == null) {
-                #error_log('param is null Agegroup is '.$price->getAgegroup()->getId().': '.$price->getCharge());
                 continue;
             }
             /*
              * if no deadline is given but price has one
              */
             if($price->getDeadline() != null && $deadline == null) {
-                #error_log('param is null Deadline is '.$price->getDeadline()->getId().': '.$price->getCharge());
                 continue;
             }
             /*
              * if agegroup does not match
              */
             if($price->getAgegroup() != null && $agegroup != null && $price->getAgegroup()->getId() != $agegroup->getId()) {
-                #error_log('Agegroup ids do not match : ('.$agegroup->getId().' != '.$price->getAgegroup()->getId().') '.$price->getCharge());
+                error_log('checking agegroup: '.$price->getAgegroup()->getId().' != '.$agegroup->getId());
                 continue;
             }
             /*
              * if deadline does not match
              */
             if($price->getDeadline() != null && $deadline != null && $price->getDeadline()->getId() != $deadline->getId()) {
-                #error_log('Deadline ids do not match : ('.$deadline->getId().' != '.$price->getDeadline()->getId().') '.$price->getCharge());
                 continue;
             }
             
@@ -846,7 +843,6 @@ class Product implements InputFilterAwareInterface
              * at this point we should only have the prices we want, take the highest one.
              */
             if($ret->getCharge() < $price->getCharge()) {
-                #error_log('found price: '.$price->getCharge());
                 $ret = $price;
             }
         }
@@ -855,10 +851,8 @@ class Product implements InputFilterAwareInterface
             /*
              * start searching only by agegroup
              */
-            #error_log('==> start searching only by agegroup');
             $ret = $this->getProductPrice($agegroup, null, false);
             if($ret->getCharge() == null) {
-                #error_log('==> start searching without params');
                 $ret = $this->getProductPrice(null, null, false);
             }
         }

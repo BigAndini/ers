@@ -61,7 +61,10 @@ class ProductController extends AbstractActionController {
 
                 return $this->redirect()->toRoute('admin/product');
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
         
@@ -181,7 +184,10 @@ class ProductController extends AbstractActionController {
                 $breadcrumb = $forrest->get('product');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
 

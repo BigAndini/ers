@@ -395,6 +395,7 @@ return array(
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',
+            'Logger'     => 'EddieJaoude\Zf2Logger',
         ),
     ),
     'translator' => array(

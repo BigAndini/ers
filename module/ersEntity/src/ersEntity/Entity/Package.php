@@ -361,7 +361,6 @@ class Package implements InputFilterAwareInterface
      */
     public function getItemBySessionId($id) {
         foreach($this->getItems() as $item) {
-            error_log('session_id: '.$item->getSessionId());
             if($item->getSessionId() == $id) {
                 return $item;
             }
@@ -376,13 +375,11 @@ class Package implements InputFilterAwareInterface
      * @return boolean
      */
     public function existItem(Item $item) {
-        error_log('existItem: found '.count($this->getItems()).' items');
         $key = array_search($item, $this->getItems()->toArray(), true);
 
         if ($key !== false) {
             return true;
         }
-        error_log('item was not the searched one: '.$item->getName());
         return false;
     }
     

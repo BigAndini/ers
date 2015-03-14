@@ -8,6 +8,13 @@
 
 return array(
     
+    'service_manager' => array(
+        'aliases' => array(
+            'translator' => 'MvcTranslator',
+            'Logger'     => 'EddieJaoude\Zf2Logger',
+        ),
+    ),
+    
     'translator' => array(
         'locale' => 'en_US',
         'translation_file_patterns' => array(

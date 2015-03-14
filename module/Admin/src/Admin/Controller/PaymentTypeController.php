@@ -97,7 +97,10 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
 
@@ -165,7 +168,10 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
 
@@ -198,7 +204,10 @@ class PaymentTypeController extends AbstractActionController {
 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
         
@@ -300,7 +309,10 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
 
@@ -403,7 +415,10 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
 

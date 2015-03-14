@@ -67,7 +67,10 @@ class ProductVariantController extends AbstractActionController
                         $breadcrumb->options
                         );
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
         

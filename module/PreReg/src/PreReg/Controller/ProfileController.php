@@ -67,7 +67,10 @@ class ProfileController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('profile');
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             } 
         }
         
@@ -81,6 +84,10 @@ class ProfileController extends AbstractActionController {
             return $this->redirect()->toRoute('zfcuser/login');
         }
         
+        $logger = $this
+            ->getServiceLocator()
+            ->get('Logger');
+        
         $formClass = $this->getServiceLocator()->get('zfcuser_user_service')->getChangePasswordForm();
         $form = new $formClass('ChangePassword', $this->getServiceLocator()->get('zfcuser_module_options'));
         
@@ -93,12 +100,15 @@ class ProfileController extends AbstractActionController {
                 $change = $this->getServiceLocator()->get('zfcuser_user_service')
                         ->changePassword($form->getData());
                 if(!$change) {
-                    error_log('Unable to change password');
+                    $logger->warning('Unable to change password');
                 }
                 
                 return $this->redirect()->toRoute('profile');
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             } 
         }
         

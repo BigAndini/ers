@@ -55,7 +55,6 @@ class OrderController extends AbstractActionController {
         $hashKey = $this->params()->fromRoute('hashkey', '');
         
         if($hashKey == '') {
-            error_log('no hashkey given');
             return $this->notFoundAction();
         }
         
@@ -66,15 +65,16 @@ class OrderController extends AbstractActionController {
                 ->findOneBy(array('hashKey' => $hashKey));
         
         if($order == null) {
-            error_log('order for hash key '.$hashKey.' not found');
+            $logger = $this
+                ->getServiceLocator()
+                ->get('Logger');
+            $logger->info('order for hash key '.$hashKey.' not found');
             return $this->notFoundAction();
         }
         
         return new ViewModel(array(
             'order' => $order,
         ));
-        
-        
     }
     
     /*
@@ -119,11 +119,6 @@ class OrderController extends AbstractActionController {
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                foreach($cartContainer->order->getParticipants() as $participant) {
-                    error_log($participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getSessionId().')');
-                }
-                error_log('purchaser id: '.$data['purchaser_id']);
-                
                 $purchaser = $cartContainer->order->getParticipantBySessionId($data['purchaser_id']);
                         
                 # add purchser to order
@@ -131,7 +126,10 @@ class OrderController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('order', array('action' => 'payment'));
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
        
@@ -206,7 +204,10 @@ class OrderController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('order', array('action' => 'checkout'));
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
         

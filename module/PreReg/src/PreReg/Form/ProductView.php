@@ -13,6 +13,19 @@ use ersEntity\Entity;
 
 class ProductView extends Form
 {
+    protected $sl;
+    
+    public function setServiceLocator($sl) {
+        $this->sl = $sl;
+    }
+    
+    public function getServiceLocator() {
+        if(!isset($this->sl)) {
+            throw new \Exception('Unable to find ServiceLocator');
+        }
+        return $this->sl;
+    }
+    
     public function __construct($name = null)
     {
         
@@ -78,7 +91,10 @@ class ProductView extends Form
                     $variant_add++;
                 }
             } else {
-                error_log(get_class().': object is of class '.get_class($v));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn(get_class().': object is of class '.get_class($v));
             }
         }
         $this->addVariants($defaults);
@@ -89,6 +105,10 @@ class ProductView extends Form
     }
     
     private function addVariants($defaults=array()) {
+        $logger = $this
+            ->getServiceLocator()
+            ->get('Logger');
+        $logger->warn('check logger');
         $this->variantCounter = 0;
         foreach($this->variants as $variant) {
             /* Example array
@@ -175,7 +195,10 @@ class ProductView extends Form
                         );
                     break;
                 default:
-                    error_log(get_class().': Don\'t know what to do with type '.$variant->getType());
+                    $logger = $this
+                        ->getServiceLocator()
+                        ->get('Logger');
+                    $logger->warn(get_class().': Don\'t know what to do with type '.$variant->getType());
                     break;
             }
             

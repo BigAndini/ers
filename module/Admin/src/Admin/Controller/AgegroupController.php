@@ -50,7 +50,10 @@ class AgegroupController extends AbstractActionController {
 
                 return $this->redirect()->toRoute('admin/agegroup');
             } else {
-                error_log(var_export($form->getMessages(), true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
         

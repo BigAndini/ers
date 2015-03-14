@@ -50,7 +50,10 @@ class TestController extends AbstractActionController {
         }
         $handle = fopen( $filename, "w" );
         if(!$handle) {
-            error_log('unable to open file '.$filename);
+            $logger = $this
+                ->getServiceLocator()
+                ->get('Logger');
+            $logger->warn('unable to open file '.$filename);
             exit();
         }
         foreach ($finalData as $finalRow) {

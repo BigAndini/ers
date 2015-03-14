@@ -73,7 +73,10 @@ class ProductVariantValueController extends AbstractActionController
                 $breadcrumb = $forrest->get('product-variant-value');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                error_log(var_export($form->getMessages(),true));
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
         

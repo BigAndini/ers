@@ -23,6 +23,10 @@ $ git clone https://github.com/inbaz/ers
 
 We tested on PHP 5.5, maybe 5.4 is working aswell, 5.3 doesn't
 
+PHP modules needed:
+- gd
+- fileinfo
+
 ### 3. Create a mysql database and user
 
 ```

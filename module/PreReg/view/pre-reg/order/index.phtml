@@ -65,12 +65,14 @@ echo $this->navigation()
                             <td>
                                 <span class="product-name"><?php echo $item->getName(); ?></span>
                                 <span class="product-variants">
-                                    <?php if(count($item->getItemVariants()) > 0): ?>
+                                    <?php 
+                                    $variants = array();
+                                    if(count($item->getItemVariants()) > 0): 
+                                    ?>
                                     (
                                     <?php 
                                     $numVariants = count($item->getItemVariants()); 
                                     $i = 0;
-                                    $variants = array();
                                     ?>
                                     <?php foreach($item->getItemVariants() as $variant): 
                                         echo $variant->getName().': '.$variant->getValue(); 
