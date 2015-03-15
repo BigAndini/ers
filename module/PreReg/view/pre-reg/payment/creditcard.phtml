@@ -1,17 +1,30 @@
 <?php
+$form = $this->form;
+$form->prepare();
+$trx_amount = $form->get('trx_amount')->getValue();
 
-$title = 'Pay by Credit Card';
-$this->headTitle($title);
-?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
-<div>
-    <h4>Amount: <?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></h4>
-    <?php
-    $form = $this->form;
-    $form->prepare();
-    
-    echo $this->form()->openTag($form);
-    echo $this->formCollection($form);
-    echo $this->form()->closeTag();
-?>
-</div>
+if($order == null || $trx_amount == 0): 
+    $title = 'Order not found';
+    $this->headTitle($title);
+    ?>
+    <div class='jumbotron'>
+        <h1><?php echo $this->escapeHtml($title); ?></h1>
+        <p>Your order could not be found. Please recheck the link you've used.</p>
+        <p>If there are any problems conntact us at <a href='mailto:prereg@eja.net'>prereg@eja.net</a></p>
+    </div>
+<?php else:
+    $title = 'Pay by Credit Card';
+    $this->headTitle($title);
+    ?>
+    <h1><?php echo $this->escapeHtml($title); ?></h1>
+    <div>
+        <h4>Amount: <?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></h4>
+        <?php
+        
+
+        echo $this->form()->openTag($form);
+        echo $this->formCollection($form);
+        echo $this->form()->closeTag();
+    ?>
+    </div>
+<?php endif;

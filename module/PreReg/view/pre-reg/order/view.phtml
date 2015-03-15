@@ -24,12 +24,12 @@ $this->headTitle($title);
             <p><?php echo $paymenttype->getExplanation(); ?></p>
             <?php if($order->getStatus() == 'unpaid'): ?>
                 <?php if($paymenttype->getType() == 'BankTransfer'): ?>
-                <h3>Bank Transfer Details</h3>
-                <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
+                    <h3>Bank Transfer Details</h3>
+                    <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
                 <?php elseif($paymenttype->getType() == 'CreditCard'): ?>
-                <a href="<?php echo $this->url('payment', array('action' => 'creditcard', 'hashkey' => $order->getHashKey())); ?>">
-                    Pay with Credit Card
-                </a>
+                    <a href="<?php echo $this->url('payment', array('action' => 'creditcard', 'hashkey' => $order->getHashKey())); ?>">
+                        Start payment with Credit Card
+                    </a>
                 <?php endif; ?>
             <?php elseif($order->getStatus() == 'paid'): ?>
                 <h3>This order is already paid</h3>

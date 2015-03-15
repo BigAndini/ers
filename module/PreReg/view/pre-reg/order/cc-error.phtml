@@ -4,7 +4,16 @@ $title = 'Credit Card Error';
 $this->headTitle($title);
 ?>
 
-<h1>$_GET</h1>
-<?php echo var_export($_GET, true) ?>
-<h1>$_POST</h1>
-<?php echo var_export($_POST, true) ?>
+<div class="jumbotron">
+    <h1>We were not able to finish your credit card payment</h1>
+    <p>You can restart the credit card payment via the
+    <a href="<?php echo $this->url(
+            'order',
+            array(
+                'action' => 'view',
+                'hashkey' => $order->getHashKey(),
+                )); ?>">
+            order overview
+        </a>.</p>
+        <p>We sent this link to your email address address, too.</p>
+</div>

@@ -385,7 +385,12 @@ class OrderController extends AbstractActionController {
                 case 'banktransfer':
                     return $this->redirect()->toRoute('payment', array('action' => 'banktransfer'));
                 case 'creditcard':
-                    return $this->redirect()->toRoute('payment', array('action' => 'creditcard'));
+                    return $this->redirect()->toRoute(
+                            'payment', 
+                            array(
+                                'action' => 'creditcard',
+                                'hashkey' => $cartContainer->order->getHashKey(),
+                                ));
                 case 'paypal':
                     break;
                 default:
@@ -484,6 +489,28 @@ class OrderController extends AbstractActionController {
     }
 
     public function ccErrorAction() {
-        return new ViewModel();
+        $hashKey = $this->params()->fromRoute('hashkey', '');
+        
+        if($hashKey == '') {
+            return $this->notFoundAction();
+        }
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('hashKey' => $hashKey));
+        
+        if($order == null) {
+            $logger = $this
+                ->getServiceLocator()
+                ->get('Logger');
+            $logger->info('order for hash key '.$hashKey.' not found');
+            return $this->notFoundAction();
+        }
+        
+        return new ViewModel(array(
+            'order' => $order,
+        ));
     }
 }
