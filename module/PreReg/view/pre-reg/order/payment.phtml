@@ -32,10 +32,10 @@ echo $this->navigation()
             $checked = false;
         endif; ?>
     <p>
-        <h3>
+            <label class="payment-type">
             <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
             <?php echo $paymenttype->getName(); ?>
-        </h3>
+            </label>
         <p class="payment-desc"><?php echo $paymenttype->getShortDescription(); ?> <a href="<?php echo $this->url('payment', array('action' => 'info', 'id' => $paymenttype->getId()))?>">more info...</a></p>
     </p>
     <?php endforeach; ?>

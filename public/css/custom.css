@@ -396,3 +396,8 @@ div.product-info-field {
     padding: 10px 15px;
     margin-bottom: 20px;
 }
+
+label.payment-type {
+    font-size: 24px;
+    font-weight: normal;
+}
