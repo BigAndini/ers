@@ -59,27 +59,50 @@ class PaymentController extends AbstractActionController {
      * Formular for paying the order via credit card
      */
     public function creditcardAction() {
-        $session_order = new Container('order');
+        $hashKey = $this->params()->fromRoute('hashkey', '');
+        
+        if($hashKey == '') {
+            return $this->notFoundAction();
+        }
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ersEntity\Entity\Order")->findOneBy(array('id' => $session_order->order_id));
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('hashKey' => $hashKey));
+        
+        /*$session_order = new Container('order');
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")->findOneBy(array('id' => $session_order->order_id));*/
         
         $config = $this->getServiceLocator()->get('Config');
         
+        $account_id     = $config['ERS\iPayment']['account_id'];
         $trxuser_id     = $config['ERS\iPayment']['trxuser_id'];
         $trx_currency   = $config['ERS\iPayment']['trx_currency'];
         $trxpassword    = $config['ERS\iPayment']['trxpassword'];
         $sec_key        = $config['ERS\iPayment']['sec_key'];
         $tmp_action     = $config['ERS\iPayment']['action'];
-        $action = preg_replace('/%trxuser_id%/', $trxuser_id, $tmp_action);
+        $action = preg_replace('/%account_id%/', $account_id, $tmp_action);
+        
+        $logger = $this
+            ->getServiceLocator()
+            ->get('Logger');
+        
         
         #$trxuser_id = '99999';
         #$trx_currency = 'EUR';
         #$trxpassword = '0';
         #$sec_key = 'ohPinei6chahnahcoesh';
         
-        $trx_amount = $order->getSum()*100; # amount in cents
+        if($order != null) {
+            $trx_amount = $order->getSum()*100; # amount in cents
+        } else {
+            $trx_amount = 0;
+        }
+        
         
         #$form = new Form\CreditCard();
         $form = $this->getServiceLocator()->get('PreReg\Form\CreditCard');
@@ -87,25 +110,43 @@ class PaymentController extends AbstractActionController {
         #$form->setAttribute('action', 'https://ipayment.de/merchant/'.$trxuser_id.'/processor/2.0/');
         $form->setAttribute('action', $action);
         
-        $form->get('silent_error_url')->setValue(
-                $this->url()->fromRoute(
+        if($order != null) {
+            $silent_error_url = $this->url()->fromRoute(
                         'order', 
-                        array('action' => 'cc-error'), 
+                        array(
+                            'action' => 'cc-error',
+                            'hashkey' => $order->getHashKey(),
+                            ), 
                         array('force_canonical' => true)
-                ));
+                );
+            $form->get('silent_error_url')->setValue($silent_error_url);
+        }
         $form->get('redirect_url')->setValue(
                 $this->url()->fromRoute(
                         'order', 
                         array('action' => 'thankyou'), 
                         array('force_canonical' => true)
                 ));
+        $form->get('trxuser_id')->setValue($trxuser_id);
+        $form->get('trxpassword')->setValue($trxpassword);
+        
+        $logger->info('trxuser_id: '.$trxuser_id);
+        $logger->info('trx_amount: '.$trx_amount);
+        $logger->info('trx_currency: '.$trx_currency);
+        $logger->info('trxpassword: '.$trxpassword);
+        $logger->info('sec_key: '.$sec_key);
+        
+        $trx_securityhash = \md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
+        #$logger->info('trx_securityhash: '.$trx_securityhash);
+        
+        $form->get('trx_securityhash')->setValue($trx_securityhash);
         $form->get('trx_amount')->setValue($trx_amount);
         $form->get('trx_currency')->setValue($trx_currency);
+        #$form->get('trx_securityhash')->setValue($trx_securityhash);
+        if($order != null) {
+            $form->get('shopper_id')->setValue($order->getCode()->getValue());
+        }
         
-        $form->get('trx_securityhash')->setValue(
-                    md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key)
-                );
-        $form->get('shopper_id')->setValue($order->getCode()->getValue());
         
         return new ViewModel(array(
             'order' => $order,

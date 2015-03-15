@@ -10,7 +10,7 @@
 # uncomment the return
 # do additional changes in ipayment.local.php
 
-return array(
+/*return array(
     'ERS\iPayment' => array(
         'trxuser_id'    => '99999',
         'trx_currency'  => 'EUR',
@@ -18,4 +18,5 @@ return array(
         'sec_key'       => '1234567890',
         'action'        => 'https://ipayment.de/merchant/%trxuser_id%/processor/2.0/',
     )
-);
+);*/
+return array();
