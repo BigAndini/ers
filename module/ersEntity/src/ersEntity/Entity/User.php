@@ -139,6 +139,7 @@ class User implements UserInterface, ProviderInterface
     protected $roles;
     
     /**
+     * @var ersEntity\Country
      * @ORM\ManyToOne(targetEntity="Country", inversedBy="users")
      * @ORM\JoinColumn(name="Country_id", referencedColumnName="id", nullable=true)
      */

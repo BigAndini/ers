@@ -30,6 +30,16 @@ class ParticipantController extends AbstractActionController {
         
         $cartContainer = new Container('cart');
         $participants = $cartContainer->order->getParticipants();
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        foreach($participants as $participant) {
+            $country = $em->getRepository("ersEntity\Entity\Country")
+                        ->findOneBy(array('id' => $participant->getCountryId()));
+            $participant->setCountry($country);
+        }
        
         return new ViewModel(array(
             'participants' => $participants,
@@ -112,6 +122,7 @@ class ParticipantController extends AbstractActionController {
                 
                 if($user->getCountryId() == 0) {
                     $user->setCountryId(null);
+                    $user->setCountry(null);
                 }
                 
                 $breadcrumb = $forrest->get('participant');
@@ -177,6 +188,7 @@ class ParticipantController extends AbstractActionController {
                 
                 if($participant->getCountryId() == 0) {
                     $participant->setCountryId(null);
+                    $participant->setCountry(null);
                 }
                 
                 $breadcrumb = $forrest->get('participant');

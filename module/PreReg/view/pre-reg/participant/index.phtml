@@ -25,10 +25,10 @@ $this->headTitle($title);
         </td>
         <td><a href="mailto:<?php echo $participant->getEmail();?>"><?php echo $participant->getEmail();?></a></td>
         <td>
-            <?php if($participant->getCountry() == null):
-                echo 'no Country';
+            <?php if($participant->getCountryId() != null):
+                echo $participant->getCountry()->getName();
             else:
-                echo $participant->getCountry()->getName(); 
+                echo 'no Country';
             endif; ?>
         </td>
         <td>
