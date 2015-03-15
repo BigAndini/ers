@@ -71,13 +71,7 @@ echo $this->navigation()
                 endif;
         ?>
             <div class="package">
-                <h3>
-                    <?php echo $participant; ?>
-                    <span style="font-size: 14px;">
-                        <a href="<?php echo $this->url('participant', array('action'=>'edit', 'id' => $user->getSessionId()));?>"><?php echo $this->translate('Edit'); ?></a>
-                        <a href="<?php echo $this->url('participant', array('action'=>'delete', 'id' => $user->getSessionId()));?>"><?php echo $this->translate('Delete'); ?></a>
-                    </span>
-                </h3>
+                <h3><?php echo $participant; ?></h3>
                 
                 <?php if(count($package->getItems()) != 0): ?>
                 <table class="table">
@@ -85,7 +79,6 @@ echo $this->navigation()
                         <th>Product</th>
                         <th class="cart-amount">Amount</th>
                         <th class="cart-price">Price</th>
-                        <th class="cart-tool"></th>
                     </tr>
                     <?php
                     $subtotal = 0;
@@ -119,36 +112,12 @@ echo $this->navigation()
                             </td>
                             <td><?php echo $item->getAmount(); ?></td>
                             <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
-                            <td>
-                                <?php 
-                                if($user->getSessionId() === null) {
-                                    $user_id = 0;
-                                } else {
-                                    $user_id = $user->getSessionId();
-                                }
-                                ?>
-                                <a href="<?php echo $this->url('product', 
-                                        array(
-                                            'action' => 'edit', 
-                                            'product_id' => $item->getProductId(), 
-                                            'participant_id' => $user_id,
-                                            'item_id' => $item->getSessionId()
-                                        )) ?>">edit</a>
-                                <a href="<?php echo $this->url('product', 
-                                        array(
-                                            'action' => 'delete', 
-                                            'product_id' => $item->getProductId(), 
-                                            'participant_id' => $user_id,
-                                            'item_id' => $item->getSessionId()
-                                        )) ?>">delete</a>
-                            </td>
                         </tr>
                     <?php endforeach; ?>
                     <tr>
                         <td></td>
                         <td>Subtotal:</td>
                         <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
-                        <td></td>
                     </tr>
                 </table>
                 <?php endif; ?>

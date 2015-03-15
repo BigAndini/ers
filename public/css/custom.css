@@ -400,4 +400,11 @@ div.product-info-field {
 label.payment-type {
     font-size: 24px;
     font-weight: normal;
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+label.purchaser-label {
+    font-size: 24px;
+    font-weight: normal;
+    
 }

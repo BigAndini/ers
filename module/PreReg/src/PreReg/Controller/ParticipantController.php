@@ -110,6 +110,10 @@ class ParticipantController extends AbstractActionController {
                 $cartContainer->order->addParticipant($user);
                 $cartContainer->Country_id = $user->getCountryId();
                 
+                if($user->getCountryId() == 0) {
+                    $user->setCountryId(null);
+                }
+                
                 $breadcrumb = $forrest->get('participant');
                 if($breadcrumb->route == 'product' && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
                     $breadcrumb->params['participant_id'] = $user->getSessionId();
@@ -170,6 +174,10 @@ class ParticipantController extends AbstractActionController {
                 $participant = $form->getData();
                 $cartContainer = new Container('cart');
                 $cartContainer->order->setParticipantBySessionId($participant, $id);
+                
+                if($participant->getCountryId() == 0) {
+                    $participant->setCountryId(null);
+                }
                 
                 $breadcrumb = $forrest->get('participant');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);

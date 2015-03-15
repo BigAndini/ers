@@ -43,7 +43,7 @@ class ProductController extends AbstractActionController {
         }
         
         $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
-                    ->findBy(array(), array('agegroup' => 'DESC'));
+                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
         $deadlineService = new Service\DeadlineService();
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
             ->findAll();

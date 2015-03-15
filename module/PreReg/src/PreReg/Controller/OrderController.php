@@ -30,6 +30,9 @@ class OrderController extends AbstractActionController {
      * overview of this order
      */
     public function indexAction() {
+        $orderContainer = new Container('order');
+        $orderContainer->getManager()->getStorage()->clear('order');
+        
         $forrest = new Service\BreadcrumbFactory();
         $forrest->reset();
         $forrest->set('product', 'order');
@@ -81,6 +84,9 @@ class OrderController extends AbstractActionController {
      * collect data for the purchaser
      */
     public function purchaserAction() {
+        $orderContainer = new Container('order');
+        $orderContainer->getManager()->getStorage()->clear('order');
+        
         $form = new Form\Register();
         
         $cartContainer = new Container('cart');
@@ -152,6 +158,9 @@ class OrderController extends AbstractActionController {
     public function paymentAction() {
         $forrest = new Service\BreadcrumbFactory();
         $forrest->set('paymenttype', 'order', array('action' => 'payment'));
+        
+        $orderContainer = new Container('order');
+        $orderContainer->getManager()->getStorage()->clear('order');
         
         $form = new Form\PaymentType();
         
