@@ -5,7 +5,7 @@ $this->headTitle($title);
 ?>
 
 <div class="jumbotron">
-    <h1><?php echo $this->escapeHtml($title); ?></h1>
+    <h1><span class="green"><?php echo $this->escapeHtml($title); ?></span></h1>
     
     <p>...for your purchase and with that for your support to make the EJC 2015 possible.</p>
 
@@ -13,12 +13,3 @@ $this->headTitle($title);
 
     <p>In this email you will find further information of your purchase.</p>
 </div>
-
-<h1>$_GET</h1>
-<pre>
-<?php echo var_export($_GET, true) ?>
-</pre>
-<h1>$_POST</h1>
-<pre>
-<?php echo var_export($_POST, true) ?>
-</pre>

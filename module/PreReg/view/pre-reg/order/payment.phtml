@@ -39,7 +39,7 @@ echo $this->navigation()
             <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
             <?php echo $paymenttype->getName(); ?>
             </label>
-            <p class="payment-desc"><?php echo $paymenttype->getShortDescription(); ?> <a href="<?php echo $this->url('payment', array('action' => 'info', 'id' => $paymenttype->getId()))?>">more info...</a></p>
+            <p class="payment-desc"><?php echo $paymenttype->getShortDescription(); ?> <a href="<?php echo $this->url('info', array('action' => 'payment', 'id' => $paymenttype->getId()))?>">more info...</a></p>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>

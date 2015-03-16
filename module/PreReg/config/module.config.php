@@ -153,7 +153,7 @@ return array(
             'info' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/info[/:action]',
+                    'route' => '/info[/:action][/:id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id'     => '[0-9]+',

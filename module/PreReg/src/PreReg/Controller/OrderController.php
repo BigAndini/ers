@@ -381,6 +381,8 @@ class OrderController extends AbstractActionController {
             $cartContainer->init = 0;
             
             $this->sendConfirmationEmail();
+            $forrest = new Service\BreadcrumbFactory;
+            $forrest->remove('terms');
             switch(strtolower($cartContainer->order->getPaymentType()->getType())) {
                 case 'banktransfer':
                     return $this->redirect()->toRoute('payment', array('action' => 'banktransfer'));
@@ -397,6 +399,9 @@ class OrderController extends AbstractActionController {
             }
             
         }
+        
+        $forrest = new Service\BreadcrumbFactory;
+        $forrest->set('terms', 'order', array('action' => 'checkout'));
         
         return new ViewModel(array(
             'form' => $form,
@@ -431,7 +436,9 @@ class OrderController extends AbstractActionController {
         $emailService->setHtmlMessage($html);
         #$emailService->setTextMessage('Testmail');
         
-        $emailService->addAttachment($this->genTermsPDF());
+        $filename = "EJC2015_Terms_and_Services.pdf";
+        $filepath = getcwd().'/tmp/'.$filename;
+        $emailService->addAttachment($filepath);
         
         $emailService->send();
         
@@ -440,6 +447,7 @@ class OrderController extends AbstractActionController {
     
     private function genTermsPDF() {
         $pdfView = new ViewModel();
+        
         $pdfView->setTemplate('pre-reg/info/terms');
         /*$pdfView->setVariables(array(
             'name' => $name,
@@ -466,11 +474,46 @@ class OrderController extends AbstractActionController {
      * say thank you after purchaser
      */
     public function thankyouAction() {
-        $cartContainer = new Container('cart');
+        /*$cartContainer = new Container('cart');
         #$cartContainer->getManager()->getStorage()->clear('cart');
         $cartContainer->init = 0;
         return new ViewModel(array(
             'order' => $cartContainer->order,
+        ));*/
+        
+        $hashKey = $this->params()->fromRoute('hashkey', '');
+        
+        if($hashKey == '') {
+            return $this->notFoundAction();
+        }
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('hashKey' => $hashKey));
+        
+        if($order == null) {
+            $logger = $this
+                ->getServiceLocator()
+                ->get('Logger');
+            $logger->info('order for hash key '.$hashKey.' not found');
+            return $this->notFoundAction();
+        }
+        
+        $query = $this->params()->fromQuery();
+        if(count($query) > 0) {
+            $paymentDetail = new Entity\PaymentDetail();
+            $paymentDetail->setData(json_encode($query));
+            #$paymentDetail->setOrderId($order->getId());
+            $paymentDetail->setOrder($order);
+
+            $em->persist($paymentDetail);
+            $em->flush();
+        }
+        
+        return new ViewModel(array(
+            'order' => $order,
         ));
     }
     
@@ -508,6 +551,15 @@ class OrderController extends AbstractActionController {
             $logger->info('order for hash key '.$hashKey.' not found');
             return $this->notFoundAction();
         }
+        
+        $query = $this->params()->fromQuery();
+        $paymentDetail = new Entity\PaymentDetail();
+        $paymentDetail->setData(json_encode($query));
+        #$paymentDetail->setOrderId($order->getId());
+        $paymentDetail->setOrder($order);
+        
+        $em->persist($paymentDetail);
+        $em->flush();
         
         return new ViewModel(array(
             'order' => $order,

@@ -83,12 +83,14 @@ class TestController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $user = $em->getRepository("ersEntity\Entity\User")->findOneBy(array('email' => 'andi@sixhop.net'));
         $user = new Entity\User();
-        $user->setEmail('web-vtR4MV@mail-tester.com');
+        $user->setEmail('andi@inbaz.org');
         $emailService->addTo($user);
         $emailService->setSubject('Testmail');
         $emailService->setHtmlMessage('<h1>Testmail</h1>');
         #$emailService->setTextMessage('Testmail');
-        $emailService->addAttachment('public/img/logo.jpg');
+        $emailService->addAttachment(getcwd().'/public/img/EJC2015_Terms_and_Services.pdf');
+        $emailService->addAttachment(getcwd().'/public/img/logo.jpg');
+        $emailService->addAttachment(getcwd().'/public/img/ejc_logo.png');
         $emailService->send();
         
         return true;
@@ -142,14 +144,14 @@ class TestController extends AbstractActionController {
         $pdf->setOption("paperSize", "a4"); //Defaults to 8x11
         $pdf->setOption("paperOrientation", "portrait"); //Defaults to portrait
         $name = 'Andreas Nitsche';
-        $code = 'AA-BB-CC-DD';
+        $code = 'AABBCCDD';
 
         /*
          * QR-Code creation
          */
         $qr = $this->getServiceLocator()->get('QRCode');
         $qr->isHttps(); // or $qr->isHttp();
-        $qr->setData('https://prereg.eja.net/onsite/register/'.  \urlencode($code));
+        $qr->setData('http://prereg.eja.net/onsite/register/'.  \urlencode($code));
         $qr->setCorrectionLevel('H', 0);
         $qr->setDimensions(200, 200);
         $config = array(
@@ -178,7 +180,7 @@ class TestController extends AbstractActionController {
         $barcodeOptions = array(
             'text' => $code, 
             'barHeight' => 40,
-            'factor' => 1.5,
+            'factor' => 1.1,
         );
 
         // No required options
@@ -217,7 +219,7 @@ class TestController extends AbstractActionController {
         
         /***********************************/
         $pdfView = new ViewModel();
-        $pdfView->setTemplate('pre-reg/order/generatepdf');
+        $pdfView->setTemplate('pre-reg/test/generatepdf');
         $pdfView->setVariables(array(
             'name' => $name,
             'code' => $code,

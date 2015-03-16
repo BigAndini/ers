@@ -19,26 +19,6 @@ class PaymentController extends AbstractActionController {
     public function indexAction() {
         $this->notFoundAction();
     }
-    /*
-     * display long description of payment type
-     */
-    public function infoAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('product');
-        }
-        $em = $this
-            ->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $forrest = new Service\BreadcrumbFactory();
-        $breadcrumb = $forrest->get('paymenttype');
-        
-        return new ViewModel(array(
-            'paymenttype' => $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id)),
-            'breadcrumb' => $breadcrumb,
-        ));
-    }
     
     /**
      * Formular for paying the order via bank transfer
@@ -98,7 +78,10 @@ class PaymentController extends AbstractActionController {
         #$sec_key = 'ohPinei6chahnahcoesh';
         
         if($order != null) {
-            $trx_amount = $order->getSum()*100; # amount in cents
+            $a = new \NumberFormatter("de-DE", \NumberFormatter::PATTERN_DECIMAL);
+            $a->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
+            $a->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
+            $trx_amount = $a->format($order->getSum()*100); # amount in cents
         } else {
             $trx_amount = 0;
         }
@@ -124,7 +107,10 @@ class PaymentController extends AbstractActionController {
         $form->get('redirect_url')->setValue(
                 $this->url()->fromRoute(
                         'order', 
-                        array('action' => 'thankyou'), 
+                        array(
+                            'action' => 'thankyou',
+                            'hashkey' => $order->getHashKey(),
+                            ), 
                         array('force_canonical' => true)
                 ));
         $form->get('trxuser_id')->setValue($trxuser_id);

@@ -38,9 +38,12 @@ class OrderController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('id' => $id));
+        $paymentDetails = $em->getRepository("ersEntity\Entity\PaymentDetail")
+                ->findBy(array('Order_id' => $id), array('created' => 'DESC'));
         
         return new ViewModel(array(
             'order' => $order,
+            'paymentDetails' => $paymentDetails,
         ));
     }   
 }

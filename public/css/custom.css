@@ -291,6 +291,9 @@ a.product-item span.product-title {
 a.product-item span.product-short-description {
     display: block;
 }
+dt.product-price {
+    font-size: 12px;
+}
 .product-price {
     font-size: 22px;
     text-align: right;

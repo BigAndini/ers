@@ -128,9 +128,11 @@ class EmailFactory
                 }
             }
             
-            $att = new Mime\Part(fopen($pathToAtt, 'r'));
+            #$att = new Mime\Part(fopen($pathToAtt, 'r'));
+            $att = new Mime\Part(file_get_contents($pathToAtt));
             #$attachment->type = 'image/jpeg';
             $att->type = \mime_content_type($pathToAtt);
+            #$att->type = Mime\Mime::TYPE_OCTETSTREAM;
             $pattern = array(
                 '/\ /'
             );
@@ -186,11 +188,7 @@ class EmailFactory
         if($this->isHtmlMessage()) {
             $message->getHeaders()->get('content-type')
                 ->addParameter('charset', 'utf-8')
-                ->setType('multipart/alternative');
-            // Set UTF-8 charset
-            /*$headers = $message->getHeaders();
-            $headers->removeHeader('Content-Type');
-            $headers->addHeaderLine('Content-Type', 'text/html; charset=UTF-8');*/
+                ->setType('multipart/mixed'); // Important to get all attachments into this email.
         } else {
             $message->getHeaders()->get('content-type')
                 ->addParameter('charset', 'utf-8')

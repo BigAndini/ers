@@ -11,7 +11,7 @@ $this->headTitle($title);
     <p>1. by clicking the link in your email</p>
     <p>2. by logging in to your account:</p>
     <ul>
-        <li><strong><a href="#">Setup a password</a></strong> for your account with your email address <?php echo $order->getPurchaser()->getEmail(); ?>.</li>
+        <li><strong><a href="<?php echo $this->url('profile', array('action' => 'request-password')) ?>">Setup a password</a></strong> for your account with your email address <?php echo $order->getPurchaser()->getEmail(); ?>.</li>
         <li><strong><a href="<?php echo $this->url('zfcuser/login'); ?>">Login</a></strong> to your account.</li>
         <li>View your <strong>order detail</strong>.</li>
         <li>View your <strong>payment detail</strong>.</li>

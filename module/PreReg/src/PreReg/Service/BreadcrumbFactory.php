@@ -35,6 +35,12 @@ class BreadcrumbFactory
         return $this->get($context);
     }
     
+    public function remove($context) {
+        if($this->exists($context)) {
+            $this->forrest->trace->offsetUnset($context);
+        }
+    }
+    
     public function get($context) {
         if($this->forrest->trace->offsetExists($context)) {
             return $this->forrest->trace->offsetGet($context);

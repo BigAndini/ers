@@ -10,30 +10,41 @@ $this->headTitle($title);
     <a href="<?php echo $this->url('admin/order'); ?>">back to Overview</a>    
 </div>
 
-<div class="order-info order-info-left">
-    <h1>Purchaser</h1>
-    <?php $purchaser = $order->getPurchaser(); ?>
-    <?php if($purchaser) : ?>
-        <h3>
-            <?php echo $purchaser->getFirstname().' '.$purchaser->getSurname(); ?>
-            (<a href="mailto:<?php echo $purchaser->getEmail(); ?>"><?php echo $purchaser->getEmail(); ?></a>)
-        </h3>
-    <?php else: ?>
-        <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-        <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose Purchaser</a>
-    <?php endif; ?>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="order-info">
+            <h1>Purchaser</h1>
+            <?php $purchaser = $order->getPurchaser(); ?>
+            <?php if($purchaser) : ?>
+                <h3>
+                    <?php echo $purchaser->getFirstname().' '.$purchaser->getSurname(); ?>
+                    (<a href="mailto:<?php echo $purchaser->getEmail(); ?>"><?php echo $purchaser->getEmail(); ?></a>)
+                </h3>
+            <?php else: ?>
+                <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+                <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose Purchaser</a>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="order-info">
+            <h1>Payment</h1>
+            <?php $paymenttype = $order->getPaymentType(); ?>
+            <?php if($paymenttype) : ?>
+                <h3><?php echo $paymenttype->getName(); ?></h3>
+            <?php else: ?>
+                <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+                <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
+            <?php endif; ?>  
+            <?php foreach($paymentDetails as $detail): ?>
+                <pre>
+                    <?php \var_export(json_decode($detail->getData())); ?>
+                </pre>
+            <?php endforeach; ?>
+        </div>
+    </div>
 </div>
-<div class="order-info order-info-right">
-    <h1>Payment</h1>
-    <?php $paymenttype = $order->getPaymentType(); ?>
-    <?php if($paymenttype) : ?>
-        <h3><?php echo $paymenttype->getName(); ?></h3>
-    <?php else: ?>
-        <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-        <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
-    <?php endif; ?>    
-</div>
-<div class="clear-both"></div>
+
 <div>
     <h1>Participants / Tickets</h1>
     <div>

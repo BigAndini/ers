@@ -103,6 +103,12 @@ class Order implements InputFilterAwareInterface
      * @ORM\JoinColumn(name="id", referencedColumnName="Order_id")
      */
     protected $packages;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="PaymentDetail", mappedBy="order")
+     * @ORM\JoinColumn(name="id", referencedColumnName="Order_id")
+     */
+    protected $paymentDetail;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="orders")
@@ -618,6 +624,46 @@ class Order implements InputFilterAwareInterface
         }
         
         return $this;
+    }
+    
+    /**
+     * Add PaymentDetail entity to collection (one to many).
+     *
+     * @param \Entity\PaymentDetail $paymentDetail
+     * @return \Entity\Order
+     */
+    public function addPaymentDetail(PaymentDetail $paymentDetail)
+    {
+        if(!is_numeric($paymentDetail->getSessionId())) {
+            $id = \count($this->getPaymentDetails())+1;
+            $paymentDetail->setSessionId($id);
+        }
+        $this->paymentDetails[] = $paymentDetail;
+
+        return $this;
+    }
+    
+    /**
+     * Remove PaymentDetail entity from collection (one to many).
+     *
+     * @param \Entity\PaymentDetail $paymentDetail
+     * @return \Entity\Order
+     */
+    public function removePaymentDetail(PaymentDetail $paymentDetail)
+    {
+        $this->paymentDetails->removeElement($paymentDetail);
+
+        return $this;
+    }
+
+    /**
+     * Get PaymentDetail entity collection (one to many).
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPaymentDetails()
+    {
+        return $this->paymentDetails;
     }
 
     /**
