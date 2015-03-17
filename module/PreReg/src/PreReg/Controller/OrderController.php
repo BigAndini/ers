@@ -420,8 +420,7 @@ class OrderController extends AbstractActionController {
         $purchaser = $order->getPurchaser();
         
         $emailService = new Service\EmailFactory();
-        #$emailService->setFrom('prereg@eja.net');
-        $emailService->setFrom('prereg@inbaz.org');
+        $emailService->setFrom('prereg@eja.net');
         
         $emailService->addTo($purchaser);
         $emailService->setSubject('EJC Registration System: Order Confirmation');

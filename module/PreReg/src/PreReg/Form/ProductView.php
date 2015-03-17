@@ -108,7 +108,6 @@ class ProductView extends Form
         $logger = $this
             ->getServiceLocator()
             ->get('Logger');
-        $logger->warn('check logger');
         $this->variantCounter = 0;
         foreach($this->variants as $variant) {
             /* Example array

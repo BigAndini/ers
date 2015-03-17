@@ -24,7 +24,6 @@
                     <th>Product</th>
                     <th class="cart-amount">Amount</th>
                     <th class="cart-price">Price</th>
-                    <th class="cart-tool"></th>
                 </tr>
                 <?php
                 $subtotal = 0;
@@ -57,24 +56,14 @@
                                 <?php endif; ?>
                             </span>
                         </td>
-                        <td><?php echo $item->getAmount(); ?></td>
-                        <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
-                        <td>
-                            <?php 
-                            if($user->getSessionId() === null) {
-                                $user_id = 0;
-                            } else {
-                                $user_id = $user->getSessionId();
-                            }
-                            ?>
-                        </td>
+                        <td class="cart-amount"><?php echo $item->getAmount(); ?></td>
+                        <td class="cart-price"><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
                     </tr>
                 <?php endforeach; ?>
                 <tr>
                     <td></td>
-                    <td>Subtotal:</td>
-                    <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
-                    <td></td>
+                    <td class="cart-amount">Subtotal:</td>
+                    <td class="cart-price"><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
                 </tr>
             </table>
             <?php endif; ?>
@@ -91,8 +80,9 @@
             <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), 'EUR', null, 'de_DE'); ?></td>
         </tr>
         <tr>
-            <th><span style="font-size: 18px;">Total amount:</span></th>
-            <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
+            <th><span class="total-amount">Total amount:</span></th>
+            <th><span class="total-amount"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
         </tr>
     </table>
+    <div class="clear-both"></div>
 </div>

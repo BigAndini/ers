@@ -797,9 +797,6 @@ class Product implements InputFilterAwareInterface
      */
     public function getProductPrice(Agegroup $agegroup = null, Deadline $deadline = null, $search = true) {
         $ret = new ProductPrice();
-        if($agegroup != null) {
-            error_log('searching for agegroup: '.$agegroup->getAgegroup()->format('d.m.Y H:i:s'));
-        }
         foreach($this->getProductPrices() as $price) {
             /* 
              * if a agegroup is given but price has none
@@ -829,7 +826,6 @@ class Product implements InputFilterAwareInterface
              * if agegroup does not match
              */
             if($price->getAgegroup() != null && $agegroup != null && $price->getAgegroup()->getId() != $agegroup->getId()) {
-                error_log('checking agegroup: '.$price->getAgegroup()->getId().' != '.$agegroup->getId());
                 continue;
             }
             /*

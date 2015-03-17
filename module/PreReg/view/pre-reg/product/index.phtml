@@ -27,7 +27,9 @@ foreach ($products as $product) :
         </tr>
         <?php endforeach; ?>
         <tr>
-            <td></td>
+            <td>
+                <span class="product-price-list product-price-active">normal</span>
+            </td>
             <td>
                 <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
             </td>

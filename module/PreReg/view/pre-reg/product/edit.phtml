@@ -84,6 +84,9 @@
                     <?php if($product->getPersonalized() || count($participants) > 0):
                         echo $this->formRow($form->get('participant_id')); ?>
                         <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add person to this list</a>
+                        <p><strong>Note:</strong><br />You can edit person details
+                            with <a href="<?php echo $this->url('participant'); ?>">My Persons</a> 
+                            from the main menu.</p>
                         <?php if($form->get('submit')->getAttribute('disabled') == 'disabled'): ?>
                             <div class="alert alert-warning">
                                 <h4>Please choose a person</h4>

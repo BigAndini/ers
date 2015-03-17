@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-# copy this file to doctrine.local.php
+# copy this file to ipayment.local.php
 # uncomment the return
 # do additional changes in ipayment.local.php
 

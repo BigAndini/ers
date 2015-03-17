@@ -186,9 +186,16 @@ class EmailFactory
         
         $message->setBody($body);
         if($this->isHtmlMessage()) {
-            $message->getHeaders()->get('content-type')
-                ->addParameter('charset', 'utf-8')
-                ->setType('multipart/mixed'); // Important to get all attachments into this email.
+            if(count($this->getAttachments()) == 0) {
+                $message->getHeaders()->get('content-type')
+                    ->addParameter('charset', 'utf-8')
+                    ->setType('multipart/alternative');
+            } else {
+                $message->getHeaders()->get('content-type')
+                    ->addParameter('charset', 'utf-8')
+                    ->setType('multipart/mixed'); // Important to get all attachments into this email.
+            }
+            
         } else {
             $message->getHeaders()->get('content-type')
                 ->addParameter('charset', 'utf-8')

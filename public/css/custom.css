@@ -321,6 +321,10 @@ div.product-info-field {
     float: right;
 }
 
+.total-amount {
+    font-size: 18px;
+}
+
 .p_overlay_close {
     text-align: right;
 }

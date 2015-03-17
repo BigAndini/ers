@@ -148,7 +148,7 @@ class ProfileController extends AbstractActionController {
                     $em->flush();
                     
                     $emailService = new Service\EmailFactory();
-                    $emailService->setFrom('prereg@inbaz.org');
+                    #$emailService->setFrom('prereg@eja.net');
         
                     $emailService->addTo($user);
                     $emailService->setSubject('EJC Registration System: Password Request Link');
@@ -197,7 +197,7 @@ class ProfileController extends AbstractActionController {
         }
         
         $now = new \DateTime();
-        if(($user->getUpdated()->getTimestamp()+7200) <= $now->getTimestamp()) {
+        if(($user->getUpdated()->getTimestamp()+7200) >= $now->getTimestamp()) {
             return $this->redirect()->toRoute('zfcuser/login');
         }
         

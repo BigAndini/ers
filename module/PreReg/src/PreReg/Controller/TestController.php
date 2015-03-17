@@ -75,8 +75,7 @@ class TestController extends AbstractActionController {
     
     public function mailtestAction() {
         $emailService = new Service\EmailFactory();
-        #$emailService->setFrom('prereg@eja.net');
-        $emailService->setFrom('prereg@inbaz.org');
+        $emailService->setFrom('prereg@eja.net');
         
         $em = $this
             ->getServiceLocator()
@@ -131,6 +130,44 @@ class TestController extends AbstractActionController {
         $transport->send($message);
     }
     
+    public function generateInvoiceAction() {
+        /*
+         * PDF creation
+         */
+        $pdf = new PdfModel();
+        $pdf->setOption("paperSize", "a4"); //Defaults to 8x11
+        $pdf->setOption("paperOrientation", "portrait"); //Defaults to portrait
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => '87'));
+        
+        if($order == null) {
+            error_log('unable to find order');
+            return;
+        }
+        
+        $pdfView = new ViewModel();
+        $pdfView->setTemplate('pdf/invoice');
+        $pdfView->setVariables(array(
+            'order' => $order,
+        ));
+        $pdfRenderer = $this->getServiceLocator()->get('ViewPdfRenderer');
+        $html = $pdfRenderer->getHtmlRenderer()->render($pdfView);
+        $pdfEngine = $pdfRenderer->getEngine();
+
+        $pdfEngine->load_html($html);
+        $pdfEngine->render();
+        $pdfContent = $pdfEngine->output();
+        
+        $filename = "EJC2015_Invoice";
+        file_put_contents(getcwd().'/public/img/'.$filename.'.pdf', $pdfContent);
+        
+        return new ViewModel();
+    }
     public function generatepdfAction() {
         
         if(!extension_loaded('gd')) {
@@ -287,8 +324,7 @@ class TestController extends AbstractActionController {
         #$logger->info('html: '.$html);
         
         $emailService = new Service\EmailFactory();
-        #$emailService->setFrom('prereg@eja.net');
-        $emailService->setFrom('prereg@inbaz.org');
+        $emailService->setFrom('prereg@eja.net');
         
         $purchaser = new Entity\User();
         $purchaser->setEmail('andi@inbaz.org');

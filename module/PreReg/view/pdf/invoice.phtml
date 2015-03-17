@@ -1,0 +1,274 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>Rechnung <?php echo $order->getCode()->getValue(); ?></title>
+    <style type="text/css">
+        @page {
+            margin: 2cm;
+        }
+
+        body {
+            margin: 6cm 0 0.5cm 0;
+            color: #333;
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+            line-height: 1.42857;
+        }
+        .clear-both {
+            clear:both;
+        }
+        h1 {
+            font-weight: normal;
+        }
+
+        #toaddress,
+        #header,
+        #footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            font-size: 12px;
+        }
+
+        #toaddress {
+            position: absolute;
+            top: -35mm;
+            width: 85mm;
+        }
+        /*#toaddress table#toaddress {
+            margin-top: 17mm;
+            margin-left: 15mm;
+        }*/
+        #toaddress td#fromaddress {
+            font-size: 9px;
+            border-bottom: solid 1px #000000;
+            width: 85mm;
+            height: 5mm;
+        }
+        #header {
+            top: 0;
+        }
+
+        #footer {
+            bottom: 15mm;
+            font-size: 11px;
+            border-top: 0.1pt solid #aaa;
+            color: #aaa;
+        }
+        #content {
+            padding-bottom: 0.5cm;
+            font-size: 12px;
+        }
+
+        #toaddress table,
+        #header table {
+            font-size: 11px;
+            width: 100%;
+            border-collapse: collapse;
+            border: none;
+        }
+        #footer table {
+            font-size: 11px;
+            width: 100%;
+            border-collapse: collapse;
+            border: none;
+        }
+
+        #toaddress td,
+        #header td,
+        #footer td {
+            padding: 0;
+            width: 50%;
+        }
+        td.right,
+        th.right {
+            text-align: right;
+        }
+        td.name {
+            text-align: right;
+            color: #aaaaaa;
+        }
+        td.address {
+            color: #000;
+        }
+
+        table.invoicetable {
+            width: 100%;
+            font-size: 12px;
+            border-collapse: collapse;
+            margin-bottom: 1cm;
+        }
+        table.invoicetable td, table.invoicetable th {
+            padding: 1mm;
+        }
+        tr.flip {
+            background: #eee;
+        }
+        tr.flop {
+            background: #fff;
+        }
+        td.pos, td.amount {
+            text-align: center;
+            width: 11mm;
+        }
+        td.price {
+            text-align: right;
+            width: 18mm;
+        }
+        p.pricetype {
+            font-size: 10px;
+            margin: 0;
+            padding: 0;
+        }
+        p.price {
+            text-align: right;
+            margin: 0 0 3px 0;
+            padding: 0;
+        }
+        td.invoicesum {
+            border-top: double 1px #000;
+            border-bottom: double 1px #000;
+        }
+
+        td.sumdesc {
+            text-align: right;
+        }
+
+        .page-number {
+            text-align: right;
+        }
+
+        .page-number:before {
+            content: "page " counter(page);
+        }
+
+        hr {
+            page-break-after: always;
+            border: 0;
+        }
+        .package {
+            border-radius: 5px;
+            margin-bottom: 50px;
+            padding: 5px 5px;
+        }
+        .table {
+            font-size: 10px;
+            width: 100%;
+        }
+        .table > thead > tr > th, 
+        .table > tbody > tr > th,
+        .table > tfoot > tr > th, 
+        .table > thead > tr > td, 
+        .table > tbody > tr > td, 
+        .table > tfoot > tr > td {
+            border-top: 1px solid #ddd;
+            line-height: 1;
+            padding: 8px;
+            vertical-align: top;
+        }
+        th {
+            text-align: left;
+        }
+        .cart-amount {
+            width: 150px;
+            text-align: right;
+        }
+        .cart-price {
+            width: 150px;
+            text-align: right;
+        }
+        .cart-tool {
+            width: 150px;
+        }
+        .sum-table th, .sum-table td {            
+            text-align: right;
+        }
+        .invoice-date {
+             text-align: right; 
+             margin: 0; 
+             margin-top: 1cm;
+             padding: 0;
+        }
+    </style>
+  
+</head>
+
+<body>
+
+<div id="toaddress">
+	<table >
+            <tr>
+                <td id="fromaddress">Bruneck Kronplatz Tourismus - Rathausplatz 7 - 39031 Bruneck</td>
+            </tr>
+            <tr>
+                <td><?php echo $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?></td>
+            </tr>
+	</table>
+</div>
+<div id="header">
+  <table>
+	<tr>
+		<td class="headerfield" style="width: 65%;"><img height="50" src="<?php echo getcwd().'/public/img/logo.jpg' ?>" alt="" /></td>
+		<td class="headerfield name" style="width: 35%;"><h1>Bruneck Kronplatz<br />Tourismus</h1></td>
+	</tr>
+	<tr>
+		<td>
+		</td>
+		<td class="right address" valign="top">
+			Rathausplatz 7<br />
+			39031 Bruneck<br />
+			Tel.: +39 0474 555722<br />
+			Fax: +39 0474 555544<br />
+                        E-Mail: info@bruneck.com<br /><br />
+			Invoice No.: <?php echo $order->getCode()->getValue(); ?>
+		</td>
+	</tr>
+  </table>
+</div>
+
+<div id="footer">
+	<table id="footer">
+		<tr>
+                    <td class="col1 page"></td>
+                    <td class="col2 page"></td>
+                    <td class="col3 page"><div class="page-number"></div></td>
+		</tr>
+		<tr>
+                    <td class="col1 top">Website: http://www.ejc2015.org/</td>
+                    <td class="col2 top">ING BANK N.V.</td>
+                    <td class="col3 top">Bruneck Kronplatz Tourismus</td>
+		</tr>
+		<tr>
+                    <td class="col1">Pre Registration: http://prereg.eja.net/</td>
+                    <td class="col2">BIC/SWIFT: INGBNL2A</td>
+                    <td class="col3">Rathausplatz 7</td>
+		</tr>
+                <tr>
+                    <td class="col1">E-Mail: info@ejc2015.org</td>
+                    <td class="col2">IBAN: NL84 INGB 0007 8721 92</td>
+                    <td class="col3">39031 Bruneck</td>
+		</tr>
+		<tr>
+                    <td class="col1"></td>
+                    <td class="col2">Owner: STICHTING EUROPEAN JUGGLING ASSOCIATION (EJA)</td>
+                    <td class="col3"></td>
+		</tr>
+	</table>
+</div>
+
+<div id="content">
+	<p class="invoice-date"><?php echo $order->getUpdated()->format('d.m.Y'); ?></p>
+        <h3>Invoice <?php echo $order->getCode()->getValue(); ?></h3>
+        <p>Dear <?php echo $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?>,</p>
+        <p>thank you for your purchase.</p>
+        <!-- Rechnungsposten -->
+        <?php echo $this->partial('partial/order-info.phtml', array('order' => $order)); ?>
+                
+        <p>The amount was paid via <?php echo $order->getPaymentType()->getName(); ?>. See you at the EJC 2015.</p>
+        <p>Best regards,<br />
+        Your European Juggling Association and the local EJC 2015 organizers</p>
+    </div>
+
+</body>
+</html>
