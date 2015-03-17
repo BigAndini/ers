@@ -68,7 +68,7 @@ class Order implements InputFilterAwareInterface
     protected $hashKey;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=150, nullable=true)
      */
     protected $invoiceDetail;
     
@@ -76,7 +76,12 @@ class Order implements InputFilterAwareInterface
      * @ORM\Column(type="string", length=45)
      */
     protected $status = 'unpaid';
-
+    
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $Code_id;
+    
     /**
      * @ORM\Column(type="datetime")
      */
@@ -86,11 +91,6 @@ class Order implements InputFilterAwareInterface
      * @ORM\Column(type="datetime")
      */
     protected $created;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    protected $Code_id;
 
     /**
      * @ORM\OneToMany(targetEntity="Match", mappedBy="order")
@@ -444,7 +444,7 @@ class Order implements InputFilterAwareInterface
     {
         return $this->Code_id;
     }
-
+    
     /**
      * Add Match entity to collection (one to many).
      *
