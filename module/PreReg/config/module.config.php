@@ -63,12 +63,12 @@ return array(
                 #'action' => 'login',
                 'resource'  => 'controller/zfcuser:login',
             ),
-            'register' => array(
+            /*'register' => array(
                 'label' => 'Register',
                 'route' => 'zfcuser/register',
                 #'action' => 'register',
                 'resource'  => 'controller/zfcuser:register',
-            ),
+            ),*/
             'profile' => array(
                 'label' => 'My Profile',
                 'route' => 'profile',
