@@ -39,7 +39,7 @@ class Participant extends Form
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Firstname', 
+                'label' => 'Firstname',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -55,7 +55,7 @@ class Participant extends Form
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Surname', 
+                'label' => 'Surname',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -76,7 +76,7 @@ class Participant extends Form
                 #'step' => '1', 
             ), 
             'options' => array( 
-                'label' => 'Date of birth', 
+                'label' => 'Date of birth',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),

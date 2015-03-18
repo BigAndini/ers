@@ -20,10 +20,19 @@ $form->prepare();
 echo $this->form()->openTag($form);
 #echo $this->formHidden($form->get('id'));
 echo $this->formHidden($form->get('session_id'));
-echo $this->formRow($form->get('firstname'));
-echo $this->formRow($form->get('surname'));
-echo $this->formRow($form->get('birthday'));
 ?>
+<div class="row">
+    <div class="col-lg-3">
+<?php echo $this->formRow($form->get('firstname'));
+echo $this->formRow($form->get('surname'));
+echo $this->formRow($form->get('birthday')); ?>
+</div>
+    <div class="col-lg-5">
+        <p><strong>Note:</strong> Your firstname, surname and date of birth are 
+            checked at the onsite registration to validate that this eTicket 
+            belongs to you. Therefore you need to enter the data like they appear on your passport/ID card.</p>
+    </div>
+</div>
 <div class="row">
     <div class="col-lg-3">
         <?php echo $this->formRow($form->get('email')); ?>
