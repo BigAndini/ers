@@ -279,6 +279,32 @@ return array(
                     ),
                 ),
             ),
+            'zfcuser' => array(
+                // changing to hostname route - using an unreachable hostname
+                #'type' => 'Hostname',
+                // minimum possible priority - all other routes come first.
+                'priority' => ~PHP_INT_MAX,
+                /*'options' => array(
+                    // foo.bar does not exist - never matched
+                    'route' => 'foo.bar',
+                    'defaults' => array(
+                        'controller' => null,
+                        'action' => 'index',
+                    ),
+                ),*/
+
+                // optional - just if you want to override single child routes:
+                'child_routes' => array(
+                    'register' => array(
+                        'options' => array(
+                            'defaults' => array(
+                                'controller' => null,
+                            ),
+                        ),
+                    ),
+                    
+                ),
+            ),
         ),
     ),
     'service_manager' => array(

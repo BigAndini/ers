@@ -41,6 +41,8 @@ class OrderController extends AbstractActionController {
         
         $cartContainer = new Container('cart');
         
+        $this->checkItemPrices();
+        
         return new ViewModel(array(
             'order' => $cartContainer->order,
         ));
@@ -49,6 +51,43 @@ class OrderController extends AbstractActionController {
         $view = $this->indexAction();
         $view->setTemplate('pre-reg/order/index.phtml');
         return $view;
+    }
+    
+    private function checkItemPrices() {
+        $cartContainer = new Container('cart');
+        $order = $cartContainer->order;
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $deadlineService = new Service\DeadlineService();
+        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                    ->findBy(array('priceChange' => '1'));
+        $deadlineService->setDeadlines($deadlines);
+        $deadline = $deadlineService->getDeadline();
+        
+        $agegroupService = new Service\AgegroupService();
+        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    ->findBy(array('priceChange' => '1'));
+        $agegroupService->setAgegroups($agegroups);
+        foreach($order->getPackages() as $package) {
+            $participant = $package->getParticipant();
+            $agegroup = $agegroupService->getAgegroupByUser($participant);
+            if($participant == null) {
+                continue;
+            }
+            foreach($package->getItems() as $item) {
+                $product = $em->getRepository("ersEntity\Entity\Product")
+                    ->findOneBy(array('id' => $item->getProductId()));
+                if($product != null) {
+                    $productPrice = $product->getProductPrice($agegroup, $deadline);
+                    if($item->getPrice() != $productPrice->getCharge()) {
+                        $item->setPrice($productPrice->getCharge());
+                    }
+                }
+                
+            }
+        }
     }
     
     /**
@@ -233,6 +272,8 @@ class OrderController extends AbstractActionController {
     public function checkoutAction() {
         $cartContainer = new Container('cart');
         $orderContainer = new Container('order');
+        
+        $this->checkItemPrices();
         
         $em = $this
                 ->getServiceLocator()
