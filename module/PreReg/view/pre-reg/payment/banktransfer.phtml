@@ -7,13 +7,18 @@ $this->headTitle($title);
 <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
 <div>
     <p>We sent this information to your email address: <strong><?php echo $order->getPurchaser()->getEmail(); ?></strong></p>
-    <h3>You can request this information again</h3>
-    <p>1. by clicking the link in your email</p>
-    <p>2. by logging in to your account:</p>
-    <ul>
-        <li><strong><a href="<?php echo $this->url('profile', array('action' => 'request-password')) ?>">Setup a password</a></strong> for your account with your email address <?php echo $order->getPurchaser()->getEmail(); ?>.</li>
-        <li><strong><a href="<?php echo $this->url('zfcuser/login'); ?>">Login</a></strong> to your account.</li>
-        <li>View your <strong>order detail</strong>.</li>
-        <li>View your <strong>payment detail</strong>.</li>
-    </ul>
+    <h3>You can request <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>">this information</a> again</h3>
+    <p>Simply bookmark <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>">this link</a> or have a look at the mail we sent you.</p>
+    <ol>
+        <!--<li>by clicking the link in your email</li>
+        <li>by logging in to your account:
+            <ol>
+                <li><strong><a href="<?php echo $this->url('profile', array('action' => 'request-password')) ?>">Setup a password</a></strong> for your account with your email address <?php echo $order->getPurchaser()->getEmail(); ?>.</li>
+                <li><strong><a href="<?php echo $this->url('zfcuser/login'); ?>">Login</a></strong> to your account.</li>
+                <li>View your <strong>order detail</strong>.</li>
+                <li>View your <strong>payment detail</strong>.</li>
+            </ol>
+        </li>-->
+    </ol>
+    
 </div>

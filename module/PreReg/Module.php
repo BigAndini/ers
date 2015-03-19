@@ -196,4 +196,12 @@ class Module
             ),
         );
     }
+    public function getViewHelperConfig()
+{
+    return array(
+        'invokables' => array(
+            'formelementerrors' => 'PreReg\Form\View\Helper\FormElementErrors'
+        ),
+    );
+}
 }

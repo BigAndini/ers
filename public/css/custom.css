@@ -278,6 +278,8 @@ a.product-item {
     color: #000;
     text-decoration: none;
     padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 a.product-item:hover {
     text-decoration: none;
@@ -414,4 +416,14 @@ label.purchaser-label {
     font-size: 24px;
     font-weight: normal;
     
+}
+
+.form-alert {
+    background-color: #f2dede;
+    border: 1px solid #a94442;
+    color: #a94442;
+    margin: 10px 0 15px;
+    padding: 5px;
+    padding-left: 1.5em;
+    border-radius: 5px;
 }
