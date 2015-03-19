@@ -29,6 +29,9 @@ class AgegroupService
             return $ret;
         }
         $birthday = $user->getBirthday();
+        if($birthday == null) {
+            return $ret;
+        }
         foreach($this->agegroups as $agegroup) {
             if($birthday->getTimestamp() < $agegroup->getAgegroup()->getTimestamp()) {
                 continue;
