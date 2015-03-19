@@ -64,7 +64,7 @@ class CartController extends AbstractActionController {
             # check if participant already has a personalized ticket
             $cartContainer = new Container('cart');
             $package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
-            if($package->hasPersonalizedItem()) {
+            if($package != null && $package->hasPersonalizedItem()) {
                 $logger->warn('Package for participant '.$participant_id.' already has a personalized item. What should I do?');
             }
             
@@ -132,6 +132,9 @@ class CartController extends AbstractActionController {
         }
         
         $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('cart')) {
+            $forrest->set('cart', 'product');
+        }
         $breadcrumb = $forrest->get('cart');
         
         return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);

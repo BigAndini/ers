@@ -586,12 +586,9 @@ class Order implements InputFilterAwareInterface
     public function findPackageByItem(Item $item) {
         foreach($this->getPackages() as $package) {
             if($package->existItem($item)) {
-                error_log('found package');
-                error_log('package_id: '.$package->getSessionId());
                 return $package;
             }
         }
-        error_log('package not found');
         return false;
     }
     
