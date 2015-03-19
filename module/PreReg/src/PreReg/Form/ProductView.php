@@ -82,7 +82,7 @@ class ProductView extends Form
         $variant_add = 1;
         foreach($variants as $v) {
             if(is_object($v) && $v instanceof Entity\ProductVariant) {
-                if($v->getOrder() != 0) {
+                if($v->getOrder() != null && $v->getOrder() != 0) {
                     $this->variants[$v->getOrder()] = $v;
                 } else {
                     # Make sure the variants without order number or 

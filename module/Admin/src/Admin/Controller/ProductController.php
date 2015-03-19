@@ -251,7 +251,7 @@ class ProductController extends AbstractActionController {
                 ->findBy(array('Product_id' => $Product->getId()));
         foreach($ProductVariants as $variant) {
             $ProductVariantValues = $em->getRepository("ersEntity\Entity\ProductVariantValue")
-                    ->findBy(array('ProductVariant_id' => $variant->getId()));
+                    ->findBy(array('ProductVariant_id' => $variant->getId()), array('ordering' => 'ASC'));
             foreach($ProductVariantValues as $value) {
                 $em->remove($value);
             }
