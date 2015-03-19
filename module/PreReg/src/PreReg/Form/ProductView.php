@@ -105,9 +105,6 @@ class ProductView extends Form
     }
     
     private function addVariants($defaults=array()) {
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
         $this->variantCounter = 0;
         foreach($this->variants as $variant) {
             /* Example array
@@ -194,7 +191,7 @@ class ProductView extends Form
                         );
                     break;
                 default:
-                    $logger->warn(get_class().': Don\'t know what to do with type '.$variant->getType());
+                    error_log(get_class().': Don\'t know what to do with type '.$variant->getType());
                     break;
             }
             
