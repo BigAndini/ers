@@ -41,6 +41,18 @@ class Module
             \Zend\View\Helper\Navigation::setDefaultAcl($acl);
             \Zend\View\Helper\Navigation::setDefaultRole($role);
         }
+        
+        $application   = $e->getApplication();
+        $sm = $application->getServiceManager();
+        $sharedManager = $application->getEventManager()->getSharedManager();
+
+        $sharedManager->attach('Zend\Mvc\Application', 'dispatch.error',
+                function($e) use ($sm) {
+                    if ($e->getParam('exception')){
+                        $sm->get('Logger')->crit($e->getParam('exception'));
+                    }
+                }
+            );
     }
     
     public function bootstrapSession($e)
