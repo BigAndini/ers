@@ -65,7 +65,7 @@ echo $this->navigation()
                 $user = $package->getParticipant();
             
                 if($user->getFirstname() == '' && $user->getSurname() == '') :
-                    $participant = 'unassigned items';
+                    $participant = 'further items';
                 else:
                     $participant = $user->getFirstname().' '.$user->getSurname();
                 endif;

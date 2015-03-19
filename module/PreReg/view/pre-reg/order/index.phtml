@@ -29,7 +29,7 @@ echo $this->navigation()
                 $user = $package->getParticipant();
             
                 if($user->getFirstname() == '' && $user->getSurname() == '') :
-                    $participant = 'unassigned items';
+                    $participant = 'further items';
                     $edit_participant = false;
                 else:
                     $participant = $user->getFirstname().' '.$user->getSurname();
