@@ -115,6 +115,9 @@ class ProductVariantValueController extends AbstractActionController
                 $em->flush();
 
                 $forrest = new Service\BreadcrumbFactory();
+                if(!$forrest->exists('product-variant-value')) {
+                    $forrest->set('product-variant-value', 'product');
+                }
                 $breadcrumb = $forrest->get('product-variant-value');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }

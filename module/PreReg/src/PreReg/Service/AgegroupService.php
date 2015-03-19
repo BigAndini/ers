@@ -23,12 +23,12 @@ class AgegroupService
         $this->agegroups = $agegroups;
     }
     
-    public function getAgegroupByUser(Entity\User $user) {
+    public function getAgegroupByUser(Entity\User $user = null) {
         $ret = null;
-        $birthday = $user->getBirthday();
-        if($birthday == null) {
-            return null;
+        if($user == null) {
+            return $ret;
         }
+        $birthday = $user->getBirthday();
         foreach($this->agegroups as $agegroup) {
             if($birthday->getTimestamp() < $agegroup->getAgegroup()->getTimestamp()) {
                 continue;

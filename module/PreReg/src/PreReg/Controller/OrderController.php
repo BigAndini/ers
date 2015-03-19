@@ -302,7 +302,6 @@ class OrderController extends AbstractActionController {
 
             # check if the session cart container has all data to finish this order
             
-            
             $purchaser = $cartContainer->order->getPurchaser();
             $user = $em->getRepository("ersEntity\Entity\User")
                     ->findOneBy(array('email' => $purchaser->getEmail()));

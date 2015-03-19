@@ -178,6 +178,10 @@ class ProductPriceController extends AbstractActionController {
                 $em->persist($productprice);
                 $em->flush();
                 
+                if(!$forrest->exists('product-price')) {
+                    $forrest->set('product-price', 'product');
+                }
+                
                 $breadcrumb = $forrest->get('product-price');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {

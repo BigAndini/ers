@@ -95,4 +95,13 @@ jQuery(function($) {
     /*$('#participant').change(function() {
         location.reload();
     });*/
+    $.cookieCuttr({
+        cookieAnalytics: false,
+        cookieMessage: 'We use cookies on this website, you can <a href="{{cookiePolicyLink}}" title="read about our cookies" target="_blank">read about them here</a>. To use the website as intended please...',
+        cookiePolicyLink: 'http://cookiecuttr.com/'
+    });
+});
+
+$(document).ready(function () {
+  
 });
