@@ -39,7 +39,7 @@ return array(
                 'filter' => \Zend\Log\Logger::INFO,
                 'enabled' => true
             ),
-            'tmp-file' => array(
+            /*'tmp-file' => array(
                 'adapter'  => '\Zend\Log\Writer\Stream',
                 'options'  => array(
                     'output' => '/tmp/application-' . $_SERVER['SERVER_NAME'] . '.log', // path to file
@@ -47,7 +47,7 @@ return array(
                 // options: EMERG, ALERT, CRIT, ERR, WARN, NOTICE, INFO, DEBUG
                 'filter' => \Zend\Log\Logger::DEBUG,
                 'enabled' => false
-            ),
+            ),*/
             /*'standard-output' => array(
                 'adapter'  => '\Zend\Log\Writer\Stream',
                 'options'  => array(
@@ -60,7 +60,8 @@ return array(
             'standard-error' => array(
                 'adapter'  => '\Zend\Log\Writer\Stream',
                 'options'  => array(
-                    'output' => 'php://stderr'
+                    #'output' => 'php://stderr'
+                    'output' => 'data/error-'.date('Y-m-d').'.log', // path to file
                 ),
                 // options: EMERG, ALERT, CRIT, ERR, WARN, NOTICE, INFO, DEBUG
                 'filter' => \Zend\Log\Logger::NOTICE,

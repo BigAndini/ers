@@ -106,9 +106,6 @@ class ProfileController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('profile');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
                 $logger->warn($form->getMessages());
             } 
         }

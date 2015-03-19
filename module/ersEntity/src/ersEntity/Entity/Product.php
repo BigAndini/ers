@@ -128,6 +128,7 @@ class Product implements InputFilterAwareInterface
     /**
      * @ORM\OneToMany(targetEntity="ProductVariant", mappedBy="product", cascade={"persist"})
      * @ORM\JoinColumn(name="id", referencedColumnName="Product_id")
+     * @ORM\OrderBy({"ordering" = "ASC"})
      */
     protected $productVariants;
 

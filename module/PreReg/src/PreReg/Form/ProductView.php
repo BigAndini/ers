@@ -194,9 +194,6 @@ class ProductView extends Form
                         );
                     break;
                 default:
-                    $logger = $this
-                        ->getServiceLocator()
-                        ->get('Logger');
                     $logger->warn(get_class().': Don\'t know what to do with type '.$variant->getType());
                     break;
             }
