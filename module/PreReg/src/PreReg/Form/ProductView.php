@@ -53,7 +53,35 @@ class ProductView extends Form
             ),
         ));
         
-        $formElement = array();
+        $this->add(array(
+            'name' => 'participant_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Person',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                    'id' => 'participant',
+                ),
+            ),
+        ));
+        $this->add(array(
+            'name' => 'agegroup_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Agegroup',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                    'id' => 'agegroup',
+                ),
+            ),
+        ));
+        /*$formElement = array();
         $formElement['name'] = 'participant_id';
         $formElement['type'] = 'Zend\Form\Element\Select';
 
@@ -64,7 +92,7 @@ class ProductView extends Form
             'class'  => 'media-object',
             'id' => 'participant',
         );
-        $this->add($formElement);
+        $this->add($formElement);*/
         
         $this->add(array(
             'name' => 'submit',

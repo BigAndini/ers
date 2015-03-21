@@ -89,7 +89,12 @@
                                 <div class="clear-both"></div>
                             </div>
                         <?php endif;
-                        echo $this->formRow($form->get('participant_id')); ?>
+                        if($select_agegroup):
+                            echo $this->formRow($form->get('agegroup_id'));
+                        else:
+                            echo $this->formRow($form->get('participant_id'));
+                        endif;
+                        ?>
                         <p><strong>Tip:</strong><br />You can 
                             <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add a new person</a>
                             or edit the details of any person with 

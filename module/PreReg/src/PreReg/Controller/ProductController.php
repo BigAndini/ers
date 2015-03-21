@@ -177,28 +177,49 @@ class ProductController extends AbstractActionController {
         if($participant_id == 0) {
             $selected = true;
         }
+        
+        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
+        $agegroup_options = array();
+        
         if(!$product->getPersonalized() && count($options) > 0) {
             array_unshift($options, array(
                 'value' => 0,
                 'label' => 'do not assign this product',
                 'selected' => $selected,
                 ));
+        } else {
+            foreach($agegroups as $agegroup) {
+                $agegroup_options[] = array(
+                    'value' => $agegroup->getId(),
+                    'label' => $agegroup->getName(),
+                );
+            }
+            $agegroup_options[] = array(
+                    'value' => '0',
+                    'label' => 'normal',
+                    'selected' => true,
+                );
         }
         
         if(count($options) <= 0 && $product->getPersonalized()) {
             $form->get('submit')->setAttribute('disabled', 'disabled');
         }
         
-        $form->get('participant_id')->setAttribute('options', $options);
+        $select_agegroup = false;
+        if(count($agegroup_options) > 0) {
+            $select_agegroup = true;
+            $form->get('agegroup_id')->setAttribute('options', $agegroup_options);
+        } else {
+            $form->get('participant_id')->setAttribute('options', $options);
+        }
+        
 
         $breadcrumb = $forrest->get('product');
         
         $chooser = $cartContainer->chooser;
         $cartContainer->chooser = false;
 
-        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
-                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
-        
         $agegroupService = new Service\AgegroupService();
         $agegroupService->setAgegroups($agegroups);
         $agegroup = $agegroupService->getAgegroupByUser($participant);
@@ -219,6 +240,7 @@ class ProductController extends AbstractActionController {
             'bc_stay' => $forrest->get('bc_stay'),
             'chooser' => $chooser,
             'agegroups' => $agegroups,
+            'select_agegroup' => $select_agegroup,
             'deadline' => $deadline,
             'agegroup' => $agegroup,
         ));
