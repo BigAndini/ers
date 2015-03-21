@@ -284,6 +284,7 @@ a.product-item {
 a.product-item:hover {
     text-decoration: none;
     /*background-color: #f1f1f1;*/
+    color: #000;
     background-color: #d6f29d;
 }
 a.product-item span.product-title {
@@ -293,6 +294,18 @@ a.product-item span.product-title {
 a.product-item span.product-short-description {
     display: block;
 }
+
+.nav > li > a {
+  color: #000;
+}
+
+.nav > li > a:hover,
+.nav > li > a:focus {
+  text-decoration: none;
+  color: #000;
+  background-color: #d6f29d;
+}
+
 dt.product-price {
     font-size: 12px;
 }
@@ -426,4 +439,18 @@ label.purchaser-label {
     padding: 5px;
     padding-left: 1.5em;
     border-radius: 5px;
+}
+
+.justify {
+    text-align: justify;
+}
+.jumbotron h1 {
+    margin-bottom: 30px;
+}
+
+a {
+    color: #85b32a;
+}
+a:hover, a:focus {
+    color: #70d900;
 }

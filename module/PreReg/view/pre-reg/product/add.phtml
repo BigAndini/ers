@@ -53,10 +53,12 @@
                     <p class="small text-right">This prices are valid until <?php echo $deadline->getDeadline()->format('d.m.Y'); ?></p>
                     <dl class="dl-horizontal">
                         <?php foreach($agegroups as $ag): ?>
-                        <?php $class = '';
-                        if($agegroup != null && $agegroup->getId() == $ag->getId()):
+                        <?php 
+                        #$class = '';
+                        $class = 'product-price-active';
+                        /*if($agegroup != null && $agegroup->getId() == $ag->getId()):
                             $class = 'product-price-active';
-                        endif; ?>
+                        endif;*/ ?>
                         <dt class="product-price<?php echo ' '.$class ?>">
                             <?php echo $ag->getName(); ?>
                         </dt>
@@ -64,10 +66,12 @@
                             <?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?>
                         </dd>
                         <?php endforeach; ?>
-                        <?php $class = '';
-                        if($participant->getSessionId() == 0 || $agegroup == null):
+                        <?php 
+                        #$class = '';
+                        $class = 'product-price-active';
+                        /*if($participant->getSessionId() == 0 || $agegroup == null):
                             $class = 'product-price-active';
-                        endif; ?>
+                        endif;*/ ?>
                         <dt class="product-price<?php echo ' '.$class ?>">normal</dt>
                         <dd class="product-price<?php echo ' '.$class ?>">
                             <?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?>

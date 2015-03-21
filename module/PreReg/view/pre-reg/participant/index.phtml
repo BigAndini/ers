@@ -23,7 +23,7 @@ $this->headTitle($title);
                 echo $participant->getBirthday()->format('d.m.Y');
             endif; ?>
         </td>
-        <td><a href="mailto:<?php echo $participant->getEmail();?>"><?php echo $participant->getEmail();?></a></td>
+        <td><?php echo $participant->getEmail();?></td>
         <td>
             <?php if($participant->getCountryId() != null):
                 echo $participant->getCountry()->getName();
