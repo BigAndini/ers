@@ -34,7 +34,7 @@ class Order implements InputFilterAwareInterface
     private $inputFilter;
     
     /**
-     * define length of hashKey
+     * define length of hashkey
      * 
      * @var length
      */
@@ -65,7 +65,7 @@ class Order implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="string", length=45)
      */
-    protected $hashKey;
+    protected $hashkey;
 
     /**
      * @ORM\Column(type="string", length=150, nullable=true)
@@ -105,6 +105,13 @@ class Order implements InputFilterAwareInterface
     protected $packages;
     
     /**
+     * @ORM\OneToMany(targetEntity="OrderStatus", mappedBy="order")
+     * @ORM\JoinColumn(name="id", referencedColumnName="Order_id")
+     * @ORM\OrderBy({"created" = "DESC"})
+     */
+    protected $orderStatus;
+    
+    /**
      * @ORM\OneToMany(targetEntity="PaymentDetail", mappedBy="order")
      * @ORM\JoinColumn(name="id", referencedColumnName="Order_id")
      */
@@ -132,6 +139,7 @@ class Order implements InputFilterAwareInterface
     {
         $this->matches = new ArrayCollection();
         $this->packages = new ArrayCollection();
+        $this->orderStatus = new ArrayCollection();
         
         $this->genHash();
         
@@ -145,7 +153,7 @@ class Order implements InputFilterAwareInterface
     }
     
     /**
-     * Generate hashKey
+     * Generate hashkey
      */
     private function genHash() {
         $alphabet = "0123456789ACDFGHKMNPRUVWXY";
@@ -162,7 +170,7 @@ class Order implements InputFilterAwareInterface
             $code[$i] = $alphabet[$n];
         }
         
-        $this->setHashKey(implode($code).$this->genChecksum(implode($code)));
+        $this->setHashkey(implode($code).$this->genChecksum(implode($code)));
     }
     
     /**
@@ -183,13 +191,13 @@ class Order implements InputFilterAwareInterface
     }
     
     /**
-     * Check if hashKey checksum is valid
+     * Check if hashkey checksum is valid
      * 
      * @return boolean
      */
-    public function checkHashKey() {
-        $checksum = substr($this->getHashKey(),$this->length);
-        $code = substr($this->getHashKey(),0,$this->length);
+    public function checkHashkey() {
+        $checksum = substr($this->getHashkey(),$this->length);
+        $code = substr($this->getHashkey(),0,$this->length);
         if($this->genChecksum($code) == $checksum) {
             return true;
         } else {
@@ -308,26 +316,26 @@ class Order implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of hashKey.
+     * Set the value of hashkey.
      *
-     * @param string $hashKey
+     * @param string $hashkey
      * @return \Entity\Order
      */
-    public function setHashKey($hashKey)
+    public function setHashkey($hashkey)
     {
-        $this->hashKey = $hashKey;
+        $this->hashkey = $hashkey;
 
         return $this;
     }
 
     /**
-     * Get the value of hashKey.
+     * Get the value of hashkey.
      *
      * @return string
      */
-    public function getHashKey()
+    public function getHashkey()
     {
-        return $this->hashKey;
+        return $this->hashkey;
     }
     
     /**
@@ -356,7 +364,7 @@ class Order implements InputFilterAwareInterface
     /**
      * Set the value of status.
      *
-     * @param string $stauts
+     * @param string $status
      * @return \Entity\Order
      */
     public function setStatus($status)
@@ -621,6 +629,66 @@ class Order implements InputFilterAwareInterface
         }
         
         return $this;
+    }
+    
+    /**
+     * Add Package entity to collection (one to many).
+     *
+     * @param \Entity\OrderStatus $orderStatus
+     * @return \Entity\Order
+     */
+    public function addOrderStatus(OrderStatus $orderStatus)
+    {
+        $this->orderStatus[] = $orderStatus;
+
+        return $this;
+    }
+    
+    /**
+     * Remove OrderStatus entity from collection (one to many).
+     *
+     * @param \Entity\OrderStatus $orderStatus
+     * @return \Entity\Order
+     */
+    public function removeOrderStatus(OrderStatus $orderStatus)
+    {
+        $this->orderStatus->removeElement($orderStatus);
+
+        return $this;
+    }
+
+    /**
+     * Get OrderStatus entity collection (one to many).
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrderStatus()
+    {
+        return $this->orderStatus;
+    }
+    
+    /**
+     * get the last set OrderStatus
+     * 
+     * @return Entity\OrderStatus
+     */
+    public function getLastOrderStatus() {
+        return array_pop($this->orderStatus);
+    }
+    
+    /**
+     * find a status for this order
+     * 
+     * @param type $value
+     * @return boolean
+     */
+    public function findOrderStatus($value) {
+        foreach($this->getOrderStatus() as $status) {
+            if($status->getValue() == $value) {
+                return $status;
+            }
+        }
+        return new OrderStatus();
     }
     
     /**
@@ -956,7 +1024,7 @@ class Order implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'hashKey', 'invoiceDetail', 'updated', 'created', 'Code_id');
+        $dataFields = array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'hashkey', 'invoiceDetail', 'updated', 'created', 'Code_id');
         $relationFields = array('user', 'paymentType', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -989,6 +1057,6 @@ class Order implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'hashKey', 'invoiceDetail', 'packages', 'updated', 'created', 'Code_id');
+        return array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'hashkey', 'invoiceDetail', 'packages', 'updated', 'created', 'Code_id');
     }
 }

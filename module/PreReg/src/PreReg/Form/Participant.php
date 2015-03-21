@@ -34,12 +34,12 @@ class Participant extends Form
             'name' => 'firstname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Firstname...', 
+                'placeholder' => 'First name...', 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Firstname',
+                'label' => 'First name',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),

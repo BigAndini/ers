@@ -94,9 +94,9 @@ class OrderController extends AbstractActionController {
      * Action that allows viewing an order by the hash key
      */
     public function viewAction() {
-        $hashKey = $this->params()->fromRoute('hashkey', '');
+        $hashkey = $this->params()->fromRoute('hashkey', '');
         
-        if($hashKey == '') {
+        if($hashkey == '') {
             return $this->notFoundAction();
         }
         
@@ -104,13 +104,13 @@ class OrderController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
-                ->findOneBy(array('hashKey' => $hashKey));
+                ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {
             $logger = $this
                 ->getServiceLocator()
                 ->get('Logger');
-            $logger->info('order for hash key '.$hashKey.' not found');
+            $logger->info('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
         
@@ -214,6 +214,9 @@ class OrderController extends AbstractActionController {
         
         $pts = array();
         foreach($paymenttypes as $paymenttype) {
+            if(!$paymenttype->getVisible()) {
+                continue;
+            }
             $activeFrom = $paymenttype->getActiveFrom();
             $activeUntil = $paymenttype->getActiveUntil();
             if(
@@ -287,7 +290,7 @@ class OrderController extends AbstractActionController {
                         'order', 
                         array(
                             'action' => 'view',
-                            'hashkey' => $order->getHashKey(),
+                            'hashkey' => $order->getHashkey(),
                             ));
             }
         }
@@ -412,6 +415,11 @@ class OrderController extends AbstractActionController {
                 
                 $em->persist($package);
             }
+            $orderStatus = new Entity\OrderStatus();
+            $orderStatus->setOrder($cartContainer->order);
+            $orderStatus->setValue('unpaid');
+            $em->persist($orderStatus);
+            $cartContainer->order->addOrderStatus($orderStatus);
             
             $em->persist($cartContainer->order);
             $em->flush();
@@ -431,7 +439,7 @@ class OrderController extends AbstractActionController {
                             'payment', 
                             array(
                                 'action' => 'creditcard',
-                                'hashkey' => $cartContainer->order->getHashKey(),
+                                'hashkey' => $cartContainer->order->getHashkey(),
                                 ));
                 case 'paypal':
                     break;
@@ -481,6 +489,12 @@ class OrderController extends AbstractActionController {
         
         $emailService->send();
         
+        $orderStatus = new Entity\OrderStatus();
+        $orderStatus->setOrder($order);
+        $orderStatus->setValue('confirmation sent');
+        $em->persist($orderStatus);
+        $em->flush();
+        
         return true;
     }
     
@@ -520,9 +534,9 @@ class OrderController extends AbstractActionController {
             'order' => $cartContainer->order,
         ));*/
         
-        $hashKey = $this->params()->fromRoute('hashkey', '');
+        $hashkey = $this->params()->fromRoute('hashkey', '');
         
-        if($hashKey == '') {
+        if($hashkey == '') {
             return $this->notFoundAction();
         }
         
@@ -530,13 +544,13 @@ class OrderController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
-                ->findOneBy(array('hashKey' => $hashKey));
+                ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {
             $logger = $this
                 ->getServiceLocator()
                 ->get('Logger');
-            $logger->info('order for hash key '.$hashKey.' not found');
+            $logger->info('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
         
@@ -571,9 +585,10 @@ class OrderController extends AbstractActionController {
     }
 
     public function ccErrorAction() {
-        $hashKey = $this->params()->fromRoute('hashkey', '');
+        $hashkey = $this->params()->fromRoute('hashkey', '');
+        $params = $this->params()->fromQuery();
         
-        if($hashKey == '') {
+        if($hashkey == '') {
             return $this->notFoundAction();
         }
         
@@ -581,13 +596,13 @@ class OrderController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
-                ->findOneBy(array('hashKey' => $hashKey));
+                ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {
             $logger = $this
                 ->getServiceLocator()
                 ->get('Logger');
-            $logger->info('order for hash key '.$hashKey.' not found');
+            $logger->info('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
         
@@ -602,6 +617,7 @@ class OrderController extends AbstractActionController {
         
         return new ViewModel(array(
             'order' => $order,
+            'params' => $params,
         ));
     }
 }

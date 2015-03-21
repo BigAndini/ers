@@ -114,12 +114,12 @@ class CreditCard extends Form
             ),
         ));
         
-        /*$this->add(array(
+        $this->add(array(
             'name' => 'hidden_trigger_url',
             'attributes' => array(
                 'type'  => 'hidden',
             ),
-        ));*/
+        ));
         
         $this->add(array(
             'name' => 'trx_securityhash',
@@ -160,6 +160,29 @@ class CreditCard extends Form
         ));
         
         $this->add(array( 
+            'name' => 'cc_typ', 
+            'type' => 'Zend\Form\Element\Select', 
+            'attributes' => array( 
+                'required' => 'required', 
+                'class' => 'form-control form-element',
+            ), 
+            'options' => array( 
+                'label' => 'Credit Card Type', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ), 
+        ));
+        
+        $this->add(array(
+            'name' => 'ignore_cc_typ_mismatch',
+            'attributes' => array(
+                'type'  => 'hidden',
+                'value' => '1',
+            ),
+        ));
+        
+        $this->add(array( 
             'name' => 'cc_number', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
@@ -182,6 +205,7 @@ class CreditCard extends Form
                 'placeholder' => 'Card Check Code...', 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
+                'maxlength' => '3',
             ), 
             'options' => array( 
                 'label' => 'Card Check Code', 

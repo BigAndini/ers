@@ -475,6 +475,8 @@ class PaymentTypeController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
                 ->findOneBy(array('id' => $id));
+        $orders = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('PaymentType_id' => $id));
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -493,6 +495,7 @@ class PaymentTypeController extends AbstractActionController {
 
         return new ViewModel(array(
             'id'    => $id,
+            'orders' => $orders,
             'paymenttype' => $paymenttype,
         ));
     }

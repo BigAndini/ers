@@ -80,7 +80,7 @@ class Purchaser extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Save Purchaser',
+                'value' => 'Save & Continue',
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),

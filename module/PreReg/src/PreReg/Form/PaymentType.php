@@ -26,6 +26,7 @@ class PaymentType extends Form
         $this->add(array( 
             'name' => 'paymenttype_id', 
             #'disable_inarray_validator' => false,
+            #'disable_inarray_validator' => true,
             'type' => 'Zend\Form\Element\Radio', 
             'attributes' => array( 
                 #'required' => 'required',
@@ -45,7 +46,7 @@ class PaymentType extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Save Payment type',
+                'value' => 'Save & Continue',
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary btn-lg',
             ),

@@ -10,19 +10,23 @@ $this->headTitle('EJC Registration System');
         <span class="green"><?php echo $this->escapeHtml('EJC Registration System'); ?></span>
     </h1>
     
-    <p>In 2015 the European Juggling Convention (EJC) will take place in Bruneck (Italy). You can help the orga team by registering your ticket and paying early.</p>
-
-    <p>This site provides a shop to purchase tickets for the EJC 2015.</p>
-
-    <div class="col-lg-7">
-    <ul>
-        <li>You can <a href="<?php echo $this->url('zfcuser/login') ?>">login</a> with your data to change your order.</li>
-        <li>Browse the <a href="<?php echo $this->url('product') ?>">product list</a> to select your ticket(s).</li>
-        <li>Your <a href="<?php echo $this->url('order') ?>">shopping cart</a> shows the chosen products and is the first step to checkout and pay.</li>
-    </ul>
+    <p>On this site you can purchase tickets for EJC 2015 as well as other 
+        items such as t-shirts and galashow tickets.</p>
+    
+    <p>The European Juggling Convention (EJC) 2015 will take place from 
+        01.08. - 09.08.2015 in Bruneck (Italy). You can find all up to date 
+        information on www.ejc2015.org.</p>
+    <p>This year it is especially important that many jugglers register as 
+        early as possible. So help the organizing team: Buy your ticket now!</p>
+    
+    <p>Please also note that the price of all tickets  increases as EJC comes 
+        closer. Visit www.ejc2015.org/registration to see all ticket prices at 
+        a glance.</p>
+    
+    <div class='row'>
+        <div class="col-lg-7"></div>
+        <div class="col-lg-5 start-button">
+            <a class="btn btn-vlg btn-success" href="<?php echo $this->url('product') ?>">Go to product overview</a>
+        </div>
     </div>
-    <div class="col-lg-5 start-button">
-        <a class="btn btn-vlg btn-success" href="<?php echo $this->url('product') ?>">register now</a>
-    </div>
-    <div class="clear-both"></div>
 </div>

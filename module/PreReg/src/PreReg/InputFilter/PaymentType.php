@@ -36,6 +36,14 @@ class PaymentType implements InputFilterAwareInterface
                     array('name' => 'Int'), 
                 ),
                 'validators' => array(
+                    /*array (
+                        'name' => 'NotEmpty',
+                        'options' => array(
+                            'messages' => array(
+                                'isEmpty' => 'To continue you need to select a payment type.',
+                            )
+                        ),
+                    ),*/
                 ),
             ]));
             

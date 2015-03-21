@@ -24,21 +24,13 @@ echo $this->navigation()
     <?php echo $this->formSubmit($form->get('submit')); ?>
 </div>
 <div>
-    <h1>Register</h1>
+    <h1>Select Purchaser</h1>
     <?php if(count($order->getPackages()) > 1): ?>
-    <p>Every participant who has an email set will receive his own eTicket. The <strong>purchaser</strong> you choose will receive <strong>all eTickets</strong>.</p>
+    <p><strong>All eTickets will be emailed to the purchaser.</strong> If you 
+        order items for multiple persons and provided their email addresses, 
+        they will automatically receive a copy of their eTicket.</p>
     <h3>Choose Purchaser</h3>
-    <?php if(count($form->getMessages()) != 0): ?>
-    <div>
-        <ul>
-            <?php foreach($form->getMessages() as $field => $messages): ?>
-                <?php foreach($messages as $message): ?>
-                <li><?php echo $message; ?></li>
-                <?php endforeach; ?>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-    <?php endif; ?>
+    <?php echo $this->formElementErrors($form->get('purchaser_id')); ?>
     <?php foreach($participants as $participant): ?>
         <?php if($participant->getEmail() == '' || $participant->getFirstname() == '' || $participant->getSurname() == ''): 
             $disabled = true;

@@ -208,6 +208,8 @@ class ProductController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $Product = $em->getRepository("ersEntity\Entity\Product")
                 ->findOneBy(array('id' => $id));
+        $Items = $em->getRepository("ersEntity\Entity\Item")
+                ->findBy(array('Product_id' => $id));
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -230,9 +232,11 @@ class ProductController extends AbstractActionController {
 
         return new ViewModel(array(
             'id'    => $id,
+            'items' => $Items,
             'product' => $Product,
         ));
     }
+    
     private function removeProductPrices(Entity\Product $Product) {
         $em = $this
             ->getServiceLocator()

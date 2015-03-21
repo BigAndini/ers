@@ -39,9 +39,9 @@ class PaymentController extends AbstractActionController {
      * Formular for paying the order via credit card
      */
     public function creditcardAction() {
-        $hashKey = $this->params()->fromRoute('hashkey', '');
+        $hashkey = $this->params()->fromRoute('hashkey', '');
         
-        if($hashKey == '') {
+        if($hashkey == '') {
             return $this->notFoundAction();
         }
         
@@ -49,7 +49,7 @@ class PaymentController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
-                ->findOneBy(array('hashKey' => $hashKey));
+                ->findOneBy(array('hashkey' => $hashkey));
         
         /*$session_order = new Container('order');
         $em = $this
@@ -98,7 +98,7 @@ class PaymentController extends AbstractActionController {
                         'order', 
                         array(
                             'action' => 'cc-error',
-                            'hashkey' => $order->getHashKey(),
+                            'hashkey' => $order->getHashkey(),
                             ), 
                         array('force_canonical' => true)
                 );
@@ -109,7 +109,16 @@ class PaymentController extends AbstractActionController {
                         'order', 
                         array(
                             'action' => 'thankyou',
-                            'hashkey' => $order->getHashKey(),
+                            'hashkey' => $order->getHashkey(),
+                            ), 
+                        array('force_canonical' => true)
+                ));
+        $form->get('hidden_trigger_url')->setValue(
+                $this->url()->fromRoute(
+                        'payment', 
+                        array(
+                            'action' => 'cc-check',
+                            'hashkey' => $order->getHashkey(),
                             ), 
                         array('force_canonical' => true)
                 ));
@@ -133,6 +142,17 @@ class PaymentController extends AbstractActionController {
             $form->get('shopper_id')->setValue($order->getCode()->getValue());
         }
         
+        $options = array();
+        $options[] = array(
+            'value' => 'VisaCard',
+            'label' => 'VISA Card',
+        );
+        $options[] = array(
+            'value' => 'MasterCard',
+            'label' => 'MasterCard',
+        );
+        $form->get('cc_typ')->setAttribute('options', $options);
+        
         
         return new ViewModel(array(
             'order' => $order,
@@ -140,35 +160,95 @@ class PaymentController extends AbstractActionController {
         ));
     }
     
-    public function checkCCPaymentAction() {
-        $security_key= "qundhft67dnft";
-        $return_checksum="";
-        if (isset($_GET["trxuser_id "]))
-            $return_checksum.= $_GET["trxuser_id"];
-        if (isset($_GET["trx_amount "]))
-            $return_checksum.= $_GET["trx_amount"];
-        if (isset($_GET["trx_currency "]))
-            $return_checksum.= $_GET["trx_currency"];
-        if (isset($_GET["ret_authcode "]))
-            $return_checksum.= $_GET["ret_authcode"];
-        if (isset($_GET["ret_trx_number "]))
-            $return_checksum.= $_GET["ret_trx_number"];
-        $return_checksum.= $security_key;
-        if ($_GET["ret_param_checksum "]!=md5($return_checksum)) {
-            // Error because hash do not match!
-            exit;
+    public function ccCheckAction() {
+        $response = $this->getResponse();
+        $response->setStatusCode(200);
+        $response->setContent("Thank you");
+        
+        $config = $this->getServiceLocator()->get('Config');
+        
+        #$account_id     = $config['ERS\iPayment']['account_id'];
+        #$trxuser_id     = $config['ERS\iPayment']['trxuser_id'];
+        #$trx_currency   = $config['ERS\iPayment']['trx_currency'];
+        #$trxpassword    = $config['ERS\iPayment']['trxpassword'];
+        $sec_key        = $config['ERS\iPayment']['sec_key'];
+        #$tmp_action     = $config['ERS\iPayment']['action'];
+        #$action = preg_replace('/%account_id%/', $account_id, $tmp_action);
+        
+        $allowed_ips = array(
+            '212.227.34.218',
+            '212.227.34.219',
+            '212.227.34.220',
+        );
+        
+        $logger = $this
+            ->getServiceLocator()
+            ->get('Logger');
+        
+        $request = new \Zend\Http\PhpEnvironment\Request();
+        
+        $ipmatch = false;
+        if(in_array($request->getServer('REMOTE_ADDR'), $allowed_ips)) {
+            $ipmatch = true;
+        } else {
+            $logger->info('unauthorized hidden trigger from: '.$request->getServer('REMOTE_ADDR'));
+            return $response;
         }
         
-        $security_key= "qundhft67dnft";
-        $url= "https://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-        $url_without_checksum=
-        substr($url, 0, strpos($url, "&ret_url_checksum") + 1);
-        if ($_REQUEST['ret_url_checksum'] != md5($url_without_checksum.$security_key)) {
-            // Error because hash does not match
+        $post_param = $this->params()->fromPost();
+        $logger->info('$_POST:');
+        $logger->info($post_param);
+        
+        $return_checksum="";
+        if (isset($post_param["trxuser_id "]))
+            $return_checksum.= $post_param["trxuser_id"];
+        if (isset($post_param["trx_amount "]))
+            $return_checksum.= $post_param["trx_amount"];
+        if (isset($post_param["trx_currency "]))
+            $return_checksum.= $post_param["trx_currency"];
+        if (isset($post_param["ret_authcode "]))
+            $return_checksum.= $post_param["ret_authcode"];
+        if (isset($post_param["ret_trx_number "]))
+            $return_checksum.= $post_param["ret_trx_number"];
+        $return_checksum.= $sec_key;
+        $logger->info('ret_param: '.$post_param["ret_param_checksum"]);
+        $logger->info('hash     : '.md5($return_checksum));
+        if ($post_param["ret_param_checksum"] != md5($return_checksum)) {
+            // Error because hash do not match!
+            return $response;
+            #exit;
         }
-        else {
-            // URL ok
+        
+        $hashkey = $this->params()->fromRoute('hashkey', '');
+        
+        if($hashkey == '') {
+            $logger->warn('no hashkey given in route');
+            return $response;
         }
+        
+        $logger->info('found hashkey: '.$hashkey);
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('hashkey' => $hashkey));
+        
+        if($order == null) {
+            $logger->warn('unable to find order with hashkey: '.$hashkey);
+            return $response;
+        }
+        
+        $order->setStatus('paid');
+        $em->persist($order);
+        
+        $orderStatus = new Entity\OrderStatus;
+        $orderStatus->setOrder($order);
+        $orderStatus->setValue('paid');
+        $em->persist($orderStatus);
+        $em->flush();
+        
+        return $response;
     }
     
     /**

@@ -41,6 +41,20 @@ class PaymentTypeBankTransfer extends Form
             ), 
         )); 
         
+        $this->add(array(
+            'type' => 'checkbox',
+            'name' => 'visible',
+            'attributes' => array(
+                'class' => 'checkbox',
+            ),
+            'options' => array(
+                'label' => 'Visible',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
         $this->add(array( 
             'name' => 'name', 
             'type' => 'Zend\Form\Element\Text', 

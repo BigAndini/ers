@@ -101,6 +101,11 @@ class PaymentType implements InputFilterAwareInterface
     protected $type;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $visible;
+    
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $updated;
@@ -516,6 +521,29 @@ class PaymentType implements InputFilterAwareInterface
     }
     
     /**
+     * Set the value of visible.
+     *
+     * @param boolean $visible
+     * @return \Entity\Product
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of visible.
+     *
+     * @return boolean
+     */
+    public function getVisible()
+    {
+        return $this->visible;
+    }
+    
+    /**
      * Set the value of updated.
      *
      * @param datetime $updated
@@ -731,7 +759,7 @@ class PaymentType implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'explanation', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'type', 'updated', 'created');
+        $dataFields = array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'explanation', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'type', 'visible', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -764,6 +792,6 @@ class PaymentType implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'explanation', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'type', 'updated', 'created');
+        return array('id', 'ordering', 'name', 'logo', 'shortDescription', 'longDescription', 'explanation', 'fixFee', 'percentageFee', 'activeFrom', 'activeUntil', 'days2pay', 'type', 'visible', 'updated', 'created');
     }
 }

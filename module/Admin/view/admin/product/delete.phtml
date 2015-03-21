@@ -5,40 +5,45 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-<?php if(count($product->getParentProducts()) != 0 || count($product->getChildProducts()) != 0): ?>
-<?php if(count($product->getParentProducts()) != 0): ?>
-    <p>Please unconnect his product from its parent products.</p>
-
-    <ul>
-    <?php foreach($product->getParentProducts() as $parent): ?>
-        <li><?php echo $parent->getProduct()->getName();?></li>
-    <?php endforeach; ?>
-    </ul>
-<?php endif; ?>
-<?php if(count($product->getChildProducts()) != 0): ?>
-    <p>Please delete the child products first.</p>
-
-    <ul>
-    <?php foreach($product->getChildProducts() as $child): ?>
-        <li><?php echo $child->getSubProduct()->getName();?></li>
-    <?php endforeach; ?>
-    </ul>
-<?php endif; ?>
+<?php if($items != null && count($items) > 0) :?>
+    <p>Product for which orders already exist can't be deleted, just disable this product.</p>
+    <a href="<?php echo $this->url('admin/product');?>">Back</a>
 <?php else: ?>
-<p>Are you sure that you want to delete the product
-    <strong><?php echo $this->escapeHtml($product->getName()); ?></strong>?
-</p>
-<?php
-$url = $this->url('admin/product', array(
-    'action' => 'delete',
-    'id'     => $this->id,
-));
-?>
-<form action="<?php echo $url; ?>" method="post">
-<div>
-    <input type="hidden" name="id" value="<?php echo (int) $product->getId(); ?>" />
-    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
-    <a href="<?php echo $this->url('admin/product');?>">Cancel</a>
-</div>
-</form>
-<?php endif; ?>
+    <?php if(count($product->getParentProducts()) != 0 || count($product->getChildProducts()) != 0): ?>
+    <?php if(count($product->getParentProducts()) != 0): ?>
+        <p>Please unconnect his product from its parent products.</p>
+
+        <ul>
+        <?php foreach($product->getParentProducts() as $parent): ?>
+            <li><?php echo $parent->getProduct()->getName();?></li>
+        <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+    <?php if(count($product->getChildProducts()) != 0): ?>
+        <p>Please delete the child products first.</p>
+
+        <ul>
+        <?php foreach($product->getChildProducts() as $child): ?>
+            <li><?php echo $child->getSubProduct()->getName();?></li>
+        <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+    <?php else: ?>
+    <p>Are you sure that you want to delete the product
+        <strong><?php echo $this->escapeHtml($product->getName()); ?></strong>?
+    </p>
+    <?php
+    $url = $this->url('admin/product', array(
+        'action' => 'delete',
+        'id'     => $this->id,
+    ));
+    ?>
+    <form action="<?php echo $url; ?>" method="post">
+    <div>
+        <input type="hidden" name="id" value="<?php echo (int) $product->getId(); ?>" />
+        <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+        <a href="<?php echo $this->url('admin/product');?>">Cancel</a>
+    </div>
+    </form>
+    <?php endif; ?>
+<?php endif;?>
