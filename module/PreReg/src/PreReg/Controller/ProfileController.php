@@ -178,8 +178,9 @@ class ProfileController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Logger');
         
-        $hashKey = $this->params()->fromRoute('hashkey', '');
-        if($hashKey == '') {
+        $hashkey = $this->params()->fromRoute('hashkey', '');
+        if($hashkey == '') {
+            $logger->info('unable to find hashkey in route');
             return $this->redirect()->toRoute('zfcuser/login');
         }
         $form = new Form\ResetPassword();
@@ -188,13 +189,15 @@ class ProfileController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $user = $em->getRepository("ersEntity\Entity\User")
-                ->findOneBy(array('hashKey' => $hashKey));
+                ->findOneBy(array('hashkey' => $hashkey));
         if(!$user) {
+            $logger->info('unable to find user with hash key: '.$hashkey);
             return $this->redirect()->toRoute('zfcuser/login');
         }
         
         $now = new \DateTime();
-        if(($user->getUpdated()->getTimestamp()+7200) >= $now->getTimestamp()) {
+        if(($user->getUpdated()->getTimestamp()+7200) <= $now->getTimestamp()) {
+            $logger->info('Too late, link is not enabled anymore: '.($user->getUpdated()->getTimestamp()+7200).' >= '.$now->getTimestamp());
             return $this->redirect()->toRoute('zfcuser/login');
         }
         
@@ -215,6 +218,11 @@ class ProfileController extends AbstractActionController {
                 $password = $bcrypt->create($data['newPassword']);
                 $user->setPassword($password);
                 $user->setHashKey(null);
+                
+                $role = $em->getRepository("ersEntity\Entity\Role")
+                    ->findOneBy(array('roleId' => 'user'));
+                $user->addRole($role);
+                
                 $em->persist($user);
                 $em->flush();
                 
