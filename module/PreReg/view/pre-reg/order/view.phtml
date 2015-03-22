@@ -23,13 +23,13 @@ $this->headTitle($title);
             <h3><?php echo $paymenttype->getName(); ?></h3>
             <p><?php echo $paymenttype->getExplanation(); ?></p>
             <?php #if($order->getStatus() == 'paid'): ?>
-            <?php if($order->findOrderStatus('paid')): ?>
+            <?php if($order->findOrderStatus('paid')->getValue() != ''): ?>
                 <h3>This order is already paid</h3>
                 <p>Your eTickets will be sent out in june.</p>
-                <p><strong>Note:</strong>> Please add the email address 
+                <p><strong>Note:</strong> Please add the email address 
                     prereg@eja.net to your address book. To be sure the email 
                     with your eTickets will not arrive in your spamfolder.</p>
-            <?php elseif($order->findOrderStatus('unpaid')): ?>
+            <?php elseif($order->findOrderStatus('unpaid')->getValue() != ''): ?>
             <?php #if($order->getStatus() == 'unpaid'): ?>
                 <?php if($paymenttype->getType() == 'BankTransfer'): ?>
                     <h3>Bank Transfer Details</h3>

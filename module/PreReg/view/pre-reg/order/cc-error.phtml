@@ -7,19 +7,18 @@ $this->headTitle($title);
 <div class="jumbotron">
     <h1>We were not able to finish your credit card payment</h1>
     <?php if(isset($params['ret_errormsg']) && $params['ret_errormsg'] != ''): ?>
-        <h3><strong>Error: </strong><?php echo $params['ret_errormsg'] ?></h3>
-        <?php if(isset($params['ret_additionalmsg']) && $params['ret_additionalmsg'] != ''): ?>
-        <p><?php echo $params['ret_additionalmsg'] ?></p>
-        <?php endif; ?>
+        <div class="alert alert-danger">
+            <h3><strong>Error: </strong><?php echo $params['ret_errormsg'] ?></h3>
+            <?php if(isset($params['ret_additionalmsg']) && $params['ret_additionalmsg'] != ''): ?>
+            <p><?php echo $params['ret_additionalmsg'] ?></p>
+            <?php endif; ?>
+        </div>
     <?php endif; ?>
     <p>You can restart the credit card payment via the
-    <a href="<?php echo $this->url(
-            'order',
+    <a href="<?php echo $this->url('order',
             array(
                 'action' => 'view',
                 'hashkey' => $order->getHashKey(),
-                )); ?>">
-            order overview
-        </a>.</p>
+                )); ?>">order overview</a>.</p>
         <p>We sent this link to your email address address, too.</p>
 </div>

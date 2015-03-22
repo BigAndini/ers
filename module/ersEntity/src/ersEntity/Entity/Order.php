@@ -738,6 +738,7 @@ class Order implements InputFilterAwareInterface
     public function findOrderStatus($value) {
         foreach($this->getOrderStatus() as $status) {
             if($status->getValue() == $value) {
+                error_log('found: '.$status->getValue());
                 return $status;
             }
         }
