@@ -4,7 +4,7 @@ $title = 'My Persons';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-<p><a class="btn btn-primary" href="<?php echo $this->url('participant', array('action'=>'add'));?>">Add person</a></p>
+<p><a class="btn btn-success" href="<?php echo $this->url('participant', array('action'=>'add'));?>">Add person</a></p>
 
 <table class="table">
     <tr>
@@ -38,4 +38,4 @@ $this->headTitle($title);
     </tr>
 <?php endforeach; ?>
 </table>
-<p><a class="btn btn-primary" href="<?php echo $this->url('participant', array('action'=>'add'));?>">Add person</a></p>
+<p><a class="btn btn-success" href="<?php echo $this->url('participant', array('action'=>'add'));?>">Add person</a></p>

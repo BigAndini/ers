@@ -47,7 +47,7 @@ class RequestPassword extends Form
                 'type'  => 'submit',
                 'value' => 'Send',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-success',
             ),
         ));
     }

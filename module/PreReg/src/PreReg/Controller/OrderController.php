@@ -72,10 +72,13 @@ class OrderController extends AbstractActionController {
         $agegroupService->setAgegroups($agegroups);
         foreach($order->getPackages() as $package) {
             $participant = $package->getParticipant();
-            $agegroup = $agegroupService->getAgegroupByUser($participant);
             if($participant == null) {
                 continue;
             }
+            if($participant->getSessionId() == 0) {
+                continue;
+            }
+            $agegroup = $agegroupService->getAgegroupByUser($participant);
             foreach($package->getItems() as $item) {
                 $product = $em->getRepository("ersEntity\Entity\Product")
                     ->findOneBy(array('id' => $item->getProductId()));

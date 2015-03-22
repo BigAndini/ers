@@ -62,12 +62,21 @@ class ProductController extends AbstractActionController {
     
     public function addAction() {
         $product_id = (int) $this->params()->fromRoute('product_id', 0);
-        $participant_id = (int) $this->params()->fromRoute('participant_id', 0);
+        #$participant_id = (int) $this->params()->fromRoute('participant_id', 0);
         $item_id = (int) $this->params()->fromRoute('item_id', 0);
         if (!$product_id) {
             return $this->redirect()->toRoute('product', array(
                 'action' => 'index'
             ));
+        }
+        $participant_id = $this->params()->fromQuery('participant_id');
+        $agegroup_id = $this->params()->fromQuery('agegroup_id');
+        
+        if(!is_numeric($participant_id)) {
+            $participant_id = null;
+        }
+        if(!is_numeric($agegroup_id)) {
+            $agegroup_id = null;
         }
         
         $forrest = new Service\BreadcrumbFactory();
@@ -77,11 +86,38 @@ class ProductController extends AbstractActionController {
         
         $params = array();
         $params2 = array();
-        if(is_numeric($participant_id)) {
+        $options = array();
+        
+        $params['action'] = 'add';
+        $params['product_id'] = $product_id;
+        if($participant_id != 0) {
+            $options['query'] = array(
+                'participant_id' => $participant_id,
+            );
+        } elseif($agegroup_id != 0) {
+            $options['query'] = array(
+                'agegroup_id' => $agegroup_id,
+            );
+        }
+        $params2 = $params;
+
+        if($item_id) {
+            $params['action'] = 'edit';
+            # When we're in edit mode there may not be a item_id from 
+            # returning back from participant (#114)
+            $params2 = $params;
+            $params2['item_id'] = $item_id;
+            #$params['item_id'] = $item_id;
+        }
+        $forrest->set('participant', 'product', $params, $options);
+        
+        /*if(is_numeric($participant_id)) {
             #$params = $forrest->get('product')->params;
             $params['action'] = 'add';
             $params['product_id'] = $product_id;
-            $params['participant_id'] = $participant_id;
+            $options['query'] = array(
+                    'participant_id' => $participant_id,
+                );
             $params2 = $params;
             
             if($item_id) {
@@ -91,7 +127,7 @@ class ProductController extends AbstractActionController {
                 $params2 = $params;
                 $params2['item_id'] = $item_id;    
             }
-            $forrest->set('participant', 'product', $params);
+            $forrest->set('participant', 'product', $params, $options);
         } else {
             $forrest->set('participant', 'product',
                     array(
@@ -99,18 +135,19 @@ class ProductController extends AbstractActionController {
                         'product_id' => $product_id
                     )
                 );
-        }
+        }*/
         
-        if(!$forrest->exists('cart')) {
+        /*if(!$forrest->exists('cart')) {
             $forrest->set('cart', 'product');
-        }
-        $forrest->set('cart', 'product', $params2);
-        $forrest->set('bc_stay', 'product', $params2);
+        }*/
+        $forrest->set('cart', 'product', $params2, $options);
+        $forrest->set('bc_stay', 'product', $params2, $options);
         
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $product_id));
+        $product = $em->getRepository("ersEntity\Entity\Product")
+                ->findOneBy(array('id' => $product_id));
         
         $form = $this->getServiceLocator()->get('PreReg\Form\ProductView');
 
@@ -118,7 +155,7 @@ class ProductController extends AbstractActionController {
             $url = $this->url()->fromRoute('cart', 
                     array(
                         'action' => 'add', 
-                        'participant_id' => $participant_id, 
+                        #'participant_id' => $participant_id, 
                         'item_id' => $item_id
                     ));
         } else {
@@ -142,12 +179,10 @@ class ProductController extends AbstractActionController {
         $cartContainer = new Container('cart');
         $participant = null;
         $item = '';
-        if(is_numeric($participant_id)) { 
-            $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
-            if($item_id) {
-                $item = $cartContainer->order->getItem($participant_id, $item_id);
-                $cartContainer->editItem = $item;
-            }
+        
+        if($item_id) {
+            $item = $cartContainer->order->getItem($item_id);
+            $cartContainer->editItem = $item;
         }
         
         $options = array();
@@ -188,33 +223,26 @@ class ProductController extends AbstractActionController {
                 'label' => 'do not assign this product',
                 'selected' => $selected,
                 ));
-        } else {
-            foreach($agegroups as $agegroup) {
-                $agegroup_options[] = array(
-                    'value' => $agegroup->getId(),
-                    'label' => $agegroup->getName(),
-                );
-            }
-            $agegroup_options[] = array(
-                    'value' => '0',
-                    'label' => 'normal',
-                    'selected' => true,
-                );
         }
+        foreach($agegroups as $agegroup) {
+            $agegroup_options[] = array(
+                'value' => $agegroup->getId(),
+                'label' => $agegroup->getName(),
+            );
+        }
+        $agegroup_options[] = array(
+                'value' => '0',
+                'label' => 'normal',
+                'selected' => true,
+            );
         
         if(count($options) <= 0 && $product->getPersonalized()) {
             $form->get('submit')->setAttribute('disabled', 'disabled');
         }
-        
-        $select_agegroup = false;
-        if(count($agegroup_options) > 0) {
-            $select_agegroup = true;
-            $form->get('agegroup_id')->setAttribute('options', $agegroup_options);
-        } else {
-            $form->get('participant_id')->setAttribute('options', $options);
-        }
-        
 
+        $form->get('agegroup_id')->setAttribute('options', $agegroup_options);
+        $form->get('participant_id')->setAttribute('options', $options);
+        
         $breadcrumb = $forrest->get('product');
         
         $chooser = $cartContainer->chooser;
@@ -240,7 +268,6 @@ class ProductController extends AbstractActionController {
             'bc_stay' => $forrest->get('bc_stay'),
             'chooser' => $chooser,
             'agegroups' => $agegroups,
-            'select_agegroup' => $select_agegroup,
             'deadline' => $deadline,
             'agegroup' => $agegroup,
         ));
@@ -267,33 +294,38 @@ class ProductController extends AbstractActionController {
         }
         
         $product_id = (int) $this->params()->fromRoute('product_id', 0);
-        $participant_id = (int) $this->params()->fromRoute('participant_id', 0);
+        #$participant_id = (int) $this->params()->fromRoute('participant_id', 0);
         $item_id = (int) $this->params()->fromRoute('item_id', 0);
-        if (!is_numeric($product_id) || !is_numeric($participant_id) || !is_numeric($item_id)) {
+        if (!is_numeric($product_id) || !is_numeric($item_id)) {
+        #if (!is_numeric($product_id) || !is_numeric($participant_id) || !is_numeric($item_id)) {
             $breadcrumb = $forrest->get('product');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
         $cartContainer = new Container('cart');
-        $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
-        $item = $cartContainer->order->getItem($participant_id, $item_id);
+        #$participant = $cartContainer->order->getParticipantBySessionId($participant_id);
+        $participant = $cartContainer->order->getParticipantByItemId($item_id);
+        #$item = $cartContainer->order->getItem($participant_id, $item_id);
+        $item = $cartContainer->order->getItem($item_id);
         
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $product_id));
+        $product = $em->getRepository("ersEntity\Entity\Product")
+                ->findOneBy(array('id' => $product_id));
         
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
-                $participant_id = (int) $request->getPost('participant_id');
+                #$participant_id = (int) $request->getPost('participant_id');
                 $item_id = (int) $request->getPost('item_id');
                 
-                $package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
+                #$package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
                 
-                $cartContainer->order->removeItem($package->getSessionId(), $item_id);
+                #$cartContainer->order->removeItem($package->getSessionId(), $item_id);
+                $cartContainer->order->removeItem($item_id);
             }
 
             $breadcrumb = $forrest->get('product');

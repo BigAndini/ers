@@ -48,7 +48,7 @@ class PaymentType extends Form
                 'type'  => 'submit',
                 'value' => 'Save & Continue',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-primary btn-lg',
+                'class' => 'btn btn-success btn-lg',
             ),
         ));
     }

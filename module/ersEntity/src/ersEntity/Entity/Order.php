@@ -39,6 +39,20 @@ class Order implements InputFilterAwareInterface
      * @var length
      */
     private $length = 30;
+    
+    /**
+     * session ids for packages
+     * 
+     * @var package_id
+     */
+    private $package_id = 0;
+    
+    /**
+     * session ids for items
+     * 
+     * @var item_id
+     */
+    private $item_id = 0;
 
     /**
      * @ORM\Id
@@ -429,6 +443,19 @@ class Order implements InputFilterAwareInterface
     {
         return $this->created;
     }
+    
+    public function getSessionId($part) {
+        switch($part) {
+            case 'package':
+                $this->package_id++;
+                return $this->package_id;
+                #return \count($this->getPackages())+1;
+            case 'item':
+                $this->item_id++;
+                return $this->item_id;
+                #return \count($this->getItems())+1;
+        }
+    }
 
     /**
      * Set the value of Code_id.
@@ -498,8 +525,9 @@ class Order implements InputFilterAwareInterface
     public function addPackage(Package $package)
     {
         if(!is_numeric($package->getSessionId())) {
-            $id = \count($this->getPackages())+1;
-            $package->setSessionId($id);
+            #$id = \count($this->getPackages())+1;
+            #$package->setSessionId($id);
+            $package->setSessionId($this->getSessionId('package'));
         }
         $this->packages[] = $package;
 
@@ -543,6 +571,17 @@ class Order implements InputFilterAwareInterface
         return false;
     }
     
+    public function getPackageByItemId($item_id) {
+        foreach($this->getPackages() as $package) {
+            foreach($package->getItems() as $item) {
+                if($item->getSessionId() == $item_id) {
+                    return $package;
+                }
+            }
+        }
+        return false;
+    }
+    
     /**
      * Get Package by participant session id.
      * 
@@ -566,7 +605,9 @@ class Order implements InputFilterAwareInterface
      */
     public function addItem(Item $item, $Participant_id)
     {
+        error_log('participant_id: '.$Participant_id);
         $package = $this->getPackageByParticipantSessionId($Participant_id);
+        $package->setOrder($this);
         $package->addItem($item);
         
         return $this;
@@ -581,14 +622,24 @@ class Order implements InputFilterAwareInterface
      * @return \Entity\Item
      * @return false
      */
-    public function getItem($participant_id, $item_id) {
-        $package = $this->getPackageByParticipantSessionId($participant_id);
+    public function getItem($item_id) {
+    #public function getItem($participant_id, $item_id) {
+        foreach($this->getPackages() as $package) {
+            foreach($package->getItems() as $item) {
+                if($item->getSessionId() == $item_id) {
+                    return $item;
+                }
+            }
+        }
+        error_log('unable to find package with id: '.$item_id);
+        return false;
+        /*$package = $this->getPackageByParticipantSessionId($participant_id);
         if($package) {
             return $package->getItemBySessionId($item_id);    
         } else {
             error_log('unable to find package');
         }
-        return false;
+        return false;*/
     }
     
     public function findPackageByItem(Item $item) {
@@ -622,8 +673,10 @@ class Order implements InputFilterAwareInterface
      * 
      * @return \Entity\Order
      */
-    public function removeItem($package_id, $item_id) {
-        $package = $this->getPackageBySessionId($package_id);
+    public function removeItem($item_id) {
+    #public function removeItem($package_id, $item_id) {
+        $package = $this->getPackageByItemId($item_id);
+        #$package = $this->getPackageBySessionId($package_id);
         if($package) {
             $package->removeItemBySessionId($item_id);    
         }
@@ -699,10 +752,10 @@ class Order implements InputFilterAwareInterface
      */
     public function addPaymentDetail(PaymentDetail $paymentDetail)
     {
-        if(!is_numeric($paymentDetail->getSessionId())) {
+        /*if(!is_numeric($paymentDetail->getSessionId())) {
             $id = \count($this->getPaymentDetails())+1;
             $paymentDetail->setSessionId($id);
-        }
+        }*/
         $this->paymentDetails[] = $paymentDetail;
 
         return $this;
@@ -741,7 +794,10 @@ class Order implements InputFilterAwareInterface
         foreach($this->getPackages() as $package) {
             if($package->getParticipant()->getFirstname() != '' && $package->getParticipant()->getSurname() != '') {
                 $id = $package->getParticipant()->getSessionId();
+                error_log('participant '.$package->getParticipant()->getFirstname().' has id '.$id);
                 $participants[$id] = $package->getParticipant();
+            } else {
+                error_log('will not add participant '.$package->getParticipant()->getFirstname().' '.$package->getParticipant()->getSurname().' with id: '.$package->getParticipant()->getSessionId());
             }
         }
         
@@ -759,6 +815,26 @@ class Order implements InputFilterAwareInterface
             if($package->getParticipant()->getSessionId() == $id) {
                 return $package->getParticipant();
             }
+        }
+        return false;
+    }
+    
+    /**
+     * Get Participant by item_id
+     * 
+     * @param type $item_id
+     * @return boolean
+     */
+    public function getParticipantByItemId($item_id) {
+        foreach($this->getPackages() as $package) {
+            foreach($package->getItems() as $item) {
+                if($item->getSessionId() == $item_id) {
+                    return $package->getParticipant();
+                }
+            }
+            /*if($package->getParticipant()->getSessionId() == $id) {
+                return $package->getParticipant();
+            }*/
         }
         return false;
     }
@@ -787,11 +863,15 @@ class Order implements InputFilterAwareInterface
     
     public function addParticipant($participant) {
         $package = new Package();
-        $participant_id = \count($this->getPackages())+1;
-        $participant->setSessionId($participant_id);
+        $sessionId = $this->getSessionId('package');
+        error_log('participant session id: '.$sessionId);
+        #$participant_id = \count($this->getPackages())+1;
+        #$participant->setSessionId($participant_id);
+        $participant->setSessionId($sessionId);
         $package->setParticipant($participant);
-        $package_id = \count($this->getPackages())+1;
-        $package->setSessionId($package_id);
+        #$package_id = \count($this->getPackages())+1;
+        #$package->setSessionId($package_id);
+        $package->setSessionId($sessionId);
         
         $this->packages[] = $package;
         
@@ -1057,6 +1137,20 @@ class Order implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'hashkey', 'invoiceDetail', 'packages', 'updated', 'created', 'Code_id');
+        return array(
+            'id', 
+            'package_id', 
+            'item_id', 
+            'Purchaser_id', 
+            'purchaser', 
+            'PaymentType_id', 
+            'paymentType', 
+            'matchKey', 
+            'hashkey', 
+            'invoiceDetail', 
+            'packages', 
+            'updated', 
+            'created', 
+            'Code_id');
     }
 }

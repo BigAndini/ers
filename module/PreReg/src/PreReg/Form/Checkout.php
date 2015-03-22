@@ -50,7 +50,7 @@ class Checkout extends Form
                 'type'  => 'submit',
                 'value' => 'Buy Now',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-primary btn-lg',
+                'class' => 'btn btn-success btn-lg',
             ),
         ));
     }

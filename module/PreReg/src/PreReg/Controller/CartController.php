@@ -44,8 +44,8 @@ class CartController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Logger');
         
-        $param_participant_id = (int) $this->params()->fromRoute('participant_id', 0);
-        $param_item_id = (int) $this->params()->fromRoute('item_id', 0);
+        #$param_participant_id = (int) $this->params()->fromRoute('participant_id', 0);
+        #$param_item_id = (int) $this->params()->fromRoute('item_id', 0);
         /*if (!$participant_id) {
             return $this->redirect()->toRoute('order');
         }*/
@@ -55,10 +55,17 @@ class CartController extends AbstractActionController {
         if ($request->isPost()) {
             $data = $request->getPost();
             
+            $logger->info(var_export($data, true));
+            
             $participant_id = 0;
             if(isset($data['participant_id'])) {
                 $participant_id = $data['participant_id'];
                 unset($data['participant_id']);
+            }
+            $agegroup_id = 0;
+            if(isset($data['agegroup_id'])) {
+                $agegroup_id = $data['agegroup_id'];
+                unset($data['agegroup_id']);
             }
             
             # check if participant already has a personalized ticket
@@ -80,22 +87,28 @@ class CartController extends AbstractActionController {
             $product_data['Product_id'] = $product_data['id'];
             unset($product_data['id']);
             
-            $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
+            if($participant_id != 0) {
+                $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
             
-            $agegroupService = new Service\AgegroupService();
-            $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
-                    ->findAll();
-            $agegroupService->setAgegroups($agegroups);
-            $agegroup = $agegroupService->getAgegroupByUser($participant);
+                $agegroupService = new Service\AgegroupService();
+                $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                        ->findBy(array('priceChange' => '1'));
+                $agegroupService->setAgegroups($agegroups);
+                $agegroup = $agegroupService->getAgegroupByUser($participant);
+            } elseif($agegroup_id != 0) {
+                $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")
+                        ->findOneBy(array('id' => $agegroup_id));
+            } else {
+                $logger->emerg('Unable to add/edit product!');
+            }
             
             $deadlineService = new Service\DeadlineService();
             $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
-                    ->findAll();
+                    ->findBy(array('priceChange' => '1'));
             $deadlineService->setDeadlines($deadlines);
             $deadline = $deadlineService->getDeadline();
             
-            $item->populate($product_data);
-            #$item->setPrice($product->getPrice()->getCharge());
+            #$item->populate($product_data);
             $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
             $item->setAmount(1);
             $item->populate((array) $product_data);
@@ -123,10 +136,11 @@ class CartController extends AbstractActionController {
             }
             
             if(isset($cartContainer->editItem) && $cartContainer->editItem instanceof Entity\Item) {
-                $package = $cartContainer->order->findPackageByItem($cartContainer->editItem);
-                $cartContainer->order->removeItem($package->getSessionId(), $cartContainer->editItem->getSessionId());
+                $cartContainer->order->removeItem($cartContainer->editItem->getSessionId());
                 unset($cartContainer->editItem);
             }
+            
+            error_log('adding item to participant: '.$participant_id);
             $cartContainer->order->addItem($item, $participant_id);
             $cartContainer->chooser = true;
         }
@@ -136,6 +150,7 @@ class CartController extends AbstractActionController {
             $forrest->set('cart', 'product');
         }
         $breadcrumb = $forrest->get('cart');
+        $logger->info(var_export($breadcrumb, true));
         
         return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
     }

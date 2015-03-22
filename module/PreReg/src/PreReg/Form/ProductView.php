@@ -69,15 +69,19 @@ class ProductView extends Form
         ));
         $this->add(array(
             'name' => 'agegroup_id',
-            'type'  => 'Zend\Form\Element\Select',
+            'type'  => 'Zend\Form\Element\Radio',
             'attributes' => array(
-                'class' => 'form-control form-element',
+                #'class' => 'form-control form-element',
+                'class' => 'checkbox-inline',
             ),
             'options' => array(
                 'label' => 'Agegroup',
                 'label_attributes' => array(
                     'class'  => 'media-object',
-                    'id' => 'agegroup',
+                    #'id' => 'agegroup',
+                ),
+                'legend_attributes' => array(
+                    'class' => 'hide',
                 ),
             ),
         ));
@@ -100,7 +104,7 @@ class ProductView extends Form
                 'type'  => 'submit',
                 'value' => 'Go',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-success',
             ),
         ));
     }

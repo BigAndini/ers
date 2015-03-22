@@ -63,7 +63,7 @@ class ResetPassword extends Form
                 'type'  => 'submit',
                 'value' => 'Save',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-success',
             ),
         ));
     }

@@ -306,6 +306,21 @@ a.product-item span.product-short-description {
   background-color: #d6f29d;
 }
 
+.nav-pills > li > a {
+  color: #85b32a;
+}
+
+.nav-pills > li.active > a {
+  color: #000;
+  background-color: #d6f29d;
+}
+
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+  color: #000;
+  background-color: #d6f29d;
+}
+
 dt.product-price {
     font-size: 12px;
 }
@@ -453,4 +468,15 @@ a {
 }
 a:hover, a:focus {
     color: #70d900;
+}
+
+.ui-widget-content a {
+    color: #85b32a;
+}
+
+.ui-tabs .ui-tabs-panel {
+    padding: 15px 10px;
+}
+.ui-tabs-panel p {
+    margin: 0 0 5px;
 }

@@ -14,7 +14,7 @@ echo $this->navigation()
 <div class="clear-both"></div>
 
 <div class="checkout">
-    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'purchaser')) ?>">Continue</a>
+    <a class="btn btn-lg btn-success" href="<?php echo $this->url('order', array('action' => 'purchaser')) ?>">Continue</a>
 </div>
 <div class="reset-cart">
     <a href="<?php echo $this->url('cart', array('action' => 'reset')) ?>">Reset My Shopping Cart and My Persons</a>
@@ -88,30 +88,40 @@ echo $this->navigation()
                             <td><?php echo $item->getAmount(); ?></td>
                             <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
                             <td>
-                                <?php 
-                                if($user->getSessionId() === null) {
-                                    $user_id = 0;
-                                } else {
-                                    $user_id = $user->getSessionId();
-                                }
+                                <?php
+                                if($participant != 'further items') :
+                                    if($user->getSessionId() != null) :
+                                        $variants['participant_id'] = $user->getSessionId();
+                                        $fragment = 'person';
+                                    endif;
+                                else:
+                                    $variants['agegroup_id'] = 4;
+                                    $fragment = 'agegroup';
+                                endif;
+                                
                                 ?>
                                 <a href="<?php echo $this->url('product', 
                                         array(
                                             'action' => 'edit', 
                                             'product_id' => $item->getProductId(), 
-                                            'participant_id' => $user_id,
+                                            #'participant_id' => $user_id,
                                             'item_id' => $item->getSessionId(),
-                                            #'variants' => urlencode(json_encode($variants)),
                                         ),
                                         array(
                                             'query' => $variants,
+                                            'fragment' => $fragment,
                                         )) ?>">edit</a>
                                 <a href="<?php echo $this->url('product', 
                                         array(
                                             'action' => 'delete', 
                                             'product_id' => $item->getProductId(), 
-                                            'participant_id' => $user_id,
+                                            #'participant_id' => $user_id,
                                             'item_id' => $item->getSessionId()
+                                        ),
+                                        array(
+                                            /*'query' => array(
+                                                'participant_id' => $user_id,
+                                            )*/
                                         )) ?>">delete</a>
                             </td>
                         </tr>
@@ -138,5 +148,5 @@ echo $this->navigation()
  
  <div class="clear-both"></div>
  <div class="checkout">
-     <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'purchaser')) ?>">Continue</a>
+     <a class="btn btn-lg btn-success" href="<?php echo $this->url('order', array('action' => 'purchaser')) ?>">Continue</a>
  </div>

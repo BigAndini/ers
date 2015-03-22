@@ -100,8 +100,20 @@ jQuery(function($) {
         cookieMessage: 'We use cookies on this website, you can <a href="{{cookiePolicyLink}}" title="read about our cookies" target="_blank">read about them here</a>. To use the website as intended please...',
         cookiePolicyLink: 'http://cookiecuttr.com/'
     });
-});
-
-$(document).ready(function () {
-  
+    
+    $( "#person-detail" ).tabs({
+        create: function( event, ui ) {
+            $( "#person-detail" ).find('input').prop('disabled', true);
+            $( "#person-detail" ).find('select').prop('disabled', true);
+            ui.panel.find('input').prop('disabled', false);
+            ui.panel.find('select').prop('disabled', false);
+        },
+        /*activate: function( event, ui ) {},*/
+        beforeActivate: function( event, ui ) {
+            $( "#person-detail" ).find('input').prop('disabled', true);
+            $( "#person-detail" ).find('select').prop('disabled', true);
+            ui.newPanel.find('input').prop('disabled', false);
+            ui.newPanel.find('select').prop('disabled', false);
+        }
+    });
 });

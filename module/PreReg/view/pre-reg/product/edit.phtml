@@ -15,7 +15,7 @@
             <a class="btn btn-default" href="<?php echo $this->url('product'); ?>">&lt; products</a>
         </div>
         <div class="floatRight">
-            <a class="btn btn-primary" href="<?php echo $this->url('order'); ?>">shopping cart &gt;</a>
+            <a class="btn btn-success" href="<?php echo $this->url('order'); ?>">shopping cart &gt;</a>
         </div>
         <div class="clear-both"></div>
     </div>
@@ -55,10 +55,12 @@
                     <p class="small text-right">This prices are valid until <?php echo $deadline->getDeadline()->format('d.m.Y'); ?></p>
                     <dl class="dl-horizontal">
                         <?php foreach($agegroups as $ag): ?>
-                        <?php $class = '';
-                        if($agegroup != null && $agegroup->getId() == $ag->getId()):
+                        <?php 
+                        #$class = '';
+                        $class = 'product-price-active';
+                        /*if($agegroup != null && $agegroup->getId() == $ag->getId()):
                             $class = 'product-price-active';
-                        endif; ?>
+                        endif;*/ ?>
                         <dt class="product-price<?php echo ' '.$class ?>">
                             <?php echo $ag->getName(); ?>
                         </dt>
@@ -66,40 +68,53 @@
                             <?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?>
                         </dd>
                         <?php endforeach; ?>
-                        <?php $class = '';
-                        if($participant->getSessionId() == 0 || $agegroup == null):
+                        <?php 
+                        #$class = '';
+                        $class = 'product-price-active';
+                        /*if($participant->getSessionId() == 0 || $agegroup == null):
                             $class = 'product-price-active';
-                        endif; ?>
+                        endif;*/ ?>
                         <dt class="product-price<?php echo ' '.$class ?>">normal</dt>
                         <dd class="product-price<?php echo ' '.$class ?>">
                             <?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?>
                         </dd>
                     </dl>
-                    <p class="text-right">
-                        <?php echo $this->formSubmit($form->get('submit')); ?>
-                    </p>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-6">
-                    <?php #if($product->getPersonalized() || count($participants) > 0):
-                        if($form->get('submit')->getAttribute('disabled') == 'disabled'): ?>
-                            <div class="alert alert-warning">
-                                <h4>Please choose a person</h4>
-                                <p>This is a personalized ticket. To continue, please first 
-                                    <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add the person</a>
-                                    who will use the ticket for the event.</p>
-                                <div class="clear-both"></div>
+                <div class="col-lg-6 ui-tabs-panel ui-widget-content ui-corner-all">
+                    <div id="person-detail">
+                        <ul>
+                            <li><a href="#person">Person</a></li>
+                            <?php if(!$product->getPersonalized()): ?>
+                                <li><a href="#agegroup">Agegroup</a></li>
+                            <?php endif; ?>
+                        </ul>
+                        <div id="person">
+                            <?php if($form->get('submit')->getAttribute('disabled') == 'disabled'): ?>
+                                <div class="alert alert-warning">
+                                    <h4>Please choose a person</h4>
+                                    <p>This is a personalized ticket. To continue, please first 
+                                        <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add the person</a> who will use the ticket for the event.</p>
+                                    <div class="clear-both"></div>
+                                </div>
+                            <?php 
+                            endif;
+                            echo $this->formRow($form->get('participant_id'));
+                            ?>
+                            <p><strong>Tip:</strong><br />You can 
+                                <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add a new person</a>
+                                or edit the details of any person with 
+                                <a href="<?php echo $this->url('participant'); ?>">My Persons</a> 
+                                from the menu.</p>
+                        </div>
+                        <?php if(!$product->getPersonalized()): ?>
+                            <div id="agegroup">
+                                <?php echo $this->formRow($form->get('agegroup_id')); ?>
                             </div>
-                        <?php endif;
-                        echo $this->formRow($form->get('participant_id')); ?>
-                        <p><strong>Tip:</strong><br />You can 
-                            <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add a new person</a>
-                            or edit the details of any person with 
-                            <a href="<?php echo $this->url('participant'); ?>">My Persons</a> 
-                            from the menu.</p>
-                    <?php #endif; ?>
-
+                        <?php endif; ?>
+                    </div>
+                    
                     <?php $form->get('Product_id')->setAttribute('value', $product->getId());
                     echo $this->formHidden($form->get('Product_id'));
                     $prices = $product->getProductPrices();
@@ -110,6 +125,10 @@
                         echo $this->formRow($form->get('variant_type_'.$i));
                     }
                     ?>
+                    <p class="text-right">
+                        <?php echo $this->formSubmit($form->get('submit')); ?>
+                        <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);?>"><?php echo $this->translate('Cancel'); ?></a>
+                    </p>
                 </div>
                 <div class="col-lg-6">
                     <?php if(count($product->getChildProducts()) > 0): ?>

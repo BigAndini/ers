@@ -300,8 +300,9 @@ class Package implements InputFilterAwareInterface
     public function addItem(Item $item)
     {
         if(!is_numeric($item->getSessionId())) {
-            $id = \count($this->getItems())+1;
-            $item->setSessionId($id);
+            #$id = \count($this->getItems())+1;
+            #$item->setSessionId($id);
+            $item->setSessionId($this->order->getSessionId('item'));
         }
         $this->items[] = $item;
 
