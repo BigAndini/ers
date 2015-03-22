@@ -202,9 +202,6 @@ body {
     font-weight: bold;
 }
 
-/*.ers-dropdown {
-    width: 960px;
-}*/
 ul.ers-dropdown {
     padding: 0px;
     margin: 0px;
@@ -224,7 +221,7 @@ ul.ers-dropdown li {
 ul.ers-dropdown li a {
     text-decoration: none;
     display: block;
-    /*color: #333;*/
+    color: #eee;
     padding: 14px 34px 14px 34px;
 }
 ul.ers-dropdown li:hover > ul {
@@ -239,6 +236,9 @@ ul.ers-dropdown li ul{
 ul.ers-dropdown li ul li{
     float: none;
     background-color: #f1f1f1;
+}
+ul.ers-dropdown li ul li a {
+    color: #000;
 }
 ul.ers-dropdown li ul li a:hover{
     /*color: #333;*/

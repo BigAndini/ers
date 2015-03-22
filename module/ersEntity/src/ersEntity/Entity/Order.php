@@ -605,10 +605,11 @@ class Order implements InputFilterAwareInterface
      */
     public function addItem(Item $item, $Participant_id)
     {
-        error_log('participant_id: '.$Participant_id);
         $package = $this->getPackageByParticipantSessionId($Participant_id);
-        $package->setOrder($this);
-        $package->addItem($item);
+        if($package) {
+            $package->setOrder($this);
+            $package->addItem($item);
+        }
         
         return $this;
     }
@@ -631,15 +632,7 @@ class Order implements InputFilterAwareInterface
                 }
             }
         }
-        error_log('unable to find package with id: '.$item_id);
         return false;
-        /*$package = $this->getPackageByParticipantSessionId($participant_id);
-        if($package) {
-            return $package->getItemBySessionId($item_id);    
-        } else {
-            error_log('unable to find package');
-        }
-        return false;*/
     }
     
     public function findPackageByItem(Item $item) {
@@ -738,7 +731,6 @@ class Order implements InputFilterAwareInterface
     public function findOrderStatus($value) {
         foreach($this->getOrderStatus() as $status) {
             if($status->getValue() == $value) {
-                error_log('found: '.$status->getValue());
                 return $status;
             }
         }
@@ -795,10 +787,7 @@ class Order implements InputFilterAwareInterface
         foreach($this->getPackages() as $package) {
             if($package->getParticipant()->getFirstname() != '' && $package->getParticipant()->getSurname() != '') {
                 $id = $package->getParticipant()->getSessionId();
-                error_log('participant '.$package->getParticipant()->getFirstname().' has id '.$id);
                 $participants[$id] = $package->getParticipant();
-            } else {
-                error_log('will not add participant '.$package->getParticipant()->getFirstname().' '.$package->getParticipant()->getSurname().' with id: '.$package->getParticipant()->getSessionId());
             }
         }
         
@@ -865,13 +854,8 @@ class Order implements InputFilterAwareInterface
     public function addParticipant($participant) {
         $package = new Package();
         $sessionId = $this->getSessionId('package');
-        error_log('participant session id: '.$sessionId);
-        #$participant_id = \count($this->getPackages())+1;
-        #$participant->setSessionId($participant_id);
         $participant->setSessionId($sessionId);
         $package->setParticipant($participant);
-        #$package_id = \count($this->getPackages())+1;
-        #$package->setSessionId($package_id);
         $package->setSessionId($sessionId);
         
         $this->packages[] = $package;

@@ -113,7 +113,20 @@ class CartController extends AbstractActionController {
             $item->setAmount(1);
             $item->populate((array) $product_data);
             
-            for($i=0; $i < count($product->getProductVariants()); $i++) {
+            $variant_data = $data['pv'];
+            foreach($product->getProductVariants() as $variant) {
+                $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                    ->findOneBy(array('id' => $variant_data[$variant->getId()]));
+                if($value) {
+                    $itemVariant = new Entity\ItemVariant();
+                    $itemVariant->populateFromEntity($variant, $value);
+                    $item->addItemVariant($itemVariant);
+                    #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
+                } else {
+                    $logger->warn('Unable to find value for variant: '.$variant->getName().' (id: '.$variant->getId().')');
+                }
+            }
+            /*for($i=0; $i < count($product->getProductVariants()); $i++) {
                 if(!isset($data['variant_id_'.$i])) {
                     $logger->notice('unable to find variant_id_'.$i.' in POST data.');
                     continue;
@@ -133,7 +146,7 @@ class CartController extends AbstractActionController {
                     $itemVariant->populateFromEntity($variant, $value);
                     $item->addItemVariant($itemVariant);
                 }
-            }
+            }*/
             
             if(isset($cartContainer->editItem) && $cartContainer->editItem instanceof Entity\Item) {
                 $cartContainer->order->removeItem($cartContainer->editItem->getSessionId());
