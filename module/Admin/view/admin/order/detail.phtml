@@ -1,6 +1,12 @@
-<?php
+<?php 
+$status = 'undefined';
+if($order->findOrderStatus('paid')->getValue() != ''):
+    $status = 'paid';
+elseif($order->findOrderStatus('unpaid')->getValue() != ''):
+    $status = 'unpaid';
+endif;
 
-$title = 'Order '.$order->getCode()->getValue().' ('.$order->getStatus().')';
+$title = 'Order '.$order->getCode()->getValue().' ('.$status.')';
 $this->headTitle($title);
 ?>
 
