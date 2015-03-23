@@ -9,6 +9,8 @@
 namespace PreReg\Form;
 
 use Zend\Form\Form;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilter;
 use ersEntity\Entity;
 
 class ProductView extends Form
@@ -30,7 +32,7 @@ class ProductView extends Form
     {
         
         parent::__construct('Product');
-        $this->variantCounter = 0;
+        #$this->variantCounter = 0;
         $this->variants = array();
         $this->setAttribute('method', 'post');
         
@@ -69,34 +71,21 @@ class ProductView extends Form
         ));
         $this->add(array(
             'name' => 'agegroup_id',
+            'require' => true,
             'type'  => 'Zend\Form\Element\Radio',
             'attributes' => array(
-                #'class' => 'form-control form-element',
                 'class' => 'checkbox-inline',
             ),
             'options' => array(
                 'label' => 'Agegroup',
                 'label_attributes' => array(
                     'class'  => 'media-object',
-                    #'id' => 'agegroup',
                 ),
                 'legend_attributes' => array(
                     'class' => 'hide',
                 ),
             ),
         ));
-        /*$formElement = array();
-        $formElement['name'] = 'participant_id';
-        $formElement['type'] = 'Zend\Form\Element\Select';
-
-        $formElement['attributes']['class'] = 'form-control form-element';
-        $formElement['options'] = array();
-        $formElement['options']['label'] = 'Person';
-        $formElement['options']['label_attributes'] = array(
-            'class'  => 'media-object',
-            'id' => 'participant',
-        );
-        $this->add($formElement);*/
         
         $this->add(array(
             'name' => 'submit',
@@ -107,6 +96,8 @@ class ProductView extends Form
                 'class' => 'btn btn-success',
             ),
         ));
+        
+        $this->getInputFilter();
     }
 
     public function setVariants($variants, $defaults = array()) {
@@ -132,12 +123,12 @@ class ProductView extends Form
         $this->addVariants($defaults);
     }
     
-    public function getVariantCounter() {
+    /*public function getVariantCounter() {
         return $this->variantCounter;
-    }
+    }*/
     
     private function addVariants($defaults=array()) {
-        $this->variantCounter = 0;
+        #$this->variantCounter = 0;
         foreach($this->variants as $variant) {
             /* Example array
              * array(
@@ -150,47 +141,18 @@ class ProductView extends Form
                     'label' => 'Birthday',
                 ),
             )*/
-            /*$formElementId = array();
-            $formElementId['name'] = 'variant_id_'.$this->variantCounter;
-            $formElementId['attributes'] = array();
-            $formElementId['attributes']['type'] = 'hidden';
-            $formElementId['attributes']['value'] = $variant->getId();
-            $this->add($formElementId);
-            
-            $formElementType = array();
-            $formElementType['name'] = 'variant_type_'.$this->variantCounter;
-            $formElementType['attributes'] = array();
-            $formElementType['attributes']['type'] = 'hidden';
-            $formElementType['attributes']['value'] = $variant->getType();
-            $this->add($formElementType);*/
-            
             
             $productVariant = array();
             $productVariant['name'] = 'pv['.$variant->getId().']';
-            
-            /*$formElementValue = array();
-            $formElementValue['name'] = 'variant_value_'.$this->variantCounter;*/
+           
             switch(strtolower($variant->getType())) {
                 case 'text':
-                    /*$formElementValue['attributes'] = array();
-                    $formElementValue['attributes']['type'] = $variant->getType();
-                    $formElementValue['attributes']['class'] = 'form-control form-element';
-                    if(isset($defaults[$variant->getId()])) {
-                        $formElementValue['attributes']['value'] = $defaults[$variant->getId()];
-                    }*/
-                    
                     $productVariant['attributes'] = array();
                     $productVariant['attributes']['type'] = $variant->getType();
                     $productVariant['attributes']['class'] = 'form-control form-element';
                     if(isset($defaults[$variant->getId()])) {
                         $productVariant['attributes']['value'] = $defaults[$variant->getId()];
                     }
-                    
-                    /*$formElementValue['options'] = array();
-                    $formElementValue['options']['label'] = $variant->getName();
-                    $formElementValue['options']['label_attributes'] = array(
-                            'class'  => 'media-object',
-                        );*/
                     
                     $productVariant['options'] = array();
                     $productVariant['options']['label'] = $variant->getName();
@@ -199,25 +161,12 @@ class ProductView extends Form
                         );
                     break;
                 case 'date':
-                    /*$formElementValue['attributes'] = array();
-                    $formElementValue['attributes']['type'] = 'text';
-                    $formElementValue['attributes']['class'] = 'form-control form-element datepicker';
-                    if(isset($defaults[$variant->getId()])) {
-                        $formElementValue['attributes']['value'] = $defaults[$variant->getId()];
-                    }*/
-                    
                     $productVariant['attributes'] = array();
                     $productVariant['attributes']['type'] = 'text';
                     $productVariant['attributes']['class'] = 'form-control form-element datepicker';
                     if(isset($defaults[$variant->getId()])) {
                         $productVariant['attributes']['value'] = $defaults[$variant->getId()];
                     }
-                    
-                    /*$formElementValue['options'] = array();
-                    $formElementValue['options']['label'] = $variant->getName();
-                    $formElementValue['options']['label_attributes'] = array(
-                            'class'  => 'media-object',
-                        );*/
                     
                     $productVariant['options'] = array();
                     $productVariant['options']['label'] = $variant->getName();
@@ -254,15 +203,62 @@ class ProductView extends Form
                     $productVariant['options']['label_attributes'] = array(
                             'class'  => 'media-object',
                         );
+                    
+                    $factory = new InputFactory(); 
+                    $this->inputFilter->add($factory->createInput([ 
+                        'name' => $productVariant['name'],
+                        'filters' => array(
+                            array('name' => 'Int'),
+                        ),
+                        'validators' => array(
+                        ),
+                    ])); 
+                    
                     break;
                 default:
                     error_log(get_class().': Don\'t know what to do with type '.$variant->getType());
                     break;
             }
-            
-            #$this->add($formElementValue);
+           
             $this->add($productVariant);
-            $this->variantCounter++;
+            #$this->variantCounter++;
         }
+    }
+    
+    public function getInputFilter()
+    {
+        $this->inputFilter = new InputFilter(); 
+        $factory = new InputFactory();             
+
+        $this->inputFilter->add($factory->createInput([ 
+            'name' => 'Product_id', 
+            'required' => true, 
+            'filters' => array( 
+                array('name' => 'Int'),
+            ), 
+            'validators' => array( 
+            ), 
+        ])); 
+
+        $this->inputFilter->add($factory->createInput([ 
+            'name' => 'participant_id', 
+            'required' => true, 
+            'filters' => array( 
+                array('name' => 'Int'),
+            ), 
+            'validators' => array( 
+            ), 
+        ])); 
+
+        $this->inputFilter->add($factory->createInput([ 
+            'name' => 'agegroup_id', 
+            'required' => true, 
+            'filters' => array( 
+                array('name' => 'Int'),
+            ), 
+            'validators' => array(
+            ), 
+        ])); 
+        return $this->inputFilter; 
     }
 }

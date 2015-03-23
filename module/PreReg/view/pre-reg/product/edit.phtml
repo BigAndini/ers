@@ -85,11 +85,16 @@
                 <div class="col-lg-6 ui-tabs-panel ui-widget-content ui-corner-all">
                     <div id="person-detail">
                         <ul>
-                            <li><a href="#person">Person</a></li>
                             <?php if(!$product->getPersonalized()): ?>
                                 <li><a href="#agegroup">Agegroup</a></li>
                             <?php endif; ?>
+                            <li><a href="#person">Person</a></li>
                         </ul>
+                        <?php if(!$product->getPersonalized()): ?>
+                            <div id="agegroup">
+                                <?php echo $this->formRow($form->get('agegroup_id')); ?>
+                            </div>
+                        <?php endif; ?>
                         <div id="person">
                             <?php if($form->get('submit')->getAttribute('disabled') == 'disabled'): ?>
                                 <div class="alert alert-warning">
@@ -108,11 +113,6 @@
                                 <a href="<?php echo $this->url('participant'); ?>">My Persons</a> 
                                 from the menu.</p>
                         </div>
-                        <?php if(!$product->getPersonalized()): ?>
-                            <div id="agegroup">
-                                <?php echo $this->formRow($form->get('agegroup_id')); ?>
-                            </div>
-                        <?php endif; ?>
                     </div>
                     
                     <?php $form->get('Product_id')->setAttribute('value', $product->getId());
