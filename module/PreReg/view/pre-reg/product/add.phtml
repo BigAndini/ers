@@ -137,6 +137,10 @@
                     <?php foreach($product->getChildProducts() as $package): 
                         $child = $package->getSubProduct(); ?>
                         <h4><?php echo $child->getName(); ?></h4>
+                        <?php foreach($child->getProductVariants() as $variant) :
+                            echo $this->formRow($form->get('pv['.$variant->getId().']'));
+                        endforeach;?>
+                        
                     <?php endforeach; ?>
                     <?php endif; ?>
                 </div>

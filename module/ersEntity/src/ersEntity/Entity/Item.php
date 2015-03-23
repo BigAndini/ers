@@ -128,6 +128,18 @@ class Item implements InputFilterAwareInterface
      * @ORM\JoinColumn(name="Product_id", referencedColumnName="id", nullable=true)
      */
     protected $product;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="ItemPackage", mappedBy="item", cascade={"persist"})
+     * @ORM\JoinColumn(name="id", referencedColumnName="Item_id")
+     */
+    protected $childItems;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ItemPackage", mappedBy="subitem")
+     * @ORM\JoinColumn(name="id", referencedColumnName="SubItem_id")
+     */
+    protected $parentItems;
 
     /**
      * @ORM\ManyToOne(targetEntity="Package", inversedBy="items")
@@ -146,6 +158,8 @@ class Item implements InputFilterAwareInterface
     {
         $this->session_id = null;
         $this->itemVariants = new ArrayCollection();
+        $this->childItems = new ArrayCollection();
+        $this->parentItems = new ArrayCollection();
     }
     
     /**
@@ -567,6 +581,78 @@ class Item implements InputFilterAwareInterface
     {
         return $this->product;
     }
+    
+        /**
+     * Add ItemPackage entity related by `Item_id` to collection (one to many).
+     *
+     * @param \Entity\ItemPackage $itemPackage
+     * @return \Entity\Item
+     */
+    public function addChildItem(ItemPackage $itemPackage)
+    {
+        $this->childItems[] = $itemPackage;
+
+        return $this;
+    }
+
+    /**
+     * Remove ItemPackage entity related by `Item_id` from collection (one to many).
+     *
+     * @param \Entity\ItemPackage $itemPackage
+     * @return \Entity\Item
+     */
+    public function removeChildItem(ItemPackage $itemPackage)
+    {
+        $this->childItems->removeElement($itemPackage);
+
+        return $this;
+    }
+
+    /**
+     * Get ItemPackage entity related by `Item_id` collection (one to many).
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getChildItems()
+    {
+        return $this->childItems;
+    }
+
+    /**
+     * Add ItemPackage entity related by `SubItem_id` to collection (one to many).
+     *
+     * @param \Entity\ItemPackage $itemPackage
+     * @return \Entity\Item
+     */
+    public function addParentItem(ItemPackage $itemPackage)
+    {
+        $this->parentItems[] = $itemPackage;
+
+        return $this;
+    }
+
+    /**
+     * Remove ItemPackage entity related by `SubItem_id` from collection (one to many).
+     *
+     * @param \Entity\ItemPackage $itemPackage
+     * @return \Entity\Item
+     */
+    public function removeParentItem(ItemPackage $itemPackage)
+    {
+        $this->parentItems->removeElement($itemPackage);
+
+        return $this;
+    }
+
+    /**
+     * Get ItemPackage entity related by `SubItem_id` collection (one to many).
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getParentItems()
+    {
+        return $this->parentItems;
+    }
 
     /**
      * Set Package entity (many to one).
@@ -751,7 +837,7 @@ class Item implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'itemVariants', 'updated', 'created');
+        $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'itemVariants', 'childItems', 'parentItems', 'updated', 'created');
         $relationFields = array('product', 'package', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -784,6 +870,6 @@ class Item implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'itemVariants', 'updated', 'created');
+        return array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'itemVariants', 'childItems', 'parentItems', 'updated', 'created');
     }
 }

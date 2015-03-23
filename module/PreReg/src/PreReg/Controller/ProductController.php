@@ -144,10 +144,19 @@ class ProductController extends AbstractActionController {
         $form->setAttribute('action', $url);
         
         /*
-         * Get variants for this product and set in form
+         * Get variants for this product and subproducts
          */
         $variants = $em->getRepository("ersEntity\Entity\ProductVariant")
                 ->findBy(array('Product_id' => $product_id));
+        
+        $productPackages = $em->getRepository("ersEntity\Entity\ProductPackage")
+                ->findBy(array('Product_id' => $product_id));
+        foreach($productPackages as $package) {
+            $subProduct = $package->getSubProduct();
+            $subVariants = $em->getRepository("ersEntity\Entity\ProductVariant")
+                ->findBy(array('Product_id' => $subProduct->getId()));
+            $variants = array_merge($variants, $subVariants);
+        }
         
         $defaults = $this->params()->fromQuery();
         $form->setVariants($variants, $defaults);
@@ -156,13 +165,11 @@ class ProductController extends AbstractActionController {
          * Set form values
          */
         $form->get('submit')->setAttribute('value', 'Add to Cart');
-        #$form->get('participant_id')->setOptions(array('label' => 'This ticket belongs to:'));
         
         /*
          * save the item we need to edit (when in edit mode)
          */
         $cartContainer = new Container('cart');
-        #$participant = null;
         $item = '';
         if($item_id) {
             $item = $cartContainer->order->getItem($item_id);
@@ -172,7 +179,7 @@ class ProductController extends AbstractActionController {
         /*
          * build participant select options
          */
-        $person_options = $this->getPersonOptions($product);
+        $person_options = $this->getPersonOptions($product, $participant_id);
         $form->get('participant_id')->setAttribute('options', $person_options);
         
         /*
@@ -195,10 +202,6 @@ class ProductController extends AbstractActionController {
         $chooser = $cartContainer->chooser;
         $cartContainer->chooser = false;
 
-        /*$agegroupService = new Service\AgegroupService();
-        $agegroupService->setAgegroups($agegroups);
-        $agegroup = $agegroupService->getAgegroupByUser($participant);*/
-        
         $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
                     ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
         
@@ -223,7 +226,7 @@ class ProductController extends AbstractActionController {
         ));
     }
     
-    private function getPersonOptions(Entity\Product $product) {
+    private function getPersonOptions(\ersEntity\Entity\Product $product, $participant_id=null) {
         $cartContainer = new Container('cart');
         $options = array();
         foreach($cartContainer->order->getParticipants() as $k => $v) {

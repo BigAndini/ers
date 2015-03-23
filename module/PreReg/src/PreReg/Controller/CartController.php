@@ -44,12 +44,6 @@ class CartController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Logger');
         
-        #$param_participant_id = (int) $this->params()->fromRoute('participant_id', 0);
-        #$param_item_id = (int) $this->params()->fromRoute('item_id', 0);
-        /*if (!$participant_id) {
-            return $this->redirect()->toRoute('order');
-        }*/
-        
         $this->initialize();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -125,6 +119,40 @@ class CartController extends AbstractActionController {
                 } else {
                     $logger->warn('Unable to find value for variant: '.$variant->getName().' (id: '.$variant->getId().')');
                 }
+            }
+            
+            $productPackages = $em->getRepository("ersEntity\Entity\ProductPackage")
+                ->findBy(array('Product_id' => $product->getId()));
+            foreach($productPackages as $package) {
+                $subProduct = $package->getSubProduct();
+                $subItem = new Entity\Item();
+                $subItem->setPrice(0);
+                $subItem->setAmount($package->getAmount());
+                $product_data = $subProduct->getArrayCopy();
+                $product_data['Product_id'] = $product_data['id'];
+                unset($product_data['id']);
+                $subItem->populate($product_data);
+                
+                foreach($subProduct->getProductVariants() as $variant) {
+                    $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                        ->findOneBy(array('id' => $variant_data[$variant->getId()]));
+                    if($value) {
+                        $itemVariant = new Entity\ItemVariant();
+                        $itemVariant->populateFromEntity($variant, $value);
+                        $subItem->addItemVariant($itemVariant);
+                        #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
+                    } else {
+                        $logger->warn('Unable to find value for variant of subItem: '.$variant->getName().' (id: '.$variant->getId().')');
+                    }
+                }
+                /*$subVariants = $em->getRepository("ersEntity\Entity\ProductVariant")
+                    ->findBy(array('Product_id' => $subProduct->getId()));*/
+                #$variants = array_merge($variants, $subVariants);
+                
+                $itemPackage = new Entity\ItemPackage();
+                $itemPackage->setItem($item);
+                $itemPackage->setSubItem($subItem);
+                $item->addChildItem($itemPackage);
             }
             
             if(isset($cartContainer->editItem) && $cartContainer->editItem instanceof Entity\Item) {

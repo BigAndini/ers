@@ -71,7 +71,7 @@ echo $this->navigation()
                                     ?>
                                     (
                                     <?php 
-                                    $numVariants = count($item->getItemVariants()); 
+                                    $numVariants = count($item->getItemVariants());
                                     $i = 0;
                                     ?>
                                     <?php foreach($item->getItemVariants() as $variant): 
@@ -84,6 +84,25 @@ echo $this->navigation()
                                     )
                                     <?php endif; ?>
                                 </span>
+                                <?php if(count($item->getChildItems()) > 0): ?>
+                                    <span class="subproducts">
+                                        <?php foreach($item->getChildItems() as $package):
+                                            $subItem = $package->getSubItem();
+                                            $subItem->getName() ?> (
+                                            <?php 
+                                            $numVariants = count($subItem->getItemVariants());
+                                            $i = 0;
+                                            foreach($subItem->getItemVariants() as $variant):
+                                                echo $variant->getName().': '.$variant->getValue(); 
+                                                if(++$i != $numVariants):
+                                                    echo '; ';
+                                                endif;
+                                                $variants[\urlencode($variant->getName())] = \urlencode($variant->getProductVariantValueId());
+                                            endforeach; ?>
+                                            )
+                                        <?php endforeach; ?>
+                                    </span>
+                                <?php endif; ?>
                             </td>
                             <td><?php echo $item->getAmount(); ?></td>
                             <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>

@@ -414,6 +414,26 @@ class OrderController extends AbstractActionController {
                     foreach($item->getItemVariants() as $variant) {
                         $variant->setItem($item);
                     }
+                    foreach($item->getChildItems() as $subItemPackage) {
+                        $subItem = $subItemPackage->getSubItem();
+                        $subProduct = $em->getRepository("ersEntity\Entity\Product")
+                            ->findOneBy(array('id' => $subItem->getProductId()));
+                        error_log('found product id: '.$subItem->getProductId());
+                        $subItem->setProduct($subProduct);
+                        $subItem->setPackage($package);
+                        $code = new Entity\Code();
+                        $code->genCode();
+                        $codecheck = 1;
+                        while($codecheck != null) {
+                            $code->genCode();
+                            $codecheck = $em->getRepository("ersEntity\Entity\Code")
+                                ->findOneBy(array('value' => $code->getValue()));
+                        }
+                        $subItem->setCode($code);
+                        foreach($subItem->getItemVariants() as $variant) {
+                            $variant->setItem($subItem);
+                        }
+                    }
                 }
                 
                 $em->persist($package);
