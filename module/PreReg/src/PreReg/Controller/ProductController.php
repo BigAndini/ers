@@ -62,7 +62,6 @@ class ProductController extends AbstractActionController {
     
     public function addAction() {
         $product_id = (int) $this->params()->fromRoute('product_id', 0);
-        #$participant_id = (int) $this->params()->fromRoute('participant_id', 0);
         $item_id = (int) $this->params()->fromRoute('item_id', 0);
         if (!$product_id) {
             return $this->redirect()->toRoute('product', array(
@@ -107,39 +106,9 @@ class ProductController extends AbstractActionController {
             # returning back from participant (#114)
             $params2 = $params;
             $params2['item_id'] = $item_id;
-            #$params['item_id'] = $item_id;
         }
         $forrest->set('participant', 'product', $params, $options);
-        
-        /*if(is_numeric($participant_id)) {
-            #$params = $forrest->get('product')->params;
-            $params['action'] = 'add';
-            $params['product_id'] = $product_id;
-            $options['query'] = array(
-                    'participant_id' => $participant_id,
-                );
-            $params2 = $params;
-            
-            if($item_id) {
-                $params['action'] = 'edit';
-                # When we're in edit mode there may not be a item_id from 
-                # returning back from participant (#114)
-                $params2 = $params;
-                $params2['item_id'] = $item_id;    
-            }
-            $forrest->set('participant', 'product', $params, $options);
-        } else {
-            $forrest->set('participant', 'product',
-                    array(
-                        'action' => 'add',
-                        'product_id' => $product_id
-                    )
-                );
-        }*/
-        
-        /*if(!$forrest->exists('cart')) {
-            $forrest->set('cart', 'product');
-        }*/
+       
         $forrest->set('cart', 'product', $params2, $options);
         $forrest->set('bc_stay', 'product', $params2, $options);
         
@@ -169,11 +138,6 @@ class ProductController extends AbstractActionController {
         $defaults = $this->params()->fromQuery();
         $form->setVariants($variants, $defaults);
         $form->get('submit')->setAttribute('value', 'Add to Cart');
-        /*if($product->getPersonalized()) {
-            $form->get('participant_id')->setOptions(array('label' => 'you need to assign this ticket to a person'));
-        } else {
-            $form->get('participant_id')->setOptions(array('label' => 'assign this ticket to a person'));
-        }*/
         $form->get('participant_id')->setOptions(array('label' => 'This ticket belongs to:'));
         
         $cartContainer = new Container('cart');

@@ -126,34 +126,12 @@ class CartController extends AbstractActionController {
                     $logger->warn('Unable to find value for variant: '.$variant->getName().' (id: '.$variant->getId().')');
                 }
             }
-            /*for($i=0; $i < count($product->getProductVariants()); $i++) {
-                if(!isset($data['variant_id_'.$i])) {
-                    $logger->notice('unable to find variant_id_'.$i.' in POST data.');
-                    continue;
-                }
-                if(!isset($data['variant_value_'.$i])) {
-                    $logger->notice('unable to find variant_value_'.$i.' in POST data.');
-                    continue;
-                }
-                $logger->info('variant_id_'.$i.': '.$data['variant_id_'.$i]);
-                $variant = $em->getRepository("ersEntity\Entity\ProductVariant")
-                    ->findOneBy(array('id' => $data['variant_id_'.$i]));
-                $logger->info('variant_value_'.$i.': '.$data['variant_value_'.$i]);
-                $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
-                    ->findOneBy(array('id' => $data['variant_value_'.$i]));
-                if($value) {
-                    $itemVariant = new Entity\ItemVariant();
-                    $itemVariant->populateFromEntity($variant, $value);
-                    $item->addItemVariant($itemVariant);
-                }
-            }*/
             
             if(isset($cartContainer->editItem) && $cartContainer->editItem instanceof Entity\Item) {
                 $cartContainer->order->removeItem($cartContainer->editItem->getSessionId());
                 unset($cartContainer->editItem);
             }
             
-            error_log('adding item to participant: '.$participant_id);
             $cartContainer->order->addItem($item, $participant_id);
             $cartContainer->chooser = true;
         }

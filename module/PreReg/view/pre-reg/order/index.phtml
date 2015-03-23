@@ -79,7 +79,7 @@ echo $this->navigation()
                                         if(++$i != $numVariants):
                                             echo '; ';
                                         endif;
-                                        $variants[$variant->getName()] = $variant->getProductVariantValueId();
+                                        $variants[\urlencode($variant->getName())] = \urlencode($variant->getProductVariantValueId());
                                     endforeach; ?>
                                     )
                                     <?php endif; ?>
@@ -91,7 +91,7 @@ echo $this->navigation()
                                 <?php
                                 if($participant != 'further items') :
                                     if($user->getSessionId() != null) :
-                                        $variants['participant_id'] = $user->getSessionId();
+                                        $variants['participant_id'] = \urlencode($user->getSessionId());
                                         $fragment = 'person';
                                     endif;
                                 else:

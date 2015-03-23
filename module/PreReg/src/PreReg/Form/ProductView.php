@@ -150,7 +150,7 @@ class ProductView extends Form
                     'label' => 'Birthday',
                 ),
             )*/
-            $formElementId = array();
+            /*$formElementId = array();
             $formElementId['name'] = 'variant_id_'.$this->variantCounter;
             $formElementId['attributes'] = array();
             $formElementId['attributes']['type'] = 'hidden';
@@ -162,22 +162,22 @@ class ProductView extends Form
             $formElementType['attributes'] = array();
             $formElementType['attributes']['type'] = 'hidden';
             $formElementType['attributes']['value'] = $variant->getType();
-            $this->add($formElementType);
+            $this->add($formElementType);*/
             
             
             $productVariant = array();
             $productVariant['name'] = 'pv['.$variant->getId().']';
             
-            $formElementValue = array();
-            $formElementValue['name'] = 'variant_value_'.$this->variantCounter;
+            /*$formElementValue = array();
+            $formElementValue['name'] = 'variant_value_'.$this->variantCounter;*/
             switch(strtolower($variant->getType())) {
                 case 'text':
-                    $formElementValue['attributes'] = array();
+                    /*$formElementValue['attributes'] = array();
                     $formElementValue['attributes']['type'] = $variant->getType();
                     $formElementValue['attributes']['class'] = 'form-control form-element';
                     if(isset($defaults[$variant->getId()])) {
                         $formElementValue['attributes']['value'] = $defaults[$variant->getId()];
-                    }
+                    }*/
                     
                     $productVariant['attributes'] = array();
                     $productVariant['attributes']['type'] = $variant->getType();
@@ -186,11 +186,11 @@ class ProductView extends Form
                         $productVariant['attributes']['value'] = $defaults[$variant->getId()];
                     }
                     
-                    $formElementValue['options'] = array();
+                    /*$formElementValue['options'] = array();
                     $formElementValue['options']['label'] = $variant->getName();
                     $formElementValue['options']['label_attributes'] = array(
                             'class'  => 'media-object',
-                        );
+                        );*/
                     
                     $productVariant['options'] = array();
                     $productVariant['options']['label'] = $variant->getName();
@@ -199,12 +199,12 @@ class ProductView extends Form
                         );
                     break;
                 case 'date':
-                    $formElementValue['attributes'] = array();
+                    /*$formElementValue['attributes'] = array();
                     $formElementValue['attributes']['type'] = 'text';
                     $formElementValue['attributes']['class'] = 'form-control form-element datepicker';
                     if(isset($defaults[$variant->getId()])) {
                         $formElementValue['attributes']['value'] = $defaults[$variant->getId()];
-                    }
+                    }*/
                     
                     $productVariant['attributes'] = array();
                     $productVariant['attributes']['type'] = 'text';
@@ -213,11 +213,11 @@ class ProductView extends Form
                         $productVariant['attributes']['value'] = $defaults[$variant->getId()];
                     }
                     
-                    $formElementValue['options'] = array();
+                    /*$formElementValue['options'] = array();
                     $formElementValue['options']['label'] = $variant->getName();
                     $formElementValue['options']['label_attributes'] = array(
                             'class'  => 'media-object',
-                        );
+                        );*/
                     
                     $productVariant['options'] = array();
                     $productVariant['options']['label'] = $variant->getName();
@@ -226,15 +226,12 @@ class ProductView extends Form
                         );
                     break;
                 case 'select':
-                    #$formElementValue['type'] = 'Zend\Form\Element\Select';
                     $productVariant['type'] = 'Zend\Form\Element\Select';
                     $options = array();
-                    /*foreach($variant->getProductVariantValues() as $v) {
-                        $options[$v->getId()] = $v->getValue();
-                    }*/
                     foreach($variant->getProductVariantValues() as $v) {
                         $selected = false;
-                        if(isset($defaults[$variant->getName()]) &&  $v->getId() == $defaults[$variant->getName()]) {
+                        
+                        if(isset($defaults[\urlencode($variant->getName())]) &&  $v->getId() == $defaults[\urlencode($variant->getName())]) {
                             $selected = true;
                         }
                         $options[] = array(
@@ -247,19 +244,10 @@ class ProductView extends Form
                         'value' => 0,
                         'label' => 'select '.$variant->getName(),
                     ));
-                    #$formElementValue['attributes'] = array();
-                    #$formElementValue['attributes']['options'] = $options;
-                    #$formElementValue['attributes']['class'] = 'form-control form-element';
             
                     $productVariant['attributes'] = array();
                     $productVariant['attributes']['options'] = $options;
                     $productVariant['attributes']['class'] = 'form-control form-element';
-                    
-                    #$formElementValue['options'] = array();
-                    #$formElementValue['options']['label'] = $variant->getName();
-                    #$formElementValue['options']['label_attributes'] = array(
-                    #        'class'  => 'media-object',
-                    #    );
                     
                     $productVariant['options'] = array();
                     $productVariant['options']['label'] = $variant->getName();
