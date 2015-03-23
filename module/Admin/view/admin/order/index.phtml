@@ -28,7 +28,11 @@ $this->headTitle($title);
             <?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?>
         </td>
         <td>
-            <?php echo $order->getStatus(); ?>
+            <?php if($order->findOrderStatus('paid')->getValue() != ''):
+                echo 'paid';
+            elseif($order->findOrderStatus('unpaid')->getValue() != ''):
+                echo 'paid';
+            endif; ?>
         </td>
         <td>
             <a href="<?php echo $this->url('admin/order', array('action'=>'detail', 'id' => $order->getId()));?>"><?php echo $this->translate('Detail'); ?></a>
