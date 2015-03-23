@@ -191,7 +191,7 @@ class ProductView extends Form
                     }
                     array_unshift($options, array(
                         'value' => 0,
-                        'label' => 'select '.$variant->getName(),
+                        'label' => '',
                     ));
             
                     $productVariant['attributes'] = array();
