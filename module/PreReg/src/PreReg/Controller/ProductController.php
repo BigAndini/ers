@@ -61,6 +61,9 @@ class ProductController extends AbstractActionController {
     }
     
     public function addAction() {
+        /*
+         * Get and check parameters
+         */
         $product_id = (int) $this->params()->fromRoute('product_id', 0);
         $item_id = (int) $this->params()->fromRoute('item_id', 0);
         if (!$product_id) {
@@ -78,13 +81,16 @@ class ProductController extends AbstractActionController {
             $agegroup_id = null;
         }
         
+        /*
+         * Build and set breadcrumbs
+         */
         $forrest = new Service\BreadcrumbFactory();
         if(!$forrest->exists('product')) {
             $forrest->set('product', 'product');
         }
         
         $params = array();
-        $params2 = array();
+        #$params2 = array();
         $options = array();
         
         $params['action'] = 'add';
@@ -108,10 +114,12 @@ class ProductController extends AbstractActionController {
             $params2['item_id'] = $item_id;
         }
         $forrest->set('participant', 'product', $params, $options);
-       
         $forrest->set('cart', 'product', $params2, $options);
         $forrest->set('bc_stay', 'product', $params2, $options);
         
+        /*
+         * Get data for this product
+         */
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -120,35 +128,103 @@ class ProductController extends AbstractActionController {
         
         $form = $this->getServiceLocator()->get('PreReg\Form\ProductView');
 
-        if(isset($participant_id) && is_numeric($participant_id) && $item_id) {
+        /*
+         * Build and set form action url
+         */
+        #if(isset($participant_id) && is_numeric($participant_id) && $item_id) {
+        /*if($item_id) {
             $url = $this->url()->fromRoute('cart', 
                     array(
-                        'action' => 'add', 
-                        #'participant_id' => $participant_id, 
+                        'action' => 'add',
                         'item_id' => $item_id
                     ));
-        } else {
+        } else {*/
             $url = $this->url()->fromRoute('cart', array('action' => 'add'));
-        }
+        #}
         $form->setAttribute('action', $url);
         
+        /*
+         * Get variants for this product and set in form
+         */
         $variants = $em->getRepository("ersEntity\Entity\ProductVariant")
                 ->findBy(array('Product_id' => $product_id));
         
         $defaults = $this->params()->fromQuery();
         $form->setVariants($variants, $defaults);
+        
+        /*
+         * Set form values
+         */
         $form->get('submit')->setAttribute('value', 'Add to Cart');
-        $form->get('participant_id')->setOptions(array('label' => 'This ticket belongs to:'));
+        #$form->get('participant_id')->setOptions(array('label' => 'This ticket belongs to:'));
         
+        /*
+         * save the item we need to edit (when in edit mode)
+         */
         $cartContainer = new Container('cart');
-        $participant = null;
+        #$participant = null;
         $item = '';
-        
         if($item_id) {
             $item = $cartContainer->order->getItem($item_id);
             $cartContainer->editItem = $item;
         }
         
+        /*
+         * build participant select options
+         */
+        $person_options = $this->getPersonOptions($product);
+        $form->get('participant_id')->setAttribute('options', $person_options);
+        
+        /*
+         * Disable submit button when there is no person but the ticket is personalized
+         */
+        if(count($person_options) <= 0 && $product->getPersonalized()) {
+            $form->get('submit')->setAttribute('disabled', 'disabled');
+        }
+        
+        /*
+         * Get and build agegroup select options
+         */
+        $form->get('agegroup_id')->setAttribute('options', $this->getAgegroupOptions());
+        
+        /*
+         * get all variables for ViewModel
+         */
+        $breadcrumb = $forrest->get('product');
+        
+        $chooser = $cartContainer->chooser;
+        $cartContainer->chooser = false;
+
+        /*$agegroupService = new Service\AgegroupService();
+        $agegroupService->setAgegroups($agegroups);
+        $agegroup = $agegroupService->getAgegroupByUser($participant);*/
+        
+        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
+        
+        $deadlineService = new Service\DeadlineService();
+        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                    ->findBy(array('priceChange' => '1'));
+        $deadlineService->setDeadlines($deadlines);
+        $deadline = $deadlineService->getDeadline();
+        
+        return new ViewModel(array(
+            #'participants' => $options,
+            'product' => $product,
+            #'participant' => $participant,
+            'item' => $item,
+            'form' => $form,
+            'breadcrumb' => $breadcrumb,
+            'bc_stay' => $forrest->get('bc_stay'),
+            'chooser' => $chooser,
+            'agegroups' => $agegroups,
+            #'agegroup' => $agegroup,
+            'deadline' => $deadline,
+        ));
+    }
+    
+    private function getPersonOptions(Entity\Product $product) {
+        $cartContainer = new Container('cart');
         $options = array();
         foreach($cartContainer->order->getParticipants() as $k => $v) {
             $disabled = false;
@@ -176,11 +252,6 @@ class ProductController extends AbstractActionController {
         if($participant_id == 0) {
             $selected = true;
         }
-        
-        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
-                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
-        $agegroup_options = array();
-        
         if(!$product->getPersonalized() && count($options) > 0) {
             array_unshift($options, array(
                 'value' => 0,
@@ -188,53 +259,30 @@ class ProductController extends AbstractActionController {
                 'selected' => $selected,
                 ));
         }
+        
+        return $options;
+    }
+    
+    private function getAgegroupOptions() {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
+        $options = array();
+        
         foreach($agegroups as $agegroup) {
-            $agegroup_options[] = array(
+            $options[] = array(
                 'value' => $agegroup->getId(),
                 'label' => $agegroup->getName(),
             );
         }
-        $agegroup_options[] = array(
+        $options[] = array(
                 'value' => '0',
                 'label' => 'normal',
                 'selected' => true,
             );
-        
-        if(count($options) <= 0 && $product->getPersonalized()) {
-            $form->get('submit')->setAttribute('disabled', 'disabled');
-        }
-
-        $form->get('agegroup_id')->setAttribute('options', $agegroup_options);
-        $form->get('participant_id')->setAttribute('options', $options);
-        
-        $breadcrumb = $forrest->get('product');
-        
-        $chooser = $cartContainer->chooser;
-        $cartContainer->chooser = false;
-
-        $agegroupService = new Service\AgegroupService();
-        $agegroupService->setAgegroups($agegroups);
-        $agegroup = $agegroupService->getAgegroupByUser($participant);
-        
-        $deadlineService = new Service\DeadlineService();
-        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
-                    ->findAll();
-        $deadlineService->setDeadlines($deadlines);
-        $deadline = $deadlineService->getDeadline();
-        
-        return new ViewModel(array(
-            'participants' => $options,
-            'product' => $product,
-            'participant' => $participant,
-            'item' => $item,
-            'form' => $form,
-            'breadcrumb' => $breadcrumb,
-            'bc_stay' => $forrest->get('bc_stay'),
-            'chooser' => $chooser,
-            'agegroups' => $agegroups,
-            'deadline' => $deadline,
-            'agegroup' => $agegroup,
-        ));
+        return $options;
     }
     
     public function editAction() {

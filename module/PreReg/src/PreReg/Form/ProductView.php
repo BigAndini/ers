@@ -60,7 +60,7 @@ class ProductView extends Form
                 'class' => 'form-control form-element',
             ),
             'options' => array(
-                'label' => 'Person',
+                'label' => 'This ticket belongs to:',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                     'id' => 'participant',
