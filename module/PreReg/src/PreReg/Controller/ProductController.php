@@ -283,7 +283,7 @@ class ProductController extends AbstractActionController {
         $options[] = array(
                 'value' => '0',
                 'label' => 'normal',
-                'selected' => true,
+                #'selected' => false,
             );
         return $options;
     }

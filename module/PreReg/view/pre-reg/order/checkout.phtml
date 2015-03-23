@@ -18,6 +18,9 @@ echo $this->navigation()
     $form->setAttribute('action', $this->url('order', array('action' => 'checkout')));
     $form->prepare();
 ?>
+<div class="row alert alert-danger">
+    <h3>Credit Card Payment is turned on. The order amount will be really transferred.</h3>
+</div>
 <div class="row">
     <div class="col-lg-6">
         <div class="order-info">
