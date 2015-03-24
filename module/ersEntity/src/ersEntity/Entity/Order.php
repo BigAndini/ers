@@ -407,7 +407,7 @@ class Order implements InputFilterAwareInterface
         $ret = null;
         foreach($this->getOrderStatus() as $status) {
             if(in_array($status->getValue(), $payment_status)) {
-                if($ret == null || ($ret->getCreated()->getTimestamp() < $status->getCreated->getTimestamp())) {
+                if($ret == null || ($ret->getCreated()->getTimestamp() < $status->getCreated()->getTimestamp())) {
                     $ret = $status;
                 }
             }
