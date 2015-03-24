@@ -11,15 +11,15 @@ $this->headTitle($title);
 
 <table class="table">
     <tr>
+        <th>Date</th>
         <th>Name</th>
         <th>can change price</th>
         <th>&nbsp;</th>
     </tr>
 <?php foreach ($deadlines as $deadline) : ?>
     <tr>
-        <td><?php 
-            echo $deadline->getDeadline()->format('Y-m-d H:i:s'); 
-        ?></td>
+        <td><?php echo $deadline->getDeadline()->format('Y-m-d H:i:s'); ?></td>
+        <td><?php echo $deadline->getName(); ?></td>
         <td>
             <?php if($deadline->getPriceChange()): ?>
             <i class="fa fa-check"></i>

@@ -480,3 +480,8 @@ a:hover, a:focus {
 .ui-tabs-panel p {
     margin: 0 0 5px;
 }
+
+.col-bordered {
+    border: 1px solid #ddd;
+    border-radiud: 5px;
+}

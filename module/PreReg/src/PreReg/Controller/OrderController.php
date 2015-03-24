@@ -36,6 +36,31 @@ class OrderController extends AbstractActionController {
         
         $this->checkItemPrices();
         
+        $logger = $this
+                ->getServiceLocator()
+                ->get('Logger');
+        $logger->info('=== shopping cart start ===');
+        foreach($cartContainer->order->getPackages() as $package) {
+            $participant = $package->getParticipant();
+            $logger->info('participant: '.$participant->getFirstname().' '.$participant->getSurname());
+            $logger->info('has '.count($package->getItems()).' items:');
+            foreach($package->getItems() as $item) {
+                $logger->info(' - '.$item->getName().' '.$item->getPrice());
+                foreach($item->getItemVariants() as $variant) {
+                    $logger->info('   - '.$variant->getName().': '.$variant->getValue());
+                }
+                $logger->info('  has '.count($item->getChildItems()).' sub items:');
+                foreach($item->getChildItems() as $itemPackage) {
+                    $subItem = $itemPackage->getSubItem();
+                    $logger->info('   - '.$subItem->getName());
+                    foreach($subItem->getItemVariants() as $subVariant) {
+                        $logger->info('     - '.$subVariant->getName().': '.$subVariant->getValue());
+                    }
+                }
+            }
+        }
+        $logger->info('=== shopping cart end ===');
+        
         return new ViewModel(array(
             'order' => $cartContainer->order,
         ));

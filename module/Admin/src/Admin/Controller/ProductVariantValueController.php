@@ -82,7 +82,7 @@ class ProductVariantValueController extends AbstractActionController
         
         return new ViewModel(array(
             'productvariant_id' => $id,
-            'breadcrum' => $forrest->get('product-variant-value'),
+            'breadcrumb' => $forrest->get('product-variant-value'),
             'form' => $form,                
         ));
     }
@@ -99,6 +99,11 @@ class ProductVariantValueController extends AbstractActionController
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('product-variant-value')) {
+            $forrest->set('product-variant-value', 'admin/product');
+        }
+        
         $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")->findOneBy(array('id' => $id));
 
         $form  = new Form\ProductVariantValue();
@@ -114,7 +119,6 @@ class ProductVariantValueController extends AbstractActionController
                 $em->persist($form->getData());
                 $em->flush();
 
-                $forrest = new Service\BreadcrumbFactory();
                 if(!$forrest->exists('product-variant-value')) {
                     $forrest->set('product-variant-value', 'product');
                 }
@@ -125,6 +129,7 @@ class ProductVariantValueController extends AbstractActionController
 
         return new ViewModel(array(
             'id' => $id,
+            'breadcrumb' => $forrest->get('product-variant-value'),
             'form' => $form,
         ));
     }

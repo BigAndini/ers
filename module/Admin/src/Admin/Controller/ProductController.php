@@ -26,6 +26,7 @@ class ProductController extends AbstractActionController {
         $forrest = new Service\BreadcrumbFactory();
         $forrest->set('product', 'admin/product');
         $forrest->set('product-variant', 'admin/product');
+        $forrest->set('product-variant-value', 'admin/product');
         $forrest->set('product-price', 'admin/product');
         
         return new ViewModel(array(
