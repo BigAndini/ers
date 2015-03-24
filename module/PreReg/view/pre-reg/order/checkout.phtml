@@ -162,7 +162,7 @@ echo $this->navigation()
             <p><a href="<?php echo $this->url('product'); ?>">Add products</a> to your shopping cart first.</p>
         <?php endif; ?>
         <?php if(!$order->getPurchaser()) : ?>
-            <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'purchaser')); ?>">choose/add a purchaser</a>.</p>
+            <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'purchaser')); ?>">choose/add a purchaser</a> with a valid email address.</p>
         <?php endif; ?>
         <?php if(!$order->getPaymentType()) : ?>
             <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose a payment type</a>.</p>
