@@ -12,6 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use PreReg\Service;
+use ersEntity\Entity;
 
 use PreReg\Form;
 
