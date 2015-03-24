@@ -15,14 +15,7 @@ use PreReg\InputFilter;
 use PreReg\Service;
 use Zend\Session\Container;
 use ersEntity\Entity;
-
-# for pdf generation
-use DOMPDFModule\View\Model\PdfModel;
-
-# for sending emails
-use Zend\Mail\Message;
-use Zend\Mail\Transport;
-use Zend\Mime;
+use Zend\Validator;
 
 class OrderController extends AbstractActionController {
  
@@ -474,6 +467,18 @@ class OrderController extends AbstractActionController {
         $forrest = new Service\BreadcrumbFactory;
         $forrest->set('terms', 'order', array('action' => 'checkout'));
         
+        /*
+         * Check the purchasers email, if it's not valid, delete purchaser
+         */
+        $email_validator = new Validator\EmailAddress();
+        $purchaser = $cartContainer->order->getPurchaser();
+        if($purchaser) {
+            $email = $cartContainer->order->getPurchaser()->getEmail();
+            if (!$email_validator->isValid($email)) {
+                $cartContainer->order->setPurchaser();
+            }    
+        }
+
         return new ViewModel(array(
             'form' => $form,
             'order' => $cartContainer->order,
