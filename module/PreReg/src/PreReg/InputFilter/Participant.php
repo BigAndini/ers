@@ -148,6 +148,9 @@ class Participant implements InputFilterAwareInterface
                                 $min = \DateTime::createFromFormat('d.m.Y', '01.01.1900');
                                 $max = new \DateTime();
                                 $birthday = \DateTime::createFromFormat('d.m.Y', $value);
+                                if(!$birthday instanceof \DateTime) {
+                                    return false;
+                                }
                                 if($min->getTimestamp() > $birthday->getTimestamp()) {
                                     return false;
                                 }

@@ -93,6 +93,10 @@ class Module
             $cartContainer->order = new Entity\Order();
             $cartContainer->init = 1;
         }
+        $cartContainer->chooserCount--;
+        if($cartContainer->chooserCount <= 0) {
+            $cartContainer->chooser = false;
+        }
         /*
          * shopping cart debugging
          */
