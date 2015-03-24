@@ -16,7 +16,7 @@
         'trx_currency'  => 'EUR',
         'trxpassword'   => '0',
         'sec_key'       => '1234567890',
-        'action'        => 'https://ipayment.de/merchant/%trxuser_id%/processor/2.0/',
+        'action'        => 'https://ipayment.de/merchant/%account_id%/processor/2.0/',
     )
 );*/
 return array();

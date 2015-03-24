@@ -397,6 +397,27 @@ class Order implements InputFilterAwareInterface
     {
         return $this->status;
     }
+    
+    public function getPaymentStatus() {
+        $payment_status = array(
+            'paid',
+            'unpaid',
+            'refund',
+        );
+        $ret = null;
+        foreach($this->getOrderStatus() as $status) {
+            if(in_array($status->getValue(), $payment_status)) {
+                if($ret == null || ($ret->getCreated()->getTimestamp() < $status->getCreated->getTimestamp())) {
+                    $ret = $status;
+                }
+            }
+        }
+        if($ret == null) {
+            $ret = new OrderStatus();
+            $ret->setValue('undefined');
+        }
+        return $ret;
+    }
 
     /**
      * Set the value of updated.

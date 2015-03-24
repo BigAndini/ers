@@ -166,14 +166,7 @@ class PaymentController extends AbstractActionController {
         $response->setContent("Thank you");
         
         $config = $this->getServiceLocator()->get('Config');
-        
-        #$account_id     = $config['ERS\iPayment']['account_id'];
-        #$trxuser_id     = $config['ERS\iPayment']['trxuser_id'];
-        #$trx_currency   = $config['ERS\iPayment']['trx_currency'];
-        #$trxpassword    = $config['ERS\iPayment']['trxpassword'];
         $sec_key        = $config['ERS\iPayment']['sec_key'];
-        #$tmp_action     = $config['ERS\iPayment']['action'];
-        #$action = preg_replace('/%account_id%/', $account_id, $tmp_action);
         
         $allowed_ips = array(
             '212.227.34.218',
@@ -199,22 +192,30 @@ class PaymentController extends AbstractActionController {
         $logger->info('$_POST:');
         $logger->info($post_param);
         
-        $return_checksum="";
-        if (isset($post_param["trxuser_id "]))
-            $return_checksum.= $post_param["trxuser_id"];
-        if (isset($post_param["trx_amount "]))
-            $return_checksum.= $post_param["trx_amount"];
-        if (isset($post_param["trx_currency "]))
-            $return_checksum.= $post_param["trx_currency"];
-        if (isset($post_param["ret_authcode "]))
-            $return_checksum.= $post_param["ret_authcode"];
-        if (isset($post_param["ret_trx_number "]))
-            $return_checksum.= $post_param["ret_trx_number"];
-        $return_checksum.= $sec_key;
+        $return_checksum = array();
+        if (isset($post_param["trxuser_id"])) {
+            $return_checksum[] = $post_param["trxuser_id"];
+        }
+        if (isset($post_param["trx_amount"])) {
+            $return_checksum[] = $post_param["trx_amount"];
+        }
+        if (isset($post_param["trx_currency"])) {
+            $return_checksum[] = $post_param["trx_currency"];
+        }
+        if (isset($post_param["ret_authcode"])) {
+            $return_checksum[] = $post_param["ret_authcode"];
+        }
+        
+        if (isset($post_param["ret_trx_number"])) {
+            $return_checksum[] = $post_param["ret_trx_number"];
+        }
+        $return_checksum[] = $sec_key;
+        $logger->info($return_checksum);
         $logger->info('ret_param: '.$post_param["ret_param_checksum"]);
-        $logger->info('hash     : '.md5($return_checksum));
-        if ($post_param["ret_param_checksum"] != md5($return_checksum)) {
+        $logger->info('hash     : '.md5(implode($return_checksum)));
+        if ($post_param["ret_param_checksum"] != md5(implode($return_checksum))) {
             // Error because hash do not match!
+            $logger->emerg('Unable to finish payment, checksums do not match.');
             return $response;
             #exit;
         }
