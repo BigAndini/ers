@@ -221,13 +221,10 @@ class PaymentController extends AbstractActionController {
         }
         
         $hashkey = $this->params()->fromRoute('hashkey', '');
-        
         if($hashkey == '') {
             $logger->warn('no hashkey given in route');
             return $response;
         }
-        
-        $logger->info('found hashkey: '.$hashkey);
         
         $em = $this
             ->getServiceLocator()
@@ -241,11 +238,12 @@ class PaymentController extends AbstractActionController {
         }
         
         $order->setStatus('paid');
-        $em->persist($order);
         
         $orderStatus = new Entity\OrderStatus;
         $orderStatus->setOrder($order);
         $orderStatus->setValue('paid');
+        $order->addOrderStatus($orderStatus);
+        $em->persist($order);
         $em->persist($orderStatus);
         $em->flush();
         
