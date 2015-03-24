@@ -24,6 +24,6 @@ echo $this->formRow($form->get('value'));
 echo $this->formRow($form->get('ProductVariant_id'));
 echo $this->formSubmit($form->get('submit'));
 ?>
-<a href="<?php echo $this->url('admin/product');?>">Cancel</a>
+<a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
 <?php
 echo $this->form()->closeTag();

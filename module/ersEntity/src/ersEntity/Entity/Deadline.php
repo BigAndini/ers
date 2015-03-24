@@ -44,6 +44,11 @@ class Deadline implements InputFilterAwareInterface
      * @ORM\Column(type="datetime")
      */
     protected $deadline;
+    
+    /**
+     * @ORM\Column(type="string", length=45)
+     */
+    protected $name;
 
     /**
      * @ORM\Column(type="boolean")
@@ -141,6 +146,29 @@ class Deadline implements InputFilterAwareInterface
         return $this->deadline;
     }
 
+    /**
+     * Set the value of name.
+     *
+     * @param string $name
+     * @return \Entity\Product
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of name.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+    
     /**
      * Set the value of priceChange.
      *
@@ -331,7 +359,7 @@ class Deadline implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'deadline', 'priceChange', 'updated', 'created');
+        $dataFields = array('id', 'deadline', 'name', 'priceChange', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -364,6 +392,6 @@ class Deadline implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'deadline', 'priceChange', 'updated', 'created');
+        return array('id', 'deadline', 'name', 'priceChange', 'updated', 'created');
     }
 }

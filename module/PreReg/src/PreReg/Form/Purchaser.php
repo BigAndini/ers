@@ -14,9 +14,7 @@ use Zend\InputFilter\InputFilter;
 
 
 class Purchaser extends Form
-{
-    public $inputFilter;
-    
+{ 
     public function __construct($name = null)
     {
         parent::__construct('Purchaser');
@@ -56,7 +54,7 @@ class Purchaser extends Form
         )); 
  
         $this->add(array( 
-            'name' => 'email', 
+            'name' => 'email',
             'type' => 'Zend\Form\Element\Email', 
             'attributes' => array( 
                 'placeholder' => 'Email Address...', 

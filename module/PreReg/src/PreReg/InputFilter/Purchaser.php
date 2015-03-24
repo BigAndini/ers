@@ -161,7 +161,7 @@ class Purchaser implements InputFilterAwareInterface
 
             $inputFilter->add($factory->createInput([ 
                 'name' => 'email', 
-                'required' => false,
+                'required' => true,
                 'filters' => array( 
                     array('name' => 'StripTags'), 
                     array('name' => 'StringTrim'), 
@@ -195,7 +195,7 @@ class Purchaser implements InputFilterAwareInterface
                         'name' => 'EmailAddress', 
                         'options' => array( 
                             'messages' => array( 
-                                'emailAddressInvalidFormat' => 'Email address format is not invalid', 
+                                'emailAddressInvalidFormat' => 'Email address format is invalid', 
                             ) 
                         ), 
                     ), 
@@ -203,7 +203,7 @@ class Purchaser implements InputFilterAwareInterface
                         'name' => 'NotEmpty', 
                         'options' => array( 
                             'messages' => array( 
-                                'isEmpty' => '', 
+                                'isEmpty' => 'Email address may not be empty', 
                             ) 
                         ), 
                     ), 

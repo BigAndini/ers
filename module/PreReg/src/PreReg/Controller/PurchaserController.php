@@ -88,11 +88,18 @@ class PurchaserController extends AbstractActionController {
         $form = new Form\Purchaser(); 
         $request = $this->getRequest(); 
         
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
         $form->bind($participant);
         
         if($request->isPost()) 
         {
-            $form->setInputFilter($form->getInputFilter()); 
+            $inputFilter = new InputFilter\Purchaser();
+            
+            $inputFilter->setEntityManager($em);
+            $form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
                 
             if($form->isValid())
