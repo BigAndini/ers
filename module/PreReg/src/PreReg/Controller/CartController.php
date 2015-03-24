@@ -162,6 +162,7 @@ class CartController extends AbstractActionController {
             
             $cartContainer->order->addItem($item, $participant_id);
             $cartContainer->chooser = true;
+            $cartContainer->chooserCount = 2;
         }
         
         $forrest = new Service\BreadcrumbFactory();
