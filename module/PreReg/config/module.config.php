@@ -86,6 +86,16 @@ return array(
                 'route' => 'admin',
                 'resource'  => 'controller/Admin\Controller\Admin',
             ),
+            'help' => array(
+                /*'label' => '<span class="fa-stack fa-lg">
+                        <i class="fa fa-circle fa-stack-2x green"></i>
+                        <i class="fa fa-question fa-stack-1x fa-inverse"></i>
+                    </span>',*/
+                'label' => '?',
+                'route' => 'info',
+                'action' => 'help',
+                'resource'  => 'controller/PreReg\Controller\Info',
+            ),
         ),
         'checkout_nav' => array(
             'mycart' => array(

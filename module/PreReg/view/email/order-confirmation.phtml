@@ -46,6 +46,10 @@
             ), array('force_canonical' => true)); ?>">your order</a>
             from <?php echo $order->getCreated()->format('d.m.Y'); ?> with the 
             order ID <?php echo $order->getCode()->getValue(); ?>.</p>
+        <p>To receive this email in another language you can visit the <a href="<?php echo $this->url('order', array(
+                'action' => 'email',
+                'hashkey' => $order->getHashKey()
+            ), array('force_canonical' => true)); ?>">resend email link</a>.</p>
         <p><strong>Note:</strong> To receive the email with your eTickets correctly, it is important that you add the email address prereg@eja.net to your address book.</p>
         <p>Thank you for registering for the <?php echo $ejc_with_number; ?>! Your registration helps us to improve <?php echo $ejc_with_year; ?> for you and for all fellow jugglers.</p>
         <p>You chose <?php echo $order->getPaymentType()->getName(); ?> as payment method.</p>

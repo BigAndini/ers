@@ -58,15 +58,13 @@
                     </a>
                 </div>
                 <div class="collapse navbar-collapse">
-                    <?php
-                        echo $this->navigation()
+                    <?php echo $this->navigation()
                             ->menu('top_nav')
-                            ->setUlClass('nav nav-pills nav-top-right');
+                            ->setUlClass('nav nav-pills nav-top-right'); ?>
                         
-                        echo $this->navigation()
+                    <?php echo $this->navigation()
                             ->menu('main_nav')
-                            ->setUlClass('nav navbar-nav');
-                    ?>
+                            ->setUlClass('nav navbar-nav'); ?>
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
