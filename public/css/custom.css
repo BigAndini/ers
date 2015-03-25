@@ -485,3 +485,8 @@ a:hover, a:focus {
     border: 1px solid #ddd;
     border-radiud: 5px;
 }
+
+.col-payment {
+    border-radius: 5px;
+    margin-bottom: 15px;
+}

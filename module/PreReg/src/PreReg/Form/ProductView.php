@@ -32,7 +32,6 @@ class ProductView extends Form
     {
         
         parent::__construct('Product');
-        #$this->variantCounter = 0;
         $this->variants = array();
         $this->setAttribute('method', 'post');
         
@@ -58,6 +57,7 @@ class ProductView extends Form
         $this->add(array(
             'name' => 'participant_id',
             'type'  => 'Zend\Form\Element\Select',
+            'value' => '',
             'attributes' => array(
                 'class' => 'form-control form-element',
             ),
@@ -73,6 +73,7 @@ class ProductView extends Form
             'name' => 'agegroup_id',
             'require' => true,
             'type'  => 'Zend\Form\Element\Radio',
+            'value' => '',
             'attributes' => array(
                 'class' => 'checkbox-inline',
             ),
@@ -190,7 +191,7 @@ class ProductView extends Form
                         );
                     }
                     array_unshift($options, array(
-                        'value' => 0,
+                        'value' => '',
                         'label' => '',
                     ));
             
@@ -204,15 +205,45 @@ class ProductView extends Form
                             'class'  => 'media-object',
                         );
                     
-                    $factory = new InputFactory(); 
+                    /*$factory = new InputFactory(); 
                     $this->inputFilter->add($factory->createInput([ 
                         'name' => $productVariant['name'],
+                        'required' => true,
                         'filters' => array(
                             array('name' => 'Int'),
                         ),
                         'validators' => array(
+                            array (
+                                'name' => 'NotEmpty',
+                                'options' => array(
+                                    'messages' => array(
+                                        'isEmpty' => 'Please choose a '.$variant->getName(),
+                                    )
+                                ),
+                            ),
+                            array(
+                                'name' => 'Callback',
+                                'options' => array(
+                                    'messages' => array(
+                                        \Zend\Validator\Callback::INVALID_VALUE => 'Please select a '.$variant->getName().'.',
+                                    ),
+                                    'callback' => function($value, $context=array()) {
+                                        error_log('I\'m in the callback validator.');
+                                        if(is_numeric($value)) {
+                                            return true;
+                                        }                
+                                        if(isset($context['agegroup_id']) && is_numeric($context['agegroup_id'])) {
+                                            return true;
+                                        }
+
+
+                                        return false;
+                                    },
+
+                                ),
+                            ),
                         ),
-                    ])); 
+                    ]));*/
                     
                     break;
                 default:
@@ -232,7 +263,7 @@ class ProductView extends Form
 
         $this->inputFilter->add($factory->createInput([ 
             'name' => 'Product_id', 
-            'required' => true, 
+            'required' => true,
             'filters' => array( 
                 array('name' => 'Int'),
             ), 
@@ -246,7 +277,27 @@ class ProductView extends Form
             'filters' => array( 
                 array('name' => 'Int'),
             ), 
-            'validators' => array( 
+            'validators' => array(
+                array(
+                    'name' => 'Callback',
+                    'options' => array(
+                        'messages' => array(
+                            \Zend\Validator\Callback::INVALID_VALUE => 'Please select a person.',
+                        ),
+                        'callback' => function($value, $context=array()) {
+                            if(is_numeric($value)) {
+                                return true;
+                            }                
+                            if(isset($context['agegroup_id']) && is_numeric($context['agegroup_id'])) {
+                                return true;
+                            }
+                            
+
+                            return false;
+                        },
+
+                    ),
+                ),
             ), 
         ])); 
 
@@ -257,6 +308,70 @@ class ProductView extends Form
                 array('name' => 'Int'),
             ), 
             'validators' => array(
+                array(
+                    'name' => 'Callback',
+                    'options' => array(
+                        'messages' => array(
+                            \Zend\Validator\Callback::INVALID_VALUE => 'Please select a agegroup.',
+                        ),
+                        'callback' => function($value, $context=array()) {
+                            if(is_numeric($value)) {
+                                return true;
+                            }
+                            if(isset($context['participant_id']) && is_numeric($context['participant_id'])) {
+                                return true;
+                            }
+
+                            return false;
+                        },
+
+                    ),
+                ),
+            ), 
+        ])); 
+        $this->inputFilter->add($factory->createInput([ 
+            'name' => 'pv', 
+            'required' => true, 
+            'filters' => array( 
+                array("name" => "Callback", "options" => array(
+                    "callback" => function($values) {
+                        #$int = new \Zend\Filter\Int();
+                        $strip = new \Zend\Filter\StripTags();
+                        $trim = new \Zend\Filter\StringTrim();
+                        foreach($values as $key => $value) {
+                            #$value = $int->filter($value);
+                            $value = $strip->filter($value);
+                            $value = $trim->filter($value);
+                            $values[$key] = $value;
+                        }
+                        return $values;
+                    })),
+            ), 
+            'validators' => array(
+                array(
+                    'name' => 'Callback',
+                    'options' => array(
+                        'messages' => array(
+                            \Zend\Validator\Callback::INVALID_VALUE => 'Please select a product variant.',
+                        ),
+                        'callback' => function($values, $context=array()) {
+                            foreach($values as $key => $value) {
+                                error_log($key.' => '.$value);
+                                if($value == '') {
+                                    error_log('this value is empty: fail!');
+                                    return false;
+                                }
+                                if(!is_numeric($value)) {
+                                    error_log('this value is not numeric: fail!');
+                                    return false;
+                                }
+                            }
+                            
+                            return true;
+                        },
+
+                    ),
+                ),
             ), 
         ])); 
         return $this->inputFilter; 
