@@ -714,9 +714,6 @@ class Product implements InputFilterAwareInterface
      */
     public function getProductVariants()
     {
-        if (!is_object($this->productVariants)) { 
-            $this->productVariants = new ArrayCollection();
-        }
         return $this->productVariants;
     }
 

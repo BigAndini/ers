@@ -148,6 +148,13 @@ class ProductController extends AbstractActionController {
          */
         $variants = $em->getRepository("ersEntity\Entity\ProductVariant")
                 ->findBy(array('Product_id' => $product_id));
+        $defaults = $this->params()->fromQuery();
+        #$form->setVariants($variants, $defaults);
+        
+        $package_info = array();
+        foreach($variants as $variant) {
+            $package_info[$variant->getId()] = false;
+        }
         
         $productPackages = $em->getRepository("ersEntity\Entity\ProductPackage")
                 ->findBy(array('Product_id' => $product_id));
@@ -155,11 +162,13 @@ class ProductController extends AbstractActionController {
             $subProduct = $package->getSubProduct();
             $subVariants = $em->getRepository("ersEntity\Entity\ProductVariant")
                 ->findBy(array('Product_id' => $subProduct->getId()));
+            foreach($subVariants as $variant) {
+                $package_info[$variant->getId()] = true;
+            }
             $variants = array_merge($variants, $subVariants);
         }
         
-        $defaults = $this->params()->fromQuery();
-        $form->setVariants($variants, $defaults);
+        $form->setVariants($variants, $defaults, $package_info);
         
         /*
          * get the according deadline

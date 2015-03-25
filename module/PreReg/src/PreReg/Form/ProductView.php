@@ -101,7 +101,7 @@ class ProductView extends Form
         $this->getInputFilter();
     }
 
-    public function setVariants($variants, $defaults = array()) {
+    public function setVariants($variants, $defaults = array(), $package_info = array()) {
         $variant_count = count($variants);
         $variant_add = 1;
         foreach($variants as $v) {
@@ -121,14 +121,14 @@ class ProductView extends Form
                 $logger->warn(get_class().': object is of class '.get_class($v));
             }
         }
-        $this->addVariants($defaults);
+        $this->addVariants($defaults, $package_info);
     }
     
     /*public function getVariantCounter() {
         return $this->variantCounter;
     }*/
     
-    private function addVariants($defaults=array()) {
+    private function addVariants($defaults = array(), $package_info = array()) {
         #$this->variantCounter = 0;
         foreach($this->variants as $variant) {
             /* Example array
@@ -190,6 +190,12 @@ class ProductView extends Form
                             'selected' => $selected,
                         );
                     }
+                    if($package_info[$variant->getId()]) {
+                        $options[] = array(
+                            'value' => 0,
+                            'label' => 'no '.$variant->getName(),
+                        );
+                    }
                     array_unshift($options, array(
                         'value' => '',
                         'label' => '',
@@ -204,46 +210,6 @@ class ProductView extends Form
                     $productVariant['options']['label_attributes'] = array(
                             'class'  => 'media-object',
                         );
-                    
-                    /*$factory = new InputFactory(); 
-                    $this->inputFilter->add($factory->createInput([ 
-                        'name' => $productVariant['name'],
-                        'required' => true,
-                        'filters' => array(
-                            array('name' => 'Int'),
-                        ),
-                        'validators' => array(
-                            array (
-                                'name' => 'NotEmpty',
-                                'options' => array(
-                                    'messages' => array(
-                                        'isEmpty' => 'Please choose a '.$variant->getName(),
-                                    )
-                                ),
-                            ),
-                            array(
-                                'name' => 'Callback',
-                                'options' => array(
-                                    'messages' => array(
-                                        \Zend\Validator\Callback::INVALID_VALUE => 'Please select a '.$variant->getName().'.',
-                                    ),
-                                    'callback' => function($value, $context=array()) {
-                                        error_log('I\'m in the callback validator.');
-                                        if(is_numeric($value)) {
-                                            return true;
-                                        }                
-                                        if(isset($context['agegroup_id']) && is_numeric($context['agegroup_id'])) {
-                                            return true;
-                                        }
-
-
-                                        return false;
-                                    },
-
-                                ),
-                            ),
-                        ),
-                    ]));*/
                     
                     break;
                 default:
@@ -356,17 +322,13 @@ class ProductView extends Form
                         ),
                         'callback' => function($values, $context=array()) {
                             foreach($values as $key => $value) {
-                                error_log($key.' => '.$value);
                                 if($value == '') {
-                                    error_log('this value is empty: fail!');
                                     return false;
                                 }
                                 if(!is_numeric($value)) {
-                                    error_log('this value is not numeric: fail!');
                                     return false;
                                 }
                             }
-                            
                             return true;
                         },
 

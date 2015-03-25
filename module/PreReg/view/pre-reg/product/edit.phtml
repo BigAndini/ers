@@ -45,6 +45,13 @@
                     <h1><?php echo $this->escapeHtml($product->getName()); ?></h1>
                 </div>
             </div>
+            <?php if($formfail): ?>
+            <div class="row">
+                <div class="alert alert-danger">
+                    <p>Please complete the whole form to put this product into the cart.</p>
+                </div>
+            </div>
+            <?php endif; ?>
             <div class="row">
                 <div class="col-lg-6">
                     <p class="desc-short"><?php echo $product->getShortDescription(); ?></p>
