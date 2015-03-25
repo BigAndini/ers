@@ -13,6 +13,7 @@ use Zend\View\Model\ViewModel;
 use PreReg\Form;
 use PreReg\Service;
 use Zend\Session\Container;
+use ersEntity\Entity;
 
 class ProductController extends AbstractActionController {
     public function indexAction()
@@ -58,6 +59,17 @@ class ProductController extends AbstractActionController {
             'deadline' => $deadline,
             'order' => $cartContainer->order,
         ));
+    }
+    
+    /*
+     * initialize shopping cart
+     */
+    private function initializeCart() {
+        $cartContainer = new Container('cart');
+        if(!isset($cartContainer->init) && $cartContainer->init == 1) {
+            $cartContainer->order = new Entity\Order();
+            $cartContainer->init = 1;
+        }
     }
     
     public function addAction() {
@@ -127,20 +139,8 @@ class ProductController extends AbstractActionController {
                 ->findOneBy(array('id' => $product_id));
         
         $form = $this->getServiceLocator()->get('PreReg\Form\ProductView');
-
-        /*
-         * Build and set form action url
-         */
-        #if(isset($participant_id) && is_numeric($participant_id) && $item_id) {
-        /*if($item_id) {
-            $url = $this->url()->fromRoute('cart', 
-                    array(
-                        'action' => 'add',
-                        'item_id' => $item_id
-                    ));
-        } else {*/
-            $url = $this->url()->fromRoute('cart', array('action' => 'add'));
-        #}
+        #$url = $this->url()->fromRoute('cart', array('action' => 'add'));
+        $url = $this->url()->fromRoute('product', $params2, $options);
         $form->setAttribute('action', $url);
         
         /*
@@ -162,6 +162,209 @@ class ProductController extends AbstractActionController {
         $form->setVariants($variants, $defaults);
         
         /*
+         * get the according deadline
+         */
+        $deadlineService = new Service\DeadlineService();
+        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                    ->findBy(array('priceChange' => '1'));
+        $deadlineService->setDeadlines($deadlines);
+        $deadline = $deadlineService->getDeadline();
+        
+        /*
+         * Here starts the cart add Action
+         */
+        
+        $logger = $this
+            ->getServiceLocator()
+            ->get('Logger');
+        
+        $this->initializeCart();
+        $cartContainer = new Container('cart');
+        
+        $formfail = false;
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $inputFilter = $form->getInputFilter();
+            $form->setInputFilter($inputFilter); 
+            $form->setData($request->getPost()); 
+        
+            if($form->isValid())
+            { 
+                $data = $request->getPost();
+                $logger->info(var_export($data, true));
+
+                /*
+                 * get needed variables
+                 */
+                $participant_id = 0;
+                if(isset($data['participant_id'])) {
+                    $participant_id = $data['participant_id'];
+                    unset($data['participant_id']);
+                }
+                $agegroup_id = 0;
+                if(isset($data['agegroup_id'])) {
+                    $agegroup_id = $data['agegroup_id'];
+                    unset($data['agegroup_id']);
+                }
+                
+                /*
+                 *  check if participant already has a personalized ticket
+                 */
+                $package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
+                if($package != null && $package->hasPersonalizedItem()) {
+                    $logger->warn('Package for participant '.$participant_id.' already has a personalized item. What should I do?');
+                }
+                
+                /*
+                 * get according product entity from database
+                 */
+                $em = $this
+                    ->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                $product = $em->getRepository("ersEntity\Entity\Product")
+                        ->findOneBy(array('id' => $data['Product_id']));
+
+                /*
+                 * search the according agegroup
+                 */
+                if($participant_id != 0) {
+                    $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
+
+                    $agegroupService = new Service\AgegroupService();
+                    $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                            ->findBy(array('priceChange' => '1'));
+                    $agegroupService->setAgegroups($agegroups);
+                    $agegroup = $agegroupService->getAgegroupByUser($participant);
+                } elseif($agegroup_id != 0) {
+                    $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")
+                            ->findOneBy(array('id' => $agegroup_id));
+                } else {
+                    $logger->emerg('Unable to add/edit product!');
+                }
+
+                /*
+                 * get deadline
+                 */
+                #$deadlineService = new Service\DeadlineService();
+                #$deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                #        ->findBy(array('priceChange' => '1'));
+                #$deadlineService->setDeadlines($deadlines);
+                #$deadline = $deadlineService->getDeadline();
+                
+                /*
+                 *  prepare product data to populate item
+                 */
+                $product_data = $product->getArrayCopy();
+                $product_data['Product_id'] = $product_data['id'];
+                unset($product_data['id']);
+                
+                /*
+                 * build up item entity
+                 */
+                $item = new Entity\Item();
+                #$item->populate($product_data);
+                $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
+                $item->setAmount(1);
+                $item->populate((array) $product_data);
+
+                /*
+                 * add variant data to item entity
+                 */
+                $variant_data = $data['pv'];
+                foreach($product->getProductVariants() as $variant) {
+                    $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                        ->findOneBy(array('id' => $variant_data[$variant->getId()]));
+                    if($value) {
+                        $itemVariant = new Entity\ItemVariant();
+                        $itemVariant->populateFromEntity($variant, $value);
+                        $item->addItemVariant($itemVariant);
+                        #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
+                    } else {
+                        $logger->warn('Unable to find value for variant: '.$variant->getName().' (id: '.$variant->getId().')');
+                    }
+                }
+                
+                /*
+                 * check product packages and add data to item entity
+                 */
+                $productPackages = $em->getRepository("ersEntity\Entity\ProductPackage")
+                    ->findBy(array('Product_id' => $product->getId()));
+                foreach($productPackages as $package) {
+                    $subProduct = $package->getSubProduct();
+                    $subItem = new Entity\Item();
+                    $subItem->setPrice(0);
+                    $subItem->setAmount($package->getAmount());
+                    $product_data = $subProduct->getArrayCopy();
+                    $product_data['Product_id'] = $product_data['id'];
+                    unset($product_data['id']);
+                    $subItem->populate($product_data);
+
+                    foreach($subProduct->getProductVariants() as $variant) {
+                        $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                            ->findOneBy(array('id' => $variant_data[$variant->getId()]));
+                        if($value) {
+                            $itemVariant = new Entity\ItemVariant();
+                            $itemVariant->populateFromEntity($variant, $value);
+                            $subItem->addItemVariant($itemVariant);
+                            #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
+                        } else {
+                            $logger->warn('Unable to find value for variant of subItem: '.$variant->getName().' (id: '.$variant->getId().')');
+                        }
+                    }
+
+                    $itemPackage = new Entity\ItemPackage();
+                    $itemPackage->setItem($item);
+                    $itemPackage->setSubItem($subItem);
+                    $item->addChildItem($itemPackage);
+                }
+                
+                /*
+                 * delete the item we have edited when we're in edit mode
+                 */
+                if(is_numeric($item_id) && $item_id != 0) {
+                    $cartContainer->order->removeItem($item_id);
+                }
+                
+                /*if(isset($cartContainer->editItem) && $cartContainer->editItem instanceof Entity\Item) {
+                    $cartContainer->order->removeItem($cartContainer->editItem->getSessionId());
+                    unset($cartContainer->editItem);
+                }*/
+                
+                /*
+                 * add the newly created item
+                 */
+                $cartContainer->order->addItem($item, $participant_id);
+                
+                /*
+                 * the chooser for product, shopping cart or stay on product 
+                 * page will be visible for two pageloads. This prevents the 
+                 * chooser overlay from getting displayd in strange situations
+                 */
+                $cartContainer->chooser = true;
+                $cartContainer->chooserCount = 2;
+                
+                /*
+                 * go the route of the breadcrumbs and find the way back. :)
+                 */
+                $forrest = new Service\BreadcrumbFactory();
+                if(!$forrest->exists('cart')) {
+                    $forrest->set('cart', 'product');
+                }
+                $breadcrumb = $forrest->get('cart');
+                $logger->info(var_export($breadcrumb, true));
+
+                #return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            } else {
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
+                $formfail = true;
+            } 
+        }
+        
+        /*
          * Set form values
          */
         $form->get('submit')->setAttribute('value', 'Add to Cart');
@@ -169,12 +372,12 @@ class ProductController extends AbstractActionController {
         /*
          * save the item we need to edit (when in edit mode)
          */
-        $cartContainer = new Container('cart');
+        /*$cartContainer = new Container('cart');
         $item = '';
         if($item_id) {
             $item = $cartContainer->order->getItem($item_id);
             $cartContainer->editItem = $item;
-        }
+        }*/
         
         /*
          * build participant select options
@@ -205,23 +408,15 @@ class ProductController extends AbstractActionController {
         $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
                     ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
         
-        $deadlineService = new Service\DeadlineService();
-        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
-                    ->findBy(array('priceChange' => '1'));
-        $deadlineService->setDeadlines($deadlines);
-        $deadline = $deadlineService->getDeadline();
-        
         return new ViewModel(array(
-            #'participants' => $options,
             'product' => $product,
-            #'participant' => $participant,
-            'item' => $item,
+            'formfail' => $formfail,
+            #'item' => $item,
             'form' => $form,
             'breadcrumb' => $breadcrumb,
             'bc_stay' => $forrest->get('bc_stay'),
             'chooser' => $chooser,
             'agegroups' => $agegroups,
-            #'agegroup' => $agegroup,
             'deadline' => $deadline,
         ));
     }
@@ -296,7 +491,9 @@ class ProductController extends AbstractActionController {
         $forrest->set('participant', 'product', array('action' => 'edit'));
         
         $viewModel = $this->addAction();
-        $viewModel->setTemplate('pre-reg/product/edit');
+        if($viewModel instanceof ViewModel) {
+            $viewModel->setTemplate('pre-reg/product/edit');
+        }
         
         return $viewModel;
     }

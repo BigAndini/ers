@@ -91,7 +91,14 @@
                         </ul>
                         <?php if(!$product->getPersonalized()): ?>
                             <div id="agegroup">
-                                <?php echo $this->formRow($form->get('agegroup_id')); ?>
+                                <?php
+                                echo $this->formRow($form->get('agegroup_id')); 
+                                /*
+                                 * I need the empty participant_id here so the 
+                                 * validator can work correctly
+                                 */
+                                echo $this->formHidden($form->get('participant_id'));
+                                ?>
                             </div>
                         <?php endif; ?>
                         <div id="person">
@@ -105,12 +112,15 @@
                             <?php 
                             endif;
                             echo $this->formRow($form->get('participant_id'));
+                            /*
+                             * I need the empty agegroup_id here so the 
+                             * validator can work correctly
+                             */
+                            echo $this->formHidden($form->get('agegroup_id'));
                             ?>
                             <p><strong>Tip:</strong><br />You can 
                                 <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add a new person</a>
-                                or edit the details of any person with 
-                                <a href="<?php echo $this->url('participant'); ?>">My Persons</a> 
-                                from the menu.</p>
+                                or edit the details of any person with "My Persons" from the main menu.</p>
                         </div>
                     </div>
                     

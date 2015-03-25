@@ -43,6 +43,13 @@
                     <h1><?php echo $this->escapeHtml($product->getName()); ?></h1>
                 </div>
             </div>
+            <?php if($formfail): ?>
+            <div class="row">
+                <div class="alert alert-warning">
+                    <p>Please complete the whole form to put this product into the cart.</p>
+                </div>
+            </div>
+            <?php endif; ?>
             <div class="row">
                 <div class="col-lg-6">
                     <p class="desc-short"><?php echo $product->getShortDescription(); ?></p>
@@ -89,7 +96,14 @@
                         </ul>
                         <?php if(!$product->getPersonalized()): ?>
                             <div id="agegroup">
-                                <?php echo $this->formRow($form->get('agegroup_id')); ?>
+                                <?php 
+                                echo $this->formRow($form->get('agegroup_id')); 
+                                /*
+                                 * I need the empty participant_id here so the 
+                                 * validator can work correctly
+                                 */
+                                echo $this->formHidden($form->get('participant_id'));
+                                ?>
                             </div>
                         <?php endif; ?>
                         <div id="person">
@@ -103,12 +117,15 @@
                             <?php 
                             endif;
                             echo $this->formRow($form->get('participant_id'));
+                            /*
+                             * I need the empty agegroup_id here so the 
+                             * validator can work correctly
+                             */
+                            echo $this->formHidden($form->get('agegroup_id'));
                             ?>
                             <p><strong>Tip:</strong><br />You can 
                                 <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add a new person</a>
-                                or edit the details of any person with 
-                                <a href="<?php echo $this->url('participant'); ?>">My Persons</a> 
-                                from the menu.</p>
+                                or edit the details of any person with "My Persons" from the main menu.</p>
                         </div>
                     </div>
 

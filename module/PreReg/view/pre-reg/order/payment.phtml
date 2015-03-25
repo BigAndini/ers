@@ -31,16 +31,23 @@ echo $this->navigation()
         <h1>Choose Payment type</h1>
         <?php echo $this->formElementErrors($form->get('paymenttype_id')); ?>
         <?php foreach($paymenttypes as $paymenttype): ?>
-        <?php if($order->getPaymentType() != null && $order->getPaymentType()->getId() == $paymenttype->getId()) :
-                $checked = true;
-            else:
-                $checked = false;
-            endif; ?>
-            <label class="payment-type">
-            <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
-            <?php echo $paymenttype->getName(); ?>
-            </label>
-            <p class="payment-desc"><?php echo $paymenttype->getShortDescription(); ?> <a href="<?php echo $this->url('info', array('action' => 'payment', 'id' => $paymenttype->getId()))?>">more info...</a></p>
+            <div class="row">
+                <div class="col-lg-6 col-bordered col-payment">
+                    <?php if($order->getPaymentType() != null && $order->getPaymentType()->getId() == $paymenttype->getId()) :
+                        $checked = true;
+                    else:
+                        $checked = false;
+                    endif; ?>
+                    <label class="payment-type">
+                    <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
+                    <?php echo $paymenttype->getName(); ?>
+                    </label>
+                    <p class="payment-desc">
+                        <!--<?php echo $paymenttype->getShortDescription(); ?> <a href="<?php echo $this->url('info', array('action' => 'payment', 'id' => $paymenttype->getId()))?>">more info...</a>-->
+                        <?php echo $paymenttype->getLongDescription(); ?>
+                    </p>
+                </div>
+            </div>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>

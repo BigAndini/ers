@@ -1,9 +1,28 @@
 <?php
 
-$title = 'Your Shopping Cart is empty now.';
-$this->headTitle($title);
-$this->headMeta()->appendHttpEquiv('Refresh', '3;URL='.$this->url('product'));
-?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+if($emptycart) :
+    $title = 'Your Shopping Cart is empty now';
+    $this->headTitle($title);
+    $this->headMeta()->appendHttpEquiv('Refresh', '3;URL='.$this->url('product'));?>
+    <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-<p>You are being redirected, please click <a href="<?php echo $this->url('product') ?>">here</a> if your browser does not redirect you.</p>
+    <p>You are being redirected, please click <a href="<?php echo $this->url('product') ?>">here</a> if your browser does not redirect you.</p>
+<?php 
+else:
+    $title = 'Empty your Shopping Cart and My Person list';
+    $this->headTitle($title);
+    ?>
+
+    <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+    <p>Are you sure that you want to empty your shopping cart and your My Person list?</p>
+    <?php $url = $this->url('cart', array('action' => 'reset')); ?>
+    <form action="<?php echo $url; ?>" method="post">
+    <div>
+        <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+        <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+    </div>
+    </form>
+<?php endif;
+
+
