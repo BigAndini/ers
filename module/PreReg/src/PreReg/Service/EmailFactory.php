@@ -121,6 +121,7 @@ class EmailFactory
             $this->attachments[] = $attachment;
         } else {
             $pathToAtt = $attachment;
+            error_log($pathToAtt);
             if(!file_exists($attachment)) {
                 $pathToAtt = getcwd() . '/' . $attachment;
                 if(!file_exists($pathToAtt)) {
