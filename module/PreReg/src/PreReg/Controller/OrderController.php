@@ -536,9 +536,13 @@ class OrderController extends AbstractActionController {
         $emailService->setHtmlMessage($html);
         #$emailService->setTextMessage('Testmail');
         
-        $filename = "EJC2015_Terms_and_Services.pdf";
-        $filepath = getcwd().'/tmp/'.$filename;
-        $emailService->addAttachment($filepath);
+        #$filename = "EJC2015_Terms_and_Services.pdf";
+        #$filepath = getcwd().'/tmp/'.$filename;
+        $terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v3.pdf';
+        $terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
+        #$emailService->addAttachment($filepath);
+        $emailService->addAttachment($terms1);
+        $emailService->addAttachment($terms2);
         
         $emailService->send();
         
