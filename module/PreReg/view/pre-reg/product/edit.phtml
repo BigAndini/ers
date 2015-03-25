@@ -58,7 +58,7 @@
                     <?php echo $product->getLongDescription(); ?>
                 </div>
                 <div class="col-lg-6">
-                    <p class="small text-right">Prices of this PreReg phase are valid until <?php echo $deadline->getDeadline()->format('d.m.Y'); ?></p>
+                    <p class="small text-right">The prices will raise after <?php echo $deadline->getDeadline()->format('d.m.Y H:i:s'); ?></p>
                     <dl class="dl-horizontal">
                         <?php foreach($agegroups as $ag): ?>
                         <?php 

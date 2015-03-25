@@ -25,6 +25,12 @@ class InfoController extends AbstractActionController {
             'breadcrumb' => $forrest->get('terms'),
         ));
     }
+    public function cookieAction() {
+        return new ViewModel();
+    }
+    public function helpAction() {
+        return new ViewModel();
+    }
     /*
      * display long description of payment type
      */
