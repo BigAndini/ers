@@ -679,4 +679,30 @@ class OrderController extends AbstractActionController {
             'params' => $params,
         ));
     }
+    
+    public function emailAction() {
+        $hashkey = $this->params()->fromRoute('hashkey', '');
+        
+        if($hashkey == '') {
+            return $this->notFoundAction();
+        }
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('hashkey' => $hashkey));
+        
+        if($order == null) {
+            $logger = $this
+                ->getServiceLocator()
+                ->get('Logger');
+            $logger->info('order for hash key '.$hashkey.' not found');
+            return $this->notFoundAction();
+        }
+        
+        return new ViewModel(array(
+            'order' => $order,
+        ));
+    }
 }
