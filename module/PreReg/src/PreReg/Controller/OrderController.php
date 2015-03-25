@@ -524,7 +524,9 @@ class OrderController extends AbstractActionController {
         $emailService->setFrom('prereg@eja.net');
         
         $emailService->addTo($purchaser);
-        $emailService->setSubject('EJC Registration System: Order Confirmation');
+        #$emailService->setSubject('EJC Registration System: Order Confirmation');
+        $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
+        $emailService->setSubject($subject);
         
         $viewModel = new ViewModel(array(
             'order' => $order,
