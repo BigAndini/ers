@@ -20,7 +20,26 @@ $this->headTitle($title);
     <h1><?php echo $this->escapeHtml($title); ?></h1>
     
     <div>
-        <h2>Give your check to Ron.</h2>
+        <p>​Please make cheques payable to: <strong>European Juggling Association</strong>.</p>
+        <p>Your order amount in GBP is: <strong>
+            <?php
+            $pound = ($order->getSum()*0.8);
+            echo $this->currencyFormat($pound, 'GBP', null, 'en_GB');
+            ?>
+                </strong></p>
+        <p>Please send:</p>
+        <ul>
+            <li>Cheques (amount in GBP, price calculated from Euro-price * 0,8 )</li>
+            <li>your name</li>
+            <li>order ID <?php echo $order->getCode()->getValue(); ?></li>
+            <li>to the address of the UK country-rep:
+                <pre style="width: 200px;">Ron Trickett
+14 Peterborough Road
+Newton Hall
+Durham
+DH1 5QX</pre>                
+            </li>
+        </ul>
     </div>
     <div>
         <p>We sent this information to your email address: <strong><?php echo $order->getPurchaser()->getEmail(); ?></strong></p>
