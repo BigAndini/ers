@@ -32,8 +32,30 @@ class AgegroupService
         if($birthday == null) {
             return $ret;
         }
-        foreach($this->agegroups as $agegroup) {
+        return $this->getAgegroupByDate($birthday);
+        /*foreach($this->agegroups as $agegroup) {
             if($birthday->getTimestamp() < $agegroup->getAgegroup()->getTimestamp()) {
+                continue;
+            }
+            if($ret == null) {
+                $ret = $agegroup;
+                continue;
+            }
+            if($agegroup->getAgegroup()->getTimestamp() > $ret->getAgegroup()->getTimestamp()) {
+                $ret = $agegroup;
+            }
+        }
+        
+        return $ret;*/
+    }
+    
+    public function getAgegroupByDate(\DateTime $date = null) {
+        $ret = null;
+        if($date == null) {
+            return $ret;
+        }
+        foreach($this->agegroups as $agegroup) {
+            if($date->getTimestamp() < $agegroup->getAgegroup()->getTimestamp()) {
                 continue;
             }
             if($ret == null) {

@@ -34,27 +34,46 @@
                     <tr>
                         <td>
                             <span class="product-name"><?php echo $item->getName(); ?></span>
-                            <span class="product-variants">
-                                <?php if(count($item->getItemVariants()) > 0): ?>
-                                (
                                 <?php 
-                                $numVariants = count($item->getItemVariants()); 
-                                $i = 0;
                                 $variants = array();
-                                ?>
-                                <?php foreach($item->getItemVariants() as $variant): 
-                                    echo $variant->getName().': '.$variant->getValue(); 
-                                    if(++$i != $numVariants):
-                                        echo '; ';
-                                    endif;
-                                    $variants[] = array(
-                                        'pv' => $variant->getProductVariantId(),
-                                        'pvv' => $variant->getProductVariantValueId(),
-                                        );
-                                endforeach; ?>
-                                )
-                                <?php endif; ?>
-                            </span>
+                                if(count($item->getItemVariants()) > 0): 
+                                    $numVariants = count($item->getItemVariants());
+                                    $i = 0;
+                                    $var_string = '';
+                                    foreach($item->getItemVariants() as $variant): 
+                                        $var_string .= $variant->getName().': '.$variant->getValue(); 
+                                        if(++$i != $numVariants):
+                                            $var_string .= '; ';
+                                        endif;
+                                        $variants[\urlencode($variant->getName())] = \urlencode($variant->getProductVariantValueId());
+                                    endforeach;
+                                    if($var_string != ''): ?>
+                                        <span class="product-variants">
+                                        <?php echo '('.$var_string.')'; ?>
+                                        </span>
+                                    <?php endif;
+                                endif;
+                                if(count($item->getChildItems()) > 0):
+                                    foreach($item->getChildItems() as $package):
+                                        $subItem = $package->getSubItem();
+                                        #echo $subItem->getName();
+                                        $numVariants = count($subItem->getItemVariants());
+                                        $i = 0;
+                                        $subvar_string = '';
+                                        foreach($subItem->getItemVariants() as $variant):
+                                            $subvar_string .= $variant->getName().': '.$variant->getValue(); 
+                                            if(++$i != $numVariants):
+                                                $subvar_string .= '; ';
+                                            endif;
+                                            $variants[\urlencode($variant->getName())] = \urlencode($variant->getProductVariantValueId());
+                                        endforeach;
+                                    endforeach;
+                                    if($subvar_string != ''): ?>
+                                        <span class="subproducts">
+                                        <?php echo '('.$subvar_string.')'; ?>
+                                        </span>
+                                    <?php endif;
+                                endif; ?>
                         </td>
                         <td class="cart-amount"><?php echo $item->getAmount(); ?></td>
                         <td class="cart-price"><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
