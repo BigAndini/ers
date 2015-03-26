@@ -490,3 +490,7 @@ a:hover, a:focus {
     border-radius: 5px;
     margin-bottom: 15px;
 }
+
+.jumbotron h1, .jumbotron .h1 {
+    font-size: 48px;
+}

@@ -25,11 +25,17 @@ class PaymentController extends AbstractActionController {
      * Formular for paying the order via bank transfer
      */
     public function banktransferAction() {
-        $session_order = new Container('order');
+        $hashkey = $this->params()->fromRoute('hashkey', '');
+        
+        if($hashkey == '') {
+            return $this->notFoundAction();
+        }
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ersEntity\Entity\Order")->findOneBy(array('id' => $session_order->order_id));
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('hashkey' => $hashkey));
         
         return new ViewModel(array(
             'order' => $order,
@@ -52,11 +58,7 @@ class PaymentController extends AbstractActionController {
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
         
-        /*$session_order = new Container('order');
-        $em = $this
-            ->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ersEntity\Entity\Order")->findOneBy(array('id' => $session_order->order_id));*/
+       
         
         $config = $this->getServiceLocator()->get('Config');
         
@@ -72,19 +74,13 @@ class PaymentController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Logger');
         
-        
-        #$trxuser_id = '99999';
-        #$trx_currency = 'EUR';
-        #$trxpassword = '0';
-        #$sec_key = 'ohPinei6chahnahcoesh';
-        
         if($order != null) {
             $a = new \NumberFormatter("de-DE", \NumberFormatter::PATTERN_DECIMAL);
             $a->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
             $a->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
             $trx_amount = $a->format($order->getSum()*100); # amount in cents
         } else {
-            $trx_amount = 0;
+            return $this->redirect()->toRoute('order', array('action' => 'cc-error'));
         }
         
         

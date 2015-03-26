@@ -275,8 +275,11 @@ class ProductController extends AbstractActionController {
                 #$item->populate($product_data);
                 $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
                 $item->setAmount(1);
+                if($agegroup) {
+                    $item->setAgegroup($agegroup->getAgegroup());
+                }
                 $item->populate((array) $product_data);
-
+                
                 /*
                  * add variant data to item entity
                  */
@@ -304,6 +307,9 @@ class ProductController extends AbstractActionController {
                     $subItem = new Entity\Item();
                     $subItem->setPrice(0);
                     $subItem->setAmount($package->getAmount());
+                    if($agegroup) {
+                        $subItem->setAgegroup($agegroup->getAgegroup());
+                    }
                     $product_data = $subProduct->getArrayCopy();
                     $product_data['Product_id'] = $product_data['id'];
                     unset($product_data['id']);
@@ -379,16 +385,6 @@ class ProductController extends AbstractActionController {
         $form->get('submit')->setAttribute('value', 'Add to Cart');
         
         /*
-         * save the item we need to edit (when in edit mode)
-         */
-        /*$cartContainer = new Container('cart');
-        $item = '';
-        if($item_id) {
-            $item = $cartContainer->order->getItem($item_id);
-            $cartContainer->editItem = $item;
-        }*/
-        
-        /*
          * build participant select options
          */
         $person_options = $this->getPersonOptions($product, $participant_id);
@@ -404,7 +400,7 @@ class ProductController extends AbstractActionController {
         /*
          * Get and build agegroup select options
          */
-        $form->get('agegroup_id')->setAttribute('options', $this->getAgegroupOptions());
+        $form->get('agegroup_id')->setAttribute('options', $this->getAgegroupOptions($agegroup_id));
         
         /*
          * get all variables for ViewModel
@@ -470,7 +466,7 @@ class ProductController extends AbstractActionController {
         return $options;
     }
     
-    private function getAgegroupOptions() {
+    private function getAgegroupOptions($agegroup_id = null) {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -479,15 +475,28 @@ class ProductController extends AbstractActionController {
         $options = array();
         
         foreach($agegroups as $agegroup) {
+            if($agegroup_id == $agegroup->getId()) {
+                $selected = true;
+            } else {
+                $selected = false;
+            }
             $options[] = array(
                 'value' => $agegroup->getId(),
                 'label' => $agegroup->getName(),
+                'selected' => $selected,
             );
+        }
+        if($agegroup_id == null) {
+            $selected = false;
+        } elseif($agegroup_id == 0) {
+            $selected = true;
+        } else {
+            $selected = false;
         }
         $options[] = array(
                 'value' => '0',
                 'label' => 'normal',
-                #'selected' => false,
+                'selected' => $selected,
             );
         return $options;
     }

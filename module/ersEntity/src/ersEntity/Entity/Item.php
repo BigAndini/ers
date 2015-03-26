@@ -106,6 +106,11 @@ class Item implements InputFilterAwareInterface
      * @ORM\Column(type="boolean", nullable=true)
      */
     protected $personalized;
+    
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    protected $agegroup;
 
     /**
      * @ORM\Column(type="datetime")
@@ -478,6 +483,29 @@ class Item implements InputFilterAwareInterface
     }
     
     /**
+     * Set the value of agegroup.
+     *
+     * @param datetime $agegroup
+     * @return \Entity\Item
+     */
+    public function setAgegroup($agegroup)
+    {
+        $this->agegroup = $agegroup;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of agegroup.
+     *
+     * @return datetime
+     */
+    public function getAgegroup()
+    {
+        return $this->agegroup;
+    }
+    
+    /**
      * Set the value of updated.
      *
      * @param datetime $updated
@@ -837,7 +865,10 @@ class Item implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'itemVariants', 'childItems', 'parentItems', 'updated', 'created');
+        $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 
+            'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 
+            'amount', 'info', 'status', 'personalized', 'itemVariants', 
+            'childItems', 'parentItems', 'agegroup', 'updated', 'created');
         $relationFields = array('product', 'package', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -870,6 +901,26 @@ class Item implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'session_id', 'Product_id', 'Package_id', 'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 'amount', 'info', 'status', 'personalized', 'itemVariants', 'childItems', 'parentItems', 'updated', 'created');
+        return array(
+            'id', 
+            'session_id', 
+            'Product_id', 
+            'Package_id', 
+            'Code_id', 
+            'name', 
+            'shortDescription', 
+            'longDescription', 
+            'price', 
+            'amount', 
+            'info', 
+            'status', 
+            'personalized', 
+            'itemVariants', 
+            'childItems', 
+            'parentItems', 
+            'agegroup',
+            'updated', 
+            'created'
+            );
     }
 }

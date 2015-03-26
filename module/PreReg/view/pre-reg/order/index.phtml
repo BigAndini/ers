@@ -115,7 +115,13 @@ echo $this->navigation()
                                         $fragment = 'person';
                                     endif;
                                 else:
-                                    $variants['agegroup_id'] = 4;
+                                    error_log(var_export($item->getAgegroup(), true));
+                                    $agegroup = $agegroupService->getAgegroupByDate($item->getAgegroup());
+                                    if($agegroup):
+                                        $variants['agegroup_id'] = $agegroup->getId();
+                                    else:
+                                        $variants['agegroup_id'] = 0;
+                                    endif;
                                     $fragment = 'agegroup';
                                 endif;
                                 

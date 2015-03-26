@@ -61,8 +61,17 @@ class OrderController extends AbstractActionController {
         }
         $logger->info('=== shopping cart end ===');
         
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $agegroupService = new Service\AgegroupService();
+        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    ->findBy(array('priceChange' => '1'));
+        $agegroupService->setAgegroups($agegroups);
+        
         return new ViewModel(array(
             'order' => $cartContainer->order,
+            'agegroupService' => $agegroupService,
         ));
     }
     public function overviewAction() {
@@ -449,6 +458,7 @@ class OrderController extends AbstractActionController {
                         }
                         $subItem->setCode($code);
                         foreach($subItem->getItemVariants() as $variant) {
+                            error_log('found variant '.$variant->getName().' with value '.$variant->getValue());
                             $variant->setItem($subItem);
                         }
                     }
@@ -469,12 +479,16 @@ class OrderController extends AbstractActionController {
             
             $cartContainer->init = 0;
             
-            $this->sendConfirmationEmail();
+            $this->sendConfirmationEmail($cartContainer->order->getId());
             $forrest = new Service\BreadcrumbFactory;
             $forrest->remove('terms');
             switch(strtolower($cartContainer->order->getPaymentType()->getType())) {
                 case 'banktransfer':
-                    return $this->redirect()->toRoute('payment', array('action' => 'banktransfer'));
+                    return $this->redirect()->toRoute('payment', 
+                            array(
+                                'action' => 'banktransfer',
+                                'hashkey' => $cartContainer->order->getHashkey(),
+                                ));
                 case 'creditcard':
                     return $this->redirect()->toRoute(
                             'payment', 
@@ -510,14 +524,14 @@ class OrderController extends AbstractActionController {
         ));
     }
     
-    private function sendConfirmationEmail() {
+    private function sendConfirmationEmail($order_id) {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $session_order = new Container('order');
         $order = $em->getRepository("ersEntity\Entity\Order")
-                    ->findOneBy(array('id' => $session_order->order_id));
+                    ->findOneBy(array('id' => $order_id));
         $purchaser = $order->getPurchaser();
         
         $emailService = new Service\EmailFactory();
