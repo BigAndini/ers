@@ -68,15 +68,37 @@
                 'hashkey' => $order->getHashKey()
             ), array('force_canonical' => true)); ?>">Your order details</a></p>
         <?php elseif($paymenttype->getType() == 'Cheque'): ?>
-            <p>To complete your order, Ron the British country representative 
-                needs to receive your cheque. If you ordered a discounted 
-                ticket (phase 1 or phase 2), please make sure that your cheque 
-                is received within 14 days after the end of this phase 
-                (i.e. 14th of May / 14th of July).</p>
-            <p>Make sure to state your order ID 
-                <strong><?php echo $order->getCode()->getValue(); ?></strong> 
-                as the reference for your order. Otherwise we won't be able to 
-                match your payment and your order can't be processed.</p>
+            <p>The conversation rate Euro to Pounds for cheques is set to 0.8 - 
+                this means that you need to multiply the price with 0.8, i.e. 
+                120 EUR --> 96 GBP. We know that this exchange rate is more 
+                expensive than market price - if you have an alternative payment 
+                method (e.g. credit card, or friends in other countries) we 
+                suggest to request a change of payment type for this order with 
+                email to <a href="mailto:prereg@eja.net">prereg@eja.net</a>.</p>
+            <p>​​Please make cheques payable to: <strong>European Juggling 
+                Association</strong>.</p>
+            <p>Your order amount is: <strong>
+                <?php
+                $pound = ($order->getSum()*0.8);
+                echo $this->currencyFormat($pound, 'GBP', null, 'en_GB');
+                ?>
+                    </strong></p>
+            <p>Please send:</p>
+            <ul>
+                <li>Cheques (amount in GBP, price calculated from Euro-price * 0,8 )</li>
+                <li>your name</li>
+                <li>order ID <?php echo $order->getCode()->getValue(); ?></li>
+                <li>to the address of the UK country-rep:<br /><br />
+                    Ron Trickett<br />
+                    14 Peterborough Road<br />
+                    Newton Hall<br />
+                    Durham<br />
+                    DH1 5QX<br />
+                </li>
+            </ul>
+            <p>If you ordered a discounted ticket (phase 1 or phase 2), please 
+                make sure that your cheque is received within 14 days after the 
+                end of this phase (i.e. 14th of May / 14th of July).</p>
             <p>To see if we have already received your payment, you can visit the following link:
             <a href="<?php echo $this->url('order', array(
                 'action' => 'view',
