@@ -39,6 +39,10 @@
         <div class='header'>EJC 2015 - 01.-09.08.2015 in Bruneck, South Tyrol, Italy - <a href='http://www.ejc2015.org'>www.ejc2015.org</a></div>
         
         <p>Dear <?php echo $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?>,</p>
+        <p>To receive this email in another language you can visit the <a href="<?php echo $this->url('order', array(
+                'action' => 'email',
+                'hashkey' => $order->getHashKey()
+            ), array('force_canonical' => true)); ?>">resend email link</a>.</p>
         <p>this is the confirmation for
             <a href="<?php echo $this->url('order', array(
                 'action' => 'view',
@@ -46,10 +50,6 @@
             ), array('force_canonical' => true)); ?>">your order</a>
             from <?php echo $order->getCreated()->format('d.m.Y'); ?> with the 
             order ID <?php echo $order->getCode()->getValue(); ?>.</p>
-        <p>To receive this email in another language you can visit the <a href="<?php echo $this->url('order', array(
-                'action' => 'email',
-                'hashkey' => $order->getHashKey()
-            ), array('force_canonical' => true)); ?>">resend email link</a>.</p>
         <p><strong>Note:</strong> To receive the email with your eTickets correctly, it is important that you add the email address prereg@eja.net to your address book.</p>
         <p>Thank you for registering for the <?php echo $ejc_with_number; ?>! Your registration helps us to improve <?php echo $ejc_with_year; ?> for you and for all fellow jugglers.</p>
         <p>You chose <?php echo $order->getPaymentType()->getName(); ?> as payment method.</p>
@@ -92,7 +92,7 @@
                 <a href="http://get.adobe.com/reader">http://get.adobe.com/reader</a></p>
         <p>Your eTickets and further information concerning the 
             <?php echo $ejc_with_number; ?> will be delivered in another email 
-            as soon as your payment has been confirmed.</p>
+            (not immediately after your payment has been received).</p>
         <p>We are looking forward to welcoming you at <?php echo $ejc_with_number; ?>!</p>
         
         <p>The official EJC 2015 T-Shirt and other awesome merchandise-products 

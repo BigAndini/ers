@@ -103,7 +103,7 @@ class ProductController extends AbstractActionController {
         
         $params = array();
         #$params2 = array();
-        $options = array();
+        $options = $this->params()->fromQuery();
         
         $params['action'] = 'add';
         $params['product_id'] = $product_id;
@@ -125,7 +125,7 @@ class ProductController extends AbstractActionController {
             $params2 = $params;
             $params2['item_id'] = $item_id;
         }
-        $forrest->set('participant', 'product', $params, $options);
+        $forrest->set('participant', 'product', $params2, $options);
         $forrest->set('cart', 'product', $params2, $options);
         $forrest->set('bc_stay', 'product', $params2, $options);
         

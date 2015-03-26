@@ -5,7 +5,14 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-<p>Click on any item to add further information and place it in your shopping cart.</p>
+<div class="row">
+    <div class="col-lg-6">
+        <p>Click on any item to add further information and place it in your shopping cart.</p>
+    </div>
+    <div class="col-lg-6">
+        <p class="text-right">The prices will increase after <?php echo $deadline->getDeadline()->format('d.m.Y H:i:s'); ?></p>
+    </div>
+</div>
 
 <?php 
 foreach ($products as $product) : 

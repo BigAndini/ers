@@ -28,7 +28,7 @@ echo $this->navigation()
             <?php $purchaser = $order->getPurchaser(); ?>
             <?php if($purchaser) : ?>
                 <h2><?php echo $purchaser->getFirstname().' '.$purchaser->getSurname(); ?></h2>
-                <p>The purchaser will receive all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is payed and will be able to download the eTicket on his own as well.</p>
+                <p>The purchaser will receive all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is paid and will be able to download the eTicket on his own as well.</p>
                 <h3>We will send all information to: <?php echo $purchaser->getEmail(); ?></h3>
             <?php else: ?>
                 <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
