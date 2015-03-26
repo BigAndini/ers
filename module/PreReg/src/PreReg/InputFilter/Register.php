@@ -81,7 +81,7 @@ class Register implements InputFilterAwareInterface
                             
                         ),
                     ),
-                    /*array(
+                    array(
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
@@ -107,7 +107,7 @@ class Register implements InputFilterAwareInterface
                             },
                             
                         ),
-                    ),*/
+                    ),
                 ),
             ]));
             
