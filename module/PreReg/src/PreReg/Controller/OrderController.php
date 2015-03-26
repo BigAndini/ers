@@ -489,6 +489,12 @@ class OrderController extends AbstractActionController {
                                 'action' => 'banktransfer',
                                 'hashkey' => $cartContainer->order->getHashkey(),
                                 ));
+                case 'cheque':
+                    return $this->redirect()->toRoute('payment', 
+                            array(
+                                'action' => 'cheque',
+                                'hashkey' => $cartContainer->order->getHashkey(),
+                                ));
                 case 'creditcard':
                     return $this->redirect()->toRoute(
                             'payment', 

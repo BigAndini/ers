@@ -56,10 +56,25 @@
         <?php 
         $paymenttype = $order->getPaymentType();
         if($paymenttype->getType() == 'BankTransfer'): ?>
-            <p>To complete your order, we need to receive your bank transfer within 14 days. If you ordered a discounted ticket (phase 1 or phase 2), please make sure that yout payment is processed within 14 days after the end of this phase (i.e. 14th of May / 14th of July).</p>
+            <p>To complete your order, we need to receive your bank transfer within 14 days. If you ordered a discounted ticket (phase 1 or phase 2), please make sure that your payment is processed within 14 days after the end of this phase (i.e. 14th of May / 14th of July).</p>
             <p>Please transfer the entire amount of your order to the following account:</p>
             <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
             <p>Make sure to state your order ID <strong><?php echo $order->getCode()->getValue(); ?></strong> as the reference for the transfer. Otherwise we won't be able to match your payment and your order can't be processed.</p>
+            <p>To see if we have already received your payment, you can visit the following link:
+            <a href="<?php echo $this->url('order', array(
+                'action' => 'view',
+                'hashkey' => $order->getHashKey()
+            ), array('force_canonical' => true)); ?>">Your order details</a></p>
+        <?php elseif($paymenttype->getType() == 'Cheque'): ?>
+            <p>To complete your order, Ron the British country representative 
+                needs to receive your cheque. If you ordered a discounted 
+                ticket (phase 1 or phase 2), please make sure that your cheque 
+                is received within 14 days after the end of this phase 
+                (i.e. 14th of May / 14th of July).</p>
+            <p>Make sure to state your order ID 
+                <strong><?php echo $order->getCode()->getValue(); ?></strong> 
+                as the reference for your order. Otherwise we won't be able to 
+                match your payment and your order can't be processed.</p>
             <p>To see if we have already received your payment, you can visit the following link:
             <a href="<?php echo $this->url('order', array(
                 'action' => 'view',
