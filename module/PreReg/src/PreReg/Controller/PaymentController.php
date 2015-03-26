@@ -43,6 +43,27 @@ class PaymentController extends AbstractActionController {
     }
     
     /**
+     * Formular for paying the order via cheque
+     */
+    public function chequeAction() {
+        $hashkey = $this->params()->fromRoute('hashkey', '');
+        
+        if($hashkey == '') {
+            return $this->notFoundAction();
+        }
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('hashkey' => $hashkey));
+        
+        return new ViewModel(array(
+            'order' => $order,
+        ));
+    }
+    
+    /**
      * Formular for paying the order via credit card
      */
     public function creditcardAction() {
