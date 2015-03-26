@@ -251,15 +251,6 @@ class ProductController extends AbstractActionController {
                 } else {
                     $logger->emerg('Unable to add/edit product!');
                 }
-
-                /*
-                 * get deadline
-                 */
-                #$deadlineService = new Service\DeadlineService();
-                #$deadlines = $em->getRepository("ersEntity\Entity\Deadline")
-                #        ->findBy(array('priceChange' => '1'));
-                #$deadlineService->setDeadlines($deadlines);
-                #$deadline = $deadlineService->getDeadline();
                 
                 /*
                  *  prepare product data to populate item
@@ -272,7 +263,6 @@ class ProductController extends AbstractActionController {
                  * build up item entity
                  */
                 $item = new Entity\Item();
-                #$item->populate($product_data);
                 $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
                 $item->setAmount(1);
                 if($agegroup) {
@@ -315,10 +305,12 @@ class ProductController extends AbstractActionController {
                     unset($product_data['id']);
                     $subItem->populate($product_data);
 
+                    $add = false;
                     foreach($subProduct->getProductVariants() as $variant) {
                         $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
                             ->findOneBy(array('id' => $variant_data[$variant->getId()]));
                         if($value) {
+                            $add = true;
                             $itemVariant = new Entity\ItemVariant();
                             $itemVariant->populateFromEntity($variant, $value);
                             $subItem->addItemVariant($itemVariant);
@@ -328,10 +320,12 @@ class ProductController extends AbstractActionController {
                         }
                     }
 
-                    $itemPackage = new Entity\ItemPackage();
-                    $itemPackage->setItem($item);
-                    $itemPackage->setSubItem($subItem);
-                    $item->addChildItem($itemPackage);
+                    if($add) {
+                        $itemPackage = new Entity\ItemPackage();
+                        $itemPackage->setItem($item);
+                        $itemPackage->setSubItem($subItem);
+                        $item->addChildItem($itemPackage);
+                    }
                 }
                 
                 /*
