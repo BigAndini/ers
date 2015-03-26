@@ -91,7 +91,7 @@ return array(
                         <i class="fa fa-circle fa-stack-2x green"></i>
                         <i class="fa fa-question fa-stack-1x fa-inverse"></i>
                     </span>',*/
-                'label' => '?',
+                'label' => 'Help',
                 'route' => 'info',
                 'action' => 'help',
                 'resource'  => 'controller/PreReg\Controller\Info',

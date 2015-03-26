@@ -127,7 +127,11 @@ class ParticipantController extends AbstractActionController {
                 
                 $breadcrumb = $forrest->get('participant');
                 if($breadcrumb->route == 'product' && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
-                    $breadcrumb->params['participant_id'] = $user->getSessionId();
+                    error_log('setting user info');
+                    #$breadcrumb->params['participant_id'] = $user->getSessionId();
+                    unset($breadcrumb->params['agegroup_id']);
+                    $breadcrumb->options['fragment'] = 'person';
+                    $breadcrumb->options['query']['participant_id'] = $user->getSessionId();
                 }
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
