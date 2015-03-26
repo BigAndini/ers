@@ -56,8 +56,10 @@
         <?php 
         $paymenttype = $order->getPaymentType();
         if($paymenttype->getType() == 'BankTransfer'): ?>
-            <p>To complete your order, we need to receive your bank transfer within 14 days. If you ordered a discounted ticket (phase 1 or phase 2), please make sure that your payment is processed within 14 days after the end of this phase (i.e. 14th of May / 14th of July).</p>
-            <p>Please transfer the entire amount of your order to the following account:</p>
+            <p>To complete your order, we need to receive your bank transfer 
+                within 14 days. If you ordered a discounted ticket (phase 1 or 
+                phase 2), please make sure that your payment is processed within 
+                14 days after the end of this phase (i.e. 14th of May / 14th of July).</p>
             <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
             <p>Make sure to state your order ID <strong><?php echo $order->getCode()->getValue(); ?></strong> as the reference for the transfer. Otherwise we won't be able to match your payment and your order can't be processed.</p>
             <p>To see if we have already received your payment, you can visit the following link:
@@ -118,7 +120,8 @@
             Your European Juggling Association and the local 
                 <?php echo $ejc_with_number; ?> organizers</p>
         <hr />
-        <p>You purchased the following items:</p>
+        <p>You purchased the following items (ordered by 
+            <?php echo $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?>):</p>
         <?php echo $this->partial('partial/order-info.phtml', array('order' => $order)); ?>
         <div class='footer'>This mail was sent to you by the EJC Registration 
             System (ERS), operated by the European Juggling Association (EJA) on 
