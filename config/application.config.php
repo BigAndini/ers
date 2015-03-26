@@ -17,6 +17,7 @@ return array(
         'ersEntity',
         'Admin',
         'PreReg',
+        'SpeckPaypal',
     ),
 
     // These are various options for the listeners attached to the ModuleManager

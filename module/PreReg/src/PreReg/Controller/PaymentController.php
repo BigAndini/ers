@@ -64,6 +64,57 @@ class PaymentController extends AbstractActionController {
     }
     
     /**
+     * Formular for paying the order via cheque
+     */
+    /*public function paypalAction() {
+        $hashkey = $this->params()->fromRoute('hashkey', '');
+        
+        if($hashkey == '') {
+            return $this->notFoundAction();
+        }
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('hashkey' => $hashkey));
+        
+        //setup config object
+        $config = array(
+            'username'      => 'your_username',
+            'password'      => 'your_password',
+            'signature'     => 'your_signature',
+            'endpoint'      => 'https://api-3t.sandbox.paypal.com/nvp' //this is sandbox endpoint
+        );
+        $paypalConfig = new \SpeckPaypal\Element\Config($config);
+
+        //set up http client
+        $client = new \Zend\Http\Client;
+        $client->setMethod('POST');
+        $client->setAdapter(new \Zend\Http\Client\Adapter\Curl);
+        $paypalRequest = new \SpeckPaypal\Service\Request;
+        $paypalRequest->setClient($client);
+        $paypalRequest->setConfig($paypalConfig);
+        
+        $paymentDetails = new \SpeckPaypal\Element\PaymentDetails(array(
+            'amt' => '20.00'
+        ));
+        $express = new \SpeckPaypal\Request\SetExpressCheckout(array('paymentDetails' => $paymentDetails));
+        $express->setReturnUrl('http://www.someurl.com/return');
+        $express->setCancelUrl('http://www.someurl.com/cancel');
+
+        $response = $paypalRequest->send($express);
+
+        echo $response->isSuccess();
+
+        $token = $response->getToken();
+        
+        return new ViewModel(array(
+            'order' => $order,
+        ));
+    }*/
+    
+    /**
      * Formular for paying the order via credit card
      */
     public function creditcardAction() {
@@ -266,12 +317,5 @@ class PaymentController extends AbstractActionController {
         $em->flush();
         
         return $response;
-    }
-    
-    /**
-     * Formular for paying the order via PayPal
-     */
-    public function paypalAction() {
-        return new ViewModel();
     }
 }

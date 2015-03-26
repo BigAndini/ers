@@ -445,7 +445,6 @@ class OrderController extends AbstractActionController {
                         $subItem = $subItemPackage->getSubItem();
                         $subProduct = $em->getRepository("ersEntity\Entity\Product")
                             ->findOneBy(array('id' => $subItem->getProductId()));
-                        error_log('found product id: '.$subItem->getProductId());
                         $subItem->setProduct($subProduct);
                         $subItem->setPackage($package);
                         $code = new Entity\Code();
@@ -458,7 +457,6 @@ class OrderController extends AbstractActionController {
                         }
                         $subItem->setCode($code);
                         foreach($subItem->getItemVariants() as $variant) {
-                            error_log('found variant '.$variant->getName().' with value '.$variant->getValue());
                             $variant->setItem($subItem);
                         }
                     }
@@ -503,6 +501,12 @@ class OrderController extends AbstractActionController {
                                 'hashkey' => $cartContainer->order->getHashkey(),
                                 ));
                 case 'paypal':
+                    return $this->redirect()->toRoute(
+                            'payment', 
+                            array(
+                                'action' => 'paypal',
+                                'hashkey' => $cartContainer->order->getHashkey(),
+                                ));
                     break;
                 default:
             }
