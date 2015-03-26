@@ -18,7 +18,7 @@ return array(
         'Admin',
         'PreReg',
         'SpeckPaypal',
-        'org_heigl/piwik',
+        'OrgHeiglPiwik',
     ),
 
     // These are various options for the listeners attached to the ModuleManager
