@@ -42,8 +42,6 @@ jQuery(function($) {
         }, 'json');
     });
     
-    
-
     $('#sticky-notes').on('keyup', 'textarea', function(event){
         var $stickynote = $(this);
         var update_id = $stickynote.attr('id'),
@@ -61,12 +59,6 @@ jQuery(function($) {
         }, 'json');
 
     });
-    /*$('input[type=datetime]').datetimepicker({
-        timeFormat: "HH:mm:ss",
-        dateFormat: "yy-mm-dd",
-        addSliderAccess: true,
-	sliderAccessArgs: { touchonly: false }
-    });*/
     $('.datepicker').datepicker({
         /*dateFormat: "yy-mm-dd",*/
         dateFormat: "dd.mm.yy",
@@ -75,7 +67,12 @@ jQuery(function($) {
         changeMonth: true, 
         changeYear: true, 
         yearRange: '1900:2015',
-	sliderAccessArgs: { touchonly: false }
+	sliderAccessArgs: { touchonly: false },
+        /*beforeShow: function(input, inst) {
+            if($(input).val() == '') {
+                $(input).val('15.04.1978');
+            }
+        }*/
     });
     $('.datetimepicker').datetimepicker({
         timeFormat: "HH:mm:ss",
