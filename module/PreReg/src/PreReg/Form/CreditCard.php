@@ -150,6 +150,7 @@ class CreditCard extends Form
                 'placeholder' => 'Cardholder name...', 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
+                'autocomplete' => 'off',
             ), 
             'options' => array( 
                 'label' => 'Cardholder name', 
@@ -165,6 +166,7 @@ class CreditCard extends Form
             'attributes' => array( 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
+                'autocomplete' => 'off',
             ), 
             'options' => array( 
                 'label' => 'Credit Card Type', 
@@ -189,6 +191,7 @@ class CreditCard extends Form
                 'placeholder' => 'Credit Card Number...', 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
+                'autocomplete' => 'off',
             ), 
             'options' => array( 
                 'label' => 'Credit Card Number', 
@@ -206,6 +209,7 @@ class CreditCard extends Form
                 'required' => 'required', 
                 'class' => 'form-control form-element',
                 'maxlength' => '3',
+                'autocomplete' => 'off',
             ), 
             'options' => array( 
                 'label' => 'Card Check Code', 
@@ -221,6 +225,7 @@ class CreditCard extends Form
             'attributes' => array( 
                 'required' => 'required', 
                 'class' => 'form-control',
+                'autocomplete' => 'off',
             ),
             
             'options' => array( 
@@ -251,6 +256,7 @@ class CreditCard extends Form
             'attributes' => array( 
                 'required' => 'required', 
                 'class' => 'form-control',
+                'autocomplete' => 'off',
             ),
             'options' => array( 
                 'label' => ' ', 
