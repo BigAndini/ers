@@ -494,3 +494,8 @@ a:hover, a:focus {
 .jumbotron h1, .jumbotron .h1 {
     font-size: 48px;
 }
+
+.cc-cookies {
+    width: 100%;
+    position: relative;
+}
