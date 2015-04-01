@@ -1,3 +1,6 @@
+<div class="clear-both">
+    <a href="<?php echo $this->url('admin/order'); ?>">back to Overview</a>    
+</div>
 <?php 
 $status = 'undefined';
 if($order->findOrderStatus('paid')->getValue() != ''):
@@ -12,10 +15,6 @@ $this->headTitle($title);
 
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <h3>Order date: <?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></h3>
-
-<div class="clear-both">
-    <a href="<?php echo $this->url('admin/order'); ?>">back to Overview</a>    
-</div>
 
 <div class="row">
     <div class="col-lg-6">
@@ -66,7 +65,7 @@ $this->headTitle($title);
             if($user->getFirstname() == '' && $user->getSurname() == '') :
                 $participant = 'unassigned items';
             else:
-                $participant = $user->getFirstname().' '.$user->getSurname();
+                $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getBirthday()->format('d.m.Y').')';
             endif;
     ?>
         <div class="package">
