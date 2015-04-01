@@ -13,6 +13,7 @@ use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
 use Admin\Form;
 use Admin\Service;
+use Admin\InputFilter;
 
 class UserController extends AbstractActionController {
     
@@ -92,7 +93,7 @@ class UserController extends AbstractActionController {
         $form->bind($user);
         $form->get('submit')->setAttribute('value', 'Edit');
 
-        $roles = $em->getRepository("ersEntity\Entity\Role")->findAll();
+        /*$roles = $em->getRepository("ersEntity\Entity\Role")->findAll();
         $userRoles = $user->getRoles();
         $roleValue = array();
         foreach($roles as $role) {
@@ -103,11 +104,12 @@ class UserController extends AbstractActionController {
                 'disabled' => $role->getActive() ? true : false,
             );
         }
-        $form->get('roles')->setValueOptions($roleValue);
+        $form->get('roles')->setValueOptions($roleValue);*/
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($user->getInputFilter());
+            $inputFilter = new InputFilter\Participant();
+            $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -129,9 +131,6 @@ class UserController extends AbstractActionController {
         ));
     }
 
-    /*
-     * The delete action is for Agegroups, Counters and Users the same.
-     */
     public function deleteAction()
     {
         $forrest = new Service\BreadcrumbFactory();

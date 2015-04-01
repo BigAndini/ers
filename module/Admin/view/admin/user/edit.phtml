@@ -18,10 +18,11 @@ $form->prepare();
 
 echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('id'));
-echo $this->formRow($form->get('email'));
 echo $this->formRow($form->get('firstname'));
 echo $this->formRow($form->get('surname'));
-echo $this->formRow($form->get('roles'));
+echo $this->formRow($form->get('email'));
+echo $this->formRow($form->get('birthday'));
+/*echo $this->formRow($form->get('roles'));*/
 echo $this->formHidden($form->get('csrf'));
 echo $this->formSubmit($form->get('submit'));
 ?>

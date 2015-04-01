@@ -71,7 +71,13 @@ $this->headTitle($title);
     ?>
         <div class="package">
             <h3>
-                <?php echo $participant; ?>
+                <?php 
+                echo $participant; 
+                if($participant != 'unassigned items'):?>
+                <span style="font-size: 14px;">
+                    <a href="<?php echo $this->url('admin/user', array('action' => 'edit', 'id' => $user->getId())); ?>">edit</a>
+                </span>
+                <?php endif; ?>
             </h3>
 
             <?php if(count($package->getItems()) != 0): ?>
@@ -89,7 +95,9 @@ $this->headTitle($title);
                     ?>
                     <tr>
                         <td>
-                            <span class="product-name"><?php echo $item->getName(); ?></span>
+                            <span class="product-name">
+                                <?php echo $item->getName(); ?>
+                            </span>
                             <span class="product-variants">
                                 <?php if(count($item->getItemVariants()) > 0): ?>
                                 (
