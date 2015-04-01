@@ -65,7 +65,11 @@ $this->headTitle($title);
             if($user->getFirstname() == '' && $user->getSurname() == '') :
                 $participant = 'unassigned items';
             else:
-                $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getBirthday()->format('d.m.Y').')';
+                if($user->getBirthday() != null):
+                    $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getBirthday()->format('d.m.Y').')';
+                else:
+                    $participant = $user->getFirstname().' '.$user->getSurname().' (no date of birth)';
+                endif;
             endif;
     ?>
         <div class="package">
