@@ -3,6 +3,13 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta property="og:locale" content="en_GB" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="EJC Registration System - EJC 2015" />
+        <meta property="og:description" content="Get your ticket for the EJC 2015 now!" />
+        <meta property="og:url" content="http://prereg.eja.net/" />
+        <meta property="og:site_name" content="EJC Registration System - ERS" />
+        <meta property="og:image" content="<?php echo $this->serverUrl('/img/newsfeed.jpg'); ?>" />
         <?php #echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
         <?php echo $this->headTitle($this->translate('EJC Registration System'))->setSeparator(' - ')->setAutoEscape(false)  // change Skeleton Application to Sticky Notes ?> 
 
@@ -53,7 +60,7 @@
                     </button>
                     
                     <a class="navbar-brand" href="<?php echo $this->url('home') ?>">
-                        <img src="<?php $this->basePath(); ?>/img/ejc_logo.png" alt="" />
+                        <img src="/img/ejc_logo.png" alt="" />
                         <?php echo $this->translate('Registration System') ?>
                     </a>
                 </div>

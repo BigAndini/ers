@@ -81,17 +81,6 @@ jQuery(function($) {
 	sliderAccessArgs: { touchonly: false }
     });
     
-    /*$('#TnC').on('click', 'a.TnC-show', function(event) {
-        event.preventDefault();
-        $.get("/info/terms", function(data) {
-            $("#TnC-container").html(data);
-            $("#TnC-container").show();
-            alert( "Load was performed.");
-        });
-    });*/
-    /*$('#participant').change(function() {
-        location.reload();
-    });*/
     $.cookieCuttr({
         cookieAnalytics: false,
         cookieMessage: 'We use cookies on this website, you can <a href="{{cookiePolicyLink}}" title="read about our cookies" target="_blank">read about them here</a>. To use the website as intended please...',

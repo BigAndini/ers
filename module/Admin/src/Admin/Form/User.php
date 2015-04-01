@@ -26,22 +26,6 @@ class User extends Form
         ));
         
         $this->add(array( 
-            'name' => 'email', 
-            'type' => 'Zend\Form\Element\Text', 
-            'attributes' => array( 
-                'placeholder' => 'E-Mail Address...', 
-                'required' => 'required', 
-                'class' => 'form-control form-element',
-            ), 
-            'options' => array( 
-                'label' => 'E-Mail Address', 
-                'label_attributes' => array(
-                    'class'  => 'media-object',
-                ),
-            ), 
-        )); 
- 
-        $this->add(array( 
             'name' => 'firstname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
@@ -70,8 +54,47 @@ class User extends Form
                 ),
             ), 
         )); 
- 
+        
         $this->add(array( 
+            'name' => 'email', 
+            'type' => 'Zend\Form\Element\Text', 
+            'attributes' => array( 
+                'placeholder' => 'E-Mail Address...', 
+                'required' => 'required', 
+                'class' => 'form-control form-element',
+            ), 
+            'options' => array( 
+                'label' => 'E-Mail Address', 
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ), 
+        )); 
+        
+        $this->add(array( 
+            'name' => 'birthday', 
+            #'type' => 'Zend\Form\Element\Date',
+            #'type' => 'Zend\Form\Element\Text',
+            'type' => 'PreReg\Form\Element\DateText',
+            'attributes' => array( 
+                'placeholder' => 'Birthday...', 
+                'required' => 'required',
+                'class' => 'form-control form-element datepicker',
+                #'min' => '1900-01-01', 
+                #'max' => 2015-08-09, 
+                #'step' => '1', 
+            ), 
+            'options' => array( 
+                'label' => 'Date of birth',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ), 
+        ));
+        #$this->get('birthday')->setFormat('Y-m-d');
+        $this->get('birthday')->setFormat('d.m.Y');
+ 
+        /*$this->add(array( 
             'name' => 'roles', 
             'type' => 'Zend\Form\Element\MultiCheckbox', 
             'attributes' => array(
@@ -84,7 +107,7 @@ class User extends Form
                     'class'  => 'media-object',
                 ),
             ), 
-        ));
+        ));*/
  
         $this->add(array( 
             'name' => 'csrf', 
