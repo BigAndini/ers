@@ -9,17 +9,24 @@ $this->headTitle($title);
 <div class="row">
     <div class="col-lg-6">
         <h2>Orders</h2>
+        <?php 
+        $totalsum = 0;
+        $transfersum = 0;
+        foreach($orders as $order):
+            $totalsum += $order->getPrice();
+            $transfersum += $order->getSum();
+        endforeach;
+        ?>
         <dl>
             <dt>count</dt>
             <dd><?php echo count($orders); ?></dd>
             <dt>total sum</dt>
             <dd>
-                <?php
-                $sum = 0;
-                foreach($oders as $order):
-                    $sum += $order->getSum();
-                endforeach;
-                echo $this->currencyFormat($sum, 'EUR', null, 'de_DE'); ?>
+                <?php echo $this->currencyFormat($totalsum, 'EUR', null, 'de_DE'); ?>
+            </dd>
+            <dt>total sum (including payment fees)</dt>
+            <dd>
+                <?php echo $this->currencyFormat($transfersum, 'EUR', null, 'de_DE'); ?>
             </dd>
         </dl>
     </div>
