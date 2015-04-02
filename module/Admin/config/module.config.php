@@ -10,6 +10,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Admin\Controller\Admin'                => 'Admin\Controller\AdminController',
+            'Admin\Controller\Statistic'            => 'Admin\Controller\StatisticController',
             'Admin\Controller\Tax'                  => 'Admin\Controller\TaxController',
             'Admin\Controller\Product'              => 'Admin\Controller\ProductController',
             'Admin\Controller\ProductPackage'       => 'Admin\Controller\ProductPackageController',
@@ -35,6 +36,11 @@ return array(
                 'route' => 'home',
                 'target' => '_blank',
                 'resource'  => 'controller/PreReg\Controller\Product',
+            ),
+            'statistic' => array(
+                'label' => 'Stats',
+                'route' => 'admin/statistic',
+                'resource'  => 'controller/Admin\Controller\Statistic',
             ),
             'shop' => array(
                 'label' => 'Shop',
@@ -165,6 +171,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Test',
+                                'action'     => 'index',
+                            ),
+                        ),
+                    ),
+                    'statistic' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/statistic[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Statistic',
                                 'action'     => 'index',
                             ),
                         ),
