@@ -7,7 +7,7 @@
         <meta property="og:type" content="website" />
         <meta property="og:title" content="EJC Registration System - EJC 2015" />
         <meta property="og:description" content="Get your ticket for the EJC 2015 now!" />
-        <meta property="og:url" content="http://prereg.eja.net/" />
+        <meta property="og:url" content="<?php echo $this->serverUrl(); ?>" />
         <meta property="og:site_name" content="EJC Registration System - ERS" />
         <meta property="og:image" content="<?php echo $this->serverUrl('/img/newsfeed.jpg'); ?>" />
         <?php #echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
@@ -85,6 +85,7 @@
             <footer>
                 <p style="float:right;">
                     <a href="<?php echo $this->url('info', array('action' => 'terms')); ?>" target="_blank">terms and conditions</a><br />
+                    <a href="<?php echo $this->url('info', array('action' => 'impressum')); ?>">impressum</a><br />
                     <a href="https://github.com/inbaz/ers/issues" target="_blank">report a bug</a><br />
                     <span>Version: <?php echo exec('git symbolic-ref -q HEAD || git describe --tags --exact-match'); ?></span>
                 </p>

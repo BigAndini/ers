@@ -29,6 +29,8 @@
         "dudapiotr/zftable": "3.*",
         "eddiejaoude/zf2-logger" : "0.*",
         "speckcommerce/speck-paypal" : "dev-master",
-        "org_heigl/piwik" : "1.0.*"
+        "org_heigl/piwik" : "1.0.*",
+        "goalio/goalio-rememberme": "1.*",
+        "goalio/goalio-rememberme-doctrine-orm": "1.*"
     }
 }

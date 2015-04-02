@@ -19,6 +19,8 @@ return array(
         'PreReg',
         'SpeckPaypal',
         'OrgHeiglPiwik',
+        'GoalioRememberMe',
+        'GoalioRememberMeDoctrineORM',
     ),
 
     // These are various options for the listeners attached to the ModuleManager

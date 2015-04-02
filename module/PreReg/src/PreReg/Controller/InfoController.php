@@ -25,6 +25,10 @@ class InfoController extends AbstractActionController {
             'breadcrumb' => $forrest->get('terms'),
         ));
     }
+    public function impressumAction() {
+        return new ViewModel();
+    }
+
     public function cookieAction() {
         return new ViewModel();
     }
