@@ -123,6 +123,32 @@ return array(
                 'resource' => 'controller/PreReg\Controller\Order',
             ),
         ),
+        'profile_nav' => array(
+            'change-data' => array(
+                'label' => 'Change my user data',
+                'route' => 'profile',
+                'action' => 'change',
+                'resource' => 'controller/PreReg\Controller\Profile',
+            ),
+            'change-password' => array(
+                'label' => 'Change my password',
+                'route' => 'zfcuser/changepassword',
+                #'action' => '',
+                'resource' => 'controller/PreReg\Controller\Profile',
+            ),
+            'package' => array(
+                'label' => 'View tickets',
+                'route' => 'package',
+                #'action' => '',
+                'resource' => 'controller/PreReg\Controller\Package',
+            ),
+            'person' => array(
+                'label' => 'My Persons',
+                'route' => 'profile',
+                'action' => 'participant',
+                'resource' => 'controller/PreReg\Controller\Profile:participant',
+            ),
+        ),
     ),
     'router' => array(
         'routes' => array(
@@ -320,9 +346,10 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'main_nav' => 'PreReg\Service\MainNavigationFactory',
-            'top_nav' => 'PreReg\Service\TopNavigationFactory',
-            'checkout_nav' => 'PreReg\Service\CheckoutNavigationFactory',
+            'main_nav'      => 'PreReg\Service\MainNavigationFactory',
+            'top_nav'       => 'PreReg\Service\TopNavigationFactory',
+            'checkout_nav'  => 'PreReg\Service\CheckoutNavigationFactory',
+            'profile_nav'   => 'PreReg\Service\ProfileNavigationFactory',
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',

@@ -241,10 +241,103 @@ class ProfileController extends AbstractActionController {
         
     }
     public function changeAction() {
+        $email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $participant = $em->getRepository("ersEntity\Entity\User")
+            ->findOneBy(array('email' => $email));
+        
+        $form = new Form\Participant(); 
+        $request = $this->getRequest(); 
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('profile')) {
+            $forrest->set('profile', 'profile');
+        }
+        
+        $form->get('Country_id')->setValueOptions($this->getCountryOptions());
+        
+        $form->bind($participant);
+        
+        if($request->isPost()) 
+        {
+            $inputFilter = new InputFilter\Participant();
+            $form->setInputFilter($inputFilter->getInputFilter()); 
+            $form->setData($request->getPost()); 
+                
+            if($form->isValid())
+            { 
+                $participant = $form->getData();
+                
+                if($participant->getCountryId() == 0) {
+                    $participant->setCountryId(null);
+                    $participant->setCountry(null);
+                }
+                
+                $em->persist($participant);
+                $em->flush();
+                
+                $breadcrumb = $forrest->get('profile');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            } else {
+                $logger = $this
+                    ->getServiceLocator()
+                    ->get('Logger');
+                $logger->warn($form->getMessages());
+            } 
+        }
+        
+        $breadcrumb = $forrest->get('profile');
         return new ViewModel(array(
-            
+            'form' => $form,
+            'breadcrumb' => $breadcrumb,
         ));
     }
+    
+    private function getCountryOptions($countryId = null) {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $qb1 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
+        $qb1->where($qb1->expr()->isNotNull('n.ordering'));
+        $qb1->orderBy('n.ordering', 'ASC');
+        $result1 = $qb1->getQuery()->getResult();
+        
+        $qb2 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
+        $qb2->where($qb2->expr()->isNull('n.ordering'));
+        $qb2->orderBy('n.name', 'ASC');
+        $result2 = $qb2->getQuery()->getResult();
+
+        $countries = array_merge($result1, $result2);
+        
+        $options = array();
+        $selected = false;
+        if($countryId == null) {
+            $selected = true;
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'no Country',
+            'selected' => $selected,
+        );
+        foreach($countries as $country) {
+            $selected = false;
+            if($countryId == $country->getId()) {
+                $selected = true;
+            }
+            $options[] = array(
+                'value' => $country->getId(),
+                'label' => $country->getName(),
+                'selected' => $selected,
+            );
+        }
+        return $options;
+    }
+    
     public function packageAction() {
         
     }

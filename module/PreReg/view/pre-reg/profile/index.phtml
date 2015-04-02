@@ -4,7 +4,11 @@ $title = 'My Profile';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-
+<div class="profile-nav">
+    <?php echo $this->navigation()
+        ->menu('profile_nav')
+        ->setUlClass('nav nav-pills'); ?>
+</div>
 <div>
     <table class='table'>
         <tr>
@@ -27,12 +31,13 @@ $this->headTitle($title);
                 <?php endif; ?>
             </td>
         </tr>
+        <tr>
+            <td>Country:</td>
+            <td>
+                <?php if($user->getCountry() instanceof \ersEntity\Entity\Country): ?>
+                    <?php echo $user->getCountry()->getName(); ?>
+                <?php endif; ?>
+            </td>
+        </tr>
     </table>
-</div>
-<div>
-    <a href="<?php echo $this->url('zfcuser/changeemail'); ?>">Change email address</a> | 
-    <a href="<?php echo $this->url('zfcuser/changepassword'); ?>">Change password</a> | 
-    <a href="<?php echo $this->url('profile', array('action' => 'change')); ?>">Change my user data</a> | 
-    <a href="<?php echo $this->url('package'); ?>">View tickets</a> | 
-    <a href="<?php echo $this->url('profile', array('action' => 'participant')); ?>">Update participant data</a>
 </div>

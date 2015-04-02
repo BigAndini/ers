@@ -141,11 +141,11 @@ return [
                 ['controller' => 'PreReg\Controller\Order',                         'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Payment',                       'roles' => ['guest', 'user']],
                 #['controller' => 'PreReg\Controller\Order', 'action' => 'index',   'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Package',                       'roles' => ['guest', 'user']],
+                #['controller' => 'PreReg\Controller\Package',                       'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Product',                       'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Participant',                   'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Purchaser',                     'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Test',                          'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Test',                          'roles' => ['admin']],
                 #['controller' => 'PreReg\Controller\Profile', 'action' => 'index', 'roles' => ['user']],
                 
                 /* ZfcUser */
@@ -159,11 +159,13 @@ return [
                 /* Profile */
                 ['controller' => 'PreReg\Controller\Profile', 'action' => 'request-password', 'roles' => ['guest']],
                 ['controller' => 'PreReg\Controller\Profile', 'action' => 'password-reset',   'roles' => ['guest']],
+                ['controller' => 'PreReg\Controller\Profile', 'action' => 'participant',      'roles' => ['supradm']],
                 ['controller' => 'PreReg\Controller\Profile', 'roles' => ['user']],
                 
                 /* Admin */
                 #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Test',                'roles' => ['admin']],
+                ['controller' => 'Admin\Controller\Statistic',           'roles' => ['admin', 'statistic']],
                 ['controller' => 'Admin\Controller\Admin',               'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\PriceLimit',          'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Product',             'roles' => ['admin']],

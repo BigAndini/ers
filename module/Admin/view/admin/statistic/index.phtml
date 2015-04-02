@@ -1,0 +1,33 @@
+<?php
+/* pizza would be really nice */
+
+$title = 'ERS Statistics';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <h2>Orders</h2>
+        <dl>
+            <dt>count</dt>
+            <dd><?php echo count($orders); ?></dd>
+            <dt>total sum</dt>
+            <dd>
+                <?php
+                $sum = 0;
+                foreach($oders as $order):
+                    $sum += $order->getSum();
+                endforeach;
+                echo $this->currencyFormat($sum, 'EUR', null, 'de_DE'); ?>
+            </dd>
+        </dl>
+    </div>
+    <div class="col-lg-6">
+        <h2>Participants</h2>
+        <dl>
+            <dt>count</dt>
+            <dd><?php echo count($users); ?></dd>
+        </dl>
+    </div>
+</div>
