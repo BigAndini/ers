@@ -1,6 +1,3 @@
-<div class="clear-both">
-    <a href="<?php echo $this->url('admin/order'); ?>">back to Overview</a>    
-</div>
 <?php 
 $status = 'undefined';
 if($order->findOrderStatus('paid')->getValue() != ''):
@@ -12,7 +9,9 @@ endif;
 $title = 'Order '.$order->getCode()->getValue().' ('.$status.')';
 $this->headTitle($title);
 ?>
-
+<div class="clear-both">
+    <a href="<?php echo $this->url('admin/order'); ?>">back to Overview</a>    
+</div>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <h3>Order date: <?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></h3>
 
@@ -34,6 +33,7 @@ $this->headTitle($title);
     </div>
     <div class="col-lg-6">
         <div class="order-info">
+            <a href="<?php echo $this->url('admin/order', array('action' => 'change-payment-type', 'id' => $order->getId())); ?>">Change Payment Type</a>
             <h1>Payment</h1>
             <?php $paymenttype = $order->getPaymentType(); ?>
             <?php if($paymenttype) : ?>
@@ -42,6 +42,22 @@ $this->headTitle($title);
                 <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
                 <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
             <?php endif; ?>  
+            <div>
+                <table class="table sum-table">
+                    <tr>
+                        <td>Order amount:</td>
+                        <td><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+                    </tr>
+                    <tr>
+                        <td>Payment Charge:</td>
+                        <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), 'EUR', null, 'de_DE'); ?></td>
+                    </tr>
+                    <tr>
+                        <th><span style="font-size: 18px;">Total amount:</span></th>
+                        <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
+                    </tr>
+                </table>
+            </div>
             <?php foreach($paymentDetails as $detail): ?>
                 <pre>
                     <?php \var_export(json_decode($detail->getData())); ?>
@@ -65,11 +81,7 @@ $this->headTitle($title);
             if($user->getFirstname() == '' && $user->getSurname() == '') :
                 $participant = 'unassigned items';
             else:
-                if($user->getBirthday() != null):
-                    $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getBirthday()->format('d.m.Y').')';
-                else:
-                    $participant = $user->getFirstname().' '.$user->getSurname().' (no date of birth)';
-                endif;
+                $participant = $user->getFirstname().' '.$user->getSurname();
             endif;
     ?>
         <div class="package">

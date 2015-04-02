@@ -184,7 +184,7 @@ class Participant implements InputFilterAwareInterface
                         'name' => 'Callback', 
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'There is already a person with this email address in your order',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'There is already a person with this email address in your order. Note: the email field is optional.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 if(
