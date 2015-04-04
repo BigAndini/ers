@@ -342,6 +342,6 @@ class ProfileController extends AbstractActionController {
         
     }
     public function participantAction() {
-        
+        return new ViewModel();
     }
 }

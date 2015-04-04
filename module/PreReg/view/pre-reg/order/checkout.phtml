@@ -21,15 +21,15 @@ echo $this->navigation()
 <div class="row">
     <div class="col-lg-6">
         <div class="order-info">
-            <h1>Purchaser</h1>
-            <?php $purchaser = $order->getPurchaser(); ?>
-            <?php if($purchaser) : ?>
-                <h2><?php echo $purchaser->getFirstname().' '.$purchaser->getSurname(); ?></h2>
-                <p>The purchaser will receive all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is paid and will be able to download the eTicket on his own as well.</p>
-                <h3>We will send all information to: <?php echo $purchaser->getEmail(); ?></h3>
+            <h1>Buyer</h1>
+            <?php $buyer = $order->getBuyer(); ?>
+            <?php if($buyer) : ?>
+                <h2><?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?></h2>
+                <p>The buyer will receive all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is paid and will be able to download the eTicket on his own as well.</p>
+                <h3>We will send all information to: <?php echo $buyer->getEmail(); ?></h3>
             <?php else: ?>
                 <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-                <a href="<?php echo $this->url('order', array('action' => 'purchaser')); ?>">choose Purchaser</a>
+                <a href="<?php echo $this->url('order', array('action' => 'buyer')); ?>">choose Buyer</a>
             <?php endif; ?>
         </div>
     </div>
@@ -178,8 +178,8 @@ echo $this->navigation()
         <?php if(count($order->getItems()) == 0) : ?>
             <p><a href="<?php echo $this->url('product'); ?>">Add products</a> to your shopping cart first.</p>
         <?php endif; ?>
-        <?php if(!$order->getPurchaser()) : ?>
-            <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'purchaser')); ?>">choose/add a purchaser</a> with a valid email address.</p>
+        <?php if(!$order->getBuyer()) : ?>
+            <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'buyer')); ?>">choose/add a buyer</a> with a valid email address.</p>
         <?php endif; ?>
         <?php if(!$order->getPaymentType()) : ?>
             <p>To purchase this order <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose a payment type</a>.</p>

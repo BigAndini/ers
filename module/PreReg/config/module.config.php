@@ -14,7 +14,7 @@ return array(
             'PreReg\Controller\Cart'        => 'PreReg\Controller\CartController',
             'PreReg\Controller\Package'     => 'PreReg\Controller\PackageController',
             'PreReg\Controller\Participant' => 'PreReg\Controller\ParticipantController',
-            'PreReg\Controller\Purchaser'   => 'PreReg\Controller\PurchaserController',
+            'PreReg\Controller\Buyer'   => 'PreReg\Controller\BuyerController',
             'PreReg\Controller\Product'     => 'PreReg\Controller\ProductController',
             'PreReg\Controller\Profile'     => 'PreReg\Controller\ProfileController',
             'PreReg\Controller\Info'        => 'PreReg\Controller\InfoController',
@@ -104,10 +104,10 @@ return array(
                 'action' => 'overview',
                 'resource' => 'controller/PreReg\Controller\Order',
             ),
-            'purchaser' => array(
-                'label' => 'Purchaser',
+            'buyer' => array(
+                'label' => 'Buyer',
                 'route' => 'order',
-                'action' => 'purchaser',
+                'action' => 'buyer',
                 'resource' => 'controller/PreReg\Controller\Order',
             ),
             'payment' => array(
@@ -274,16 +274,16 @@ return array(
                     ),
                 ),
             ),
-            'purchaser' => array(
+            'buyer' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route'    => '/purchaser[/][:action][/:id]',
+                    'route'    => '/buyer[/][:action][/:id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id'     => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'PreReg\Controller\Purchaser',
+                        'controller' => 'PreReg\Controller\Buyer',
                         'action'     => 'index',
                     ),
                 ),

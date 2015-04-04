@@ -11,7 +11,7 @@
         </style>
     </head>
     <body>
-        <p>Dear <?php $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?>,</p>
+        <p>Dear <?php $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>,</p>
 
         <p>We received the payment in conjunction with your order from 
             <?php $order->getCreated()->format('d.m.Y') ?> with the order ID 

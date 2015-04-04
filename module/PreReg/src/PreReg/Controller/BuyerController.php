@@ -16,7 +16,7 @@ use ersEntity\Entity;
 use PreReg\Service;
 use PreReg\InputFilter;
 
-class PurchaserController extends AbstractActionController {
+class BuyerController extends AbstractActionController {
     public function indexAction()
     {
         return $this->notFoundAction();
@@ -24,11 +24,11 @@ class PurchaserController extends AbstractActionController {
     
     
     /*
-     * add a purchaser user object to the session when none of the participants 
-     * is the purchaser
+     * add a buyer user object to the session when none of the participants 
+     * is the buyer
      */
     public function addAction() {
-        $form = new Form\Purchaser(); 
+        $form = new Form\Buyer(); 
         $request = $this->getRequest(); 
 
         $forrest = new Service\BreadcrumbFactory();
@@ -36,7 +36,7 @@ class PurchaserController extends AbstractActionController {
         { 
             $user = new Entity\User();
 
-            $inputFilter = new InputFilter\Purchaser();
+            $inputFilter = new InputFilter\Buyer();
             $em = $this
                 ->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
@@ -49,9 +49,9 @@ class PurchaserController extends AbstractActionController {
                 $user->populate($form->getData()); 
                 $cartContainer = new Container('cart');
                 $cartContainer->order->addParticipant($user);
-                $cartContainer->order->setPurchaser($user);
+                $cartContainer->order->setBuyer($user);
                 
-                $breadcrumb = $forrest->get('purchaser');
+                $breadcrumb = $forrest->get('buyer');
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
@@ -61,10 +61,12 @@ class PurchaserController extends AbstractActionController {
                 $logger->warn($form->getMessages());
             }
         }
-        
+        if(!$forrest->exists('buyer')) {
+            $forrest->set('buyer', 'order', array('action' => 'buyer'));
+        }
         return new ViewModel(array(
             'form' => $form,
-            'breadcrumb' => $forrest->get('purchaser'),
+            'breadcrumb' => $forrest->get('buyer'),
         ));
     }
     
@@ -76,7 +78,7 @@ class PurchaserController extends AbstractActionController {
     public function editAction() 
     {
         $forrest = new Service\BreadcrumbFactory();
-        $breadcrumb = $forrest->get('purchaser');
+        $breadcrumb = $forrest->get('buyer');
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
@@ -85,7 +87,7 @@ class PurchaserController extends AbstractActionController {
         $cartContainer = new Container('cart');
         $participant = $cartContainer->order->getParticipantBySessionId($id);
         
-        $form = new Form\Purchaser(); 
+        $form = new Form\Buyer(); 
         $request = $this->getRequest(); 
         
         $em = $this
@@ -96,7 +98,7 @@ class PurchaserController extends AbstractActionController {
         
         if($request->isPost()) 
         {
-            $inputFilter = new InputFilter\Purchaser();
+            $inputFilter = new InputFilter\Buyer();
             
             $inputFilter->setEntityManager($em);
             $form->setInputFilter($inputFilter->getInputFilter()); 
@@ -118,7 +120,7 @@ class PurchaserController extends AbstractActionController {
             } 
         }
         
-        $breadcrumb = $forrest->get('purchaser');
+        $breadcrumb = $forrest->get('buyer');
         return new ViewModel(array(
             'id' => $id,
             'form' => $form,

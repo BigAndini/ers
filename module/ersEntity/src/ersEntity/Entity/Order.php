@@ -21,7 +21,7 @@ use Zend\InputFilter\InputFilterInterface;
  * Entity\Order
  *
  * @ORM\Entity()
- * @ORM\Table(name="`Order`", indexes={@ORM\Index(name="fk_Order_User1_idx", columns={"Purchaser_id"}), @ORM\Index(name="fk_Order_PaymentType1_idx", columns={"PaymentType_id"}), @ORM\Index(name="fk_Order_Code1_idx", columns={"Code_id"})})
+ * @ORM\Table(name="`Order`", indexes={@ORM\Index(name="fk_Order_User1_idx", columns={"Buyer_id"}), @ORM\Index(name="fk_Order_PaymentType1_idx", columns={"PaymentType_id"}), @ORM\Index(name="fk_Order_Code1_idx", columns={"Code_id"})})
  * @ORM\HasLifecycleCallbacks()
  */
 class Order implements InputFilterAwareInterface
@@ -64,7 +64,7 @@ class Order implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="integer")
      */
-    protected $Purchaser_id;
+    protected $Buyer_id;
 
     /**
      * @ORM\Column(type="integer")
@@ -133,9 +133,9 @@ class Order implements InputFilterAwareInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="orders")
-     * @ORM\JoinColumn(name="Purchaser_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="Buyer_id", referencedColumnName="id")
      */
-    protected $purchaser;
+    protected $buyer;
 
     /**
      * @ORM\ManyToOne(targetEntity="PaymentType", inversedBy="orders")
@@ -261,26 +261,26 @@ class Order implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of Purchaser_id.
+     * Set the value of Buyer_id.
      *
-     * @param integer $Purchaser_id
+     * @param integer $Buyer_id
      * @return \Entity\Order
      */
-    public function setPurchaserId($Purchaser_id)
+    public function setBuyerId($Buyer_id)
     {
-        $this->Purchaser_id = $Purchaser_id;
+        $this->Buyer_id = $Buyer_id;
 
         return $this;
     }
 
     /**
-     * Get the value of Purchaser_id.
+     * Get the value of Buyer_id.
      *
      * @return integer
      */
-    public function getPurchaserId()
+    public function getBuyerId()
     {
-        return $this->Purchaser_id;
+        return $this->Buyer_id;
     }
 
     /**
@@ -618,7 +618,7 @@ class Order implements InputFilterAwareInterface
     }
     
     /**
-     * Add Item to the according package with the correct Purchaser_id
+     * Add Item to the according package with the correct Buyer_id
      * 
      * @param \Entity\Item $item
      * @param integer $Participant_id
@@ -902,26 +902,26 @@ class Order implements InputFilterAwareInterface
     }
     
     /**
-     * Set Purchaser entity (many to one).
+     * Set Buyer entity (many to one).
      *
-     * @param \Entity\User $purchaser
+     * @param \Entity\User $buyer
      * @return \Entity\Order
      */
-    public function setPurchaser(User $purchaser = null)
+    public function setBuyer(User $buyer = null)
     {
-        $this->purchaser = $purchaser;
+        $this->buyer = $buyer;
 
         return $this;
     }
 
     /**
-     * Get Purchaser entity (many to one).
+     * Get Buyer entity (many to one).
      *
      * @return \Entity\User
      */
-    public function getPurchaser()
+    public function getBuyer()
     {
-        return $this->purchaser;
+        return $this->buyer;
     }
 
     /**
@@ -1030,7 +1030,7 @@ class Order implements InputFilterAwareInterface
                 'validators' => array(),
             ),
             array(
-                'name' => 'Purchaser_id',
+                'name' => 'Buyer_id',
                 'required' => true,
                 'filters' => array(),
                 'validators' => array(),
@@ -1110,7 +1110,7 @@ class Order implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Purchaser_id', 'purchaser', 'PaymentType_id', 'paymentType', 'matchKey', 'hashkey', 'invoiceDetail', 'updated', 'created', 'Code_id');
+        $dataFields = array('id', 'Buyer_id', 'buyer', 'PaymentType_id', 'paymentType', 'matchKey', 'hashkey', 'invoiceDetail', 'updated', 'created', 'Code_id');
         $relationFields = array('user', 'paymentType', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -1147,8 +1147,8 @@ class Order implements InputFilterAwareInterface
             'id', 
             'package_id', 
             'item_id', 
-            'Purchaser_id', 
-            'purchaser', 
+            'Buyer_id', 
+            'buyer', 
             'PaymentType_id', 
             'paymentType', 
             'matchKey', 

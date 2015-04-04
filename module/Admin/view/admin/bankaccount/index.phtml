@@ -8,29 +8,3 @@ $this->headTitle($title);
 <p>
     <a href="<?php echo $this->url('admin/bankaccount', array('action'=>'add'));?>">Add Bankaccount</a>
 </p>
-
-<table class="table">
-    <tr>
-        <th>RoleId</th>
-        <th>Parent</th>
-        <th>&nbsp;</th>
-    </tr>
-<?php foreach ($roles as $role) : ?>
-    <tr>
-        <td>
-            <?php echo $role->getRoleId();?>
-        </td>
-        <td>
-            <?php 
-            if($role->getParent() != null) {
-                echo $role->getParent()->getRoleId();
-            }
-            ?>
-        </td>
-        <td>
-            <a href="<?php echo $this->url('admin/role', array('action'=>'edit', 'id' => $role->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-            <a href="<?php echo $this->url('admin/role', array('action'=>'delete', 'id' => $role->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
-        </td>
-    </tr>
-<?php endforeach; ?>
-</table>

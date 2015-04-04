@@ -168,13 +168,13 @@ body {
     min-height: 500px;
 }
 
-.purchaser {
+.buyer {
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 10px;
     margin: 10px 0;
 }
-.purchaser input[type=radio] {
+.buyer input[type=radio] {
     display: inline;
 }
 
@@ -440,7 +440,7 @@ label.payment-type {
     margin-top: 5px;
     margin-bottom: 0px;
 }
-label.purchaser-label {
+label.buyer-label {
     font-size: 24px;
     font-weight: normal;
     
@@ -498,4 +498,20 @@ a:hover, a:focus {
 .cc-cookies {
     width: 100%;
     position: relative;
+}
+
+.table .person-name {
+    width: 30%;
+}
+.table .person-birthday {
+    width: 10%;
+}
+.table .person-email {
+    width: 30%;
+}
+.table .person-country {
+    width: 20%;
+}
+.table .person-tools {
+    width: 10%;
 }

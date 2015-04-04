@@ -55,7 +55,7 @@ class Register implements InputFilterAwareInterface
             $factory = new InputFactory();             
             
             $inputFilter->add($factory->createInput([ 
-                'name' => 'purchaser_id', 
+                'name' => 'buyer_id', 
                 'required' => true, 
                 'filters' => array( 
                     array('name' => 'Int'), 
@@ -65,14 +65,14 @@ class Register implements InputFilterAwareInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'Please select a purchaser.',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'Please select a buyer.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 /*
-                                 * If the purchaser_id is not 0 the user adds an 
-                                 * already existing participant as purchaser.
+                                 * If the buyer_id is not 0 the user adds an 
+                                 * already existing participant as buyer.
                                  */
-                                if($context['purchaser_id'] != 0) {
+                                if($context['buyer_id'] != 0) {
                                     return true;
                                 }
                                 
@@ -85,11 +85,11 @@ class Register implements InputFilterAwareInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'The email of this purchaser already exists. Please login with this account to continue.',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The email of this buyer already exists. Please login with this account to continue.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 $cartContainer = new Container('cart');
-                                $participant = $cartContainer->order->getParticipantBySessionId($context['purchaser_id']);
+                                $participant = $cartContainer->order->getParticipantBySessionId($context['buyer_id']);
                                 
                                 $this->setEmail($participant->getEmail());
                                 

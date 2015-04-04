@@ -42,7 +42,7 @@ DH1 5QX</pre>
         </ul>
     </div>
     <div>
-        <p>We sent this information to your email address: <strong><?php echo $order->getPurchaser()->getEmail(); ?></strong></p>
+        <p>We sent this information to your email address: <strong><?php echo $order->getBuyer()->getEmail(); ?></strong></p>
         <h3>You can request <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>">this information</a> again</h3>
         <p>Simply bookmark <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>">this link</a> or have a look at the mail we sent you.</p>
     </div>

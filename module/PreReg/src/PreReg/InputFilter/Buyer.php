@@ -13,7 +13,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface; 
 use Zend\InputFilter\InputFilterInterface; 
 
-class Purchaser implements InputFilterAwareInterface 
+class Buyer implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
     protected $em;
@@ -49,14 +49,14 @@ class Purchaser implements InputFilterAwareInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'The Firstname of the purchaser cannot be empty.',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The Firstname of the buyer cannot be empty.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 /*
-                                 * If the purchaser_id is not 0 the user adds an 
-                                 * already existing participant as purchaser.
+                                 * If the buyer_id is not 0 the user adds an 
+                                 * already existing participant as buyer.
                                  */
-                                if(isset($context['purchaser_id']) && $context['purchaser_id'] != 0) {
+                                if(isset($context['buyer_id']) && $context['buyer_id'] != 0) {
                                     return true;
                                 }
                                 
@@ -110,14 +110,14 @@ class Purchaser implements InputFilterAwareInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'The Surname of the purchaser cannot be empty.',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The Surname of the buyer cannot be empty.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 /*
-                                 * If the purchaser_id is not 0 the user adds an 
-                                 * already existing participant as purchaser.
+                                 * If the buyer_id is not 0 the user adds an 
+                                 * already existing participant as buyer.
                                  */
-                                if(isset($context['purchaser_id']) && $context['purchaser_id'] != 0) {
+                                if(isset($context['buyer_id']) && $context['buyer_id'] != 0) {
                                     return true;
                                 }
                                 
@@ -171,14 +171,14 @@ class Purchaser implements InputFilterAwareInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'The email address of the purchaser cannot be empty.',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The email address of the buyer cannot be empty.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 /*
-                                 * If the purchaser_id is not 0 the user adds an 
-                                 * already existing participant as purchaser.
+                                 * If the buyer_id is not 0 the user adds an 
+                                 * already existing participant as buyer.
                                  */
-                                if(isset($context['purchaser_id']) && $context['purchaser_id'] != 0) {
+                                if(isset($context['buyer_id']) && $context['buyer_id'] != 0) {
                                     return true;
                                 }
                                 

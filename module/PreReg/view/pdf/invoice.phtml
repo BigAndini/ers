@@ -202,7 +202,7 @@
                 <td id="fromaddress">Bruneck Kronplatz Tourismus - Rathausplatz 7 - 39031 Bruneck</td>
             </tr>
             <tr>
-                <td><?php echo $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?></td>
+                <td><?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?></td>
             </tr>
 	</table>
 </div>
@@ -260,7 +260,7 @@
 <div id="content">
 	<p class="invoice-date"><?php echo $order->getUpdated()->format('d.m.Y'); ?></p>
         <h3>Invoice <?php echo $order->getCode()->getValue(); ?></h3>
-        <p>Dear <?php echo $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?>,</p>
+        <p>Dear <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>,</p>
         <p>thank you for your purchase.</p>
         <!-- Rechnungsposten -->
         <?php echo $this->partial('partial/order-info.phtml', array('order' => $order)); ?>

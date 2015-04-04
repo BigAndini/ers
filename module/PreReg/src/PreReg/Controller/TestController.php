@@ -326,9 +326,9 @@ class TestController extends AbstractActionController {
         $emailService = new Service\EmailFactory();
         $emailService->setFrom('prereg@eja.net');
         
-        $purchaser = new Entity\User();
-        $purchaser->setEmail('andi@inbaz.org');
-        $emailService->addTo($purchaser);
+        $buyer = new Entity\User();
+        $buyer->setEmail('andi@inbaz.org');
+        $emailService->addTo($buyer);
         $emailService->setSubject('order confirmation');
         
         

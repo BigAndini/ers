@@ -19,19 +19,19 @@ class Register extends Form
     
     public function __construct($name = null)
     {
-        parent::__construct('Purchaser');
+        parent::__construct('Buyer');
         
         $this->setAttribute('method', 'post'); 
         
         $this->add(array( 
-            'name' => 'purchaser_id', 
+            'name' => 'buyer_id', 
             #'disable_inarray_validator' => false,
             'type' => 'Zend\Form\Element\Radio', 
             'attributes' => array( 
                 'required' => 'required',
             ), 
             'options' => array( 
-                'label' => 'Choose Purchaser', 
+                'label' => 'Choose Buyer', 
             ), 
         ));
         

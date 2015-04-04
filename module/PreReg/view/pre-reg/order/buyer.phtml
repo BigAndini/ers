@@ -15,7 +15,7 @@ echo $this->navigation()
 
 <?php
     $form = $this->form;
-    $form->setAttribute('action', $this->url('order', array('action' => 'purchaser')));
+    $form->setAttribute('action', $this->url('order', array('action' => 'buyer')));
     $form->prepare();
 
     echo $this->form()->openTag($form);
@@ -24,40 +24,40 @@ echo $this->navigation()
     <?php echo $this->formSubmit($form->get('submit')); ?>
 </div>
 <div>
-    <h1>Select Purchaser</h1>
+    <h1>Select Buyer</h1>
     <?php if(count($order->getPackages()) > 1): ?>
-    <p><strong>All eTickets will be emailed to the purchaser.</strong> If you 
+    <p><strong>All eTickets will be emailed to the buyer.</strong> If you 
         order items for multiple persons and provided their email addresses, 
         they will automatically receive a copy of their eTicket.</p>
-    <h3>Choose Purchaser</h3>
-    <?php echo $this->formElementErrors($form->get('purchaser_id')); ?>
+    <h3>Choose Buyer</h3>
+    <?php echo $this->formElementErrors($form->get('buyer_id')); ?>
     <?php foreach($participants as $participant): ?>
         <?php if($participant->getEmail() == '' || $participant->getFirstname() == '' || $participant->getSurname() == ''): 
             $disabled = true;
         else:
             $disabled = false;
         endif; ?>
-        <?php if($order->getPurchaser() != null && $order->getPurchaser()->getEmail() == $participant->getEmail()) :
+        <?php if($order->getBuyer() != null && $order->getBuyer()->getEmail() == $participant->getEmail()) :
             $checked = true;
         else:
             $checked = false;
         endif; ?>
-        <div class="purchaser">
-            <label class="purchaser-label">
-                <input type="radio" <?php echo $checked ? 'checked="checked"' : '' ?> <?php echo $disabled ? 'disabled="disabled"' : ''; ?> name="purchaser_id" value="<?php echo $participant->getSessionId() ?>" />
+        <div class="buyer">
+            <label class="buyer-label">
+                <input type="radio" <?php echo $checked ? 'checked="checked"' : '' ?> <?php echo $disabled ? 'disabled="disabled"' : ''; ?> name="buyer_id" value="<?php echo $participant->getSessionId() ?>" />
                 <?php echo $participant->getFirstname().' '.$participant->getSurname(); ?>
                 <span style="font-size: 14px;">
                     <?php if($participant->getBirthday() != null): ?>
                     <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>
                     <?php else: ?>
-                    <a href="<?php echo $this->url('purchaser', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>
+                    <a href="<?php echo $this->url('buyer', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>
                     <?php endif; ?>
                 </span>
             </label>
             <?php if($participant->getEmail() != ''): ?>
                 <p>Email: <?php echo $participant->getEmail(); ?></p>
             <?php else: ?>
-                <p><a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">Add email address</a> to choose this participant as purchaser.</p>
+                <p><a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">Add email address</a> to choose this participant as buyer.</p>
             <?php endif; ?>
 
             <?php if($participant->getBirthday() != null): ?>
@@ -67,16 +67,16 @@ echo $this->navigation()
         </div>
     <?php endforeach; ?>
     <?php
-        #echo $this->formRow($form->get('purchaser_id'));
+        #echo $this->formRow($form->get('buyer_id'));
     else: 
-        $form->get('purchaser_id')->setAttribute('value', 0);
-        echo $this->formHidden($form->get('purchaser_id'));
+        $form->get('buyer_id')->setAttribute('value', 0);
+        echo $this->formHidden($form->get('buyer_id'));
     endif;
     ?>
-    <!--<div class="purchaser">
+    <!--<div class="buyer">
         <h4>
-            <input type="radio" name="purchaser_id" value="0" />
-            Add Purchaser
+            <input type="radio" name="buyer_id" value="0" />
+            Add Buyer
         </h4>
         <?php
             #echo $this->formRow($form->get('firstname'));
@@ -85,7 +85,7 @@ echo $this->navigation()
         ?>
     </div>-->
     <div>
-        <a class="btn btn-success" href="<?php echo $this->url('purchaser', array('action' => 'add')); ?>">add Purchaser</a>
+        <a class="btn btn-success" href="<?php echo $this->url('buyer', array('action' => 'add')); ?>">add Buyer</a>
     </div>
 </div>
 
