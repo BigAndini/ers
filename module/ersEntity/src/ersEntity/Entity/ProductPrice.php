@@ -111,6 +111,14 @@ class ProductPrice implements InputFilterAwareInterface
     }
     
     /**
+     * @ORM\PreUpdate
+     */
+    public function PreUpdate()
+    {
+        $this->updated = new \DateTime();
+    }
+    
+    /**
      * Set id of this object to null if it's cloned
      */
     public function __clone() {

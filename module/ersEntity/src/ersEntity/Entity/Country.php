@@ -75,6 +75,25 @@ class Country implements InputFilterAwareInterface
     {
         $this->users = new ArrayCollection();
     }
+    
+    /**
+     * @ORM\PrePersist
+     */
+    public function PrePersist()
+    {
+        if(!isset($this->created)) {
+            $this->created = new \DateTime();
+        }
+        $this->updated = new \DateTime();
+    }
+    
+    /**
+     * @ORM\PreUpdate
+     */
+    public function PreUpdate()
+    {
+        $this->updated = new \DateTime();
+    }
 
     /**
      * Set the value of id.
