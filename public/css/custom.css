@@ -154,11 +154,11 @@ body {
     float:right;
 }
 
-.navbar-nav > li > a {
+/*.navbar-nav > li > a {
     line-height: 30px;
     padding-bottom: 20px;
     padding-top: 20px;
-}
+}*/
 
 .navbar-inverse .navbar-brand {
     color: #85b32a;
@@ -514,4 +514,10 @@ a:hover, a:focus {
 }
 .table .person-tools {
     width: 10%;
+}
+
+.equal, .equal > div[class*='col-'] {  
+    display: -webkit-flex;
+    display: flex;
+    flex:1 1 auto;
 }

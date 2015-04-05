@@ -17,60 +17,73 @@ $this->headTitle($title);
 
 <div class="row">
     <div class="col-lg-6">
-        <div class="order-info">
-            <h1>Buyer</h1>
-            <?php $buyer = $order->getBuyer(); ?>
-            <?php if($buyer) : ?>
-                <h3>
-                    <?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?>
-                    (<a href="mailto:<?php echo $buyer->getEmail(); ?>"><?php echo $buyer->getEmail(); ?></a>)
-                </h3>
-            <?php else: ?>
-                <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-                <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose Buyer</a>
-            <?php endif; ?>
+        <div class="panel panel-success">
+        <!--<div class="order-info">-->
+            <div class="panel-heading">
+                <h3>Buyer</h3>
+            </div>
+            <div class="panel-body">
+                <?php $buyer = $order->getBuyer(); ?>
+                <?php if($buyer) : ?>
+                    <h3>
+                        <?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?>
+                        (<a href="mailto:<?php echo $buyer->getEmail(); ?>"><?php echo $buyer->getEmail(); ?></a>)
+                    </h3>
+                <?php else: ?>
+                    <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+                    <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose Buyer</a>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
     <div class="col-lg-6">
-        <div class="order-info">
-            <a href="<?php echo $this->url('admin/order', array('action' => 'change-payment-type', 'id' => $order->getId())); ?>">Change Payment Type</a>
-            <h1>Payment</h1>
-            <?php $paymenttype = $order->getPaymentType(); ?>
-            <?php if($paymenttype) : ?>
-                <h3><?php echo $paymenttype->getName(); ?></h3>
-            <?php else: ?>
-                <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-                <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
-            <?php endif; ?>  
-            <div>
-                <table class="table sum-table">
-                    <tr>
-                        <td>Order amount:</td>
-                        <td><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
-                    </tr>
-                    <tr>
-                        <td>Payment Charge:</td>
-                        <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), 'EUR', null, 'de_DE'); ?></td>
-                    </tr>
-                    <tr>
-                        <th><span style="font-size: 18px;">Total amount:</span></th>
-                        <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
-                    </tr>
-                </table>
+        <div class="panel panel-success">
+        <!--<div class="order-info">-->
+            <div class="panel-heading">
+                <h3>Payment</h3>
             </div>
-            <?php foreach($paymentDetails as $detail): ?>
-                <pre>
-                    <?php \var_export(json_decode($detail->getData())); ?>
-                </pre>
-            <?php endforeach; ?>
+            <div class="panel-body">
+                <a href="<?php echo $this->url('admin/order', array('action' => 'change-payment-type', 'id' => $order->getId())); ?>">Change Payment Type</a>
+
+                <?php $paymenttype = $order->getPaymentType(); ?>
+                <?php if($paymenttype) : ?>
+                    <h3><?php echo $paymenttype->getName(); ?></h3>
+                <?php else: ?>
+                    <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+                    <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
+                <?php endif; ?>  
+                <div>
+                    <table class="table sum-table">
+                        <tr>
+                            <td>Order amount:</td>
+                            <td class="text-right"><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+                        </tr>
+                        <tr>
+                            <td>Payment Charge:</td>
+                            <td class="text-right"><?php echo $this->currencyFormat($paymenttype->calcFee($order->getPrice()), 'EUR', null, 'de_DE'); ?></td>
+                        </tr>
+                        <tr>
+                            <th><span style="font-size: 18px;">Total amount:</span></th>
+                            <th class="text-right"><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
+                        </tr>
+                    </table>
+                </div>
+                <?php foreach($paymentDetails as $detail): ?>
+                    <pre>
+                        <?php \var_export(json_decode($detail->getData())); ?>
+                    </pre>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
 </div>
 
-<div>
-    <h1>Participants / Tickets</h1>
-    <div>
-    <?php 
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h3>Participants / Tickets</h3>
+    </div>
+    <div class="panel-body">
+        <?php 
         $sum = 0;
         foreach ($order->getPackages() as $package) : 
             if(count($package->getItems()) == 0) {
@@ -83,7 +96,7 @@ $this->headTitle($title);
             else:
                 $participant = $user->getFirstname().' '.$user->getSurname();
             endif;
-    ?>
+        ?>
         <div class="package">
             <h3>
                 <?php 
@@ -147,22 +160,22 @@ $this->headTitle($title);
             </table>
             <?php endif; ?>
         </div>
-    <?php endforeach; ?>
-    <div>
-        <table class="table sum-table">
-            <tr>
-                <td>Order amount:</td>
-                <td><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
-            </tr>
-            <tr>
-                <td>Payment Charge:</td>
-                <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), 'EUR', null, 'de_DE'); ?></td>
-            </tr>
-            <tr>
-                <th><span style="font-size: 18px;">Total amount:</span></th>
-                <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
-            </tr>
-        </table>
+        <?php endforeach; ?>
+        <div>
+            <table class="table sum-table">
+                <tr>
+                    <td>Order amount:</td>
+                    <td><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+                </tr>
+                <tr>
+                    <td>Payment Charge:</td>
+                    <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), 'EUR', null, 'de_DE'); ?></td>
+                </tr>
+                <tr>
+                    <th><span style="font-size: 18px;">Total amount:</span></th>
+                    <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div class="clear-both"></div>
  </div>
