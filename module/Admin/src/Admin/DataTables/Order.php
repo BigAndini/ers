@@ -26,7 +26,7 @@ class Order extends AbstractTable
     protected $headers = array(
         'idcustomer' =>     array('tableAlias' => 'q', 'title' => 'Id', 'width' => '50') ,
         #'doctrine' =>       array('tableAlias' => 'q', 'title' => 'Doctrine closure' , 'filters' => 'text'),
-        'Purchaser_id' =>   array('tableAlias' => 'p', 'title' => 'Purchaser_id' , 'filters' => 'text'),
+        'Buyer_id' =>       array('tableAlias' => 'p', 'title' => 'Buyer_id' , 'filters' => 'text'),
         'PaymentType_id' => array('tableAlias' => 'p', 'title' => 'PaymentType_id' , 'filters' => 'text'),
         'Code_id' =>        array('tableAlias' => 'p', 'title' => 'Code_id' , 'filters' => 'text'),
         'product' =>        array('tableAlias' => 'p', 'title' => 'Product' , 'filters' => 'text'),

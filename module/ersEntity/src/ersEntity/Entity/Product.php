@@ -160,6 +160,14 @@ class Product implements InputFilterAwareInterface
         }
         $this->updated = new \DateTime();
     }
+    
+    /**
+     * @ORM\PreUpdate
+     */
+    public function PreUpdate()
+    {
+        $this->updated = new \DateTime();
+    }
 
     /**
      * Set id of this object to null if it's cloned

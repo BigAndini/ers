@@ -158,8 +158,8 @@ class User implements UserInterface, ProviderInterface
     protected $matches;
 
     /**
-     * @ORM\OneToMany(targetEntity="Order", mappedBy="purchaser")
-     * @ORM\JoinColumn(name="id", referencedColumnName="Purchaser_id")
+     * @ORM\OneToMany(targetEntity="Order", mappedBy="buyer")
+     * @ORM\JoinColumn(name="id", referencedColumnName="Buyer_id")
      */
     protected $orders;
 
@@ -190,6 +190,14 @@ class User implements UserInterface, ProviderInterface
         if(!isset($this->created)) {
             $this->created = new \DateTime();
         }
+        $this->updated = new \DateTime();
+    }
+    
+    /**
+     * @ORM\PreUpdate
+     */
+    public function PreUpdate()
+    {
         $this->updated = new \DateTime();
     }
     

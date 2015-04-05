@@ -9,11 +9,11 @@ $this->headTitle($title);
 <div class="row">
     <div class="col-lg-6">
         <div class="order-info">
-            <h1>Purchaser</h1>
-            <?php $purchaser = $order->getPurchaser(); ?>
-            <h2><?php echo $purchaser->getFirstname().' '.$purchaser->getSurname(); ?></h2>
-            <p>The purchaser will receive all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is payed and will be able to download the eTicket on his own aswell.</p>
-            <h3>We will send all information to: <?php echo $purchaser->getEmail(); ?></h3>
+            <h1>Buyer</h1>
+            <?php $buyer = $order->getBuyer(); ?>
+            <h2><?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?></h2>
+            <p>The buyer will receive all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is payed and will be able to download the eTicket on his own aswell.</p>
+            <h3>We will send all information to: <?php echo $buyer->getEmail(); ?></h3>
         </div>
     </div>
     <div class="col-lg-6">

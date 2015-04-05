@@ -40,8 +40,30 @@ class ParticipantController extends AbstractActionController {
                         ->findOneBy(array('id' => $participant->getCountryId()));
             $participant->setCountry($country);
         }
-       
+        $login_user = null;
+        $users = array();
+        if($this->zfcUserAuthentication()->hasIdentity()) {
+            $email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
+            $login_user = $em->getRepository("ersEntity\Entity\User")
+                    ->findOneBy(array('email' => $email));
+
+            $orders = $em->getRepository("ersEntity\Entity\Order")
+                    ->findBy(array('Buyer_id' => $login_user->getId()));
+
+            /*$logger = $this
+                ->getServiceLocator()
+                ->get('Logger');*/
+
+
+            foreach($orders as $order) {
+                #$logger->warn($order->getCreated()->format('d.m.Y H:i:s'));
+                $users = array_merge($users, $order->getParticipants());
+            }
+        }
+        
         return new ViewModel(array(
+            'login_user' => $login_user,
+            'users' => $users,
             'participants' => $participants,
         ));
     }
@@ -94,7 +116,7 @@ class ParticipantController extends AbstractActionController {
     }
     
     /*
-     * add a participant user object to the session for which the purchaser is 
+     * add a participant user object to the session for which the buyer is 
      * able to assign a product afterwards.
      */
     public function addAction() {

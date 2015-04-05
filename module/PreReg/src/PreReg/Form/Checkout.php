@@ -19,7 +19,7 @@ class Checkout extends Form
     
     public function __construct($name = null)
     {
-        parent::__construct('Purchaser');
+        parent::__construct('Buyer');
         
         $this->setAttribute('method', 'post'); 
         

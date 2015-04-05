@@ -59,8 +59,8 @@ class ResetPassword implements InputFilterAwareInterface
                             ),
                             'callback' => function($value, $context=array()) {
                                 /*
-                                 * If the purchaser_id is not 0 the user adds an 
-                                 * already existing participant as purchaser.
+                                 * If the buyer_id is not 0 the user adds an 
+                                 * already existing participant as buyer.
                                  */
                                 if(!isset($context['newPassword2'])) {
                                     return false;
@@ -95,14 +95,14 @@ class ResetPassword implements InputFilterAwareInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'The Surname of the purchaser cannot be empty.',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The Surname of the buyer cannot be empty.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 /*
-                                 * If the purchaser_id is not 0 the user adds an 
-                                 * already existing participant as purchaser.
+                                 * If the buyer_id is not 0 the user adds an 
+                                 * already existing participant as buyer.
                                  */
-                                if(isset($context['purchaser_id']) && $context['purchaser_id'] != 0) {
+                                if(isset($context['buyer_id']) && $context['buyer_id'] != 0) {
                                     return true;
                                 }
                                 
@@ -156,14 +156,14 @@ class ResetPassword implements InputFilterAwareInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'The email address of the purchaser cannot be empty.',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The email address of the buyer cannot be empty.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 /*
-                                 * If the purchaser_id is not 0 the user adds an 
-                                 * already existing participant as purchaser.
+                                 * If the buyer_id is not 0 the user adds an 
+                                 * already existing participant as buyer.
                                  */
-                                if(isset($context['purchaser_id']) && $context['purchaser_id'] != 0) {
+                                if(isset($context['buyer_id']) && $context['buyer_id'] != 0) {
                                     return true;
                                 }
                                 

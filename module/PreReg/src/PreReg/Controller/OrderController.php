@@ -150,9 +150,9 @@ class OrderController extends AbstractActionController {
     }
     
     /*
-     * collect data for the purchaser
+     * collect data for the buyer
      */
-    public function purchaserAction() {
+    public function buyerAction() {
         $orderContainer = new Container('order');
         $orderContainer->getManager()->getStorage()->clear('order');
         
@@ -164,18 +164,18 @@ class OrderController extends AbstractActionController {
         # values.
         if(count($cartContainer->order->getPackages()) > 1) {
             $users = $cartContainer->order->getParticipants();
-            $purchaser = array();
+            $buyer = array();
             foreach($users as $participant) {
-                $purchaser[] = array(
+                $buyer[] = array(
                     'value' => $participant->getSessionId(),
                     'label' => $participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getEmail().')',
                 );
             }
-            $purchaser[] = array(
+            $buyer[] = array(
                 'value' => 0,
-                'label' => 'Add purchaser',
+                'label' => 'Add buyer',
             );
-            $form->get('purchaser_id')->setValueOptions($purchaser);
+            $form->get('buyer_id')->setValueOptions($buyer);
         }
         
         $request = $this->getRequest();
@@ -194,10 +194,10 @@ class OrderController extends AbstractActionController {
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                $purchaser = $cartContainer->order->getParticipantBySessionId($data['purchaser_id']);
+                $buyer = $cartContainer->order->getParticipantBySessionId($data['buyer_id']);
                         
                 # add purchser to order
-                $cartContainer->order->setPurchaser($purchaser);
+                $cartContainer->order->setBuyer($buyer);
                 
                 return $this->redirect()->toRoute('order', array('action' => 'payment'));
             } else {
@@ -209,8 +209,8 @@ class OrderController extends AbstractActionController {
         }
        
         $forrest = new Service\BreadcrumbFactory();
-        $forrest->set('participant', 'order', array('action' => 'purchaser'));
-        $forrest->set('purchaser', 'order', array('action' => 'purchaser'));
+        $forrest->set('participant', 'order', array('action' => 'buyer'));
+        $forrest->set('buyer', 'order', array('action' => 'buyer'));
         
         $participants = $cartContainer->order->getParticipants();
         
@@ -335,16 +335,16 @@ class OrderController extends AbstractActionController {
 
             # check if the session cart container has all data to finish this order
             
-            $purchaser = $cartContainer->order->getPurchaser();
+            $buyer = $cartContainer->order->getBuyer();
             $user = $em->getRepository("ersEntity\Entity\User")
-                    ->findOneBy(array('email' => $purchaser->getEmail()));
+                    ->findOneBy(array('email' => $buyer->getEmail()));
             if($user instanceof Entity\User) {
-                $cartContainer->order->setPurchaser($user);
-                $cartContainer->order->setPurchaserId($user->getId());
+                $cartContainer->order->setBuyer($user);
+                $cartContainer->order->setBuyerId($user->getId());
             } else {
-                $em->persist($purchaser);
-                $cartContainer->order->setPurchaser($purchaser);
-                $cartContainer->order->setPurchaserId($purchaser->getId());
+                $em->persist($buyer);
+                $cartContainer->order->setBuyer($buyer);
+                $cartContainer->order->setBuyerId($buyer->getId());
             }
             
             $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
@@ -377,7 +377,7 @@ class OrderController extends AbstractActionController {
                 $participant = $package->getParticipant();
                 
                 if($participant->getFirstname() == '' || $participant->getSurname() == '') {
-                    $participant = $purchaser;
+                    $participant = $buyer;
                 }
                 
                 $user = null;
@@ -517,14 +517,14 @@ class OrderController extends AbstractActionController {
         $forrest->set('terms', 'order', array('action' => 'checkout'));
         
         /*
-         * Check the purchasers email, if it's not valid, delete purchaser
+         * Check the buyers email, if it's not valid, delete buyer
          */
         $email_validator = new Validator\EmailAddress();
-        $purchaser = $cartContainer->order->getPurchaser();
-        if($purchaser) {
-            $email = $cartContainer->order->getPurchaser()->getEmail();
+        $buyer = $cartContainer->order->getBuyer();
+        if($buyer) {
+            $email = $cartContainer->order->getBuyer()->getEmail();
             if (!$email_validator->isValid($email)) {
-                $cartContainer->order->setPurchaser();
+                $cartContainer->order->setBuyer();
             }    
         }
 
@@ -542,12 +542,12 @@ class OrderController extends AbstractActionController {
         $session_order = new Container('order');
         $order = $em->getRepository("ersEntity\Entity\Order")
                     ->findOneBy(array('id' => $order_id));
-        $purchaser = $order->getPurchaser();
+        $buyer = $order->getBuyer();
         
         $emailService = new Service\EmailFactory();
         $emailService->setFrom('prereg@eja.net');
         
-        $emailService->addTo($purchaser);
+        $emailService->addTo($buyer);
         #$emailService->setSubject('EJC Registration System: Order Confirmation');
         $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
         $emailService->setSubject($subject);
@@ -607,7 +607,7 @@ class OrderController extends AbstractActionController {
     }
     
     /*
-     * say thank you after purchaser
+     * say thank you after buyer
      */
     public function thankyouAction() {
         /*$cartContainer = new Container('cart');

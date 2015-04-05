@@ -38,7 +38,7 @@
     <body>
         <div class='header'>EJC 2015 - 01.-09.08.2015 in Bruneck, South Tyrol, Italy - <a href='http://www.ejc2015.org'>www.ejc2015.org</a></div>
         
-        <p>Dear <?php echo $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?>,</p>
+        <p>Dear <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>,</p>
         <p>To receive this email in another language you can visit the <a href="<?php echo $this->url('order', array(
                 'action' => 'email',
                 'hashkey' => $order->getHashKey()
@@ -139,7 +139,7 @@
                 <?php echo $ejc_with_number; ?> organizers</p>
         <hr />
         <p>You purchased the following items (ordered by 
-            <?php echo $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?>):</p>
+            <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>):</p>
         <?php echo $this->partial('partial/order-info.phtml', array('order' => $order)); ?>
         <div class='footer'>This mail was sent to you by the EJC Registration 
             System (ERS), operated by the European Juggling Association (EJA) on 

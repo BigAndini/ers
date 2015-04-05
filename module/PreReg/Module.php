@@ -102,10 +102,10 @@ class Module
          */
         /*error_log('=== Order Info ===');
         error_log('paymenttype_id: '.$cartContainer->order->getPaymentTypeId());
-        error_log('purchaser_id: '.$cartContainer->order->getPurchaserId());
-        $purchaser = $cartContainer->order->getPurchaser();
-        if($purchaser) {
-            error_log('purchaser email: '.$cartContainer->order->getPurchaser()->getEmail());
+        error_log('buyer_id: '.$cartContainer->order->getBuyerId());
+        $buyer = $cartContainer->order->getBuyer();
+        if($buyer) {
+            error_log('buyer email: '.$cartContainer->order->getBuyer()->getEmail());
         }
         foreach($cartContainer->order->getPackages() as $package) {
             error_log('  --- Package Info ---');

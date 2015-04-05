@@ -18,16 +18,16 @@ $this->headTitle($title);
 <div class="row">
     <div class="col-lg-6">
         <div class="order-info">
-            <h1>Purchaser</h1>
-            <?php $purchaser = $order->getPurchaser(); ?>
-            <?php if($purchaser) : ?>
+            <h1>Buyer</h1>
+            <?php $buyer = $order->getBuyer(); ?>
+            <?php if($buyer) : ?>
                 <h3>
-                    <?php echo $purchaser->getFirstname().' '.$purchaser->getSurname(); ?>
-                    (<a href="mailto:<?php echo $purchaser->getEmail(); ?>"><?php echo $purchaser->getEmail(); ?></a>)
+                    <?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?>
+                    (<a href="mailto:<?php echo $buyer->getEmail(); ?>"><?php echo $buyer->getEmail(); ?></a>)
                 </h3>
             <?php else: ?>
                 <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-                <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose Purchaser</a>
+                <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose Buyer</a>
             <?php endif; ?>
         </div>
     </div>

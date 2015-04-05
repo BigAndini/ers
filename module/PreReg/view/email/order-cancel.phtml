@@ -11,7 +11,7 @@
         </style>
     </head>
     <body>
-        <p>Dear <?php $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?>,</p>
+        <p>Dear <?php $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>,</p>
 
         <p>unfortunately we haven't received any payment in conjunction with your order from <?php echo $order->getCreated()->format('d.m.Y') ?> with the order ID <?php echo $order->getCode()->getValue(); ?> yet. Thus, we cancelled your order.</p>
 

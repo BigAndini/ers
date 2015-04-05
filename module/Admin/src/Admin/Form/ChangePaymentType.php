@@ -19,7 +19,7 @@ class ChangePaymentType extends Form
     
     public function __construct($name = null)
     {
-        parent::__construct('Purchaser');
+        parent::__construct('ChangePaymentType');
         
         $this->setAttribute('method', 'post'); 
         

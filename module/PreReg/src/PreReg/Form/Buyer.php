@@ -1,4 +1,4 @@
-<?php   
+    <?php   
 
 /* 
  * To change this license header, choose License Headers in Project Properties.
@@ -13,11 +13,11 @@ use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 
 
-class Purchaser extends Form
+class Buyer extends Form
 { 
     public function __construct($name = null)
     {
-        parent::__construct('Purchaser');
+        parent::__construct('Buyer');
         
         $this->setAttribute('method', 'post'); 
         

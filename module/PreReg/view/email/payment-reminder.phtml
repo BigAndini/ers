@@ -11,7 +11,7 @@
         </style>
     </head>
     <body>
-        <p>Dear <?php echo $order->getPurchaser()->getFirstname().' '.$order->getPurchaser()->getSurname(); ?>,</p>
+        <p>Dear <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>,</p>
 
         <p>Unfortunately, we haven’t received any payment in conjunction with 
         your order from %date% with the order ID %matching_hash% yet.<br />
