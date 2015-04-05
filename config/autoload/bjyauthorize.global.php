@@ -165,8 +165,9 @@ return [
                 /* Admin */
                 #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Test',                'roles' => ['admin']],
-                ['controller' => 'Admin\Controller\Statistic',           'roles' => ['admin', 'statistic']],
-                ['controller' => 'Admin\Controller\Admin',               'roles' => ['admin', 'statistic']],
+                ['controller' => 'Admin\Controller\Admin',               'roles' => ['admin', 'statistic', 'preregcoordinator']],
+                ['controller' => 'Admin\Controller\Statistic',           'roles' => ['admin', 'statistic', 'preregcoordinator']],
+                ['controller' => 'Admin\Controller\Order',               'roles' => ['admin', 'preregcoordinator']],
                 ['controller' => 'Admin\Controller\PriceLimit',          'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Product',             'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\ProductPackage',      'roles' => ['admin']],
@@ -180,7 +181,6 @@ return [
                 ['controller' => 'Admin\Controller\Counter',             'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\User',                'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Role',                'roles' => ['admin']],
-                ['controller' => 'Admin\Controller\Order',               'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Country',             'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Bankaccount',         'roles' => ['admin']],
                 

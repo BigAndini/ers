@@ -221,7 +221,9 @@ class ProfileController extends AbstractActionController {
                 
                 $role = $em->getRepository("ersEntity\Entity\Role")
                     ->findOneBy(array('roleId' => 'user'));
-                $user->addRole($role);
+                if(!$user->hasRole($role)) {
+                    $user->addRole($role);
+                }
                 
                 $em->persist($user);
                 $em->flush();
