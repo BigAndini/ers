@@ -54,6 +54,11 @@ class ProductVariant implements InputFilterAwareInterface
      * @ORM\Column(name="`name`", type="string", length=45, nullable=true)
      */
     protected $name;
+    
+    /**
+     * @ORM\Column(type="string", length=45, nullable=true)
+     */
+    protected $statsname;
 
     /**
      * @ORM\Column(name="`type`", type="string", nullable=true)
@@ -87,6 +92,13 @@ class ProductVariant implements InputFilterAwareInterface
      * @ORM\JoinColumn(name="Product_id", referencedColumnName="id")
      */
     protected $product;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="ItemVariant", mappedBy="productVariants")
+     * @ORM\JoinColumn(name="id", referencedColumnName="ProductVariant_id")
+     * @ORM\OrderBy({"value" = "ASC"})
+     */
+    protected $itemVariants;
 
     public function __construct()
     {
@@ -227,6 +239,29 @@ class ProductVariant implements InputFilterAwareInterface
         return $this->name;
     }
 
+    /**
+     * Set the value of statsname.
+     *
+     * @param string $statsname
+     * @return \Entity\ProductVariant
+     */
+    public function setStatsname($statsname)
+    {
+        $this->statsname = $statsname;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of statsname.
+     *
+     * @return string
+     */
+    public function getStatsname()
+    {
+        return $this->statsname;
+    }
+    
     /**
      * Set the value of type.
      *
@@ -381,6 +416,57 @@ class ProductVariant implements InputFilterAwareInterface
         return $this->product;
     }
 
+    /**
+     * Add ItemVariant entity to collection (one to many).
+     *
+     * @param \Entity\ItemVariant $itemVariant
+     * @return \Entity\Product
+     */
+    public function addItemVariants(ItemVariant $itemVariant)
+    {
+        $this->itemVariants[] = $itemVariant;
+
+        return $this;
+    }
+    
+    /**
+     * set ItemVariants
+     * 
+     * @param array of \Entity\ItemVariant $prices
+     * @return \Entity\Product
+     */
+    public function setItemVariants(array $prices)
+    {
+        foreach($prices as $itemVariant) {
+            $this->addItemVariant($itemVariant);
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Remove ItemVariant entity from collection (one to many).
+     *
+     * @param \Entity\ItemVariant $itemVariant
+     * @return \Entity\Product
+     */
+    public function removeItemVariant(ItemVariant $itemVariant)
+    {
+        $this->itemVariants->removeElement($itemVariant);
+
+        return $this;
+    }
+
+    /**
+     * Get ItemVariant entity collection (one to many).
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getItemVariants()
+    {
+        return $this->itemVariants;
+    }
+    
     /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
      * 

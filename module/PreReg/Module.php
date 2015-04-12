@@ -15,7 +15,6 @@ use Zend\Session\Container;
 
 class Module
 {
-    
     public function onBootstrap($e)
     {
         $eventManager        = $e->getApplication()->getEventManager();
@@ -32,7 +31,9 @@ class Module
         $moduleRouteListener->attach($eventManager);
         $this->bootstrapSession($e);
         
-        $sm   = $e->getApplication()->getServiceManager();
+        $application   = $e->getApplication();
+        $sm = $application->getServiceManager();
+        #$sm   = $e->getApplication()->getServiceManager();
         $auth = $sm->get('BjyAuthorize\Service\Authorize');
 
         if(!\Zend\Console\Console::isConsole()) {
@@ -42,10 +43,7 @@ class Module
             \Zend\View\Helper\Navigation::setDefaultRole($role);
         }
         
-        $application   = $e->getApplication();
-        $sm = $application->getServiceManager();
         $sharedManager = $application->getEventManager()->getSharedManager();
-
         $sharedManager->attach('Zend\Mvc\Application', 'dispatch.error',
                 function($e) use ($sm) {
                     if ($e->getParam('exception')){
@@ -74,7 +72,7 @@ class Module
         }
         #$container->getManager()->getStorage()->clear('initialized');
         if (!isset($container->init) || $container->lifetime < time()) {
-            error_log('reset session');
+            #error_log('reset session');
             $container->getManager()->getStorage()->clear('initialized');
             $container = new Container('initialized');
             $container->init = 1;
@@ -88,7 +86,7 @@ class Module
         $cartContainer = new Container('cart');
         #$cartContainer->getManager()->getStorage()->clear('cart');
         if(!isset($cartContainer->init) || $cartContainer->init != 1) {
-            error_log('reset cart');
+            #error_log('reset cart');
             $cartContainer->getManager()->getStorage()->clear('cart');
             $cartContainer->order = new Entity\Order();
             $cartContainer->init = 1;
@@ -208,6 +206,11 @@ class Module
                     $form->get('cc_expdate_month')->setAttribute('options', $months);
                     
                     return $form;
+                },
+                'PreReg\Service\ETicketService' => function($sm) {
+                    $eticketService = new Service\ETicketService();
+                    $eticketService->setServiceLocator($sm);
+                    return $eticketService;
                 },
             ),
         );

@@ -50,6 +50,19 @@ class ProductVariant extends Form
                 ),
             ),
         ));
+        $this->add(array(
+            'name' => 'statsname',
+            'attributes' => array(
+                'type'  => 'text',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Name in statistic',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
         
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',

@@ -7,7 +7,7 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <h2>Orders</h2>
         <?php 
         $totalsum = 0;
@@ -30,11 +30,31 @@ $this->headTitle($title);
             </dd>
         </dl>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-4">
+        <h2>Product Variants</h2>
+        <?php foreach($variants as $variant): ?>
+            <h3>
+                <?php if($variant->getStatsname() != ''):
+                    echo $variant->getStatsname();
+                else:
+                    echo $variant->getName();
+                endif; ?>
+            </h3>
+            <table class="table">
+            <?php foreach($variant->getProductVariantValues() as $value): ?>
+                <tr>
+                    <th><?php echo $value->getValue(); ?></th>
+                    <td><?php echo count($value->getItemVariants()); ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </table>
+        <?php endforeach; ?>
+    </div>
+    <div class="col-lg-4">
         <h2>Participants</h2>
         <dl>
             <dt>count</dt>
-            <dd><?php echo count($users); ?></dd>
+            <dd><?php echo count($participants); ?></dd>
         </dl>
     </div>
 </div>

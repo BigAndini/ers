@@ -11,11 +11,11 @@ namespace Admin\Form;
 use Zend\Form\Form;
 
 
-class Agegroup extends Form
+class BankAccount extends Form
 {
     public function __construct($name = null)
     {
-        parent::__construct('Agegroup');
+        parent::__construct('BankAccount');
         $this->setAttribute('method', 'post');
         
         $this->add(array(
@@ -24,23 +24,6 @@ class Agegroup extends Form
                 'type'  => 'hidden',
             ),
         ));
- 
-        $this->add(array( 
-            'name' => 'agegroup', 
-            'type' => 'Admin\Form\Element\DateText', 
-            'attributes' => array( 
-                'placeholder' => 'Agegroup...', 
-                'required' => 'required',
-                'class' => 'form-control form-element datepicker',
-            ), 
-            'options' => array( 
-                'label' => 'Agegroup', 
-                'label_attributes' => array(
-                    'class'  => 'media-object',
-                ),
-            ), 
-        ));
-        $this->get('agegroup')->setFormat('d.m.Y');
         
         $this->add(array(
             'name' => 'name',
@@ -59,13 +42,15 @@ class Agegroup extends Form
         ));
         
         $this->add(array(
-            'type' => 'checkbox',
-            'name' => 'priceChange',
+            'name' => 'bank',
             'attributes' => array(
-                'class' => 'checkbox',
+                'required' => 'required',
+                'type'  => 'text',
+                'class' => 'form-control form-element',
+                'placeholder' => 'Bank...',
             ),
             'options' => array(
-                'label' => 'This agegroup can change prices',
+                'label' => 'Bank',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -73,19 +58,36 @@ class Agegroup extends Form
         ));
         
         $this->add(array(
-            'type' => 'checkbox',
-            'name' => 'ticketChange',
+            'name' => 'iban',
             'attributes' => array(
-                'class' => 'checkbox',
+                'required' => 'required',
+                'type'  => 'text',
+                'class' => 'form-control form-element',
+                'placeholder' => 'IBAN...',
             ),
             'options' => array(
-                'label' => 'This agegroup can change tickets',
+                'label' => 'IBAN',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
             ),
         ));
- 
+        $this->add(array(
+            'name' => 'bic',
+            'attributes' => array(
+                'required' => 'required',
+                'type'  => 'text',
+                'class' => 'form-control form-element',
+                'placeholder' => 'BIC...',
+            ),
+            'options' => array(
+                'label' => 'BIC',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
         $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 

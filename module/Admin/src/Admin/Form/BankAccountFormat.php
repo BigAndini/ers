@@ -11,11 +11,11 @@ namespace Admin\Form;
 use Zend\Form\Form;
 
 
-class Agegroup extends Form
+class BankAccountFormat extends Form
 {
     public function __construct($name = null)
     {
-        parent::__construct('Agegroup');
+        parent::__construct('BankAccount');
         $this->setAttribute('method', 'post');
         
         $this->add(array(
@@ -24,68 +24,60 @@ class Agegroup extends Form
                 'type'  => 'hidden',
             ),
         ));
- 
-        $this->add(array( 
-            'name' => 'agegroup', 
-            'type' => 'Admin\Form\Element\DateText', 
-            'attributes' => array( 
-                'placeholder' => 'Agegroup...', 
-                'required' => 'required',
-                'class' => 'form-control form-element datepicker',
-            ), 
-            'options' => array( 
-                'label' => 'Agegroup', 
+        
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
+            'name' => 'matchKey',
+            'attributes' => array(
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'contains order code',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
-            ), 
+            ),
         ));
-        $this->get('agegroup')->setFormat('d.m.Y');
-        
         $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
+            'name' => 'amount',
+            'attributes' => array(
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'transfer amount',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
             'name' => 'name',
             'attributes' => array(
-                'required' => 'required',
-                'type'  => 'text',
                 'class' => 'form-control form-element',
-                'placeholder' => 'Name...',
             ),
             'options' => array(
-                'label' => 'Name',
+                'label' => 'name of buyer',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
+            'name' => 'date',
+            'attributes' => array(
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'date of transfer',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
             ),
         ));
         
-        $this->add(array(
-            'type' => 'checkbox',
-            'name' => 'priceChange',
-            'attributes' => array(
-                'class' => 'checkbox',
-            ),
-            'options' => array(
-                'label' => 'This agegroup can change prices',
-                'label_attributes' => array(
-                    'class'  => 'media-object',
-                ),
-            ),
-        ));
-        
-        $this->add(array(
-            'type' => 'checkbox',
-            'name' => 'ticketChange',
-            'attributes' => array(
-                'class' => 'checkbox',
-            ),
-            'options' => array(
-                'label' => 'This agegroup can change tickets',
-                'label_attributes' => array(
-                    'class'  => 'media-object',
-                ),
-            ),
-        ));
- 
         $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 
@@ -95,7 +87,7 @@ class Agegroup extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Go',
+                'value' => 'Save',
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),

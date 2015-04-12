@@ -144,7 +144,7 @@ return [
                 #['controller' => 'PreReg\Controller\Package',                       'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Product',                       'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Participant',                   'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Purchaser',                     'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Buyer',                     'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Test',                          'roles' => ['admin']],
                 #['controller' => 'PreReg\Controller\Profile', 'action' => 'index', 'roles' => ['user']],
                 
@@ -183,6 +183,9 @@ return [
                 ['controller' => 'Admin\Controller\Role',                'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Country',             'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Bankaccount',         'roles' => ['admin']],
+                
+                /* Cron */
+                ['controller' => 'Admin\Controller\Cron',  'roles' => ['guest']],
                 
                 /* Doctrine ORM */
                 #['controller' => 'DoctrineORMModule\Yuml\YumlController', 'roles' => ['admin']],

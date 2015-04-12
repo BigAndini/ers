@@ -26,6 +26,8 @@ return array(
             'Admin\Controller\Order'                => 'Admin\Controller\OrderController',
             'Admin\Controller\Bankaccount'          => 'Admin\Controller\BankaccountController',
             'Admin\Controller\Country'              => 'Admin\Controller\CountryController',
+            'Admin\Controller\Cron'                 => 'Admin\Controller\CronController',
+            'Admin\Controller\Matching'             => 'Admin\Controller\MatchingController',
             'Admin\Controller\Test'                 => 'Admin\Controller\TestController',
         ),
     ),
@@ -101,16 +103,27 @@ return array(
                 'route' => 'admin/order',
                 'resource'  => 'controller/Admin\Controller\Order',
             ),
-            'bankaccount' => array(
-                'label' => 'Bankaccount',
-                'route' => 'admin/bankaccount',
-                'resource'  => 'controller/Admin\Controller\Bankaccount',
+            'matching' => array(
+                'label' => 'Matching',
+                'route' => 'admin',
                 'pages' => array(
-                    'role' => array(
+                    'bankaccount' => array(
+                        'label' => 'Bank accounts',
+                        'route' => 'admin/bankaccount',
+                        'resource'  => 'controller/Admin\Controller\Bankaccount',
+                    ),
+                    'upload-csv' => array(
                         'label' => 'Upload CSV',
                         'route' => 'admin/bankaccount',
                         'action' => 'upload-csv',
                         'resource'  => 'controller/Admin\Controller\Bankaccount',
+                    ),
+                    
+                    'manual' => array(
+                        'label' => 'Manual Matching',
+                        'route' => 'admin/matching',
+                        'action' => 'manual',
+                        'resource'  => 'controller/Admin\Controller\Matching',
                     ),
                 ),
             ),
@@ -144,6 +157,21 @@ return array(
                 'label' => 'AdminPanel',
                 'route' => 'admin',
                 'resource'  => 'controller/Admin\Controller\Admin',
+            ),
+        ),
+    ),
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'cron' => array(
+                    'options' => array(
+                        'route'    => 'cron',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'cron'
+                        )
+                    )
+                ),
             ),
         ),
     ),

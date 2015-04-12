@@ -15,8 +15,7 @@ use Zend\Mvc\ModuleRouteListener;
 
 class Module
 {
-    public function onBootstrap(MvcEvent $e)
-    {
+    public function onBootstrap(MvcEvent $e) {
         $eventManager        = $e->getApplication()->getEventManager();
         $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($e) {
             $controller      = $e->getTarget();
