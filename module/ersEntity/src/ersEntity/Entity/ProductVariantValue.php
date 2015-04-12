@@ -72,10 +72,17 @@ class ProductVariantValue implements InputFilterAwareInterface
     protected $counters;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ProductVariant", inversedBy="productVariantValues")
+     * @ORM\ManyToOne(targetEntity="ProductVariant", inversedBy="productVariantValue")
      * @ORM\JoinColumn(name="ProductVariant_id", referencedColumnName="id")
      */
     protected $productVariant;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="ItemVariant", mappedBy="productVariantValue")
+     * @ORM\JoinColumn(name="id", referencedColumnName="ProductVariantValue_id")
+     * @ORM\OrderBy({"value" = "ASC"})
+     */
+    protected $itemVariants;
 
     public function __construct()
     {
@@ -313,6 +320,57 @@ class ProductVariantValue implements InputFilterAwareInterface
         return $this->productVariant;
     }
 
+    /**
+     * Add ItemVariant entity to collection (one to many).
+     *
+     * @param \Entity\ItemVariant $itemVariant
+     * @return \Entity\Product
+     */
+    public function addItemVariants(ItemVariant $itemVariant)
+    {
+        $this->itemVariants[] = $itemVariant;
+
+        return $this;
+    }
+    
+    /**
+     * set ItemVariants
+     * 
+     * @param array of \Entity\ItemVariant $prices
+     * @return \Entity\Product
+     */
+    public function setItemVariants(array $prices)
+    {
+        foreach($prices as $itemVariant) {
+            $this->addItemVariant($itemVariant);
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Remove ItemVariant entity from collection (one to many).
+     *
+     * @param \Entity\ItemVariant $itemVariant
+     * @return \Entity\Product
+     */
+    public function removeItemVariant(ItemVariant $itemVariant)
+    {
+        $this->itemVariants->removeElement($itemVariant);
+
+        return $this;
+    }
+
+    /**
+     * Get ItemVariant entity collection (one to many).
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getItemVariants()
+    {
+        return $this->itemVariants;
+    }
+    
     /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
      * 

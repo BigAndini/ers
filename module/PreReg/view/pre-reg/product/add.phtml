@@ -115,8 +115,10 @@
                                     <div class="clear-both"></div>
                                 </div>
                             <?php 
+                            else:
+                                echo $this->formRow($form->get('participant_id'));
                             endif;
-                            echo $this->formRow($form->get('participant_id'));
+                            
                             /*
                              * I need the empty agegroup_id here so the 
                              * validator can work correctly

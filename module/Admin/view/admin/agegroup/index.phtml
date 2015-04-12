@@ -14,6 +14,7 @@ $this->headTitle($title);
         <th>Name</th>
         <th>Birthdate</th>
         <th>can change price</th>
+        <th>can change ticket</th>
         <th>&nbsp;</th>
     </tr>
 <?php foreach ($agegroups as $agegroup) : ?>
@@ -22,6 +23,13 @@ $this->headTitle($title);
         <td><?php echo $agegroup->getAgegroup()->format('d.m.Y'); ?></td>
         <td>
             <?php if($agegroup->getPriceChange()): ?>
+            <i class="fa fa-check"></i>
+            <?php else: ?>
+            <i class="fa fa-close"></i>
+            <?php endif; ?>
+        </td>
+        <td>
+            <?php if($agegroup->getTicketChange()): ?>
             <i class="fa fa-check"></i>
             <?php else: ?>
             <i class="fa fa-close"></i>

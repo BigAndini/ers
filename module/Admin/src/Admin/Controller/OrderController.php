@@ -136,4 +136,58 @@ class OrderController extends AbstractActionController {
             'breadcrumb' => $forrest->get('order'),
         ));
     }
+    public function sendEticketAction() {
+        $logger = $this
+            ->getServiceLocator()
+            ->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            $logger->info('there is no id');
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('id' => $id));
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('order')) {
+            $forrest->set('order', 'admin/order');
+        }
+        
+        $logger->info('in eticket send');
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $del = $request->getPost('del', 'No');
+
+            if ($del == 'Yes') {
+                $id = (int) $request->getPost('id');
+                
+                $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $id));
+                
+                $eticketService = $this->getServiceLocator()->get('PreReg\Service\ETicketService');
+                foreach($order->getPackages() as $package) {
+                    $eticketService->setPackage($package);
+                
+                    $filePath = $eticketService->generatePdf();
+
+                    $logger->info('filename: '.$filePath);
+                }
+                
+                
+                $breadcrumb = $forrest->get('order');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+
+            return $this->redirect()->toRoute('admin/agegroup');
+        }
+        
+        return new ViewModel(array(
+            'order' => $order,
+            'breadcrumb' => $forrest->get('order'),
+        ));
+    }
 }

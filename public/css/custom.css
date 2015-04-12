@@ -39,6 +39,10 @@ body {
     clear: both;
 }
 
+.text-nowrap {
+    white-space: nowrap;
+}
+
 .navbar-admin {
     color: #fff;
   background-image: -webkit-linear-gradient(top, #3c3c3c 0%, #222222 100%);

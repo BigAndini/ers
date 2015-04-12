@@ -56,6 +56,11 @@ class Agegroup implements InputFilterAwareInterface
     protected $priceChange;
     
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $ticketChange;
+    
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $updated;
@@ -180,7 +185,7 @@ class Agegroup implements InputFilterAwareInterface
     /**
      * Set the value of priceChange.
      *
-     * @param boolean $visible
+     * @param boolean $priceChange
      * @return \Entity\Agegroup
      */
     public function setPriceChange($priceChange)
@@ -198,6 +203,29 @@ class Agegroup implements InputFilterAwareInterface
     public function getPriceChange()
     {
         return $this->priceChange;
+    }
+    
+    /**
+     * Set the value of ticketChange.
+     *
+     * @param boolean $ticketChange
+     * @return \Entity\Agegroup
+     */
+    public function setTicketChange($ticketChange)
+    {
+        $this->ticketChange = $ticketChange;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of ticketChange.
+     *
+     * @return boolean
+     */
+    public function getTicketChange()
+    {
+        return $this->ticketChange;
     }
     
     /**
@@ -373,7 +401,7 @@ class Agegroup implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'agegroup', 'name', 'updated', 'priceChange', 'created');
+        $dataFields = array('id', 'agegroup', 'name', 'priceChange', 'ticketChange', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -406,6 +434,6 @@ class Agegroup implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'agegroup', 'name', 'updated', 'priceChange', 'created');
+        return array('id', 'agegroup', 'name', 'priceChange', 'ticketChange', 'updated', 'created');
     }
 }

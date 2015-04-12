@@ -86,7 +86,7 @@ class BankAccount implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="BankStatement", mappedBy="bankAccount")
+     * @ORM\OneToMany(targetEntity="BankStatement", mappedBy="bankAccount", cascade={"persist"})
      * @ORM\JoinColumn(name="id", referencedColumnName="BankAccount_id")
      */
     protected $bankStatements;
@@ -413,7 +413,7 @@ class BankAccount implements InputFilterAwareInterface
         $filters = array(
             array(
                 'name' => 'id',
-                'required' => true,
+                'required' => false,
                 'filters' => array(),
                 'validators' => array(),
             ),

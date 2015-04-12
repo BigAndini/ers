@@ -46,82 +46,82 @@ class BankStatement implements InputFilterAwareInterface
     protected $BankAccount_id;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     protected $hash;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol1;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol2;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol3;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol4;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol5;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol6;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol7;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol8;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol9;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol10;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol11;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol12;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol13;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol14;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $BankStatementcol15;
 
@@ -245,6 +245,40 @@ class BankStatement implements InputFilterAwareInterface
     public function getHash()
     {
         return $this->hash;
+    }
+    
+    /**
+     * Load bank statements from array
+     * 
+     * @param array $bankStatements
+     * @return \ersEntity\Entity\BankStatement
+     */
+    public function setBankStatements(array $bankStatements) {
+        $count = 1;
+        foreach($bankStatements as $statement) {
+            $func = 'setBankStatementcol'.$count;
+            $this->$func($statement);
+            $count++;
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * get bank statements as array
+     * 
+     * @return array
+     */
+    public function getBankStatements() {
+        $count = 1;
+        $ret = array();
+        $func = 'getBankStatementcol'.$count;
+        while(method_exists($this, $func)) {
+            $func = 'getBankStatementcol'.$count;
+            $ret[] = $this->$func();
+            $count++;
+        }
+        return $ret;
     }
 
     /**

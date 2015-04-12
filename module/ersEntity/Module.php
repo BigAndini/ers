@@ -39,7 +39,7 @@ class Module
             $sm = $userService->getServiceManager();
             $em = $sm->get('doctrine.entitymanager.orm_default');
             $newUser = $e->getParam('user');
-            $registrationForm = $e->getParam('form');
+            #$registrationForm = $e->getParam('form');
             $config = $sm->get('config');
             $criteria = array('roleId' => $config['bjyauthorize']['new_user_default_role']);
             $defaultUserRole = $em->getRepository('ersEntity\Entity\Role')->findOneBy($criteria);

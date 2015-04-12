@@ -755,7 +755,7 @@ class Order implements InputFilterAwareInterface
      * find a status for this order
      * 
      * @param type $value
-     * @return boolean
+     * @return OrderStatus
      */
     public function findOrderStatus($value) {
         foreach($this->getOrderStatus() as $status) {
@@ -764,6 +764,21 @@ class Order implements InputFilterAwareInterface
             }
         }
         return new OrderStatus();
+    }
+    
+    /**
+     * check whether this order has this status or not
+     * 
+     * @param type $value
+     * @return boolean
+     */
+    public function hasOrderStatus($value) {
+        foreach($this->getOrderStatus() as $status) {
+            if($status->getValue() == $value) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**

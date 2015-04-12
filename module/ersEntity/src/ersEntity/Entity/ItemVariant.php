@@ -80,6 +80,18 @@ class ItemVariant implements InputFilterAwareInterface
      */
     protected $item;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="ProductVariant", inversedBy="itemVariants")
+     * @ORM\JoinColumn(name="ProductVariant_id", referencedColumnName="id")
+     */
+    protected $productVariant;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="ProductVariantValue", inversedBy="itemVariants")
+     * @ORM\JoinColumn(name="ProductVariantValue_id", referencedColumnName="id")
+     */
+    protected $productVariantValue;
+    
     public function __construct()
     {
     }

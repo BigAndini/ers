@@ -20,8 +20,6 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
-        
-        
         #$sm = $e->getApplication()->getServiceManager();
         // Add ACL information to the Navigation view helper
         #$authorize = $sm->get('BjyAuthorize\Service\Authorize');

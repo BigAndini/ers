@@ -171,7 +171,7 @@ class TestController extends AbstractActionController {
     public function generatepdfAction() {
         
         if(!extension_loaded('gd')) {
-            die('PHP Extension gd needs to be loaded.');
+            throw new Exception('PHP Extension gd needs to be loaded.');
         }
         
         /*

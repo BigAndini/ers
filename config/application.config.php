@@ -1,5 +1,6 @@
 <?php
-return array(
+#use Zend\Console\Console;
+$config = array(
     // This should be an array of module namespaces used in the application.
     'modules' => array(
         'EddieJaoude\Zf2Logger',
@@ -21,6 +22,7 @@ return array(
         'OrgHeiglPiwik',
         'GoalioRememberMe',
         'GoalioRememberMeDoctrineORM',
+        #'Inbaz\CronTask',
     ),
 
     // These are various options for the listeners attached to the ModuleManager
@@ -80,3 +82,10 @@ return array(
    // Should be compatible with Zend\ServiceManager\Config.
    // 'service_manager' => array(),
 );
+
+/*if (Console::isConsole()) {
+    array_splice($config['modules'],array_search('BjyAuthorize',$config['modules']),1);
+    #array_unshift($config['modules'], 'BjyAuthorize');
+}*/
+
+return $config;
