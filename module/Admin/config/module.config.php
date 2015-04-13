@@ -172,6 +172,24 @@ return array(
                         )
                     )
                 ),
+                'auto-matching' => array(
+                    'options' => array(
+                        'route'    => 'auto-matching',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'auto-matching'
+                        )
+                    )
+                ),
+                'gen-user-list' => array(
+                    'options' => array(
+                        'route'    => 'gen-user-list',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'gen-user-list'
+                        )
+                    )
+                ),
             ),
         ),
     ),

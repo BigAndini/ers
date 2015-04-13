@@ -255,6 +255,7 @@ class BankaccountController extends AbstractActionController {
                     $bs->setBankStatements($row_data);
                     $bs->setBankAccount($bankaccount);
                     $bs->setHash($hash);
+                    $bs->setStatus('new');
                     
                     $bankaccount->addBankStatement($bs);
                     $row++;

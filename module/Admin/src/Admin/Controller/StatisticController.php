@@ -30,14 +30,12 @@ class StatisticController extends AbstractActionController {
          */
         $variants = $em->getRepository("ersEntity\Entity\ProductVariant")
                 ->findBy(array('type' => 'select'));
-        /*$variant_data = array();
-        foreach($variants as $variant) {
-            $tmp['name'] = $variant->getName();
-            $tmp['values'] = $em->getRepository("ersEntity\Entity\ProductVariantValue")
-                ->findBy(array('ProductVariant_id' => $variant->getId()));
-            $variant_data[] = $tmp;
-        }*/
         
+        /*
+         * payment types
+         */
+        $paymenttypes = $em->getRepository("ersEntity\Entity\PaymentType")
+                ->findAll();
         
         /*
          * participants
@@ -47,6 +45,7 @@ class StatisticController extends AbstractActionController {
         return new ViewModel(array(
             'orders' => $orders,
             'variants' => $variants,
+            'paymenttypes' => $paymenttypes,
             'participants' => $users,
         ));
     }

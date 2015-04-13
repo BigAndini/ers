@@ -1022,6 +1022,15 @@ class Order implements InputFilterAwareInterface
         $sum += $this->getPaymentType()->calcFee($sum);
         return $sum;
     }
+    
+    /**
+     * get payment fees for this order
+     * 
+     * @return float
+     */
+    public function getPaymentFees() {
+        return $this->getPaymentType()->calcFee($this->getPrice());
+    }
 
     /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
