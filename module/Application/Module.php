@@ -26,6 +26,15 @@ class Module
         #$acl = $authorize->getAcl();
         #\Zend\View\Helper\Navigation::setDefaultAcl($acl);
         #\Zend\View\Helper\Navigation::setDefaultRole('guest');
+        
+        $eventManager->attach('render', function($e) {
+            $sm = $e->getApplication()->getServiceManager();
+
+            $config = $sm->get('Config');
+            
+            $view = $e->getViewModel();
+            $view->setVariable('ers_config', $config['ERS']);
+        });
     }
 
     public function getConfig()

@@ -11,6 +11,7 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Admin\Form;
+use Admin\InputFilter;
 use ersEntity\Entity;
 
 class BankaccountController extends AbstractActionController {
@@ -148,8 +149,16 @@ class BankaccountController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/bankaccount');
         }
         
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $bankaccount = $em->getRepository("ersEntity\Entity\BankAccount")
+                ->findOneBy(array('id' => $id));
+        
         $form = new Form\BankAccountFormat();
         
+        # TODO: add one options array for each field to be able to preset 
+        # selected fields.
         $options = array();
         $options[] = array(
             'value' => '',
@@ -167,11 +176,7 @@ class BankaccountController extends AbstractActionController {
         $form->get('name')->setAttribute('options', $options);
         $form->get('date')->setAttribute('options', $options);
         
-        $em = $this
-            ->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository("ersEntity\Entity\BankAccount")
-                ->findOneBy(array('id' => $id));
+        $form->get('id')->setValue($bankaccount->getId());
         
         $statements = $em->getRepository("ersEntity\Entity\BankStatement")
                 ->findBy(
@@ -179,6 +184,34 @@ class BankaccountController extends AbstractActionController {
                         array(),
                         5
                         );
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $inputFilter = new InputFilter\BankAccountFormat();
+            $form->setInputFilter($inputFilter->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $id = (int) $request->getPost('id');
+                $bankaccount = $em->getRepository("ersEntity\Entity\BankAccount")
+                    ->findOneBy(array('id' => $id));
+                
+                $format = array(
+                    'matchKey' => $data['matchKey'],
+                    'amount' => $data['amount'],
+                    'name' => $data['name'],
+                    'date' => $data['date'],
+                );
+                $bankaccount->setStatementFormat(json_encode($format));
+                
+                $em->persist($bankaccount);
+                $em->flush();
+
+                return $this->redirect()->toRoute('admin/bankaccount');
+            }
+        }
         
         return new ViewModel(array(
             'form' => $form,
@@ -255,6 +288,7 @@ class BankaccountController extends AbstractActionController {
                     $bs->setBankStatements($row_data);
                     $bs->setBankAccount($bankaccount);
                     $bs->setHash($hash);
+                    $bs->setStatus('new');
                     
                     $bankaccount->addBankStatement($bs);
                     $row++;

@@ -303,7 +303,7 @@ class BankAccount implements InputFilterAwareInterface
      */
     public function getStatementFormat()
     {
-        return $this->statementFormat;
+        return $this->statement_format;
     }
 
     /**

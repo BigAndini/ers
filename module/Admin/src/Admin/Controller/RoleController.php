@@ -23,7 +23,7 @@ class RoleController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'roles' => $em->getRepository("ersEntity\Entity\Role")->findAll(),
+            'roles' => $em->getRepository("ersEntity\Entity\Role")->findBy(array(),array('roleId' => 'ASC')),
          ));
     }
 

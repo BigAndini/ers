@@ -1,7 +1,8 @@
 <h1><?php echo $this->translate('A 404 error occurred') ?></h1>
 <h2>Sorry!</h2>
 <p>The page you are looking for doesn't exist. If you think this is an error, 
-    please let us know at <a href="mailto:info@ejc2015.org">info@ejc2015.org</a>.</p>
+    please let us know at <a href="mailto:<?php echo $this->layout()->ers_config['info_mail']; ?>"><?php echo $this->layout()->ers_config['info_mail']; ?></a>.</p>
+<p>If you encounter any error with this system, please send us a full copy of this page.</p>
 
 <h3>You might be looking for:</h3>
 <ul>

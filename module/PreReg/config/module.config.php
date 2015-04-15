@@ -14,7 +14,7 @@ return array(
             'PreReg\Controller\Cart'        => 'PreReg\Controller\CartController',
             'PreReg\Controller\Package'     => 'PreReg\Controller\PackageController',
             'PreReg\Controller\Participant' => 'PreReg\Controller\ParticipantController',
-            'PreReg\Controller\Buyer'   => 'PreReg\Controller\BuyerController',
+            'PreReg\Controller\Buyer'       => 'PreReg\Controller\BuyerController',
             'PreReg\Controller\Product'     => 'PreReg\Controller\ProductController',
             'PreReg\Controller\Profile'     => 'PreReg\Controller\ProfileController',
             'PreReg\Controller\Info'        => 'PreReg\Controller\InfoController',
@@ -84,7 +84,7 @@ return array(
             'admin' => array(
                 'label' => 'AdminPanel',
                 'route' => 'admin',
-                'resource'  => 'controller/Admin\Controller\Admin',
+                'resource'  => 'controller/Admin\Controller\Index',
             ),
             'help' => array(
                 /*'label' => '<span class="fa-stack fa-lg">

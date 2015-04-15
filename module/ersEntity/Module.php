@@ -75,7 +75,12 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(
-                'ersEntity\Service\CodeService' => 'ersEntity\ServiceFactory\CodeServiceFactory',
+                'ersEntity\Service\CodeService' => 'ersEntity\Service\Factory\CodeFactory',
+                'ersEntity\Service\EmailService' => function ($sm) {
+                    $emailService = new Service\EmailService();
+                    $emailService->setServiceLocator($sm);
+                    return $emailService;
+                },
             ),
         );
     }

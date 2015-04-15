@@ -49,6 +49,11 @@ class BankStatement implements InputFilterAwareInterface
      * @ORM\Column(type="string", length=50, nullable=true)
      */
     protected $hash;
+    
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    protected $status;
 
     /**
      * @ORM\Column(type="string", length=1000, nullable=true)
@@ -224,6 +229,29 @@ class BankStatement implements InputFilterAwareInterface
         return $this->BankAccount_id;
     }
 
+    /**
+     * Set the value of status.
+     *
+     * @param string $status
+     * @return \Entity\BankStatement
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of status.
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    
     /**
      * Set the value of hash.
      *

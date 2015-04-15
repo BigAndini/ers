@@ -75,7 +75,7 @@ class Module
                     $form = new Form\Role();
                     
                     $em = $sm->get('doctrine.entitymanager');
-                    $roles = $em->getRepository("ersEntity\Entity\Role")->findAll();
+                    $roles = $em->getRepository("ersEntity\Entity\Role")->findBy(array(), array('roleId' => 'ASC'));
                     
                     $options = array();
                     $options[null] = 'no parent';
