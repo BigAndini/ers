@@ -18,27 +18,26 @@ $this->headTitle($title);
 <div class="row">
     <div class="col-lg-6">
         <div class="panel panel-success">
-        <!--<div class="order-info">-->
             <div class="panel-heading">
                 <h3>Buyer</h3>
             </div>
             <div class="panel-body">
                 <?php $buyer = $order->getBuyer(); ?>
                 <?php if($buyer) : ?>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'resend-confirmation', 'id' => $order->getId())); ?>">resend order confirmation</a>
                     <h3>
                         <?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?>
                         (<a href="mailto:<?php echo $buyer->getEmail(); ?>"><?php echo $buyer->getEmail(); ?></a>)
                     </h3>
                 <?php else: ?>
                     <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-                    <a href="<?php echo $this->url('order', array('action' => 'register')); ?>">choose Buyer</a>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'register')); ?>">choose Buyer</a>
                 <?php endif; ?>
             </div>
         </div>
     </div>
     <div class="col-lg-6">
         <div class="panel panel-success">
-        <!--<div class="order-info">-->
             <div class="panel-heading">
                 <h3>Payment</h3>
             </div>

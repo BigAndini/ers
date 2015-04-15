@@ -477,7 +477,12 @@ class OrderController extends AbstractActionController {
             
             $cartContainer->init = 0;
             
-            $this->sendConfirmationEmail($cartContainer->order->getId());
+            $emailService = $this
+                ->getServiceLocator()
+                ->get('ersEntity\Service\EmailService');
+            $emailService->sendConfirmationEmail($cartContainer->order->getId());
+            #$this->sendConfirmationEmail($cartContainer->order->getId());
+            
             $forrest = new Service\BreadcrumbFactory;
             $forrest->remove('terms');
             switch(strtolower($cartContainer->order->getPaymentType()->getType())) {
@@ -534,12 +539,12 @@ class OrderController extends AbstractActionController {
         ));
     }
     
-    private function sendConfirmationEmail($order_id) {
+    /*private function sendConfirmationEmail($order_id) {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $session_order = new Container('order');
+        #$session_order = new Container('order');
         $order = $em->getRepository("ersEntity\Entity\Order")
                     ->findOneBy(array('id' => $order_id));
         $buyer = $order->getBuyer();
@@ -548,7 +553,6 @@ class OrderController extends AbstractActionController {
         $emailService->setFrom('prereg@eja.net');
         
         $emailService->addTo($buyer);
-        #$emailService->setSubject('EJC Registration System: Order Confirmation');
         $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
         $emailService->setSubject($subject);
         
@@ -560,13 +564,9 @@ class OrderController extends AbstractActionController {
         $html = $viewRender->render($viewModel);
         
         $emailService->setHtmlMessage($html);
-        #$emailService->setTextMessage('Testmail');
         
-        #$filename = "EJC2015_Terms_and_Services.pdf";
-        #$filepath = getcwd().'/tmp/'.$filename;
         $terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v3.pdf';
         $terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
-        #$emailService->addAttachment($filepath);
         $emailService->addAttachment($terms1);
         $emailService->addAttachment($terms2);
         
@@ -579,7 +579,7 @@ class OrderController extends AbstractActionController {
         $em->flush();
         
         return true;
-    }
+    }*/
     
     private function genTermsPDF() {
         $pdfView = new ViewModel();

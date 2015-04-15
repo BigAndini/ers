@@ -11,14 +11,21 @@ $this->headTitle($title);
 
 <table class="table">
     <tr>
+        <th>name</th>
         <th>email</th>
+        <th>age</th>
         <th>roles</th>
         <th>&nbsp;</th>
     </tr>
 <?php foreach ($users as $user) : ?>
     <tr>
+        <td><?php echo $user->getFirstname().' '.$user->getSurname(); ?></td>
+        <td><?php echo $user->getEmail(); ?></td>
         <td><?php 
-            echo $user->getEmail();
+            if($user->getBirthday() != null) {
+                $now = new \DateTime();
+                echo $now->diff($user->getBirthday())->format('%Y'); 
+            }
         ?></td>
         <td>
             <?php foreach($user->getRoles() as $role) : ?>

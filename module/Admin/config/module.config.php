@@ -9,7 +9,7 @@
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Admin\Controller\Admin'                => 'Admin\Controller\AdminController',
+            'Admin\Controller\Index'                => 'Admin\Controller\IndexController',
             'Admin\Controller\Statistic'            => 'Admin\Controller\StatisticController',
             'Admin\Controller\Tax'                  => 'Admin\Controller\TaxController',
             'Admin\Controller\Product'              => 'Admin\Controller\ProductController',
@@ -73,6 +73,11 @@ return array(
                         'route' => 'admin/country',
                         'resource'  => 'controller/Admin\Controller\Country',
                     ),
+                    'counter' => array(
+                        'label' => 'Counter',
+                        'route' => 'admin/counter',
+                        'resource'  => 'controller/Admin\Controller\Counter',
+                    ),
                 ),
             ),
             'product' => array(
@@ -81,16 +86,16 @@ return array(
                 #'action' => 'reset',
                 'resource'  => 'controller/Admin\Controller\Product',
             ),
-            'counter' => array(
-                'label' => 'Counter',
-                'route' => 'admin/counter',
-                'resource'  => 'controller/Admin\Controller\Counter',
-            ),
             'user' => array(
                 'label' => 'User',
                 'route' => 'admin/user',
                 'resource'  => 'controller/Admin\Controller\User',
                 'pages' => array(
+                    'user' => array(
+                        'label' => 'User',
+                        'route' => 'admin/user',
+                        'resource'  => 'controller/Admin\Controller\User',
+                    ),
                     'role' => array(
                         'label' => 'Role',
                         'route' => 'admin/role',
@@ -156,7 +161,7 @@ return array(
             'admin' => array(
                 'label' => 'AdminPanel',
                 'route' => 'admin',
-                'resource'  => 'controller/Admin\Controller\Admin',
+                'resource'  => 'controller/Admin\Controller\Index',
             ),
         ),
     ),
@@ -201,7 +206,7 @@ return array(
                     #'route' => '/admin[/]',
                     'route' => '/admin',
                     'defaults' => array(
-                        'controller' => 'Admin\Controller\Admin',
+                        'controller' => 'Admin\Controller\Index',
                         'action' => 'index',
                     ),
                 ),

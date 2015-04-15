@@ -6,13 +6,12 @@
  * and open the template in the editor.
  */
 
-namespace ersEntity\ServiceFactory;
+namespace ersEntity\Service\Factory;
 
-use MyApp\Service\ApiService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class CodeServiceFactory implements FactoryInterface
+class CodeFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceLocator)
     {

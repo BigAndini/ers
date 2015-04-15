@@ -183,7 +183,7 @@ class Code implements InputFilterAwareInterface
          * X
          * Y
          */
-        $alphabet = "0123456789ACDFGHKMNPRUVWXY";
+        $alphabet = "0123456789ACDFHKMNPRUVWXY";
         $memory = '';
         $n = '';
         #srand(mktime()); 
@@ -227,7 +227,7 @@ class Code implements InputFilterAwareInterface
         }
     }
 
-    public function normalizeText($text) {
+    private function normalizeText($text) {
         $text = strtoupper($text);
         $matrix = array(
             '0' => array(
@@ -267,6 +267,17 @@ class Code implements InputFilterAwareInterface
             }
         }
         return preg_replace($pattern, $replace, $text);
+    }
+    
+    /**
+     * normalize value of this code
+     * 
+     * @return \ersEntity\Entity\Code
+     */
+    public function normalize() {
+        $this->setValue($this->normalizeText($this->getValue()));
+        
+        return $this;
     }
 
     /**

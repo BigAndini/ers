@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <style type="text/css">
+            * {
+                font-family: sans-serif;
+            }
+            .clear-both {
+                clear: both;
+            }
+        </style>
+    </head>
+    <body>
+        <p>Dear <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>,</p>
+
+        <p>Unfortunately, we haven’t received any payment in conjunction with 
+        your order from %date% with the order ID %matching_hash% yet.<br />
+        Please transfer the entire amount of your order within the coming 7 
+        days. Otherwise, we’ll have to cancel your order. Thank you for your 
+        appreciation!</p>
+
+        <p>Best regards,<br />
+        Your European Juggling Association and the local EJC 2015 organizers</p>
+        
+        <hr />
+
+        <?php echo $this->partial('email/order-confirmation.phtml', array('order' => $order)); ?>
+    </body>
+</html>

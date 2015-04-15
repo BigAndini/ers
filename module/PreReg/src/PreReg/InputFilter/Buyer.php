@@ -12,6 +12,7 @@ use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter; 
 use Zend\InputFilter\InputFilterAwareInterface; 
 use Zend\InputFilter\InputFilterInterface; 
+use Zend\Session\Container;
 
 class Buyer implements InputFilterAwareInterface 
 { 
@@ -187,6 +188,32 @@ class Buyer implements InputFilterAwareInterface
                                     return true;
                                 }
                                 return false;
+                            },
+                            
+                        ),
+                    ),
+                    array ( 
+                        'name' => 'Callback', 
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'There is already a person with this email address in your order, please use this person.',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                if(
+                                    isset($context['session_id']) && 
+                                    is_numeric($context['session_id']) && 
+                                    $context['session_id'] != 0
+                                ) {
+                                    return true;
+                                }
+                                $cartContainer = new Container('cart');
+                                $participants = $cartContainer->order->getParticipants();
+                                foreach($participants as $participant) {
+                                    if($value == $participant->getEmail()) {
+                                        return false;
+                                    }
+                                }
+                                return true;
                             },
                             
                         ),
