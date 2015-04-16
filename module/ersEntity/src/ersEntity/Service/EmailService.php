@@ -239,6 +239,39 @@ class EmailService
         $transport->send($message);
     }
     
+    public function sendExceptionEmail(\Exception $e) {
+        $this->setFrom('prereg@eja.net');
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $role = $em->getRepository("ersEntity\Entity\Role")
+                    ->findOneBy(array('roleId' => 'supradm'));
+        $users = $role->getUsers();
+        if(count($users) <= 0) {
+            return false;
+        }
+        foreach($users as $user) {
+            $this->addTo($user);
+        }
+        
+        $this->setSubject('An error occurred: '.$e->getMessage());
+        
+        $viewModel = new ViewModel(array(
+            'message' => 'An error occurred during execution',
+            'exception' => $e,
+        ));
+        
+        $viewModel->setTemplate('email/exception.phtml');
+        $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+        $html = $viewRender->render($viewModel);
+        
+        $this->setHtmlMessage($html);
+        
+        $this->send();
+        
+        return true;
+    }
+    
     public function sendConfirmationEmail($order_id) {
         $em = $this
             ->getServiceLocator()
