@@ -109,4 +109,8 @@ class TestController extends AbstractActionController {
             'orderTable' => $table->render()
         ));
     }
+    
+    public function exceptionAction() {
+        throw new \Exception('This is a test exception');
+    }
 }

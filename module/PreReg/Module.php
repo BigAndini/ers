@@ -48,6 +48,8 @@ class Module
                 function($e) use ($sm) {
                     if ($e->getParam('exception')){
                         $sm->get('Logger')->crit($e->getParam('exception'));
+                        $emailService = $sm->get('ersEntity\Service\EmailService');
+                        $emailService->sendExceptionEmail($e->getParam('exception'));
                     }
                 }
             );
