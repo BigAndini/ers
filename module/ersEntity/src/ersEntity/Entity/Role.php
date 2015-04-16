@@ -76,16 +76,12 @@ class Role implements HierarchicalRoleInterface
     
     /**
      * @var \Doctrine\Common\Collections\Collection
-     * @ORM\ManyToMany(targetEntity="User")
-     * @ORM\JoinTable(name="user_role_linker",
-     *      joinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
-     * )
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
      */
     protected $users;
     
-    public function __construct()
-    {
+    public function __construct() {
+        $this->users = new ArrayCollection();
     }
     
     /**
