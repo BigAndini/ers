@@ -3,11 +3,6 @@
 <?php if($chooser): ?>
 <div class="p_overlay">
     <div class="p_overlay_inner">
-        <p class="p_overlay_close">
-            <span class="p_overlay_close_inner">
-                <a href="<?php echo $this->url($bc_stay->route, $bc_stay->params, $bc_stay->options);?>">X</a>
-            </span>
-        </p>
         <h3>
             Added <span class="green"><?php echo $product->getName(); ?></span> to your shopping cart.
         </h3>
@@ -18,7 +13,7 @@
                     $bc_stay->route, 
                     $bc_stay->params, 
                     $bc_stay->options
-                    ); ?>"><i class="fa fa-caret-left"></i> add this product for another person</a></p>
+                    ); ?>"><i class="fa fa-caret-left"></i> add this product again</a></p>
             </div>
             <div class="col-sm-6">
                 <a class="btn btn-success pull-right" href="<?php echo $this->url('order'); ?>">shopping cart <i class="fa fa-caret-right"></i></a>
