@@ -668,9 +668,9 @@ class Product implements InputFilterAwareInterface
      */
     public function getProductPrices()
     {
-        if (!is_object($this->productPrices)) { 
+        /*if (!is_object($this->productPrices)) { 
             $this->productPrices = new ArrayCollection();
-        }
+        }*/
         return $this->productPrices;
     }
 
