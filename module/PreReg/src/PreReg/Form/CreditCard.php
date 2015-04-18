@@ -297,7 +297,7 @@ class CreditCard extends Form
             $inputFilter = new InputFilter(); 
             $factory = new InputFactory();             
 
-            $inputFilter->add($factory->createInput([ 
+            /*$inputFilter->add($factory->createInput([ 
                 'name' => 'firstname', 
                 'required' => true, 
                 'filters' => array( 
@@ -317,9 +317,9 @@ class CreditCard extends Form
                 ), 
                 'validators' => array( 
                 ), 
-            ])); 
+            ]));*/ 
 
-            $inputFilter->add($factory->createInput([ 
+            /*$inputFilter->add($factory->createInput([ 
                 'name' => 'birthday', 
                 'required' => true, 
                 'filters' => array( 
@@ -333,9 +333,9 @@ class CreditCard extends Form
                         ),
                     ),
                 ), 
-            ])); 
+            ]));*/
 
-            $inputFilter->add($factory->createInput([ 
+            /*$inputFilter->add($factory->createInput([ 
                 'name' => 'email', 
                 'filters' => array( 
                     array('name' => 'StripTags'), 
@@ -359,7 +359,7 @@ class CreditCard extends Form
                         ), 
                     ), 
                 ), 
-            ])); 
+            ]));*/
  
             $this->inputFilter = $inputFilter; 
         } 
