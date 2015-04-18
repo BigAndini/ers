@@ -254,7 +254,9 @@ class EmailService
             $this->addTo($user);
         }
         
-        $this->setSubject('An error occurred: '.$e->getMessage());
+        $helper = new \Zend\View\Helper\ServerUrl();
+        $url = $helper->__invoke(true);
+        $this->setSubject('An error occurred on '.$url.': '.$e->getMessage());
         
         $viewModel = new ViewModel(array(
             'message' => 'An error occurred during execution',
