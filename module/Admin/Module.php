@@ -99,6 +99,13 @@ class Module
                     
                     return $form;
                 },
+                'Admin\InputFilter\User' => function($sm){
+                    $inputFilter   = new InputFilter\User();
+                    
+                    $inputFilter->setServiceLocator($sm);
+                    
+                    return $inputFilter;
+                },
             ),
         );
     }

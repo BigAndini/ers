@@ -14,7 +14,7 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface; 
 use Zend\Session\Container;
 
-class Participant implements InputFilterAwareInterface 
+class User implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
     protected $em;
@@ -184,16 +184,16 @@ class Participant implements InputFilterAwareInterface
                         'name' => 'Callback', 
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'There is already a person with this email address in your order',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'There is already a person with this email address in the system.',
                             ),
                             'callback' => function($value, $context=array()) {
-                                if(
+                                /*if(
                                     isset($context['session_id']) && 
                                     is_numeric($context['session_id']) && 
                                     $context['session_id'] != 0
                                 ) {
                                     return true;
-                                }
+                                }*/
                                 $cartContainer = new Container('cart');
                                 $participants = $cartContainer->order->getParticipants();
                                 foreach($participants as $participant) {
