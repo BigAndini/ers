@@ -307,7 +307,7 @@ class ItemVariant implements InputFilterAwareInterface
     }
 
     /**
-     * Set Item entity (many to one).
+     * Set Item entity.
      *
      * @param \Entity\Item $item
      * @return \Entity\ItemVariant
@@ -328,7 +328,53 @@ class ItemVariant implements InputFilterAwareInterface
     {
         return $this->item;
     }
+    
+    /**
+     * Set ProductVariant entity.
+     *
+     * @param \Entity\ProductVariant $productVariant
+     * @return \Entity\ProductVariantVariant
+     */
+    public function setProductVariant(ProductVariant $productVariant = null)
+    {
+        $this->productVariant = $productVariant;
 
+        return $this;
+    }
+
+    /**
+     * Get ProductVariant entity (many to one).
+     *
+     * @return \Entity\ProductVariant
+     */
+    public function getProductVariant()
+    {
+        return $this->productVariant;
+    }
+    
+    /**
+     * Set ProductVariantValue entity.
+     *
+     * @param \Entity\ProductVariantValue $productVariantValue
+     * @return \Entity\ProductVariantValueVariant
+     */
+    public function setProductVariantValue(ProductVariantValue $productVariantValue = null)
+    {
+        $this->productVariantValue = $productVariantValue;
+
+        return $this;
+    }
+
+    /**
+     * Get ProductVariantValue entity (many to one).
+     *
+     * @return \Entity\ProductVariantValue
+     */
+    public function getProductVariantValue()
+    {
+        return $this->productVariantValue;
+    }
+ 
     /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
      * 

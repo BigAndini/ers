@@ -31,6 +31,22 @@ class StatisticController extends AbstractActionController {
         $variants = $em->getRepository("ersEntity\Entity\ProductVariant")
                 ->findBy(array('type' => 'select'));
         
+        $variant_stats = array();
+        foreach($variants as $variant) {
+            #$varaint_stats[$variant->getId()] = array();
+            foreach($variant->getProductVariantValues() as $value) {
+                $repository = $em->getRepository("ersEntity\Entity\ItemVariant");
+
+                $qb = $repository->createQueryBuilder('i')
+                        ->select('count(i.id)')
+                        ->where('i.ProductVariantValue_id = :value_id')
+                        ->setParameter('value_id', $value->getId());
+                
+                $count = $qb->getQuery()->getSingleScalarResult();
+                $variant_stats[$variant->getId()][$value->getId()] = $count;
+            }
+        }
+        
         /*
          * payment types
          */
@@ -45,6 +61,7 @@ class StatisticController extends AbstractActionController {
         return new ViewModel(array(
             'orders' => $orders,
             'variants' => $variants,
+            'variant_stats' => $variant_stats,
             'paymenttypes' => $paymenttypes,
             'participants' => $users,
         ));

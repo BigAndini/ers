@@ -64,7 +64,7 @@ $this->headTitle($title);
                             <?php foreach($variant->getProductVariantValues() as $value): ?>
                                 <tr>
                                     <th><?php echo $value->getValue(); ?></th>
-                                    <td><?php echo count($value->getItemVariants()); ?></td>
+                                    <td><?php echo $variant_stats[$variant->getId()][$value->getId()]; ?></td>
                                 </tr>
                             <?php endforeach; ?>
                             </table>
