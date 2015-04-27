@@ -440,6 +440,14 @@ class OrderController extends AbstractActionController {
                     $item->setCode($code);
                     foreach($item->getItemVariants() as $variant) {
                         $variant->setItem($item);
+                        
+                        $productVariant = $em->getRepository("ersEntity\Entity\ProductVariant")
+                            ->findOneBy(array('id' => $variant->getProductVariantId()));
+                        $variant->setProductVariant($productVariant);
+                        
+                        $productVariantValue = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                            ->findOneBy(array('id' => $variant->getProductVariantValueId()));
+                        $variant->setProductVariantValue($productVariantValue);
                     }
                     foreach($item->getChildItems() as $subItemPackage) {
                         $subItem = $subItemPackage->getSubItem();
@@ -458,6 +466,14 @@ class OrderController extends AbstractActionController {
                         $subItem->setCode($code);
                         foreach($subItem->getItemVariants() as $variant) {
                             $variant->setItem($subItem);
+                            
+                            $productVariant = $em->getRepository("ersEntity\Entity\ProductVariant")
+                                ->findOneBy(array('id' => $variant->getProductVariantId()));
+                            $variant->setProductVariant($productVariant);
+                            
+                            $productVariantValue = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                                ->findOneBy(array('id' => $variant->getProductVariantValueId()));
+                            $variant->setProductVariantValue($productVariantValue);
                         }
                     }
                 }

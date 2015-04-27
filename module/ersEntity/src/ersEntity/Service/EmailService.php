@@ -258,9 +258,17 @@ class EmailService
         $url = $helper->__invoke(true);
         $this->setSubject('An error occurred on '.$url.': '.$e->getMessage());
         
+        $auth = $this->getServiceLocator()->get('zfcuser_auth_service');
+        if ($auth->hasIdentity()) {
+            $email = $auth->getIdentity()->getEmail();
+        } else {
+            $email = 'not logged in';
+        }
+        
         $viewModel = new ViewModel(array(
             'message' => 'An error occurred during execution',
             'exception' => $e,
+            'email' => $email,
         ));
         
         $viewModel->setTemplate('email/exception.phtml');
