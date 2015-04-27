@@ -18,12 +18,20 @@ class User implements InputFilterAwareInterface
 { 
     protected $inputFilter; 
     protected $em;
+    protected $sm;
     
     public function setEntityManager(\Doctrine\ORM\EntityManager $em) {
         $this->em = $em;
     }
     public function getEntityManager() {
         return $this->em;
+    }
+    
+    public function setServiceLocator($sm) {
+        $this->sm = $sm;
+    }
+    public function getServiceLocator() {
+        return $this->sm;
     }
     
     public function setInputFilter(InputFilterInterface $inputFilter) 
