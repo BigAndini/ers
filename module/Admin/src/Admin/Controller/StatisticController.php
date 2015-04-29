@@ -54,12 +54,19 @@ class StatisticController extends AbstractActionController {
                 ->findAll();
         
         /*
+         * products
+         */
+        $products = $em->getRepository("ersEntity\Entity\Product")
+                ->findBy(array('visible' => 1));
+        
+        /*
          * participants
          */
         $users = $em->getRepository("ersEntity\Entity\User")
                 ->findBy(array(), array('created' => 'DESC'));
         return new ViewModel(array(
             'orders' => $orders,
+            'products' => $products,
             'variants' => $variants,
             'variant_stats' => $variant_stats,
             'paymenttypes' => $paymenttypes,
