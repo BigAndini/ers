@@ -54,6 +54,11 @@ class ProductVariantValue implements InputFilterAwareInterface
      * @ORM\Column(name="`value`", type="string", length=45, nullable=true)
      */
     protected $value;
+    
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    protected $disabled = 0;
 
     /**
      * @ORM\Column(type="datetime")
@@ -215,6 +220,29 @@ class ProductVariantValue implements InputFilterAwareInterface
         return $this->value;
     }
 
+    /**
+     * Set the disabled of disabled.
+     *
+     * @param string $disabled
+     * @return \Entity\ProductVariantValue
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
+
+        return $this;
+    }
+
+    /**
+     * Get the disabled of disabled.
+     *
+     * @return string
+     */
+    public function getDisabled()
+    {
+        return $this->disabled;
+    }
+    
     /**
      * Set the value of updated.
      *
@@ -470,7 +498,7 @@ class ProductVariantValue implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'ProductVariant_id', 'ordering', 'value', 'updated', 'created');
+        $dataFields = array('id', 'ProductVariant_id', 'ordering', 'value', 'disabled', 'updated', 'created');
         $relationFields = array('productVariant');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -503,6 +531,6 @@ class ProductVariantValue implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'ProductVariant_id', 'ordering', 'value', 'updated', 'created');
+        return array('id', 'ProductVariant_id', 'ordering', 'value', 'disabled', 'updated', 'created');
     }
 }

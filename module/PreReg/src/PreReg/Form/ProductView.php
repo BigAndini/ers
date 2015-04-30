@@ -184,10 +184,18 @@ class ProductView extends Form
                         if(isset($defaults[\urlencode($variant->getName())]) &&  $v->getId() == $defaults[\urlencode($variant->getName())]) {
                             $selected = true;
                         }
+                        if($v->getDisabled()) {
+                            $disabled = true;
+                            $value = $v->getValue().' (sold out)';
+                        } else {
+                            $disabled = false;
+                            $value = $v->getValue();
+                        }
                         $options[] = array(
                             'value' => $v->getId(),
-                            'label' => $v->getValue(),
+                            'label' => $value,
                             'selected' => $selected,
+                            'disabled' => $disabled,
                         );
                     }
                     if($package_info[$variant->getId()]) {
