@@ -309,7 +309,7 @@ class ProductController extends AbstractActionController {
                     foreach($subProduct->getProductVariants() as $variant) {
                         $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
                             ->findOneBy(array('id' => $variant_data[$variant->getId()]));
-                        if($value) {
+                        if($value && !$value->getDisabled()) {
                             $add = true;
                             $itemVariant = new Entity\ItemVariant();
                             $itemVariant->populateFromEntity($variant, $value);

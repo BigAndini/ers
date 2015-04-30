@@ -34,8 +34,6 @@ $this->headTitle($title);
         </td>
         <td>
             <a href="<?php echo $this->url('admin/user', array('action'=>'edit', 'id' => $user->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-            <a href="<?php echo $this->url('admin/user', array('action'=>'copy', 'id' => $user->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
-            <a href="<?php echo $this->url('admin/user', array('action'=>'delete', 'id' => $user->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
         </td>
     </tr>
 <?php endforeach; ?>
