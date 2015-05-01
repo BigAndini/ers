@@ -210,6 +210,24 @@ class Module
                     
                     return $form;
                 },
+                'PreReg\Service\AgegroupService:price' => function($sm) {
+                    $agegroupService = new Service\AgegroupService();
+                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                    $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                                ->findBy(array('priceChange' => '1'));
+                    $agegroupService->setAgegroups($agegroups);
+                    
+                    return $agegroupService;
+                },
+                'PreReg\Service\AgegroupService:ticket' => function($sm) {
+                    $agegroupService = new Service\AgegroupService();
+                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                    $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                                ->findBy(array('ticketChange' => '1'));
+                    $agegroupService->setAgegroups($agegroups);
+                    
+                    return $agegroupService;
+                },
                 'PreReg\Service\ETicketService' => function($sm) {
                     $eticketService = new Service\ETicketService();
                     $eticketService->setServiceLocator($sm);

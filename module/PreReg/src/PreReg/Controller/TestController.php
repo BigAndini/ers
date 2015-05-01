@@ -277,6 +277,25 @@ class TestController extends AbstractActionController {
         return new ViewModel();
         
     }
+    public function eticketAction() {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                #->findOneBy(array('id' => '297'));
+                ->findOneBy(array('id' => '12'));
+                #->findOneBy(array('id' => '54'));
+        
+        /*$this->getServiceLocator()
+                ->setShared('DOMPDF', false);*/
+        foreach($order->getPackages() as $package) {
+            $eticketService = $this->getServiceLocator()
+                ->get('PreReg\Service\ETicketService');
+            $eticketService->setPackage($package);
+            $eticketService->generatePdf();
+        }
+    }
     public function ccErrorAction() {
         return new ViewModel();
     }

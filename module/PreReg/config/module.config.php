@@ -351,6 +351,11 @@ return array(
             'checkout_nav'  => 'PreReg\Service\CheckoutNavigationFactory',
             'profile_nav'   => 'PreReg\Service\ProfileNavigationFactory',
         ),
+        'shared' => array(
+            'DOMPDF' => false,
+            'PreReg\Service\ETicketService' => false,
+            'ViewPdfRenderer' => false,
+        ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',

@@ -73,7 +73,11 @@ $this->headTitle($title);
         </td>
     </tr>
     <?php endif; ?>
-<?php foreach ($users as $user) : ?>
+<?php foreach ($users as $user) : 
+    if($login_user && $user->getEmail() == $login_user->getEmail()):
+        continue;
+    endif;
+?>
     <tr>
         <td><?php echo $user->getFirstname()." ".$user->getSurname(); ?></td>
         <td>

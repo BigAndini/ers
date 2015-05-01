@@ -61,13 +61,8 @@ class OrderController extends AbstractActionController {
         }
         $logger->info('=== shopping cart end ===');
         
-        $em = $this
-            ->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $agegroupService = new Service\AgegroupService();
-        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
-                    ->findBy(array('priceChange' => '1'));
-        $agegroupService->setAgegroups($agegroups);
+        $agegroupService = $this->getServiceLocator()
+                ->get('PreReg\Service\AgegroupService');
         
         return new ViewModel(array(
             'order' => $cartContainer->order,

@@ -108,10 +108,8 @@ class CartController extends AbstractActionController {
                 if($participant_id != 0) {
                     $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
 
-                    $agegroupService = new Service\AgegroupService();
-                    $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
-                            ->findBy(array('priceChange' => '1'));
-                    $agegroupService->setAgegroups($agegroups);
+                    $agegroupService = $this->getServiceLocator()
+                            ->get('PreReg\Service\AgegroupService');
                     $agegroup = $agegroupService->getAgegroupByUser($participant);
                 } elseif($agegroup_id != 0) {
                     $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")

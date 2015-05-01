@@ -9,6 +9,7 @@
 namespace PreReg\Service;
 
 use ersEntity\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Zend\View\Model\ViewModel;
 use DOMPDFModule\View\Model\PdfModel;
 
@@ -21,10 +22,13 @@ class ETicketService
     protected $_package;
     protected $_participant;
     protected $_agegroup;
-    protected $_pItems;
+    protected $_personalItems;
     protected $_Items;
     
     public function __construct() {
+        $this->_agegroup = null;
+        $this->_Items = new ArrayCollection();
+        $this->_personalItems = new ArrayCollection();
     }
     
     /**
@@ -47,12 +51,23 @@ class ETicketService
     
     /**
      * set Package
+     * even if a participant can have multiple packages this service will only 
+     * process one of them. So for multiple packages the participant will get 
+     * multiple eTickets.
      * 
      * @param \ersEntity\Entity\Package $package
      */
     public function setPackage(Entity\Package $package) {
         $this->_package = $package;
         $this->setParticipant($package->getParticipant());
+        
+        foreach($package->getItems() as $item) {
+            if($item->getProduct()->getPersonalized()) {
+                $this->addPersonalItem($item);
+            } else {
+                $this->addItem($item);
+            }
+        }
     }
     
     /**
@@ -71,6 +86,13 @@ class ETicketService
      */
     public function setParticipant(Entity\User $participant) {
         $this->_participant = $participant;
+        
+        $agegroupService = $this->getServiceLocator()
+                ->get('PreReg\Service\AgegroupService:ticket');
+        $agegroup = $agegroupService->getAgegroupByUser($participant);
+        if($agegroup) {
+            $this->setAgegroup($agegroup);
+        }
     }
     
     /**
@@ -99,18 +121,81 @@ class ETicketService
     public function getAgegroup() {
         return $this->_agegroup;
     }
+    
+    /**
+     * Add Item entity to collection.
+     *
+     * @param \Entity\Item $item
+     * @return \Entity\Order
+     */
+    public function addItem(Entity\Item $item)
+    {
+        $this->_Items[] = $item;
 
+        return $this;
+    }
+
+    /**
+     * Remove Item entity from collection.
+     *
+     * @param \Entity\Item $item
+     * @return \Entity\Order
+     */
+    public function removeItem(Entity\Item $item)
+    {
+        $this->_Items->removeElement($item);
+
+        return $this;
+    }
+
+    /**
+     * Get Item entity collection.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getItems()
+    {
+        return $this->_Items;
+    }
+
+    /**
+     * Add personal Item entity to collection.
+     *
+     * @param Entity\Item $item
+     * @return Service\ETicketService
+     */
+    public function addPersonalItem(Entity\Item $item)
+    {
+        $this->_personalItems[] = $item;
+
+        return $this;
+    }
+
+    /**
+     * Remove personal Item entity from collection.
+     *
+     * @param Entity\Item $item
+     * @return Service\ETicketService
+     */
+    public function removePersonalItem(Entity\Item $item)
+    {
+        $this->_personalItems->removeElement($item);
+
+        return $this;
+    }
+
+    /**
+     * Get personal Item entity collection.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersonalItems()
+    {
+        return $this->_personalItems;
+    }
+    
     public function generatePdf() {
         $config = $this->getServiceLocator()->get('Config');
-        
-        /*switch($type) {
-            case 'personalized':
-                break;
-            case 'unpersonalized':
-                break;
-            default:
-                throw new \Exception('Cannot generate eTicket for type: '.$type);
-        }*/
         
         if(!extension_loaded('gd')) {
             throw new \Exception('PHP Extension gd needs to be loaded.');
@@ -190,15 +275,17 @@ class ETicketService
          * generate PDF
          */
         $pdfView = new ViewModel();
-        #$pdfView->setTemplate('pre-reg/test/generatepdf');
         $pdfView->setTemplate('pdf/eticket');
         $pdfView->setVariables(array(
             'name' => $name,
+            'package' => $this->getPackage(),
+            'agegroup' => $this->getAgegroup(),
             'code' => $code,
             'qrcode' => $base64_qrcode,
             'barcode' => $base64_barcode,
         ));
-        $pdfRenderer = $this->getServiceLocator()->get('ViewPdfRenderer');
+        $pdfRenderer = $this->getServiceLocator()
+                ->get('ViewPdfRenderer');
         $html = $pdfRenderer->getHtmlRenderer()->render($pdfView);
         $pdfEngine = $pdfRenderer->getEngine();
 
@@ -207,6 +294,7 @@ class ETicketService
         $pdfContent = $pdfEngine->output();
         
         $filename = $config['ERS']['name_short']."_eTicket_".preg_replace('/\ /', '_', $name);
+        $filename = $config['ERS']['name_short']."_eTicket_".$this->getPackage()->getCode()->getValue();
         
         # TODO: make ticket_path configurable
         $ticket_path = getcwd().'/data/etickets';
