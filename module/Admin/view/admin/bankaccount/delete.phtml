@@ -5,7 +5,7 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-<?php if(count($bankstatements) != 0): ?>
+<?php if(count($bankaccount->getBankStatements()) != 0): ?>
     <p>This bank account cannot be deleted since there are bank statements connected.</p>
 <?php else: ?>
 <p>Are you sure that you want to delete bank account

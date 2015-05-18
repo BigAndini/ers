@@ -65,13 +65,13 @@ class ItemPackage implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Item", inversedBy="parentItem")
+     * @ORM\ManyToOne(targetEntity="Item", inversedBy="parentItems")
      * @ORM\JoinColumn(name="Item_id", referencedColumnName="id")
      */
     protected $item;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Item", inversedBy="childItem", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Item", inversedBy="childItems", cascade={"persist"})
      * @ORM\JoinColumn(name="SubItem_id", referencedColumnName="id")
      */
     protected $subitem;

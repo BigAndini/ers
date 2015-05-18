@@ -112,14 +112,6 @@ class BankaccountController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $bankaccount = $em->getRepository("ersEntity\Entity\BankAccount")
                 ->findOneBy(array('id' => $id));
-        $productprices = $bankaccount->getProductPrices();
-        
-        $qb = $em->getRepository("ersEntity\Entity\PaymentType")->createQueryBuilder('n');
-        $paymenttypes = $qb->where(
-                $qb->expr()->orX(
-                    $qb->expr()->eq('n.activeFrom_id', $id),
-                    $qb->expr()->eq('n.activeUntil_id', $id)
-            ))->getQuery()->getResult();
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -139,7 +131,6 @@ class BankaccountController extends AbstractActionController {
         return new ViewModel(array(
             'id'    => $id,
             'bankaccount' => $bankaccount,
-            'bankstatements' => $bankstatements,
         ));
     }
     
@@ -157,33 +148,47 @@ class BankaccountController extends AbstractActionController {
         
         $form = new Form\BankAccountFormat();
         
-        # TODO: add one options array for each field to be able to preset 
-        # selected fields.
-        $options = array();
-        $options[] = array(
-            'value' => '',
-            'label' => '',
-        );
-        for($i=1; $i<=10; $i++) {
-            $options[] = array(
-                'value' => $i,
-                'label' => 'column '.$i,
-            );
-        }
-        
-        $form->get('matchKey')->setAttribute('options', $options);
-        $form->get('amount')->setAttribute('options', $options);
-        $form->get('name')->setAttribute('options', $options);
-        $form->get('date')->setAttribute('options', $options);
-        
-        $form->get('id')->setValue($bankaccount->getId());
-        
         $statements = $em->getRepository("ersEntity\Entity\BankStatement")
                 ->findBy(
                         array('BankAccount_id' => $bankaccount->getId()),
                         array(),
                         5
                         );
+        
+        $colCount = 0;
+        foreach($statements as $statement) {
+            if($colCount < count($statement->getBankStatementCols())) {
+                $colCount = count($statement->getBankStatementCols());
+            }
+        }
+        
+        $statement_format = json_decode($bankaccount->getStatementFormat());
+        
+        if(!isset($statement_format->matchKey)) {
+            $statement_format->matchKey = 0;
+        }
+        $form->get('matchKey')->setAttribute('options', 
+                $this->getColumnOptions($colCount, $statement_format->matchKey));
+        
+        if(!isset($statement_format->amount)) {
+            $statement_format->amount = 0;
+        }
+        $form->get('amount')->setAttribute('options', 
+                $this->getColumnOptions($colCount, $statement_format->amount));
+        
+        if(!isset($statement_format->name)) {
+            $statement_format->name = 0;
+        }
+        $form->get('name')->setAttribute('options', 
+                $this->getColumnOptions($colCount, $statement_format->name));
+        
+        if(!isset($statement_format->date)) {
+            $statement_format->date = 0;
+        }
+        $form->get('date')->setAttribute('options', 
+                $this->getColumnOptions($colCount, $statement_format->date));
+        
+        $form->get('id')->setValue($bankaccount->getId());
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -216,8 +221,30 @@ class BankaccountController extends AbstractActionController {
         return new ViewModel(array(
             'form' => $form,
             'bankaccount' => $bankaccount,
+            'colCount' => $colCount,
             'statements' => $statements,
         ));
+    }
+    
+    private function getColumnOptions($count, $default = null) {
+        $options = array();
+        $options[] = array(
+            'value' => '',
+            'label' => '',
+        );
+        for($i=1; $i<=$count; $i++) {
+            if($i == $default) {
+                $selected = true;
+            } else {
+                $selected = false;
+            }
+            $options[] = array(
+                'value' => $i,
+                'label' => 'column '.$i,
+                'selected' => $selected,
+            );
+        }
+        return $options;
     }
     
     public function uploadCsvAction() {
@@ -256,10 +283,10 @@ class BankaccountController extends AbstractActionController {
                     ->findOneBy(array('id' => $id));
                 
                 $file = $data['csv-upload'];
-                $logger = $this
+                /*$logger = $this
                     ->getServiceLocator()
                     ->get('Logger');
-                $logger->info($file);
+                $logger->info($file);*/
                 
                 /*
                  * open file for reading
@@ -285,12 +312,20 @@ class BankaccountController extends AbstractActionController {
                     }
                     
                     $bs = new Entity\BankStatement();
-                    $bs->setBankStatements($row_data);
+                    #$bs->setBankStatementCols($row_data);
                     $bs->setBankAccount($bankaccount);
                     $bs->setHash($hash);
                     $bs->setStatus('new');
-                    
-                    $bankaccount->addBankStatement($bs);
+                    foreach($row_data as $column => $value) {
+                        $bsc = new Entity\BankStatementCol();
+                        $bsc->setColumn(($column+1));
+                        $bsc->setValue($value);
+                        $bsc->setBankStatement($bs);
+                        $bs->addBankStatementCol($bsc);
+                    }
+                 
+                    #$bankaccount->addBankStatement($bs);
+                    $em->persist($bs);
                     $row++;
                 }
                 fclose($handle);
@@ -298,7 +333,7 @@ class BankaccountController extends AbstractActionController {
                 /*
                  * save everything to database
                  */
-                $em->persist($bankaccount);
+                #$em->persist($bankaccount);
                 $em->flush();
                 
                 return $this->redirect()->toRoute('admin/bankaccount');

@@ -8,7 +8,6 @@
 
 namespace PreReg\Service;
 
-use Zend\Session\Container;
 use ersEntity\Entity;
 
 class AgegroupService
@@ -33,20 +32,6 @@ class AgegroupService
             return $ret;
         }
         return $this->getAgegroupByDate($birthday);
-        /*foreach($this->agegroups as $agegroup) {
-            if($birthday->getTimestamp() < $agegroup->getAgegroup()->getTimestamp()) {
-                continue;
-            }
-            if($ret == null) {
-                $ret = $agegroup;
-                continue;
-            }
-            if($agegroup->getAgegroup()->getTimestamp() > $ret->getAgegroup()->getTimestamp()) {
-                $ret = $agegroup;
-            }
-        }
-        
-        return $ret;*/
     }
     
     public function getAgegroupByDate(\DateTime $date = null) {

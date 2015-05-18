@@ -54,6 +54,24 @@ class Module
                     }
                 }
             );
+
+        #$zfcAuthEvents = $sm->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
+
+        /*$zfcAuthEvents->attach( 'authenticate.success', function( $authEvent ) use( $sm ){
+            $loginService =  $sm->get( 'PreReg\Service\LoginService' );
+            $user_id = $authEvent->getIdentity();
+            $loginService->setUserId($user_id);
+            $loginService->onLogin();
+            return true;
+        });*/
+        
+        /*$zfcAuthEvents->attach( 'logout', function( $authEvent ) use( $sm ){
+            $loginService =  $sm->get( 'PreReg\Service\LoginService' );
+            #$user_id = $authEvent->getIdentity();
+            #$loginService->setUserId($user_id);
+            $loginService->onLogout();
+            return true;
+        });*/
     }
     
     public function bootstrapSession($e)
@@ -232,6 +250,11 @@ class Module
                     $eticketService = new Service\ETicketService();
                     $eticketService->setServiceLocator($sm);
                     return $eticketService;
+                },
+                'PreReg\Service\LoginService' => function($sm) {
+                    $loginService = new Service\LoginService();
+                    $loginService->setServiceLocator($sm);
+                    return $loginService;
                 },
             ),
         );

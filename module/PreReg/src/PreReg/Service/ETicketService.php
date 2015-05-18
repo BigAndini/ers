@@ -91,7 +91,9 @@ class ETicketService
                 ->get('PreReg\Service\AgegroupService:ticket');
         $agegroup = $agegroupService->getAgegroupByUser($participant);
         if($agegroup) {
-            $this->setAgegroup($agegroup);
+            $this->_agegroup = $agegroup;
+        } else {
+            $this->_agegroup = null;
         }
     }
     

@@ -1,0 +1,131 @@
+<?php 
+$order = $package->getOrder();
+
+$title = 'Package '.$package->getCode()->getValue().' ('.$package->getStatus().')';
+$this->headTitle($title);
+?>
+<a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $order->getId())); ?>">back to Order</a>
+
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<table class="table">
+    <tr>
+        <th>Product</th>
+        <th>Subproducts</th>
+        <th>Amount</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th></th>
+    </tr>
+    <?php foreach ($package->getItems() as $item):
+        #$subtotal += $item->getPrice();
+        #$sum += $item->getPrice();
+        if($item->hasParentItems()):
+            continue;
+        endif;
+        $itemPackages = $item->getChildItems();
+        ?>
+        <tr>
+            <td>
+                <span class="product-name">
+                    <?php echo $item->getName(); ?>
+                </span>
+                <span class="product-variants">
+                    <?php if(count($item->getItemVariants()) > 0): ?>
+                    (
+                    <?php 
+                    $numVariants = count($item->getItemVariants()); 
+                    $i = 0;
+                    $variants = array();
+                    ?>
+                    <?php foreach($item->getItemVariants() as $variant): 
+                        echo $variant->getName().': '.$variant->getValue(); 
+                        if(++$i != $numVariants):
+                            echo '; ';
+                        endif;
+                    endforeach; ?>
+                    )
+                    <?php endif; ?>
+                </span>
+            </td>
+            <td>
+                <?php foreach($itemPackages as $itemPackage):
+                    $subitem = $itemPackage->getSubItem(); ?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="product-name">
+                                <?php echo $subitem->getName(); ?>
+                            </span>
+                            <span class="product-variants">
+                                <?php if(count($subitem->getItemVariants()) > 0): ?>
+                                (
+                                <?php 
+                                $numVariants = count($subitem->getItemVariants()); 
+                                $i = 0;
+                                $variants = array();
+                                ?>
+                                <?php foreach($subitem->getItemVariants() as $variant): 
+                                    echo $variant->getName().': '.$variant->getValue(); 
+                                    if(++$i != $numVariants):
+                                        echo '; ';
+                                    endif;
+                                endforeach; ?>
+                                )
+                                <?php endif; ?>
+                            </span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </td>
+            <td><?php echo $item->getAmount(); ?></td>
+            <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+            <td class="text-right h3 text-nowrap">
+                <?php 
+                $statuscssclass = array(
+                    'ordered' => 'gray',
+                    'paid' => 'gray',
+                    'cancelled' => 'gray',
+                    'shipped' => 'gray',
+                );
+
+                $statuscssclass[$item->getStatus()] = 'green';
+                ?>
+                <i data-toggle="tooltip" data-placement="bottom" title="ordered" class="fa fa-shopping-cart <?php echo $statuscssclass['ordered']; ?>"></i>
+                <i data-toggle="tooltip" data-placement="bottom" title="paid" class="fa fa-money <?php echo $statuscssclass['paid']; ?>" title="paid"></i>
+                <i data-toggle="tooltip" data-placement="bottom" title="cancelled" class="fa fa-ban <?php echo $statuscssclass['cancelled']; ?>" title="cancelled"></i>
+                <i data-toggle="tooltip" data-placement="bottom" title="shipped" class="fa fa-barcode <?php echo $statuscssclass['shipped']; ?>" title="shipped"></i>
+            </td>
+            <td>
+                <div class="btn-group-vertical" role="group">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            Item
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'edit', 'id' => $item->getId())); ?>">Change Item Detail</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            Status
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'cancel', 'id' => $item->getId())); ?>">Cancelled</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'paid', 'id' => $item->getId())); ?>">Paid</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'ordered', 'id' => $item->getId())); ?>">Unpaid</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>

@@ -1,0 +1,41 @@
+<?php
+
+$title = 'Disabled Statements';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php foreach($statements as $statement): ?>
+    <div class="row">
+        <div class="col-md-1">
+            <?php echo $statement->getId(); ?>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped">
+                        <tr>
+                            <td>name</td>
+                            <td><?php echo $statement->getName()->getValue(); ?></td>
+                        </tr>
+                        <tr>
+                            <td>amount</td>
+                            <td><?php echo $statement->getAmount()->getValue(); ?></td>
+                        </tr>
+                        <tr>
+                            <td>code</td>
+                            <td><?php echo $statement->getCode()->getValue(); ?></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <?php echo $statement->getUpdated()->format('d.m.Y H:m:i') ?>
+        </div>
+        <div class="col-md-1">
+            <a href="<?php echo $this->url('admin/matching', array('action' => 'enable', 'id' => $statement->getId())); ?>"><i class="fa fa-eye"></i></a>
+        </div>
+    </div>
+    <hr>
+<?php endforeach; ?>

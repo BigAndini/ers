@@ -108,13 +108,13 @@ class Product implements InputFilterAwareInterface
     protected $items;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProductPackage", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="ProductPackage", mappedBy="subproduct")
      * @ORM\JoinColumn(name="id", referencedColumnName="Product_id")
      */
     protected $childProducts;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProductPackage", mappedBy="subproduct")
+     * @ORM\OneToMany(targetEntity="ProductPackage", mappedBy="product")
      * @ORM\JoinColumn(name="id", referencedColumnName="SubProduct_id")
      */
     protected $parentProducts;

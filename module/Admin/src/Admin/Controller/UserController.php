@@ -130,6 +130,7 @@ class UserController extends AbstractActionController {
         return new ViewModel(array(
             'id' => $id,
             'form' => $form,
+            'breadcrumb' => $breadcrumb,
         ));
     }
 

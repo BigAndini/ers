@@ -12,7 +12,7 @@ return array(
         'invokables' => array(
             'PreReg\Controller\Order'       => 'PreReg\Controller\OrderController',
             'PreReg\Controller\Cart'        => 'PreReg\Controller\CartController',
-            'PreReg\Controller\Package'     => 'PreReg\Controller\PackageController',
+            'PreReg\Contsroller\Package'     => 'PreReg\Controller\PackageController',
             'PreReg\Controller\Participant' => 'PreReg\Controller\ParticipantController',
             'PreReg\Controller\Buyer'       => 'PreReg\Controller\BuyerController',
             'PreReg\Controller\Product'     => 'PreReg\Controller\ProductController',
@@ -353,8 +353,9 @@ return array(
         ),
         'shared' => array(
             'DOMPDF' => false,
-            'PreReg\Service\ETicketService' => false,
             'ViewPdfRenderer' => false,
+            'PreReg\Service\ETicketService' => false,
+            'PreReg\Service\AgegroupService:ticket' => false,
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',

@@ -1,0 +1,52 @@
+<?php
+
+$title = 'Matching ('.count($matchings).')';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php foreach($matchings as $matching): ?>
+    <div class="row">
+        <div class="col-md-5">
+            <?php $order = $matching->getOrder(); ?>
+            <div class="row">
+                <div class="col-md-1"><?php echo $matching->getOrderId(); ?></div>
+                <div class="col-md-9">
+                    <?php 
+                    $buyer = $order->getBuyer();
+                    echo $order->getCode()->getValue().' - '.$buyer->getFirstname().' '.$buyer->getSurname(); 
+                    ?><br>
+                    <?php 
+                    echo '('.$order->getPaymentType()->getName().') ';
+                    echo $order->getUpdated()->format('d.m.Y H:m:i');
+                    ?>
+                </div>
+                <div class="col-md-2"><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped">
+                        <tr>
+                            <td>name</td>
+                            <td><?php echo $matching->getBankStatement()->getName()->getValue(); ?></td>
+                        </tr>
+                        <tr>
+                            <td>amount</td>
+                            <td><?php echo $matching->getBankStatement()->getAmount()->getValue(); ?></td>
+                        </tr>
+                        <tr>
+                            <td>code</td>
+                            <td><?php echo $matching->getBankStatement()->getCode()->getValue(); ?></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <a href="<?php echo $this->url('admin/matching', array('action' => 'unlink', 'id' => $matching->getId())); ?>"><i class="fa fa-unlink"></i></a>
+        </div>
+    </div>
+    <hr>
+<?php endforeach; ?>

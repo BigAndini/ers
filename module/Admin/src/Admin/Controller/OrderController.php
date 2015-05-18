@@ -30,6 +30,151 @@ class OrderController extends AbstractActionController {
         ));
     }
     
+    public function searchAction() {
+        $logger = $this
+            ->getServiceLocator()
+            ->get('Logger');
+        
+        $form = new Form\SearchOrder();
+        
+        $result = array();
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $inputFilter = new InputFilter\SearchOrder();
+            $form->setInputFilter($inputFilter->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                /*
+                 * - use "" (quotes) to search exakt strings with spaces
+                 * - use - (minus) to exclude a string
+                 * - use space as and operator
+                 * - use (a,b,c) as or operator
+                 */
+                $searchText = $data['q'];
+                
+                $matches = array();
+                preg_match('/"[^"]+"/', $searchText, $matches);
+                $searchElements = preg_replace('/"/', '', $matches);
+                
+                $logger->info('found matches:');
+                $logger->info($matches);
+                $searchArray = split(' ', $searchText);
+                $exclude = false;
+                
+                $excludeElements = array();
+                foreach($searchArray as $element) {
+                    if(preg_match('/^"/', $element)) {
+                        $exclude = true;
+                    }
+                    if(!$exclude) {
+                        if(preg_match('/^-/', $element)) {
+                            $excludeElements[] = preg_replace('/^-/','',$element);
+                        } else {
+                            $searchElements[] = $element;
+                        }
+                    }
+                    if(preg_match('/"$/', $element)) {
+                        $exclude = false;
+                    }
+                }
+                
+                $logger->info('search elements:');
+                $logger->info($searchElements);
+                
+                $logger->info('exclude elements:');
+                $logger->info($excludeElements);
+                
+                $searchString = array(
+                    
+                );
+                
+                error_log('searchText: '.$searchText);
+                
+                $em = $this
+                    ->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                
+                $result = array();
+                
+                /*
+                 * search code
+                 */
+                $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('o');
+                $qb->join('o.code', 'c');
+                $i = 0;
+                foreach($searchElements as $element) {
+                    if($i == 0) {
+                        $qb->where('c.value LIKE :param'.$i);
+                    } else {
+                        $qb->orWhere('c.value LIKE :param'.$i);
+                    }
+                    error_log('element: '.$element);
+                    $qb->setParameter('param'.$i, $element);
+                    $i++;
+                }
+                
+                $check_first = $i;
+                foreach($excludeElements as $elemnt) {
+                    if($i == $check_first) {
+                        $qb->where('c.value NOT LIKE :param'.$i);
+                    } else {
+                        $qb->orWhere('c.value LIKE :param'.$i);
+                    }
+                    $qb->setParameter('param'.$i, $element);
+                    $i++;
+                }
+                
+                $result = array_merge($result, $qb->getQuery()->getResult());
+                
+                /*
+                 * search firstname, surname, email, birthdate
+                 * of buyer and participant
+                 */
+                $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('o');
+                $qb->join('o.buyer', 'b');
+                $qb->join('o.packages', 'p');
+                $qb->join('p.participant', 'u');
+                $i = 0;
+                foreach($searchElements as $element) {
+                    $b_expr = $qb->expr()->lower($qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname')));
+                    $u_expr = $qb->expr()->lower($qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.surname')));
+                    if($i == 0) {
+                        /*$qb->add('where', $qb->expr()->orX(
+                            $qb->expr()->eq('u.id', '?1'),
+                            $qb->expr()->like('u.nickname', '?2')
+                        ));*/
+                        #$qb->setParameter(1, 100);
+                        $qb->where($qb->expr()->like($b_expr, ':param'.$i));
+                        #$qb->where('LOWER(CONCAT(b.firstname, " ",b.surname)) LIKE :param'.$i);
+                        #$qb->orWhere('LOWER(CONCAT(u.firstname, " ",u.surname)) LIKE :param'.$i);
+                    } else {
+                        $qb->orWhere($qb->expr()->like($b_expr, ':param'.$i));
+                        
+                        #$qb->orWhere('LOWER(CONCAT(b.firstname, " ",b.surname)) LIKE :param'.$i);
+                        #$qb->orWhere('LOWER(CONCAT(u.firstname, " ",u.surname)) LIKE :param'.$i);
+                    }
+                    $qb->orWhere($qb->expr()->like($u_expr, ':param'.$i));
+                    $qb->setParameter('param'.$i, '%'.strtolower($element).'%');
+                    $i++;
+                }
+                error_log($qb->getQuery()->getSql());
+                $result = array_merge($result, $qb->getQuery()->getResult());
+                
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'result' => $result,
+        ));
+    }
+    
     public function detailAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
@@ -46,6 +191,9 @@ class OrderController extends AbstractActionController {
         
         $forrest = new Service\BreadcrumbFactory();
         $forrest->set('order', 'admin/order', array('action' => 'detail', 'id' => $id));
+        $forrest->set('user', 'admin/order', array('action' => 'detail', 'id' => $id));
+        $forrest->set('package', 'admin/order', array('action' => 'detail', 'id' => $id));
+        $forrest->set('item', 'admin/order', array('action' => 'detail', 'id' => $id));
         
         return new ViewModel(array(
             'order' => $order,
@@ -177,8 +325,6 @@ class OrderController extends AbstractActionController {
                 $breadcrumb = $forrest->get('order');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
-
-            return $this->redirect()->toRoute('admin/agegroup');
         }
         
         return new ViewModel(array(
@@ -186,6 +332,7 @@ class OrderController extends AbstractActionController {
             'breadcrumb' => $forrest->get('order'),
         ));
     }
+    
     public function sendEticketAction() {
         $logger = $this
             ->getServiceLocator()
@@ -207,7 +354,6 @@ class OrderController extends AbstractActionController {
             $forrest->set('order', 'admin/order');
         }
         
-        $logger->info('in eticket send');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $ret = $request->getPost('del', 'No');
@@ -233,6 +379,175 @@ class OrderController extends AbstractActionController {
             }
 
             return $this->redirect()->toRoute('admin/agegroup');
+        }
+        
+        return new ViewModel(array(
+            'order' => $order,
+            'breadcrumb' => $forrest->get('order'),
+        ));
+    }
+    
+    public function changePackageAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $package = $em->getRepository("ersEntity\Entity\Package")
+                ->findOneBy(array('id' => $id));
+        
+        return new ViewModel(array(
+            'package' => $package,
+        ));
+    }
+    
+    public function changeItemAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $item = $em->getRepository("ersEntity\Entity\Item")
+                ->findOneBy(array('id' => $id));
+        
+        return new ViewModel(array(
+            'item' => $item,
+        ));
+    }
+    
+    public function cancelAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('id' => $id));
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('order')) {
+            $forrest->set('order', 'admin/order');
+        }
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ret = $request->getPost('del', 'No');
+
+            if ($ret == 'Yes') {
+                $id = (int) $request->getPost('id');
+                
+                $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $id));
+                
+                $order->setPaymentStatus('cancelled');
+                $em->persist($order);
+                
+                foreach($order->getItems() as $item) {
+                    $item->setStatus('cancelled');
+                    $em->persist($item);
+                }
+                
+                $em->flush();
+                
+                $breadcrumb = $forrest->get('order');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+        }
+        
+        return new ViewModel(array(
+            'order' => $order,
+            'breadcrumb' => $forrest->get('order'),
+        ));
+    }
+    
+    public function paidAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('id' => $id));
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('order')) {
+            $forrest->set('order', 'admin/order');
+        }
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ret = $request->getPost('del', 'No');
+
+            if ($ret == 'Yes') {
+                $id = (int) $request->getPost('id');
+                
+                $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $id));
+                
+                $order->setPaymentStatus('paid');
+                $em->persist($order);
+                
+                foreach($order->getItems() as $item) {
+                    $item->setStatus('paid');
+                    $em->persist($item);
+                }
+                
+                $em->flush();
+                
+                $breadcrumb = $forrest->get('order');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+        }
+        
+        return new ViewModel(array(
+            'order' => $order,
+            'breadcrumb' => $forrest->get('order'),
+        ));
+    }
+    
+    public function unpaidAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('id' => $id));
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('order')) {
+            $forrest->set('order', 'admin/order');
+        }
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ret = $request->getPost('del', 'No');
+
+            if ($ret == 'Yes') {
+                $id = (int) $request->getPost('id');
+                
+                $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $id));
+                
+                $order->setPaymentStatus('unpaid');
+                $em->persist($order);
+                
+                foreach($order->getItems() as $item) {
+                    $item->setStatus('ordered');
+                    $em->persist($item);
+                }
+                
+                $em->flush();
+                
+                $breadcrumb = $forrest->get('order');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
         }
         
         return new ViewModel(array(

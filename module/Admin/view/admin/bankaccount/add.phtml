@@ -12,6 +12,7 @@ $form->prepare();
 echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('id'));
 echo $this->formRow($form->get('name'));
+echo $this->formRow($form->get('virtual'));
 echo $this->formRow($form->get('bank'));
 echo $this->formRow($form->get('iban'));
 echo $this->formRow($form->get('bic'));

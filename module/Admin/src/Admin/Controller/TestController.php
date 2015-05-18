@@ -113,4 +113,64 @@ class TestController extends AbstractActionController {
     public function exceptionAction() {
         throw new \Exception('This is a test exception');
     }
+    
+    public function paidOrderSumAction() {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $orders = $em->getRepository("ersEntity\Entity\Order")
+                ->findBy(array('payment_status' => 'paid'));
+        
+        $orderSum = 0;
+        $paymentSum = 0;
+        foreach($orders as $order) {
+            $orderSum += (float) $order->getPrice();
+            $paymentSum += (float) $order->getSum();
+        }
+        
+        return new ViewModel(array(
+            'ordersSum' => $orderSum,
+            'paymentSum' => $paymentSum,
+        ));
+    }
+    
+    public function orderSaveAction() {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $orders = $em->getRepository("ersEntity\Entity\Order")
+                ->findBy(array('total_sum' => 0));
+        error_log('found '.count($orders).' orders');
+        $count = 0;
+        foreach($orders as $order) {
+            #error_log($order->getId().' '.$order->getSum().' '.$order->getPrice());
+            $order->setTotalSum($order->getSum());
+            $order->setOrderSum($order->getPrice());
+            $em->persist($order);
+            if($count >= 10) {
+                $em->flush();
+                $count = 0;
+            }
+            $count++;
+        }
+    }
+    
+    public function doctrineAction() {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('id' => 1));
+        error_log('packages: '.count($order->getPackages()));
+        
+        $user = $em->getRepository("ersEntity\Entity\User")
+                ->findOneBy(array('id' => 1));
+        error_log($user->getFirstname().' '.$user->getSurname());
+        error_log('country: '.$user->getCountry()->getName());
+        
+        return new ViewModel(array());
+    }
 }

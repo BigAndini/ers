@@ -1,0 +1,38 @@
+<div class="panel-body">
+    <?php if(count($statements) <= 0): ?>
+    <div class="alert alert-warning">
+        <h3>No bank statements could be found.</h3>
+    </div>
+    <?php else: ?>
+    <div class="panel-body">
+        <div class="panel-group" id="statement-accordion">
+            <?php foreach($statements as $statement): ?>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <h4 class="panel-title">
+                                <input type="checkbox" name="statements[]" value="<?php echo $statement->getId(); ?>" />
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#statement-accordion" href="#statement<?php echo $statement->getId(); ?>">
+                                    <?php 
+                                        echo $statement->getAmount()->getValue().' '.$statement->getName()->getValue();
+                                    ?>
+                                </a>
+                                </h4>
+                            </div>
+                            <div class="col-md-2 text-right">
+                                <a href="<?php echo $this->url('admin/matching', array('action' => 'disable', 'id' => $statement->getId())); ?>"><i class="fa fa-eye-slash"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="statement<?php echo $statement->getId(); ?>" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <p style="position: relative; margin: .5em auto; width: 20px;"><i class="fa-li fa fa-spinner fa-spin"></i></p>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+</div>

@@ -10,54 +10,82 @@ $this->headTitle($title);
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading">Orders</div>
-            <div class="panel-body">
-                <?php 
-                $totalsum = 0;
-                $transfersum = 0;
-                $paymentfees = 0;
-                foreach($orders as $order):
-                    $totalsum += $order->getPrice();
-                    $transfersum += $order->getSum();
-                    $paymentfees += $order->getPaymentFees();
-                endforeach;
-                ?>
-                <table class="table table-striped">
-                    <tbody>
-                        <tr>
-                            <th>count</th>
-                            <th>total sum</th>
-                            <th>payment fees</th>
-                        </tr>
-                        <tr>
-                            <td><?php echo count($orders); ?></td>
-                            <td><?php echo $this->currencyFormat($totalsum, 'EUR', null, 'de_DE'); ?></td>
-                            <td><?php echo $this->currencyFormat($paymentfees, 'EUR', null, 'de_DE'); ?></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <?php 
+            $totalsum = 0;
+            $transfersum = 0;
+            $paymentfees = 0;
+            foreach($orders as $order):
+                $totalsum += $order->getPrice();
+                $transfersum += $order->getSum();
+                $paymentfees += $order->getPaymentFees();
+            endforeach;
+            ?>
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th>count</th>
+                        <th>total sum</th>
+                        <th>payment fees</th>
+                    </tr>
+                    <tr>
+                        <td><?php echo count($orders); ?></td>
+                        <td><?php echo $this->currencyFormat($totalsum, 'EUR', null, 'de_DE'); ?></td>
+                        <td><?php echo $this->currencyFormat($paymentfees, 'EUR', null, 'de_DE'); ?></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Bank Account</div>
+            <table class="table table-striped">
+            <?php foreach($bankaccounts as $bankaccount): ?>
+                <tr>
+                    <td><?php echo $bankaccount->getName(); ?></td>
+                    <td><?php echo $this->currencyFormat($bankaccount->getAmount(), 'EUR', null, 'de_DE'); ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </table>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">Participants</div>
-            <div class="panel-body">
-                <dl>
-                    <dt>count</dt>
-                    <dd><?php echo count($participants); ?></dd>
-                </dl>
-            </div>
+            <?php
+            $participant_stats = array();
+            foreach($participants as $participant):
+                $agegroup = $agegroupService->getAgegroupByUser($participant);
+                if($agegroup):
+                    $key = $agegroup->getName();
+                else:
+                    $key = 'adult';
+                endif;
+                if(!isset($participant_stats[$key])):
+                    $participant_stats[$key] = 0;
+                endif;
+                $participant_stats[$key]++;
+            endforeach;
+            ?>
+            <table class="table table-striped">
+                <tr>
+                    <th>all</th>
+                    <td><?php echo count($participants); ?></td>
+                </tr>
+                <?php foreach($participant_stats as $key => $value): ?>
+                <tr>
+                    <th><?php echo $key; ?></th>
+                    <td><?php echo $value; ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </table>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">Products</div>
-            <div class="panel-body">
-                <table class="table table-striped">
-                    <?php foreach($products as $product): ?>
-                    <tr>
-                        <th><?php echo $product->getName(); ?></th>
-                        <td><?php echo count($product->getItems()); ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                </table>
-            </div>
+            <table class="table table-striped">
+                <?php foreach($products as $product): ?>
+                <tr>
+                    <th><?php echo $product->getName(); ?></th>
+                    <td><?php echo count($product->getItems()); ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </table>
         </div>
     </div>
     <div class="col-md-4">

@@ -94,7 +94,7 @@ class ProductVariant implements InputFilterAwareInterface
     protected $product;
     
     /**
-     * @ORM\OneToMany(targetEntity="ItemVariant", mappedBy="productVariants")
+     * @ORM\OneToMany(targetEntity="ItemVariant", mappedBy="productVariant")
      * @ORM\JoinColumn(name="id", referencedColumnName="ProductVariant_id")
      * @ORM\OrderBy({"value" = "ASC"})
      */

@@ -20,6 +20,13 @@ body {
 
 /* CSS colors */
 
+.gray, .grey {
+    color: #aaa;
+}
+.gray-bg, .grey-bg {
+    background: #aaa;
+}
+
 .green {
     color: #85b32a;
 }
@@ -52,9 +59,9 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
-.form-element {
+/*.form-element {
     width: 250px;
-}
+}*/
 
 .product-view {
     border: 1px solid #aaa;
@@ -524,4 +531,9 @@ a:hover, a:focus {
     display: -webkit-flex;
     display: flex;
     flex:1 1 auto;
+}
+
+.panel-matching {
+    overflow: auto;
+    height: 500px;
 }

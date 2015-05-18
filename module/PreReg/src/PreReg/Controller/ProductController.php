@@ -182,7 +182,6 @@ class ProductController extends AbstractActionController {
         /*
          * Here starts the cart add Action
          */
-        
         $logger = $this
             ->getServiceLocator()
             ->get('Logger');
@@ -421,7 +420,7 @@ class ProductController extends AbstractActionController {
     private function getPersonOptions(\ersEntity\Entity\Product $product, $participant_id=null) {
         $cartContainer = new Container('cart');
         $options = array();
-        foreach($cartContainer->order->getParticipants() as $k => $v) {
+        foreach($cartContainer->order->getParticipants() as $v) {
             $disabled = false;
             if($v->getFirstname() == '') {
                 $disabled = true;
@@ -433,11 +432,11 @@ class ProductController extends AbstractActionController {
                 $disabled = true;
             }
             $selected = false;
-            if($k == $participant_id) {
+            if($v->getSessionId() == $participant_id) {
                 $selected = true;
             }
             $options[] = array(
-                'value' => $k,
+                'value' => $v->getSessionId(),
                 'label' => $v->getFirstname().' '.$v->getSurname(),
                 'selected' => $selected,
                 'disabled' => $disabled,

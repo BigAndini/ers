@@ -25,7 +25,7 @@ $settings = array(
      * Accepted values: the number of seconds the user should be remembered
      */
     //'cookie_expire' => 2592000,
-    #'cookie_expire' => 2592000,
+    'cookie_expire' => 604800,
     
     /**
      * Remember me cookie domain

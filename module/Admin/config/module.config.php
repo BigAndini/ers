@@ -24,10 +24,13 @@ return array(
             'Admin\Controller\User'                 => 'Admin\Controller\UserController',
             'Admin\Controller\Role'                 => 'Admin\Controller\RoleController',
             'Admin\Controller\Order'                => 'Admin\Controller\OrderController',
+            'Admin\Controller\Package'              => 'Admin\Controller\PackageController',
+            'Admin\Controller\Item'                 => 'Admin\Controller\ItemController',
             'Admin\Controller\Bankaccount'          => 'Admin\Controller\BankaccountController',
             'Admin\Controller\Country'              => 'Admin\Controller\CountryController',
             'Admin\Controller\Cron'                 => 'Admin\Controller\CronController',
             'Admin\Controller\Matching'             => 'Admin\Controller\MatchingController',
+            'Admin\Controller\Ajax'                 => 'Admin\Controller\AjaxController',
             'Admin\Controller\Test'                 => 'Admin\Controller\TestController',
         ),
     ),
@@ -42,7 +45,25 @@ return array(
             'statistic' => array(
                 'label' => 'Stats',
                 'route' => 'admin/statistic',
-                'resource'  => 'controller/Admin\Controller\Statistic',
+                'pages' => array(
+                    'overview' => array(
+                        'label' => 'Overview',
+                        'route' => 'admin/statistic',
+                        'resource'  => 'controller/Admin\Controller\Statistic',
+                    ),
+                    'order' => array(
+                        'label' => 'Oders',
+                        'route' => 'admin/statistic',
+                        'action' => 'orders',
+                        'resource'  => 'controller/Admin\Controller\Statistic',
+                    ),
+                    'bankaccount' => array(
+                        'label' => 'Bankaccounts',
+                        'route' => 'admin/statistic',
+                        'action' => 'bankaccounts',
+                        'resource'  => 'controller/Admin\Controller\Statistic',
+                    ),
+                ),
             ),
             'shop' => array(
                 'label' => 'Shop',
@@ -106,12 +127,31 @@ return array(
             'order' => array(
                 'label' => 'Order',
                 'route' => 'admin/order',
-                'resource'  => 'controller/Admin\Controller\Order',
+                #'resource'  => 'controller/Admin\Controller\Order',
+                'pages' => array(
+                    'user' => array(
+                        'label' => 'Overview',
+                        'route' => 'admin/order',
+                        'resource'  => 'controller/Admin\Controller\Order',
+                    ),
+                    'role' => array(
+                        'label' => 'Search',
+                        'route' => 'admin/order',
+                        'action' => 'search',
+                        'resource'  => 'controller/Admin\Controller\Order',
+                    ),
+                ),
             ),
             'matching' => array(
                 'label' => 'Matching',
                 'route' => 'admin',
                 'pages' => array(
+                    'overview' => array(
+                        'label' => 'Overview',
+                        'route' => 'admin/matching',
+                        'action' => 'index',
+                        'resource'  => 'controller/Admin\Controller\Matching',
+                    ),
                     'bankaccount' => array(
                         'label' => 'Bank accounts',
                         'route' => 'admin/bankaccount',
@@ -123,11 +163,16 @@ return array(
                         'action' => 'upload-csv',
                         'resource'  => 'controller/Admin\Controller\Bankaccount',
                     ),
-                    
                     'manual' => array(
                         'label' => 'Manual Matching',
                         'route' => 'admin/matching',
                         'action' => 'manual',
+                        'resource'  => 'controller/Admin\Controller\Matching',
+                    ),
+                    'disabled' => array(
+                        'label' => 'Disabled Statements',
+                        'route' => 'admin/matching',
+                        'action' => 'disabled',
                         'resource'  => 'controller/Admin\Controller\Matching',
                     ),
                 ),
@@ -177,6 +222,15 @@ return array(
                         )
                     )
                 ),
+                'update-orders' => array(
+                    'options' => array(
+                        'route'    => 'update-orders',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'update-orders'
+                        )
+                    )
+                ),
                 'auto-matching' => array(
                     'options' => array(
                         'route'    => 'auto-matching',
@@ -186,6 +240,16 @@ return array(
                         )
                     )
                 ),
+                'generate-etickets' => array(
+                    'options' => array(
+                        'route'    => 'generate-etickets',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'generate-etickets'
+                        )
+                    )
+                ),
+                
                 'gen-user-list' => array(
                     'options' => array(
                         'route'    => 'gen-user-list',
@@ -268,6 +332,20 @@ return array(
                             ),
                         ),
                     ),
+                    'matching' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/matching[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Matching',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
                     'deadline' => array(
                         'type' => 'segment',
                         'options' => array(
@@ -306,6 +384,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\PaymentType',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'ajax' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/ajax[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Ajax',
                                 'action' => 'index',
                             ),
                         ),
@@ -362,6 +454,34 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Order',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'package' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/package[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Package',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'item' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/item[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Item',
                                 'action' => 'index',
                             ),
                         ),
@@ -482,6 +602,9 @@ return array(
     'view_manager' => array(
         'template_path_stack' => array(
             'admin' => __DIR__ . '/../view',
+        ),
+        'strategies' => array(
+            'ViewJsonStrategy',
         ),
     ),
 );

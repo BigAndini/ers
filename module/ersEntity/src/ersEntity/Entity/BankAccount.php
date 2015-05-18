@@ -51,6 +51,11 @@ class BankAccount implements InputFilterAwareInterface
     protected $bank;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $virtual;
+    
+    /**
      * @ORM\Column(type="string", length=45, nullable=true)
      */
     protected $iban;
@@ -191,6 +196,29 @@ class BankAccount implements InputFilterAwareInterface
         return $this->bank;
     }
 
+    /**
+     * Set the value of virtual.
+     *
+     * @param string $virtual
+     * @return \Entity\VirtualAccount
+     */
+    public function setVirtual($virtual)
+    {
+        $this->virtual = $virtual;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of virtual.
+     *
+     * @return string
+     */
+    public function getVirtual()
+    {
+        return $this->virtual;
+    }
+    
     /**
      * Set the value of iban.
      *
@@ -386,6 +414,19 @@ class BankAccount implements InputFilterAwareInterface
     public function getBankStatements()
     {
         return $this->bankStatements;
+    }
+    
+    /**
+     * 
+     * @return float
+     */
+    public function getAmount() {
+        $statement_format  = json_decode($this->getStatementFormat());
+        $amount = (float) 0;
+        foreach($this->getBankStatements() as $statement) {
+            $amount += (float) $statement->getBankStatementColByNumber($statement_format->amount)->getValue();
+        }
+        return $amount;
     }
 
     /**

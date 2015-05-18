@@ -576,7 +576,7 @@ class OrderController extends AbstractActionController {
         
         $emailService->setHtmlMessage($html);
         
-        $terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v3.pdf';
+        $terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v4.pdf';
         $terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
         $emailService->addAttachment($terms1);
         $emailService->addAttachment($terms2);

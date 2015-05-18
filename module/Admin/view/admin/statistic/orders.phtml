@@ -1,0 +1,24 @@
+<?php
+/* pizza would be really nice */
+
+$title = 'ERS Statistics: Orders';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<table class="table table-striped">
+    <tr>
+        <th>Status</th>
+        <th>Count</th>
+        <th class="text-right">Sum</th>
+    </tr>
+    <?php foreach($order_stats as $stat): ?>
+    <tr>
+        <td><?php echo $stat['payment_status']; ?></td>
+        <td><?php echo $stat[1]; ?></td>
+        <td class="text-right">
+            <?php echo $this->currencyFormat($stat[2], 'EUR', null, 'de_DE'); ?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>

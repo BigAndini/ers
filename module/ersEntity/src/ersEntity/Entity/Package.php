@@ -474,6 +474,28 @@ class Package implements InputFilterAwareInterface
     {
         return $this->code;
     }
+    
+    /**
+     * check if all items in this package have the same status and return the 
+     * status.
+     * 
+     * @return string
+     */
+    public function getStatus() {
+        $status = array();
+        foreach($this->getItems() as $item) {
+            if(isset($status[$item->getStatus()])) {
+                $status[$item->getStatus()]++;
+            } else {
+                $status[$item->getStatus()] = 1;
+            }
+        }
+        if(count($status) == 1) {
+            return key($status);
+        } else {
+            return 'undefined';
+        }
+    }
 
     /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
@@ -603,6 +625,16 @@ class Package implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'session_id', 'Order_id', 'Participant_id', 'Code_id', 'participant', 'items', 'updated', 'created');
+        return array(
+            'id', 
+            'session_id', 
+            'Order_id', 
+            'Participant_id', 
+            'Code_id', 
+            'participant', 
+            'items', 
+            'updated', 
+            'created'
+        );
     }
 }

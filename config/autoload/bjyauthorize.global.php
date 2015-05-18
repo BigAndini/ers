@@ -162,12 +162,17 @@ return [
                 ['controller' => 'PreReg\Controller\Profile', 'action' => 'participant',      'roles' => ['supradm']],
                 ['controller' => 'PreReg\Controller\Profile',                                 'roles' => ['user']],
                 
+                /* Onsite */
+                ['controller' => 'OnsiteReg\Controller\Index',                'roles' => ['supradm']],
+                
                 /* Admin */
                 #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Test',                'roles' => ['Admin_Test',                      'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Index',               'roles' => ['Admin_Index',     'preregcoordinator', 'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Statistic',           'roles' => ['Admin_Statistic', 'preregcoordinator', 'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Order',               'roles' => ['Admin_Order',     'preregcoordinator', 'admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Package',             'roles' => ['Admin_Package',   'preregcoordinator', 'admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Item',                'roles' => ['Admin_Item',      'preregcoordinator', 'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\PriceLimit',          'roles' => ['Admin_PriceLimit',                'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Product',             'roles' => ['Admin_Product',                   'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\ProductPackage',      'roles' => ['Admin_ProductPackage',            'admin', 'supradm']],
@@ -183,6 +188,8 @@ return [
                 ['controller' => 'Admin\Controller\Role',                'roles' => ['Admin_Role',                      'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Country',             'roles' => ['Admin_Country',                   'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Bankaccount',         'roles' => ['Admin_Bankaccount',               'admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Matching',            'roles' => ['Admin_Matching',                  'admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Ajax',                'roles' => ['Admin_Matching',                  'admin', 'supradm']],
                 
                 /* Cron */
                 ['controller' => 'Admin\Controller\Cron',  'roles' => ['guest']],

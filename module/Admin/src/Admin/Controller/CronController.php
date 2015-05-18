@@ -70,7 +70,7 @@ class CronController extends AbstractActionController {
     public function autoMatchingAction() {
         /*
          * Status of BankStatements
-         * 1. unchecked
+         * 1. new
          * 2. notfound
          * 3. matched
          * 4. disabled
@@ -92,12 +92,12 @@ class CronController extends AbstractActionController {
             $bankaccount = $statement->getBankAccount();
             $statement_format = json_decode($bankaccount->getStatementFormat());
             
-            $matchKey_func = 'getBankStatementcol'.$statement_format->matchKey;
+            /*$matchKey_func = 'getBankStatementcol'.$statement_format->matchKey;
             $name_func = 'getBankStatementcol'.$statement_format->name;
             $amount_func = 'getBankStatementcol'.$statement_format->amount;
-            $date_func = 'getBankStatementcol'.$statement_format->date;
+            $date_func = 'getBankStatementcol'.$statement_format->date;*/
             
-            $ret = $this->findCode($statement->$matchKey_func());
+            $ret = $this->findCode($statement->getBankStatementColByNumber($statement_format->matchKey)->getValue());
             if(is_array($ret)) {
                 #echo "found ".count($ret)." codes for statement: ".$statement->getId().PHP_EOL;
                 $found = false;
@@ -110,7 +110,7 @@ class CronController extends AbstractActionController {
                         $found = true;
                         $order = $em->getRepository("ersEntity\Entity\Order")
                             ->findOneBy(array('Code_id' => $order_code->getId()));
-                        $statement_amount = (float) $statement->$amount_func();
+                        $statement_amount = (float) $statement->getBankStatementColByNumber($statement_format->amount)->getValue();
                         $order_amount = (float) $order->getSum();
                         #echo 'order: '.$order_amount.' bank statement: '.$statement_amount.PHP_EOL;
                         $paid = false;
@@ -127,16 +127,31 @@ class CronController extends AbstractActionController {
                             $orderStatus->setOrder($order);
                             $orderStatus->setValue('paid');
                             $order->addOrderStatus($orderStatus);
+                            $order->setPaymentStatus('paid');
+                            
+                            $match = new Entity\Match();
+                            $match->setBankStatement($statement);
+                            $match->setOrder($order);
+                            $match->setComment('matched by auto-matching');
+                            
+                            /*
+                             * set andi as admin for auto-matching
+                             */
+                            $admin = $em->getRepository("ersEntity\Entity\User")
+                                ->findOneBy(array('id' => 1));
+                            $match->setUser($admin);
+                            
+                            $em->persist($match);
                             $em->persist($order);
                             $em->persist($statement);
-                            $em->persist($orderStatus);
+                            #$em->persist($orderStatus);
                             $em->flush();
                         }
                     }
                 }
                 if(!$found) {
                     echo "ERROR: Unable to find any code in system.".PHP_EOL;
-                    echo $statement->$matchKey_func().PHP_EOL;
+                    echo $statement->getBankStatementColByNumber($statement_format->matchKey)->getValue().PHP_EOL;
                 }
             }
         }
@@ -202,5 +217,70 @@ class CronController extends AbstractActionController {
             fputcsv($fp, $tmp);
         }
         fclose($fp);
+    }
+    
+    public function generateEticketsAction() {
+        $time_start = microtime();
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        #$order = $em->getRepository("ersEntity\Entity\Order")
+                #->findOneBy(array('id' => '297'));
+                #->findOneBy(array('id' => '12'));
+                #->findOneBy(array('id' => '54'));
+        
+        $orders = $em->getRepository("ersEntity\Entity\Order")
+                ->findAll();
+        $count = 0;
+        $eticketService = $this->getServiceLocator()
+            ->get('PreReg\Service\ETicketService');
+        
+        foreach($orders as $order) {
+            echo "You are using " . intval(memory_get_usage() / 1024 / 1024) ." MB". PHP_EOL;
+            foreach($order->getPackages() as $package) {
+                $eticketService->setPackage($package);
+                $eticketService->generatePdf();
+                $count++;
+                $em->detach($package);
+                #$em->flush();
+                #$em->clear();
+            }
+            $em->detach($order);
+        }
+        echo "generated ".$count." etickets in ".(microtime()-$time_start).' $unit'.PHP_EOL;
+    }
+    
+    public function updateOrdersAction() {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $orders = $em->getRepository("ersEntity\Entity\Order")
+                ->findAll();
+                #->findBy(array('total_sum' => 0));
+        #error_log('found '.count($orders).' orders');
+        $count = 0;
+        foreach($orders as $order) {
+            #error_log($order->getId().' '.$order->getSum().' '.$order->getPrice());
+            $order->setTotalSum($order->getSum());
+            $order->setOrderSum($order->getPrice());
+            if($order->getPaymentStatus() == 'paid') {
+                $items = $order->getItems();
+                #error_log('found '.count($items).' items');
+                foreach($items as $item) {
+                    $item->setStatus('paid');
+                    $em->persist($item);
+                }
+            }
+            $em->persist($order);
+            $em->flush();
+            /*if($count >= 100) {
+                $em->flush();
+                $count = 0;
+            }*/
+            $count++;
+        }
     }
 }

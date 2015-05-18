@@ -1,0 +1,22 @@
+<?php
+/* pizza would be really nice */
+
+$title = 'ERS Statistics: Bankaccounts';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<table class="table table-striped">
+    <tr>
+        <th>Name</th>
+        <th>Amount</th>
+    </tr>
+    <?php foreach($stats as $key => $value): ?>
+    <tr>
+        <td><?php echo $key; ?></td>
+        <td>
+            <?php echo $this->currencyFormat($value, 'EUR', null, 'de_DE'); ?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>

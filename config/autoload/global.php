@@ -29,6 +29,7 @@ return array(
         'Application'    => 'layout/layout.phtml',
         #'PreReg'         => 'layout/prereg.phtml',
         'Admin'          => 'layout/admin.phtml',
+        'OnsiteReg'      => 'layout/onsite.phtml',
     ),
     'session' => array(
         'config' => array(

@@ -407,6 +407,13 @@ class Country implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'ordering', 'code', 'name', 'updated', 'created');
+        return array(
+            'id', 
+            'ordering', 
+            'code', 
+            'name', 
+            'updated', 
+            'created'
+        );
     }
 }

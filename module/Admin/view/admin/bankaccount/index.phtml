@@ -12,17 +12,27 @@ $this->headTitle($title);
 <table class="table">
     <tr>
         <th>Name</th>
+        <th>virtual</th>
         <th>Bank</th>
         <th>IBAN</th>
         <th>BIC</th>
+        <th>Statements</th>
         <th>&nbsp;</th>
     </tr>
 <?php foreach ($accounts as $account) : ?>
     <tr>
         <td><?php echo $account->getName(); ?></td>
+        <td>
+            <?php if($account->getVirtual()): ?>
+                <i class="fa fa-check"></i>
+            <?php else: ?>
+                <i class="fa fa-close"></i>
+            <?php endif; ?>
+        </td>
         <td><?php echo $account->getBank(); ?></td>
         <td><?php echo $account->getIban(); ?></td>
         <td><?php echo $account->getBic(); ?></td>
+        <td><?php echo count($account->getBankStatements()); ?></td>
         <td>
             <a href="<?php echo $this->url('admin/bankaccount', array('action'=>'edit', 'id' => $account->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
             <a href="<?php echo $this->url('admin/bankaccount', array('action'=>'format', 'id' => $account->getId()));?>"><?php echo $this->translate('Format'); ?></a>

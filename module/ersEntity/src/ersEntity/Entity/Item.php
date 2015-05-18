@@ -98,9 +98,9 @@ class Item implements InputFilterAwareInterface
     protected $info;
 
     /**
-     * @ORM\Column(name="`status`", type="string", nullable=true)
+     * @ORM\Column(name="`status`", type="string")
      */
-    protected $status;
+    protected $status = 'ordered';
     
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -135,13 +135,13 @@ class Item implements InputFilterAwareInterface
     protected $product;
     
     /**
-     * @ORM\OneToMany(targetEntity="ItemPackage", mappedBy="item", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="ItemPackage", mappedBy="subitem", cascade={"persist"})
      * @ORM\JoinColumn(name="id", referencedColumnName="Item_id")
      */
     protected $childItems;
 
     /**
-     * @ORM\OneToMany(targetEntity="ItemPackage", mappedBy="subitem")
+     * @ORM\OneToMany(targetEntity="ItemPackage", mappedBy="item")
      * @ORM\JoinColumn(name="id", referencedColumnName="SubItem_id")
      */
     protected $parentItems;
@@ -653,6 +653,18 @@ class Item implements InputFilterAwareInterface
     {
         return $this->childItems;
     }
+    
+    /**
+     * check if this item has child items
+     * 
+     * @return boolean
+     */
+    public function hasChildItems() {
+        if(count($this->getChildItems()) > 0) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Add ItemPackage entity related by `SubItem_id` to collection (one to many).
@@ -689,6 +701,18 @@ class Item implements InputFilterAwareInterface
     {
         return $this->parentItems;
     }
+    
+    /**
+     * check if this item has parent items
+     * 
+     * @return boolean
+     */
+    public function hasParentItems() {
+        if(count($this->getParentItems()) > 0) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Set Package entity (many to one).
@@ -711,6 +735,14 @@ class Item implements InputFilterAwareInterface
     public function getPackage()
     {
         return $this->package;
+    }
+    
+    /**
+     * Get Order in which this item is saved.
+     * 
+     */
+    public function getOrder() {
+        return $this->getPackage()->getOrder();
     }
 
     /**

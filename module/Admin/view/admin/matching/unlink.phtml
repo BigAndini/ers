@@ -1,0 +1,57 @@
+<?php
+
+$title = 'Unlink match';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php if(!$match): ?>
+<p>Unable to find match.</p>
+<?php else: ?>
+<div class="row">
+    <div class="col-md-6">
+        <?php $order = $match->getOrder(); ?>
+        <div class="row">
+            <div class="col-md-1"><?php echo $match->getOrderId(); ?></div>
+            <div class="col-md-9">
+                <?php 
+                $buyer = $order->getBuyer();
+                echo $order->getCode()->getValue().' - '.$buyer->getFirstname().' '.$buyer->getSurname(); 
+                ?><br>
+                <?php 
+                echo '('.$order->getPaymentType()->getName().') ';
+                echo $order->getUpdated()->format('d.m.Y H:m:i');
+                ?>
+            </div>
+            <div class="col-md-2"><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <tr>
+                        <td>name</td>
+                        <td><?php echo $match->getBankStatement()->getName()->getValue(); ?></td>
+                    </tr>
+                    <tr>
+                        <td>amount</td>
+                        <td><?php echo $match->getBankStatement()->getAmount()->getValue(); ?></td>
+                    </tr>
+                    <tr>
+                        <td>code</td>
+                        <td><?php echo $match->getBankStatement()->getCode()->getValue(); ?></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<p>Do you really want to unlink this match?</p>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $match->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+    <a href="<?php echo $this->url('admin/matching'); ?>">Cancel</a>
+</div>
+</form>
+<?php endif; ?>
