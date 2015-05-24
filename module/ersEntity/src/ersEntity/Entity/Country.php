@@ -66,8 +66,8 @@ class Country implements InputFilterAwareInterface
     protected $created;
     
     /**
+     * @var Collection
      * @ORM\OneToMany(targetEntity="User", mappedBy="country")
-     * @ORM\JoinColumn(name="id", referencedColumnName="Country_id")
      */
     protected $users;
 

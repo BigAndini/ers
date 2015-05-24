@@ -75,11 +75,25 @@ class AjaxController extends AbstractActionController {
         $qb->setParameter(2, 'disabled');
         $statements = $qb->getQuery()->getResult();
 
-        error_log('statements: '.count($statements));
         $viewModel->setVariable("statements", $statements);
-        
         $viewModel->setTerminal(true);
-
+        return $viewModel;
+    }
+    
+    public function matchingStatementcolsAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        
+        $viewModel = new ViewModel();
+        $viewModel->setTemplate("partial/ajax/matching-statementcols");
+        
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $statement = $em->getRepository("ersEntity\Entity\BankStatement")
+                ->findOneBy(array('id' => $id));
+        
+        $viewModel->setVariable("statement", $statement);
+        $viewModel->setTerminal(true);
         return $viewModel;
     }
     

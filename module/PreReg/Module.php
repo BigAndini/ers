@@ -55,23 +55,23 @@ class Module
                 }
             );
 
-        #$zfcAuthEvents = $sm->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
+        $zfcAuthEvents = $sm->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
 
-        /*$zfcAuthEvents->attach( 'authenticate.success', function( $authEvent ) use( $sm ){
+        $zfcAuthEvents->attach( 'authenticate.success', function( $authEvent ) use( $sm ){
             $loginService =  $sm->get( 'PreReg\Service\LoginService' );
             $user_id = $authEvent->getIdentity();
             $loginService->setUserId($user_id);
             $loginService->onLogin();
             return true;
-        });*/
+        });
         
-        /*$zfcAuthEvents->attach( 'logout', function( $authEvent ) use( $sm ){
+        $zfcAuthEvents->attach( 'logout', function( $authEvent ) use( $sm ){
             $loginService =  $sm->get( 'PreReg\Service\LoginService' );
             #$user_id = $authEvent->getIdentity();
             #$loginService->setUserId($user_id);
             $loginService->onLogout();
             return true;
-        });*/
+        });
     }
     
     public function bootstrapSession($e)
@@ -256,6 +256,11 @@ class Module
                     $loginService->setServiceLocator($sm);
                     return $loginService;
                 },
+                'PreReg\InputFilter\Register' => function($sm) {
+                    $inputFilter = new InputFilter\Register();
+                    $inputFilter->setServiceLocator($sm);
+                    return $inputFilter;
+                }
             ),
         );
     }

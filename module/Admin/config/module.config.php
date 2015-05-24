@@ -129,15 +129,21 @@ return array(
                 'route' => 'admin/order',
                 #'resource'  => 'controller/Admin\Controller\Order',
                 'pages' => array(
-                    'user' => array(
+                    'overview' => array(
                         'label' => 'Overview',
                         'route' => 'admin/order',
                         'resource'  => 'controller/Admin\Controller\Order',
                     ),
-                    'role' => array(
+                    'search' => array(
                         'label' => 'Search',
                         'route' => 'admin/order',
                         'action' => 'search',
+                        'resource'  => 'controller/Admin\Controller\Order',
+                    ),
+                    'zero-euro-tickets' => array(
+                        'label' => '0€-Week-Tickets',
+                        'route' => 'admin/order',
+                        'action' => 'zero-euro-tickets',
                         'resource'  => 'controller/Admin\Controller\Order',
                     ),
                 ),
@@ -193,9 +199,9 @@ return array(
             ),
             'profile' => array(
                 'label' => 'My Profile',
-                'route' => 'zfcuser',
+                'route' => 'profile',
                 'action' => '',
-                'resource'  => 'controller/zfcuser:index',
+                'resource'  => 'controller/PreReg\Controller\Profile',
             ),
             'logout' => array(
                 'label' => 'Logout',

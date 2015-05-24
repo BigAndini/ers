@@ -70,13 +70,13 @@ class ProductPackage implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Product", inversedBy="parentProducts")
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="childProducts")
      * @ORM\JoinColumn(name="Product_id", referencedColumnName="id")
      */
     protected $product;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Product", inversedBy="childProducts")
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="parentProducts")
      * @ORM\JoinColumn(name="SubProduct_id", referencedColumnName="id")
      */
     protected $subproduct;

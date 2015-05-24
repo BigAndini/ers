@@ -86,7 +86,7 @@ class Order implements InputFilterAwareInterface
     protected $hashkey;
 
     /**
-     * @ORM\Column(type="string", length=150, nullable=true)
+     * @ORM\Column(type="string", length=1500, nullable=true)
      */
     protected $invoiceDetail;
     
@@ -101,12 +101,12 @@ class Order implements InputFilterAwareInterface
     protected $Code_id;
     
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     protected $order_sum;
     
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     protected $total_sum;
     
@@ -930,9 +930,39 @@ class Order implements InputFilterAwareInterface
      * @return false
      */
     public function getParticipantBySessionId($id) {
-        foreach($this->getPackages() as $package) {
-            if($package->getParticipant()->getSessionId() == $id) {
-                return $package->getParticipant();
+        foreach($this->getParticipants() as $participant) {
+            if($participant->getSessionId() == $id) {
+                return $participant;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Get Participant by email
+     * 
+     * @return Entity\User
+     * @return false
+     */
+    public function getParticipantByEmail($email) {
+        foreach($this->getParticipants() as $participant) {
+            if($participant->getEmail() == $email) {
+                return $participant;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Get Participant by id
+     * 
+     * @return Entity\User
+     * @return false
+     */
+    public function getParticipantById($id) {
+        foreach($this->getParticipants() as $participant) {
+            if($participant->getId() == $id) {
+                return $participant;
             }
         }
         return false;
@@ -1229,7 +1259,7 @@ class Order implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Code_id', 'Buyer_id', 'PaymentType_id', 'matchKey', 'hashkey', 'invoiceDetail', 'updated', 'created');
+        $dataFields = array('id', 'Code_id', 'Buyer_id', 'buyer', 'PaymentType_id', 'matchKey', 'hashkey', 'invoiceDetail', 'updated', 'created');
         $relationFields = array('user', 'paymentType', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -1267,7 +1297,8 @@ class Order implements InputFilterAwareInterface
             'Code_id',
             'package_id', 
             'item_id', 
-            'Buyer_id', 
+            'Buyer_id',
+            'buyer',
             'PaymentType_id', 
             'matchKey', 
             'hashkey', 

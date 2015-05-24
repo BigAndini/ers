@@ -19,6 +19,9 @@ class UserController extends AbstractActionController {
     
     public function indexAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->set('user', 'admin/user');
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');

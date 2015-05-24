@@ -199,7 +199,9 @@ echo $this->navigation()
             <div id="TnC-container"></div>
         <?php 
             echo $this->formElementErrors($form->get('terms')); 
-        endif;
+        endif; ?>
+            <a class="btn btn-lg btn-warning" href="<?php echo $this->url('order'); ?>"><i class="fa fa-chevron-left"></i> change order</a>
+        <?php
         echo $this->formSubmit($form->get('submit'));
         echo $this->formHidden($form->get('csrf'));
         echo $this->form()->closeTag(); 

@@ -1,0 +1,27 @@
+<table class="table table-striped">
+    <tr>
+        <td>name</td>
+        <td><?php echo $statement->getName()->getValue(); ?></td>
+    </tr>
+    <tr>
+        <td>date</td>
+        <td>
+            <?php 
+            $date = $statement->getDate();
+            if(is_object($date)) {
+                echo $date->format('d.m.Y H:i:s');
+            } else {
+                echo 'unable to find date';
+            }
+            ?>
+        </td>
+    </tr>
+    <tr>
+        <td>amount</td>
+        <td><?php echo $statement->getAmount()->getValue(); ?></td>
+    </tr>
+    <tr>
+        <td>code</td>
+        <td><?php echo $statement->getCode()->getValue(); ?></td>
+    </tr>
+</table>

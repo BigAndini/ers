@@ -122,19 +122,9 @@ class User implements InputFilterAwareInterface
                 ), 
             ])); 
             
-            /*$inputFilter->add($factory->createInput([ 
-                'name' => 'Country_id', 
-                'required' => true, 
-                'filters' => array( 
-                    array('name' => 'Int'), 
-                ), 
-                'validators' => array( 
-                ), 
-            ]));*/ 
-
             $inputFilter->add($factory->createInput([ 
                 'name' => 'birthday', 
-                'required' => true, 
+                'required' => false,
                 'filters' => array( 
                     array('name' => 'StripTags'), 
                     array('name' => 'StringTrim'), 
@@ -202,16 +192,15 @@ class User implements InputFilterAwareInterface
                                 ) {
                                     return true;
                                 }*/
-                                $cartContainer = new Container('cart');
-                                $participants = $cartContainer->order->getParticipants();
-                                foreach($participants as $participant) {
-                                    if($value == $participant->getEmail()) {
-                                        return false;
-                                    }
+                                $em = $this->getServiceLocator()
+                                    ->get('Doctrine\ORM\EntityManager');
+                                $user = $em->getRepository("ersEntity\Entity\User")
+                                        ->findOneBy(array('email' => $value));
+                                if($user && $user->getId() != $context['id']) {
+                                    return false;
                                 }
                                 return true;
                             },
-                            
                         ),
                     ),
                 ), 

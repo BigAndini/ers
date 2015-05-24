@@ -48,7 +48,8 @@ jQuery(function($) {
             });
         }
     });
-    $('#statement-accordion .accordion-toggle').click(function () {
+    $('#bankaccount-accordion .accordion-toggle').click(function () {
+    /*$('#statement-accordion .accordion-toggle').click(function () {*/
         if($(this).hasClass("panelisopen")){
             $(this).removeClass("panelisopen");
         } else {
@@ -59,6 +60,20 @@ jQuery(function($) {
             
             $.get( "/admin/ajax/matching-bankstatement/" + bankaccountId, function( data ) {
                 $( "#bankaccount" + bankaccountId ).html( data );
+                $('#statement-accordion .accordion-toggle').click(function () {
+                    if($(this).hasClass("panelisopen")){
+                        $(this).removeClass("panelisopen");
+                    } else {
+                        var href = this.hash;
+                        var bankaccountId = href.replace("#statement",""); 
+
+                        $(this).addClass("panelisopen");
+
+                        $.get( "/admin/ajax/matching-statementcols/" + bankaccountId, function( data ) {
+                            $( "#statement" + bankaccountId ).html( data );
+                        });
+                    }
+                });
             });
         }
     });

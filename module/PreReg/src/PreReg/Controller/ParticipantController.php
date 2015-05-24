@@ -33,63 +33,18 @@ class ParticipantController extends AbstractActionController {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-     
-        /*foreach($participants as $participant) {
-            $country = $em->getRepository("ersEntity\Entity\Country")
-                        ->findOneBy(array('id' => $participant->getCountryId()));
-            $participant->setCountry($country);
-        }*/
-        $login_user = null;
-        $users = array();
-        
-        /*if($this->zfcUserAuthentication()->hasIdentity()) {
-            $email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
-            $login_user = $em->getRepository("ersEntity\Entity\User")
-                    ->findOneBy(array('email' => $email));
-
-            $orders = $em->getRepository("ersEntity\Entity\Order")
-                    ->findBy(array('Buyer_id' => $login_user->getId()));*/
-
-            /*$logger = $this
-                ->getServiceLocator()
-                ->get('Logger');*/
-
-            
-            /*foreach($orders as $order) {
-                $users = array_merge($users, $order->getParticipants());
-                foreach($order->getParticipants() as $user) {
-                    error_log('BREAKPOINT: '.get_class($cartContainer->order).' package count: '.$cartContainer->order->getPackage());
-                    $package = $cartContainer->order->getPackageByParticipantEmail($user->getEmail());
-                    if($package) {
-                        $package->setParticipant($user);
-                    } else {
-                        $cartContainer->order->addParticipant($user);
-                        error_log('add Participant. '.$user->getFirstname().' '.$user->getSurname());
-                    }
-                }
-            }*/
-        #}
-        
-        $user = $em->getRepository("ersEntity\Entity\User")
-                ->findOneBy(array('id' => 1));
-        error_log($user->getFirstname().' '.$user->getSurname());
-        error_log('country: '.$user->getCountry()->getName());
         
         $participants = $cartContainer->order->getParticipants();
         
         foreach($participants as $participant) {
-            error_log(var_export($participant, true));
-            error_log('found '.count($participant->getRoles()).' roles');
-            foreach($participant->getRoles() as $role) {
-                error_log('has role: '.$role->getRoleId());
+            if($participant->getCountryId()) {
+                $country = $em->getRepository("ersEntity\Entity\Country")
+                        ->findOneBy(array('id' => $participant->getCountryId()));
+                $participant->setCountry($country);
             }
-            error_log($participant->getCountry()->getName());
         }
         
         return new ViewModel(array(
-            #'login_user' => $login_user,
-            #'users' => $users,
-            #'users' => array(),
             'participants' => $participants,
         ));
     }

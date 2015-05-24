@@ -555,4 +555,24 @@ class OrderController extends AbstractActionController {
             'breadcrumb' => $forrest->get('order'),
         ));
     }
+    
+    public function zeroEuroTicketsAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $repository = $em->getRepository("ersEntity\Entity\Order");
+
+        $qb = $repository->createQueryBuilder('o')
+                ->select('o')
+                ->join('o.packages', 'p')
+                ->join('p.items', 'i')
+                ->where('i.price = 0')
+                ->andWhere('i.Product_id = 1');
+
+        $orders = $qb->getQuery()->getResult();
+        
+        return new ViewModel(array(
+            'orders' => $orders,
+        ));
+    }
 }

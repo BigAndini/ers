@@ -24,10 +24,9 @@ $this->headTitle($title);
             </td>
             <td><?php echo $participant->getEmail();?></td>
             <td>
-                <?php if($participant->getCountryId() != null):
-                    error_log(var_export($participant, true));
+                <?php error_log($participant->getId()); ?>
+                <?php if(is_object($participant->getCountry())):
                     $country = $participant->getCountry();
-                    error_log(var_export($country, true));
                     echo $country->getName();
                 else:
                     echo 'no Country';

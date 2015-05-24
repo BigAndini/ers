@@ -22,7 +22,7 @@ class MatchingController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         $matchings = $em->getRepository("ersEntity\Entity\Match")
-                ->findBy(array());
+                ->findBy(array(), array('updated' => 'DESC'));
         
         return new ViewModel(array(
             'matchings' => $matchings,
@@ -35,6 +35,9 @@ class MatchingController extends AbstractActionController {
         
         #$logger->info($param_orders);
         #$logger->info($param_statements);
+        
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->set('matching', 'admin/matching', array('action' => 'manual'));
         
         $form = new Form\ManualMatch();
         
@@ -289,12 +292,36 @@ class MatchingController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/matching', array());
         }
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('matching')) {
+            $forrest->set('matching', 'admin/matching', array('action' => 'manual'));
+        }
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $match = $em->getRepository("ersEntity\Entity\Match")
                 ->findOneBy(array('id' => $id));
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ret = $request->getPost('del', 'No');
+
+            if ($ret == 'Yes') {
+                $id = (int) $request->getPost('id');
+                
+                $match = $em->getRepository("ersEntity\Entity\Match")
+                    ->findOneBy(array('id' => $id));
+                
+                $em->remove($match);
+                $em->flush();
+                
+                $breadcrumb = $forrest->get('matching');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+        }
         
         return new ViewModel(array(
             'match' => $match,
@@ -305,6 +332,9 @@ class MatchingController extends AbstractActionController {
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
+        
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->set('matching', 'admin/matching', array('action' => 'disable'));
         
         $statements = $em->getRepository("ersEntity\Entity\BankStatement")
                 ->findBy(array('status' => 'disabled'), array('updated' => 'DESC'));
@@ -351,7 +381,7 @@ class MatchingController extends AbstractActionController {
         
         return new ViewModel(array(
             'statement' => $statement,
-            'breadcrumb' => $forrest->get('item'),
+            'breadcrumb' => $forrest->get('matching'),
         ));
     }
     
@@ -392,7 +422,7 @@ class MatchingController extends AbstractActionController {
         
         return new ViewModel(array(
             'statement' => $statement,
-            'breadcrumb' => $forrest->get('item'),
+            'breadcrumb' => $forrest->get('matching'),
         ));
     }
 }

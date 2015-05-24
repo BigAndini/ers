@@ -10,7 +10,7 @@ $this->headTitle($title);
         <p>Click on any item to add further information and place it in your shopping cart.</p>
     </div>
     <div class="col-lg-6">
-        <p class="text-right">The prices will increase after <?php echo $deadline->getDeadline()->format('d.m.Y H:i:s'); ?></p>
+        <p class="text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
     </div>
 </div>
 

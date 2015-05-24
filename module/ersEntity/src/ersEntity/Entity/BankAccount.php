@@ -548,7 +548,7 @@ class BankAccount implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'name', 'bank', 'iban', 'bic', 'kto', 'blz', 'statementFormat', 'updated', 'created');
+        $dataFields = array('id', 'name', 'bank', 'virtual', 'iban', 'bic', 'kto', 'blz', 'statementFormat', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -581,6 +581,6 @@ class BankAccount implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'name', 'bank', 'iban', 'bic', 'kto', 'blz', 'statementFormat', 'updated', 'created');
+        return array('id', 'name', 'bank', 'virtual', 'iban', 'bic', 'kto', 'blz', 'statementFormat', 'updated', 'created');
     }
 }

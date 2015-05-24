@@ -158,16 +158,15 @@ class TestController extends AbstractActionController {
     }
     
     public function doctrineAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $order = $em->getRepository("ersEntity\Entity\Order")
-                ->findOneBy(array('id' => 1));
+                ->findOneBy(array('id' => 52));
         error_log('packages: '.count($order->getPackages()));
         
         $user = $em->getRepository("ersEntity\Entity\User")
-                ->findOneBy(array('id' => 1));
+                ->findOneBy(array('id' => 549));
         error_log($user->getFirstname().' '.$user->getSurname());
         error_log('country: '.$user->getCountry()->getName());
         

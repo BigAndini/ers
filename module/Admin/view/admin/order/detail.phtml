@@ -142,6 +142,7 @@ $this->headTitle($title);
                         <h3>
                             <?php echo $participant.' ('.$package->getCode()->getValue().')'; ?>
                         </h3>
+                        <p>date of birth: <?php echo $user->getBirthday()->format('d.m.Y'); ?></p>
                     </div>
                     <div class="col-md-6">
                         <div class="navbar pull-right">

@@ -66,6 +66,7 @@ class LoginService
     
     public function onLogin() {
         $this->addParticipantsToOrder();
+        $this->setLoginUserAsBuyer();
     }
     
     public function onLogout() {
@@ -77,32 +78,68 @@ class LoginService
         $cartContainer->init = 0;
     }
     
+    private function setLoginUserAsBuyer() {
+        if($this->getUser()) {
+            $cartContainer = new Container('cart');
+            $package = $cartContainer->order->getPackageByParticipantEmail($this->getUser()->getEmail());
+            if($package && $package->getParticipant()) {
+                $cartContainer->order->setBuyer($package->getParticipant());
+            }
+        } else {
+            error_log('unable to find login user');
+        }
+    }
+    
     private function addParticipantsToOrder() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         if($this->getUser()) {
+            $cartContainer = new Container('cart');
+            $countries = array();
+            
+            /*
+             * add logged in user
+             */
+            $login_user = $this->getUser();
+            $package = $cartContainer->order->getPackageByParticipantEmail($login_user->getEmail());
+            $newUser = new Entity\User();
+            $newUser->populate($login_user->getArrayCopy());
+            
+            if($newUser->getCountryId()) {
+                if(isset($countries[$newUser->getCountryId()])) {
+                    $country = $countries[$newUser->getCountryId()];
+                } else {
+                    $country = $em->getRepository("ersEntity\Entity\Country")
+                        ->findOneBy(array('id' => $newUser->getCountryId()));
+                    $countries[$country->getId()] = $country;
+                    error_log('found country: '.$country->getName());
+                }
+                $newUser->setCountry($country);
+            } else {
+                $newUser->setCountry(null);
+                $newUser->setCountryId(null);
+            }
+
+
+            if($package) {
+                $package->setParticipant($newUser);
+            } else {
+                $cartContainer->order->addParticipant($newUser);
+            }
+                    
+            /*
+             * add users from former orders
+             */
             $orders = $em->getRepository("ersEntity\Entity\Order")
                 ->findBy(array('Buyer_id' => $this->getUser()->getId()));
         
-            $cartContainer = new Container('cart');
-            if($cartContainer->order) {
-                error_log('order is ok: '.get_class($cartContainer->order));
-            }
-            if(!method_exists($cartContainer->order, 'getPackageByParticipantEmail')) {
-                error_log('unable to find method: getPackageByParticipantEmail in '.  get_class($cartContainer->order));
-            }
-            
-            $countries = array();
             foreach($orders as $order) {
                 $count = 1;
                 foreach($order->getParticipants() as $user) {
-                    error_log('this is run '.$count);
-                    error_log('order class: '.  get_class($cartContainer->order));
                     $package = $cartContainer->order->getPackageByParticipantEmail($user->getEmail());
                     $newUser = new Entity\User();
                     $newUser->populate($user->getArrayCopy());
-                    error_log('country_id: '.$newUser->getCountryId());
                     if($newUser->getCountryId()) {
                         if(isset($countries[$newUser->getCountryId()])) {
                             $country = $countries[$newUser->getCountryId()];
@@ -120,19 +157,16 @@ class LoginService
                     
                     
                     if($package) {
+                        $newUser->setSessionId($package->getParticipant()->getSessionId());
                         $package->setParticipant($newUser);
-                        error_log('changed user in package: '.$newUser->getFirstname().' '.$newUser->getSurname());
                     } else {
                         $cartContainer->order->addParticipant($newUser);
-                        error_log('add Participant. '.$newUser->getFirstname().' '.$newUser->getSurname());
                     }
                     $count++;
                 }
             }
         } else {
-            error_log('unable to find login user');
+            throw new \Exception('unable to find logged in user');
         }
-        
-       
     }
 }

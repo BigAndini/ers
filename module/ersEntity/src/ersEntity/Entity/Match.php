@@ -374,7 +374,7 @@ class Match implements InputFilterAwareInterface
     {
         return $this->user;
     }
-
+    
     /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
      * 

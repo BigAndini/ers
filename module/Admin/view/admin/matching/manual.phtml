@@ -33,7 +33,7 @@ echo $this->form()->openTag($form); ?>
                                             echo $buyer->getFirstname().' '.$buyer->getSurname();
                                             echo '<br>';
                                             echo '('.$order->getPaymentType()->getName().') ';
-                                            echo $order->getUpdated()->format('d.m.Y H:m:i');
+                                            echo $order->getUpdated()->format('d.m.Y H:i:s');
                                         ?>
                                     </a>
                                 </h4>
@@ -54,7 +54,7 @@ echo $this->form()->openTag($form); ?>
         <div class="panel panel-default">
             <div class="panel-heading">bank accounts</div>
             <div class="panel-body panel-matching">
-                <div class="panel-group" id="statement-accordion">
+                <div class="panel-group" id="bankaccount-accordion">
                     <?php foreach($bankaccounts as $bankaccount): 
                         $statements = $bankaccount->getBankStatements();
                     ?>
