@@ -20,7 +20,10 @@ use Zend\InputFilter\InputFilterInterface;
  * Entity\ItemPackage
  *
  * @ORM\Entity()
- * @ORM\Table(name="ItemPackage", indexes={@ORM\Index(name="fk_ItemPackage_Item1_idx", columns={"Item_id"}), @ORM\Index(name="fk_ItemPackage_Item2_idx", columns={"SubItem_id"})})
+ * @ORM\Table(name="ItemPackage", indexes={
+ *  @ORM\Index(name="fk_ItemPackage_Item1_idx", columns={"SurItem_id"}), 
+ *  @ORM\Index(name="fk_ItemPackage_Item2_idx", columns={"SubItem_id"})
+ * })
  * @ORM\HasLifecycleCallbacks()
  */
 class ItemPackage implements InputFilterAwareInterface
@@ -42,7 +45,7 @@ class ItemPackage implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="integer")
      */
-    protected $Item_id;
+    protected $SurItem_id;
 
     /**
      * @ORM\Column(type="integer")
@@ -63,18 +66,19 @@ class ItemPackage implements InputFilterAwareInterface
      * @ORM\Column(type="datetime")
      */
     protected $created;
-
+    
     /**
-     * @ORM\ManyToOne(targetEntity="Item", inversedBy="parentItems")
-     * @ORM\JoinColumn(name="Item_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Item", inversedBy="itemPackageRelatedBySurItemIds")
+     * @ORM\JoinColumn(name="SurItem_id", referencedColumnName="id")
      */
-    protected $item;
+    protected $surItem;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Item", inversedBy="childItems", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Item", inversedBy="itemPackageRelatedBySubItemIds", cascade={"persist"})
      * @ORM\JoinColumn(name="SubItem_id", referencedColumnName="id")
      */
-    protected $subitem;
+    protected $subItem;
+
 
     public function __construct()
     {
@@ -130,26 +134,26 @@ class ItemPackage implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of Item_id.
+     * Set the value of SurItem_id.
      *
-     * @param integer $Item_id
+     * @param integer $SurItem_id
      * @return \Entity\ItemPackage
      */
-    public function setItemId($Item_id)
+    public function setSurItemId($SurItem_id)
     {
-        $this->Item_id = $Item_id;
+        $this->SurItem_id = $SurItem_id;
 
         return $this;
     }
 
     /**
-     * Get the value of Item_id.
+     * Get the value of SurItem_id.
      *
      * @return integer
      */
     public function getItemId()
     {
-        return $this->Item_id;
+        return $this->SurItem_id;
     }
 
     /**
@@ -199,26 +203,26 @@ class ItemPackage implements InputFilterAwareInterface
     }
     
     /**
-     * Set Item entity related by `Item_id` (many to one).
+     * Set Item entity related by `SurItem_id` (many to one).
      *
      * @param \Entity\Item $item
      * @return \Entity\ItemPackage
      */
-    public function setItem(Item $item = null)
+    public function setSurItem(Item $item = null)
     {
-        $this->item = $item;
+        $this->surItem = $item;
 
         return $this;
     }
 
     /**
-     * Get Item entity related by `Item_id` (many to one).
+     * Get Item entity related by `SurItem_id` (many to one).
      *
      * @return \Entity\Item
      */
-    public function getItem()
+    public function getSurItem()
     {
-        return $this->item;
+        return $this->surItem;
     }
 
     /**
@@ -229,7 +233,7 @@ class ItemPackage implements InputFilterAwareInterface
      */
     public function setSubItem(Item $item = null)
     {
-        $this->subitem = $item;
+        $this->subItem = $item;
 
         return $this;
     }
@@ -241,7 +245,7 @@ class ItemPackage implements InputFilterAwareInterface
      */
     public function getSubItem()
     {
-        return $this->subitem;
+        return $this->subItem;
     }
 
     /**
@@ -274,7 +278,7 @@ class ItemPackage implements InputFilterAwareInterface
                 'validators' => array(),
             ),
             array(
-                'name' => 'Item_id',
+                'name' => 'SurItem_id',
                 'required' => true,
                 'filters' => array(),
                 'validators' => array(),
@@ -327,7 +331,7 @@ class ItemPackage implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Item_id', 'SubItem_id', 'item', 'subitem', 'amount', 'updated', 'created');
+        $dataFields = array('id', 'SurItem_id', 'SubItem_id', 'surItem', 'subItem', 'amount', 'updated', 'created');
         $relationFields = array('item', 'item');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -360,6 +364,6 @@ class ItemPackage implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Item_id', 'SubItem_id', 'item', 'subitem', 'amount', 'updated', 'created');
+        return array('id', 'SurItem_id', 'SubItem_id', 'surItem', 'subItem', 'amount', 'updated', 'created');
     }
 }

@@ -10,10 +10,7 @@ $this->headTitle($title);
 
 <h2><?php echo $item->getName(); ?></h2>
 
-<?php 
-$itemPackages = $item->getChildItems();
-foreach($itemPackages as $itemPackage):
-    $subitem = $itemPackage->getSubItem(); ?>
+<?php foreach($item->getChildItems() as $subitem): ?>
     <h3>
         <?php echo $subitem->getName(); ?>
         <?php if(count($subitem->getItemVariants()) > 0): ?>

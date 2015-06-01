@@ -10,5 +10,6 @@ nbproject
 *.pyc
 composer.lock
 test/secret.py
+tmp/*
 vendor/bin
 vendor/*

@@ -172,6 +172,9 @@ $this->headTitle($title);
                                     </a>
                                     <ul id="page_2" class="dropdown-menu">
                                         <li>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'recalculate', 'id' => $package->getId())); ?>">Recalculate Prices</a>
+                                        </li>
+                                        <li>
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Change Package Detail</a>
                                         </li>
                                         <li>

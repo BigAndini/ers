@@ -11,6 +11,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'OnsiteReg\Controller\Index'       => 'OnsiteReg\Controller\IndexController',
+            'OnsiteReg\Controller\Redirect'       => 'OnsiteReg\Controller\RedirectController',
         ),
     ),
     'navigation' => array(
@@ -88,6 +89,7 @@ return array(
             'onsite' => array(
                 'type' => 'segment',
                 'options' => array(
+                    #'route' => '/admin[/]',
                     'route' => '/onsite',
                     'defaults' => array(
                         'controller' => 'OnsiteReg\Controller\Index',
@@ -96,20 +98,36 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
-                    
-                ),
-            ),
-            
-            /*'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route'    => '/',
-                    'defaults' => array(
-                        'controller' => 'OnsiteReg\Controller\Index',
-                        'action'     => 'index',
+                    'test' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/test[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'OnsiteReg\Controller\Test',
+                                'action'     => 'index',
+                            ),
+                        ),
+                    ),
+                    'redirect' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/redirect[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'OnsiteReg\Controller\Redirect',
+                                'action'     => 'index',
+                            ),
+                        ),
                     ),
                 ),
-            ),*/
+            ),
         ),
     ),
     'service_manager' => array(

@@ -109,9 +109,7 @@ echo $this->navigation()
                                     <?php endif;
                                 endif;
                                 if(count($item->getChildItems()) > 0):
-                                    foreach($item->getChildItems() as $package):
-                                        $subItem = $package->getSubItem();
-                                        #echo $subItem->getName();
+                                    foreach($item->getChildItems() as $subItem):
                                         $numVariants = count($subItem->getItemVariants());
                                         $i = 0;
                                         $subvar_string = '';

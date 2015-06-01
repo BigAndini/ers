@@ -94,9 +94,10 @@ return [
         // resource providers provide a list of resources that will be tracked
         // in the ACL. like roles, they can be hierarchical
         'resource_providers' => [
-            /*\BjyAuthorize\Provider\Resource\Config::class => [
-                'pants' => [],
-            ],*/
+            \BjyAuthorize\Provider\Resource\Config::class => [
+                #'pants' => [],
+                'redirect' => [],
+            ],
         ],
 
         /* rules can be specified here with the format:
@@ -105,21 +106,22 @@ return [
          * Zend\Acl\Assertion\AssertionInterface.
          * *if you use assertions, define them using the service manager!*
          */
-        /*'rule_providers' => [
+        'rule_providers' => [
             \BjyAuthorize\Provider\Rule\Config::class => [
                 'allow' => [
                     // allow guests and users (and admins, through inheritance)
                     // the "wear" privilege on the resource "pants"
-                    [['guest', 'user'], 'pants', 'wear'],
+                    #[['guest', 'user'], 'pants', 'wear'],
+                    [['onsite', 'admin', 'supradm'], 'redirect', 'do'],
                 ],
 
                 // Don't mix allow/deny rules if you are using role inheritance.
                 // There are some weird bugs.
-                'deny' => [
+                /*'deny' => [
                     // ...
-                ],
+                ],*/
             ],
-        ],*/
+        ],
 
         /* Currently, only controller and route guards exist
          *
@@ -164,6 +166,7 @@ return [
                 
                 /* Onsite */
                 ['controller' => 'OnsiteReg\Controller\Index',                'roles' => ['supradm']],
+                ['controller' => 'OnsiteReg\Controller\Redirect',             'roles' => ['supradm']],
                 
                 /* Admin */
                 #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],

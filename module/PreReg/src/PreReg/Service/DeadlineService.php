@@ -20,7 +20,7 @@ class DeadlineService
         $this->compareDate = new \DateTime;
     }
     
-    public function setCompareDate(DateTime $compareDate) {
+    public function setCompareDate(\DateTime $compareDate) {
         $this->compareDate = $compareDate;
     }
     

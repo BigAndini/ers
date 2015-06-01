@@ -50,8 +50,7 @@ class OrderController extends AbstractActionController {
                     $logger->info('   - '.$variant->getName().': '.$variant->getValue());
                 }
                 $logger->info('  has '.count($item->getChildItems()).' sub items:');
-                foreach($item->getChildItems() as $itemPackage) {
-                    $subItem = $itemPackage->getSubItem();
+                foreach($item->getChildItems() as $subItem) {
                     $logger->info('   - '.$subItem->getName());
                     foreach($subItem->getItemVariants() as $subVariant) {
                         $logger->info('     - '.$subVariant->getName().': '.$subVariant->getValue());
@@ -465,8 +464,7 @@ class OrderController extends AbstractActionController {
                             ->findOneBy(array('id' => $variant->getProductVariantValueId()));
                         $variant->setProductVariantValue($productVariantValue);
                     }
-                    foreach($item->getChildItems() as $subItemPackage) {
-                        $subItem = $subItemPackage->getSubItem();
+                    foreach($item->getChildItems() as $subItem) {
                         $subProduct = $em->getRepository("ersEntity\Entity\Product")
                             ->findOneBy(array('id' => $subItem->getProductId()));
                         $subItem->setProduct($subProduct);

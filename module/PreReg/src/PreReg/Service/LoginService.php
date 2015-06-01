@@ -102,7 +102,6 @@ class LoginService
              * add logged in user
              */
             $login_user = $this->getUser();
-            $package = $cartContainer->order->getPackageByParticipantEmail($login_user->getEmail());
             $newUser = new Entity\User();
             $newUser->populate($login_user->getArrayCopy());
             
@@ -113,7 +112,6 @@ class LoginService
                     $country = $em->getRepository("ersEntity\Entity\Country")
                         ->findOneBy(array('id' => $newUser->getCountryId()));
                     $countries[$country->getId()] = $country;
-                    error_log('found country: '.$country->getName());
                 }
                 $newUser->setCountry($country);
             } else {
@@ -121,11 +119,13 @@ class LoginService
                 $newUser->setCountryId(null);
             }
 
-
+            $package = $cartContainer->order->getPackageByParticipantEmail($login_user->getEmail());
             if($package) {
                 $package->setParticipant($newUser);
+                error_log('changed logged in user in package: '.$newUser->getFirstname().' '.$newUser->getSurname());
             } else {
                 $cartContainer->order->addParticipant($newUser);
+                error_log('added logged in user to my persons: '.$newUser->getFirstname().' '.$newUser->getSurname());
             }
                     
             /*

@@ -21,9 +21,7 @@ $this->headTitle($title);
         #$sum += $item->getPrice();
         if($item->hasParentItems()):
             continue;
-        endif;
-        $itemPackages = $item->getChildItems();
-        ?>
+        endif; ?>
         <tr>
             <td>
                 <span class="product-name">
@@ -48,8 +46,7 @@ $this->headTitle($title);
                 </span>
             </td>
             <td>
-                <?php foreach($itemPackages as $itemPackage):
-                    $subitem = $itemPackage->getSubItem(); ?>
+                <?php foreach($item->getChildItems() as $subitem): ?>
                     <div class="row">
                         <div class="col-md-12">
                             <span class="product-name">

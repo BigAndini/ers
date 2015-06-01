@@ -319,9 +319,9 @@ class ProductController extends AbstractActionController {
 
                     if($add) {
                         $itemPackage = new Entity\ItemPackage();
-                        $itemPackage->setItem($item);
+                        $itemPackage->setSurItem($item);
                         $itemPackage->setSubItem($subItem);
-                        $item->addChildItem($itemPackage);
+                        $item->addItemPackageRelatedBySurItemId($itemPackage);
                     }
                 }
                 
