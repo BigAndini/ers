@@ -283,10 +283,12 @@ class BankaccountController extends AbstractActionController {
                     ->findOneBy(array('id' => $id));
                 
                 $file = $data['csv-upload'];
-                /*$logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
-                $logger->info($file);*/
+                
+                $bankAccountCsv = new Entity\BankAccountCsv();
+                $bankAccountCsv->setCsvFile($file['name']);
+                $bankAccountCsv->setBankAccount($bankaccount);
+                
+                $em->persist($bankAccountCsv);
                 
                 /*
                  * open file for reading
@@ -314,6 +316,7 @@ class BankaccountController extends AbstractActionController {
                     $bs = new Entity\BankStatement();
                     #$bs->setBankStatementCols($row_data);
                     $bs->setBankAccount($bankaccount);
+                    $bs->setBankAccountCsv($bankAccountCsv);
                     $bs->setHash($hash);
                     $bs->setStatus('new');
                     foreach($row_data as $column => $value) {
@@ -360,5 +363,63 @@ class BankaccountController extends AbstractActionController {
         return new ViewModel(array(
             'order' => $order,
         ));
-    }   
+    }
+    
+    public function uploadsAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/bankaccount', array());
+        }
+        
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $bankaccount = $em->getRepository("ersEntity\Entity\BankAccount")
+                ->findOneBy(array('id' => $id));
+        
+        return new ViewModel(array(
+            'bankaccount' => $bankaccount,
+        ));
+    }
+    
+    public function deleteUploadAction()
+    {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/bankaccount');
+        }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $csv = $em->getRepository("ersEntity\Entity\BankAccountCsv")
+                ->findOneBy(array('id' => $id));
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $del = $request->getPost('del', 'No');
+
+            if ($del == 'Yes') {
+                $id = (int) $request->getPost('id');
+                $csv = $em->getRepository("ersEntity\Entity\BankAccountCsv")
+                    ->findOneBy(array('id' => $id));
+                foreach($csv->getBankStatements() as $bs) {
+                    /*
+                     * Hint: cannot be deleted if there's already a match.
+                     */
+                    $em->remove($bs);
+                    foreach($bs->getBankStatementCols() as $col) {
+                        $em->remove($col);
+                    }
+                }
+                $em->remove($csv);
+                $em->flush();
+            }
+
+            return $this->redirect()->toRoute('admin/bankaccount');
+        }
+
+        return new ViewModel(array(
+            'csv' => $csv,
+        ));
+    }
 }

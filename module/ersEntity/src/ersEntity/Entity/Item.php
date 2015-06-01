@@ -146,7 +146,6 @@ class Item implements InputFilterAwareInterface
      */
     protected $itemPackageRelatedBySubItemIds;
 
-
     /**
      * @ORM\ManyToOne(targetEntity="Package", inversedBy="items")
      * @ORM\JoinColumns({@ORM\JoinColumn(name="Package_id", referencedColumnName="id")

@@ -18,13 +18,13 @@ use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
 /**
- * Entity\BankAccount
+ * Entity\BankAccountCsv
  *
  * @ORM\Entity()
- * @ORM\Table(name="BankAccount")
+ * @ORM\Table(name="BankAccountCsv")
  * @ORM\HasLifecycleCallbacks()
  */
-class BankAccount implements InputFilterAwareInterface
+class BankAccountCsv implements InputFilterAwareInterface
 {
     /**
      * Instance of InputFilterInterface.
@@ -41,71 +41,39 @@ class BankAccount implements InputFilterAwareInterface
     protected $id;
 
     /**
-     * @ORM\Column(name="`name`", type="string", length=45, nullable=true)
+     * @ORM\Column(type="integer")
      */
-    protected $name;
+    protected $BankAccount_id;
 
     /**
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
-    protected $bank;
+    protected $csv_file;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $virtual;
-    
-    /**
-     * @ORM\Column(type="string", length=45, nullable=true)
-     */
-    protected $iban;
-
-    /**
-     * @ORM\Column(type="string", length=45, nullable=true)
-     */
-    protected $bic;
-
-    /**
-     * @ORM\Column(type="string", length=45, nullable=true)
-     */
-    protected $kto;
-
-    /**
-     * @ORM\Column(type="string", length=45, nullable=true)
-     */
-    protected $blz;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    protected $statement_format;
-
-    /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="BankStatement", mappedBy="bankAccount", cascade={"persist"})
-     * @ORM\JoinColumn(name="id", referencedColumnName="BankAccount_id")
+     * @ORM\OneToMany(targetEntity="BankStatement", mappedBy="bankAccountCsv")
+     * @ORM\JoinColumn(name="id", referencedColumnName="bank_account_csv_id")
      */
     protected $bankStatements;
-    
-    /**
-     * @ORM\OneToMany(targetEntity="BankAccountCsv", mappedBy="bankAccount")
-     * @ORM\JoinColumn(name="id", referencedColumnName="BankAccount_id")
-     */
-    protected $bankAccountCsvs;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="BankAccount", inversedBy="bankAccountCsvs")
+     * @ORM\JoinColumn(name="BankAccount_id", referencedColumnName="id")
+     */
+    protected $bankAccount;
 
     public function __construct()
     {
-        $this->bankAccountCsvs = new ArrayCollection();
         $this->bankStatements = new ArrayCollection();
     }
     
@@ -139,7 +107,7 @@ class BankAccount implements InputFilterAwareInterface
      * Set the value of id.
      *
      * @param integer $id
-     * @return \Entity\BankAccount
+     * @return \Entity\BankAccountCsv
      */
     public function setId($id)
     {
@@ -159,194 +127,57 @@ class BankAccount implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of name.
+     * Set the value of BankAccount_id.
      *
-     * @param string $name
-     * @return \Entity\BankAccount
+     * @param integer $BankAccount_id
+     * @return \Entity\BankAccountCsv
      */
-    public function setName($name)
+    public function setBankAccountId($BankAccount_id)
     {
-        $this->name = $name;
+        $this->BankAccount_id = $BankAccount_id;
 
         return $this;
     }
 
     /**
-     * Get the value of name.
+     * Get the value of BankAccount_id.
      *
-     * @return string
+     * @return integer
      */
-    public function getName()
+    public function getBankAccountId()
     {
-        return $this->name;
+        return $this->BankAccount_id;
     }
 
     /**
-     * Set the value of bank.
+     * Set the value of csv_file.
      *
-     * @param string $bank
-     * @return \Entity\BankAccount
+     * @param string $csv_file
+     * @return \Entity\BankAccountCsv
      */
-    public function setBank($bank)
+    public function setCsvFile($csv_file)
     {
-        $this->bank = $bank;
+        $this->csv_file = $csv_file;
 
         return $this;
     }
 
     /**
-     * Get the value of bank.
+     * Get the value of csv_file.
      *
      * @return string
      */
-    public function getBank()
+    public function getCsvFile()
     {
-        return $this->bank;
+        return $this->csv_file;
     }
 
-    /**
-     * Set the value of virtual.
-     *
-     * @param string $virtual
-     * @return \Entity\VirtualAccount
-     */
-    public function setVirtual($virtual)
-    {
-        $this->virtual = $virtual;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of virtual.
-     *
-     * @return string
-     */
-    public function getVirtual()
-    {
-        return $this->virtual;
-    }
-    
-    /**
-     * Set the value of iban.
-     *
-     * @param string $iban
-     * @return \Entity\BankAccount
-     */
-    public function setIban($iban)
-    {
-        $this->iban = $iban;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of iban.
-     *
-     * @return string
-     */
-    public function getIban()
-    {
-        return $this->iban;
-    }
-
-    /**
-     * Set the value of bic.
-     *
-     * @param string $bic
-     * @return \Entity\BankAccount
-     */
-    public function setBic($bic)
-    {
-        $this->bic = $bic;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of bic.
-     *
-     * @return string
-     */
-    public function getBic()
-    {
-        return $this->bic;
-    }
-
-    /**
-     * Set the value of kto.
-     *
-     * @param string $kto
-     * @return \Entity\BankAccount
-     */
-    public function setKto($kto)
-    {
-        $this->kto = $kto;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of kto.
-     *
-     * @return string
-     */
-    public function getKto()
-    {
-        return $this->kto;
-    }
-
-    /**
-     * Set the value of blz.
-     *
-     * @param string $blz
-     * @return \Entity\BankAccount
-     */
-    public function setBlz($blz)
-    {
-        $this->blz = $blz;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of blz.
-     *
-     * @return string
-     */
-    public function getBlz()
-    {
-        return $this->blz;
-    }
-
-    /**
-     * Set the value of statementFormat.
-     *
-     * @param string $statementFormat
-     * @return \Entity\BankAccount
-     */
-    public function setStatementFormat($statementFormat)
-    {
-        $this->statement_format = $statementFormat;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of statementFormat.
-     *
-     * @return string
-     */
-    public function getStatementFormat()
-    {
-        return $this->statement_format;
-    }
 
     /**
      * Set the value of updated.
      *
      * @param datetime $updated
-     * @return \Entity\BankAccount
+     * @return \Entity\BankAccountCsv
      */
     public function setUpdated($updated)
     {
@@ -369,7 +200,7 @@ class BankAccount implements InputFilterAwareInterface
      * Set the value of created.
      *
      * @param datetime $created
-     * @return \Entity\BankAccount
+     * @return \Entity\BankAccountCsv
      */
     public function setCreated($created)
     {
@@ -389,47 +220,10 @@ class BankAccount implements InputFilterAwareInterface
     }
 
     /**
-     * Add BankAccountCsv entity to collection (one to many).
-     *
-     * @param \Entity\BankAccountCsv $bankAccountCsv
-     * @return \Entity\BankAccount
-     */
-    public function addBankAccountCsv(BankAccountCsv $bankAccountCsv)
-    {
-        $this->bankAccountCsvs[] = $bankAccountCsv;
-
-        return $this;
-    }
-
-    /**
-     * Remove BankAccountCsv entity from collection (one to many).
-     *
-     * @param \Entity\BankAccountCsv $bankAccountCsv
-     * @return \Entity\BankAccount
-     */
-    public function removeBankAccountCsv(BankAccountCsv $bankAccountCsv)
-    {
-        $this->bankAccountCsvs->removeElement($bankAccountCsv);
-
-        return $this;
-    }
-
-    /**
-     * Get BankAccountCsv entity collection (one to many).
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBankAccountCsvs()
-    {
-        return $this->bankAccountCsvs;
-    }
-
-    
-    /**
      * Add BankStatement entity to collection (one to many).
      *
      * @param \Entity\BankStatement $bankStatement
-     * @return \Entity\BankAccount
+     * @return \Entity\BankAccountCsv
      */
     public function addBankStatement(BankStatement $bankStatement)
     {
@@ -442,7 +236,7 @@ class BankAccount implements InputFilterAwareInterface
      * Remove BankStatement entity from collection (one to many).
      *
      * @param \Entity\BankStatement $bankStatement
-     * @return \Entity\BankAccount
+     * @return \Entity\BankAccountCsv
      */
     public function removeBankStatement(BankStatement $bankStatement)
     {
@@ -473,6 +267,30 @@ class BankAccount implements InputFilterAwareInterface
         }
         return $amount;
     }
+    
+    /**
+     * Set BankAccount entity (many to one).
+     *
+     * @param \Entity\BankAccount $bankAccount
+     * @return \Entity\BankAccountCsv
+     */
+    public function setBankAccount(BankAccount $bankAccount = null)
+    {
+        $this->bankAccount = $bankAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get BankAccount entity (many to one).
+     *
+     * @return \Entity\BankAccount
+     */
+    public function getBankAccount()
+    {
+        return $this->bankAccount;
+    }
+
 
     /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
@@ -504,43 +322,13 @@ class BankAccount implements InputFilterAwareInterface
                 'validators' => array(),
             ),
             array(
-                'name' => 'name',
-                'required' => false,
+                'name' => 'BankAccount_id',
+                'required' => true,
                 'filters' => array(),
                 'validators' => array(),
             ),
             array(
-                'name' => 'bank',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'iban',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'bic',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'kto',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'blz',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'statementFormat',
+                'name' => 'csv_file',
                 'required' => false,
                 'filters' => array(),
                 'validators' => array(),
@@ -593,7 +381,7 @@ class BankAccount implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'name', 'bank', 'virtual', 'iban', 'bic', 'kto', 'blz', 'statementFormat', 'updated', 'created');
+        $dataFields = array('id', 'BankAccount_id', 'csv_file', 'updated', 'created');
         $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -626,6 +414,6 @@ class BankAccount implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'name', 'bank', 'virtual', 'iban', 'bic', 'kto', 'blz', 'statementFormat', 'updated', 'created');
+        return array('id', 'BankAccount_id', 'csv_file', 'updated', 'created');
     }
 }
