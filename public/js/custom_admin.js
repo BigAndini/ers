@@ -29,4 +29,61 @@ jQuery(function($) {
         addSliderAccess: true,
 	sliderAccessArgs: { touchonly: false }
     });
+    
+    /* ensure any open panels are closed before showing selected */
+    /*$('#matching-accordion').on('show.bs.collapse', function () {
+        $('#matching-accordion .in').collapse('hide');
+    });*/
+    $('#order-accordion .accordion-toggle').click(function () {
+        if($(this).hasClass("panelisopen")){
+            $(this).removeClass("panelisopen");
+        } else {
+            var href = this.hash;
+            var orderId = href.replace("#order",""); 
+
+            $(this).addClass("panelisopen");
+
+            $.get( "/admin/ajax/matching-order/" + orderId, function( data ) {
+                $( "#order" + orderId ).html( data );
+            });
+        }
+    });
+    $('#bankaccount-accordion .accordion-toggle').click(function () {
+    /*$('#statement-accordion .accordion-toggle').click(function () {*/
+        if($(this).hasClass("panelisopen")){
+            $(this).removeClass("panelisopen");
+        } else {
+            var href = this.hash;
+            var bankaccountId = href.replace("#bankaccount",""); 
+
+            $(this).addClass("panelisopen");
+            
+            $.get( "/admin/ajax/matching-bankstatement/" + bankaccountId, function( data ) {
+                $( "#bankaccount" + bankaccountId ).html( data );
+                $('#statement-accordion .accordion-toggle').click(function () {
+                    if($(this).hasClass("panelisopen")){
+                        $(this).removeClass("panelisopen");
+                    } else {
+                        var href = this.hash;
+                        var bankaccountId = href.replace("#statement",""); 
+
+                        $(this).addClass("panelisopen");
+
+                        $.get( "/admin/ajax/matching-statementcols/" + bankaccountId, function( data ) {
+                            $( "#statement" + bankaccountId ).html( data );
+                        });
+                    }
+                });
+            });
+        }
+    });
+    
+    $(".disabled").click(function(event) {
+        event.preventDefault();
+        return false;
+    });
+    
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 });

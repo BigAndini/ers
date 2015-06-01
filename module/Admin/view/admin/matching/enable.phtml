@@ -1,0 +1,49 @@
+<?php
+
+$title = 'Enable Bank Statement';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Do you really want to <enable>enable</enable> the bank statement?</p>
+<div class="row">
+    <div class="col-md-1">
+        <?php echo $statement->getId(); ?>
+    </div>
+    <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <tr>
+                        <td>name</td>
+                        <td><?php echo $statement->getName()->getValue(); ?></td>
+                    </tr>
+                    <tr>
+                        <td>amount</td>
+                        <td><?php echo $statement->getAmount()->getValue(); ?></td>
+                    </tr>
+                    <tr>
+                        <td>code</td>
+                        <td><?php echo $statement->getCode()->getValue(); ?></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1">
+        <?php echo $statement->getUpdated()->format('d.m.Y H:i:s') ?>
+    </div>
+</div>
+<?php
+$url = $this->url('admin/matching', array(
+    'action' => 'enable',
+    'id'     => $statement->getId(),
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $statement->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-warning" id="submitbutton" />
+    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+</div>
+</form>

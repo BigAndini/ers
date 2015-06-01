@@ -60,7 +60,6 @@ class User extends Form
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
                 'placeholder' => 'E-Mail Address...', 
-                'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 

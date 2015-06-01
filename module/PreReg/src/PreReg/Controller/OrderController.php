@@ -50,8 +50,7 @@ class OrderController extends AbstractActionController {
                     $logger->info('   - '.$variant->getName().': '.$variant->getValue());
                 }
                 $logger->info('  has '.count($item->getChildItems()).' sub items:');
-                foreach($item->getChildItems() as $itemPackage) {
-                    $subItem = $itemPackage->getSubItem();
+                foreach($item->getChildItems() as $subItem) {
                     $logger->info('   - '.$subItem->getName());
                     foreach($subItem->getItemVariants() as $subVariant) {
                         $logger->info('     - '.$subVariant->getName().': '.$subVariant->getValue());
@@ -61,13 +60,8 @@ class OrderController extends AbstractActionController {
         }
         $logger->info('=== shopping cart end ===');
         
-        $em = $this
-            ->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $agegroupService = new Service\AgegroupService();
-        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
-                    ->findBy(array('priceChange' => '1'));
-        $agegroupService->setAgegroups($agegroups);
+        $agegroupService = $this->getServiceLocator()
+                ->get('PreReg\Service\AgegroupService');
         
         return new ViewModel(array(
             'order' => $cartContainer->order,
@@ -160,6 +154,13 @@ class OrderController extends AbstractActionController {
         
         $cartContainer = new Container('cart');
         
+        if(is_object($cartContainer->order->getBuyer())) {
+            $buyer = $cartContainer->order->getBuyer();
+            error_log($buyer->getFirstname().' '.$buyer->getSurname().' '.$buyer->getEmail());
+        } else {
+            error_log('No buyer set in this order.');
+        }
+        
         # even if it's not displayed, this is needed to recognize the possible 
         # values.
         if(count($cartContainer->order->getPackages()) > 1) {
@@ -178,11 +179,21 @@ class OrderController extends AbstractActionController {
             $form->get('buyer_id')->setValueOptions($buyer);
         }
         
+        
+        if($this->zfcUserAuthentication()->hasIdentity()) {
+            $login_email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
+            $participant = $cartContainer->order->getParticipantByEmail($login_email);
+            $form->get('buyer_id')->setValue($participant->getSessionId());
+        } else {
+            $login_email = '';
+        }
+        
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $inputFilter = new InputFilter\Register();
-            $em = $this
-                ->getServiceLocator()
+            #$inputFilter = new InputFilter\Register();
+            $inputFilter = $this->getServiceLocator()
+                    ->get('PreReg\InputFilter\Register');
+            $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
             $inputFilter->setEntityManager($em);
             if($this->zfcUserAuthentication()->hasIdentity()) {
@@ -193,6 +204,7 @@ class OrderController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $data = $form->getData();
+                
                 
                 $buyer = $cartContainer->order->getParticipantBySessionId($data['buyer_id']);
                         
@@ -218,6 +230,7 @@ class OrderController extends AbstractActionController {
             'form' => $form,
             'order' => $cartContainer->order,
             'participants' => $participants,
+            'login_email' => $login_email,
         ));
     }
     
@@ -280,7 +293,6 @@ class OrderController extends AbstractActionController {
                 $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
                         ->findOneBy(array('id' => $data['paymenttype_id']));
                 
-                
                 $cartContainer->order->setPaymentType($paymenttype);
                 
                 return $this->redirect()->toRoute('order', array('action' => 'checkout'));
@@ -308,9 +320,12 @@ class OrderController extends AbstractActionController {
         
         $this->checkItemPrices();
         
-        $em = $this
-                ->getServiceLocator()
+        $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
+        
+        $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
+                        ->findOneBy(array('id' => $cartContainer->order->getPaymentTypeId()));
+        $cartContainer->order->setPaymentType($paymenttype);
         
         if(isset($orderContainer->order_id)) {
             $order = $em->getRepository("ersEntity\Entity\Order")
@@ -449,8 +464,7 @@ class OrderController extends AbstractActionController {
                             ->findOneBy(array('id' => $variant->getProductVariantValueId()));
                         $variant->setProductVariantValue($productVariantValue);
                     }
-                    foreach($item->getChildItems() as $subItemPackage) {
-                        $subItem = $subItemPackage->getSubItem();
+                    foreach($item->getChildItems() as $subItem) {
                         $subProduct = $em->getRepository("ersEntity\Entity\Product")
                             ->findOneBy(array('id' => $subItem->getProductId()));
                         $subItem->setProduct($subProduct);
@@ -581,7 +595,7 @@ class OrderController extends AbstractActionController {
         
         $emailService->setHtmlMessage($html);
         
-        $terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v3.pdf';
+        $terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v4.pdf';
         $terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
         $emailService->addAttachment($terms1);
         $emailService->addAttachment($terms2);

@@ -6,7 +6,6 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <p><a class="btn btn-success" href="<?php echo $this->url('participant', array('action'=>'add'));?>">Add person</a></p>
 
-<h2>Persons for this order</h2>
 <table class="table">
     <tr>
         <th class="person-name">Name</th>
@@ -15,89 +14,29 @@ $this->headTitle($title);
         <th class="person-country">Country</th>
         <th class="person-tools"></th>
     </tr>
-<?php foreach ($participants as $participant) : ?>
-    <tr>
-        <td><?php echo $participant->getFirstname()." ".$participant->getSurname(); ?></td>
-        <td>
-            <?php if($participant->getBirthday() != null):
-                echo $participant->getBirthday()->format('d.m.Y');
-            endif; ?>
-        </td>
-        <td><?php echo $participant->getEmail();?></td>
-        <td>
-            <?php if($participant->getCountryId() != null):
-                echo $participant->getCountry()->getName();
-            else:
-                echo 'no Country';
-            endif; ?>
-        </td>
-        <td>
-            <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a> |
-            <a href="<?php echo $this->url('participant', array('action' => 'delete', 'id' => $participant->getSessionId())); ?>">delete</a>
-        </td>
-    </tr>
-<?php endforeach; ?>
+    <?php foreach ($participants as $participant) : ?>
+        <tr>
+            <td><?php echo $participant->getFirstname()." ".$participant->getSurname(); ?></td>
+            <td>
+                <?php if($participant->getBirthday() != null):
+                    echo $participant->getBirthday()->format('d.m.Y');
+                endif; ?>
+            </td>
+            <td><?php echo $participant->getEmail();?></td>
+            <td>
+                <?php error_log($participant->getId()); ?>
+                <?php if(is_object($participant->getCountry())):
+                    $country = $participant->getCountry();
+                    echo $country->getName();
+                else:
+                    echo 'no Country';
+                endif; ?>
+            </td>
+            <td>
+                <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a> |
+                <a href="<?php echo $this->url('participant', array('action' => 'delete', 'id' => $participant->getSessionId())); ?>">delete</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
 </table>
-<?php if(count($users) > 0 || $login_user): ?>
-<h2>Persons of former orders</h2>
-<div class="alert alert-warning">
-    <h4>Persons with no edit</h4>
-    <p>The persons listed with no edit option do have their own accounts. They need to login on their own to change data.</p>
-</div>
-<table class="table">
-    <tr>
-        <th class="person-name">Name</th>
-        <th class="person-birthday">Birthday</th>
-        <th class="person-email">Email</th>
-        <th class="person-country">Country</th>
-        <th class="person-tools"></th>
-    </tr>
-    <?php if($login_user): ?>
-    <tr>
-        <td><?php echo $login_user->getFirstname()." ".$login_user->getSurname(); ?></td>
-        <td>
-            <?php if($login_user->getBirthday() != null):
-                echo $login_user->getBirthday()->format('d.m.Y');
-            endif; ?>
-        </td>
-        <td><?php echo $login_user->getEmail();?></td>
-        <td>
-            <?php if($login_user->getCountryId() != null):
-                echo $login_user->getCountry()->getName();
-            else:
-                echo 'no Country';
-            endif; ?>
-        </td>
-        <td>
-            <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $login_user->getSessionId())); ?>">edit</a>
-        </td>
-    </tr>
-    <?php endif; ?>
-<?php foreach ($users as $user) : ?>
-    <tr>
-        <td><?php echo $user->getFirstname()." ".$user->getSurname(); ?></td>
-        <td>
-            <?php if($user->getBirthday() != null):
-                echo $user->getBirthday()->format('d.m.Y');
-            endif; ?>
-        </td>
-        <td><?php echo $user->getEmail();?></td>
-        <td>
-            <?php if($user->getCountryId() != null):
-                echo $user->getCountry()->getName();
-            else:
-                echo 'no Country';
-            endif; ?>
-        </td>
-        <td>
-            <?php if($user->getPassword() == ''): ?>
-                <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $user->getSessionId())); ?>">edit</a>
-            <?php else: ?>
-                <span>no edit</span>
-            <?php endif; ?>
-        </td>
-    </tr>
-<?php endforeach; ?>
-</table>
-<?php endif; ?>
 <p><a class="btn btn-success" href="<?php echo $this->url('participant', array('action'=>'add'));?>">Add person</a></p>

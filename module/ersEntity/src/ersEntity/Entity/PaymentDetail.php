@@ -61,7 +61,7 @@ class PaymentDetail implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Order", inversedBy="paymentDetails")
+     * @ORM\ManyToOne(targetEntity="Order", inversedBy="paymentDetail")
      * @ORM\JoinColumn(name="Order_id", referencedColumnName="id")
      */
     protected $order;

@@ -306,7 +306,7 @@ class PaymentController extends AbstractActionController {
             return $response;
         }
         
-        $order->setStatus('paid');
+        $order->setPaymentStatus('paid');
         
         $orderStatus = new Entity\OrderStatus;
         $orderStatus->setOrder($order);

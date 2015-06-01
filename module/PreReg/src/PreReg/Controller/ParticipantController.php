@@ -27,43 +27,24 @@ class ParticipantController extends AbstractActionController {
         $forrest = new Service\BreadcrumbFactory(); 
         $forrest->reset();
         $forrest->set('participant', 'participant');
-        
+     
         $cartContainer = new Container('cart');
-        $participants = $cartContainer->order->getParticipants();
         
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
+        $participants = $cartContainer->order->getParticipants();
+        
         foreach($participants as $participant) {
-            $country = $em->getRepository("ersEntity\Entity\Country")
+            if($participant->getCountryId()) {
+                $country = $em->getRepository("ersEntity\Entity\Country")
                         ->findOneBy(array('id' => $participant->getCountryId()));
-            $participant->setCountry($country);
-        }
-        $login_user = null;
-        $users = array();
-        if($this->zfcUserAuthentication()->hasIdentity()) {
-            $email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
-            $login_user = $em->getRepository("ersEntity\Entity\User")
-                    ->findOneBy(array('email' => $email));
-
-            $orders = $em->getRepository("ersEntity\Entity\Order")
-                    ->findBy(array('Buyer_id' => $login_user->getId()));
-
-            /*$logger = $this
-                ->getServiceLocator()
-                ->get('Logger');*/
-
-
-            foreach($orders as $order) {
-                #$logger->warn($order->getCreated()->format('d.m.Y H:i:s'));
-                $users = array_merge($users, $order->getParticipants());
+                $participant->setCountry($country);
             }
         }
         
         return new ViewModel(array(
-            'login_user' => $login_user,
-            'users' => $users,
             'participants' => $participants,
         ));
     }

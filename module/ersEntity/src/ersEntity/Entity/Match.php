@@ -358,7 +358,7 @@ class Match implements InputFilterAwareInterface
      * @param \Entity\User $user
      * @return \Entity\Match
      */
-    public function setUser(User $user = null)
+    public function setAdmin(User $user = null)
     {
         $this->user = $user;
 
@@ -370,11 +370,11 @@ class Match implements InputFilterAwareInterface
      *
      * @return \Entity\User
      */
-    public function getUser()
+    public function getAdmin()
     {
         return $this->user;
     }
-
+    
     /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
      * 

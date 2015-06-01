@@ -8,20 +8,22 @@
  
 namespace ersEntity\Entity;
 
-use BjyAuthorize\Provider\Role\ProviderInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use BjyAuthorize\Provider\Role\ProviderInterface;
 use ZfcUser\Entity\UserInterface;
 
 use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilterInterface;
 
 /**
  * An example of how to implement a role aware user entity.
  *
  * @ORM\Entity
- * @ORM\Table(name="users")
+ * @ORM\Table(name="users", indexes={
+ *      @ORM\Index(name="fk_User_Country1_idx", columns={"Country_id"}), 
+ * }, uniqueConstraints={@ORM\UniqueConstraint(name="email_UNIQUE", columns={"email"})})
  * @ORM\HasLifecycleCallbacks()
  *
  * @author Tom Oram <tom@scl.co.uk>
@@ -141,7 +143,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * @var ersEntity\Country
      * @ORM\ManyToOne(targetEntity="Country", inversedBy="users")
-     * @ORM\JoinColumn(name="Country_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="Country_id", referencedColumnName="id")
      */
     protected $country;
     
@@ -913,7 +915,7 @@ class User implements UserInterface, ProviderInterface
     public function getArrayCopy(array $fields = array())
     {
         $dataFields = array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'hashkey', 'state', 'firstname', 'surname', 'Country_id', 'active', 'birthday', 'updated', 'created');
-        $relationFields = array();
+        $relationFields = array('country');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
             $map = null;
@@ -945,6 +947,22 @@ class User implements UserInterface, ProviderInterface
 
     public function __sleep()
     {
-        return array('id', 'session_id', 'username', 'email', 'displayName', 'password', 'hashkey', 'state', 'firstname', 'surname', 'Country_id', 'active', 'birthday', 'updated', 'created');
+        return array(
+            'id', 
+            'session_id', 
+            'username', 
+            'email', 
+            'displayName', 
+            'password', 
+            'hashkey', 
+            'state', 
+            'firstname', 
+            'surname', 
+            'Country_id', 
+            'active', 
+            'birthday', 
+            'updated', 
+            'created'
+        );
     }
 }

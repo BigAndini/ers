@@ -18,11 +18,11 @@ $config = array(
         'ersEntity',
         'Admin',
         'PreReg',
+        'OnsiteReg',
         'SpeckPaypal',
         'OrgHeiglPiwik',
         'GoalioRememberMe',
         'GoalioRememberMeDoctrineORM',
-        #'Inbaz\CronTask',
     ),
 
     // These are various options for the listeners attached to the ModuleManager

@@ -42,6 +42,20 @@ class BankAccount extends Form
         ));
         
         $this->add(array(
+            'type' => 'checkbox',
+            'name' => 'virtual',
+            'attributes' => array(
+                'class' => 'checkbox',
+            ),
+            'options' => array(
+                'label' => 'This bank account has no real bank account',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
+        $this->add(array(
             'name' => 'bank',
             'attributes' => array(
                 'required' => 'required',
@@ -60,7 +74,6 @@ class BankAccount extends Form
         $this->add(array(
             'name' => 'iban',
             'attributes' => array(
-                'required' => 'required',
                 'type'  => 'text',
                 'class' => 'form-control form-element',
                 'placeholder' => 'IBAN...',
@@ -75,7 +88,6 @@ class BankAccount extends Form
         $this->add(array(
             'name' => 'bic',
             'attributes' => array(
-                'required' => 'required',
                 'type'  => 'text',
                 'class' => 'form-control form-element',
                 'placeholder' => 'BIC...',

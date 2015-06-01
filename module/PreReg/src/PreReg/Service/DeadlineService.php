@@ -14,9 +14,18 @@ use ersEntity\Entity;
 class DeadlineService
 {
     protected $deadlines;
+    protected $compareDate;
     
     public function __construct() {
-        
+        $this->compareDate = new \DateTime;
+    }
+    
+    public function setCompareDate(\DateTime $compareDate) {
+        $this->compareDate = $compareDate;
+    }
+    
+    public function getCompareDate() {
+        return $this->compareDate;
     }
     
     public function setDeadlines($deadlines) {
@@ -30,7 +39,7 @@ class DeadlineService
         }
         
         $ret = null;
-        $now = new \DateTime();
+        $now = $this->getCompareDate();
         foreach($this->deadlines as $deadline) {
             if($now->getTimestamp() > $deadline->getDeadline()->getTimestamp()) {
                 continue;

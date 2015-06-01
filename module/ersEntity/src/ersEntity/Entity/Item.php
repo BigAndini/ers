@@ -98,9 +98,9 @@ class Item implements InputFilterAwareInterface
     protected $info;
 
     /**
-     * @ORM\Column(name="`status`", type="string", nullable=true)
+     * @ORM\Column(name="`status`", type="string")
      */
-    protected $status;
+    protected $status = 'ordered';
     
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -135,16 +135,17 @@ class Item implements InputFilterAwareInterface
     protected $product;
     
     /**
-     * @ORM\OneToMany(targetEntity="ItemPackage", mappedBy="item", cascade={"persist"})
-     * @ORM\JoinColumn(name="id", referencedColumnName="Item_id")
+     * @ORM\OneToMany(targetEntity="ItemPackage", mappedBy="surItem", cascade={"persist"})
+     * @ORM\JoinColumn(name="id", referencedColumnName="SurItem_id")
      */
-    protected $childItems;
+    protected $itemPackageRelatedBySurItemIds;
 
     /**
-     * @ORM\OneToMany(targetEntity="ItemPackage", mappedBy="subitem")
+     * @ORM\OneToMany(targetEntity="ItemPackage", mappedBy="subItem", cascade={"persist"})
      * @ORM\JoinColumn(name="id", referencedColumnName="SubItem_id")
      */
-    protected $parentItems;
+    protected $itemPackageRelatedBySubItemIds;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="Package", inversedBy="items")
@@ -162,9 +163,9 @@ class Item implements InputFilterAwareInterface
     public function __construct()
     {
         $this->session_id = null;
+        $this->itemPackageRelatedBySurItemIds = new ArrayCollection();
+        $this->itemPackageRelatedBySubItemIds = new ArrayCollection();
         $this->itemVariants = new ArrayCollection();
-        $this->childItems = new ArrayCollection();
-        $this->parentItems = new ArrayCollection();
     }
     
     /**
@@ -191,6 +192,7 @@ class Item implements InputFilterAwareInterface
      */
     public function __clone() {
         $this->id = null;
+        $this->Code_id = null;
     }
 
     /**
@@ -618,40 +620,63 @@ class Item implements InputFilterAwareInterface
         return $this->product;
     }
     
-        /**
-     * Add ItemPackage entity related by `Item_id` to collection (one to many).
+    /**
+     * Add ItemPackage entity related by `SurItem_id` to collection (one to many).
      *
      * @param \Entity\ItemPackage $itemPackage
      * @return \Entity\Item
      */
-    public function addChildItem(ItemPackage $itemPackage)
+    public function addItemPackageRelatedBySurItemId(ItemPackage $itemPackage)
     {
-        $this->childItems[] = $itemPackage;
+        $this->itemPackageRelatedBySurItemIds[] = $itemPackage;
 
         return $this;
     }
 
     /**
-     * Remove ItemPackage entity related by `Item_id` from collection (one to many).
+     * Remove ItemPackage entity related by `SurItem_id` from collection (one to many).
      *
      * @param \Entity\ItemPackage $itemPackage
      * @return \Entity\Item
      */
-    public function removeChildItem(ItemPackage $itemPackage)
+    public function removeItemPackageRelatedBySurItemId(ItemPackage $itemPackage)
     {
-        $this->childItems->removeElement($itemPackage);
+        $this->itemPackageRelatedBySurItemIds->removeElement($itemPackage);
 
         return $this;
     }
 
     /**
-     * Get ItemPackage entity related by `Item_id` collection (one to many).
+     * Get ItemPackage entity related by `SurItem_id` collection (one to many).
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getChildItems()
+    public function getItemPackageRelatedBySurItemIds()
     {
-        return $this->childItems;
+        return $this->itemPackageRelatedBySurItemIds;
+    }
+    
+    /**
+     * get SubItems
+     * 
+     * @return type
+     */
+    public function getSubItems() {
+        $items = new ArrayCollection();
+        foreach($this->getItemPackageRelatedBySurItemIds() as $itemPackage) {
+            $items[] = $itemPackage->getSubItem();
+        }
+        return $items;
+    }
+    public function getChildItems() {
+        return $this->getSubItems();
+    }
+    public function hasChildItems() {
+        if(count($this->getSubItems()) > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -660,10 +685,11 @@ class Item implements InputFilterAwareInterface
      * @param \Entity\ItemPackage $itemPackage
      * @return \Entity\Item
      */
-    public function addParentItem(ItemPackage $itemPackage)
+    public function addItemPackageRelatedBySubItemId(ItemPackage $itemPackage)
     {
-        $this->parentItems[] = $itemPackage;
+        $this->itemPackageRelatedBySubItemIds[] = $itemPackage;
 
+        error_log('itemPackage count: '.count($this->itemPackageRelatedBySubItemIds));
         return $this;
     }
 
@@ -673,9 +699,9 @@ class Item implements InputFilterAwareInterface
      * @param \Entity\ItemPackage $itemPackage
      * @return \Entity\Item
      */
-    public function removeParentItem(ItemPackage $itemPackage)
+    public function removeItemPackageRelatedBySubItemId(ItemPackage $itemPackage)
     {
-        $this->parentItems->removeElement($itemPackage);
+        $this->itemPackageRelatedBySubItemIds->removeElement($itemPackage);
 
         return $this;
     }
@@ -685,9 +711,32 @@ class Item implements InputFilterAwareInterface
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getParentItems()
+    public function getItemPackageRelatedBySubItemIds()
     {
-        return $this->parentItems;
+        return $this->itemPackageRelatedBySubItemIds;
+    }
+    
+    /**
+     * get SubItems
+     * 
+     * @return type
+     */
+    public function getSurItems() {
+        $items = new ArrayCollection();
+        foreach($this->getItemPackageRelatedBySubItemIds() as $itemPackage) {
+            $items[] = $itemPackage->getSurItem();
+        }
+        return $items;
+    }
+    public function getParentItems() {
+        return $this->getSurItems();
+    }
+    public function hasParentItems() {
+        if(count($this->getSurItems()) > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -711,6 +760,14 @@ class Item implements InputFilterAwareInterface
     public function getPackage()
     {
         return $this->package;
+    }
+    
+    /**
+     * Get Order in which this item is saved.
+     * 
+     */
+    public function getOrder() {
+        return $this->getPackage()->getOrder();
     }
 
     /**
@@ -876,7 +933,8 @@ class Item implements InputFilterAwareInterface
         $dataFields = array('id', 'session_id', 'Product_id', 'Package_id', 
             'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 
             'amount', 'info', 'status', 'personalized', 'itemVariants', 
-            'childItems', 'parentItems', 'agegroup', 'updated', 'created');
+            'itemPackageRelatedBySurItemIds', 'itemPackageRelatedBySubItemIds',
+            'agegroup', 'updated', 'created');
         $relationFields = array('product', 'package', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -924,8 +982,8 @@ class Item implements InputFilterAwareInterface
             'status', 
             'personalized', 
             'itemVariants', 
-            'childItems', 
-            'parentItems', 
+            'itemPackageRelatedBySurItemIds',
+            'itemPackageRelatedBySubItemIds',
             'agegroup',
             'updated', 
             'created'

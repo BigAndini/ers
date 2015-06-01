@@ -18,6 +18,7 @@ class Register implements InputFilterAwareInterface
 { 
     protected $inputFilter; 
     protected $em;
+    protected $sm;
     protected $loginEmail;
     protected $email;
     
@@ -26,6 +27,14 @@ class Register implements InputFilterAwareInterface
     }
     public function getEntityManager() {
         return $this->em;
+    }
+    
+    public function setServiceLocator($sm) {
+        error_log('service manager class'.get_class($sm));
+        $this->sm = $sm;
+    }
+    public function getServiceLocator() {
+        return $this->sm;
     }
     
     public function setLoginEmail($loginEmail) {
@@ -89,15 +98,18 @@ class Register implements InputFilterAwareInterface
                             ),
                             'callback' => function($value, $context=array()) {
                                 $cartContainer = new Container('cart');
-                                $participant = $cartContainer->order->getParticipantBySessionId($context['buyer_id']);
+                                $participant = $cartContainer->order->getParticipantBySessionId($value);
                                 
-                                $this->setEmail($participant->getEmail());
-                                
-                                if($this->getLoginEmail() == $participant->getEmail()) {
-                                    return true;
+                                $auth = $this->getServiceLocator()
+                                        ->get('zfcuser_auth_service');
+                                if ($auth->hasIdentity()) {
+                                    if($auth->getIdentity()->getEmail() == $participant->getEmail()) {
+                                        return true;
+                                    }
                                 }
                                 
-                                $em = $this->getEntityManager();
+                                $em = $this->getServiceLocator()
+                                    ->get('Doctrine\ORM\EntityManager');
                                 
                                 $user = $em->getRepository("ersEntity\Entity\User")->findOneBy(array('email' => $participant->getEmail()));
                                 if($user == null) {

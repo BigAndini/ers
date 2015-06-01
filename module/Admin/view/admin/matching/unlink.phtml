@@ -1,0 +1,158 @@
+<?php
+
+$title = 'Unlink match';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php if(!$match): ?>
+    <p>Unable to find match.</p>
+<?php else: ?>
+    <?php $order = $match->getOrder(); ?>
+    <?php $statement = $match->getBankStatement(); ?>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div class="panel-title text-right">
+                        orders <i class="fa fa-arrow-right"></i>
+                    </div>
+                </div>
+                <table class="table table-striped">
+                    <tr>
+                        <th></th>
+                        <th><?php echo $order->getCode()->getValue(); ?></th>
+                    </tr>
+                    <?php $buyer = $order->getBuyer(); ?>
+                    <tr>
+                        <th>buyer</th>
+                        <td><?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?></td>
+                    </tr>
+                    <tr>
+                        <th>email</th>
+                        <td><a href="mailto:<?php echo $buyer->getEmail() ?>"><?php echo $buyer->getEmail(); ?></a></td>
+                    </tr>
+                    <tr>
+                        <th>payment type</th>
+                        <td><?php echo $order->getPaymentType()->getName(); ?></td>
+                    </tr>
+                    <tr>
+                        <th>date of purchase</th>
+                        <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
+                    </tr>
+                    <tr>
+                        <th>amount</th>
+                        <td>
+                            <?php echo $this->currencyFormat($order->getOrderSum(), 'EUR', null, 'de_DE'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>incl. fees</th>
+                        <td>
+                            <?php echo $this->currencyFormat($order->getTotalSum(), 'EUR', null, 'de_DE'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>link</th>
+                        <td>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $order->getId())); ?>">order detail</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>status</th>
+                        <td>
+                            <div class="panel panel-success">
+                                <div class="panel-heading text-center">
+                                    <?php echo $order->getPaymentStatus(); ?>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?php echo $this->currencyFormat($order->getTotalSum(), 'EUR', null, 'de_DE'); ?>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <?php echo $this->currencyFormat($statement->getAmount()->getValue(), 'EUR', null, 'de_DE'); ?>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped">
+                    <tr>
+                        <th>match-id</th>
+                        <td><?php echo $match->getId(); ?></td>
+                    </tr>
+                    <tr>
+                        <th>who</th>
+                        <td><?php echo $match->getAdmin()->getFirstname().' '.$match->getAdmin()->getSurname(); ?></td>
+                    </tr>
+                    <tr>
+                        <th>when</th>
+                        <td><?php echo $match->getCreated()->format('d.m.Y H:i:s'); ?></td>
+                    </tr>
+                    <tr>
+                        <th>comment</th>
+                        <td><?php echo $match->getComment(); ?></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <i class="fa fa-arrow-left"></i> payments
+                            </div>
+                        </div>
+                        <table class="table table-striped">
+                            <tr>
+                                <th></th>
+                                <th>bank transfer</th>
+                            </tr>
+                            <tr>
+                                <th>bank account</th>
+                                <td><?php echo $statement->getBankAccount()->getName(); ?></td>
+                            </tr>
+                            <tr>
+                                <th>name</th>
+                                <td><?php echo $statement->getName()->getValue(); ?></td>
+                            </tr>
+                            <tr>
+                                <th>amount</th>
+                                <td><?php echo $statement->getAmount()->getValue(); ?></td>
+                            </tr>
+                            <tr>
+                                <th>code</th>
+                                <td><?php echo $statement->getCode()->getValue(); ?></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>Do you really want to unlink this match?</p>
+    <?php
+    $url = $this->url('admin/matching', array(
+        'action' => 'unlink',
+        'id'     => $match->getId(),
+    ));
+    ?>
+    <form action="<?php echo $url; ?>" method="post">
+    <div>
+        <input type="hidden" name="id" value="<?php echo (int) $match->getId(); ?>" />
+        <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+        <a href="<?php echo $this->url('admin/matching'); ?>">Cancel</a>
+    </div>
+    </form>
+<?php endif; ?>

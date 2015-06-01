@@ -25,7 +25,7 @@ $settings = array(
      * Accepted values: the number of seconds the user should be remembered
      */
     //'cookie_expire' => 2592000,
-    #'cookie_expire' => 2592000,
+    'cookie_expire' => 604800,
     
     /**
      * Remember me cookie domain
@@ -75,10 +75,10 @@ return array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\XmlDriver',
                 'paths' => __DIR__ . '/xml/goaliorememberme'
             ),*/
-            'goalioremembermedoctrineorm_entity' => array(
+            /*'goalioremembermedoctrineorm_entity' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\XmlDriver',
                 'paths' => __DIR__ . '/xml/goalioremembermedoctrineorm'
-            ),
+            ),*/
 
             'orm_default' => array(
                 'drivers' => array(

@@ -66,8 +66,8 @@ class Country implements InputFilterAwareInterface
     protected $created;
     
     /**
+     * @var Collection
      * @ORM\OneToMany(targetEntity="User", mappedBy="country")
-     * @ORM\JoinColumn(name="id", referencedColumnName="Country_id")
      */
     protected $users;
 
@@ -407,6 +407,13 @@ class Country implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'ordering', 'code', 'name', 'updated', 'created');
+        return array(
+            'id', 
+            'ordering', 
+            'code', 
+            'name', 
+            'updated', 
+            'created'
+        );
     }
 }

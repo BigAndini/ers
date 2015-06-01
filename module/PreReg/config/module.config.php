@@ -12,7 +12,7 @@ return array(
         'invokables' => array(
             'PreReg\Controller\Order'       => 'PreReg\Controller\OrderController',
             'PreReg\Controller\Cart'        => 'PreReg\Controller\CartController',
-            'PreReg\Controller\Package'     => 'PreReg\Controller\PackageController',
+            'PreReg\Contsroller\Package'     => 'PreReg\Controller\PackageController',
             'PreReg\Controller\Participant' => 'PreReg\Controller\ParticipantController',
             'PreReg\Controller\Buyer'       => 'PreReg\Controller\BuyerController',
             'PreReg\Controller\Product'     => 'PreReg\Controller\ProductController',
@@ -350,6 +350,12 @@ return array(
             'top_nav'       => 'PreReg\Service\TopNavigationFactory',
             'checkout_nav'  => 'PreReg\Service\CheckoutNavigationFactory',
             'profile_nav'   => 'PreReg\Service\ProfileNavigationFactory',
+        ),
+        'shared' => array(
+            'DOMPDF' => false,
+            'ViewPdfRenderer' => false,
+            'PreReg\Service\ETicketService' => false,
+            'PreReg\Service\AgegroupService:ticket' => false,
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',

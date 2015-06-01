@@ -19,6 +19,9 @@ class UserController extends AbstractActionController {
     
     public function indexAction()
     {
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->set('user', 'admin/user');
+        
         $em = $this
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -130,6 +133,7 @@ class UserController extends AbstractActionController {
         return new ViewModel(array(
             'id' => $id,
             'form' => $form,
+            'breadcrumb' => $breadcrumb,
         ));
     }
 

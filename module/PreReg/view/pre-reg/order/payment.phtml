@@ -33,7 +33,7 @@ echo $this->navigation()
         <?php foreach($paymenttypes as $paymenttype): ?>
             <div class="row">
                 <div class="col-lg-6 col-bordered col-payment">
-                    <?php if($order->getPaymentType() != null && $order->getPaymentType()->getId() == $paymenttype->getId()) :
+                    <?php if($order->getPaymentTypeId() != null && $order->getPaymentTypeId() == $paymenttype->getId()) :
                         $checked = true;
                     else:
                         $checked = false;

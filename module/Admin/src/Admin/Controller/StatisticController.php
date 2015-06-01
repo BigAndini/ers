@@ -26,6 +26,12 @@ class StatisticController extends AbstractActionController {
                 ->findBy(array(), array('created' => 'DESC'));
         
         /*
+         * bankaccounts
+         */
+        $bankaccounts = $em->getRepository("ersEntity\Entity\BankAccount")
+                ->findAll();
+        
+        /*
          * product variants
          */
         $variants = $em->getRepository("ersEntity\Entity\ProductVariant")
@@ -66,11 +72,60 @@ class StatisticController extends AbstractActionController {
                 ->findBy(array(), array('created' => 'DESC'));
         return new ViewModel(array(
             'orders' => $orders,
+            'bankaccounts' => $bankaccounts,
             'products' => $products,
             'variants' => $variants,
             'variant_stats' => $variant_stats,
             'paymenttypes' => $paymenttypes,
             'participants' => $users,
+            'agegroupService' => $this->getServiceLocator()
+                ->get('PreReg\Service\AgegroupService:ticket'),
+        ));
+    }
+    
+    public function ordersAction() {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $repository = $em->getRepository("ersEntity\Entity\Order");
+
+        $qb = $repository->createQueryBuilder('o')
+                ->select(array('o.payment_status', 'count(o.id)', 'sum(o.order_sum)'))
+                ->groupBy('o.payment_status');
+        $result = $qb->getQuery()->getResult();
+        
+        return new ViewModel(array(
+            'order_stats' => $result,
+        ));
+    }
+    
+    public function bankaccountsAction() {
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $matches = $em->getRepository("ersEntity\Entity\Match")
+                ->findAll();
+        
+        $stats = array();
+        $sum = 0;
+        foreach($matches as $match) {
+            $statement = $match->getBankStatement();
+            $bankaccount = $statement->getBankAccount();
+            #$order = $match->getOrder();
+            
+            if(isset($stats[$bankaccount->getName()])) {
+                $stats[$bankaccount->getName()] += (float) $statement->getAmount()->getValue();
+            } else {
+                $stats[$bankaccount->getName()] = (float) $statement->getAmount()->getValue();
+            }
+            $sum += (float) $statement->getAmount()->getValue();
+        }
+        $stats['total sum'] = $sum;
+        
+        return new ViewModel(array(
+            'stats' => $stats,
         ));
     }
 }

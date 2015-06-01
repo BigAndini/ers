@@ -56,81 +56,6 @@ class BankStatement implements InputFilterAwareInterface
     protected $status;
 
     /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol1;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol2;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol3;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol4;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol5;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol6;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol7;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol8;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol9;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol10;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol11;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol12;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol13;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol14;
-
-    /**
-     * @ORM\Column(type="string", length=1000, nullable=true)
-     */
-    protected $BankStatementcol15;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     protected $updated;
@@ -152,6 +77,12 @@ class BankStatement implements InputFilterAwareInterface
      */
     protected $bankAccount;
 
+    /**
+     * @ORM\OneToMany(targetEntity="BankStatementCol", mappedBy="bankStatement", cascade={"persist"})
+     * @ORM\JoinColumn(name="id", referencedColumnName="BankStatement_id")
+     */
+    protected $bankStatementCols;
+    
     public function __construct()
     {
         $this->matches = new ArrayCollection();
@@ -276,385 +207,6 @@ class BankStatement implements InputFilterAwareInterface
     }
     
     /**
-     * Load bank statements from array
-     * 
-     * @param array $bankStatements
-     * @return \ersEntity\Entity\BankStatement
-     */
-    public function setBankStatements(array $bankStatements) {
-        $count = 1;
-        foreach($bankStatements as $statement) {
-            $func = 'setBankStatementcol'.$count;
-            $this->$func($statement);
-            $count++;
-        }
-        
-        return $this;
-    }
-    
-    /**
-     * get bank statements as array
-     * 
-     * @return array
-     */
-    public function getBankStatements() {
-        $count = 1;
-        $ret = array();
-        $func = 'getBankStatementcol'.$count;
-        while(method_exists($this, $func)) {
-            $func = 'getBankStatementcol'.$count;
-            $ret[] = $this->$func();
-            $count++;
-        }
-        return $ret;
-    }
-
-    /**
-     * Set the value of BankStatementcol1.
-     *
-     * @param string $BankStatementcol1
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol1($BankStatementcol1)
-    {
-        $this->BankStatementcol1 = $BankStatementcol1;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol1.
-     *
-     * @return string
-     */
-    public function getBankStatementcol1()
-    {
-        return $this->BankStatementcol1;
-    }
-
-    /**
-     * Set the value of BankStatementcol2.
-     *
-     * @param string $BankStatementcol2
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol2($BankStatementcol2)
-    {
-        $this->BankStatementcol2 = $BankStatementcol2;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol2.
-     *
-     * @return string
-     */
-    public function getBankStatementcol2()
-    {
-        return $this->BankStatementcol2;
-    }
-
-    /**
-     * Set the value of BankStatementcol3.
-     *
-     * @param string $BankStatementcol3
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol3($BankStatementcol3)
-    {
-        $this->BankStatementcol3 = $BankStatementcol3;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol3.
-     *
-     * @return string
-     */
-    public function getBankStatementcol3()
-    {
-        return $this->BankStatementcol3;
-    }
-
-    /**
-     * Set the value of BankStatementcol4.
-     *
-     * @param string $BankStatementcol4
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol4($BankStatementcol4)
-    {
-        $this->BankStatementcol4 = $BankStatementcol4;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol4.
-     *
-     * @return string
-     */
-    public function getBankStatementcol4()
-    {
-        return $this->BankStatementcol4;
-    }
-
-    /**
-     * Set the value of BankStatementcol5.
-     *
-     * @param string $BankStatementcol5
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol5($BankStatementcol5)
-    {
-        $this->BankStatementcol5 = $BankStatementcol5;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol5.
-     *
-     * @return string
-     */
-    public function getBankStatementcol5()
-    {
-        return $this->BankStatementcol5;
-    }
-
-    /**
-     * Set the value of BankStatementcol6.
-     *
-     * @param string $BankStatementcol6
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol6($BankStatementcol6)
-    {
-        $this->BankStatementcol6 = $BankStatementcol6;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol6.
-     *
-     * @return string
-     */
-    public function getBankStatementcol6()
-    {
-        return $this->BankStatementcol6;
-    }
-
-    /**
-     * Set the value of BankStatementcol7.
-     *
-     * @param string $BankStatementcol7
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol7($BankStatementcol7)
-    {
-        $this->BankStatementcol7 = $BankStatementcol7;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol7.
-     *
-     * @return string
-     */
-    public function getBankStatementcol7()
-    {
-        return $this->BankStatementcol7;
-    }
-
-    /**
-     * Set the value of BankStatementcol8.
-     *
-     * @param string $BankStatementcol8
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol8($BankStatementcol8)
-    {
-        $this->BankStatementcol8 = $BankStatementcol8;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol8.
-     *
-     * @return string
-     */
-    public function getBankStatementcol8()
-    {
-        return $this->BankStatementcol8;
-    }
-
-    /**
-     * Set the value of BankStatementcol9.
-     *
-     * @param string $BankStatementcol9
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol9($BankStatementcol9)
-    {
-        $this->BankStatementcol9 = $BankStatementcol9;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol9.
-     *
-     * @return string
-     */
-    public function getBankStatementcol9()
-    {
-        return $this->BankStatementcol9;
-    }
-
-    /**
-     * Set the value of BankStatementcol10.
-     *
-     * @param string $BankStatementcol10
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol10($BankStatementcol10)
-    {
-        $this->BankStatementcol10 = $BankStatementcol10;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol10.
-     *
-     * @return string
-     */
-    public function getBankStatementcol10()
-    {
-        return $this->BankStatementcol10;
-    }
-
-    /**
-     * Set the value of BankStatementcol11.
-     *
-     * @param string $BankStatementcol11
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol11($BankStatementcol11)
-    {
-        $this->BankStatementcol11 = $BankStatementcol11;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol11.
-     *
-     * @return string
-     */
-    public function getBankStatementcol11()
-    {
-        return $this->BankStatementcol11;
-    }
-
-    /**
-     * Set the value of BankStatementcol12.
-     *
-     * @param string $BankStatementcol12
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol12($BankStatementcol12)
-    {
-        $this->BankStatementcol12 = $BankStatementcol12;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol12.
-     *
-     * @return string
-     */
-    public function getBankStatementcol12()
-    {
-        return $this->BankStatementcol12;
-    }
-
-    /**
-     * Set the value of BankStatementcol13.
-     *
-     * @param string $BankStatementcol13
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol13($BankStatementcol13)
-    {
-        $this->BankStatementcol13 = $BankStatementcol13;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol13.
-     *
-     * @return string
-     */
-    public function getBankStatementcol13()
-    {
-        return $this->BankStatementcol13;
-    }
-
-    /**
-     * Set the value of BankStatementcol14.
-     *
-     * @param string $BankStatementcol14
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol14($BankStatementcol14)
-    {
-        $this->BankStatementcol14 = $BankStatementcol14;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol14.
-     *
-     * @return string
-     */
-    public function getBankStatementcol14()
-    {
-        return $this->BankStatementcol14;
-    }
-
-    /**
-     * Set the value of BankStatementcol15.
-     *
-     * @param string $BankStatementcol15
-     * @return \Entity\BankStatement
-     */
-    public function setBankStatementcol15($BankStatementcol15)
-    {
-        $this->BankStatementcol15 = $BankStatementcol15;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of BankStatementcol15.
-     *
-     * @return string
-     */
-    public function getBankStatementcol15()
-    {
-        return $this->BankStatementcol15;
-    }
-
-    /**
      * Set the value of updated.
      *
      * @param datetime $updated
@@ -737,6 +289,98 @@ class BankStatement implements InputFilterAwareInterface
     }
 
     /**
+     * Add BankStatementCol entity to collection (one to many).
+     *
+     * @param \Entity\BankStatementCol $bankStatementCol
+     * @return \Entity\BankStatement
+     */
+    public function addBankStatementCol(BankStatementCol $bankStatementCol)
+    {
+        $this->bankStatementCols[] = $bankStatementCol;
+
+        return $this;
+    }
+
+    /**
+     * Remove BankStatementCol entity from collection (one to many).
+     *
+     * @param \Entity\BankStatementCol $bankStatementCol
+     * @return \Entity\BankStatement
+     */
+    public function removeBankStatementCol(BankStatementCol $bankStatementCol)
+    {
+        $this->bankStatementCols->removeElement($bankStatementCol);
+
+        return $this;
+    }
+
+    /**
+     * Get BankStatementCol entity collection (one to many).
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBankStatementCols()
+    {
+        return $this->bankStatementCols;
+    }
+    
+    /**
+     * Get BankStatementCol entity by column number
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBankStatementColByNumber($num)
+    {
+        foreach($this->getBankStatementCols() as $col) {
+            if($col->getColumn() == $num) {
+                return $col;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * get the amount of this statement according to the format
+     */
+    public function getAmount() {
+        $statement_format = json_decode($this->getBankAccount()->getStatementFormat());
+        return $this->getBankStatementColByNumber($statement_format->amount);
+    }
+    
+    /**
+     * Get the name of this statement according to the format
+     */
+    public function getName() {
+        $statement_format = json_decode($this->getBankAccount()->getStatementFormat());
+        return $this->getBankStatementColByNumber($statement_format->name);
+    }
+    /**
+     * Get the code of this statement according to the format
+     */
+    public function getCode() {
+        $statement_format = json_decode($this->getBankAccount()->getStatementFormat());
+        return $this->getBankStatementColByNumber($statement_format->matchKey);
+    }
+    /**
+     * Get the date of this statement according to the format
+     */
+    public function getDate() {
+        $statement_format = json_decode($this->getBankAccount()->getStatementFormat());
+        $datestring = $this->getBankStatementColByNumber($statement_format->date)->getValue();
+        $timestamp = strtotime($datestring);
+        error_log('timestamp: '.$timestamp);
+        if($timestamp != false) {
+            $date = new \DateTime();
+            $date->setTimestamp($timestamp);
+            return $date;
+        } else {
+            error_log('unable to convert this to time: '.$datestring);
+            return false;
+        }
+        
+    }
+    
+    /**
      * Set BankAccount entity (many to one).
      *
      * @param \Entity\BankAccount $bankAccount
@@ -801,96 +445,6 @@ class BankStatement implements InputFilterAwareInterface
                 'validators' => array(),
             ),
             array(
-                'name' => 'BankStatementcol1',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol2',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol3',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol4',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol5',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol6',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol7',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol8',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol9',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol10',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol11',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol12',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol13',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol14',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'BankStatementcol15',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
                 'name' => 'updated',
                 'required' => false,
                 'filters' => array(),
@@ -938,7 +492,7 @@ class BankStatement implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'BankAccount_id', 'hash', 'BankStatementcol1', 'BankStatementcol2', 'BankStatementcol3', 'BankStatementcol4', 'BankStatementcol5', 'BankStatementcol6', 'BankStatementcol7', 'BankStatementcol8', 'BankStatementcol9', 'BankStatementcol10', 'BankStatementcol11', 'BankStatementcol12', 'BankStatementcol13', 'BankStatementcol14', 'BankStatementcol15', 'updated', 'created');
+        $dataFields = array('id', 'BankAccount_id', 'hash', 'updated', 'created');
         $relationFields = array('bankAccount');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -971,6 +525,6 @@ class BankStatement implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'BankAccount_id', 'hash', 'BankStatementcol1', 'BankStatementcol2', 'BankStatementcol3', 'BankStatementcol4', 'BankStatementcol5', 'BankStatementcol6', 'BankStatementcol7', 'BankStatementcol8', 'BankStatementcol9', 'BankStatementcol10', 'BankStatementcol11', 'BankStatementcol12', 'BankStatementcol13', 'BankStatementcol14', 'BankStatementcol15', 'updated', 'created');
+        return array('id', 'BankAccount_id', 'hash', 'updated', 'created');
     }
 }

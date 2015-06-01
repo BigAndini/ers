@@ -54,6 +54,24 @@ class Module
                     }
                 }
             );
+
+        $zfcAuthEvents = $sm->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
+
+        $zfcAuthEvents->attach( 'authenticate.success', function( $authEvent ) use( $sm ){
+            $loginService =  $sm->get( 'PreReg\Service\LoginService' );
+            $user_id = $authEvent->getIdentity();
+            $loginService->setUserId($user_id);
+            $loginService->onLogin();
+            return true;
+        });
+        
+        $zfcAuthEvents->attach( 'logout', function( $authEvent ) use( $sm ){
+            $loginService =  $sm->get( 'PreReg\Service\LoginService' );
+            #$user_id = $authEvent->getIdentity();
+            #$loginService->setUserId($user_id);
+            $loginService->onLogout();
+            return true;
+        });
     }
     
     public function bootstrapSession($e)
@@ -210,11 +228,39 @@ class Module
                     
                     return $form;
                 },
+                'PreReg\Service\AgegroupService:price' => function($sm) {
+                    $agegroupService = new Service\AgegroupService();
+                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                    $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                                ->findBy(array('priceChange' => '1'));
+                    $agegroupService->setAgegroups($agegroups);
+                    
+                    return $agegroupService;
+                },
+                'PreReg\Service\AgegroupService:ticket' => function($sm) {
+                    $agegroupService = new Service\AgegroupService();
+                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                    $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                                ->findBy(array('ticketChange' => '1'));
+                    $agegroupService->setAgegroups($agegroups);
+                    
+                    return $agegroupService;
+                },
                 'PreReg\Service\ETicketService' => function($sm) {
                     $eticketService = new Service\ETicketService();
                     $eticketService->setServiceLocator($sm);
                     return $eticketService;
                 },
+                'PreReg\Service\LoginService' => function($sm) {
+                    $loginService = new Service\LoginService();
+                    $loginService->setServiceLocator($sm);
+                    return $loginService;
+                },
+                'PreReg\InputFilter\Register' => function($sm) {
+                    $inputFilter = new InputFilter\Register();
+                    $inputFilter->setServiceLocator($sm);
+                    return $inputFilter;
+                }
             ),
         );
     }

@@ -1,5 +1,4 @@
 <?php
-// module/RegistrationSystem/view/registration-system/admin/index.phtml:
 
 $title = 'Order Overview';
 $this->headTitle($title);
@@ -11,6 +10,7 @@ $this->headTitle($title);
         <th>Code</th>
         <th>Date</th>
         <th>Buyer</th>
+        <th>Payment type</th>
         <th>Price</th>
         <th>Status</th>
         <th>&nbsp;</th>
@@ -31,10 +31,13 @@ $this->headTitle($title);
             <a href="mailto:<?php echo $order->getBuyer()->getEmail(); ?>"><?php echo $order->getBuyer()->getEmail(); ?></a>
         </td>
         <td>
+            <?php echo $order->getPaymentType()->getName(); ?>
+        </td>
+        <td>
             <?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?>
         </td>
         <td>
-            <?php echo $order->getPaymentStatus()->getValue(); ?>
+            <?php echo $order->getPaymentStatus(); ?>
         </td>
         <td>
             <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $order->getId()));?>"><?php echo $this->translate('Detail'); ?></a>

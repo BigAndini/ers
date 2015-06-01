@@ -31,29 +31,15 @@ echo $this->formSubmit($form->get('submit')); ?>
 <div class="row">
     <table class="table">
         <tr>
-            <th class="text-nowrap">Column 1</th>
-            <th class="text-nowrap">Column 2</th>
-            <th class="text-nowrap">Column 3</th>
-            <th class="text-nowrap">Column 4</th>
-            <th class="text-nowrap">Column 5</th>
-            <th class="text-nowrap">Column 6</th>
-            <th class="text-nowrap">Column 7</th>
-            <th class="text-nowrap">Column 8</th>
-            <th class="text-nowrap">Column 9</th>
-            <th class="text-nowrap">Column 10</th>
+            <?php for($i=1; $i<=$colCount; $i++): ?>
+            <th class="text-nowrap">Column <?php echo $i; ?></th>
+            <?php endfor; ?>
         </tr>
     <?php foreach ($statements as $statement) : ?>
         <tr>
-            <td><?php echo $statement->getBankStatementcol1(); ?></td>
-            <td><?php echo $statement->getBankStatementcol2(); ?></td>
-            <td><?php echo $statement->getBankStatementcol3(); ?></td>
-            <td><?php echo $statement->getBankStatementcol4(); ?></td>
-            <td><?php echo $statement->getBankStatementcol5(); ?></td>
-            <td><?php echo $statement->getBankStatementcol6(); ?></td>
-            <td><?php echo $statement->getBankStatementcol7(); ?></td>
-            <td><?php echo $statement->getBankStatementcol8(); ?></td>
-            <td><?php echo $statement->getBankStatementcol9(); ?></td>
-            <td><?php echo $statement->getBankStatementcol10(); ?></td>
+            <?php foreach($statement->getBankStatementCols() as $col): ?>
+            <td><?php echo $col->getValue(); ?></td>
+            <?php endforeach; ?>
         </tr>
     <?php endforeach; ?>
     </table>

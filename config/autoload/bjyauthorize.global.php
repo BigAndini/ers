@@ -94,9 +94,10 @@ return [
         // resource providers provide a list of resources that will be tracked
         // in the ACL. like roles, they can be hierarchical
         'resource_providers' => [
-            /*\BjyAuthorize\Provider\Resource\Config::class => [
-                'pants' => [],
-            ],*/
+            \BjyAuthorize\Provider\Resource\Config::class => [
+                #'pants' => [],
+                'redirect' => [],
+            ],
         ],
 
         /* rules can be specified here with the format:
@@ -105,21 +106,22 @@ return [
          * Zend\Acl\Assertion\AssertionInterface.
          * *if you use assertions, define them using the service manager!*
          */
-        /*'rule_providers' => [
+        'rule_providers' => [
             \BjyAuthorize\Provider\Rule\Config::class => [
                 'allow' => [
                     // allow guests and users (and admins, through inheritance)
                     // the "wear" privilege on the resource "pants"
-                    [['guest', 'user'], 'pants', 'wear'],
+                    #[['guest', 'user'], 'pants', 'wear'],
+                    [['onsite', 'admin', 'supradm'], 'redirect', 'do'],
                 ],
 
                 // Don't mix allow/deny rules if you are using role inheritance.
                 // There are some weird bugs.
-                'deny' => [
+                /*'deny' => [
                     // ...
-                ],
+                ],*/
             ],
-        ],*/
+        ],
 
         /* Currently, only controller and route guards exist
          *
@@ -162,12 +164,18 @@ return [
                 ['controller' => 'PreReg\Controller\Profile', 'action' => 'participant',      'roles' => ['supradm']],
                 ['controller' => 'PreReg\Controller\Profile',                                 'roles' => ['user']],
                 
+                /* Onsite */
+                ['controller' => 'OnsiteReg\Controller\Index',                'roles' => ['supradm']],
+                ['controller' => 'OnsiteReg\Controller\Redirect',             'roles' => ['supradm']],
+                
                 /* Admin */
                 #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Test',                'roles' => ['Admin_Test',                      'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Index',               'roles' => ['Admin_Index',     'preregcoordinator', 'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Statistic',           'roles' => ['Admin_Statistic', 'preregcoordinator', 'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Order',               'roles' => ['Admin_Order',     'preregcoordinator', 'admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Package',             'roles' => ['Admin_Package',   'preregcoordinator', 'admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Item',                'roles' => ['Admin_Item',      'preregcoordinator', 'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\PriceLimit',          'roles' => ['Admin_PriceLimit',                'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Product',             'roles' => ['Admin_Product',                   'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\ProductPackage',      'roles' => ['Admin_ProductPackage',            'admin', 'supradm']],
@@ -183,6 +191,8 @@ return [
                 ['controller' => 'Admin\Controller\Role',                'roles' => ['Admin_Role',                      'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Country',             'roles' => ['Admin_Country',                   'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Bankaccount',         'roles' => ['Admin_Bankaccount',               'admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Matching',            'roles' => ['Admin_Matching',                  'admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Ajax',                'roles' => ['Admin_Matching',                  'admin', 'supradm']],
                 
                 /* Cron */
                 ['controller' => 'Admin\Controller\Cron',  'roles' => ['guest']],

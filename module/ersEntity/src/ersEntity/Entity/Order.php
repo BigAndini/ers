@@ -21,7 +21,11 @@ use Zend\InputFilter\InputFilterInterface;
  * Entity\Order
  *
  * @ORM\Entity()
- * @ORM\Table(name="`Order`", indexes={@ORM\Index(name="fk_Order_User1_idx", columns={"Buyer_id"}), @ORM\Index(name="fk_Order_PaymentType1_idx", columns={"PaymentType_id"}), @ORM\Index(name="fk_Order_Code1_idx", columns={"Code_id"})})
+ * @ORM\Table(name="`Order`", indexes={
+ *      @ORM\Index(name="fk_Order_User1_idx", columns={"Buyer_id"}), 
+ *      @ORM\Index(name="fk_Order_PaymentType1_idx", columns={"PaymentType_id"}), 
+ *      @ORM\Index(name="fk_Order_Code1_idx", columns={"Code_id"})
+ * })
  * @ORM\HasLifecycleCallbacks()
  */
 class Order implements InputFilterAwareInterface
@@ -82,19 +86,29 @@ class Order implements InputFilterAwareInterface
     protected $hashkey;
 
     /**
-     * @ORM\Column(type="string", length=150, nullable=true)
+     * @ORM\Column(type="string", length=1500, nullable=true)
      */
     protected $invoiceDetail;
     
     /**
      * @ORM\Column(type="string", length=45)
      */
-    protected $status = 'unpaid';
+    protected $payment_status = 'unpaid';
     
     /**
      * @ORM\Column(type="integer")
      */
     protected $Code_id;
+    
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    protected $order_sum;
+    
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    protected $total_sum;
     
     /**
      * @ORM\Column(type="datetime")
@@ -119,7 +133,7 @@ class Order implements InputFilterAwareInterface
     protected $packages;
     
     /**
-     * @ORM\OneToMany(targetEntity="OrderStatus", mappedBy="order")
+     * @ORM\OneToMany(targetEntity="OrderStatus", mappedBy="order", cascade={"persist"})
      * @ORM\JoinColumn(name="id", referencedColumnName="Order_id")
      * @ORM\OrderBy({"created" = "DESC"})
      */
@@ -228,6 +242,8 @@ class Order implements InputFilterAwareInterface
             $this->created = new \DateTime();
         }
         $this->updated = new \DateTime();
+        #$this->order_sum = $this->getPrice();
+        #$this->total_sum = $this->getSum();
     }
     
     /**
@@ -236,6 +252,8 @@ class Order implements InputFilterAwareInterface
     public function PreUpdate()
     {
         $this->updated = new \DateTime();
+        #$this->order_sum = $this->getPrice();
+        #$this->total_sum = $this->getSum();
     }
     
     /**
@@ -389,9 +407,9 @@ class Order implements InputFilterAwareInterface
      * @param string $status
      * @return \Entity\Order
      */
-    public function setStatus($status)
+    public function setPaymentStatus($status)
     {
-        $this->status = $status;
+        $this->payment_status = $status;
 
         return $this;
     }
@@ -401,12 +419,12 @@ class Order implements InputFilterAwareInterface
      *
      * @return string
      */
-    public function getStatus()
+    public function getPaymentStatus()
     {
-        return $this->status;
+        return $this->payment_status;
     }
     
-    public function getPaymentStatus() {
+    /*public function getPaymentStatus() {
         $payment_status = array(
             'paid',
             'unpaid',
@@ -425,7 +443,7 @@ class Order implements InputFilterAwareInterface
             $ret->setValue('undefined');
         }
         return $ret;
-    }
+    }*/
 
     /**
      * Set the value of updated.
@@ -507,6 +525,58 @@ class Order implements InputFilterAwareInterface
     public function getCodeId()
     {
         return $this->Code_id;
+    }
+    
+    /**
+     * Set the value of order_sum.
+     *
+     * @param integer $order_sum
+     * @return \Entity\Order
+     */
+    public function setOrderSum($order_sum)
+    {
+        $this->order_sum = $order_sum;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of order_sum.
+     *
+     * @return integer
+     */
+    public function getOrderSum()
+    {
+        if($this->order_sum == 0) {
+            $this->order_sum = $this->getPrice();
+        }
+        return $this->order_sum;
+    }
+    
+    /**
+     * Set the value of total_sum.
+     *
+     * @param integer $total_sum
+     * @return \Entity\Order
+     */
+    public function setTotalSum($total_sum)
+    {
+        $this->total_sum = $total_sum;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of total_sum.
+     *
+     * @return integer
+     */
+    public function getTotalSum()
+    {
+        if($this->total_sum == 0) {
+            $this->total_sum = $this->getSum();
+        }
+        return $this->total_sum;
     }
     
     /**
@@ -619,6 +689,21 @@ class Order implements InputFilterAwareInterface
     public function getPackageByParticipantSessionId($id) {
         foreach($this->getPackages() as $package) {
             if($package->getParticipant()->getSessionId() == $id) {
+                return $package;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Get Package by participant email.
+     * 
+     * @return Entity\Package
+     */
+    public function getPackageByParticipantEmail($email) {
+        foreach($this->getPackages() as $package) {
+            $participant = $package->getParticipant();
+            if($participant->getEmail() == $email) {
                 return $package;
             }
         }
@@ -830,8 +915,8 @@ class Order implements InputFilterAwareInterface
         $participants = array();
         foreach($this->getPackages() as $package) {
             if($package->getParticipant()->getFirstname() != '' && $package->getParticipant()->getSurname() != '') {
-                $id = $package->getParticipant()->getSessionId();
-                $participants[$id] = $package->getParticipant();
+                #$id = $package->getParticipant()->getSessionId();
+                $participants[] = $package->getParticipant();
             }
         }
         
@@ -845,9 +930,39 @@ class Order implements InputFilterAwareInterface
      * @return false
      */
     public function getParticipantBySessionId($id) {
-        foreach($this->getPackages() as $package) {
-            if($package->getParticipant()->getSessionId() == $id) {
-                return $package->getParticipant();
+        foreach($this->getParticipants() as $participant) {
+            if($participant->getSessionId() == $id) {
+                return $participant;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Get Participant by email
+     * 
+     * @return Entity\User
+     * @return false
+     */
+    public function getParticipantByEmail($email) {
+        foreach($this->getParticipants() as $participant) {
+            if($participant->getEmail() == $email) {
+                return $participant;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Get Participant by id
+     * 
+     * @return Entity\User
+     * @return false
+     */
+    public function getParticipantById($id) {
+        foreach($this->getParticipants() as $participant) {
+            if($participant->getId() == $id) {
+                return $participant;
             }
         }
         return false;
@@ -895,7 +1010,7 @@ class Order implements InputFilterAwareInterface
      * @return \Entity\Order
      */
     
-    public function addParticipant($participant) {
+    public function addParticipant(User $participant) {
         $package = new Package();
         $sessionId = $this->getSessionId('package');
         $participant->setSessionId($sessionId);
@@ -1005,7 +1120,9 @@ class Order implements InputFilterAwareInterface
         $price = 0;
         foreach($this->getPackages() as $package) {
             foreach($package->getItems() as $item) {
-                $price += $item->getPrice();
+                if($item->getStatus() != 'cancelled') {
+                    $price += $item->getPrice();
+                }
             }
         }
         
@@ -1142,7 +1259,7 @@ class Order implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Buyer_id', 'buyer', 'PaymentType_id', 'paymentType', 'matchKey', 'hashkey', 'invoiceDetail', 'updated', 'created', 'Code_id');
+        $dataFields = array('id', 'Code_id', 'Buyer_id', 'buyer', 'PaymentType_id', 'matchKey', 'hashkey', 'invoiceDetail', 'updated', 'created');
         $relationFields = array('user', 'paymentType', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -1177,18 +1294,18 @@ class Order implements InputFilterAwareInterface
     {
         return array(
             'id', 
+            'Code_id',
             'package_id', 
             'item_id', 
-            'Buyer_id', 
-            'buyer', 
+            'Buyer_id',
+            'buyer',
             'PaymentType_id', 
-            'paymentType', 
             'matchKey', 
             'hashkey', 
             'invoiceDetail', 
             'packages', 
             'updated', 
             'created', 
-            'Code_id');
+        );
     }
 }
