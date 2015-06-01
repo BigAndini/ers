@@ -44,6 +44,12 @@ class BankStatement implements InputFilterAwareInterface
      * @ORM\Column(type="integer")
      */
     protected $BankAccount_id;
+    
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $BankAccountCsv_id;
+
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
@@ -82,6 +88,13 @@ class BankStatement implements InputFilterAwareInterface
      * @ORM\JoinColumn(name="id", referencedColumnName="BankStatement_id")
      */
     protected $bankStatementCols;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="BankAccountCsv", inversedBy="bankStatements")
+     * @ORM\JoinColumn(name="BankAccountCsv_id", referencedColumnName="id")
+     */
+    protected $bankAccountCsv;
+
     
     public function __construct()
     {
@@ -159,6 +172,30 @@ class BankStatement implements InputFilterAwareInterface
     {
         return $this->BankAccount_id;
     }
+    
+    /**
+     * Set the value of bank_account_csv_id.
+     *
+     * @param integer $bank_account_csv_id
+     * @return \Entity\BankStatement
+     */
+    public function setBankAccountCsvId($bank_account_csv_id)
+    {
+        $this->BankAccountCsv_id = $bank_account_csv_id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of bank_account_csv_id.
+     *
+     * @return integer
+     */
+    public function getBankAccountCsvId()
+    {
+        return $this->BankAccountCsv_id;
+    }
+
 
     /**
      * Set the value of status.
@@ -338,6 +375,30 @@ class BankStatement implements InputFilterAwareInterface
         }
         return false;
     }
+    
+    /**
+     * Set BankAccountCsv entity (many to one).
+     *
+     * @param \Entity\BankAccountCsv $bankAccountCsv
+     * @return \Entity\BankStatement
+     */
+    public function setBankAccountCsv(BankAccountCsv $bankAccountCsv = null)
+    {
+        $this->bankAccountCsv = $bankAccountCsv;
+
+        return $this;
+    }
+
+    /**
+     * Get BankAccountCsv entity (many to one).
+     *
+     * @return \Entity\BankAccountCsv
+     */
+    public function getBankAccountCsv()
+    {
+        return $this->bankAccountCsv;
+    }
+
     
     /**
      * get the amount of this statement according to the format
