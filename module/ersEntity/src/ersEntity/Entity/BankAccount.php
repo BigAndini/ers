@@ -469,7 +469,10 @@ class BankAccount implements InputFilterAwareInterface
         $statement_format  = json_decode($this->getStatementFormat());
         $amount = (float) 0;
         foreach($this->getBankStatements() as $statement) {
-            $amount += (float) $statement->getBankStatementColByNumber($statement_format->amount)->getValue();
+            $col = $statement->getBankStatementColByNumber($statement_format->amount);
+            if(is_object($col)) {
+                $amount += (float) $col->getValue();
+            }
         }
         return $amount;
     }

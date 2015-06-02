@@ -1,14 +1,15 @@
 <?php
 
-$title = 'Set status to cancelled for item '.$item->getName();
+$title = 'Uncancel item '.$item->getName();
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-<p>Do you really want to set the status to <strong>cancelled</strong> for the item <?php echo $item->getName(); ?>?</p>
+<p>Do you really want to <strong>uncancel</strong> this item: <?php echo $item->getName(); ?>?</p>
+<p>The item will be set to unpaid and will be rematched with the next auto-match run.</p>
 <?php
 $url = $this->url('admin/item', array(
-    'action' => 'cancel',
+    'action' => 'uncancel',
     'id'     => $item->getId(),
 ));
 ?>

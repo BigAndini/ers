@@ -1,0 +1,112 @@
+<?php if($item->getStatus() == 'cancelled') {
+    $class = ' grey';
+} else {
+    $class = '';
+} ?>
+<tr class="<?php echo $class; ?>">
+    <td>
+        <div class="row">
+            <div class="col-md-12">
+                <p class="main-item">
+                    <span class="product-name">
+                        <?php echo $item->getName(); ?>
+                    </span>
+                    <?php if(count($item->getItemVariants()) > 0): ?>
+                        <span class="product-variants">
+                            (
+                            <?php 
+                            $numVariants = count($item->getItemVariants()); 
+                            $i = 0;
+                            $variants = array();
+                            ?>
+                            <?php foreach($item->getItemVariants() as $variant): 
+                                echo $variant->getName().': '.$variant->getValue(); 
+                                if(++$i != $numVariants):
+                                    echo '; ';
+                                endif;
+                            endforeach; ?>
+                            )
+                        </span>
+                    <?php endif; ?>
+                </p>
+            </div>
+        </div>
+        <?php if($item->hasChildItems()): ?>
+        <div class="row">
+            <div class="col-md-11 col-md-offset-1">
+                <?php foreach($item->getChildItems() as $cItem): ?>
+                    <span class="product-name">
+                        <?php echo $cItem->getName(); ?>
+                    </span>
+                    <?php if(count($cItem->getItemVariants()) > 0): ?>
+                <span class="product-variants">
+                    (
+                    <?php 
+                    $numVariants = count($cItem->getItemVariants()); 
+                    $i = 0;
+                    $variants = array();
+                    ?>
+                    <?php foreach($cItem->getItemVariants() as $variant): 
+                        echo $variant->getName().': '.$variant->getValue(); 
+                        if(++$i != $numVariants):
+                            echo '; ';
+                        endif;
+                    endforeach; ?>
+                    )
+                </span>
+            <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+    </td>
+    <td><?php echo $item->getAmount(); ?></td>
+    <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+    <td class="text-nowrap">
+        <span class="h3 green">
+            <?php switch($item->getStatus()):
+                case 'ordered': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-shopping-cart" title="ordered"></i>
+                    <?php break;
+                case 'paid': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-money" title="paid"></i>
+                    <?php break;
+                case 'cancelled': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-ban" title="cancelled"></i>
+                    <?php break;
+                case 'shipped': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-barcode" title="shipped"></i>
+                    <?php break;
+                default: ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-question" title="unknown"></i>
+                    <?php break;
+            endswitch; ?>
+        </span>
+        <div class="navbar pull-right">
+            <ul class="nav nav-pills">
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                        <span>Tools<span class="caret"></span></span>
+                    </a>
+                    <ul id="page_2" class="dropdown-menu">
+                        <li>
+                            <?php if($item->getStatus() == 'cancelled'): ?>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'uncancel', 'id' => $item->getId())); ?>">uncancel</a>
+                            <?php elseif($item->getStatus() == 'shipped'): ?>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'unship', 'id' => $item->getId())); ?>">unship</a>
+                            <?php else: ?>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'cancel', 'id' => $item->getId())); ?>">cancel</a>
+                            <?php endif; ?>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('admin/item', array('action' => 'change-item', 'id' => $item->getId())); ?>">change item</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('admin/item', array('action' => 'change-owner', 'id' => $item->getId())); ?>">change participant</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </td>
+</tr>

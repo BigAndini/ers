@@ -12,6 +12,7 @@ use Zend\Form\Form;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 use ersEntity\Entity;
+use Zend\Session\Container;
 
 class ProductView extends Form
 {
@@ -268,6 +269,24 @@ class ProductView extends Form
                             
 
                             return false;
+                        },
+
+                    ),
+                ),
+                array(
+                    'name' => 'Callback',
+                    'options' => array(
+                        'messages' => array(
+                            \Zend\Validator\Callback::INVALID_VALUE => 'Unable to add personalized product to person without birthdate. Please add date of birth in My Person list.',
+                        ),
+                        'callback' => function($value, $context=array()) {
+                            $cartContainer = new Container('cart');
+                            $participant = $cartContainer->order->getParticipantBySessionId($value);
+                            if(! $participant->getBirthday() instanceof \DateTime) {
+                                return false;
+                            } else {
+                                return true;
+                            }
                         },
 
                     ),

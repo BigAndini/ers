@@ -18,6 +18,6 @@ return array(
         'name_with_number'  => "38th European Juggling Convention",
         'info_mail'         => "info@ejc2015.org",
         'website'           => "http://www.ejc2015.org",
-        'onsitereg'         => "http://prereg.eja.net/onsite/register",
+        'onsitereg'         => "http://prereg.eja.net/redirect",
     )
 );

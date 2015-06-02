@@ -19,6 +19,7 @@ use DOMPDFModule\View\Model\PdfModel;
 class ETicketService
 {
     protected $_sl;
+    protected $_language = 'en';
     protected $_package;
     protected $_participant;
     protected $_agegroup;
@@ -48,6 +49,25 @@ class ETicketService
     protected function getServiceLocator() {
         return $this->_sl;
     }
+    
+    /**
+     * set Language
+     * 
+     * @param string $sl
+     */
+    public function setLanguage($lang) {
+        $this->_language = $lang;
+    }
+    
+    /**
+     * get Language
+     * 
+     * @return string
+     */
+    protected function getLanguage() {
+        return $this->_language;
+    }
+    
     
     /**
      * set Package
@@ -277,7 +297,7 @@ class ETicketService
          * generate PDF
          */
         $pdfView = new ViewModel();
-        $pdfView->setTemplate('pdf/eticket');
+        $pdfView->setTemplate('pdf/eticket_'.$this->getLanguage());
         $pdfView->setVariables(array(
             'name' => $name,
             'package' => $this->getPackage(),
@@ -295,7 +315,7 @@ class ETicketService
         $pdfEngine->render();
         $pdfContent = $pdfEngine->output();
         
-        $filename = $config['ERS']['name_short']."_eTicket_".preg_replace('/\ /', '_', $name);
+        #$filename = $config['ERS']['name_short']."_eTicket_".preg_replace('/\ /', '_', $name);
         $filename = $config['ERS']['name_short']."_eTicket_".$this->getPackage()->getCode()->getValue();
         
         # TODO: make ticket_path configurable
