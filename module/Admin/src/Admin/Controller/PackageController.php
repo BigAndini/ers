@@ -224,37 +224,120 @@ class PackageController extends AbstractActionController {
         $deadlineService->setCompareDate($order->getCreated());
         $deadline = $deadlineService->getDeadline();
         
-        /*
-         * get items of this package
-         */
+        $itemArray = $this->recalcPackage($package, $agegroup, $deadline);
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ret = $request->getPost('del', 'No');
+
+            if ($ret == 'Yes') {
+                $id = (int) $request->getPost('id');
+                $package = $em->getRepository("ersEntity\Entity\Package")
+                    ->findOneBy(array('id' => $id));
+                
+                $itemArray = $this->recalcPackage($package, $agegroup, $deadline);
+                foreach($itemArray as $items) {
+                    if(isset($items['after'])) {
+                        $itemAfter = $items['after'];
+                        $itemBefore = $items['before'];
+                        
+                        $em->persist($itemAfter);
+
+                        $itemBefore->setStatus('cancelled');
+                        $em->persist($itemBefore);
+
+                        $em->flush();
+                    }
+                }
+                
+                $breadcrumb = $forrest->get('package');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+                
+                /*
+                 * get items of this package
+                 */
+                foreach($package->getItems() as $item) {
+                    if($item->hasParentItems()) {
+                        continue;
+                    }
+                    $product = $item->getProduct();
+                    $price = $product->getProductPrice($agegroup, $deadline);
+                    if($item->getPrice() != $price->getCharge()) {
+                        /*
+                         * disable item and create new item
+                         */
+                        $newItem = clone $item;
+                        #$newItem = new Entity\Item();
+                        $newItem->populate($item->getArrayCopy());
+                        $newItem->setPrice($price->getCharge());
+
+                        $newItem->setProduct($item->getProduct());
+                        $newItem->setPackage($item->getPackage());
+
+                        $code = new Entity\Code();
+                        $code->genCode();
+                        $codecheck = 1;
+                        while($codecheck != null) {
+                            $code->genCode();
+                            $codecheck = $em->getRepository("ersEntity\Entity\Code")
+                                ->findOneBy(array('value' => $code->getValue()));
+                        }
+                        $newItem->setCodeId(null);
+                        $newItem->setCode($code);
+
+                        /*
+                         * add subitems to main item
+                         */
+                        foreach($item->getChildItems() as $cItem) {
+                            $itemPackage = new Entity\ItemPackage();
+                            $itemPackage->setSurItem($newItem);
+                            #$itemPackage
+                        }
+
+                        $em->persist($newItem);
+
+                        $item->setStatus('cancelled');
+                        $em->persist($item);
+
+                        $em->flush();
+                    }
+                }
+
+                $breadcrumb = $forrest->get('package');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+        }
+        
+        return new ViewModel(array(
+            'itemArray' => $itemArray,
+            'package' => $package,
+            'breadcrumb' => $forrest->get('package'),
+        ));
+    }
+    
+    private function recalcPackage(Entity\Package $package, $agegroup, $deadline) {
+        $itemArray = array();
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
         foreach($package->getItems() as $item) {
-            error_log('== main item: '.$item->getId().' - '.$item->getName().' ==');
-            error_log('parent items: ');
-            foreach($item->getParentItems() as $pItem) {
-                error_log('- item: '.$pItem->getId().' - '.$pItem->getName());
-            }
-            error_log('child items: ');
-            foreach($item->getChildItems() as $cItem) {
-                error_log('- item: '.$cItem->getId().' - '.$cItem->getName());
-            }
             if($item->hasParentItems()) {
-                error_log('this is a child item: continue');
                 continue;
             }
             $product = $item->getProduct();
             $price = $product->getProductPrice($agegroup, $deadline);
+            
             if($item->getPrice() != $price->getCharge()) {
                 /*
                  * disable item and create new item
                  */
-                $newItem = clone $item;
-                #$newItem = new Entity\Item();
+                #$newItem = clone $item;
+                $newItem = new Entity\Item();
                 $newItem->populate($item->getArrayCopy());
                 $newItem->setPrice($price->getCharge());
-                
+
                 $newItem->setProduct($item->getProduct());
                 $newItem->setPackage($item->getPackage());
-                
+
                 $code = new Entity\Code();
                 $code->genCode();
                 $codecheck = 1;
@@ -272,19 +355,48 @@ class PackageController extends AbstractActionController {
                 foreach($item->getChildItems() as $cItem) {
                     $itemPackage = new Entity\ItemPackage();
                     $itemPackage->setSurItem($newItem);
-                    #$itemPackage
+                    $itemPackage->setSubItem($cItem);
+                    $newItem->addItemPackageRelatedBySurItemId($itemPackage);
                 }
-                
-                $em->persist($newItem);
-                
-                $item->setStatus('cancelled');
-                $em->persist($item);
-                
-                $em->flush();
+
+                $itemArray[$item->getId()]['after'] = $newItem;
             }
+            $itemArray[$item->getId()]['before'] = $item;
         }
+        return $itemArray;
+    }
+    
+    public function downloadEticketAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $package = $em->getRepository("ersEntity\Entity\Package")
+                ->findOneBy(array('id' => $id));
         
-        $breadcrumb = $forrest->get('package');
-        return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+        $eticketService = $this->getServiceLocator()
+            ->get('PreReg\Service\ETicketService');
+        
+        $eticketService->setPackage($package);
+        $file = $eticketService->generatePdf();
+        
+        #$file = 'path/to/file';
+        $response = new \Zend\Http\Response\Stream();
+        $response->setStream(fopen($file, 'r'));
+        $response->setStatusCode(200);
+        $response->setStreamName(basename($file));
+        $headers = new \Zend\Http\Headers();
+        $headers->addHeaders(array(
+            'Content-Disposition' => 'attachment; filename="' . basename($file) .'"',
+            'Content-Type' => 'application/octet-stream',
+            'Content-Length' => filesize($file),
+            'Expires' => '@0', // @0, because zf2 parses date as string to \DateTime() object
+            'Cache-Control' => 'must-revalidate',
+            'Pragma' => 'public'
+        ));
+        $response->setHeaders($headers);
+        return $response;
     }
 }

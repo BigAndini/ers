@@ -1,0 +1,61 @@
+<div class="row">
+    <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-12">
+                <p class="main-item">
+                    <span class="product-name">
+                        <?php echo $item->getName(); ?>
+                    </span>
+                    <?php if(count($item->getItemVariants()) > 0): ?>
+                        <span class="product-variants">
+                            (
+                            <?php 
+                            $numVariants = count($item->getItemVariants()); 
+                            $i = 0;
+                            $variants = array();
+                            ?>
+                            <?php foreach($item->getItemVariants() as $variant): 
+                                echo $variant->getName().': '.$variant->getValue(); 
+                                if(++$i != $numVariants):
+                                    echo '; ';
+                                endif;
+                            endforeach; ?>
+                            )
+                        </span>
+                    <?php endif; ?>
+                </p>
+            </div>
+        </div>
+        <?php if($item->hasChildItems()): ?>
+        <div class="row">
+            <div class="col-md-11 col-md-offset-1">
+                <?php foreach($item->getChildItems() as $cItem): ?>
+                    <span class="product-name">
+                        <?php echo $cItem->getName(); ?>
+                    </span>
+                    <?php if(count($cItem->getItemVariants()) > 0): ?>
+                <span class="product-variants">
+                    (
+                    <?php 
+                    $numVariants = count($cItem->getItemVariants()); 
+                    $i = 0;
+                    $variants = array();
+                    ?>
+                    <?php foreach($cItem->getItemVariants() as $variant): 
+                        echo $variant->getName().': '.$variant->getValue(); 
+                        if(++$i != $numVariants):
+                            echo '; ';
+                        endif;
+                    endforeach; ?>
+                    )
+                </span>
+            <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+    </div>
+    <div class="col-md-2">
+        <?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?>
+    </div>
+</div>

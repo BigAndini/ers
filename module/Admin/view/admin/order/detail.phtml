@@ -124,7 +124,7 @@ $this->headTitle($title);
         <?php 
         $sum = 0;
         foreach ($order->getPackages() as $package) : 
-            if(count($package->getItems()) == 0) {
+            if(count($package->getAllItems()) == 0) {
                 continue;
             }
             $user = $package->getParticipant();
@@ -184,7 +184,7 @@ $this->headTitle($title);
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'send-eticket', 'id' => $package->getId())); ?>">Send eTicket</a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>">Download eTicket</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">Download eTicket</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -209,7 +209,7 @@ $this->headTitle($title);
                     </div>
                 </div>
 
-                <?php if(count($package->getItems()) != 0): ?>
+                <?php if(count($package->getAllItems()) != 0): ?>
                 <table class="table">
                     <tr>
                         <th>Product</th>
@@ -219,60 +219,16 @@ $this->headTitle($title);
                     </tr>
                     <?php
                     $subtotal = 0;
-                    foreach ($package->getItems() as $item):
-                        $subtotal += $item->getPrice();
-                        $sum += $item->getPrice();
-                        /*if($item->hasParentItems()):
+                    foreach ($package->getAllItems() as $item):
+                        if($item->hasParentItems()) {
                             continue;
-                        endif;*/
-                        ?>
-                        <tr>
-                            <td>
-                                <span class="product-name">
-                                    <?php echo $item->getName(); ?>
-                                </span>
-                                <span class="product-variants">
-                                    <?php if(count($item->getItemVariants()) > 0): ?>
-                                    (
-                                    <?php 
-                                    $numVariants = count($item->getItemVariants()); 
-                                    $i = 0;
-                                    $variants = array();
-                                    ?>
-                                    <?php foreach($item->getItemVariants() as $variant): 
-                                        echo $variant->getName().': '.$variant->getValue(); 
-                                        if(++$i != $numVariants):
-                                            echo '; ';
-                                        endif;
-                                        $variants[] = array(
-                                            'pv' => $variant->getProductVariantId(),
-                                            'pvv' => $variant->getProductVariantValueId(),
-                                            );
-                                    endforeach; ?>
-                                    )
-                                    <?php endif; ?>
-                                </span>
-                            </td>
-                            <td><?php echo $item->getAmount(); ?></td>
-                            <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
-                            <td class="text-right h3 text-nowrap">
-                                <?php 
-                                $statuscssclass = array(
-                                    'ordered' => 'gray',
-                                    'paid' => 'gray',
-                                    'cancelled' => 'gray',
-                                    'shipped' => 'gray',
-                                );
-
-                                $statuscssclass[$item->getStatus()] = 'green';
-                                ?>
-                                <i data-toggle="tooltip" data-placement="bottom" title="ordered" class="fa fa-shopping-cart <?php echo $statuscssclass['ordered']; ?>"></i>
-                                <i data-toggle="tooltip" data-placement="bottom" title="paid" class="fa fa-money <?php echo $statuscssclass['paid']; ?>" title="paid"></i>
-                                <i data-toggle="tooltip" data-placement="bottom" title="cancelled" class="fa fa-ban <?php echo $statuscssclass['cancelled']; ?>" title="cancelled"></i>
-                                <i data-toggle="tooltip" data-placement="bottom" title="shipped" class="fa fa-barcode <?php echo $statuscssclass['shipped']; ?>" title="shipped"></i>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
+                        }
+                        echo $this->partial('partial/order-detail-item.phtml', array('item' => $item));
+                        if($item->getStatus() != 'cancelled') {
+                            $subtotal += $item->getPrice();
+                            $sum += $item->getPrice();
+                        }
+                    endforeach; ?>
                     <tr>
                         <td></td>
                         <td>Subtotal:</td>
@@ -281,6 +237,24 @@ $this->headTitle($title);
                     </tr>
                 </table>
                 <?php endif; ?>
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <ul class="list-inline">
+                            <li data-toggle="tooltip" data-placement="bottom" title="there is no match for this item, yet">
+                                <i class="fa fa-shopping-cart green"></i> ordered
+                            </li>
+                            <li data-toggle="tooltip" data-placement="bottom" title="this item is paid">
+                                <i class="fa fa-money green"></i> paid
+                            </li>
+                            <li data-toggle="tooltip" data-placement="bottom" title="this item was cancelled">
+                                <i class="fa fa-ban green"></i> cancelled    
+                            </li>
+                            <li data-toggle="tooltip" data-placement="bottom" title="badge is already collected by participant">
+                                <i class="fa fa-barcode green"></i> shipped
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
         <?php endforeach; ?>

@@ -175,12 +175,18 @@
             </p>
             <?php foreach($package->getItems() as $item): ?>
                 <?php switch($item->getProductId()):
+                    /*
+                     * week ticket
+                     */
                     case '1': ?>
                         <p class="order-description">Order:</p>
                         <p class="order-value">
                             <?php echo $item->getProduct()->getName(); ?>: <span class="fa">&#xf046;</span>
                         </p>
                         <?php break;
+                    /*
+                     * gala show ticket
+                     */
                     case '5': ?>
                         <p class="order-description"><?php echo $item->getProduct()->getName(); ?></p>
                         <p class="order-value">
@@ -188,6 +194,11 @@
                             <span><?php echo $variant->getValue(); ?></span>
                             <?php endforeach; ?>
                         </p>
+                        <?php break;
+                    /*
+                     * day ticket
+                     */
+                    case '4': ?>
                         <?php break;
                     default: ?>
                         <?php break;
