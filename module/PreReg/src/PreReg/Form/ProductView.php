@@ -282,9 +282,14 @@ class ProductView extends Form
                         'callback' => function($value, $context=array()) {
                             $cartContainer = new Container('cart');
                             $participant = $cartContainer->order->getParticipantBySessionId($value);
-                            if(! $participant->getBirthday() instanceof \DateTime) {
-                                return false;
+                            if(is_object($participant)) {
+                                if(!$participant->getBirthday() instanceof \DateTime) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
                             } else {
+                                # this is not a personalized product
                                 return true;
                             }
                         },
