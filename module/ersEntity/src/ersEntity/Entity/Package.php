@@ -347,7 +347,7 @@ class Package implements InputFilterAwareInterface
      */
     public function getItems()
     {
-        $items = array();
+        $items = new ArrayCollection();
         foreach($this->items as $item) {
             if($item->getStatus() == 'cancelled') {
                 continue;
