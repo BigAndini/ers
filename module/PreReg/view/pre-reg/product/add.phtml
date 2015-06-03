@@ -151,10 +151,6 @@
                     </p>
                 </div>
                 <div class="col-lg-6">
-                    <?php 
-                    error_log('found '.count($product->getChildProducts()).' childs');
-                    error_log('found '.count($product->getParentProducts()).' parents');
-                    ?>
                     <?php if(count($product->getChildProducts()) > 0): ?>
                     <h3>Included Items:</h3>
                     <?php foreach($product->getChildProducts() as $package): 
