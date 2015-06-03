@@ -166,7 +166,7 @@ return [
                 
                 /* Onsite */
                 ['controller' => 'OnsiteReg\Controller\Index',                'roles' => ['supradm']],
-                ['controller' => 'OnsiteReg\Controller\Redirect',             'roles' => ['supradm']],
+                ['controller' => 'OnsiteReg\Controller\Redirect',             'roles' => ['onsite', 'admin', 'supradm']],
                 
                 /* Admin */
                 #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],

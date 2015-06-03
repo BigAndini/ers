@@ -21,16 +21,16 @@ class RedirectController extends AbstractActionController {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }*/
         
-        $default_redirect_target = 'http://ejc2015.org/volunteer/';
+        #$default_redirect_target = 'http://ejc2015.org/volunteer/';
         
         /*
          * If not logged in redirect to default redirect target
          * http://ejc2015.org/volunteer/
          */
-        if(!$this->zfcUserAuthentication()->hasIdentity()) {
+        /*if(!$this->zfcUserAuthentication()->hasIdentity()) {
             return $this->redirect()->toUrl($default_redirect_target);
         }
-        $user = $this->zfcUserAuthentication()->getIdentity();
+        $user = $this->zfcUserAuthentication()->getIdentity();*/
         
         /*
          * If logged in check for according rights. If no right redirect to 
@@ -45,12 +45,12 @@ class RedirectController extends AbstractActionController {
         $supradm_role->setRoleId('supradm');*/
         
         
-        if(!$this->isAllowed('redirect', 'do')) {
+        /*if(!$this->isAllowed('redirect', 'do')) {
             error_log('user is not allowed');
             return $this->redirect()->toUrl($default_redirect_target);
-        }
+        }*/
         
-        error_log('user is allowed');
+        #error_log('user is allowed');
         
         /*
          * check the code that was given
@@ -71,7 +71,8 @@ class RedirectController extends AbstractActionController {
                 ->findOneBy(array('Code_id' => $code->getId()));
         if($package) {
             error_log('found package for code '.$code->getValue());
-            return $this->redirect()->toUrl($default_redirect_target);
+            #return $this->redirect()->toUrl($default_redirect_target);
+            return $this->redirect()->toRoute('onsite/package', array('action' => 'detail', 'id' => $package->getId()));
         }
         
         

@@ -112,8 +112,10 @@ class ETicketService
         $agegroup = $agegroupService->getAgegroupByUser($participant);
         if($agegroup) {
             $this->_agegroup = $agegroup;
+            error_log('found agegroup: '.$agegroup->getName());
         } else {
             $this->_agegroup = null;
+            error_log('no agegroup found');
         }
     }
     
@@ -274,6 +276,7 @@ class ETicketService
             'text' => $code, 
             'barHeight' => 40,
             'factor' => 1.1,
+            'drawText' => false,
         );
 
         // No required options

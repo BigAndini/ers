@@ -35,7 +35,7 @@ return array(
                 'resource'  => 'controller/PreReg\Controller\Product',
             ),
             'participant' => array(
-                'label' => 'People attending',
+                'label' => 'My Persons',
                 'route' => 'participant',
                 'resource'  => 'controller/PreReg\Controller\Participant',
             ),
@@ -143,7 +143,7 @@ return array(
                 'resource' => 'controller/PreReg\Controller\Package',
             ),
             'person' => array(
-                'label' => 'People attending',
+                'label' => 'My Persons',
                 'route' => 'profile',
                 'action' => 'participant',
                 'resource' => 'controller/PreReg\Controller\Profile:participant',

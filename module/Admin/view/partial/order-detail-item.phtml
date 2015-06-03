@@ -77,6 +77,9 @@
                 case 'shipped': ?>
                     <i data-toggle="tooltip" data-placement="bottom" class="fa fa-barcode" title="shipped"></i>
                     <?php break;
+                case 'zero_ok': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-child" title="0 € child ticket"></i>
+                    <?php break;
                 default: ?>
                     <i data-toggle="tooltip" data-placement="bottom" class="fa fa-question" title="unknown"></i>
                     <?php break;
@@ -104,6 +107,17 @@
                         <li>
                             <a href="<?php echo $this->url('admin/item', array('action' => 'change-owner', 'id' => $item->getId())); ?>">change participant</a>
                         </li>
+                        <?php if($item->getStatus() == 'zero_ok'): ?>
+                            <li>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'zero-not-ok', 'id' => $item->getId())); ?>">0 € not OK</a>
+                            </li>
+                        <?php else: ?>
+                            <?php if($item->getPrice() == 0): ?>
+                                <li>
+                                    <a href="<?php echo $this->url('admin/item', array('action' => 'zero-ok', 'id' => $item->getId())); ?>">0 € OK</a>
+                                </li>
+                            <?php endif; ?>
+                        <?php endif; ?>
                     </ul>
                 </li>
             </ul>

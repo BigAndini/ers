@@ -179,6 +179,90 @@ class ItemController extends AbstractActionController {
         ));
     }
     
+    public function zeroOkAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $item = $em->getRepository("ersEntity\Entity\Item")
+                ->findOneBy(array('id' => $id));
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('item')) {
+            $forrest->set('item', 'admin/order');
+        }
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ret = $request->getPost('del', 'No');
+
+            if ($ret == 'Yes') {
+                $id = (int) $request->getPost('id');
+                
+                $item = $em->getRepository("ersEntity\Entity\Item")
+                    ->findOneBy(array('id' => $id));
+                
+                $item->setStatus('zero_ok');
+                $em->persist($item);
+                
+                $em->flush();
+                
+                $breadcrumb = $forrest->get('item');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+        }
+        
+        return new ViewModel(array(
+            'item' => $item,
+            'breadcrumb' => $forrest->get('item'),
+        ));
+    }
+    
+    public function zeroNotOkAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this
+            ->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $item = $em->getRepository("ersEntity\Entity\Item")
+                ->findOneBy(array('id' => $id));
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('item')) {
+            $forrest->set('item', 'admin/order');
+        }
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ret = $request->getPost('del', 'No');
+
+            if ($ret == 'Yes') {
+                $id = (int) $request->getPost('id');
+                
+                $item = $em->getRepository("ersEntity\Entity\Item")
+                    ->findOneBy(array('id' => $id));
+                
+                $item->setStatus('ordered');
+                $em->persist($item);
+                
+                $em->flush();
+                
+                $breadcrumb = $forrest->get('item');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+        }
+        
+        return new ViewModel(array(
+            'item' => $item,
+            'breadcrumb' => $forrest->get('item'),
+        ));
+    }
+    
     public function paidAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
