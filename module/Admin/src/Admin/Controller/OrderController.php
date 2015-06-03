@@ -567,6 +567,7 @@ class OrderController extends AbstractActionController {
                 ->join('o.packages', 'p')
                 ->join('p.items', 'i')
                 ->where('i.price = 0')
+                ->andWhere("i.status != 'zero_ok'")
                 ->andWhere('i.Product_id = 1');
 
         $orders = $qb->getQuery()->getResult();

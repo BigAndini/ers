@@ -139,7 +139,7 @@ class CronController extends AbstractActionController {
                              */
                             $admin = $em->getRepository("ersEntity\Entity\User")
                                 ->findOneBy(array('id' => 1));
-                            $match->setUser($admin);
+                            $match->setAdmin($admin);
                             
                             $em->persist($match);
                             $em->persist($order);
