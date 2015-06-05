@@ -37,6 +37,10 @@
                 text-align: justify;
             }
             
+            .black {
+                color: #000;
+            }
+            
             h3, h4 {
                 margin:0;
                 padding:0;
@@ -157,7 +161,7 @@
                 Gesundheitszustand selbst und achten auf diesen.</p>
         </div>
         <div class="order small">
-            <h3><?php echo $package->getCode()->getValue(); ?></h3>
+            <h3 class="black"><?php echo $package->getCode()->getValue(); ?></h3>
             <p class="order-description">Name:</p>
             <p class="order-value">
                 <?php 
