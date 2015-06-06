@@ -92,10 +92,13 @@ class CronController extends AbstractActionController {
             $bankaccount = $statement->getBankAccount();
             $statement_format = json_decode($bankaccount->getStatementFormat());
             
+            # TODO: check if the statement_format is already set. If not move to next statement.
+            
             /*$matchKey_func = 'getBankStatementcol'.$statement_format->matchKey;
             $name_func = 'getBankStatementcol'.$statement_format->name;
             $amount_func = 'getBankStatementcol'.$statement_format->amount;
             $date_func = 'getBankStatementcol'.$statement_format->date;*/
+            
             
             $ret = $this->findCode($statement->getBankStatementColByNumber($statement_format->matchKey)->getValue());
             if(is_array($ret)) {
