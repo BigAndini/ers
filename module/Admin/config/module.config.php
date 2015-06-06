@@ -184,7 +184,7 @@ return array(
                     ),
                 ),
             ),
-            'matching' => array(
+            'refund' => array(
                 'label' => 'Refund',
                 'route' => 'admin',
                 'pages' => array(
