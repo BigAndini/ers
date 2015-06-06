@@ -26,14 +26,11 @@ use Zend\Mime;
 
 class TestController extends AbstractActionController {    
     public function barcodetestAction() {
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $start = microtime(true);
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $codes = array();
@@ -77,8 +74,7 @@ class TestController extends AbstractActionController {
         $emailService = new Service\EmailFactory();
         $emailService->setFrom('prereg@eja.net');
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $user = $em->getRepository("ersEntity\Entity\User")->findOneBy(array('email' => 'andi@sixhop.net'));
         $user = new Entity\User();
@@ -138,8 +134,7 @@ class TestController extends AbstractActionController {
         $pdf->setOption("paperSize", "a4"); //Defaults to 8x11
         $pdf->setOption("paperOrientation", "portrait"); //Defaults to portrait
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $order = $em->getRepository("ersEntity\Entity\Order")
@@ -278,8 +273,7 @@ class TestController extends AbstractActionController {
         
     }
     public function eticketAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $order = $em->getRepository("ersEntity\Entity\Order")
@@ -300,8 +294,7 @@ class TestController extends AbstractActionController {
         return new ViewModel();
     }
     public function encodingAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $order = $em->getRepository("ersEntity\Entity\Order")
@@ -322,13 +315,10 @@ class TestController extends AbstractActionController {
         return $response;
     }
     public function mailEncodingAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        /*$logger = $this
-            ->getServiceLocator()
-            ->get('Logger');*/
+        #$logger = $this->getServiceLocator()->get('Logger');
         
         $order = $em->getRepository("ersEntity\Entity\Order")
                     ->findOneBy(array('id' => '17'));

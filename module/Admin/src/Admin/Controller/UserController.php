@@ -22,8 +22,7 @@ class UserController extends AbstractActionController {
         $forrest = new Service\BreadcrumbFactory();
         $forrest->set('user', 'admin/user');
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
@@ -52,8 +51,7 @@ class UserController extends AbstractActionController {
             if ($form->isValid()) {
                 $user->populate($form->getData());
                 
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
                 $em->persist($user);
@@ -61,9 +59,7 @@ class UserController extends AbstractActionController {
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -87,8 +83,7 @@ class UserController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $user = $em->getRepository("ersEntity\Entity\User")->findOneBy(array('id' => $id));
         
@@ -123,9 +118,7 @@ class UserController extends AbstractActionController {
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -150,8 +143,7 @@ class UserController extends AbstractActionController {
             #return $this->redirect()->toRoute('admin/user');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $user = $em->getRepository("ersEntity\Entity\User")
                 ->findOneBy(array('id' => $id));

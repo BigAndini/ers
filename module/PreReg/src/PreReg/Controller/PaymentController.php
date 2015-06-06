@@ -31,8 +31,7 @@ class PaymentController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
@@ -52,8 +51,7 @@ class PaymentController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
@@ -73,8 +71,7 @@ class PaymentController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
@@ -124,8 +121,7 @@ class PaymentController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
@@ -142,9 +138,7 @@ class PaymentController extends AbstractActionController {
         $tmp_action     = $config['ERS\iPayment']['action'];
         $action = preg_replace('/%account_id%/', $account_id, $tmp_action);
         
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         if($order != null) {
             $a = new \NumberFormatter("de-DE", \NumberFormatter::PATTERN_DECIMAL);
@@ -243,9 +237,7 @@ class PaymentController extends AbstractActionController {
             '212.227.34.220',
         );
         
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $request = new \Zend\Http\PhpEnvironment\Request();
         
@@ -295,8 +287,7 @@ class PaymentController extends AbstractActionController {
             return $response;
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));

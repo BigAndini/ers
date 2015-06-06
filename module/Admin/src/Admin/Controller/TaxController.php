@@ -17,8 +17,7 @@ use Admin\Service;
 class TaxController extends AbstractActionController {
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
             'taxes' => $em->getRepository("ersEntity\Entity\Tax")->findBy(array(), array('percentage' => 'ASC')),
@@ -45,8 +44,7 @@ class TaxController extends AbstractActionController {
             if ($form->isValid()) {
                 $tax->populate($form->getData());
 
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 $em->persist($tax);
                 $em->flush();
@@ -74,8 +72,7 @@ class TaxController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $tax = $em->getRepository("ersEntity\Entity\Tax")->findOneBy(array('id' => $id));
 
@@ -117,8 +114,7 @@ class TaxController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
 
         $request = $this->getRequest();

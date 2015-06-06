@@ -18,8 +18,7 @@ class RoleController extends AbstractActionController {
     
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
@@ -49,8 +48,7 @@ class RoleController extends AbstractActionController {
             if ($form->isValid()) {
                 $role->populate($form->getData());
                 
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
                 if(is_numeric($role->getParentId()) && $role->getParentId() > 0) {
@@ -67,9 +65,7 @@ class RoleController extends AbstractActionController {
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -94,8 +90,7 @@ class RoleController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $role = $em->getRepository("ersEntity\Entity\Role")->findOneBy(array('id' => $id));
 
@@ -139,8 +134,7 @@ class RoleController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $role = $em->getRepository("ersEntity\Entity\Role")
                 ->findOneBy(array('id' => $id));

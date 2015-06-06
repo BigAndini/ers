@@ -45,13 +45,12 @@ class CartController extends AbstractActionController {
     public function addAction() {
         return false;
         
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $this->initialize();
         
-        $form = $this->getServiceLocator()->get('PreReg\Form\ProductView');
+        $form = $this->getServiceLocator()
+                ->get('PreReg\Form\ProductView');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -89,8 +88,7 @@ class CartController extends AbstractActionController {
                 /*
                  * get according product entity from database
                  */
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 $product = $em->getRepository("ersEntity\Entity\Product")
                         ->findOneBy(array('id' => $data['Product_id']));
@@ -220,17 +218,10 @@ class CartController extends AbstractActionController {
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             } 
-            
-           
-            
         }
-        
-        
     }
     
     public function resetAction() {

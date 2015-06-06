@@ -17,8 +17,7 @@ class CounterController extends AbstractActionController {
     
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
@@ -41,8 +40,7 @@ class CounterController extends AbstractActionController {
             if ($form->isValid()) {
                 $counter->populate($form->getData());
                 
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
                 $em->persist($counter);
@@ -50,9 +48,7 @@ class CounterController extends AbstractActionController {
 
                 return $this->redirect()->toRoute('admin/counter');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -70,8 +66,7 @@ class CounterController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $counter = $em->getRepository("ersEntity\Entity\Counter")->findOneBy(array('id' => $id));
 
@@ -108,8 +103,7 @@ class CounterController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/counter');
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $productprice = $em->getRepository("ersEntity\Entity\Counter")
                 ->findOneBy(array('id' => $id));
