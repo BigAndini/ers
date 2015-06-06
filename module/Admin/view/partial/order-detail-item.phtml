@@ -102,6 +102,13 @@
                             <?php endif; ?>
                         </li>
                         <li>
+                            <?php if($item->getStatus() == 'refund'): ?>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'undo-refund', 'id' => $item->getId())); ?>">undo refund</a>
+                            <?php else: ?>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'refund', 'id' => $item->getId())); ?>">refund</a>
+                            <?php endif; ?>
+                        </li>
+                        <li>
                             <a href="<?php echo $this->url('admin/item', array('action' => 'change-item', 'id' => $item->getId())); ?>">change item</a>
                         </li>
                         <li>

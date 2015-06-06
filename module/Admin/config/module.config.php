@@ -30,6 +30,7 @@ return array(
             'Admin\Controller\Country'              => 'Admin\Controller\CountryController',
             'Admin\Controller\Cron'                 => 'Admin\Controller\CronController',
             'Admin\Controller\Matching'             => 'Admin\Controller\MatchingController',
+            'Admin\Controller\Refund'               => 'Admin\Controller\RefundController',
             'Admin\Controller\Ajax'                 => 'Admin\Controller\AjaxController',
             'Admin\Controller\Test'                 => 'Admin\Controller\TestController',
         ),
@@ -180,6 +181,18 @@ return array(
                         'route' => 'admin/matching',
                         'action' => 'disabled',
                         'resource'  => 'controller/Admin\Controller\Matching',
+                    ),
+                ),
+            ),
+            'matching' => array(
+                'label' => 'Refund',
+                'route' => 'admin',
+                'pages' => array(
+                    'overview' => array(
+                        'label' => 'Refund pending',
+                        'route' => 'admin/refund',
+                        'action' => 'index',
+                        'resource'  => 'controller/Admin\Controller\Refund',
                     ),
                 ),
             ),
@@ -348,6 +361,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Matching',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'refund' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/refund[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Refund',
                                 'action' => 'index',
                             ),
                         ),

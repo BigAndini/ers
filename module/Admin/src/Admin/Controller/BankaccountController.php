@@ -402,6 +402,9 @@ class BankaccountController extends AbstractActionController {
                 $id = (int) $request->getPost('id');
                 $csv = $em->getRepository("ersEntity\Entity\BankAccountCsv")
                     ->findOneBy(array('id' => $id));
+                if($csv->hasMatch()) {
+                    return $this->redirect()->toRoute('admin/bankaccount');
+                }
                 foreach($csv->getBankStatements() as $bs) {
                     /*
                      * Hint: cannot be deleted if there's already a match.
