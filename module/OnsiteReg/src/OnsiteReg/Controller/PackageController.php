@@ -24,8 +24,7 @@ class IndexController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('onsite', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $em->getRepository("ersEntity\Entity\Package")
                 ->findOneBy(array('id' => $id));

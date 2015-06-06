@@ -43,8 +43,7 @@ class InfoController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('product');
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $forrest = new Service\BreadcrumbFactory();

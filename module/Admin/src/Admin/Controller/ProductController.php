@@ -18,8 +18,7 @@ use Admin\Service;
 class ProductController extends AbstractActionController {
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $products = $em->getRepository("ersEntity\Entity\Product")->findBy(array(), array('ordering' => 'ASC'));
         
@@ -50,8 +49,7 @@ class ProductController extends AbstractActionController {
             if ($form->isValid()) {                
                 $product->populate($form->getData());
                 
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
                 $tax = $em->getRepository("ersEntity\Entity\Tax")->findOneBy(array('id' => $product->getTaxId()));
@@ -62,9 +60,7 @@ class ProductController extends AbstractActionController {
 
                 return $this->redirect()->toRoute('admin/product');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -82,8 +78,7 @@ class ProductController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
 
@@ -124,8 +119,7 @@ class ProductController extends AbstractActionController {
             ));
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")
                 ->findOneBy(array('id' => $id));
@@ -157,8 +151,7 @@ class ProductController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $old_product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
         
@@ -185,9 +178,7 @@ class ProductController extends AbstractActionController {
                 $breadcrumb = $forrest->get('product');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -204,8 +195,7 @@ class ProductController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $Product = $em->getRepository("ersEntity\Entity\Product")
                 ->findOneBy(array('id' => $id));
@@ -239,8 +229,7 @@ class ProductController extends AbstractActionController {
     }
     
     private function removeProductPrices(Entity\Product $Product) {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $ProductPrices = $em->getRepository("ersEntity\Entity\ProductPrice")
                 ->findBy(array('Product_id' => $Product->getId()));
@@ -249,8 +238,7 @@ class ProductController extends AbstractActionController {
         }
     }
     private function removeProductVariants(Entity\Product $Product) {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $ProductVariants = $em->getRepository("ersEntity\Entity\ProductVariant")
                 ->findBy(array('Product_id' => $Product->getId()));

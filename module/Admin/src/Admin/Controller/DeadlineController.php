@@ -17,8 +17,7 @@ class DeadlineController extends AbstractActionController {
     
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
@@ -41,8 +40,7 @@ class DeadlineController extends AbstractActionController {
             if ($form->isValid()) {
                 $deadline->populate($form->getData());
                 
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
                 $em->persist($deadline);
@@ -50,9 +48,7 @@ class DeadlineController extends AbstractActionController {
 
                 return $this->redirect()->toRoute('admin/deadline');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -70,8 +66,7 @@ class DeadlineController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $deadline = $em->getRepository("ersEntity\Entity\Deadline")->findOneBy(array('id' => $id));
 
@@ -104,8 +99,7 @@ class DeadlineController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/deadline');
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $deadline = $em->getRepository("ersEntity\Entity\Deadline")
                 ->findOneBy(array('id' => $id));

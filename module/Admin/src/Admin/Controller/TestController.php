@@ -25,8 +25,7 @@ class TestController extends AbstractActionController {
     {
         set_time_limit( 0 );
 
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $orders = $em->getRepository("ersEntity\Entity\Order")
                 ->findBy(array(), array('created' => 'ASC'));
@@ -51,9 +50,7 @@ class TestController extends AbstractActionController {
         }
         $handle = fopen( $filename, "w" );
         if(!$handle) {
-            $logger = $this
-                ->getServiceLocator()
-                ->get('Logger');
+            $logger = $this->getServiceLocator()->get('Logger');
             $logger->warn('unable to open file '.$filename);
             exit();
         }
@@ -84,8 +81,7 @@ class TestController extends AbstractActionController {
     
     public function datatablesAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('n');
@@ -115,8 +111,7 @@ class TestController extends AbstractActionController {
     }
     
     public function paidOrderSumAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $orders = $em->getRepository("ersEntity\Entity\Order")
@@ -136,8 +131,7 @@ class TestController extends AbstractActionController {
     }
     
     public function orderSaveAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $orders = $em->getRepository("ersEntity\Entity\Order")

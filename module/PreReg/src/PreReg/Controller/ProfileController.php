@@ -27,8 +27,7 @@ class ProfileController extends AbstractActionController {
         //get the email of the user
         $email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
 
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $user = $em->getRepository("ersEntity\Entity\User")->findOneBy(array('email' => $email));
         
@@ -42,8 +41,7 @@ class ProfileController extends AbstractActionController {
             return $this->redirect()->toRoute('zfcuser/login');
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
@@ -68,9 +66,7 @@ class ProfileController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('profile');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             } 
         }
@@ -85,9 +81,7 @@ class ProfileController extends AbstractActionController {
             return $this->redirect()->toRoute('zfcuser/login');
         }
         
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $formClass = $this->getServiceLocator()->get('zfcuser_user_service')->getChangePasswordForm();
         $form = new $formClass('ChangePassword', $this->getServiceLocator()->get('zfcuser_module_options'));
@@ -119,9 +113,7 @@ class ProfileController extends AbstractActionController {
     public function requestPasswordAction() {
         $form = new Form\RequestPassword();
         
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $sent = false;
         $request = $this->getRequest();
@@ -133,8 +125,7 @@ class ProfileController extends AbstractActionController {
                 $data = $form->getData();
                 #$logger->info($data);
                 
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 $user = $em->getRepository("ersEntity\Entity\User")
                         ->findOneBy(array('email' => $data['email']));
@@ -174,9 +165,7 @@ class ProfileController extends AbstractActionController {
         ));
     }
     public function passwordResetAction() {
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $hashkey = $this->params()->fromRoute('hashkey', '');
         if($hashkey == '') {
@@ -185,8 +174,7 @@ class ProfileController extends AbstractActionController {
         }
         $form = new Form\ResetPassword();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $user = $em->getRepository("ersEntity\Entity\User")
                 ->findOneBy(array('hashkey' => $hashkey));
@@ -245,8 +233,7 @@ class ProfileController extends AbstractActionController {
     public function changeAction() {
         $email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $participant = $em->getRepository("ersEntity\Entity\User")
@@ -285,9 +272,7 @@ class ProfileController extends AbstractActionController {
                 $breadcrumb = $forrest->get('profile');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             } 
         }
@@ -300,8 +285,7 @@ class ProfileController extends AbstractActionController {
     }
     
     private function getCountryOptions($countryId = null) {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $qb1 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');

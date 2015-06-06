@@ -30,8 +30,7 @@ class ParticipantController extends AbstractActionController {
      
         $cartContainer = new Container('cart');
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $participants = $cartContainer->order->getParticipants();
@@ -50,8 +49,7 @@ class ParticipantController extends AbstractActionController {
     }
     
     private function getCountryOptions($countryId = null) {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $qb1 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
@@ -139,9 +137,7 @@ class ParticipantController extends AbstractActionController {
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             } 
         }
@@ -201,9 +197,7 @@ class ParticipantController extends AbstractActionController {
                 $breadcrumb = $forrest->get('participant');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             } 
         }

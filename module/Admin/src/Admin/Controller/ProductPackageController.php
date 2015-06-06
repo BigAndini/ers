@@ -28,8 +28,7 @@ class ProductPackageController extends AbstractActionController {
      * @return array
      */
     private function getProductOptions(Entity\Product $thisProduct = null, $productId = null) {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $products = $em->getRepository("ersEntity\Entity\Product")
                 ->findBy(array(), array('ordering' => 'ASC'));
@@ -61,8 +60,7 @@ class ProductPackageController extends AbstractActionController {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $form = new Form\ProductPackage();
@@ -98,9 +96,7 @@ class ProductPackageController extends AbstractActionController {
            
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -129,8 +125,7 @@ class ProductPackageController extends AbstractActionController {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $productPackage = $em->getRepository("ersEntity\Entity\ProductPackage")
                 ->findOneBy(array('id' => $id));
@@ -185,8 +180,7 @@ class ProductPackageController extends AbstractActionController {
         }
         $forrest = new Service\BreadcrumbFactory();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $productPackage = $em->getRepository("ersEntity\Entity\ProductPackage")
                 ->findOneBy(array('id' => $id));

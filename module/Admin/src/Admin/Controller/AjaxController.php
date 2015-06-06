@@ -22,8 +22,7 @@ class AjaxController extends AbstractActionController {
         $viewModel = new ViewModel();
         $viewModel->setTemplate("partial/ajax/matching-order");
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $order = $em->getRepository("ersEntity\Entity\Order")
@@ -45,8 +44,7 @@ class AjaxController extends AbstractActionController {
         $viewModel = new ViewModel();
         $viewModel->setTemplate("partial/ajax/matching-bankstatement");
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $bankaccount = $em->getRepository("ersEntity\Entity\BankAccount")
@@ -100,8 +98,7 @@ class AjaxController extends AbstractActionController {
     public function virtualBankaccountAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $bankaccount = $em->getRepository("ersEntity\Entity\BankAccount")

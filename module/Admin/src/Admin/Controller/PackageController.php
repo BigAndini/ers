@@ -18,8 +18,7 @@ use Admin\InputFilter;
 class PackageController extends AbstractActionController {
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
@@ -40,8 +39,7 @@ class PackageController extends AbstractActionController {
         }
         $forrest->set('item', 'admin/package', array('action' => 'detail', 'id' => $id));
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $package = $em->getRepository("ersEntity\Entity\Package")
@@ -57,8 +55,7 @@ class PackageController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $em->getRepository("ersEntity\Entity\Package")
                 ->findOneBy(array('id' => $id));
@@ -101,8 +98,7 @@ class PackageController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $em->getRepository("ersEntity\Entity\Package")
                 ->findOneBy(array('id' => $id));
@@ -145,8 +141,7 @@ class PackageController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $em->getRepository("ersEntity\Entity\Package")
                 ->findOneBy(array('id' => $id));

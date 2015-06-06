@@ -49,8 +49,7 @@ class ProductVariantController extends AbstractActionController
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
 
                 $productvariant->populate($form->getData());
@@ -67,15 +66,12 @@ class ProductVariantController extends AbstractActionController
                         $breadcrumb->options
                         );
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $product_id));
         
@@ -98,8 +94,7 @@ class ProductVariantController extends AbstractActionController
         }
         $forrest = new Service\BreadcrumbFactory();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $productvariant = $em->getRepository("ersEntity\Entity\ProductVariant")->findOneBy(array('id' => $id));

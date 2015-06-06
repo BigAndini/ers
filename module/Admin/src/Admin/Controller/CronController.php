@@ -26,8 +26,7 @@ class CronController extends AbstractActionController {
         #$doname   = $request->getParam('doname', false);
         #$verbose     = $request->getParam('verbose');
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $orderStatus = $em->getRepository("ersEntity\Entity\OrderStatus")
@@ -40,9 +39,7 @@ class CronController extends AbstractActionController {
         $orders = $em->getRepository("ersEntity\Entity\Order")
                 ->findBy(array(), array('created' => 'DESC'));
         
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         $logger->info('We are in runCron of TestCron');
         
         $output = '';
@@ -76,8 +73,7 @@ class CronController extends AbstractActionController {
          * 4. disabled
          */
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $statements = $em->getRepository("ersEntity\Entity\BankStatement")
@@ -199,8 +195,7 @@ class CronController extends AbstractActionController {
     }
     
     public function genUserListAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $users = $em->getRepository("ersEntity\Entity\User")
@@ -225,8 +220,7 @@ class CronController extends AbstractActionController {
     public function generateEticketsAction() {
         $time_start = microtime();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         #$order = $em->getRepository("ersEntity\Entity\Order")
@@ -256,8 +250,7 @@ class CronController extends AbstractActionController {
     }
     
     public function updateOrdersAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $orders = $em->getRepository("ersEntity\Entity\Order")
