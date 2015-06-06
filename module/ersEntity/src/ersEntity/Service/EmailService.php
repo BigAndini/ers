@@ -241,8 +241,7 @@ class EmailService
     
     public function sendExceptionEmail(\Exception $e) {
         $this->setFrom('prereg@eja.net');
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $role = $em->getRepository("ersEntity\Entity\Role")
                     ->findOneBy(array('roleId' => 'supradm'));
@@ -283,8 +282,7 @@ class EmailService
     }
     
     public function sendConfirmationEmail($order_id) {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         #$session_order = new Container('order');

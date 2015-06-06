@@ -193,6 +193,7 @@ return [
                 ['controller' => 'Admin\Controller\Bankaccount',         'roles' => ['Admin_Bankaccount',               'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Matching',            'roles' => ['Admin_Matching',                  'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Ajax',                'roles' => ['Admin_Matching',                  'admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Refund',              'roles' => ['Admin_Refund',                    'admin', 'supradm']],
                 
                 /* Cron */
                 ['controller' => 'Admin\Controller\Cron',  'roles' => ['guest']],

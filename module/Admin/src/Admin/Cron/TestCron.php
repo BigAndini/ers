@@ -12,16 +12,13 @@ use ersEntity\Entity;
 
 class TestCron {
     public function runCron() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $orders = $em->getRepository("ersEntity\Entity\Order")
                 ->findBy(array(), array('created' => 'DESC'));
         
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         $logger->info('We are in runCron of TestCron');
         
         foreach($orders as $order) {

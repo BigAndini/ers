@@ -116,9 +116,7 @@ class ProductView extends Form
                     $variant_add++;
                 }
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn(get_class().': object is of class '.get_class($v));
             }
         }

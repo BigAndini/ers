@@ -111,6 +111,11 @@ class Order implements InputFilterAwareInterface
     protected $total_sum;
     
     /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    protected $refund_sum;
+    
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $updated;
@@ -577,6 +582,32 @@ class Order implements InputFilterAwareInterface
             $this->total_sum = $this->getSum();
         }
         return $this->total_sum;
+    }
+    
+    /**
+     * Set the value of refund_sum.
+     *
+     * @param integer $refund_sum
+     * @return \Entity\Order
+     */
+    public function setRefundSum($refund_sum)
+    {
+        $this->refund_sum = $refund_sum;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of refund_sum.
+     *
+     * @return integer
+     */
+    public function getRefundSum()
+    {
+        if($this->refund_sum == 0) {
+            $this->refund_sum = $this->getSum();
+        }
+        return $this->refund_sum;
     }
     
     /**
@@ -1116,12 +1147,18 @@ class Order implements InputFilterAwareInterface
      * 
      * @return float
      */
-    public function getPrice() {
+    public function getPrice($status=null) {
         $price = 0;
         foreach($this->getPackages() as $package) {
             foreach($package->getItems() as $item) {
-                if($item->getStatus() != 'cancelled') {
-                    $price += $item->getPrice();
+                if($status == null) {
+                    if($item->getStatus() != 'cancelled') {
+                        $price += $item->getPrice();
+                    }
+                } else {
+                    if($item->getStatus() != $status) {
+                        $price += $item->getPrice();
+                    }
                 }
             }
         }

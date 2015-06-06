@@ -18,8 +18,7 @@ class BankaccountController extends AbstractActionController {
  
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $accounts = $em->getRepository("ersEntity\Entity\BankAccount")
@@ -44,8 +43,7 @@ class BankaccountController extends AbstractActionController {
             if ($form->isValid()) {
                 $bankaccount->populate($form->getData());
                 
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
                 $em->persist($bankaccount);
@@ -53,9 +51,7 @@ class BankaccountController extends AbstractActionController {
 
                 return $this->redirect()->toRoute('admin/bankaccount');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -73,8 +69,7 @@ class BankaccountController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $bankaccount = $em->getRepository("ersEntity\Entity\BankAccount")->findOneBy(array('id' => $id));
 
@@ -107,8 +102,7 @@ class BankaccountController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/bankaccount');
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $bankaccount = $em->getRepository("ersEntity\Entity\BankAccount")
                 ->findOneBy(array('id' => $id));
@@ -140,8 +134,7 @@ class BankaccountController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/bankaccount');
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $bankaccount = $em->getRepository("ersEntity\Entity\BankAccount")
                 ->findOneBy(array('id' => $id));
@@ -250,8 +243,7 @@ class BankaccountController extends AbstractActionController {
     public function uploadCsvAction() {
         $form = new Form\UploadCsv();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $accounts = $em->getRepository("ersEntity\Entity\BankAccount")
@@ -354,8 +346,7 @@ class BankaccountController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('id' => $id));
@@ -371,8 +362,7 @@ class BankaccountController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/bankaccount', array());
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $bankaccount = $em->getRepository("ersEntity\Entity\BankAccount")
                 ->findOneBy(array('id' => $id));
@@ -388,8 +378,7 @@ class BankaccountController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/bankaccount');
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $csv = $em->getRepository("ersEntity\Entity\BankAccountCsv")
                 ->findOneBy(array('id' => $id));
@@ -402,6 +391,9 @@ class BankaccountController extends AbstractActionController {
                 $id = (int) $request->getPost('id');
                 $csv = $em->getRepository("ersEntity\Entity\BankAccountCsv")
                     ->findOneBy(array('id' => $id));
+                if($csv->hasMatch()) {
+                    return $this->redirect()->toRoute('admin/bankaccount');
+                }
                 foreach($csv->getBankStatements() as $bs) {
                     /*
                      * Hint: cannot be deleted if there's already a match.

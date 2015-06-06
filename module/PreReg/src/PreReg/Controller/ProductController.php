@@ -22,8 +22,7 @@ class ProductController extends AbstractActionController {
         $forrest->reset();
         $forrest->set('participant', 'product');
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $tmp = $em->getRepository("ersEntity\Entity\Product")
             ->findBy(
@@ -132,8 +131,7 @@ class ProductController extends AbstractActionController {
         /*
          * Get data for this product
          */
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")
                 ->findOneBy(array('id' => $product_id));
@@ -182,9 +180,7 @@ class ProductController extends AbstractActionController {
         /*
          * Here starts the cart add Action
          */
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $this->initializeCart();
         $cartContainer = new Container('cart');
@@ -227,8 +223,7 @@ class ProductController extends AbstractActionController {
                 /*
                  * get according product entity from database
                  */
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 $product = $em->getRepository("ersEntity\Entity\Product")
                         ->findOneBy(array('id' => $data['Product_id']));
@@ -362,9 +357,7 @@ class ProductController extends AbstractActionController {
 
                 #return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
                 $formfail = true;
             } 
@@ -458,8 +451,7 @@ class ProductController extends AbstractActionController {
     }
     
     private function getAgegroupOptions($agegroup_id = null) {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
                     ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
@@ -529,8 +521,7 @@ class ProductController extends AbstractActionController {
         #$item = $cartContainer->order->getItem($participant_id, $item_id);
         $item = $cartContainer->order->getItem($item_id);
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")
                 ->findOneBy(array('id' => $product_id));

@@ -291,6 +291,14 @@ class BankAccountCsv implements InputFilterAwareInterface
         return $this->bankAccount;
     }
 
+    public function hasMatch() {
+        foreach($this->getBankStatements() as $bs) {
+            if(count($bs->getMatches()) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.

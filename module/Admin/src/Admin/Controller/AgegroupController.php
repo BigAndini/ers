@@ -17,8 +17,7 @@ class AgegroupController extends AbstractActionController {
     
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
@@ -41,8 +40,7 @@ class AgegroupController extends AbstractActionController {
             if ($form->isValid()) {
                 $agegroup->populate($form->getData());
                 
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
                 $em->persist($agegroup);
@@ -50,9 +48,7 @@ class AgegroupController extends AbstractActionController {
 
                 return $this->redirect()->toRoute('admin/agegroup');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -70,8 +66,7 @@ class AgegroupController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")->findOneBy(array('id' => $id));
 
@@ -104,8 +99,7 @@ class AgegroupController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/agegroup');
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")
                 ->findOneBy(array('id' => $id));

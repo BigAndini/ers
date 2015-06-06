@@ -31,8 +31,7 @@ class ProductPriceController extends AbstractActionController {
             'id' => $id,
             ));
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ersEntity\Entity\Product")
                 ->findOneBy(array('id' => $id));
@@ -55,8 +54,7 @@ class ProductPriceController extends AbstractActionController {
      * @return array
      */
     private function getDeadlineOptions($deadlineId = null) {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
                 ->findBy(array('priceChange' => '1'), array('deadline' => 'ASC'));
@@ -91,8 +89,7 @@ class ProductPriceController extends AbstractActionController {
      * @return array
      */
     private function getAgegroupOptions($agegroupId = null) {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
                 ->findBy(array('priceChange' => '1'), array('agegroup' => 'ASC'));
@@ -129,8 +126,7 @@ class ProductPriceController extends AbstractActionController {
         }
         $forrest = new Service\BreadcrumbFactory();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $productprice = new Entity\ProductPrice();
@@ -185,9 +181,7 @@ class ProductPriceController extends AbstractActionController {
                 $breadcrumb = $forrest->get('product-price');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -215,8 +209,7 @@ class ProductPriceController extends AbstractActionController {
         }
         $forrest = new Service\BreadcrumbFactory();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $productprice = $em->getRepository("ersEntity\Entity\ProductPrice")
                 ->findOneBy(array('id' => $id));
@@ -270,8 +263,7 @@ class ProductPriceController extends AbstractActionController {
         }
         $forrest = new Service\BreadcrumbFactory();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $request = $this->getRequest();

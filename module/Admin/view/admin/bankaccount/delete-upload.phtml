@@ -4,7 +4,13 @@ $title = 'Delete bank account csv including all bank statements';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-
+<?php if($csv->hasMatch()): ?>
+<div class="alert alert-warning">
+    <h3>Warning</h3>
+    <p>This CSV cannot be deleted since there are already matches for bank 
+        statements of this csv.</p>
+</div>
+<?php else: ?>
 <p>Are you sure that you want to delete bank account csv
     <strong><?php echo $csv->getCsvFile(); ?></strong>?
 </p>
@@ -21,3 +27,4 @@ $url = $this->url('admin/bankaccount', array(
     <a href="<?php echo $this->url('admin/bankaccount');?>">Cancel</a>
 </div>
 </form>
+<?php endif; ?>

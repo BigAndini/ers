@@ -26,8 +26,7 @@ class CronController extends AbstractActionController {
         #$doname   = $request->getParam('doname', false);
         #$verbose     = $request->getParam('verbose');
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $orderStatus = $em->getRepository("ersEntity\Entity\OrderStatus")
@@ -40,9 +39,7 @@ class CronController extends AbstractActionController {
         $orders = $em->getRepository("ersEntity\Entity\Order")
                 ->findBy(array(), array('created' => 'DESC'));
         
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         $logger->info('We are in runCron of TestCron');
         
         $output = '';
@@ -76,8 +73,7 @@ class CronController extends AbstractActionController {
          * 4. disabled
          */
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $statements = $em->getRepository("ersEntity\Entity\BankStatement")
@@ -92,10 +88,13 @@ class CronController extends AbstractActionController {
             $bankaccount = $statement->getBankAccount();
             $statement_format = json_decode($bankaccount->getStatementFormat());
             
+            # TODO: check if the statement_format is already set. If not move to next statement.
+            
             /*$matchKey_func = 'getBankStatementcol'.$statement_format->matchKey;
             $name_func = 'getBankStatementcol'.$statement_format->name;
             $amount_func = 'getBankStatementcol'.$statement_format->amount;
             $date_func = 'getBankStatementcol'.$statement_format->date;*/
+            
             
             $ret = $this->findCode($statement->getBankStatementColByNumber($statement_format->matchKey)->getValue());
             if(is_array($ret)) {
@@ -196,8 +195,7 @@ class CronController extends AbstractActionController {
     }
     
     public function genUserListAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $users = $em->getRepository("ersEntity\Entity\User")
@@ -222,8 +220,7 @@ class CronController extends AbstractActionController {
     public function generateEticketsAction() {
         $time_start = microtime();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         #$order = $em->getRepository("ersEntity\Entity\Order")
@@ -253,8 +250,7 @@ class CronController extends AbstractActionController {
     }
     
     public function updateOrdersAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $orders = $em->getRepository("ersEntity\Entity\Order")
