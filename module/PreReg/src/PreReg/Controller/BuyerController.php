@@ -37,8 +37,7 @@ class BuyerController extends AbstractActionController {
             $user = new Entity\User();
 
             $inputFilter = new InputFilter\Buyer();
-            $em = $this
-                ->getServiceLocator()
+            $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
             $inputFilter->setEntityManager($em);
             $form->setInputFilter($inputFilter->getInputFilter()); 
@@ -55,9 +54,7 @@ class BuyerController extends AbstractActionController {
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -90,8 +87,7 @@ class BuyerController extends AbstractActionController {
         $form = new Form\Buyer(); 
         $request = $this->getRequest(); 
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $form->bind($participant);
@@ -113,9 +109,7 @@ class BuyerController extends AbstractActionController {
                 $breadcrumb = $forrest->get('participant');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             } 
         }

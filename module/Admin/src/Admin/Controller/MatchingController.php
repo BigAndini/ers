@@ -17,8 +17,7 @@ use Admin\Service;
 
 class MatchingController extends AbstractActionController {
     public function indexAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $matchings = $em->getRepository("ersEntity\Entity\Match")
@@ -29,9 +28,7 @@ class MatchingController extends AbstractActionController {
         ));
     }
     public function manualAction() {        
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         #$logger->info($param_orders);
         #$logger->info($param_statements);
@@ -41,8 +38,7 @@ class MatchingController extends AbstractActionController {
         
         $form = new Form\ManualMatch();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         /*
@@ -159,9 +155,7 @@ class MatchingController extends AbstractActionController {
     }
     
     public function acceptAction() {
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $param_orders = $this->params()->fromQuery('orders', array());
         $param_statements = $this->params()->fromQuery('statements', array());
@@ -169,8 +163,7 @@ class MatchingController extends AbstractActionController {
         $params['orders'] = $param_orders;
         $params['statements'] = $param_statements;
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $form = new Form\AcceptMatch();
@@ -298,8 +291,7 @@ class MatchingController extends AbstractActionController {
             $forrest->set('matching', 'admin/matching', array('action' => 'manual'));
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $match = $em->getRepository("ersEntity\Entity\Match")
@@ -329,8 +321,7 @@ class MatchingController extends AbstractActionController {
     }
     
     public function disabledAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $forrest = new Service\BreadcrumbFactory();
@@ -349,8 +340,7 @@ class MatchingController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/matching', array('action' => 'disabled'));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $statement = $em->getRepository("ersEntity\Entity\BankStatement")
                 ->findOneBy(array('id' => $id));
@@ -390,8 +380,7 @@ class MatchingController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/matching', array('action' => 'disabled'));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $statement = $em->getRepository("ersEntity\Entity\BankStatement")
                 ->findOneBy(array('id' => $id));

@@ -20,8 +20,7 @@ class CountryController extends AbstractActionController {
         $forrest = new Service\BreadcrumbFactory();
         $forrest->set('country', 'admin/country');
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $qb1 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
@@ -53,8 +52,7 @@ class CountryController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/country');
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $country = $em->getRepository("ersEntity\Entity\Country")->findOneBy(array('id' => $id));
 
@@ -101,8 +99,7 @@ class CountryController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
 
         $request = $this->getRequest();

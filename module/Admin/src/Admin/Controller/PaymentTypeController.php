@@ -18,8 +18,7 @@ class PaymentTypeController extends AbstractActionController {
     
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
@@ -42,8 +41,7 @@ class PaymentTypeController extends AbstractActionController {
         $form = new Form\PaymentTypeBankTransfer();
         $form->get('submit')->setValue('Add');
 
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
@@ -97,9 +95,7 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -113,8 +109,7 @@ class PaymentTypeController extends AbstractActionController {
         $form = new Form\PaymentTypeCheque();
         $form->get('submit')->setValue('Add');
 
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
@@ -168,9 +163,7 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -184,8 +177,7 @@ class PaymentTypeController extends AbstractActionController {
         $form = new Form\PaymentTypePayPal();
         $form->get('submit')->setValue('Add');
 
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
@@ -239,9 +231,7 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -255,8 +245,7 @@ class PaymentTypeController extends AbstractActionController {
         $form = new Form\PaymentTypeBankTransfer();
         $form->get('submit')->setValue('Add');
 
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
@@ -310,9 +299,7 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -337,8 +324,7 @@ class PaymentTypeController extends AbstractActionController {
             if ($form->isValid()) {
                 $paymenttype->populate($form->getData());
                 
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
                 $em->persist($paymenttype);
@@ -346,9 +332,7 @@ class PaymentTypeController extends AbstractActionController {
 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -366,8 +350,7 @@ class PaymentTypeController extends AbstractActionController {
             ));
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id));
@@ -451,9 +434,7 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -472,8 +453,7 @@ class PaymentTypeController extends AbstractActionController {
             ));
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id));
@@ -557,9 +537,7 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -578,8 +556,7 @@ class PaymentTypeController extends AbstractActionController {
             ));
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id));
@@ -663,9 +640,7 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -684,8 +659,7 @@ class PaymentTypeController extends AbstractActionController {
             ));
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id));
@@ -769,9 +743,7 @@ class PaymentTypeController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -790,8 +762,7 @@ class PaymentTypeController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id));
 
@@ -824,8 +795,7 @@ class PaymentTypeController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/payment-type');
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
                 ->findOneBy(array('id' => $id));

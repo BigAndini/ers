@@ -36,9 +36,7 @@ class OrderController extends AbstractActionController {
         
         $this->checkItemPrices();
         
-        $logger = $this
-                ->getServiceLocator()
-                ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         $logger->info('=== shopping cart start ===');
         foreach($cartContainer->order->getPackages() as $package) {
             $participant = $package->getParticipant();
@@ -77,8 +75,7 @@ class OrderController extends AbstractActionController {
     private function checkItemPrices() {
         $cartContainer = new Container('cart');
         $order = $cartContainer->order;
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $deadlineService = new Service\DeadlineService();
@@ -124,16 +121,13 @@ class OrderController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {
-            $logger = $this
-                ->getServiceLocator()
-                ->get('Logger');
+            $logger = $this->getServiceLocator()->get('Logger');
             $logger->info('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
@@ -213,9 +207,7 @@ class OrderController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('order', array('action' => 'payment'));
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -246,8 +238,7 @@ class OrderController extends AbstractActionController {
         
         $form = new Form\PaymentType();
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $paymenttypes = $em->getRepository("ersEntity\Entity\PaymentType")
@@ -297,9 +288,7 @@ class OrderController extends AbstractActionController {
                 
                 return $this->redirect()->toRoute('order', array('action' => 'checkout'));
             } else {
-                $logger = $this
-                    ->getServiceLocator()
-                    ->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
         }
@@ -507,8 +496,7 @@ class OrderController extends AbstractActionController {
             
             $cartContainer->init = 0;
             
-            $emailService = $this
-                ->getServiceLocator()
+            $emailService = $this->getServiceLocator()
                 ->get('ersEntity\Service\EmailService');
             $emailService->sendConfirmationEmail($cartContainer->order->getId());
             #$this->sendConfirmationEmail($cartContainer->order->getId());
@@ -570,8 +558,7 @@ class OrderController extends AbstractActionController {
     }
     
     /*private function sendConfirmationEmail($order_id) {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         #$session_order = new Container('order');
@@ -653,16 +640,13 @@ class OrderController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {
-            $logger = $this
-                ->getServiceLocator()
-                ->get('Logger');
+            $logger = $this->getServiceLocator()->get('Logger');
             $logger->info('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
@@ -705,16 +689,13 @@ class OrderController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {
-            $logger = $this
-                ->getServiceLocator()
-                ->get('Logger');
+            $logger = $this->getServiceLocator()->get('Logger');
             $logger->info('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
@@ -741,16 +722,13 @@ class OrderController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {
-            $logger = $this
-                ->getServiceLocator()
-                ->get('Logger');
+            $logger = $this->getServiceLocator()->get('Logger');
             $logger->info('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }

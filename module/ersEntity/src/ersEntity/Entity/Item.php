@@ -113,6 +113,11 @@ class Item implements InputFilterAwareInterface
     protected $agegroup;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    protected $transfer_id;
+    
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $updated;
@@ -512,6 +517,29 @@ class Item implements InputFilterAwareInterface
     public function getAgegroup()
     {
         return $this->agegroup;
+    }
+    
+    /**
+     * Set the value of transfer_id.
+     *
+     * @param datetime $transfer_id
+     * @return \Entity\Item
+     */
+    public function setTransferId($transfer_id)
+    {
+        $this->transfer_id = $transfer_id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of transfer_id.
+     *
+     * @return datetime
+     */
+    public function getTransferId()
+    {
+        return $this->transfer_id;
     }
     
     /**

@@ -18,8 +18,7 @@ class OrderController extends AbstractActionController {
  
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $orders = $em->getRepository("ersEntity\Entity\Order")
@@ -31,9 +30,7 @@ class OrderController extends AbstractActionController {
     }
     
     public function searchAction() {
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $form = new Form\SearchOrder();
         
@@ -94,8 +91,7 @@ class OrderController extends AbstractActionController {
                 
                 error_log('searchText: '.$searchText);
                 
-                $em = $this
-                    ->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
                 $result = array();
@@ -181,8 +177,7 @@ class OrderController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('id' => $id));
@@ -205,8 +200,7 @@ class OrderController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('id' => $id));
@@ -247,9 +241,7 @@ class OrderController extends AbstractActionController {
             $forrest->set('order', 'admin/order');
         }
         
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -285,9 +277,7 @@ class OrderController extends AbstractActionController {
         ));
     }
     public function resendConfirmationAction() {
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
@@ -295,8 +285,7 @@ class OrderController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/order', array());
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('id' => $id));
@@ -316,8 +305,7 @@ class OrderController extends AbstractActionController {
                 $order = $em->getRepository("ersEntity\Entity\Order")
                     ->findOneBy(array('id' => $id));
                 
-                $emailService = $this
-                        ->getServiceLocator()
+                $emailService = $this->getServiceLocator()
                         ->get('ersEntity\Service\EmailService');
                 
                 $emailService->sendConfirmationEmail($order->getId());
@@ -334,17 +322,14 @@ class OrderController extends AbstractActionController {
     }
     
     public function sendEticketAction() {
-        $logger = $this
-            ->getServiceLocator()
-            ->get('Logger');
+        $logger = $this->getServiceLocator()->get('Logger');
         
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             $logger->info('there is no id');
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('id' => $id));
@@ -390,8 +375,7 @@ class OrderController extends AbstractActionController {
     public function changePackageAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $em->getRepository("ersEntity\Entity\Package")
                 ->findOneBy(array('id' => $id));
@@ -404,8 +388,7 @@ class OrderController extends AbstractActionController {
     public function changeItemAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $em->getRepository("ersEntity\Entity\Item")
                 ->findOneBy(array('id' => $id));
@@ -420,8 +403,7 @@ class OrderController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('id' => $id));
@@ -467,8 +449,7 @@ class OrderController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('id' => $id));
@@ -514,8 +495,7 @@ class OrderController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository("ersEntity\Entity\Order")
                 ->findOneBy(array('id' => $id));

@@ -15,8 +15,7 @@ class StatisticController extends AbstractActionController {
  
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         /*
@@ -84,8 +83,7 @@ class StatisticController extends AbstractActionController {
     }
     
     public function ordersAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $repository = $em->getRepository("ersEntity\Entity\Order");
@@ -101,8 +99,7 @@ class StatisticController extends AbstractActionController {
     }
     
     public function bankaccountsAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $matches = $em->getRepository("ersEntity\Entity\Match")

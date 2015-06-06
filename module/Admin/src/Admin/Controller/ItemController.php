@@ -18,8 +18,7 @@ use Admin\InputFilter;
 class ItemController extends AbstractActionController {
     public function indexAction()
     {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
@@ -34,8 +33,7 @@ class ItemController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/order', array());
         }
         
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $package = $em->getRepository("ersEntity\Entity\Package")
@@ -58,8 +56,7 @@ class ItemController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $em->getRepository("ersEntity\Entity\Item")
                 ->findOneBy(array('id' => $id));
@@ -100,8 +97,7 @@ class ItemController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $em->getRepository("ersEntity\Entity\Item")
                 ->findOneBy(array('id' => $id));
@@ -142,8 +138,7 @@ class ItemController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $em->getRepository("ersEntity\Entity\Item")
                 ->findOneBy(array('id' => $id));
@@ -184,8 +179,7 @@ class ItemController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $em->getRepository("ersEntity\Entity\Item")
                 ->findOneBy(array('id' => $id));
@@ -226,8 +220,7 @@ class ItemController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $em->getRepository("ersEntity\Entity\Item")
                 ->findOneBy(array('id' => $id));
@@ -268,8 +261,7 @@ class ItemController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $em->getRepository("ersEntity\Entity\Item")
                 ->findOneBy(array('id' => $id));
@@ -310,8 +302,7 @@ class ItemController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array());
         }
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $em->getRepository("ersEntity\Entity\Item")
                 ->findOneBy(array('id' => $id));
