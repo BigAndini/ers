@@ -20,6 +20,7 @@ class ETicketService
 {
     protected $_sl;
     protected $_language = 'en';
+    protected $_products;
     protected $_package;
     protected $_participant;
     protected $_agegroup;
@@ -53,7 +54,7 @@ class ETicketService
     /**
      * set Language
      * 
-     * @param string $sl
+     * @param string $language
      */
     public function setLanguage($lang) {
         $this->_language = $lang;
@@ -68,6 +69,23 @@ class ETicketService
         return $this->_language;
     }
     
+    /**
+     * set Products
+     * 
+     * @param string $products
+     */
+    public function setProducts($products) {
+        $this->_products = $products;
+    }
+    
+    /**
+     * get Products
+     * 
+     * @return string
+     */
+    protected function getProducts() {
+        return $this->_products;
+    }
     
     /**
      * set Package
@@ -112,7 +130,6 @@ class ETicketService
         $agegroup = $agegroupService->getAgegroupByUser($participant);
         if($agegroup) {
             $this->_agegroup = $agegroup;
-            error_log('found agegroup: '.$agegroup->getName());
         } else {
             $this->_agegroup = null;
             error_log('no agegroup found');
@@ -296,6 +313,14 @@ class ETicketService
         
         $base64_barcode = "data:image/png;base64,".  \base64_encode($contents);
         
+        /*
+         * prepare items
+         */
+        $items = array();
+        foreach($this->getPackage()->getItems() as $item) {
+            $items[$item->getProductId()][] = $item;
+        }
+        
         /* 
          * generate PDF
          */
@@ -304,6 +329,8 @@ class ETicketService
         $pdfView->setVariables(array(
             'name' => $name,
             'package' => $this->getPackage(),
+            'items' => $items,
+            'products' => $this->getProducts(),
             'agegroup' => $this->getAgegroup(),
             'code' => $code,
             'qrcode' => $base64_qrcode,

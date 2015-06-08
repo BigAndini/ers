@@ -724,6 +724,15 @@ class Product implements InputFilterAwareInterface
     {
         return $this->productVariants;
     }
+    
+    public function getProductVariantByName($name) {
+        foreach($this->getProductVariants() as $variant) {
+            if($variant->getName() == $name) {
+                return $variant;
+            }
+        }
+        return false;
+    }
 
     /**
      * Set Tax entity (many to one).
