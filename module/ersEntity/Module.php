@@ -42,7 +42,7 @@ class Module
             #$registrationForm = $e->getParam('form');
             $config = $sm->get('config');
             $criteria = array('roleId' => $config['bjyauthorize']['new_user_default_role']);
-            $defaultUserRole = $em->getRepository('ersEntity\Entity\Role')->findOneBy($criteria);
+            $defaultUserRole = $em->getRepository('ersEntity\Entity\UserRole')->findOneBy($criteria);
             
             if ($defaultUserRole !== null)
             {

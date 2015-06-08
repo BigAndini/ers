@@ -623,6 +623,15 @@ class Item implements InputFilterAwareInterface
     {
         return $this->itemVariants;
     }
+    
+    public function getItemVariantByName($name) {
+        foreach($this->getItemVariants() as $variant) {
+            if($variant->getName() == $name) {
+                return $variant;
+            }
+        }
+        return false;
+    }
 
     /**
      * Set Product entity (many to one).

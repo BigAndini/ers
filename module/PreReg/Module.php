@@ -272,6 +272,10 @@ class Module
                 'PreReg\Service\ETicketService' => function($sm) {
                     $eticketService = new Service\ETicketService();
                     $eticketService->setServiceLocator($sm);
+                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                    $products = $em->getRepository("ersEntity\Entity\Product")
+                                ->findBy(array('visible' => '1'), array('ordering' => 'ASC'));
+                    $eticketService->setProducts($products);
                     return $eticketService;
                 },
                 'PreReg\Service\LoginService' => function($sm) {
