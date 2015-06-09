@@ -102,7 +102,7 @@ class Product implements InputFilterAwareInterface
     protected $counters;
 
     /**
-     * @ORM\OneToMany(targetEntity="Item", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="Item", mappedBy="product", fetch="EXTRA_LAZY")
      * @ORM\JoinColumn(name="id", referencedColumnName="Product_id")
      */
     protected $items;
