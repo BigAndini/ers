@@ -141,18 +141,7 @@
             <h3>Brief instruction</h3>
             <?php if($agegroup):
                 switch($agegroup->getName()):
-                    case 'U6': ?>
-                        <p><strong>Dear chaperon, please print</strong> this 
-                            ticket and never give it to a third person. A parent 
-                            or <strong>legal guardian</strong> must add and 
-                            <strong>sign</strong> the information concerning 
-                            obligatory supervision and the disclaimer. 
-                            <strong>Bring</strong> this ticket to the EJC and 
-                            present it at the registration desk. If you are no 
-                            parent or legal guardian of the child but a 
-                            chaperon, we also need a <strong>copy of a valid ID 
-                                card of the child’s legal guardian</strong>.</p>
-                        <?php break;
+                    case 'U6':
                     case 'U16': ?>
                         <p><strong>Dear chaperon, please print</strong> this 
                             ticket and never give it to a third person. A parent 
@@ -207,172 +196,18 @@
                 adequate to take part in the workshop in question or to use 
                 props and apparatus mentioned hereinabove safely.</p>
         </div>
-        <div class="order small">
-            <h3 class="black"><?php echo $package->getCode()->getValue(); ?></h3>
-            <p class="order-description">Name:</p>
-            <p class="order-value">
-                <?php 
-                $participant = $package->getParticipant();
-                echo $participant->getFirstname().' '.$participant->getSurname(); 
-                ?>
-            </p>
-            <p class="order-description">Birthday:</p>
-            <p class="order-value">
-                <?php 
-                if($participant->getBirthday() != null) :
-                    echo $participant->getBirthday()->format('d.m.Y'); 
-                endif;
-                ?>
-            </p>
-            <?php foreach($products as $product): ?>
-                <p class="order-description"><?php echo $product->getName(); ?>:</p>
-                <?php switch($product->getId()):
-                        /*
-                         * week ticket
-                         */
-                        case '1': ?>
-                            <?php if(count($items[$product->getId()]) == 0): ?>
-                                <p class="order-value"><span class="fa">&#xf096;</span></p>
-                            <?php endif;
-                            foreach($items[$product->getId()] as $item):
-                                if($item->hasParentItems()) :
-                                    continue;
-                                endif; ?>
-                                <p class="order-value"><span class="fa">&#xf046;</span></p>
-                                <?php foreach($item->getChildItems() as $cItem): ?>
-                                    <p class="order-description">
-                                        included <?php echo $cItem->getProduct()->getName(); ?>: 
-                                    </p>
-                                    <p class="order-value">
-                                        <?php foreach($cItem->getItemVariants() as $variant): ?>
-                                            <span><?php echo $variant->getValue(); ?></span>
-                                        <?php endforeach; ?>
-                                    </p>
-                                <?php endforeach; ?>
-                            <?php endforeach; ?>
-                            <?php break;
-                        /*
-                         * gala show ticket
-                         */
-                        case '5': ?>
-                            <?php if(count($items[$product->getId()]) == 0): ?>
-                                <p class="order-value">none</p>
-                            <?php endif; ?>
-                            <?php foreach($items[$product->getId()] as $item):
-                                if($item->hasParentItems()) :
-                                    continue;
-                                endif; ?>
-                                <p class="order-description"><?php echo $item->getProduct()->getName(); ?>:</p>
-                                <p class="order-value">
-                                    <?php foreach($item->getItemVariants() as $variant): ?>
-                                    <span><?php echo $variant->getValue(); ?></span>
-                                    <?php endforeach; ?>
-                                </p>
-                            <?php endforeach; ?>
-                            <?php break;
-                        /*
-                         * day ticket
-                         */
-                        case '4': ?>
-                                <p class="order-value">
-                                    <table class="day-table">
-                                        <tr>
-                                            <?php foreach($product->getProductVariantByName('day')->getProductVariantValues() as $value):
-                                                $timestamp = strtotime($value->getValue());
-                                                $date = new DateTime();
-                                                $date->setTimestamp($timestamp); ?>
-                                                <td><?php echo $date->format('D'); ?></td>
-                                            <?php endforeach; ?>
-                                        </tr>
-                                        <tr>
-                                            <?php foreach($product->getProductVariantByName('day')->getProductVariantValues() as $value):
-                                                $timestamp = strtotime($value->getValue());
-                                                $date = new DateTime();
-                                                $date->setTimestamp($timestamp); ?>
-                                                <td style='font-size: 6px;'><?php echo $date->format('d.m.'); ?></td>
-                                            <?php endforeach; ?>
-                                        </tr>
-                                        <tr>
-                                            <?php foreach($product->getProductVariantByName('day')->getProductVariantValues() as $value):
-                                                $timestamp = strtotime($value->getValue());
-                                                $date = new DateTime();
-                                                $date->setTimestamp($timestamp);
-                                                $found = false;
-                                                foreach($items[$product->getId()] as $item):
-                                                    $itemValue = $item->getItemVariantByName('day')->getValue();
-                                                    if($timestamp == strtotime($itemValue)) {
-                                                        $found = true;
-                                                    }
-                                                endforeach;
-                                                ?>
-                                                <?php if($found): ?>
-                                                    <td><span class="fa">&#xf046;</span></td>
-                                                <?php else: ?>
-                                                    <td><span class="fa">&#xf096;</span></td>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                        </tr>
-                                    </table>
-                                </p>
-                            <?php break;
-                        default: ?>
-                            <p class="order-description"><?php echo $item->getProduct()->getName(); ?>:</p>
-                            <?php break;
-                    endswitch; ?>
-            <?php endforeach; ?>
-        </div>
+        <?php 
+        $variables = array(
+            'package' => $package,
+            'products' => $products,
+            'items' => $items,
+        );
+        echo $this->partial('partial/eticket-package-overview.phtml', $variables); 
+        ?>
         <div class="left-field small">
             <?php if($agegroup):
                 switch($agegroup->getName()): 
-                    case 'U6': ?>
-                        <h3>Obligatory supervision: Have a parent / legal 
-                            guardian sign option A or B</h3>
-                        <table>
-                            <tr>
-                                <td><span class="cc-option">A</span></td>
-                                <td colspan="2">
-                                    <p>I hereby agree that my son / daughter (as 
-                                        stated on the right) take part at the 
-                                        EJC Bruneck from August 1st to August 
-                                        9th 2015. I will attend the EJC myself 
-                                        and therefore observe the obligatory 
-                                        supervision. I accept the disclaimer.</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td><span class="sign-field">place and date</span></td>
-                                <td><span class="sign-field">signature of legal guardian</span></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3"><span class="cc-option">OR</span></td>
-                            </tr>
-                            <tr>
-                                <td><span class="cc-option">B</span></td>
-                                <td colspan="2">
-                                    <p>I hereby agree that my son / daughter (as 
-                                        stated on the right) take part at the 
-                                        EJC Bruneck from August 1st to August 
-                                        9th 2015. I entrust the following 
-                                        chaperon with the function of legal 
-                                        guardian and the obligatory supervision. 
-                                        I guarantee that this chaperon is an 
-                                        adult (age of 18 or above) and has the 
-                                        ability to look after my son / daughter. 
-                                        The host will not check this. I will add 
-                                        a copy of a valid ID card of myself (as 
-                                        stated above). Otherwise, attending will 
-                                        not be possible for my son / daughter. I 
-                                        accept the disclaimer.</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td><span class="sign-field">date and place</span></td>
-                                <td><span class="sign-field">signature of legal guardian</span></td>
-                            </tr>
-                        </table>
-                        <?php break;
+                    case 'U6':
                     case 'U16': ?>
                         <h3>Obligatory supervision: Have a parent / legal 
                             guardian sign option A or B</h3>
@@ -417,7 +252,7 @@
                             </tr>
                             <tr>
                                 <td></td>
-                                <td><span class="sign-field">date and place</span></td>
+                                <td><span class="sign-field">place and date</span></td>
                                 <td><span class="sign-field">signature of legal guardian</span></td>
                             </tr>
                         </table>
@@ -440,7 +275,7 @@
                             </tr>
                             <tr>
                                 <td></td>
-                                <td><span class="sign-field">date and place</span></td>
+                                <td><span class="sign-field">place and date</span></td>
                                 <td><span class="sign-field">signature of legal guardian</span></td>
                             </tr>
                             <tr>
@@ -477,12 +312,12 @@
                         break;
                 endswitch; 
             else: ?>
-                        <table>
-                            <tr>
-                                <td><span class="sign-field">date and place</span></td>
-                                <td><span class="sign-field">signature</span></td>
-                            </tr>
-                        </table>
+                <table>
+                    <tr>
+                        <td><span class="sign-field">place and date</span></td>
+                        <td><span class="sign-field">signature</span></td>
+                    </tr>
+                </table>
             <?php endif;?>
             
         </div>
