@@ -150,12 +150,16 @@ class StatisticController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
+        $allStats = array();
+        $allStatsSum = array("amount" => 0, "count" => 0);
+        $matchingStats = array();
+        $matchingStatsSum = array("amount" => 0, "count" => 0);
+        
         $statementValueCache = array();
         
         $bankaccounts = $em->getRepository("ersEntity\Entity\BankAccount")
                 ->findAll();
         
-        $allStats = array();
         /* @var $bankaccount \ersEntity\Entity\BankAccount */
         foreach($bankaccounts as $bankaccount) {
             $statVals = array();
@@ -165,10 +169,18 @@ class StatisticController extends AbstractActionController {
                 $statVals[$statement->getId()] = (float) $statement->getAmount()->getValue();
             }
             
+            // keep individual computed values in cache for reuse below
             $statementValueCache[$bankaccount->getName()] = $statVals;
-            $allStats[$bankaccount->getName()] = array_sum($statVals);
+            
+            $currSum = array_sum($statVals);
+            $currCount = count($statVals);
+            $allStats[$bankaccount->getName()] = array("amount" => $currSum, "count" => $currCount);
+            $allStatsSum["amount"] += $currSum;
+            $allStatsSum["count"] += $currCount;
+            
+            // pre-initialize matched statements account
+            $matchingStats[$bankaccount->getName()] = array("amount" => 0, "count" => 0);
         }
-        $allStatsSum = array_sum($allStats);
         
         
         
@@ -176,8 +188,6 @@ class StatisticController extends AbstractActionController {
         $matches = $em->getRepository("ersEntity\Entity\Match")
                 ->findAll();
         
-        $matchingStats = array();
-        $sum = 0;
         /* @var $match \ersEntity\Entity\Match */
         foreach($matches as $match) {
             $statement = $match->getBankStatement();
@@ -185,14 +195,11 @@ class StatisticController extends AbstractActionController {
             $value = $statementValueCache[$bankaccountName][$statement->getId()];
             //$value = (float) $statement->getAmount()->getValue();
             
-            if(!isset($matchingStats[$bankaccountName])) {
-                $matchingStats[$bankaccountName] = 0;
-            }
-            
-            $matchingStats[$bankaccountName] += $value;
-            $sum += $value;
+            $matchingStats[$bankaccountName]["amount"] += $value;
+            $matchingStats[$bankaccountName]["count"]++;
+            $matchingStatsSum["amount"] += $value;
+            $matchingStatsSum["count"]++;
         }
-        $matchingStatsSum = $sum;
         
         
         

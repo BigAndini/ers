@@ -6,19 +6,21 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-<h2>Bank Statements</h2>
+<h2>All Bank Statements</h2>
 <p>Sum of all bank statements received for a bank account.</p>
 
 <table class="table table-striped">
     <tr>
         <th>Name</th>
         <th>Amount</th>
+        <th>Count</th>
     </tr>
     
     <?php foreach($allStats as $key => $value): ?>
     <tr>
         <td><?php echo $key; ?></td>
-        <td><?php echo $this->currencyFormat($value, 'EUR', null, 'de_DE'); ?></td>
+        <td><?php echo $this->currencyFormat($value["amount"], 'EUR', null, 'de_DE'); ?></td>
+        <td><?php echo $value["count"]; ?></td>
     </tr>
     
     <?php endforeach; ?>
@@ -26,34 +28,36 @@ $this->headTitle($title);
     <tfoot>
         <tr>
             <th>total sum</th>
-            <th><?php echo $this->currencyFormat($allStatsSum, 'EUR', null, 'de_DE'); ?></th>
+            <th><?php echo $this->currencyFormat($allStatsSum["amount"], 'EUR', null, 'de_DE'); ?></th>
+            <th><?php echo $allStatsSum["count"]; ?></th>
         </tr>
     </tfoot>
 </table>
 
 
-<h2>Matched Statements</h2>
+<h2>Matched Bank Statements</h2>
 <p>Sum of all bank statements that have been matched to their respective order for a bank account.</p>
 
 <table class="table table-striped">
     <tr>
         <th>Name</th>
         <th>Amount</th>
+        <th>Count</th>
     </tr>
     
     <?php foreach($matchingStats as $key => $value): ?>
     <tr>
         <td><?php echo $key; ?></td>
-        <td>
-            <?php echo $this->currencyFormat($value, 'EUR', null, 'de_DE'); ?>
-        </td>
+        <td><?php echo $this->currencyFormat($value["amount"], 'EUR', null, 'de_DE'); ?></td>
+        <td><?php echo $value["count"]; ?></td>
     </tr>
     <?php endforeach; ?>
     
     <tfoot>
         <tr>
             <th>total sum</th>
-            <th><?php echo $this->currencyFormat($matchingStatsSum, 'EUR', null, 'de_DE'); ?></th>
+            <th><?php echo $this->currencyFormat($matchingStatsSum["amount"], 'EUR', null, 'de_DE'); ?></th>
+            <th><?php echo $matchingStatsSum["count"]; ?></th>
         </tr>
     </tfoot>
 </table>
