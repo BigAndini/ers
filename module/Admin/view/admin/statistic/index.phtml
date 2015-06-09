@@ -33,17 +33,7 @@ $this->headTitle($title);
                 </tbody>
             </table>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">Bank Account</div>
-            <table class="table table-striped">
-            <?php foreach($bankaccounts as $bankaccount): ?>
-                <tr>
-                    <td><?php echo $bankaccount->getName(); ?></td>
-                    <td><?php echo $this->currencyFormat($bankaccount->getAmount(), 'EUR', null, 'de_DE'); ?></td>
-                </tr>
-            <?php endforeach; ?>
-            </table>
-        </div>
+        
         <div class="panel panel-default">
             <div class="panel-heading">Participants</div>
             <table class="table table-striped">

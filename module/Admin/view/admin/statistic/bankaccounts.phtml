@@ -1,17 +1,47 @@
 <?php
 /* pizza would be really nice */
 
-$title = 'ERS Statistics: Bankaccounts';
+$title = 'ERS Statistics: Bank accounts';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<h2>Bank Statements</h2>
+<p>Sum of all bank statements received for a bank account.</p>
 
 <table class="table table-striped">
     <tr>
         <th>Name</th>
         <th>Amount</th>
     </tr>
-    <?php foreach($stats as $key => $value): ?>
+    
+    <?php foreach($allStats as $key => $value): ?>
+    <tr>
+        <td><?php echo $key; ?></td>
+        <td><?php echo $this->currencyFormat($value, 'EUR', null, 'de_DE'); ?></td>
+    </tr>
+    
+    <?php endforeach; ?>
+    
+    <tfoot>
+        <tr>
+            <th>total sum</th>
+            <th><?php echo $this->currencyFormat($allStatsSum, 'EUR', null, 'de_DE'); ?></th>
+        </tr>
+    </tfoot>
+</table>
+
+
+<h2>Matched Statements</h2>
+<p>Sum of all bank statements that have been matched to their respective order for a bank account.</p>
+
+<table class="table table-striped">
+    <tr>
+        <th>Name</th>
+        <th>Amount</th>
+    </tr>
+    
+    <?php foreach($matchingStats as $key => $value): ?>
     <tr>
         <td><?php echo $key; ?></td>
         <td>
@@ -19,4 +49,11 @@ $this->headTitle($title);
         </td>
     </tr>
     <?php endforeach; ?>
+    
+    <tfoot>
+        <tr>
+            <th>total sum</th>
+            <th><?php echo $this->currencyFormat($matchingStatsSum, 'EUR', null, 'de_DE'); ?></th>
+        </tr>
+    </tfoot>
 </table>

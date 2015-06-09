@@ -58,7 +58,7 @@ return array(
                         'resource'  => 'controller/Admin\Controller\Statistic',
                     ),
                     'bankaccount' => array(
-                        'label' => 'Bankaccounts',
+                        'label' => 'Bank accounts',
                         'route' => 'admin/statistic',
                         'action' => 'bankaccounts',
                         'resource'  => 'controller/Admin\Controller\Statistic',

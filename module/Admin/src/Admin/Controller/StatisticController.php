@@ -54,13 +54,6 @@ class StatisticController extends AbstractActionController {
         
         
         /*
-         * bankaccounts
-         */
-        // ca. 5500 ms --> optimized getBankStatementColByNumber in BankStatement
-        $bankaccounts = $em->getRepository("ersEntity\Entity\BankAccount")
-                ->findAll();
-        
-        /*
          * product variants
          */
         // acceptable performance
@@ -100,9 +93,10 @@ class StatisticController extends AbstractActionController {
         /*
          * participants
          */
+        // only load birthdays for performance reasons
         $users = $em->createQueryBuilder()->select('u.birthday')->from('ersEntity\Entity\User u')->getQuery()->getResult();
         $agegroupService = $this->getServiceLocator()
-                ->get('PreReg\Service\AgegroupService:ticket');
+                ->get('PreReg\Service\AgegroupService:price');
         
         $participant_stats = array();
         $participant_stats['all'] = count($users);
@@ -126,7 +120,6 @@ class StatisticController extends AbstractActionController {
         
         return new ViewModel(array(
             'order_data' => $order_data,
-            'bankaccounts' => $bankaccounts,
             'products' => $products,
             'variants' => $variants,
             'variant_stats' => $variant_stats,
@@ -157,27 +150,57 @@ class StatisticController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
+        $statementValueCache = array();
+        
+        $bankaccounts = $em->getRepository("ersEntity\Entity\BankAccount")
+                ->findAll();
+        
+        $allStats = array();
+        /* @var $bankaccount \ersEntity\Entity\BankAccount */
+        foreach($bankaccounts as $bankaccount) {
+            $statVals = array();
+            
+            /* @var $statement \ersEntity\Entity\BankStatement */
+            foreach($bankaccount->getBankStatements() as $statement) {
+                $statVals[$statement->getId()] = (float) $statement->getAmount()->getValue();
+            }
+            
+            $statementValueCache[$bankaccount->getName()] = $statVals;
+            $allStats[$bankaccount->getName()] = array_sum($statVals);
+        }
+        $allStatsSum = array_sum($allStats);
+        
+        
+        
+        
         $matches = $em->getRepository("ersEntity\Entity\Match")
                 ->findAll();
         
-        $stats = array();
+        $matchingStats = array();
         $sum = 0;
+        /* @var $match \ersEntity\Entity\Match */
         foreach($matches as $match) {
             $statement = $match->getBankStatement();
             $bankaccountName = $statement->getBankAccount()->getName();
-            $value = (float) $statement->getAmount()->getValue();
+            $value = $statementValueCache[$bankaccountName][$statement->getId()];
+            //$value = (float) $statement->getAmount()->getValue();
             
-            if(!isset($stats[$bankaccountName])) {
-                $stats[$bankaccountName] = 0;
+            if(!isset($matchingStats[$bankaccountName])) {
+                $matchingStats[$bankaccountName] = 0;
             }
             
-            $stats[$bankaccountName] += $value;
+            $matchingStats[$bankaccountName] += $value;
             $sum += $value;
         }
-        $stats['total sum'] = $sum;
+        $matchingStatsSum = $sum;
+        
+        
         
         return new ViewModel(array(
-            'stats' => $stats,
+            'allStats' => $allStats,
+            'allStatsSum' => $allStatsSum,
+            'matchingStats' => $matchingStats,
+            'matchingStatsSum' => $matchingStatsSum,
         ));
     }
 }
