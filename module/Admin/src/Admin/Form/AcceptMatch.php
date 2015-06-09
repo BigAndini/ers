@@ -19,17 +19,6 @@ class AcceptMatch extends Form
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
         
-        /*$this->add(array(
-            'name' => 'BankStatement_id',
-            'attributes' => array(
-                'type'  => 'hidden',
-                'value_options' => array(
-                    'foo',
-                    'baz',
-                    ),
-            ),
-        ));*/
-        
         $this->add(array( 
             'name' => 'BankStatement_id', 
             'type' => 'Zend\Form\Element\MultiCheckbox', 
@@ -44,13 +33,6 @@ class AcceptMatch extends Form
                 ),*/
             ), 
         ));
-        
-        /*$this->add(array(
-            'name' => 'Order_id[]',
-            'attributes' => array(
-                'type'  => 'hidden',
-            ),
-        ));*/
         
         $this->add(array( 
             'name' => 'Order_id', 
@@ -86,6 +68,25 @@ class AcceptMatch extends Form
             ), 
             'options' => array( 
                 'label' => 'Comment',
+            ), 
+        )); 
+        
+        $this->add(array( 
+            'name' => 'status', 
+            'type' => 'Zend\Form\Element\Radio', 
+            'attributes' => array( 
+                'required' => 'required', 
+                'value' => '0',
+            ), 
+            'options' => array( 
+                'label' => 'Status', 
+                'label_attributes' => array(
+                    'class'  => 'radio',
+                ),
+                'value_options' => array(
+                    '0' => 'partially paid', 
+                    '1' => 'paid', 
+                ),
             ), 
         )); 
         

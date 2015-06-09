@@ -346,7 +346,7 @@ class ETicketService
         $pdfContent = $pdfEngine->output();
         
         #$filename = $config['ERS']['name_short']."_eTicket_".preg_replace('/\ /', '_', $name);
-        $filename = $config['ERS']['name_short']."_eTicket_".$this->getPackage()->getCode()->getValue();
+        $filename = $config['ERS']['name_short']."_eTicket_".$this->getPackage()->getCode()->getValue().'_'.$this->getLanguage();
         
         # TODO: make ticket_path configurable
         $ticket_path = getcwd().'/data/etickets';

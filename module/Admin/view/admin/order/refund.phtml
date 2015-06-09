@@ -1,0 +1,21 @@
+<?php
+
+$title = 'Set status to paid for order '.$order->getCode()->getValue();
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Do you really want to set the status to <strong>refund</strong> for the whole order <?php echo $order->getCode()->getValue(); ?>?</p>
+<?php
+$url = $this->url('admin/order', array(
+    'action' => 'refund',
+    'id'     => $order->getId(),
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $order->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-warning" id="submitbutton" />
+    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+</div>
+</form>

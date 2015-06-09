@@ -1,5 +1,4 @@
 <?php
-#use Zend\Console\Console;
 $config = array(
     // This should be an array of module namespaces used in the application.
     'modules' => array(

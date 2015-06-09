@@ -13,6 +13,7 @@ use Zend\View\Model\ViewModel;
 use Admin\Form;
 use Admin\Service;
 use Admin\InputFilter;
+use ersEntity\Entity;
 
 class OrderController extends AbstractActionController {
  
@@ -111,6 +112,15 @@ class OrderController extends AbstractActionController {
                     error_log('element: '.$element);
                     $qb->setParameter('param'.$i, $element);
                     $i++;
+                    
+                    $code = new Entity\Code();
+                    $code->setValue($element);
+                    if($code->checkCode()) {
+                        $qb->orWhere('c.value LIKE :param'.$i);
+                        $qb->setParameter('param'.$i, $code->getValue());
+                        $i++;
+                    }
+                    
                 }
                 
                 $check_first = $i;
@@ -474,6 +484,52 @@ class OrderController extends AbstractActionController {
                 
                 foreach($order->getItems() as $item) {
                     $item->setStatus('paid');
+                    $em->persist($item);
+                }
+                
+                $em->flush();
+                
+                $breadcrumb = $forrest->get('order');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+        }
+        
+        return new ViewModel(array(
+            'order' => $order,
+            'breadcrumb' => $forrest->get('order'),
+        ));
+    }
+    
+    public function refundAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('id' => $id));
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('order')) {
+            $forrest->set('order', 'admin/order');
+        }
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ret = $request->getPost('del', 'No');
+
+            if ($ret == 'Yes') {
+                $id = (int) $request->getPost('id');
+                
+                $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $id));
+                
+                $order->setPaymentStatus('refund');
+                $em->persist($order);
+                
+                foreach($order->getItems() as $item) {
+                    $item->setStatus('refund');
                     $em->persist($item);
                 }
                 
