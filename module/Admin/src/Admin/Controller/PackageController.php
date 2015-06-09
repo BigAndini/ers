@@ -136,6 +136,49 @@ class PackageController extends AbstractActionController {
         ));
     }
     
+    public function refundAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $package = $em->getRepository("ersEntity\Entity\Package")
+                ->findOneBy(array('id' => $id));
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('package')) {
+            $forrest->set('package', 'admin/order');
+        }
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ret = $request->getPost('del', 'No');
+
+            if ($ret == 'Yes') {
+                $id = (int) $request->getPost('id');
+                
+                $package = $em->getRepository("ersEntity\Entity\Package")
+                    ->findOneBy(array('id' => $id));
+                
+                foreach($package->getItems() as $item) {
+                    $item->setStatus('refund');
+                    $em->persist($item);
+                }
+                
+                $em->flush();
+                
+                $breadcrumb = $forrest->get('package');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+        }
+        
+        return new ViewModel(array(
+            'package' => $package,
+            'breadcrumb' => $forrest->get('package'),
+        ));
+    }
+    
     public function cancelAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
@@ -247,59 +290,6 @@ class PackageController extends AbstractActionController {
                 
                 $breadcrumb = $forrest->get('package');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
-                
-                /*
-                 * get items of this package
-                 */
-                foreach($package->getItems() as $item) {
-                    if($item->hasParentItems()) {
-                        continue;
-                    }
-                    $product = $item->getProduct();
-                    $price = $product->getProductPrice($agegroup, $deadline);
-                    if($item->getPrice() != $price->getCharge()) {
-                        /*
-                         * disable item and create new item
-                         */
-                        $newItem = clone $item;
-                        #$newItem = new Entity\Item();
-                        $newItem->populate($item->getArrayCopy());
-                        $newItem->setPrice($price->getCharge());
-
-                        $newItem->setProduct($item->getProduct());
-                        $newItem->setPackage($item->getPackage());
-
-                        $code = new Entity\Code();
-                        $code->genCode();
-                        $codecheck = 1;
-                        while($codecheck != null) {
-                            $code->genCode();
-                            $codecheck = $em->getRepository("ersEntity\Entity\Code")
-                                ->findOneBy(array('value' => $code->getValue()));
-                        }
-                        $newItem->setCodeId(null);
-                        $newItem->setCode($code);
-
-                        /*
-                         * add subitems to main item
-                         */
-                        foreach($item->getChildItems() as $cItem) {
-                            $itemPackage = new Entity\ItemPackage();
-                            $itemPackage->setSurItem($newItem);
-                            #$itemPackage
-                        }
-
-                        $em->persist($newItem);
-
-                        $item->setStatus('cancelled');
-                        $em->persist($item);
-
-                        $em->flush();
-                    }
-                }
-
-                $breadcrumb = $forrest->get('package');
-                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
         
@@ -371,27 +361,81 @@ class PackageController extends AbstractActionController {
         $package = $em->getRepository("ersEntity\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
-        $eticketService = $this->getServiceLocator()
-            ->get('PreReg\Service\ETicketService');
+        $languages = array(
+            array(
+                'label' => 'English',
+                'value' => 'en',
+            ),
+            array(
+                'label' => 'German',
+                'value' => 'de',
+            ),
+            array(
+                'label' => 'Italian',
+                'value' => 'it',
+            ),
+            array(
+                'label' => 'Spanish',
+                'value' => 'es',
+            ),
+            array(
+                'label' => 'French',
+                'value' => 'fr',
+            ),
+        );
         
-        $eticketService->setPackage($package);
-        $file = $eticketService->generatePdf();
+        $form = new Form\DownloadEticket();
+        $form->get('language')->setValueOptions($languages);
+        $form->get('submit')->setValue('Download');
+        $form->get('id')->setValue($package->getId());
         
-        #$file = 'path/to/file';
-        $response = new \Zend\Http\Response\Stream();
-        $response->setStream(fopen($file, 'r'));
-        $response->setStatusCode(200);
-        $response->setStreamName(basename($file));
-        $headers = new \Zend\Http\Headers();
-        $headers->addHeaders(array(
-            'Content-Disposition' => 'attachment; filename="' . basename($file) .'"',
-            'Content-Type' => 'application/octet-stream',
-            'Content-Length' => filesize($file),
-            'Expires' => '@0', // @0, because zf2 parses date as string to \DateTime() object
-            'Cache-Control' => 'must-revalidate',
-            'Pragma' => 'public'
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('package')) {
+            $forrest->set('package', 'admin/order');
+        }
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            #$form->setInputFilter($agegroup->getInputFilter());
+            $form->setData($request->getPost());
+            if ($form->isValid()) {
+                $id = (int) $request->getPost('id');
+                
+                $package = $em->getRepository("ersEntity\Entity\Package")
+                    ->findOneBy(array('id' => $id));
+                
+                $eticketService = $this->getServiceLocator()
+                    ->get('PreReg\Service\ETicketService');
+                
+                $eticketService->setLanguage($request->getPost('language'));
+                $eticketService->setPackage($package);
+                $file = $eticketService->generatePdf();
+
+                $response = new \Zend\Http\Response\Stream();
+                $response->setStream(fopen($file, 'r'));
+                $response->setStatusCode(200);
+                $response->setStreamName(basename($file));
+                $headers = new \Zend\Http\Headers();
+                $headers->addHeaders(array(
+                    'Content-Disposition' => 'attachment; filename="' . basename($file) .'"',
+                    'Content-Type' => 'application/octet-stream',
+                    'Content-Length' => filesize($file),
+                    'Expires' => '@0', // @0, because zf2 parses date as string to \DateTime() object
+                    'Cache-Control' => 'must-revalidate',
+                    'Pragma' => 'public'
+                ));
+                $response->setHeaders($headers);
+                return $response;
+            } else {
+                $logger = $this->getServiceLocator()->get('Logger');
+                $logger->warn($form->getMessages());
+            }
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'package' => $package,
+            'breadcrumb' => $forrest->get('package'),
         ));
-        $response->setHeaders($headers);
-        return $response;
     }
 }

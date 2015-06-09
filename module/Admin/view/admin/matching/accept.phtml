@@ -95,7 +95,8 @@ $this->headTitle($title);
     echo $this->formHidden($form->get('Admin_id')); ?>
     <div class="row">
         <div class="col-md-12">
-            <?php echo $this->formRow($form->get('comment')); ?>
+            <p><?php echo $this->formRow($form->get('status')); ?></p>
+            <p><?php echo $this->formRow($form->get('comment')); ?></p>
         </div>
     </div>
     <div class="row">

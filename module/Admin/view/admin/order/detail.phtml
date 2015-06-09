@@ -30,6 +30,9 @@ $this->headTitle($title);
                 <li>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'resend-confirmation', 'id' => $order->getId())); ?>">Resend Confirmation</a>
                 </li>
+                <li>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">Send E-Tickets</a>
+                </li>
             </ul>
         </li>
         <li class="dropdown">
@@ -38,26 +41,13 @@ $this->headTitle($title);
             </a>
             <ul id="page_2" class="dropdown-menu">
                 <li>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'refund', 'id' => $order->getId())); ?>">Refund</a>
+                </li>
+                <li>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'cancel', 'id' => $order->getId())); ?>">Cancelled</a>
                 </li>
                 <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'paid', 'id' => $order->getId())); ?>">Paid</a>
-                </li>
-                <li>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'unpaid', 'id' => $order->getId())); ?>">Unpaid</a>
-                </li>
-            </ul>
-        </li>
-        <li class="dropdown">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                <span>eTickets<span class="caret"></span></span>
-            </a>
-            <ul id="page_2" class="dropdown-menu">
-                <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'activate-etickets', 'id' => $order->getId())); ?>">Activate eTickets</a>
-                </li>
-                <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">Send eTickets</a>
                 </li>
             </ul>
         </li>
@@ -161,8 +151,8 @@ $this->headTitle($title);
                                                 <a data-toggle="tooltip" data-placement="bottom"  title="Package is not assigned. Please use change owner." href="<?php echo $this->url('admin/user', array('action' => 'edit', 'id' => $user->getId())); ?>">Edit Participant Detail</a>
                                             </li>
                                         <?php endif; ?>
-                                        <li class="disabled">
-                                            <a data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet." href="<?php echo $this->url('admin/order', array('action' => 'change-owner', 'id' => $package->getId())); ?>">Change Participant</a>
+                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
+                                            <a href="<?php echo $this->url('admin/order', array('action' => 'change-owner', 'id' => $package->getId())); ?>">Change Participant</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -174,17 +164,14 @@ $this->headTitle($title);
                                         <li>
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'recalculate', 'id' => $package->getId())); ?>">Recalculate Prices</a>
                                         </li>
-                                        <li>
+                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Change Package Detail</a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'activate-eticket', 'id' => $package->getId())); ?>">Activate eTicket</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'send-eticket', 'id' => $package->getId())); ?>">Send E-Ticket</a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'send-eticket', 'id' => $package->getId())); ?>">Send eTicket</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">Download eTicket</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">Download E-Ticket</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -194,10 +181,10 @@ $this->headTitle($title);
                                     </a>
                                     <ul id="page_2" class="dropdown-menu">
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'cancel', 'id' => $package->getId())); ?>">Cancelled</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'refund', 'id' => $package->getId())); ?>">Refund</a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'paid', 'id' => $package->getId())); ?>">Paid</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'cancel', 'id' => $package->getId())); ?>">Cancelled</a>
                                         </li>
                                         <li>
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'unpaid', 'id' => $package->getId())); ?>">Unpaid</a>
@@ -248,6 +235,9 @@ $this->headTitle($title);
                             </li>
                             <li data-toggle="tooltip" data-placement="bottom" title="0 € child ticket">
                                 <i class="fa fa-child green"></i> 0 € child ticket
+                            </li>
+                            <li data-toggle="tooltip" data-placement="bottom" title="this item will be refund">
+                                <i class="fa fa-reply green"></i> refund
                             </li>
                             <li data-toggle="tooltip" data-placement="bottom" title="this item was cancelled">
                                 <i class="fa fa-ban green"></i> cancelled    

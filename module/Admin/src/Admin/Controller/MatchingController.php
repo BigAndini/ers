@@ -241,6 +241,9 @@ class MatchingController extends AbstractActionController {
                 if($statement_sum >= $order_sum) {
                     $status = 'paid';
                 }
+                if($data['status'] == 1) {
+                    $status = 'paid';
+                }
                 
                 /*
                  * do matches and set order to paid

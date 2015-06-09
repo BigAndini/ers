@@ -90,61 +90,28 @@ class CronController extends AbstractActionController {
             
             # TODO: check if the statement_format is already set. If not move to next statement.
             
-            /*$matchKey_func = 'getBankStatementcol'.$statement_format->matchKey;
-            $name_func = 'getBankStatementcol'.$statement_format->name;
-            $amount_func = 'getBankStatementcol'.$statement_format->amount;
-            $date_func = 'getBankStatementcol'.$statement_format->date;*/
-            
-            
-            $ret = $this->findCode($statement->getBankStatementColByNumber($statement_format->matchKey)->getValue());
+            $ret = $this->findCodes($statement->getBankStatementColByNumber($statement_format->matchKey)->getValue());
             if(is_array($ret)) {
-                #echo "found ".count($ret)." codes for statement: ".$statement->getId().PHP_EOL;
                 $found = false;
                 foreach($ret as $code) {
-                    #echo $code->getValue().PHP_EOL;
                     $order_code = $em->getRepository("ersEntity\Entity\Code")
                         ->findOneBy(array('value' => $code->getValue()));
                     if($order_code) {
-                        #echo "found code in system: ".$order_code->getValue().PHP_EOL;
                         $found = true;
-                        $order = $em->getRepository("ersEntity\Entity\Order")
-                            ->findOneBy(array('Code_id' => $order_code->getId()));
-                        $statement_amount = (float) $statement->getBankStatementColByNumber($statement_format->amount)->getValue();
-                        $order_amount = (float) $order->getSum();
-                        #echo 'order: '.$order_amount.' bank statement: '.$statement_amount.PHP_EOL;
-                        $paid = false;
-                        if($order_amount == $statement_amount) {
-                            $paid = true;
-                            echo "perfect match!".PHP_EOL;
-                        } elseif($order_amount < $statement_amount) {
-                            $paid = true;
-                            echo "overpaid, ok!".PHP_EOL;
-                        }
-                        if($paid) {
-                            $statement->setStatus('matched');
-                            $orderStatus = new Entity\OrderStatus();
-                            $orderStatus->setOrder($order);
-                            $orderStatus->setValue('paid');
-                            $order->addOrderStatus($orderStatus);
-                            $order->setPaymentStatus('paid');
-                            
-                            $match = new Entity\Match();
-                            $match->setBankStatement($statement);
-                            $match->setOrder($order);
-                            $match->setComment('matched by auto-matching');
-                            
-                            /*
-                             * set andi as admin for auto-matching
-                             */
-                            $admin = $em->getRepository("ersEntity\Entity\User")
-                                ->findOneBy(array('id' => 1));
-                            $match->setAdmin($admin);
-                            
-                            $em->persist($match);
-                            $em->persist($order);
-                            $em->persist($statement);
-                            #$em->persist($orderStatus);
-                            $em->flush();
+                        $this->createMatch($statement, $order_code);
+                    }
+                }
+                if(!$found) {
+                    $ret = $this->findAllCodes($statement->getBankStatementColByNumber($statement_format->matchKey)->getValue());
+                    if(is_array($ret)) {
+                        $found = false;
+                        foreach($ret as $code) {
+                            $order_code = $em->getRepository("ersEntity\Entity\Code")
+                                ->findOneBy(array('value' => $code->getValue()));
+                            if($order_code) {
+                                $found = true;
+                                $this->createMatch($statement, $order_code);
+                            }
                         }
                     }
                 }
@@ -156,7 +123,58 @@ class CronController extends AbstractActionController {
         }
     }
     
-    private function findCode($string) {
+    private function createMatch(Entity\BankStatement $statement, Entity\Code $code) {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $bankaccount = $statement->getBankAccount();
+        $statement_format = json_decode($bankaccount->getStatementFormat());
+        
+        $order = $em->getRepository("ersEntity\Entity\Order")
+            ->findOneBy(array('Code_id' => $code->getId()));
+        $statement_amount = (float) $statement->getBankStatementColByNumber($statement_format->amount)->getValue();
+        $order_amount = (float) $order->getSum();
+
+        $statement->setStatus('matched');
+
+        $em->persist($statement);
+
+        $match = new Entity\Match();
+        $match->setBankStatement($statement);
+        $match->setOrder($order);
+        $match->setComment('matched by auto-matching');
+
+        /*
+         * set andi as admin for auto-matching
+         */
+        $admin = $em->getRepository("ersEntity\Entity\User")
+            ->findOneBy(array('id' => 1));
+        $match->setAdmin($admin);
+
+        $em->persist($match);
+
+        $paid = false;
+        if($order_amount == $statement_amount) {
+            $paid = true;
+            echo "perfect match!".PHP_EOL;
+        } elseif($order_amount < $statement_amount) {
+            $paid = true;
+            echo "overpaid, ok!".PHP_EOL;
+        }
+        if($paid) {
+            #$orderStatus = new Entity\OrderStatus();
+            #$orderStatus->setOrder($order);
+            #$orderStatus->setValue('paid');
+            #$order->addOrderStatus($orderStatus);
+            $order->setPaymentStatus('paid');
+
+            $em->persist($order);
+            #$em->persist($orderStatus);
+        }
+        $em->flush();
+    }
+    
+    private function findCodes($string) {
         $length = 8;
         $matches = array();
         preg_match_all('/[A-Za-z0-9]{'.$length.'}/', $string, $matches);
@@ -175,6 +193,42 @@ class CronController extends AbstractActionController {
                 }
             }
         }
+        return $this->array_unique_callback($ret, function($code) { return $code->getValue(); });
+    }
+    
+    private function findAllCodes($string) {
+        $length = 8;
+        $regex='/[A-Z0-9]{'.$length.'}/';
+        $prepared_string = preg_replace('/\ /', '', $string);
+        $matches = array();
+        $codes = array();
+        $ret = array();
+        
+        $offset = 0;
+        $old_offset = 1;
+        while($offset != $old_offset) {
+            preg_match($regex, $prepared_string, $matches, PREG_OFFSET_CAPTURE, $offset);
+            if(!isset($matches[0])) {
+                break;
+            }
+            $codes[] = $matches[0][0];
+            $old_offset = $offset;
+            $offset = $matches[0][1]+1;
+        }
+        
+        $code = new Entity\Code();
+        foreach($codes as $value) {
+            $code->setValue($value);
+            if($code->checkCode()) {
+                $ret[] = clone $code;
+            }
+
+            $code->normalize();
+            if($code->checkCode()) {
+                $ret[] = clone $code;
+            }
+        }
+
         return $this->array_unique_callback($ret, function($code) { return $code->getValue(); });
     }
     
