@@ -429,7 +429,6 @@ class BankStatement implements InputFilterAwareInterface
         $statement_format = json_decode($this->getBankAccount()->getStatementFormat());
         $datestring = $this->getBankStatementColByNumber($statement_format->date)->getValue();
         $timestamp = strtotime($datestring);
-        error_log('timestamp: '.$timestamp);
         if($timestamp != false) {
             $date = new \DateTime();
             $date->setTimestamp($timestamp);
