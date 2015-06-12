@@ -142,6 +142,7 @@ class CronController extends AbstractActionController {
         $match = new Entity\Match();
         $match->setBankStatement($statement);
         $match->setOrder($order);
+        $match->setStatus('active');
         $match->setComment('matched by auto-matching');
 
         /*
@@ -167,9 +168,19 @@ class CronController extends AbstractActionController {
             #$orderStatus->setValue('paid');
             #$order->addOrderStatus($orderStatus);
             $order->setPaymentStatus('paid');
+            
+            foreach($order->getItems() as $item) {
+                $item->setStatus('paid');
+                $em->persist($item);
+            }
 
             $em->persist($order);
             #$em->persist($orderStatus);
+        } else {
+            foreach($order->getItems() as $item) {
+                $item->setStatus('ordered');
+                $em->persist($item);
+            }
         }
         $em->flush();
     }

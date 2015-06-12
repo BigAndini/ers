@@ -72,36 +72,27 @@ class AcceptMatch extends Form
         )); 
         
         $this->add(array( 
-            'name' => 'status', 
-            'type' => 'Zend\Form\Element\Radio', 
-            'attributes' => array( 
-                'required' => 'required', 
-                'value' => '0',
-            ), 
-            'options' => array( 
-                'label' => 'Status', 
-                'label_attributes' => array(
-                    'class'  => 'radio',
-                ),
-                'value_options' => array(
-                    '0' => 'partially paid', 
-                    '1' => 'paid', 
-                ),
-            ), 
-        )); 
-        
-        $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 
         ));
         
         $this->add(array(
-            'name' => 'submit',
+            'name' => 'half-match',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Accept Match',
+                'value' => 'Match -> unpaid',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-warning',
+            ),
+        ));
+        
+        $this->add(array(
+            'name' => 'full-match',
+            'attributes' => array(
+                'type'  => 'submit',
+                'value' => 'Match -> paid',
+                'id' => 'submitbutton',
+                'class' => 'btn btn-success',
             ),
         ));
     }

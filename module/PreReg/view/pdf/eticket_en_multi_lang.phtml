@@ -15,34 +15,147 @@
             .fa {
                 font-family: FontAwesome;
             }
+            .clear-both {
+                clear: both;
+            }
+            .small {
+                font-size: 12px;
+            }
+            .very-small {
+                font-size: 10px;
+            }
+            .bluetext {
+                color: #5278cf;
+            }
+            .greytext, .grey {
+                color: #888;
+            }
+            .initial-info {
+                width: 40%;
+            }
+            .very-small p {
+                margin: 2px;
+                padding: 0;
+            }
+            .very-small h1 {
+                color: #5278cf;
+                font-size: 32px;
+            }
+            .justify {
+                text-align: justify;
+            }
+            
+            .black {
+                color: #000;
+            }
+            
+            h3, h4 {
+                margin:0;
+                padding:0;
+                color: #85b32a;
+            }
+            table {
+                width: 100%;
+            }
+            .left-field {
+                width: 485px;
+            }
+            .span2 {
+                width: 50%;
+            }
+            .short-description {
+                width: 485px;
+            }
+            .disclaimer {
+                width: 485px;
+            }
+            .agegroup {
+                position: absolute;
+                right: 250px;
+                top: 30px;
+                font-size: 48px;
+                color: #85b32a;
+                font-weight: bold;
+            }
+            .codes {
+                width: 200px;
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                text-align: center;
+                font-size: 100%;
+                border: 1px solid #eee;
+                padding: 10px;
+            }
+            .order {
+                width: 200px;
+                position: absolute;
+                right: 0px;
+                top: 300px;
+                font-size: 100%;
+                border: 1px solid #eee;
+                padding: 10px;
+            }
+            .order-description {
+                padding: 0px;
+                margin: 5px 0 0 0;
+                font-size: 10px;
+            }
+            .order-value {
+                padding: 0px;
+                margin: 0 0 10px 0;
+                font-size: 16px;
+            }
+            .compulsory-control {
+                margin-top:80px;
+            }
+            .cc-option {
+                font-size: 20px;
+                color: #85b32a;
+                width: 30px;
+            }
+            .ticket-heading {
+                margin-left: 20px;
+            }
+            .day-table {
+                font-size: 10px;
+                width: 100%;
+            }
+            .day-table td {
+                text-align: center;
+            }
+            .sign-field {
+                width: 200px;
+                height: 40px;
+                display: block;
+                border-top: 1px solid;
+                margin-top: 35px;
+                padding-top: 5px;
+            }
         </style>
     </head>
     <body>
         <div class="row">
-            <div class="col-xs-5" style="border: 1px solid;">
-                <h1>
-                    <img src="<?php echo getcwd(); ?>/pdf/img/logofinal_black_green2015_300.png" alt="EJC 2015 Bruneck" width="120" />
-                    <span class="ticket-heading">E-Ticket</span>
-                </h1>
+            <div class="col-md-9">
+                
             </div>
-            <div class="col-xs-2" style="border: 1px solid;">
-                <?php if($agegroup): ?>
-                    <div class="agegroup">
-                        <span><?php echo $agegroup->getName(); ?></span>
-                    </div>
-                <?php endif; ?>
-                foo
-            </div>
-            <div class="col-xs-3" style="border: 1px solid;">
-                <div class="codes">
-                    <img src="<?php echo $qrcode; ?>" alt="QR-Code is missing, please regenerate your E-Ticket" /><br />
-                    <img src="<?php echo $barcode; ?>" alt="Barcode is missing, please regenerate your E-Ticket" />
-                </div>
+            <div class="col-md-3">
+                
             </div>
         </div>
-        
-        
-        
+        <div class="codes">
+            <img src="<?php echo $qrcode; ?>" alt="QR-Code is missing, please regenerate your E-Ticket" /><br />
+            <img src="<?php echo $barcode; ?>" alt="Barcode is missing, please regenerate your E-Ticket" />
+        </div>
+        <h1>
+            <img src="<?php echo getcwd(); ?>/pdf/img/logofinal_black_green2015_300.png" alt="EJC 2015 Bruneck" width="120" />
+            <span class="ticket-heading">E-Ticket</span>
+        </h1>
+        <?php if($agegroup): ?>
+        <div class="agegroup">
+            <span><?php echo $agegroup->getName(); ?></span>
+        </div>
+        <?php endif; ?>
         <div class="left-field small">
             <h3>Brief instruction / <span class="grey">Istruzioni brevi</span></h3>
             <?php if($agegroup):

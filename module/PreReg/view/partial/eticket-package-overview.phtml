@@ -91,12 +91,14 @@
                                         $date = new DateTime();
                                         $date->setTimestamp($timestamp);
                                         $found = false;
-                                        foreach($items[$product->getId()] as $item):
-                                            $itemValue = $item->getItemVariantByName('day')->getValue();
-                                            if($timestamp == strtotime($itemValue)) {
-                                                $found = true;
-                                            }
-                                        endforeach;
+                                        if(isset($items[$product->getId()]) && is_array($items[$product->getId()])):
+                                            foreach($items[$product->getId()] as $item):
+                                                $itemValue = $item->getItemVariantByName('day')->getValue();
+                                                if($timestamp == strtotime($itemValue)) {
+                                                    $found = true;
+                                                }
+                                            endforeach;
+                                        endif;
                                         ?>
                                         <?php if($found): ?>
                                             <td><span class="fa">&#xf046;</span></td>

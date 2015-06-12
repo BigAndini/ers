@@ -17,16 +17,20 @@ use Admin\Service;
 
 class MatchingController extends AbstractActionController {
     public function indexAction() {
+        $forrest = new Service\BreadcrumbFactory();
+        $forrest->set('matching', 'admin/matching');
+        
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $matchings = $em->getRepository("ersEntity\Entity\Match")
-                ->findBy(array(), array('updated' => 'DESC'));
+                ->findBy(array('status' => 'active'), array('updated' => 'DESC'));
         
         return new ViewModel(array(
             'matchings' => $matchings,
         ));
     }
+    
     public function manualAction() {        
         $logger = $this->getServiceLocator()->get('Logger');
         
@@ -59,6 +63,8 @@ class MatchingController extends AbstractActionController {
                 #->setParameter('status', 'unpaid');
         $qb->leftJoin('o.matches', 'm');
         $qb->where($qb->expr()->isNull('m.Order_id'));
+        $qb->andWhere("o.payment_status != 'cancelled'");
+        $qb->andWhere("o.payment_status != 'refund'");
 
         $orders = $qb->getQuery()->getResult();
         
@@ -75,7 +81,7 @@ class MatchingController extends AbstractActionController {
          * add bankaccounts to view model
          */
         $bankaccounts = $em->getRepository("ersEntity\Entity\BankAccount")
-                ->findBy(array());
+            ->findBy(array());
         
         /*
          * add bank statements to as value options to form
@@ -94,7 +100,6 @@ class MatchingController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $logger->info('this is in post');
             $inputFilter = new InputFilter\ManualMatch();
             $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
@@ -206,6 +211,11 @@ class MatchingController extends AbstractActionController {
                 
                 $logger->info(var_export($data, true));
                 
+                $status = 'unpaid';
+                if($data['half-match'] == null) {
+                    $status = 'paid';
+                }
+                
                 /*
                  * get orders
                  */
@@ -237,24 +247,26 @@ class MatchingController extends AbstractActionController {
                     $statement_sum += (float) $statement->getAmount()->getValue();
                 }
                 
-                $status = 'unpaid';
-                if($statement_sum >= $order_sum) {
-                    $status = 'paid';
-                }
-                if($data['status'] == 1) {
-                    $status = 'paid';
-                }
-                
                 /*
                  * do matches and set order to paid
                  */
                 foreach($orders as $order) {
+                    foreach($order->getItems() as $item) {
+                        if($status == 'paid') {
+                            $item->setStatus('paid');
+                            $em->persist($item);
+                        } elseif($status == 'unpaid') {
+                            $item->setStatus('ordered');
+                            $em->persist($item);
+                        }
+                    }
                     $order->setPaymentStatus($status);
                     $em->persist($order);
                     
                     foreach($statements as $statement) {
                         $match = new Entity\Match();
                         $match->setOrder($order);
+                        $match->setStatus('active');
                         $match->setBankStatement($statement);
                         $user = $this->zfcUserAuthentication()->getIdentity();
                         #$match->setAdminId($this->zfcUserAuthentication()->getIdentity()->getId());
@@ -310,7 +322,8 @@ class MatchingController extends AbstractActionController {
                 $match = $em->getRepository("ersEntity\Entity\Match")
                     ->findOneBy(array('id' => $id));
                 
-                $em->remove($match);
+                $match->setStatus('disabled');
+                #$em->remove($match);
                 $em->flush();
                 
                 $breadcrumb = $forrest->get('matching');
