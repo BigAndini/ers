@@ -10,6 +10,18 @@ $form = $this->form;
 $form->setAttribute('action', $this->url('admin/matching', array('action' => 'manual')));
 $form->prepare();
 
+if(count($form->getMessages()) > 0): ?>
+    <div class="alert alert-danger">
+        <ul>
+            <?php foreach($form->getMessages() as $message): ?>
+                <?php foreach($message as $key => $value): ?>
+                    <li><strong><?php echo $key ?>:</strong> <?php echo $value; ?></li>
+                <?php endforeach; ?>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif;
+
 echo $this->form()->openTag($form); ?>
 <div class="row">
     <div class="col-md-6">

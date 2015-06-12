@@ -54,58 +54,6 @@ $this->headTitle($title);
     </ul>
 </div>
 
-<div class="row">
-    <div class="col-lg-12">
-        <div class="panel panel-success">
-            <div class="panel-heading">
-                <h3 class="panel-title">Payment Detail</h3>
-            </div>
-            <div class="panel-body">
-                <?php $buyer = $order->getBuyer(); ?>
-                <?php if($buyer) : ?>
-                    <h4>
-                        Buyer: 
-                        <?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?>
-                        (<a href="mailto:<?php echo $buyer->getEmail(); ?>"><?php echo $buyer->getEmail(); ?></a>)
-                    </h4>
-                <?php else: ?>
-                    <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'register')); ?>">choose Buyer</a>
-                <?php endif; ?>
-                
-                <?php $paymenttype = $order->getPaymentType(); ?>
-                <?php if($paymenttype) : ?>
-                    <h4>Payment Type: <?php echo $paymenttype->getName(); ?></h4>
-                <?php else: ?>
-                    <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-                    <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
-                <?php endif; ?>  
-                <div>
-                    <table class="table sum-table">
-                        <tr>
-                            <td>Order amount:</td>
-                            <td class="text-right"><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
-                        </tr>
-                        <tr>
-                            <td>Payment Charge:</td>
-                            <td class="text-right"><?php echo $this->currencyFormat($paymenttype->calcFee($order->getPrice()), 'EUR', null, 'de_DE'); ?></td>
-                        </tr>
-                        <tr>
-                            <th><span style="font-size: 18px;">Total amount:</span></th>
-                            <th class="text-right"><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
-                        </tr>
-                    </table>
-                </div>
-                <?php foreach($paymentDetails as $detail): ?>
-                    <pre>
-                        <?php \var_export(json_decode($detail->getData())); ?>
-                    </pre>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="panel panel-success">
     <div class="panel-heading">
         <h3 class="panel-title">Participants / Tickets</h3>
@@ -267,5 +215,82 @@ $this->headTitle($title);
                 </tr>
             </table>
         </div>
+    </div>
+</div>
+
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h3 class="panel-title">Payment Detail</h3>
+    </div>
+    <div class="panel-body">
+        <?php $buyer = $order->getBuyer(); ?>
+        <?php if($buyer) : ?>
+            <h4>
+                Buyer: 
+                <?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?>
+                (<a href="mailto:<?php echo $buyer->getEmail(); ?>"><?php echo $buyer->getEmail(); ?></a>)
+            </h4>
+        <?php else: ?>
+            <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+            <a href="<?php echo $this->url('admin/order', array('action' => 'register')); ?>">choose Buyer</a>
+        <?php endif; ?>
+
+        <?php $paymenttype = $order->getPaymentType(); ?>
+        <?php if($paymenttype) : ?>
+            <h4>Payment Type: <?php echo $paymenttype->getName(); ?></h4>
+        <?php else: ?>
+            <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
+            <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
+        <?php endif; ?>  
+        <?php foreach($order->getMatches() as $match): 
+            $statement = $match->getBankStatement(); ?>
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <i class="fa fa-arrow-left"></i> payments
+                    </div>
+                </div>
+                <table class="table table-striped">
+                    <tr>
+                        <th></th>
+                        <th>bank transfer</th>
+                    </tr>
+                    <tr>
+                        <th>bank account</th>
+                        <td><?php echo $statement->getBankAccount()->getName(); ?></td>
+                    </tr>
+                    <tr>
+                        <th>name</th>
+                        <td><?php echo $statement->getName()->getValue(); ?></td>
+                    </tr>
+                    <tr>
+                        <th>date</th>
+                        <td>
+                            <?php 
+                            $date = $statement->getDate();
+                            if(is_object($date)) {
+                                echo $date->format('d.m.Y H:i:s');
+                            } else {
+                                echo 'unable to find date';
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>amount</th>
+                        <td><?php echo $statement->getAmount()->getValue(); ?></td>
+                    </tr>
+                    <tr>
+                        <th>code</th>
+                        <td><?php echo $statement->getCode()->getValue(); ?></td>
+                    </tr>
+                </table>
+            </div>
+        <?php endforeach; ?>
+        <?php foreach($paymentDetails as $detail): ?>
+            <pre>
+                <?php \var_export(json_decode($detail->getData())); ?>
+            </pre>
+        <?php endforeach; ?>
     </div>
 </div>

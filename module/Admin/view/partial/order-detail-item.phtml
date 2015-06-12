@@ -111,10 +111,10 @@
                                 <a href="<?php echo $this->url('admin/item', array('action' => 'refund', 'id' => $item->getId())); ?>">refund</a>
                             <?php endif; ?>
                         </li>
-                        <li>
+                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
                             <a href="<?php echo $this->url('admin/item', array('action' => 'change-item', 'id' => $item->getId())); ?>">change item</a>
                         </li>
-                        <li>
+                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
                             <a href="<?php echo $this->url('admin/item', array('action' => 'change-owner', 'id' => $item->getId())); ?>">change participant</a>
                         </li>
                         <?php if($item->getStatus() == 'zero_ok'): ?>

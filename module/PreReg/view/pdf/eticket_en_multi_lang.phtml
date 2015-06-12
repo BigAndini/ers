@@ -1,5 +1,6 @@
 <html>
     <head>
+        <link type="text/css" href="public/css/bootstrap.min.css" rel="stylesheet" />
         <style type="text/css">
             * {
                 font-family: sans-serif;
@@ -26,7 +27,7 @@
             .bluetext {
                 color: #5278cf;
             }
-            .greytext {
+            .greytext, .grey {
                 color: #888;
             }
             .initial-info {
@@ -58,6 +59,9 @@
             }
             .left-field {
                 width: 485px;
+            }
+            .span2 {
+                width: 50%;
             }
             .short-description {
                 width: 485px;
@@ -131,6 +135,14 @@
         </style>
     </head>
     <body>
+        <div class="row">
+            <div class="col-md-9">
+                
+            </div>
+            <div class="col-md-3">
+                
+            </div>
+        </div>
         <div class="codes">
             <img src="<?php echo $qrcode; ?>" alt="QR-Code is missing, please regenerate your E-Ticket" /><br />
             <img src="<?php echo $barcode; ?>" alt="Barcode is missing, please regenerate your E-Ticket" />
@@ -145,7 +157,7 @@
         </div>
         <?php endif; ?>
         <div class="left-field small">
-            <h3>Brief instruction</h3>
+            <h3>Brief instruction / <span class="grey">Istruzioni brevi</span></h3>
             <?php if($agegroup):
                 switch($agegroup->getName()):
                     case 'U6':
@@ -160,6 +172,7 @@
                             parent or legal guardian of the child but a 
                             chaperon, we also need a <strong>copy of a valid ID 
                                 card of the child’s legal guardian</strong>.</p>
+                        <p class="grey">Caro accompagnatore, per favore stampa questo biglietto e non darlo ad altri. Un genitore o tutore legale deve aggiungere e firmare le informazioni riguardanti la supervisione obbligatoria e lo scarico di responsabilità. Portare questo biglietto alla EJC e presentarlo al banco di registrazione. Se non sei un genitore o tutore legale del bambino, ma una chaperon, abbiamo anche bisogno di una copia di un documento di identità del tutore legale del bambino.</p>
                         <?php break;
                     case 'U18': ?>
                         <p><strong>Print</strong> this ticket and never give it 
@@ -171,6 +184,7 @@
                             If you attend the EJC on your own, we also need a 
                             <strong>copy of your legal guardian’s ID 
                                 card</strong>.</p>
+                        <p class="grey">Stampa questo biglietto e non darlo ad altri. Un genitore o tutore legale deve firmare le informazioni riguardanti la supervisione obbligatoria e lo scarico di responsabilità. Porta questo biglietto alla EJC e presentalo al banco di registrazione. Se frequenti la EJC da solo, abbiamo anche bisogno di una copia della carta d'identità del tuo tutore legale.</p>
                         <?php break;
                 endswitch; 
             else: ?>
@@ -179,29 +193,37 @@
                 <strong>Bring</strong> this ticket together with your 
                 <strong>valid ID card</strong> to the EJC and present them at 
                 the registration desk.</p>
+            <p class="grey">Stampa questo biglietto e non darlo mai ad altri. Firma lo scarico di responsabilità. Porta questo biglietto con la carta d'identità valida alla EJC e presentali al banco di registrazione.</p>
             <?php endif; ?>
         </div>
         <div class="left-field small">
-            <h3>Disclaimer</h3>
-            <p>Upon attending the EJC, in no event shall the host or its 
-                representatives or its assistants be liable for any loss or 
-                injury or any damages, unless they are grounded in cause of 
-                gross negligence or wilful act of breach of duty by the host 
-                or its representatives or its assistants. Participants attend by 
-                choice, on their own risk; they take the responsibility for 
-                their own health status and pay attention to it. We especially 
-                point out that the EJC is a sports event where professional 
-                jugglers and acrobats will train together with non – 
-                professionals of all skill levels. There will be workshops in 
-                all sorts of circus disciplines open (but maybe not 
-                appropriate!) for everyone; above that props and apparatus 
-                will be accessible, be it because the host provides them or any 
-                participant simply puts them up and let others use them as well. 
-                It is your own responsibility and neither the hosts’, nor the 
-                workshop leaders’, their representatives’ or assistants’ to make 
-                sure at any time that your health and fitness condition is 
-                adequate to take part in the workshop in question or to use 
-                props and apparatus mentioned hereinabove safely.</p>
+            <h3>Disclaimer / <span class="grey">Scarico di responsabilità</span></h3>
+            <div class="row">
+                <div class="col-xs-5">
+                    <p>Upon attending the EJC, in no event shall the host or its 
+                    representatives or its assistants be liable for any loss or 
+                    injury or any damages, unless they are grounded in cause of 
+                    gross negligence or wilful act of breach of duty by the host 
+                    or its representatives or its assistants. Participants attend by 
+                    choice, on their own risk; they take the responsibility for 
+                    their own health status and pay attention to it. We especially 
+                    point out that the EJC is a sports event where professional 
+                    jugglers and acrobats will train together with non – 
+                    professionals of all skill levels. There will be workshops in 
+                    all sorts of circus disciplines open (but maybe not 
+                    appropriate!) for everyone; above that props and apparatus 
+                    will be accessible, be it because the host provides them or any 
+                    participant simply puts them up and let others use them as well. 
+                    It is your own responsibility and neither the hosts’, nor the 
+                    workshop leaders’, their representatives’ or assistants’ to make 
+                    sure at any time that your health and fitness condition is 
+                    adequate to take part in the workshop in question or to use 
+                    props and apparatus mentioned hereinabove safely.</p>
+                </div>
+                <div class="col-xs-5">
+                    <p class="grey">Partecipando alla EJC, in nessun caso l'organizzatore il padrone di casa o i suoi rappresentanti o i suoi assistenti saranno responsabili per qualsiasi perdita o infortunio o danni, a meno che non si fondano su causa di negligenza grave o atto deliberato di violazione del dovere da parte dell'organizzatore o dei suoi rappresentanti o dei suoi assistenti. I partecipanti frequentano per scelta, a loro rischio e pericolo; assumono la responsabilità per la propria salute e prestano attenzione ad essa. Si segnala in particolare che l'EJC è un evento sportivo in cui giocolieri e acrobati professionisti si alleneranno insieme con i non - professionisti di tutti i livelli di abilità. Ci saranno laboratori a tutti i tipi di discipline circensi aperti (ma forse non di livello appropriato!) per tutti; saranno resi accessibili strutture e attrezzi, sia perché l'organizzatore li fornisce sia perché qualsiasi partecipante li mette semplicemente a disposizione degli altri. E' vostra responsabilità, e non degli organizzatori, né dei conduttori dei laboratori, i loro rappresentanti o assistenti, assicurarsi che in qualsiasi momento la vostra salute e condizione fisica è sufficiente per prendere parte al workshop in questione o l'utilizzo di strutture e attrezzi menzionati precedentemente sia sicuro.</p>
+                </div>
+            </div>
         </div>
         <?php 
         $variables = array(
@@ -228,6 +250,7 @@
                                         9th 2015. I will attend the EJC myself 
                                         and therefore observe the obligatory 
                                         supervision. I accept the disclaimer.</p>
+                                    <p class="grey">Acconsento che mio figlio / figlia (come indicato sulla destra) partecipi alla EJC Brunico dal 1 agosto al 9 agosto 2015. Parteciperò alla EJC io stesso e quindi fornirò la supervisione obbligatoria. Accetto lo scarico di responsabilità.</p>
                                 </td>
                             </tr>
                             <tr>
@@ -255,6 +278,7 @@
                                         stated above). Otherwise, attending will 
                                         not be possible for my son / daughter. I 
                                         accept the disclaimer.</p>
+                                    <p class="grey">Acconsento che mio figlio / figlia (come indicato sulla destra) partecipi alla EJC Brunico dal 1 agosto  al 9 agosto 2015. Affido il seguente accompagnatore con la funzione di tutore legale e la supervisione obbligatoria. Garantisco che questo accompagnatore è un adulto (18 anni di età o superiore) e ha la capacità di prendersi cura di mio figlio / figlia. L'organizzatore non verificherà questo. Aggiungo una copia di un documento di identità di me stesso (come detto sopra). In caso contrario la partecipazione alla EJC non sarà possibile per mio figlio / figlia. Accetto lo scarico di responsabilità.</p>
                                 </td>
                             </tr>
                             <tr>
@@ -278,6 +302,7 @@
                                         myself and therefore observe the 
                                         obligatory supervision. I accept the 
                                         disclaimer. </p>
+                                    <p class="grey">Acconsento che mio figlio / figlia (come indicato sulla destra) partecipi alla EJC Brunico dal 1 agosto al 9 agosto 2015. Parteciperò alla EJC io stesso e quindi fornirò la supervisione obbligatoria. Accetto lo scarico di responsabilità.</p>
                                 </td>
                             </tr>
                             <tr>
@@ -300,6 +325,7 @@
                                         documents the participation of my child 
                                         at the EJC is impossible. I accept the 
                                         disclaimer.</p>
+                                    <p class="grey">Acconsento che mio figlio / figlia (come indicato sulla destra) partecipi alla EJC Brunico dal 1 agosto al 9 agosto 2015. Non parteciperò alla EJC. Allego una copia della mia carta d'identità a questo E-Ticket. Senza entrambi i documenti la partecipazione di mio figlio alla EJC è impossibile. Accetto lo scarico di responsabilità.</p>
                                 </td>
                             </tr>
                             <tr>

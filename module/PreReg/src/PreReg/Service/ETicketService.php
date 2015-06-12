@@ -245,11 +245,12 @@ class ETicketService
         /*
          * PDF creation
          */
+        $paperSize = 'a4';
+        $paperOrientation = 'portrait';
         $pdf = new PdfModel();
-        $pdf->setOption("paperSize", "a4"); //Defaults to 8x11
-        $pdf->setOption("paperOrientation", "portrait"); //Defaults to portrait
-        #$name = 'Andreas Nitsche';
-        #$code = 'AABBCCDD';
+        $pdf->setOption("paperSize", $paperSize); //Defaults to 8x11
+        $pdf->setOption("paperOrientation", $paperOrientation); //Defaults to portrait
+        
         $name = $this->getParticipant()->getFirstname().' '.$this->getParticipant()->getSurname();
         $code = $this->getPackage()->getCode()->getValue();
 
@@ -340,7 +341,9 @@ class ETicketService
                 ->get('ViewPdfRenderer');
         $html = $pdfRenderer->getHtmlRenderer()->render($pdfView);
         $pdfEngine = $pdfRenderer->getEngine();
-
+        
+        $pdfEngine->set_paper($paperSize, $paperOrientation);
+        $pdfEngine->set_base_path(getcwd().'/');
         $pdfEngine->load_html($html);
         $pdfEngine->render();
         $pdfContent = $pdfEngine->output();
