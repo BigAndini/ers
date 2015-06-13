@@ -113,7 +113,7 @@ class Item implements InputFilterAwareInterface
     protected $agegroup;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $transfer_id;
     
