@@ -52,7 +52,7 @@ class BankStatement implements InputFilterAwareInterface
 
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, unique=true, nullable=true)
      */
     protected $hash;
     
@@ -241,6 +241,21 @@ class BankStatement implements InputFilterAwareInterface
     public function getHash()
     {
         return $this->hash;
+    }
+    
+    /**
+     * generate the hash code for this bank statement
+     * 
+     * @return \ersEntity\Entity\BankStatement
+     */
+    public function generateHash() {
+        $values = array();
+        foreach($this->getBankStatementCols() as $col) {
+            $values[] = $col->getValue();
+        }
+        $this->setHash(md5(implode($values)));
+        
+        return $this;
     }
     
     /**

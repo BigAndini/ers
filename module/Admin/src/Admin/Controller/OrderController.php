@@ -359,6 +359,10 @@ class OrderController extends AbstractActionController {
                 $order = $em->getRepository("ersEntity\Entity\Order")
                     ->findOneBy(array('id' => $id));
                 
+                if($order->getPaymentStatus() != 'paid') {
+                    return $this->redirect()->toRoute('admin/order', array('action' => 'send-eticket'));
+                }
+                
                 $eticketService = $this->getServiceLocator()->get('PreReg\Service\ETicketService');
                 foreach($order->getPackages() as $package) {
                     $eticketService->setPackage($package);
@@ -372,8 +376,6 @@ class OrderController extends AbstractActionController {
                 $breadcrumb = $forrest->get('order');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
-
-            return $this->redirect()->toRoute('admin/agegroup');
         }
         
         return new ViewModel(array(

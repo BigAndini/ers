@@ -181,6 +181,12 @@ class BankaccountController extends AbstractActionController {
         $form->get('date')->setAttribute('options', 
                 $this->getColumnOptions($colCount, $statement_format->date));
         
+        if(!isset($statement_format->sign)) {
+            $statement_format->sign = 0;
+        }
+        $form->get('sign')->setAttribute('options', 
+                $this->getColumnOptions($colCount, $statement_format->sign));
+        
         $form->get('id')->setValue($bankaccount->getId());
         
         $request = $this->getRequest();
@@ -201,8 +207,38 @@ class BankaccountController extends AbstractActionController {
                     'amount' => $data['amount'],
                     'name' => $data['name'],
                     'date' => $data['date'],
+                    'sign' => array(
+                        'col' => $data['sign'],
+                        'value' => $data['sign-value']
+                    )
                 );
                 $bankaccount->setStatementFormat(json_encode($format));
+                
+                $hashes = array();
+                foreach($bankaccount->getBankStatements() as $statement) {
+                    $amountCol = $statement->getAmount();
+                    $amountCol->setValue((float) $amountCol->getValue());
+                    
+                    $em->persist($amountCol);
+                    $statement->generateHash();
+                    
+                    $bankstatement = $em->getRepository("ersEntity\Entity\BankStatement")
+                        ->findOneBy(array('hash' => $statement->getHash()));
+                    if($bankaccount) {
+                        error_log('the statement with hash '.$statement->getHash().' already exists.');
+                        $em->remove($statement);
+                        continue;
+                    }
+                    
+                    if(in_array($statement->getHash(), $hashes)) {
+                        error_log('the statement with hash '.$statement->getHash().' already exists.');
+                        $em->remove($statement);
+                        continue;
+                    }
+                    
+                    $hashes[] = $statement->getHash();
+                    $em->persist($statement);
+                }
                 
                 $em->persist($bankaccount);
                 $em->flush();
@@ -290,26 +326,25 @@ class BankaccountController extends AbstractActionController {
                     throw new \Exception('Unable to open csv');
                 }
                 
+                $statement_format = json_decode($bankaccount->getStatementFormat());
+                $fix_amount = false;
+                if(is_array($statement_format)) {
+                    $fix_amount = true;
+                }
+                
                 /*
                  * read every line in the file and generate bank statement entities
                  */
                 $row = 1;
+                $hashes = array();
                 while (($row_data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                    #$logger->info($row_data);
-                
-                    $hash = md5(implode($row_data));
-                    $bankstatement = $em->getRepository("ersEntity\Entity\BankStatement")
-                        ->findOneBy(array('hash' => $hash));
-                    if($bankstatement) {
-                        #$logger->info('bank statement already exists in db');
-                        continue;
-                    }
+                    #$hash = md5(implode($row_data));
                     
                     $bs = new Entity\BankStatement();
                     #$bs->setBankStatementCols($row_data);
                     $bs->setBankAccount($bankaccount);
                     $bs->setBankAccountCsv($bankAccountCsv);
-                    $bs->setHash($hash);
+                    #$bs->setHash($hash);
                     $bs->setStatus('new');
                     foreach($row_data as $column => $value) {
                         $bsc = new Entity\BankStatementCol();
@@ -318,17 +353,31 @@ class BankaccountController extends AbstractActionController {
                         $bsc->setBankStatement($bs);
                         $bs->addBankStatementCol($bsc);
                     }
+                    if($fix_amount) {
+                        $bs->getAmount()->setValue((float) $bs->getAmount()->getValue());
+                    }
+                    $bs->generateHash();
+                    
+                    $bankstatement = $em->getRepository("ersEntity\Entity\BankStatement")
+                        ->findOneBy(array('hash' => $bs->getHash()));
+                    if($bankstatement) {
+                        continue;
+                    }
                  
-                    #$bankaccount->addBankStatement($bs);
+                    /*
+                     * bank statement already exists in this file
+                     */
+                    if(in_array($bs->getHash(), $hashes)) {
+                        error_log('The bank statement you want to upload exists twice in this file: '.$bs->getHash());
+                        continue;
+                    }
+                    $hashes[] = $bs->getHash();
+                    
                     $em->persist($bs);
                     $row++;
                 }
                 fclose($handle);
-
-                /*
-                 * save everything to database
-                 */
-                #$em->persist($bankaccount);
+                
                 $em->flush();
                 
                 return $this->redirect()->toRoute('admin/bankaccount');

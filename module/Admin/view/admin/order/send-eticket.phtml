@@ -4,7 +4,10 @@ $title = 'Send eTicket for Order '.$order->getCode()->getValue();
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-
+<?php if($order->getPaymentStatus() != 'paid'): ?>
+<p>Unable to send E-Tickets for this order since it is not in status paid.</p>
+<a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Back</a>
+<?php else: ?>
 <p>Do you really want to send out eTickets  for the order <?php echo $order->getCode()->getValue(); ?>?</p>
 <?php
 $url = $this->url('admin/order', array(
@@ -19,3 +22,4 @@ $url = $this->url('admin/order', array(
     <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
 </div>
 </form>
+<?php endif; ?>
