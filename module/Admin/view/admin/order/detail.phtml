@@ -30,7 +30,11 @@ $this->headTitle($title);
                 <li>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'resend-confirmation', 'id' => $order->getId())); ?>">Resend Confirmation</a>
                 </li>
+                <?php if($order->getPaymentStatus() != 'paid'): ?>
+                <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid orders.">
+                <?php else: ?>
                 <li>
+                <?php endif; ?>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">Send E-Tickets</a>
                 </li>
             </ul>

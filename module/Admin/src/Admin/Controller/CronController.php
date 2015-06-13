@@ -90,6 +90,11 @@ class CronController extends AbstractActionController {
             
             # TODO: check if the statement_format is already set. If not move to next statement.
             
+            if($statement->getBankStatementColByNumber($statement_format->sign->col)->getValue() != $statement_format->sign->value) {
+                # This is no positive statement. We will not check this.
+                continue;
+            }
+            
             $ret = $this->findCodes($statement->getBankStatementColByNumber($statement_format->matchKey)->getValue());
             if(is_array($ret)) {
                 $found = false;
@@ -116,7 +121,7 @@ class CronController extends AbstractActionController {
                     }
                 }
                 if(!$found) {
-                    echo "ERROR: Unable to find any code in system.".PHP_EOL;
+                    echo PHP_EOL."ERROR: Unable to find any code in system.".PHP_EOL;
                     echo $statement->getBankStatementColByNumber($statement_format->matchKey)->getValue().PHP_EOL;
                 }
             }
@@ -154,13 +159,17 @@ class CronController extends AbstractActionController {
 
         $em->persist($match);
 
-        $paid = false;
         if($order_amount == $statement_amount) {
             $paid = true;
-            echo "perfect match!".PHP_EOL;
+            #echo "perfect match!".PHP_EOL;
+            echo ".";
         } elseif($order_amount < $statement_amount) {
             $paid = true;
-            echo "overpaid, ok!".PHP_EOL;
+            #echo "overpaid, ok!".PHP_EOL;
+            echo "!";
+        } else {
+            $paid = false;
+            echo "-";
         }
         if($paid) {
             #$orderStatus = new Entity\OrderStatus();

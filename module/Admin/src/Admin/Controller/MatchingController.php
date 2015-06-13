@@ -17,17 +17,27 @@ use Admin\Service;
 
 class MatchingController extends AbstractActionController {
     public function indexAction() {
+        $page = (int) $query = $this->params()->fromQuery('page', 1);
         $forrest = new Service\BreadcrumbFactory();
         $forrest->set('matching', 'admin/matching');
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
+        $limit = 50;
+        $offset = ($limit * ($page - 1));
+        # findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
         $matchings = $em->getRepository("ersEntity\Entity\Match")
-                ->findBy(array('status' => 'active'), array('updated' => 'DESC'));
+                ->findBy(array('status' => 'active'), array('updated' => 'DESC'), $limit, $offset);
         
+        $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('m');
+        $qb->select('count(m.id)');
+        $count = $qb->getQuery()->getSingleScalarResult();
+        $pagecount = floor($count/$limit);
         return new ViewModel(array(
             'matchings' => $matchings,
+            'page' => $page,
+            'pagecount' => $pagecount,
         ));
     }
     

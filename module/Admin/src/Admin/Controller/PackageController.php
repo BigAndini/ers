@@ -438,4 +438,54 @@ class PackageController extends AbstractActionController {
             'breadcrumb' => $forrest->get('package'),
         ));
     }
+    
+    public function sendEticketAction() {
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('package')) {
+            $forrest->set('package', 'admin/order');
+        }
+        
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            $logger->info('there is no id');
+            #return $this->redirect()->toRoute('admin/order', array());
+            $breadcrumb = $forrest->get('package');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('id' => $id));
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ret = $request->getPost('del', 'No');
+
+            if ($ret == 'Yes') {
+                $id = (int) $request->getPost('id');
+                
+                $package = $em->getRepository("ersEntity\Entity\Package")
+                    ->findOneBy(array('id' => $id));
+                
+                if($package->getStatus() != 'paid') {
+                    return $this->redirect()->toRoute('admin/package', array('action' => 'send-eticket'));
+                }
+                
+                $eticketService = $this->getServiceLocator()->get('PreReg\Service\ETicketService');
+                $eticketService->setPackage($package);
+                $filePath = $eticketService->generatePdf();
+                $logger->info('filename: '.$filePath);
+                
+                $breadcrumb = $forrest->get('order');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+        }
+        
+        return new ViewModel(array(
+            'package' => $package,
+            'breadcrumb' => $forrest->get('package'),
+        ));
+    }
 }

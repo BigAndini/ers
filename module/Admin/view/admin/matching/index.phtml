@@ -1,9 +1,56 @@
 <?php
 
-$title = 'Matching ('.count($matchings).')';
+$title = 'Matching';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<nav>
+    <ul class="pagination pagination-sm">
+        <?php if($page == 1): ?>
+            <li class='disabled'>
+        <?php else: ?>
+            <li>
+        <?php endif; ?>
+            <a href="<?php echo $this->url('admin/matching', 
+                    array(), 
+                        array(
+                            'query' => array('page' => ($page-1))
+                        )
+                    ); ?>" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <?php for($num=1; $num <= $pagecount; $num++): ?>
+            <?php if($page == $num): ?>
+                <li class="active">
+            <?php else: ?>
+                <li>
+            <?php endif;?>
+            
+                <a href="<?php echo $this->url('admin/matching', 
+                array(), 
+                    array(
+                        'query' => array('page' => $num)
+                    )
+                ); ?>"><?php echo $num; ?></a></li>
+        <?php endfor; ?>
+        <?php if($page == $pagecount): ?>
+            <li class='disabled'>
+        <?php else: ?>
+            <li>
+        <?php endif; ?>
+            <a href="<?php echo $this->url('admin/matching', 
+                    array(), 
+                        array(
+                            'query' => array('page' => ($page+1))
+                        )
+                    ); ?>" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
 
 <?php foreach($matchings as $matching): ?>
     <?php $order = $matching->getOrder(); ?>
@@ -41,12 +88,18 @@ $this->headTitle($title);
                     <tr>
                         <th>amount</th>
                         <td>
+                            <?php if(!is_numeric($order->getOrderSum())):
+                                error_log('order sum is bad!');
+                            endif; ?>
                             <?php echo $this->currencyFormat($order->getOrderSum(), 'EUR', null, 'de_DE'); ?>
                         </td>
                     </tr>
                     <tr>
                         <th>incl. fees</th>
                         <td>
+                            <?php if(!is_numeric($order->getTotalSum())):
+                                error_log('total sum is bad!');
+                            endif; ?>
                             <?php echo $this->currencyFormat($order->getTotalSum(), 'EUR', null, 'de_DE'); ?>
                         </td>
                     </tr>
@@ -74,13 +127,20 @@ $this->headTitle($title);
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-md-4">
+                            <?php if(!is_numeric($order->getTotalSum())):
+                                error_log('the other total sum is bad!');
+                            endif; ?>
                             <?php echo $this->currencyFormat($order->getTotalSum(), 'EUR', null, 'de_DE'); ?>
                         </div>
                         <div class="col-md-4 text-center">
                             <a class="btn btn-danger" href="<?php echo $this->url('admin/matching', array('action' => 'unlink', 'id' => $matching->getId())); ?>">unlink</a>
                         </div>
                         <div class="col-md-4 text-right">
-                            <?php echo $this->currencyFormat($statement->getAmount()->getValue(), 'EUR', null, 'de_DE'); ?>
+                            <?php if(is_numeric($statement->getAmount()->getValue())):
+                                echo $this->currencyFormat((float) $statement->getAmount()->getValue(), 'EUR', null, 'de_DE');
+                            else :
+                                echo $statement->getAmount()->getValue();
+                            endif; ?>
                         </div>
                     </div>
                 </div>

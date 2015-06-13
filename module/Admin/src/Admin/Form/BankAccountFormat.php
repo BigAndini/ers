@@ -78,6 +78,35 @@ class BankAccountFormat extends Form
             ),
         ));
         
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
+            'name' => 'sign',
+            'attributes' => array(
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'contains algebraic sign (+ / -)',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
+        $this->add(array(
+            'name' => 'sign-value',
+            'attributes' => array(
+                'type'  => 'text',
+                'class' => 'form-control form-element',
+                'placeholder' => 'sign value',
+            ),
+            'options' => array(
+                'label' => 'sign value for plus',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
         $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 
