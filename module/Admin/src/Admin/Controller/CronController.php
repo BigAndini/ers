@@ -259,6 +259,22 @@ class CronController extends AbstractActionController {
         );
     }
     
+    public function removeMatchesAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $matches = $em->getRepository("ersEntity\Entity\Match")
+                ->findAll();
+        
+        foreach($matches as $match) {
+            $statement = $match->getBankStatement();
+            $statement->setStatus('new');
+            $em->persist($statement);
+            $em->remove($match);
+        }
+        $em->flush();
+    }
+    
     public function genUserListAction() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');

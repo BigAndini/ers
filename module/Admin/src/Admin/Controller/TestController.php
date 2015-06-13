@@ -166,4 +166,111 @@ class TestController extends AbstractActionController {
         
         return new ViewModel(array());
     }
+    
+    public function eticketHtmlAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $package = $em->getRepository("ersEntity\Entity\Package")
+                ->findOneBy(array('id' => 52));
+        
+        $products = $em->getRepository("ersEntity\Entity\Product")
+                ->findAll();
+        
+        $config = $this->getServiceLocator()->get('Config');
+       
+        $name = $package->getParticipant()->getFirstname().' '.$package->getParticipant()->getSurname();
+        $code = $package->getCode()->getValue();
+
+        /*
+         * QR-Code creation
+         */
+        $qr = $this->getServiceLocator()->get('QRCode');
+        $qr->isHttps(); // or $qr->isHttp();
+        #$qr->setData('http://prereg.eja.net/onsite/register/'.  \urlencode($code));
+        $onsitereg = $config['ERS']['onsitereg'];
+        # ensure the url has no trailing slash
+        \rtrim( $onsitereg, '/\\' );
+        $qr->setData($onsitereg.'/'.\urlencode($code));
+        
+        $qr->setCorrectionLevel('H', 0);
+        $qr->setDimensions(200, 200);
+        $qr_config = array(
+            'adapter'      => 'Zend\Http\Client\Adapter\Socket',
+            'ssltransport' => 'tls',
+            'sslcapath'    => '/etc/ssl/certs/',
+            'sslverifypeer' => false,
+        );
+
+        // Instantiate a client object
+        $client = new \Zend\Http\Client($qr->getResult(), $qr_config);
+
+        // The following request will be sent over a TLS secure connection.
+        $response = $client->send();
+        
+        $qr_content = $response->getContent();
+        $base64_qrcode = "data:image/png;base64,".  \base64_encode($qr_content);
+        
+        #file_put_contents(getcwd().'/public/img/qrcode.png', $qr_content);
+        
+        /*
+         * Barcode creation
+         */
+        
+        // Only the text to draw is required
+        $barcodeOptions = array(
+            'text' => $code, 
+            'barHeight' => 40,
+            'factor' => 1.1,
+            'drawText' => false,
+        );
+
+        // No required options
+        $rendererOptions = array();
+
+        // Draw the barcode in a new image,
+        $imageResource = \Zend\Barcode\Barcode::factory(
+            'code39', 'image', $barcodeOptions, $rendererOptions
+        )->draw();
+        
+        ob_start(); //Start output buffer.
+            imagejpeg($imageResource); //This will normally output the image, but because of ob_start(), it won't.
+            $contents = ob_get_contents(); //Instead, output above is saved to $contents
+        ob_end_clean(); //End the output buffer.
+        
+        #file_put_contents(getcwd().'/public/img/barcode2.jpg', $contents);
+        
+        $base64_barcode = "data:image/png;base64,".  \base64_encode($contents);
+        
+        /*
+         * prepare items
+         */
+        $items = array();
+        foreach($package->getItems() as $item) {
+            $items[$item->getProductId()][] = $item;
+        }
+        
+        $agegroupService = $this->getServiceLocator()
+                ->get('PreReg\Service\AgegroupService:ticket');
+        $agegroup = $agegroupService->getAgegroupByUser($package->getParticipant());
+        
+        /* 
+         * generate PDF
+         */
+        $viewModel = new ViewModel();
+        #$viewModel->setTemplate('pdf/eticket_'.$this->getLanguage());
+        $viewModel->setTemplate('pdf/eticket_en');
+        $viewModel->setVariables(array(
+            'name' => $name,
+            'package' => $package,
+            'items' => $items,
+            'products' => $products,
+            'agegroup' => $agegroup,
+            'code' => $code,
+            'qrcode' => $base64_qrcode,
+            'barcode' => $base64_barcode,
+        ));
+        
+        return $viewModel;
+    }
 }

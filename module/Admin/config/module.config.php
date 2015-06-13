@@ -259,6 +259,15 @@ return array(
                         )
                     )
                 ),
+                'remove-matches' => array(
+                    'options' => array(
+                        'route'    => 'remove-matches',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'remove-matches'
+                        )
+                    )
+                ),
                 'generate-etickets' => array(
                     'options' => array(
                         'route'    => 'generate-etickets',
