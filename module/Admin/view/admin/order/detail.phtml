@@ -5,9 +5,14 @@ if($order->findOrderStatus('paid')->getValue() != ''):
 elseif($order->findOrderStatus('unpaid')->getValue() != ''):
     $status = 'unpaid';
 endif;*/
+if($order):
+    $title = 'Order '.$order->getCode()->getValue().' ('.$order->getPaymentStatus().')';
+else:
+    $title = 'Order not found';
+endif;
 
 #$title = 'Order '.$order->getCode()->getValue().' ('.$status.')';
-$title = 'Order '.$order->getCode()->getValue().' ('.$order->getPaymentStatus().')';
+
 $this->headTitle($title);
 ?>
 <div class="clear-both">
@@ -15,6 +20,7 @@ $this->headTitle($title);
     <a href="<?php echo $this->url('admin/order', array('action' => 'search')); ?>">back to Search</a>
 </div>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php if($order): ?>
 <h3>Order date: <?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></h3>
 
 <div class="navbar">
@@ -84,7 +90,12 @@ $this->headTitle($title);
                         <h3>
                             <?php echo $participant.' ('.$package->getCode()->getValue().')'; ?>
                         </h3>
-                        <p>date of birth: <?php echo $user->getBirthday()->format('d.m.Y'); ?></p>
+                        <p>
+                            date of birth: 
+                            <?php if($user->getBirthday() instanceof \DateTime):
+                                echo $user->getBirthday()->format('d.m.Y');
+                            endif; ?>
+                        </p>
                     </div>
                     <div class="col-md-6">
                         <div class="navbar pull-right">
@@ -298,3 +309,4 @@ $this->headTitle($title);
         <?php endforeach; ?>
     </div>
 </div>
+<?php endif; ?>
