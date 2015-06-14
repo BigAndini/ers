@@ -298,6 +298,10 @@ class PaymentController extends AbstractActionController {
         }
         
         $order->setPaymentStatus('paid');
+        foreach($order->getItems() as $item) {
+            $item->setStatus('paid');
+            $em->persist($item);
+        }
         
         $orderStatus = new Entity\OrderStatus;
         $orderStatus->setOrder($order);
