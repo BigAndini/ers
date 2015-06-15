@@ -279,9 +279,6 @@ class PackageController extends AbstractActionController {
                         $itemAfter = $items['after'];
                         $itemBefore = $items['before'];
                         
-                        foreach($itemAfter->getItemVariants() as $variant) {
-                            error_log('found variant '.$variant->getName().': '.$variant->getValue());
-                        }
                         $em->persist($itemAfter);
 
                         $itemBefore->setStatus('cancelled');
