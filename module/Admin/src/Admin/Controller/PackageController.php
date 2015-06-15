@@ -280,6 +280,11 @@ class PackageController extends AbstractActionController {
                         $itemBefore = $items['before'];
                         
                         $em->persist($itemAfter);
+                        
+                        $order = $itemAfter->getPackage()->getOrder();
+                        if($order->getPaymentStatus() == 'paid') {
+                            $order->setPaymentStatus('unpaid');
+                        }
 
                         $itemBefore->setStatus('cancelled');
                         $em->persist($itemBefore);
@@ -305,6 +310,9 @@ class PackageController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         foreach($package->getItems() as $item) {
+            if($item->getStatus() == 'refund') {
+                continue;
+            }
             if($item->hasParentItems()) {
                 continue;
             }
@@ -328,6 +336,10 @@ class PackageController extends AbstractActionController {
                 $newItem->setProduct($item->getProduct());
                 $newItem->setPackage($item->getPackage());
 
+                if($newItem->getStatus() == 'paid') {
+                    $newItem->setStatus('ordered');
+                }
+                
                 $code = new Entity\Code();
                 $code->genCode();
                 $codecheck = 1;
