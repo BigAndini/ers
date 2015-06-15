@@ -382,7 +382,7 @@ class BankaccountController extends AbstractActionController {
                     }
                     $hashes[] = $bs->getHash();
                     
-                    if($bs->getBankStatementColByNumber($statement_format->sign->col)->getValue() != $statement_format->sign->value) {
+                    if(isset($statement_format->sign->col) && isset($statement_format->sign->value) && $bs->getBankStatementColByNumber($statement_format->sign->col)->getValue() != $statement_format->sign->value) {
                         $bs->setStatus('disabled');
                     }
                     
