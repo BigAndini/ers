@@ -240,8 +240,7 @@ class BankaccountController extends AbstractActionController {
                         continue;
                     }
     
-                    if($statement->getBankStatementColByNumber($statement_format->sign->col)->getValue() != $statement_format->sign->value) {
-                        error_log($statement->getBankStatementColByNumber($statement_format->sign->col)->getValue().' != '.$statement_format->sign->value);
+                    if(isset($statement_format->sign->col) && isset($statement_format->sign->value) && $statement->getBankStatementColByNumber($statement_format->sign->col)->getValue() != $statement_format->sign->value) {
                         $statement->setStatus('disabled');
                     }
 
