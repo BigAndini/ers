@@ -46,15 +46,16 @@ return array(
                 'label' => 'Stats',
                 'route' => 'admin/statistic',
                 'pages' => array(
-                    'overview' => array(
-                        'label' => 'Overview',
-                        'route' => 'admin/statistic',
-                        'resource'  => 'controller/Admin\Controller\Statistic',
-                    ),
                     'order' => array(
-                        'label' => 'Oders',
+                        'label' => 'Orders',
                         'route' => 'admin/statistic',
                         'action' => 'orders',
+                        'resource'  => 'controller/Admin\Controller\Statistic',
+                    ),
+                    'participant' => array(
+                        'label' => 'Participants',
+                        'route' => 'admin/statistic',
+                        'action' => 'participants',
                         'resource'  => 'controller/Admin\Controller\Statistic',
                     ),
                     'bankaccount' => array(
@@ -299,14 +300,12 @@ return array(
                     'statistic' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route'    => '/statistic[/:action][/:id]',
+                            'route'    => '/statistic/:action',
                             'constraints' => array(
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id'     => '[0-9]+',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
                             ),
                             'defaults' => array(
-                                'controller' => 'Admin\Controller\Statistic',
-                                'action'     => 'index',
+                                'controller' => 'Admin\Controller\Statistic'
                             ),
                         ),
                     ),
