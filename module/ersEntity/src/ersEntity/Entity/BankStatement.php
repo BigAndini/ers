@@ -388,7 +388,8 @@ class BankStatement implements InputFilterAwareInterface
                 return $col;
             }
         }
-        return false;
+        $col = new BankStatementCol();
+        return $col;
     }
     
     /**
