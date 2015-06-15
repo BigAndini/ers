@@ -181,11 +181,15 @@ class BankaccountController extends AbstractActionController {
         $form->get('date')->setAttribute('options', 
                 $this->getColumnOptions($colCount, $statement_format->date));
         
-        if(!isset($statement_format->sign)) {
-            $statement_format->sign = 0;
+        if(!isset($statement_format->sign->col)) {
+            $statement_format->sign->col = 0;
         }
         $form->get('sign')->setAttribute('options', 
-                $this->getColumnOptions($colCount, $statement_format->sign));
+                $this->getColumnOptions($colCount, $statement_format->sign->col));
+        if(!isset($statement_format->sign->value)) {
+            $statement_format->sign->value = '';
+        }
+        $form->get('sign-value')->setValue($statement_format->sign->value);
         
         $form->get('id')->setValue($bankaccount->getId());
         
@@ -224,7 +228,7 @@ class BankaccountController extends AbstractActionController {
                     
                     $bankstatement = $em->getRepository("ersEntity\Entity\BankStatement")
                         ->findOneBy(array('hash' => $statement->getHash()));
-                    if($bankaccount) {
+                    if($bankstatement) {
                         error_log('the statement with hash '.$statement->getHash().' already exists.');
                         $em->remove($statement);
                         continue;
@@ -235,7 +239,12 @@ class BankaccountController extends AbstractActionController {
                         $em->remove($statement);
                         continue;
                     }
-                    
+    
+                    if($statement->getBankStatementColByNumber($statement_format->sign->col)->getValue() != $statement_format->sign->value) {
+                        error_log($statement->getBankStatementColByNumber($statement_format->sign->col)->getValue().' != '.$statement_format->sign->value);
+                        $statement->setStatus('disabled');
+                    }
+
                     $hashes[] = $statement->getHash();
                     $em->persist($statement);
                 }
@@ -372,6 +381,10 @@ class BankaccountController extends AbstractActionController {
                         continue;
                     }
                     $hashes[] = $bs->getHash();
+                    
+                    if($bs->getBankStatementColByNumber($statement_format->sign->col)->getValue() != $statement_format->sign->value) {
+                        $bs->setStatus('disabled');
+                    }
                     
                     $em->persist($bs);
                     $row++;
