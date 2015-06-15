@@ -318,6 +318,11 @@ class PackageController extends AbstractActionController {
                 #$newItem = clone $item;
                 $newItem = new Entity\Item();
                 $newItem->populate($item->getArrayCopy());
+                foreach($item->getItemVariants() as $itemVariant) {
+                    $newItemVariant = clone $itemVariant;
+                    $newItem->addItemVariant($newItemVariant);
+                    $newItemVariant->setItem($newItem);
+                }
                 $newItem->setPrice($price->getCharge());
 
                 $newItem->setProduct($item->getProduct());
