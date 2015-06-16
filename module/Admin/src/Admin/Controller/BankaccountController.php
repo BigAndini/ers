@@ -157,6 +157,10 @@ class BankaccountController extends AbstractActionController {
         
         $statement_format = json_decode($bankaccount->getStatementFormat());
         
+        if(! $statement_format instanceof \stdClass) {
+            $statement_format = new \stdClass();
+        }
+        
         if(!isset($statement_format->matchKey)) {
             $statement_format->matchKey = 0;
         }

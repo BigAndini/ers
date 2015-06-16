@@ -30,7 +30,7 @@ class MatchingController extends AbstractActionController {
         $matchings = $em->getRepository("ersEntity\Entity\Match")
                 ->findBy(array('status' => 'active'), array('updated' => 'DESC'), $limit, $offset);
         
-        $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('m');
+        $qb = $em->getRepository("ersEntity\Entity\Match")->createQueryBuilder('m');
         $qb->select('count(m.id)');
         $count = $qb->getQuery()->getSingleScalarResult();
         $pagecount = floor($count/$limit);

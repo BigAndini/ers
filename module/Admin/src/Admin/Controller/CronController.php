@@ -79,7 +79,9 @@ class CronController extends AbstractActionController {
         $statements = $em->getRepository("ersEntity\Entity\BankStatement")
                 ->findAll();
         
+        $longest_match = 0;
         foreach($statements as $statement) {
+            $time_start = microtime(true);
             if($statement->getStatus() == 'matched') {
                 continue;
             } elseif($statement->getStatus() == 'disabled') {
@@ -90,7 +92,7 @@ class CronController extends AbstractActionController {
             
             # TODO: check if the statement_format is already set. If not move to next statement.
             
-            if($statement->getBankStatementColByNumber($statement_format->sign->col)->getValue() != $statement_format->sign->value) {
+            if(isset($statement_format->sign->col) && isset($statement_format->sign->value) && $statement->getBankStatementColByNumber($statement_format->sign->col)->getValue() != $statement_format->sign->value) {
                 # This is no positive statement. We will not check this.
                 continue;
             }
@@ -124,8 +126,14 @@ class CronController extends AbstractActionController {
                     echo PHP_EOL."ERROR: Unable to find any code in system.".PHP_EOL;
                     echo $statement->getBankStatementColByNumber($statement_format->matchKey)->getValue().PHP_EOL;
                 }
+                $time_end = microtime(true);
+                $time = $time_end - $time_start;
+                if($longest_match < $time) {
+                    $longest_match = $time;
+                }
             }
         }
+        echo 'The longest match took '.$longest_match.' seconds.'.PHP_EOL;
     }
     
     private function createMatch(Entity\BankStatement $statement, Entity\Code $code) {
