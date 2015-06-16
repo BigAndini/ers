@@ -90,7 +90,7 @@ class OrderController extends AbstractActionController {
                     
                 );
                 
-                error_log('searchText: '.$searchText);
+                #error_log('searchText: '.$searchText);
                 
                 $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
@@ -167,7 +167,7 @@ class OrderController extends AbstractActionController {
                     $qb->setParameter('param'.$i, '%'.strtolower($element).'%');
                     $i++;
                 }
-                error_log($qb->getQuery()->getSql());
+                #error_log($qb->getQuery()->getSql());
                 $result = array_merge($result, $qb->getQuery()->getResult());
                 
             } else {
