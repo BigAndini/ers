@@ -141,13 +141,11 @@ class CronController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         $bankaccount = $statement->getBankAccount();
-        $statement_format = json_decode($bankaccount->getStatementFormat());
+        #$statement_format = json_decode($bankaccount->getStatementFormat());
         
         $order = $em->getRepository("ersEntity\Entity\Order")
             ->findOneBy(array('Code_id' => $code->getId()));
-        $statement_amount = (float) $statement->getBankStatementColByNumber($statement_format->amount)->getValue();
-        $order_amount = (float) $order->getSum();
-
+        
         $statement->setStatus('matched');
 
         $em->persist($statement);
@@ -164,9 +162,14 @@ class CronController extends AbstractActionController {
         $admin = $em->getRepository("ersEntity\Entity\User")
             ->findOneBy(array('id' => 1));
         $match->setAdmin($admin);
+        
+        $order->addMatch($match);
 
         $em->persist($match);
 
+        #$statement_amount = (float) $statement->getBankStatementColByNumber($statement_format->amount)->getValue();
+        $statement_amount = $order->getStatementAmount();
+        $order_amount = $order->getSum();
         if($order_amount == $statement_amount) {
             $paid = true;
             #echo "perfect match!".PHP_EOL;
