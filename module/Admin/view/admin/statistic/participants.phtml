@@ -1,0 +1,115 @@
+<?php
+$title = 'Statistics: Participants';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Participants by agegroup (affecting price)</div>
+            <table class="table table-striped">
+                <tr>
+                    <th>Agegroup</th>
+                    <th>Participant count</th>
+                    <th class="text-right">Order amount</th>
+                </tr>
+
+                <?php foreach($stats_agegroupPrice as $agegroup => $value): ?>
+                <tr>
+                    <td><?php echo $this->escapeHtml($agegroup); ?></td>
+                    <td><?php echo $value['count']; ?></td>
+                    <td class="text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></td>
+                </tr>
+                <?php endforeach; ?>
+
+                <tfoot>
+                    <tr>
+                        <th>total sum</th>
+                        <th><?php echo array_sum(array_column($stats_agegroupPrice, 'count')); ?></th>
+                        <th class="text-right"><?php echo $this->currencyFormat(array_sum(array_column($stats_agegroupPrice, 'amount')), 'EUR', null, 'de_DE'); ?></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Participants by agegroup (affecting ticket)</div>
+        <table class="table table-striped">
+            <tr>
+                <th>Agegroup</th>
+                <th>Participant count</th>
+            </tr>
+
+            <?php foreach($stats_agegroupTicket as $agegroup => $value): ?>
+            <tr>
+                <td><?php echo $this->escapeHtml($agegroup); ?></td>
+                <td><?php echo $value['count']; ?></td>
+            </tr>
+            <?php endforeach; ?>
+
+            <tfoot>
+                <tr>
+                    <th>total sum</th>
+                    <th><?php echo array_sum(array_column($stats_agegroupTicket, 'count')); ?></th>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Participants by product type</div>
+            <table class="table table-striped">
+                <tr>
+                    <th>Product</th>
+                    <th>Participant count</th>
+                    <th>Item count</th>
+                    <th>Average items<br>per participant</th>
+                </tr>
+
+                <?php foreach($stats_productType as $value): ?>
+                <tr>
+                    <td><?php echo $this->escapeHtml($value['displayName']); ?></td>
+                    <td><?php echo $value['usercount']; ?></td>
+                    <td><?php echo $value['itemcount']; ?></td>
+                    <td><?php echo number_format($value['itemcount'] / $value['usercount'], 3); ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </table>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Participants by product variant</div>
+            <table class="table table-striped">
+                <tr>
+                    <th>Variant</th>
+                    <th>Variant value</th>
+                    <th>Item count</th>
+                </tr>
+                <?php
+                foreach($stats_variant as $variantName => $variantValues):
+                    foreach($variantValues as $valueKey => $valueCount):
+                ?>
+                <tr>
+                    <td><?php echo $this->escapeHtml($variantName); ?></td>
+                    <td><?php echo $this->escapeHtml($valueKey); ?></td>
+                    <td><?php echo $valueCount; ?></td>
+                </tr>
+                <?php
+                    endforeach;
+                endforeach;
+                ?>
+            </table>
+        </div>
+    </div>
+</div>

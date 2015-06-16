@@ -12,6 +12,7 @@ namespace ersEntity\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilterAwareInterface;
@@ -383,13 +384,8 @@ class BankStatement implements InputFilterAwareInterface
      */
     public function getBankStatementColByNumber($num)
     {
-        foreach($this->getBankStatementCols() as $col) {
-            if($col->getColumn() == $num) {
-                return $col;
-            }
-        }
-        $col = new BankStatementCol();
-        return $col;
+        $columnCriteria = Criteria::create()->where(Criteria::expr()->eq("column", $num));
+        return $this->getBankStatementCols()->matching($columnCriteria)->first();
     }
     
     /**

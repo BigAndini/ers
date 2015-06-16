@@ -1177,6 +1177,15 @@ class Order implements InputFilterAwareInterface
         return $sum;
     }
     
+    public function getStatementAmount() {
+        $statement_amount = 0;
+        foreach($this->getMatches() as $match) {
+            $statement = $match->getBankStatement();
+            $statement_amount += $statement->getAmount()->getValue();
+        }
+        return $statement_amount;
+    }
+    
     /**
      * get payment fees for this order
      * 
