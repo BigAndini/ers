@@ -22,6 +22,10 @@ class AgegroupService
         $this->agegroups = $agegroups;
     }
     
+    public function getAgegroups() {
+        return $this->agegroups;
+    }
+    
     public function getAgegroupByUser(Entity\User $user = null) {
         $ret = null;
         if($user == null) {

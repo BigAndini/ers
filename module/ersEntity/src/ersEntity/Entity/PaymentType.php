@@ -128,7 +128,7 @@ class PaymentType implements InputFilterAwareInterface
     protected $activeUntil;
     
     /**
-     * @ORM\OneToMany(targetEntity="Order", mappedBy="paymentType")
+     * @ORM\OneToMany(targetEntity="Order", mappedBy="paymentType", fetch="EXTRA_LAZY")
      * @ORM\JoinColumn(name="id", referencedColumnName="PaymentType_id")
      */
     protected $orders;
