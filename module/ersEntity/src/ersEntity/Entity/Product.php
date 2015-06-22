@@ -96,12 +96,6 @@ class Product implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="Counter", mappedBy="product")
-     * @ORM\JoinColumn(name="id", referencedColumnName="Product_id")
-     */
-    protected $counters;
-
-    /**
      * @ORM\OneToMany(targetEntity="Item", mappedBy="product", fetch="EXTRA_LAZY")
      * @ORM\JoinColumn(name="id", referencedColumnName="Product_id")
      */
@@ -140,7 +134,6 @@ class Product implements InputFilterAwareInterface
 
     public function __construct()
     {
-        $this->counters = new ArrayCollection();
         $this->items = new ArrayCollection();
         $this->childProducts = new ArrayCollection();
         $this->parentProducts = new ArrayCollection();
@@ -474,42 +467,6 @@ class Product implements InputFilterAwareInterface
     public function getCreated()
     {
         return $this->created;
-    }
-
-    /**
-     * Add Counter entity to collection (one to many).
-     *
-     * @param \Entity\Counter $counter
-     * @return \Entity\Product
-     */
-    public function addCounter(Counter $counter)
-    {
-        $this->counters[] = $counter;
-
-        return $this;
-    }
-
-    /**
-     * Remove Counter entity from collection (one to many).
-     *
-     * @param \Entity\Counter $counter
-     * @return \Entity\Product
-     */
-    public function removeCounter(Counter $counter)
-    {
-        $this->counters->removeElement($counter);
-
-        return $this;
-    }
-
-    /**
-     * Get Counter entity collection (one to many).
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCounters()
-    {
-        return $this->counters;
     }
 
     /**

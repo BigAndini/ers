@@ -20,7 +20,7 @@ use Zend\InputFilter\InputFilterInterface;
  * Entity\Counter
  *
  * @ORM\Entity()
- * @ORM\Table(name="Counter", indexes={@ORM\Index(name="fk_Counter_Product1_idx", columns={"Product_id"}), @ORM\Index(name="fk_Counter_ProductVariantValue1_idx", columns={"ProductVariantValue_id"})})
+ * @ORM\Table(name="Counter")
  * @ORM\HasLifecycleCallbacks()
  */
 class Counter implements InputFilterAwareInterface
@@ -40,27 +40,12 @@ class Counter implements InputFilterAwareInterface
     protected $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    protected $Product_id;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    protected $ProductVariantValue_id;
-
-    /**
      * @ORM\Column(name="`name`", type="string", length=45, nullable=true)
      */
     protected $name;
 
     /**
-     * @ORM\Column(type="string", length=45, nullable=true)
-     */
-    protected $amount;
-
-    /**
-     * @ORM\Column(name="`value`", type="string", length=45, nullable=true)
+     * @ORM\Column(name="`value`", type="integer", nullable=true)
      */
     protected $value;
 
@@ -75,19 +60,13 @@ class Counter implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Product", inversedBy="counters")
-     * @ORM\JoinColumn(name="Product_id", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="ProductVariantValue", mappedBy="counters")
      */
-    protected $product;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="ProductVariantValue", inversedBy="counters")
-     * @ORM\JoinColumn(name="ProductVariantValue_id", referencedColumnName="id", nullable=true)
-     */
-    protected $productVariantValue;
+    protected $productVariantValues;
 
     public function __construct()
     {
+        $this->productVariantValues = new ArrayCollection();
     }
     
     /**
@@ -107,13 +86,6 @@ class Counter implements InputFilterAwareInterface
     public function PreUpdate()
     {
         $this->updated = new \DateTime();
-    }
-    
-    /**
-     * Set id of this object to null if it's cloned
-     */
-    public function __clone() {
-        $this->id = null;
     }
 
     /**
@@ -140,52 +112,6 @@ class Counter implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of Product_id.
-     *
-     * @param integer $Product_id
-     * @return \Entity\Counter
-     */
-    public function setProductId($Product_id)
-    {
-        $this->Product_id = $Product_id;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Product_id.
-     *
-     * @return integer
-     */
-    public function getProductId()
-    {
-        return $this->Product_id;
-    }
-
-    /**
-     * Set the value of ProductVariantValue_id.
-     *
-     * @param integer $ProductVariantValue_id
-     * @return \Entity\Counter
-     */
-    public function setProductVariantValueId($ProductVariantValue_id)
-    {
-        $this->ProductVariantValue_id = $ProductVariantValue_id;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of ProductVariantValue_id.
-     *
-     * @return integer
-     */
-    public function getProductVariantValueId()
-    {
-        return $this->ProductVariantValue_id;
-    }
-
-    /**
      * Set the value of name.
      *
      * @param string $name
@@ -209,32 +135,9 @@ class Counter implements InputFilterAwareInterface
     }
 
     /**
-     * Set the value of amount.
-     *
-     * @param string $amount
-     * @return \Entity\Counter
-     */
-    public function setAmount($amount)
-    {
-        $this->amount = $amount;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of amount.
-     *
-     * @return string
-     */
-    public function getAmount()
-    {
-        return $this->amount;
-    }
-
-    /**
      * Set the value of value.
      *
-     * @param string $value
+     * @param integer $value
      * @return \Entity\Counter
      */
     public function setValue($value)
@@ -247,7 +150,7 @@ class Counter implements InputFilterAwareInterface
     /**
      * Get the value of value.
      *
-     * @return string
+     * @return integer
      */
     public function getValue()
     {
@@ -301,49 +204,39 @@ class Counter implements InputFilterAwareInterface
     }
 
     /**
-     * Set Product entity (many to one).
-     *
-     * @param \Entity\Product $product
-     * @return \Entity\Counter
-     */
-    public function setProduct(Product $product = null)
-    {
-        $this->product = $product;
-
-        return $this;
-    }
-
-    /**
-     * Get Product entity (many to one).
-     *
-     * @return \Entity\Product
-     */
-    public function getProduct()
-    {
-        return $this->product;
-    }
-
-    /**
-     * Set ProductVariantValue entity (many to one).
+     * Add ProductVariantValue entity to collection.
      *
      * @param \Entity\ProductVariantValue $productVariantValue
      * @return \Entity\Counter
      */
-    public function setProductVariantValue(ProductVariantValue $productVariantValue = null)
+    public function addProductVariantValue(ProductVariantValue $productVariantValue)
     {
-        $this->productVariantValue = $productVariantValue;
+        $this->productVariantValues[] = $productVariantValue;
 
         return $this;
     }
 
     /**
-     * Get ProductVariantValue entity (many to one).
+     * Remove ProductVariantValue entity from collection.
      *
-     * @return \Entity\ProductVariantValue
+     * @param \Entity\ProductVariantValue $productVariantValue
+     * @return \Entity\Counter
      */
-    public function getProductVariantValue()
+    public function removeProductVariantValue(ProductVariantValue $productVariantValue)
     {
-        return $this->productVariantValue;
+        $this->productVariantValues->removeElement($productVariantValue);
+
+        return $this;
+    }
+
+    /**
+     * Get ProductVariantValue entity collection.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProductVariantValues()
+    {
+        return $this->productVariantValues;
     }
 
     /**
@@ -376,25 +269,7 @@ class Counter implements InputFilterAwareInterface
                 'validators' => array(),
             ),
             array(
-                'name' => 'Product_id',
-                'required' => true,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'ProductVariantValue_id',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
                 'name' => 'name',
-                'required' => false,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
-                'name' => 'amount',
                 'required' => false,
                 'filters' => array(),
                 'validators' => array(),
@@ -407,13 +282,13 @@ class Counter implements InputFilterAwareInterface
             ),
             array(
                 'name' => 'updated',
-                'required' => false,
+                'required' => true,
                 'filters' => array(),
                 'validators' => array(),
             ),
             array(
                 'name' => 'created',
-                'required' => false,
+                'required' => true,
                 'filters' => array(),
                 'validators' => array(),
             ),
@@ -453,8 +328,8 @@ class Counter implements InputFilterAwareInterface
      */
     public function getArrayCopy(array $fields = array())
     {
-        $dataFields = array('id', 'Product_id', 'ProductVariantValue_id', 'name', 'amount', 'value', 'updated', 'created');
-        $relationFields = array('product', 'productVariantValue');
+        $dataFields = array('id', 'name', 'value', 'updated', 'created');
+        $relationFields = array();
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
             $map = null;
@@ -486,6 +361,6 @@ class Counter implements InputFilterAwareInterface
 
     public function __sleep()
     {
-        return array('id', 'Product_id', 'ProductVariantValue_id', 'name', 'amount', 'value', 'updated', 'created');
+        return array('id', 'name', 'value', 'updated', 'created');
     }
 }
