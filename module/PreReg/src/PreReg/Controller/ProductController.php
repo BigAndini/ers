@@ -231,12 +231,15 @@ class ProductController extends AbstractActionController {
                 /*
                  * search the according agegroup
                  */
+                $agegroup = null;
                 if($participant_id != 0) {
                     $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
 
-                    $agegroupService = $this->getServiceLocator()
-                            ->get('PreReg\Service\AgegroupService');
-                    $agegroup = $agegroupService->getAgegroupByUser($participant);
+                    if($participant instanceof Entity\User) {
+                        $agegroupService = $this->getServiceLocator()
+                                ->get('PreReg\Service\AgegroupService');
+                        $agegroup = $agegroupService->getAgegroupByUser($participant);
+                    }
                 } elseif($agegroup_id != 0) {
                     $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")
                             ->findOneBy(array('id' => $agegroup_id));
@@ -257,7 +260,7 @@ class ProductController extends AbstractActionController {
                 $item = new Entity\Item();
                 $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
                 $item->setAmount(1);
-                if($agegroup) {
+                if($agegroup != null) {
                     $item->setAgegroup($agegroup->getAgegroup());
                 }
                 $item->populate((array) $product_data);

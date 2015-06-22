@@ -134,6 +134,47 @@ class CronController extends AbstractActionController {
             }
         }
         echo 'The longest match took '.$longest_match.' seconds.'.PHP_EOL;
+        
+        /*
+         * check status of unpaid orders
+         */
+        
+        $orders = $em->getRepository("ersEntity\Entity\Order")
+                ->findBy(array('payment_status' => 'unpaid'));
+        foreach($orders as $order) {
+            $statement_amount = $order->getStatementAmount();
+            $order_amount = $order->getSum();
+            if($order_amount == $statement_amount) {
+                $paid = true;
+                #echo "perfect match!".PHP_EOL;
+                echo ".";
+            } elseif($order_amount < $statement_amount) {
+                $paid = true;
+                #echo "overpaid, ok!".PHP_EOL;
+                echo "!";
+            } else {
+                $paid = false;
+                echo "-";
+            }
+            if($paid) {
+                $order->setPaymentStatus('paid');
+
+                foreach($order->getItems() as $item) {
+                    $item->setStatus('paid');
+                    $em->persist($item);
+                }
+
+                $em->persist($order);
+                #$em->persist($orderStatus);
+            } else {
+                foreach($order->getItems() as $item) {
+                    $item->setStatus('ordered');
+                    $em->persist($item);
+                }
+            }
+        }
+        $em->flush();
+        echo PHP_EOL."checked ".count($orders)." orders and set status.".PHP_EOL;
     }
     
     private function createMatch(Entity\BankStatement $statement, Entity\Code $code) {
@@ -356,16 +397,12 @@ class CronController extends AbstractActionController {
         
         $orders = $em->getRepository("ersEntity\Entity\Order")
                 ->findAll();
-                #->findBy(array('total_sum' => 0));
-        #error_log('found '.count($orders).' orders');
         $count = 0;
         foreach($orders as $order) {
-            #error_log($order->getId().' '.$order->getSum().' '.$order->getPrice());
             $order->setTotalSum($order->getSum());
             $order->setOrderSum($order->getPrice());
             if($order->getPaymentStatus() == 'paid') {
                 $items = $order->getItems();
-                #error_log('found '.count($items).' items');
                 foreach($items as $item) {
                     $item->setStatus('paid');
                     $em->persist($item);
@@ -373,10 +410,6 @@ class CronController extends AbstractActionController {
             }
             $em->persist($order);
             $em->flush();
-            /*if($count >= 100) {
-                $em->flush();
-                $count = 0;
-            }*/
             $count++;
         }
     }
