@@ -278,6 +278,11 @@ class Module
                     $eticketService->setProducts($products);
                     return $eticketService;
                 },
+                'PreReg\Service\TicketCounterService' => function($sm) {
+                    $ticketCounterService = new Service\TicketCounterService();
+                    $ticketCounterService->setServiceLocator($sm);
+                    return $ticketCounterService;
+                },
                 'PreReg\Service\LoginService' => function($sm) {
                     $loginService = new Service\LoginService();
                     $loginService->setServiceLocator($sm);

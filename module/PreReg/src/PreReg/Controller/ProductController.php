@@ -18,6 +18,9 @@ use ersEntity\Entity;
 class ProductController extends AbstractActionController {
     public function indexAction()
     {
+        $this->getServiceLocator()->get('PreReg\Service\TicketCounterService')
+                ->checkLimits();
+        
         $forrest = new Service\BreadcrumbFactory();
         $forrest->reset();
         $forrest->set('participant', 'product');

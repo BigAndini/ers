@@ -60,7 +60,7 @@ class Counter implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\ManyToMany(targetEntity="ProductVariantValue", mappedBy="counters")
+     * @ORM\ManyToMany(targetEntity="ProductVariantValue", mappedBy="counters", fetch="EAGER")
      */
     protected $productVariantValues;
 
