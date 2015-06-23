@@ -13,9 +13,9 @@ use Zend\Form\Form;
 
 class Counter extends Form
 {
-    public function __construct($name = null)
+    public function __construct(Doctrine\ORM\EntityManager $em)
     {
-        parent::__construct('Deadline');
+        parent::__construct('Counter');
         $this->setAttribute('method', 'post');
         
         $this->add(array(
@@ -24,24 +24,60 @@ class Counter extends Form
                 'type'  => 'hidden',
             ),
         ));
- 
-        $this->add(array( 
-            'name' => 'deadline', 
-            'type' => 'Zend\Form\Element\DateTime', 
-            'attributes' => array( 
-                'placeholder' => 'Deadline...', 
+        
+        $this->add(array(
+            'name' => 'name',
+            'attributes' => array(
+                'type'  => 'text',
+                'placeholder' => 'Name ...',
                 'required' => 'required',
-                'class' => 'form-control form-element datetimepicker',
-            ), 
-            'options' => array( 
-                'label' => 'Deadline', 
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Name',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
-            ), 
+            ),
         ));
-        $this->get('deadline')->setFormat('Y-m-d H:i:s');
- 
+        
+        $this->add(array(
+            'name' => 'productVariantValue',
+            'type'  => 'DoctrineModule\Form\Element\ObjectSelect',
+            'attributes' => array(
+                'required' => 'required', 
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Product variant',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                'object_manager' => $em,
+                'target_class' => 'ersEntity\Entity\ProductVariantValue',
+                'label_generator' => function($entity){ return $entity->getProductVariant()->getName() . ' - ' . $entity->getValue(); },
+                'display_empty_item' => true,
+                'empty_item_label' => 'Select variant ...',
+            ),
+        ));
+        
+        $this->add(array(
+            'name' => 'value',
+            'attributes' => array(
+                'type'  => 'text',
+                'placeholder' => 'Value ...',
+                'required' => 'required',
+                'pattern' => '\d+',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Counter value',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
         $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 

@@ -71,11 +71,7 @@ class ProductVariantValue implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Counter", inversedBy="productVariantValues")
-     * @ORM\JoinTable(name="ProductVariantValue_has_Counter",
-     *     joinColumns={@ORM\JoinColumn(name="ProductVariantValue_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="Counter_id", referencedColumnName="id")}
-     * )
+     * @ORM\ManyToMany(targetEntity="Counter", mappedBy="productVariantValues")
      */
     protected $counters;
 

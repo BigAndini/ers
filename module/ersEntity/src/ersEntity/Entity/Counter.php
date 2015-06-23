@@ -11,6 +11,7 @@
 namespace ersEntity\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilterAwareInterface;
@@ -60,7 +61,11 @@ class Counter implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\ManyToMany(targetEntity="ProductVariantValue", mappedBy="counters", fetch="EAGER")
+     * @ORM\ManyToMany(targetEntity="ProductVariantValue", inversedBy="counters", fetch="EAGER")
+     * @ORM\JoinTable(name="Counter_has_ProductVariantValue",
+     *     joinColumns={@ORM\JoinColumn(name="Counter_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="ProductVariantValue_id", referencedColumnName="id")}
+     * )
      */
     protected $productVariantValues;
 
@@ -264,31 +269,37 @@ class Counter implements InputFilterAwareInterface
         $filters = array(
             array(
                 'name' => 'id',
-                'required' => true,
+                'required' => false,
                 'filters' => array(),
-                'validators' => array(),
+                'validators' => array(
+                    array('name' => 'Int'),
+                ),
             ),
             array(
                 'name' => 'name',
-                'required' => false,
+                'required' => true,
                 'filters' => array(),
                 'validators' => array(),
             ),
             array(
                 'name' => 'value',
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array('name'    => 'Int'),
+                ),
+            ),
+            array(
+                'name' => 'updated',
                 'required' => false,
                 'filters' => array(),
                 'validators' => array(),
             ),
             array(
-                'name' => 'updated',
-                'required' => true,
-                'filters' => array(),
-                'validators' => array(),
-            ),
-            array(
                 'name' => 'created',
-                'required' => true,
+                'required' => false,
                 'filters' => array(),
                 'validators' => array(),
             ),
