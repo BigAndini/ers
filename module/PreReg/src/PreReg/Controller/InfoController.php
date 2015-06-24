@@ -11,6 +11,7 @@ namespace PreReg\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use PreReg\Service;
+use PreReg\Form;
 
 class InfoController extends AbstractActionController {
     public function indexAction() {
@@ -52,6 +53,101 @@ class InfoController extends AbstractActionController {
         return new ViewModel(array(
             'paymenttype' => $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id)),
             'breadcrumb' => $breadcrumb,
+        ));
+    }
+    
+    private function getLanguageOptions($selected='') {
+        $options = array();
+        $languages = array(
+            'en' => 'English',
+            'de' => 'Deutsch',
+            'it' => 'Italiano',
+            'fr' => 'Français',
+            'es' => 'Español',
+        );
+        $sel = false;
+        if($selected == '') {
+            $sel = true;
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'select language',
+            'selected' => $sel,
+        );
+        foreach($languages as $key => $value) {
+            $sel = false;
+            if($key == $selected) {
+                $sel = true;
+            }
+            $options[] = array(
+                'value' => $key,
+                'label' => $value,
+                'selected' => $sel,
+            );
+        }
+        return $options;
+    }
+    
+    private function getAgegroupOptions($selected='') {
+        $options = array();
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                ->findBy(array('ticketChange' => '1'), array('agegroup' => 'ASC'));
+        
+        $sel = false;
+        if($selected == '') {
+            $sel = true;
+        }
+        $options[] = array(
+            'value' => '',
+            'label' => 'select agegroup',
+            'selected' => $sel,
+        );
+        
+        $sel = false;
+        if($selected == 0) {
+            $sel = true;
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'adult',
+            'selected' => $sel,
+        );
+        foreach($agegroups as $agegroup) {
+            $sel = false;
+            if($agegroup->getId() == $selected) {
+                $sel = true;
+            }
+            $options[] = array(
+                'value' => $agegroup->getId(),
+                'label' => $agegroup->getName(),
+                'selected' => $sel,
+            );
+        }
+        
+        return $options;
+    }
+    
+    public function eTicketAction() {
+        $lang = $query = $this->params()->fromQuery('lang', 'en');
+        $agegroup_id = (int) $query = $this->params()->fromQuery('agegroup', 0);
+
+        $form = new Form\ETicketSelect();
+        $form->get('lang')->setValueOptions($this->getLanguageOptions($lang));
+        $form->get('agegroup')->setValueOptions($this->getAgegroupOptions($agegroup_id));
+        
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")
+                ->findOneBy(array('id' => $agegroup_id));
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'lang' => $lang,
+            'agegroup' => $agegroup,
         ));
     }
 }
