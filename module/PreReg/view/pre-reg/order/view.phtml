@@ -19,6 +19,13 @@ $this->headTitle($title);
     <div class="col-lg-6">
         <div class="order-info">
             <h1>Payment</h1>
+            <?php if($order->getPaymentStatus() == 'paid') : ?>
+            <div class="alert alert-success"><i class="fa fa-check"></i> order is paid</div>
+            <?php elseif($order->getPaymentStatus() == 'unpaid') : ?>
+            <div class="alert alert-warning"><i class="fa fa-warning"></i> order is unpaid</div>
+            <?php elseif($order->getPaymentStatus() == 'cancelled') : ?>
+            <div class="alert alert-danger"><i class="fa fa-close"></i> order is cancelled</div>
+            <?php endif; ?>
             <?php $paymenttype = $order->getPaymentType(); ?>
             <h3><?php echo $paymenttype->getName(); ?></h3>
             <p><?php echo $paymenttype->getExplanation(); ?></p>
