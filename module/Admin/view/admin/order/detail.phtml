@@ -262,7 +262,10 @@ $this->headTitle($title);
             <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
         <?php endif; ?>  
         <?php foreach($order->getMatches() as $match): 
-            $statement = $match->getBankStatement(); ?>
+            $statement = $match->getBankStatement(); 
+            if($statement->getStatus() == 'disabled'):
+                continue;
+            endif; ?>
             <div class="panel panel-success">
                 <div class="panel-heading">
                     <div class="panel-title">
