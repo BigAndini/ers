@@ -27,7 +27,10 @@ class CounterController extends AbstractActionController {
 
     public function addAction()
     {
-        $form = new Form\Counter();
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+
+        $form = new Form\Counter($em);
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -36,12 +39,9 @@ class CounterController extends AbstractActionController {
             
             $form->setInputFilter($counter->getInputFilter());
             $form->setData($request->getPost());
-
             if ($form->isValid()) {
                 $counter->populate($form->getData());
-                
-                $em = $this->getServiceLocator()
-                    ->get('Doctrine\ORM\EntityManager');
+                $counter->addProductVariantValue($em->getRepository('ersEntity\Entity\ProductVariantValue')->find((int)$form->get('productVariantValue')->getValue()));
                 
                 $em->persist($counter);
                 $em->flush();
@@ -51,6 +51,8 @@ class CounterController extends AbstractActionController {
                 $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
+            
+            var_dump($form->getMessages());
         }
         
         return new ViewModel(array(
@@ -62,17 +64,24 @@ class CounterController extends AbstractActionController {
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('admin/counter', array(
-                'action' => 'add'
-            ));
+            return $this->redirect()->toRoute('admin/counter', array('action' => 'add'));
         }
+        
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $counter = $em->getRepository("ersEntity\Entity\Counter")->findOneBy(array('id' => $id));
+        $counter = $em->getRepository("ersEntity\Entity\Counter")->find($id);
+        if(!$counter) {
+            return $this->notFoundAction();
+        }
 
-        $form = new Form\Counter();
+        $form = new Form\Counter($em);
         $form->bind($counter);
         $form->get('submit')->setAttribute('value', 'Edit');
+        
+        // hack the many-to-many mapping into a single form field
+        if($counter->getProductVariantValues()->count() == 1) {
+            $form->get('productVariantValue')->setValue($counter->getProductVariantValues()[0]->getId());
+        }
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -80,8 +89,10 @@ class CounterController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $em->persist($form->getData());
-                #$em->persist($counter);
+                $counter->getProductVariantValues()->clear();
+                $counter->addProductVariantValue($em->getRepository('ersEntity\Entity\ProductVariantValue')->find((int)$form->get('productVariantValue')->getValue()));
+                
+                $em->persist($counter);
                 $em->flush();
 
                 return $this->redirect()->toRoute('admin/counter');
@@ -105,8 +116,11 @@ class CounterController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $productprice = $em->getRepository("ersEntity\Entity\Counter")
-                ->findOneBy(array('id' => $id));
+        $counter = $em->getRepository("ersEntity\Entity\Counter")
+                ->find($id);
+        if(!$counter) {
+            return $this->notFoundAction();
+        }
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -114,9 +128,9 @@ class CounterController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $productprice = $em->getRepository("ersEntity\Entity\Counter")
+                $counter = $em->getRepository("ersEntity\Entity\Counter")
                     ->findOneBy(array('id' => $id));
-                $em->remove($productprice);
+                $em->remove($counter);
                 $em->flush();
             }
 
@@ -125,7 +139,7 @@ class CounterController extends AbstractActionController {
 
         return new ViewModel(array(
             'id'    => $id,
-            'counter' => $productprice,
+            'counter' => $counter,
         ));
     }
 }
