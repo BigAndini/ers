@@ -278,7 +278,15 @@ return array(
                         )
                     )
                 ),
-                
+                'send-etickets' => array(
+                    'options' => array(
+                        'route'    => 'send-etickets [--real|-r]',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'send-etickets'
+                        )
+                    )
+                ),
                 'gen-user-list' => array(
                     'options' => array(
                         'route'    => 'gen-user-list',

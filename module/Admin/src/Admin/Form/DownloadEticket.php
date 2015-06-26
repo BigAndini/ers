@@ -25,7 +25,7 @@ class DownloadEticket extends Form
             ),
         ));
         
-        $this->add(array(
+        /*$this->add(array(
             'type' => 'Zend\Form\Element\Select',
             'name' => 'language',
             'attributes' => array(
@@ -37,7 +37,7 @@ class DownloadEticket extends Form
                     'class'  => 'media-object',
                 ),
             ),
-        ));
+        ));*/
         
         $this->add(array( 
             'name' => 'csrf', 
