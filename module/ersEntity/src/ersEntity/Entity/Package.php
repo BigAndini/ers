@@ -66,6 +66,11 @@ class Package implements InputFilterAwareInterface
      * @ORM\Column(type="integer")
      */
     protected $Code_id;
+    
+    /**
+     * @ORM\Column(type="string", length=45, nullable=true)
+     */
+    protected $ticket_status;
 
     /**
      * @ORM\Column(type="datetime")
@@ -253,6 +258,29 @@ class Package implements InputFilterAwareInterface
         return $this->Code_id;
     }
 
+    /**
+     * Set the value of ticket_status.
+     *
+     * @param integer $ticket_status
+     * @return \Entity\Package
+     */
+    public function setTicketStatus($ticket_status)
+    {
+        $this->ticket_status = $ticket_status;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of ticket_status.
+     *
+     * @return integer
+     */
+    public function getTicketStatus()
+    {
+        return $this->ticket_status;
+    }
+    
     /**
      * Set the value of updated.
      *
@@ -495,10 +523,14 @@ class Package implements InputFilterAwareInterface
     public function getStatus() {
         $status = array();
         foreach($this->getItems() as $item) {
-            if(isset($status[$item->getStatus()])) {
-                $status[$item->getStatus()]++;
+            $item_status = $item->getStatus();
+            if($item_status == 'zero_ok') {
+                $item_status = 'paid';
+            }
+            if(isset($status[$item_status])) {
+                $status[$item_status]++;
             } else {
-                $status[$item->getStatus()] = 1;
+                $status[$item_status] = 1;
             }
         }
         if(count($status) == 1) {

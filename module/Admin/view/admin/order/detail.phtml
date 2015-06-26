@@ -130,7 +130,11 @@ $this->headTitle($title);
                                         <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Change Package Detail</a>
                                         </li>
+                                        <?php if($package->getStatus() != 'paid'): ?>
+                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid packages.">
+                                        <?php else: ?>
                                         <li>
+                                        <?php endif; ?>
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'send-eticket', 'id' => $package->getId())); ?>">Send E-Ticket</a>
                                         </li>
                                         <li>

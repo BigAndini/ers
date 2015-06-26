@@ -9,7 +9,9 @@
 namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
+use ersEntity\Service;
 use Zend\Console\Request as ConsoleRequest;
 
 class CronController extends AbstractActionController {
@@ -411,6 +413,119 @@ class CronController extends AbstractActionController {
             $em->persist($order);
             $em->flush();
             $count++;
+        }
+    }
+    
+    public function sendEticketsAction() {
+        $request = $this->getRequest();
+        
+        $long_real = (bool) $request->getParam('real',false);
+        $short_real = (bool) $request->getParam('r',false);
+        $isReal = ($long_real | $short_real);
+        
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        # zero tickets should not be send out
+        echo "checking for zero euro week tickets... ";
+        $repository = $em->getRepository("ersEntity\Entity\Item");
+        $qb = $repository->createQueryBuilder('i')
+                ->select('i')
+                ->where('i.price = 0')
+                ->andWhere("i.status != 'zero_ok'")
+                ->andWhere("i.status != 'check_zero'")
+                ->andWhere('i.Product_id = 1');
+
+        $zeroItems = $qb->getQuery()->getResult();
+        foreach($zeroItems as $item) {
+            $item->setStatus('check_zero');
+            $em->persist($item);
+        }
+        $em->flush();
+        
+        # correct package ticket_status
+        $qb = $em->getRepository("ersEntity\Entity\Package")->createQueryBuilder('p');
+        $qb->where('p.ticket_status IS NULL');
+        $noStatusPackages = $qb->getQuery()->getResult();
+        echo count($noStatusPackages)." packages can be corrected.".PHP_EOL;
+        foreach($noStatusPackages as $package) {
+            if($package->getStatus() == 'paid') {
+                $package->setTicketStatus('can_send');
+                $em->persist($package);
+            }
+        }
+        $em->flush();
+        
+        $packages = $em->getRepository("ersEntity\Entity\Package")
+            ->findBy(array('ticket_status' => 'can_send'), array(), 100);
+        echo "Sending out e-tickets for ".count($packages)." packages.".PHP_EOL;
+
+
+        foreach($packages as $package) {
+
+            # prepare email (participant, buyer)
+            $emailService = new Service\EmailService();
+            $emailService->setFrom('prereg@eja.net');
+
+            $order = $package->getOrder();
+            $participant = $package->getParticipant();
+            if($isReal) {
+                /*$buyer = $order->getBuyer();
+                $emailService->addTo($buyer);
+
+                if($participant->getEmail() != '') {
+                    $emailService->addTo($participant);
+                }
+
+                $bcc = new Entity\User();
+                $bcc->setEmail('prereg@eja.net');
+                $emailService->addBcc($bcc);*/
+                echo "this will be the real addresses...".PHP_EOL;
+            } else {
+                $to = new Entity\User();
+                $to->setEmail('andi@inbaz.org');
+                $emailService->addTo($to);
+            }
+
+            $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
+            $subject = "[EJC 2015] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+            $emailService->setSubject($subject);
+
+            $viewModel = new ViewModel(array(
+                'package' => $package,
+            ));
+            $viewModel->setTemplate('email/eticket-participant.phtml');
+            $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+            $html = $viewRender->render($viewModel);
+
+            $emailService->setHtmlMessage($html);
+
+            # generate e-ticket pdf
+            $eticketService = $this->getServiceLocator()
+                ->get('PreReg\Service\ETicketService');
+
+            $eticketService->setLanguage('en');
+            $eticketService->setPackage($package);
+            $eticketFile = $eticketService->generatePdf();
+
+            echo ob_get_clean();
+            echo "generated e-ticket ".$eticketFile.".".PHP_EOL;
+
+            # send out email
+
+            $emailService->addAttachment($eticketFile);
+
+            #$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v4.pdf';
+            #$terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
+            #$emailService->addAttachment($terms1);
+            #$emailService->addAttachment($terms2);
+
+            $emailService->send();
+            if($isReal) {
+                $package->setTicketStatus('send_out');
+                $em->persist($package);
+                $em->flush();
+            }
         }
     }
 }

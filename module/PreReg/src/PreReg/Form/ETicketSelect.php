@@ -6,29 +6,28 @@
  * and open the template in the editor.
  */
 
-namespace Admin\Form;
+namespace PreReg\Form;
 
 use Zend\Form\Form;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilter;
 
 
-class DownloadEticket extends Form
+class ETicketSelect extends Form
 {
+    public $inputFilter;
+    
     public function __construct($name = null)
     {
-        parent::__construct('Agegroup');
-        $this->setAttribute('method', 'post');
+        parent::__construct('ETicketSelect');
+        
+        $this->setAttribute('method', 'get'); 
         
         $this->add(array(
-            'name' => 'id',
+            'name' => 'lang',
+            'type'  => 'Zend\Form\Element\Select',
             'attributes' => array(
-                'type'  => 'hidden',
-            ),
-        ));
-        
-        /*$this->add(array(
-            'type' => 'Zend\Form\Element\Select',
-            'name' => 'language',
-            'attributes' => array(
+                'required' => 'required',
                 'class' => 'form-control form-element',
             ),
             'options' => array(
@@ -37,20 +36,35 @@ class DownloadEticket extends Form
                     'class'  => 'media-object',
                 ),
             ),
-        ));*/
+        ));
         
+        $this->add(array(
+            'name' => 'agegroup',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Agegroup',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+ 
         $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 
-        ));
+        )); 
         
         $this->add(array(
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Download',
+                'value' => 'Go',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-success',
             ),
         ));
     }

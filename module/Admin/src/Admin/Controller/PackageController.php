@@ -11,6 +11,7 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ersEntity\Entity;
+use ersEntity\Service as ersService;
 use Admin\Form;
 use Admin\Service;
 use Admin\InputFilter;
@@ -378,7 +379,7 @@ class PackageController extends AbstractActionController {
         $package = $em->getRepository("ersEntity\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
-        $languages = array(
+        /*$languages = array(
             array(
                 'label' => 'English',
                 'value' => 'en',
@@ -399,10 +400,10 @@ class PackageController extends AbstractActionController {
                 'label' => 'French',
                 'value' => 'fr',
             ),
-        );
+        );*/
         
         $form = new Form\DownloadEticket();
-        $form->get('language')->setValueOptions($languages);
+        /*$form->get('language')->setValueOptions($languages);*/
         $form->get('submit')->setValue('Download');
         $form->get('id')->setValue($package->getId());
         
@@ -466,14 +467,12 @@ class PackageController extends AbstractActionController {
         
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            $logger->info('there is no id');
-            #return $this->redirect()->toRoute('admin/order', array());
             $breadcrumb = $forrest->get('package');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ersEntity\Entity\Order")
+        $package = $em->getRepository("ersEntity\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
         $request = $this->getRequest();
@@ -490,10 +489,62 @@ class PackageController extends AbstractActionController {
                     return $this->redirect()->toRoute('admin/package', array('action' => 'send-eticket'));
                 }
                 
-                $eticketService = $this->getServiceLocator()->get('PreReg\Service\ETicketService');
+                # prepare email (participant, buyer)
+                $emailService = new ersService\EmailService();
+                $emailService->setFrom('prereg@eja.net');
+
+                $order = $package->getOrder();
+                $participant = $package->getParticipant();
+                
+                $buyer = $order->getBuyer();
+                $emailService->addTo($buyer);
+
+                if($participant->getEmail() != '') {
+                    $emailService->addTo($participant);
+                }
+
+                $bcc = new Entity\User();
+                $bcc->setEmail('prereg@eja.net');
+                $emailService->addBcc($bcc);
+
+                $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
+                $subject = "[EJC 2015] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+                $emailService->setSubject($subject);
+
+                $viewModel = new ViewModel(array(
+                    'package' => $package,
+                ));
+                $viewModel->setTemplate('email/eticket-participant.phtml');
+                $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+                $html = $viewRender->render($viewModel);
+
+                $emailService->setHtmlMessage($html);
+
+                # generate e-ticket pdf
+                $eticketService = $this->getServiceLocator()
+                    ->get('PreReg\Service\ETicketService');
+
+                $eticketService->setLanguage('en');
+                $eticketService->setPackage($package);
+                $eticketFile = $eticketService->generatePdf();
+
+                # send out email
+                $emailService->addAttachment($eticketFile);
+
+                #$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v4.pdf';
+                #$terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
+                #$emailService->addAttachment($terms1);
+                #$emailService->addAttachment($terms2);
+
+                $emailService->send();
+                $package->setTicketStatus('send_out');
+                $em->persist($package);
+                $em->flush();
+                
+                /*$eticketService = $this->getServiceLocator()->get('PreReg\Service\ETicketService');
                 $eticketService->setPackage($package);
                 $filePath = $eticketService->generatePdf();
-                $logger->info('filename: '.$filePath);
+                $logger->info('filename: '.$filePath);*/
                 
                 $breadcrumb = $forrest->get('order');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);

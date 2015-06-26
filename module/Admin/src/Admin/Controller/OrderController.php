@@ -14,6 +14,7 @@ use Admin\Form;
 use Admin\Service;
 use Admin\InputFilter;
 use ersEntity\Entity;
+use ersEntity\Service as ersService;
 
 class OrderController extends AbstractActionController {
  
@@ -331,7 +332,7 @@ class OrderController extends AbstractActionController {
         ));
     }
     
-    public function sendEticketAction() {
+    public function sendEticketsAction() {
         $logger = $this->getServiceLocator()->get('Logger');
         
         $id = (int) $this->params()->fromRoute('id', 0);
@@ -365,11 +366,61 @@ class OrderController extends AbstractActionController {
                 
                 $eticketService = $this->getServiceLocator()->get('PreReg\Service\ETicketService');
                 foreach($order->getPackages() as $package) {
-                    $eticketService->setPackage($package);
-                
-                    $filePath = $eticketService->generatePdf();
+                    if($package->getStatus() != 'paid') {
+                        continue;
+                    }
 
-                    $logger->info('filename: '.$filePath);
+                    # prepare email (participant, buyer)
+                    $emailService = new ersService\EmailService();
+                    $emailService->setFrom('prereg@eja.net');
+
+                    $order = $package->getOrder();
+                    $participant = $package->getParticipant();
+
+                    $buyer = $order->getBuyer();
+                    $emailService->addTo($buyer);
+
+                    if($participant->getEmail() != '') {
+                        $emailService->addTo($participant);
+                    }
+
+                    $bcc = new Entity\User();
+                    $bcc->setEmail('prereg@eja.net');
+                    $emailService->addBcc($bcc);
+
+                    $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
+                    $subject = "[EJC 2015] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+                    $emailService->setSubject($subject);
+
+                    $viewModel = new ViewModel(array(
+                        'package' => $package,
+                    ));
+                    $viewModel->setTemplate('email/eticket-participant.phtml');
+                    $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+                    $html = $viewRender->render($viewModel);
+
+                    $emailService->setHtmlMessage($html);
+
+                    # generate e-ticket pdf
+                    $eticketService = $this->getServiceLocator()
+                        ->get('PreReg\Service\ETicketService');
+
+                    $eticketService->setLanguage('en');
+                    $eticketService->setPackage($package);
+                    $eticketFile = $eticketService->generatePdf();
+
+                    # send out email
+                    $emailService->addAttachment($eticketFile);
+
+                    #$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v4.pdf';
+                    #$terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
+                    #$emailService->addAttachment($terms1);
+                    #$emailService->addAttachment($terms2);
+
+                    $emailService->send();
+                    $package->setTicketStatus('send_out');
+                    $em->persist($package);
+                    $em->flush();
                 }
                 
                 

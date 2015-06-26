@@ -8,10 +8,16 @@ $this->headTitle($title);
 <p>Unable to send E-Tickets for this order since it is not in status paid.</p>
 <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Back</a>
 <?php else: ?>
-<p>Do you really want to send out eTickets  for the order <?php echo $order->getCode()->getValue(); ?>?</p>
+<p>Do you really want to send out e-tickets  for the order <?php echo $order->getCode()->getValue(); ?>?</p>
+<ul>
+<?php foreach($order->getPackages() as $package):
+    $participant = $package->getParticipant(); ?>
+    <li><?php echo $participant->getFirstname().' '.$participant->getSurname(); ?></li>
+<?php endforeach; ?>
+</ul>
 <?php
 $url = $this->url('admin/order', array(
-    'action' => 'send-eticket',
+    'action' => 'send-etickets',
     'id'     => $order->getId(),
 ));
 ?>
