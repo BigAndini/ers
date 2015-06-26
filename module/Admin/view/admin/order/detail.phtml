@@ -262,48 +262,96 @@ $this->headTitle($title);
             <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
         <?php endif; ?>  
         <?php foreach($order->getMatches() as $match): 
-            $statement = $match->getBankStatement(); ?>
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    <div class="panel-title">
-                        <i class="fa fa-arrow-left"></i> payments
+            $statement = $match->getBankStatement(); 
+            if($statement->getStatus() == 'disabled'):
+                continue;
+            endif; ?>
+            <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <?php if(!is_numeric($order->getTotalSum())):
+                                    error_log('the other total sum is bad!');
+                                endif; ?>
+                                <?php echo $this->currencyFormat($order->getTotalSum(), 'EUR', null, 'de_DE'); ?>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <a class="btn btn-danger" href="<?php echo $this->url('admin/matching', array('action' => 'unlink', 'id' => $match->getId())); ?>">unlink</a>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <?php if(is_numeric($statement->getAmount()->getValue())):
+                                    echo $this->currencyFormat((float) $statement->getAmount()->getValue(), 'EUR', null, 'de_DE');
+                                else :
+                                    echo $statement->getAmount()->getValue();
+                                endif; ?>
+                            </div>
+                        </div>
                     </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>match-id</th>
+                            <td><?php echo $match->getId(); ?></td>
+                        </tr>
+                        <tr>
+                            <th>who</th>
+                            <td><?php echo $match->getAdmin()->getFirstname().' '.$match->getAdmin()->getSurname(); ?></td>
+                        </tr>
+                        <tr>
+                            <th>when</th>
+                            <td><?php echo $match->getCreated()->format('d.m.Y H:i:s'); ?></td>
+                        </tr>
+                        <tr>
+                            <th>comment</th>
+                            <td><?php echo $match->getComment(); ?></td>
+                        </tr>
+                    </table>
                 </div>
-                <table class="table table-striped">
-                    <tr>
-                        <th></th>
-                        <th>bank transfer</th>
-                    </tr>
-                    <tr>
-                        <th>bank account</th>
-                        <td><?php echo $statement->getBankAccount()->getName(); ?></td>
-                    </tr>
-                    <tr>
-                        <th>name</th>
-                        <td><?php echo $statement->getName()->getValue(); ?></td>
-                    </tr>
-                    <tr>
-                        <th>date</th>
-                        <td>
-                            <?php 
-                            $date = $statement->getDate();
-                            if(is_object($date)) {
-                                echo $date->format('d.m.Y H:i:s');
-                            } else {
-                                echo 'unable to find date';
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>amount</th>
-                        <td><?php echo $statement->getAmount()->getValue(); ?></td>
-                    </tr>
-                    <tr>
-                        <th>code</th>
-                        <td><?php echo $statement->getCode()->getValue(); ?></td>
-                    </tr>
-                </table>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <i class="fa fa-arrow-left"></i> payments
+                        </div>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th></th>
+                            <th>bank transfer</th>
+                        </tr>
+                        <tr>
+                            <th>bank account</th>
+                            <td><?php echo $statement->getBankAccount()->getName(); ?></td>
+                        </tr>
+                        <tr>
+                            <th>name</th>
+                            <td><?php echo $statement->getName()->getValue(); ?></td>
+                        </tr>
+                        <tr>
+                            <th>date</th>
+                            <td>
+                                <?php 
+                                $date = $statement->getDate();
+                                if(is_object($date)) {
+                                    echo $date->format('d.m.Y H:i:s');
+                                } else {
+                                    echo 'unable to find date';
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>amount</th>
+                            <td><?php echo $statement->getAmount()->getValue(); ?></td>
+                        </tr>
+                        <tr>
+                            <th>code</th>
+                            <td><?php echo $statement->getCode()->getValue(); ?></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         <?php endforeach; ?>
         <?php foreach($paymentDetails as $detail): ?>

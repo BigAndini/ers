@@ -330,12 +330,13 @@ return array(
                     'statistic' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route'    => '/statistic/:action',
+                            'route'    => '/statistic[/:action]',
                             'constraints' => array(
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
                             ),
                             'defaults' => array(
-                                'controller' => 'Admin\Controller\Statistic'
+                                'controller' => 'Admin\Controller\Statistic',
+                                'action' => 'index'
                             ),
                         ),
                     ),
