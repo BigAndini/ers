@@ -425,7 +425,7 @@ class PackageController extends AbstractActionController {
                 $eticketService = $this->getServiceLocator()
                     ->get('PreReg\Service\ETicketService');
                 
-                $eticketService->setLanguage($request->getPost('language'));
+                #$eticketService->setLanguage($request->getPost('language'));
                 $eticketService->setPackage($package);
                 $file = $eticketService->generatePdf();
 

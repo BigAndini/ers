@@ -37,16 +37,22 @@
     </head>
     <body>
         <div class='header'>EJC 2015 - 01.-09.08.2015 in Bruneck, South Tyrol, Italy - <a href='http://www.ejc2015.org'>www.ejc2015.org</a></div>
-        <?php $participant = $package->getParticipant(); ?>
+        <?php 
+        $participant = $package->getParticipant(); 
+        $order = $package->getOrder();
+        ?>
         
         <p>Dear <?php echo $participant->getFirstname().' '.$participant->getSurname(); ?>,</p>
         <p>thank you again for registering for EJC 2015.</p>
-        <p>First of all, please check your date of birth and your name on the e-ticket if they fit with your passport or identity card. If not please send an email with your order number and the updated data to prereg@eja.net. After we changed the data you will receive the up to date e-ticket.</p>
-
-        <p>Attached to this email, you can find your e-ticket. To read the text on the e-ticket in another language for a better understanding visit <?php echo $this->url('info', array('action' => 'e-ticket')); ?>.</p>
-        <p>Print this ticket and never give it to a third person. Sign the disclaimer. Bring this ticket together with your valid ID card to the EJC and present them at the registration desk. To be able to read the documents, you need to install Adobe Acrobat Reader, which you can download here: <a href="http://get.adobe.com/en/reader">http://get.adobe.com/en/reader</a>.</p>
-        <p>For the latest information about EJC 2015, stay tuned to www.ejc2015.org. If you have any further questions concerning your EJC 2015 ticket, please contact the prereg-coordinator via <a href="mailto:prereg@eja.net">prereg@eja.net</a>.</p>
-        <p>We wish you a pleasant journey and we are looking forward to a great convention.</p>
+        <p>
+            <strong>First of all, please check whether your name and your date of birth on the e-ticket fit in with your passport or identity card.</strong>
+            If not, please send an email with your order number and the updated data to <a href="mailto:prereg@eja.net">prereg@eja.net</a>. We’ll change the data and you will receive the up-to-date e-ticket. Please not that you cannot register onsite if your name and date of birth don’t match your ID card.
+        </p>
+        <p>We received the payment for your order with ID <?php echo $order->getCode()->getValue(); ?> from <?php echo $order->getCreated()->format('d.m.Y'); ?>. The payment to your order is now confirmed. Attached to this email, you can find your e-ticket. It’s in English. If you’d like to read the text in <strong>another language</strong>, visit <a href="<?php echo $this->url('info', array('action' => 'e-ticket'), array('force_canonical' => true)); ?>"><?php echo $this->url('info', array('action' => 'e-ticket'), array('force_canonical' => true)); ?></a>.</p>
+        <p><strong>Print and sign this e-ticket.</strong> Bring it to the EJC together with your <strong>valid ID card</strong> and present both documents at the registration desk.</p>
+        <p>To be able to read the documents, you need to install Adobe Acrobat Reader, which you can download here: <a href="http://get.adobe.com/reader/">http://get.adobe.com/reader/</a>.</p>
+        <p>For the latest information about EJC 2015, stay tuned to <a href="http://www.ejc2015.org">www.ejc2015.org</a>. If you have any further questions concerning your EJC 2015 e-ticket, please contact the prereg coordinator via <a href="mailto:prereg@eja.net">prereg@eja.net</a>.</p>
+        <p>We wish you a pleasant journey and we are looking forward welcoming you soon.</p>
         <p>Best regards,<br />
         Your European Juggling Association and the EJC 2015 organisers</p>
     </body>
