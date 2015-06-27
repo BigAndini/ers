@@ -27,5 +27,11 @@ else:
     $agegroup_name = 'adult';
 endif; ?>
 <h1>E-Ticket for <?php echo $agegroup_name; ?> in <?php echo $lang; ?></h1>
-
-<?php echo $this->partial('partial/eticket-translation-'.$lang.'.phtml', array('agegroup' => $agegroup)); ?>
+<div class="row">
+    <div class="col-xs-6">
+        <?php echo $this->partial('partial/eticket-translation-en.phtml', array('agegroup' => $agegroup)); ?>
+    </div>
+    <div class="col-xs-6">
+        <?php echo $this->partial('partial/eticket-translation-'.$lang.'.phtml', array('agegroup' => $agegroup)); ?>
+    </div>
+</div>
