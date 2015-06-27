@@ -1,0 +1,116 @@
+<?php
+$title = "Package " . $package->getCode()->getValue();
+$this->headTitle($title);
+
+$form->setAttribute('action', $this->url('onsite/package', array('action' => 'ship')));
+$form->prepare();
+?>
+
+<a class="btn btn-default" href="<?php echo $this->url('onsite'); ?>"><i class="fa fa-arrow-left"></i> back to landing page</a>
+<a class="btn btn-default" href="<?php echo $this->url('onsite/search', array(), array('query' => array('q' => 'asdf'))); ?>"><i class="fa fa-arrow-left"></i> back to last search</a>
+
+<h2>
+    <span class="green"><?php echo $this->escapeHtml($title); ?></span>
+</h2>
+
+<div class="row">
+    <div class="col-sm-8">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Person</h3></div>
+            <table class="table table-striped">
+                <tr>
+                    <th>Name:</th>
+                    <td><?php echo $this->escapeHtml($package->getParticipant()->getFirstname() . ' ' . $package->getParticipant()->getSurname()); ?></td>
+                </tr>
+                <tr>
+                    <th>Date of birth:</th>
+                    <td><?php echo $package->getParticipant()->getBirthday()->format('d.m.Y'); ?></td>
+                </tr>
+                <tr>
+                    <th>Age:</th>
+                    <td><?php echo $package->getParticipant()->getAge(); ?></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Items</h3></div>
+            <div class="panel-body">
+                <?php foreach ($package->getItems() as $item): ?>
+                    <div class="package">
+                        <h4><?php echo $this->escapeHtml($item->getName()); ?></h4>
+
+                        <?php foreach ($item->getItemVariants() AS $itemVariant): ?>
+                            <p><?php echo $this->escapeHtml($itemVariant->getName() . ': ' . $itemVariant->getValue()); ?></p>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endforeach; ?>
+                
+                <p>TODO: Show more information about the items (which?).</p>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Order</h3></div>
+            <table class="table table-striped">
+                <tr>
+                    <th>Code:</th>
+                    <td><a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $order->getId())); ?>"><?php echo $this->escapeHtml($order->getCode()->getValue()); ?></a></td>
+                </tr>
+                <tr>
+                    <th>Order date:</th>
+                    <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
+                </tr>
+                <tr>
+                    <th>Payment status:</th>
+                    <td><?php echo $this->escapeHtml($order->getPaymentStatus()); ?></td>
+                </tr>
+            </table>
+        </div>
+        
+        <?php echo $this->form($form); ?>
+    </div>
+
+    <div class="col-sm-4">
+        <div class="panel panel-<?php echo ($ticketAgegroup === NULL ? 'success' : 'warning'); ?>">
+            <div class="panel-heading"><h3 class="panel-title">Agegroup</h3></div>
+            <div class="panel-body">
+
+                <?php if ($ticketAgegroup !== NULL): ?>
+                    <h3 class="text-warning"><i class="fa fa-warning"></i> <?php echo $this->escapeHtml($ticketAgegroup->getName()); ?></h3>
+                    <?php
+                    switch ($ticketAgegroup->getName()):
+                        case 'U16':
+                            ?>
+                            <p>Check the disclaimer on the ticket and make sure the chaperon is present.</p>
+                            <?php break;
+                        case 'U18':
+                            ?>
+                            <p>Check the disclaimer on the ticket.</p>
+                            <?php break;
+                        default:
+                            ?>
+                            <p>Unknown.</p>
+                    <?php endswitch; ?>
+                <?php else: ?>
+                    <h3 class="text-success"><i class="fa fa-check"></i> adult</h3>
+                    <p>This person is 18 years old or older.</p>
+<?php endif; ?>
+
+            </div>
+        </div>
+
+        <div class="panel panel-<?php echo ($allItemsPaid ? 'success' : 'danger'); ?>">
+            <div class="panel-heading"><h3 class="panel-title">Payment status</h3></div>
+            <div class="panel-body">
+                <?php if ($allItemsPaid): ?>
+                    <h3 class="text-success"><i class="fa fa-check"></i> paid</h3>
+                    <p class="text-success">All items are paid and were not yet collected.</p>
+                <?php else: ?>
+                    <h3 class="text-danger"><i class="fa fa-warning"></i> unknown</h3>
+                    <p class="text-danger"> There are items that are unpaid or were already collected.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>

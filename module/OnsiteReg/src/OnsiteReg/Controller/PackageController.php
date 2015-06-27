@@ -12,7 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use OnsiteReg\Form;
 
-class IndexController extends AbstractActionController {
+class PackageController extends AbstractActionController {
     public function indexAction() {
         $form = new Form\Search();
         return new ViewModel(array(
@@ -26,17 +26,36 @@ class IndexController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $package = $em->getRepository("ersEntity\Entity\Package")
-                ->findOneBy(array('id' => $id));
         
-        $forrest = new Service\BreadcrumbFactory();
-        $forrest->set('order', 'onsite/package', array('action' => 'detail', 'id' => $id));
-        $forrest->set('user', 'onsite/package', array('action' => 'detail', 'id' => $id));
-        $forrest->set('package', 'onsite/package', array('action' => 'detail', 'id' => $id));
-        $forrest->set('item', 'onsite/package', array('action' => 'detail', 'id' => $id));
+        /* @var $package \ersEntity\Entity\Package */
+        $package = $em->getRepository("ersEntity\Entity\Package")
+                ->find($id);
+        
+//        $forrest = new \PreReg\Service\BreadcrumbFactory();
+//        $forrest->set('order', 'onsite/package', array('action' => 'detail', 'id' => $id));
+//        $forrest->set('user', 'onsite/package', array('action' => 'detail', 'id' => $id));
+//        $forrest->set('package', 'onsite/package', array('action' => 'detail', 'id' => $id));
+//        $forrest->set('item', 'onsite/package', array('action' => 'detail', 'id' => $id));
+        
+        $agegroupService = $this->getServiceLocator()->get('PreReg\Service\AgegroupService:ticket');
+        $ticketAgegroup = $agegroupService->getAgegroupByUser($package->getParticipant());
+        
+        $allItemsPaid = $package->getItems()->forAll(function($_, $item){ return $item->getStatus() === 'paid'; });
+        
+        $form = new Form\ConfirmPackage();
+        $form->bind($package);
         
         return new ViewModel(array(
             'package' => $package,
+            'order' => $package->getOrder(),
+            'ticketAgegroup' => $ticketAgegroup,
+            'allItemsPaid' => $allItemsPaid,
+            'form' => $form,
         ));
     }
+    
+    public function shipAction() {
+        return $this->redirect()->toRoute('onsite/search');
+    }
+    
 }

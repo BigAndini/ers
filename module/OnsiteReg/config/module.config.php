@@ -11,7 +11,10 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'OnsiteReg\Controller\Index'       => 'OnsiteReg\Controller\IndexController',
-            'OnsiteReg\Controller\Redirect'       => 'OnsiteReg\Controller\RedirectController',
+            'OnsiteReg\Controller\Search'      => 'OnsiteReg\Controller\SearchController',
+            'OnsiteReg\Controller\Package'      => 'OnsiteReg\Controller\PackageController',
+            'OnsiteReg\Controller\Order'      => 'OnsiteReg\Controller\OrderController',
+            'OnsiteReg\Controller\Redirect'    => 'OnsiteReg\Controller\RedirectController',
         ),
     ),
     'navigation' => array(
@@ -108,6 +111,36 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'OnsiteReg\Controller\Test',
+                                'action'     => 'index',
+                            ),
+                        ),
+                    ),
+                    'search' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/search',
+                            'defaults' => array(
+                                'controller' => 'OnsiteReg\Controller\Search',
+                                'action'     => 'index',
+                            ),
+                        ),
+                    ),
+                    'package' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/package[/:action][/:id]',
+                            'defaults' => array(
+                                'controller' => 'OnsiteReg\Controller\Package',
+                                'action'     => 'index',
+                            ),
+                        ),
+                    ),
+                    'order' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/order[/:action][/:id]',
+                            'defaults' => array(
+                                'controller' => 'OnsiteReg\Controller\Order',
                                 'action'     => 'index',
                             ),
                         ),

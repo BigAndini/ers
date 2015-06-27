@@ -543,6 +543,20 @@ class User implements UserInterface, ProviderInterface
     }
     
     /**
+     * Get the age of the user relative to a date.
+     * 
+     * @param \DateTime $now the date to use for the current date; default: now
+     * @return int
+     */
+    public function getAge(\DateTime $now = NULL)
+    {
+        if(!$now)
+            $now = new \DateTime();
+        
+        return (int) $now->diff($this->birthday)->format('%y');
+    }
+    
+    /**
      * Set the value of updated.
      *
      * @param datetime $updated
