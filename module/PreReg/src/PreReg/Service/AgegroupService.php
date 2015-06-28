@@ -15,7 +15,7 @@ class AgegroupService
     protected $agegroups;
     
     public function __construct() {
-        
+        $this->agegroups = array();
     }
     
     public function setAgegroups($agegroups) {
