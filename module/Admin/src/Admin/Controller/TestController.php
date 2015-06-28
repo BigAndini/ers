@@ -27,7 +27,9 @@ class TestController extends AbstractActionController {
 
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $orders = $em->getRepository("ersEntity\Entity\Order")
+        /*$orders = $em->getRepository("ersEntity\Entity\Order")
+                ->findBy(array(), array('created' => 'ASC'));*/
+        $packages = $em->getRepository("ersEntity\Entity\Package")
                 ->findBy(array(), array('created' => 'ASC'));
         
         $filename = getcwd() . "/tmp/excel-" . date( "m-d-Y" ) . ".xls";
@@ -39,12 +41,34 @@ class TestController extends AbstractActionController {
         $filename = realpath( $filename );
         
         $finalData = array();
-        foreach ($orders as $order) {
+        $finalData[] = array(
+            'code',
+            'buyer firstname',
+            'buyer surname',
+            'participant firstname',
+            'participant surname',
+            'list of items',
+            'date of purchase',
+        );
+        foreach ($packages as $package) {
+            $order = $package->getOrder();
+            $item_list = '';
+            foreach($package->getItems() as $item) {
+                $item_list .= $item->getName();
+                foreach($item->getItemVariants() as $variant) {
+                    $item_list .= $variant->getName().' '.$variant->getValue().'; ';
+                }
+                $item_list .= "\r\n";
+            }
             $finalData[] = array(
-                utf8_decode($order->getId()),
-                utf8_decode($order->getCode()->getValue()),
+                utf8_decode($package->getCode()->getValue()),
                 utf8_decode($order->getBuyer()->getFirstname()),
                 utf8_decode($order->getBuyer()->getSurname()),
+                utf8_decode($order->getBuyer()->getEmail()),
+                utf8_decode($package->getParticipant()->getFirstname()),
+                utf8_decode($package->getParticipant()->getSurname()),
+                utf8_decode($package->getParticipant()->getEmail()),
+                utf8_decode($item_list),
                 utf8_decode($order->getCreated()->format('d.m.Y H:i:s')),
             );
         }
