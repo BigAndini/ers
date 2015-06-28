@@ -1,90 +1,110 @@
 <?php
-$tables = array(
-    array("heading" => "Orders by status", "column" => "Status", "data" => $stats_paymentStatuses),
-    array("heading" => "Orders by payment type", "column" => "Payment type", "data" => $stats_paymentTypes)
-);
-
 $title = 'Statistics: Orders';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-<?php foreach($tables as $tbl): ?>
 <div class="panel panel-default">
-    <div class="panel-heading"><?php echo $this->escapeHtml($tbl['heading']); ?></div>
+    <div class="panel-heading">Orders by status</div>
     <table class="table table-striped">
-        <tr>
-            <th width="30%"><?php echo $this->escapeHtml($tbl['column']); ?></th>
-            <th>Count</th>
-            <th class="text-right">Total sum</th>
-            <th class="text-right">Payment fees</th>
-        </tr>
-        <?php foreach($tbl['data'] as $value): ?>
-        <tr>
-            <td><?php echo $this->escapeHtml($value['label']); ?></td>
-            <td><?php echo $value['ordercount']; ?></td>
-            <td class="text-right">
-                <?php echo $this->currencyFormat($value['totalsum'], 'EUR', null, 'de_DE'); ?>
-            </td>
-            <td class="text-right">
-                <?php echo $this->currencyFormat($value['totalsum'] - $value['ordersum'], 'EUR', null, 'de_DE'); ?>
-            </td>
-        </tr>
+        <thead>
+            <tr>
+                <th class="col-xs-4">Status</th>
+                <th class="col-xs-1">Count</th>
+                <th class="col-xs-3 text-right">Order sum</th>
+                <th class="col-xs-2 text-right">Payment fees</th>
+                <th class="col-xs-2 text-right">Total sum</th>
+            </tr>
+        </thead>
+        
+        <?php foreach($stats_paymentStatusGroups AS $statusGroupName => $statusGroup): ?>
+            <tbody>
+                <tr>
+                    <td colspan="5"><?php echo $this->escapeHtml($statusGroupName); ?></td>
+                </tr>
+
+                <?php foreach($statusGroup as $value): ?>
+                    <tr>
+                        <td><div class="col-xs-offset-2"><?php echo $this->escapeHtml($value['label']); ?></div></td>
+                        <td><?php echo $value['ordercount']; ?></td>
+                        <td class="text-right">
+                            <?php echo $this->currencyFormat($value['ordersum'], 'EUR', null, 'de_DE'); ?>
+                        </td>
+                        <td class="text-right">
+                            <?php echo $this->currencyFormat($value['totalsum'] - $value['ordersum'], 'EUR', null, 'de_DE'); ?>
+                        </td>
+                        <td class="text-right">
+                            <?php echo $this->currencyFormat($value['totalsum'], 'EUR', null, 'de_DE'); ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+
+                <tr>
+                    <th><div class="col-xs-offset-2"><?php echo $this->escapeHtml($statusGroupName); ?> sum</div></th>
+                    <th><?php echo array_sum(array_column($statusGroup, 'ordercount')); ?></th>
+                    <th class="text-right">
+                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'ordersum')), 'EUR', null, 'de_DE'); ?>
+                    </th>
+                    <th class="text-right">
+                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'totalsum'))
+                                                        - array_sum(array_column($statusGroup, 'ordersum')), 'EUR', null, 'de_DE'); ?>
+                    </th>
+                    <th class="text-right">
+                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'totalsum')), 'EUR', null, 'de_DE'); ?>
+                    </th>
+                </tr>
+            </tbody>
         <?php endforeach; ?>
+    </table>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Orders by payment type</div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="col-xs-4">Payment type</th>
+                <th class="col-xs-1">Count</th>
+                <th class="col-xs-3 text-right">Order sum</th>
+                <th class="col-xs-2 text-right">Payment fees</th>
+                <th class="col-xs-2 text-right">Total sum</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($stats_paymentTypes as $value): ?>
+            <tr>
+                <td><?php echo $this->escapeHtml($value['label']); ?></td>
+                <td><?php echo $value['ordercount']; ?></td>
+                <td class="text-right">
+                    <?php echo $this->currencyFormat($value['ordersum'], 'EUR', null, 'de_DE'); ?>
+                </td>
+                <td class="text-right">
+                    <?php echo $this->currencyFormat($value['totalsum'] - $value['ordersum'], 'EUR', null, 'de_DE'); ?>
+                </td>
+                <td class="text-right">
+                    <?php echo $this->currencyFormat($value['totalsum'], 'EUR', null, 'de_DE'); ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
 
         <tfoot>
             <tr>
                 <th>total sum</th>
-                <th><?php echo array_sum(array_column($tbl['data'], 'ordercount')); ?></th>
+                <th><?php echo array_sum(array_column($stats_paymentTypes, 'ordercount')); ?></th>
                 <th class="text-right">
-                    <?php echo $this->currencyFormat(array_sum(array_column($tbl['data'], 'totalsum')), 'EUR', null, 'de_DE'); ?>
+                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'ordersum')), 'EUR', null, 'de_DE'); ?>
                 </th>
                 <th class="text-right">
-                    <?php echo $this->currencyFormat(array_sum(array_column($tbl['data'], 'totalsum'))
-                                                    - array_sum(array_column($tbl['data'], 'ordersum')), 'EUR', null, 'de_DE'); ?>
+                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'totalsum'))
+                                                    - array_sum(array_column($stats_paymentTypes, 'ordersum')), 'EUR', null, 'de_DE'); ?>
+                </th>
+                <th class="text-right">
+                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'totalsum')), 'EUR', null, 'de_DE'); ?>
                 </th>
             </tr>
         </tfoot>
     </table>
+    
+    <div class="panel-footer">Only active orders are included in this view.</div>
 </div>
-<?php endforeach; ?>
-        
-
-<!-- Legacy -->
-<div class="panel panel-default" style="opacity: 0.75;">
-    <div class="panel-heading">Overview [Legacy]</div>
-    <table class="table table-striped">
-        <tr>
-            <th>Count</th>
-            <th class="text-right">Total sum</th>
-            <th class="text-right">Payment fees</th>
-            <th></th>
-        </tr>
-        <tr>
-            <td><?php echo $order_data['ordercount']; ?></td>
-            <td class="text-right"><?php echo $this->currencyFormat($order_data['totalsum'], 'EUR', null, 'de_DE'); ?></td>
-            <td class="text-right"><?php echo $this->currencyFormat($order_data['paymentfees'], 'EUR', null, 'de_DE'); ?></td>
-            <td>(1)</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td class="text-right"><?php echo $this->currencyFormat($order_data['totalsum_fast'], 'EUR', null, 'de_DE'); ?></td>
-            <td class="text-right"><?php echo $this->currencyFormat($order_data['paymentfees_fast'], 'EUR', null, 'de_DE'); ?></td>
-            <td>(2)</td>
-        </tr>
-        <tr>
-            <td colspan="3"><p>Note that this information is redundant now, it is already contained in the "total sum" sections above.</p>
-                <p>The two rows in this table are a comparison between a live recalculation of the sums (1) and the precomputed aggregate fields in the Order table (2).<br>
-                It should be tested if those values match with up-to-date data.</p></td>
-        </tr>
-    </table>
-</div>
-
-<!--
-TODO:
-panel structure:
-- Overview (current from stats/overview)
-- Status (by status, currently shown here)
-- by payment type
-- [sth else?]
--->
