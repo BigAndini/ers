@@ -423,11 +423,15 @@ class CronController extends AbstractActionController {
         $short_real = (bool) $request->getParam('r',false);
         $isReal = ($long_real | $short_real);
         
+        #$long_count = (int) $request->getParam('count',false);
+        #$short_count = (int) $request->getParam('c',false);
+        #$ticket_count = $long_count + $short_count;
+        
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         # zero tickets should not be send out
-        echo "checking for zero euro week tickets... ";
+        /*echo "checking for zero euro week tickets... ";
         $repository = $em->getRepository("ersEntity\Entity\Item");
         $qb = $repository->createQueryBuilder('i')
                 ->select('i')
@@ -441,18 +445,42 @@ class CronController extends AbstractActionController {
             $item->setStatus('check_zero');
             $em->persist($item);
         }
-        $em->flush();
+        $em->flush();*/
         
         # correct package ticket_status
         $qb = $em->getRepository("ersEntity\Entity\Package")->createQueryBuilder('p');
         $qb->where('p.ticket_status IS NULL');
         $noStatusPackages = $qb->getQuery()->getResult();
-        echo count($noStatusPackages)." packages can be corrected.".PHP_EOL;
+        echo count($noStatusPackages)." packages need to be corrected.".PHP_EOL;
         foreach($noStatusPackages as $package) {
-            if($package->getStatus() == 'paid') {
-                $package->setTicketStatus('can_send');
-                $em->persist($package);
+            $productId = array(
+                '1' => 0,
+            );
+            foreach($package->getItems() as $item) {
+                if(!isset($productId[$item->getProductId()])) {
+                    $productId[$item->getProductId()] = 1;
+                } else {
+                    $productId[$item->getProductId()]++;
+                }
             }
+            if($productId[1] > 1) {
+                $order = $package->getOrder();
+                echo "Found more than one week ticket in package ".$package->getCode()->getValue()." (".$order->getCode()->getValue().").".PHP_EOL;
+            }
+            # if the package status is paid and
+            # there is only one week ticket in this package
+            # or this package doesn't contain no week ticket
+            if($package->getStatus() == 'paid') {
+                if($productId[1] == 1 || $productId[1] == 0) {
+                    $package->setTicketStatus('can_send');
+                } else {
+                    $package->setTicketStatus('block_send');
+                }
+            # if the package is not paid
+            } else {
+                $package->setTicketStatus('not_send');
+            }
+            $em->persist($package);
         }
         $em->flush();
         
@@ -460,34 +488,31 @@ class CronController extends AbstractActionController {
             ->findBy(array('ticket_status' => 'can_send'), array(), 100);
         echo "Sending out e-tickets for ".count($packages)." packages.".PHP_EOL;
 
-
         foreach($packages as $package) {
-
             # prepare email (participant, buyer)
             $emailService = new Service\EmailService();
             $emailService->setFrom('prereg@eja.net');
 
             $order = $package->getOrder();
             $participant = $package->getParticipant();
-            if($isReal) {
-                /*$buyer = $order->getBuyer();
+
+            $buyer = $order->getBuyer();
+            if($participant->getEmail() == '') {
                 $emailService->addTo($buyer);
-
-                if($participant->getEmail() != '') {
-                    $emailService->addTo($participant);
-                }
-
-                $bcc = new Entity\User();
-                $bcc->setEmail('prereg@eja.net');
-                $emailService->addBcc($bcc);*/
-                echo "this will be the real addresses...".PHP_EOL;
+            } elseif($participant->getEmail() == $buyer->getEmail()) {
+                $emailService->addTo($buyer);
             } else {
-                $to = new Entity\User();
-                $to->setEmail('andi@inbaz.org');
-                $emailService->addTo($to);
+                $emailService->addTo($participant);
+                $emailService->addCc($buyer);
             }
+            /*$user = new Entity\User();
+            $user->setEmail('andi@inbaz.org');
+            $emailService->addTo($user);*/
+            
+            $bcc = new Entity\User();
+            $bcc->setEmail('prereg@eja.net');
+            $emailService->addBcc($bcc);
 
-            $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
             $subject = "[EJC 2015] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
             $emailService->setSubject($subject);
 
@@ -495,8 +520,8 @@ class CronController extends AbstractActionController {
                 'package' => $package,
             ));
             $viewModel->setTemplate('email/eticket-participant.phtml');
-            $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-            $html = $viewRender->render($viewModel);
+            $viewRenderer = $this->getServiceLocator()->get('ViewRenderer');
+            $html = $viewRenderer->render($viewModel);
 
             $emailService->setHtmlMessage($html);
 
@@ -511,21 +536,18 @@ class CronController extends AbstractActionController {
             echo ob_get_clean();
             echo "generated e-ticket ".$eticketFile.".".PHP_EOL;
 
-            # send out email
-
             $emailService->addAttachment($eticketFile);
 
             #$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v4.pdf';
             #$terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
             #$emailService->addAttachment($terms1);
             #$emailService->addAttachment($terms2);
-
+            
+            # send out email
             $emailService->send();
-            if($isReal) {
-                $package->setTicketStatus('send_out');
-                $em->persist($package);
-                $em->flush();
-            }
+            $package->setTicketStatus('send_out');
+            $em->persist($package);
+            $em->flush();
         }
     }
 }

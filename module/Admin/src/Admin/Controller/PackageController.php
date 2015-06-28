@@ -496,18 +496,21 @@ class PackageController extends AbstractActionController {
                 $order = $package->getOrder();
                 $participant = $package->getParticipant();
                 
+                
                 $buyer = $order->getBuyer();
-                $emailService->addTo($buyer);
-
-                if($participant->getEmail() != '') {
+                if($participant->getEmail() == '') {
+                    $emailService->addTo($buyer);
+                } elseif($participant->getEmail() == $buyer->getEmail()) {
+                    $emailService->addTo($buyer);
+                } else {
                     $emailService->addTo($participant);
+                    $emailService->addCc($buyer);
                 }
 
                 $bcc = new Entity\User();
                 $bcc->setEmail('prereg@eja.net');
                 $emailService->addBcc($bcc);
 
-                $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
                 $subject = "[EJC 2015] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
                 $emailService->setSubject($subject);
 
