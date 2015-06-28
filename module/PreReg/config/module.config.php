@@ -265,7 +265,6 @@ return array(
                     'constraints' => array(
                         'action'            => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'product_id'        => '[0-9]+',
-                        #'participant_id'    => '[0-9]+',
                         'item_id'           => '[0-9]+',
                     ),
                     'defaults' => array(
