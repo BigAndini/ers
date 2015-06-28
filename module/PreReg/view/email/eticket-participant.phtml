@@ -46,9 +46,16 @@
         <p>thank you again for registering for EJC 2015.</p>
         <p>
             <strong>First of all, please check whether your name and your date of birth on the e-ticket fit in with your passport or identity card.</strong>
-            If not, please send an email with your order number and the updated data to <a href="mailto:prereg@eja.net">prereg@eja.net</a>. We’ll change the data and you will receive the up-to-date e-ticket. Please not that you cannot register onsite if your name and date of birth don’t match your ID card.
+            If not, please send an email with your order number and the updated data to <a href="mailto:prereg@eja.net">prereg@eja.net</a>. We’ll change the data and you will receive the up-to-date e-ticket. Please note that you cannot register onsite if your name and date of birth don’t match your ID card.
         </p>
-        <p>We received the payment for your order with ID <?php echo $order->getCode()->getValue(); ?> from <?php echo $order->getCreated()->format('d.m.Y'); ?>. The payment to your order is now confirmed. Attached to this email, you can find your e-ticket. It’s in English. If you’d like to read the text in <strong>another language</strong>, visit <a href="<?php echo $this->url('info', array('action' => 'e-ticket'), array('force_canonical' => true)); ?>"><?php echo $this->url('info', array('action' => 'e-ticket'), array('force_canonical' => true)); ?></a>.</p>
+        <p>
+            We received the payment for your order with ID <?php echo $order->getCode()->getValue(); ?> from <?php echo $order->getCreated()->format('d.m.Y'); ?>. The payment to your order is now confirmed. Attached to this email, you can find your e-ticket. It’s in English. If you’d like to read the text in <strong>another language</strong>, visit 
+            <a href="http://prereg.eja.net<?php echo $this->url('info', array(
+                'action' => 'e-ticket'
+                )); ?>">http://prereg.eja.net<?php echo $this->url('info', array(
+                    'action' => 'e-ticket'
+                    )); ?></a>.
+        </p>
         <p><strong>Print and sign this e-ticket.</strong> Bring it to the EJC together with your <strong>valid ID card</strong> and present both documents at the registration desk.</p>
         <p>To be able to read the documents, you need to install Adobe Acrobat Reader, which you can download here: <a href="http://get.adobe.com/reader/">http://get.adobe.com/reader/</a>.</p>
         <p>For the latest information about EJC 2015, stay tuned to <a href="http://www.ejc2015.org">www.ejc2015.org</a>. If you have any further questions concerning your EJC 2015 e-ticket, please contact the prereg coordinator via <a href="mailto:prereg@eja.net">prereg@eja.net</a>.</p>

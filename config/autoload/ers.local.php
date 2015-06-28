@@ -19,5 +19,5 @@ return array(
         'info_mail'         => "info@ejc2015.org",
         'website'           => "http://www.ejc2015.org",
         'onsitereg'         => "http://prereg.eja.net/redirect",
-    )
+    ),
 );
