@@ -416,12 +416,93 @@ class CronController extends AbstractActionController {
         }
     }
     
+    public function sendUEticketsAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        # find user under 18
+        $qb = $em->getRepository("ersEntity\Entity\User")->createQueryBuilder('u');
+        $qb->where("u.birthday > '1997-08-01'");
+        $users = $qb->getQuery()->getResult();
+        echo "found ".count($users)." users under 18.".PHP_EOL;
+        
+        $package_counter = 0;
+        foreach($users as $user) {
+            # find package in status send_out -> can_send
+            $packages = $user->getPackages();
+            foreach($packages as $package) {
+                if($package->getTicketStatus() != 'send_out') {
+                    continue;
+                }
+                $package_counter++;
+                
+                # prepare email (participant, buyer)
+                $emailService = new Service\EmailService();
+                $emailService->setFrom('prereg@eja.net');
+
+                $order = $package->getOrder();
+                $participant = $package->getParticipant();
+
+                $buyer = $order->getBuyer();
+                if($participant->getEmail() == '') {
+                    $emailService->addTo($buyer);
+                } elseif($participant->getEmail() == $buyer->getEmail()) {
+                    $emailService->addTo($buyer);
+                } else {
+                    $emailService->addTo($participant);
+                    $emailService->addCc($buyer);
+                }
+                /*$user = new Entity\User();
+                $user->setEmail('andi@inbaz.org');
+                $emailService->addTo($user);*/
+
+                $bcc = new Entity\User();
+                $bcc->setEmail('prereg@eja.net');
+                $emailService->addBcc($bcc);
+
+                $subject = "[EJC 2015] Updated E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+                $emailService->setSubject($subject);
+
+                $viewModel = new ViewModel(array(
+                    'package' => $package,
+                ));
+                $viewModel->setTemplate('email/eticket-participant_u16_u18.phtml');
+                $viewRenderer = $this->getServiceLocator()->get('ViewRenderer');
+                $html = $viewRenderer->render($viewModel);
+
+                $emailService->setHtmlMessage($html);
+
+                # generate e-ticket pdf
+                $eticketService = $this->getServiceLocator()
+                    ->get('PreReg\Service\ETicketService');
+
+                $eticketService->setLanguage('en');
+                $eticketService->setPackage($package);
+                $eticketFile = $eticketService->generatePdf();
+
+                echo ob_get_clean();
+                echo "generated e-ticket ".$eticketFile.".".PHP_EOL;
+
+                $emailService->addAttachment($eticketFile);
+
+                #$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v4.pdf';
+                #$terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
+                #$emailService->addAttachment($terms1);
+                #$emailService->addAttachment($terms2);
+
+                # send out email
+                $emailService->send();
+            }
+        }
+        echo "found ".$package_counter." packages to resend.".PHP_EOL;
+    }
+    
     public function sendEticketsAction() {
         $request = $this->getRequest();
         
-        $long_real = (bool) $request->getParam('real',false);
+        /*$long_real = (bool) $request->getParam('real',false);
         $short_real = (bool) $request->getParam('r',false);
-        $isReal = ($long_real | $short_real);
+        $isReal = ($long_real | $short_real);*/
         
         #$long_count = (int) $request->getParam('count',false);
         #$short_count = (int) $request->getParam('c',false);
@@ -545,6 +626,7 @@ class CronController extends AbstractActionController {
             
             # send out email
             $emailService->send();
+            
             $package->setTicketStatus('send_out');
             $em->persist($package);
             $em->flush();

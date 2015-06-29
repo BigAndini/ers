@@ -68,10 +68,16 @@ class User implements UserInterface, ProviderInterface
 
     /**
      * @var string
-     * @ORM\Column(type="string", unique=true,  length=255, nullable=true)
+     * @ORM\Column(type="string", unique=true, length=255, nullable=true)
      */
     protected $email;
 
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=45, nullable=true)
+     */
+    protected $email_status;
+    
     /**
      * @var string
      * @ORM\Column(type="string", length=50, nullable=true)
@@ -310,6 +316,28 @@ class User implements UserInterface, ProviderInterface
     public function setEmail($email)
     {
         $this->email = $email;
+    }
+    
+    /**
+     * Get email_status.
+     *
+     * @return string
+     */
+    public function getEmailStatus()
+    {
+        return $this->email_status;
+    }
+
+    /**
+     * Set email_status.
+     *
+     * @param string $email_status
+     *
+     * @return void
+     */
+    public function setEmailStatus($email_status)
+    {
+        $this->email_status = $email_status;
     }
 
     /**
