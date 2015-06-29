@@ -21,13 +21,13 @@ class StatisticController extends AbstractActionController {
             ->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
 
-        // TODO figure out correctness of the fast accumulator fields - then remove the more complex queries
-        $qb = $em->createQueryBuilder();
+        // old, more complex queries that do not make use of the cached fields and are no longer needed
+        /*$qb = $em->createQueryBuilder();
         $order_data = $qb
-                ->select('COUNT(DISTINCT o.id) ordercount', 'SUM(i.price) totalsum')
+                ->select('COUNT(DISTINCT o.id) ordercount', 'SUM(i.price) ordersum')
                 ->from('ersEntity\Entity\Order', 'o')
                 ->join('o.packages', 'p')
-                ->join('p.items', 'i', 'WITH', $qb->expr()->neq('i.status', $qb->expr()->literal('cancelled')))
+                ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
                 ->getQuery()->getSingleResult();
         
         $qb = $em->createQueryBuilder();
@@ -36,24 +36,25 @@ class StatisticController extends AbstractActionController {
                 ->from('ersEntity\Entity\Order', 'o')
                 ->join('o.paymentType', 'pay')
                 ->join('o.packages', 'p')
-                ->join('p.items', 'i', 'WITH', $qb->expr()->neq('i.status', $qb->expr()->literal('cancelled')))
+                ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
                 ->groupBy('o.id')
                 ->getQuery()->getArrayResult();
         
         
         $order_data['paymentfees'] = array_sum(array_map(function($row){ return floatval($row['fee']); }, $paymentFees));
         
-        
         $fastResults = $em->createQueryBuilder()
                 ->select('SUM(o.total_sum) totalsum_fast', 'SUM(o.order_sum) ordersum_fast')->from('ersEntity\Entity\Order o')
                 ->getQuery()->getSingleResult();
         
+        $order_data['ordersum_fast'] = $fastResults['ordersum_fast'];
         $order_data['totalsum_fast'] = $fastResults['totalsum_fast'];
         $order_data['paymentfees_fast'] = $fastResults['totalsum_fast'] - $fastResults['ordersum_fast'];
+        */
         
         
         
-        $orderSelectFields = array('count(o.id) AS ordercount', 'sum(o.order_sum) AS ordersum, sum(o.total_sum) AS totalsum');
+        $orderSelectFields = array('COUNT(o.id) AS ordercount', 'SUM(o.order_sum) AS ordersum, SUM(o.total_sum) AS totalsum');
         
         $paymentStatusStats = $em->createQueryBuilder()
                 ->select(array_merge(array('o.payment_status AS label'), $orderSelectFields))
@@ -62,18 +63,25 @@ class StatisticController extends AbstractActionController {
                 ->getQuery()->getResult();
         
         
+        $byStatusGroups = array('active' => array(), 'inactive' => array());
+        foreach($paymentStatusStats AS $status) {
+            if($status["label"] === "cancelled" || $status["label"] === "refund")
+                $byStatusGroups['inactive'][] = $status;
+            else
+                $byStatusGroups['active'][] = $status;
+        }
+        
         $paymentTypeStats = $em->createQueryBuilder()
                 ->select(array_merge(array('pt.name AS label'), $orderSelectFields))
                 ->from('ersEntity\Entity\PaymentType', 'pt')
-                ->join('pt.orders', 'o')
+                ->join('pt.orders', 'o', 'WITH', "o.payment_status != 'cancelled' AND o.payment_status != 'refund'")
                 ->groupBy('pt.id')
                 ->getQuery()->getResult();
         
         
         
         return new ViewModel(array(
-            'order_data' => $order_data,
-            'stats_paymentStatuses' => $paymentStatusStats,
+            'stats_paymentStatusGroups' => $byStatusGroups,
             'stats_paymentTypes' => $paymentTypeStats
         ));
     }
@@ -85,14 +93,15 @@ class StatisticController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         /*
-         * === by agegroups ===
+         * === by agegroups & country ===
          */
         $qb = $em->createQueryBuilder();
         $users = $qb
-                ->select('u.birthday', 'SUM(i.price) ordersum')
+                ->select('u.birthday', 'c.id country_id', 'c.name country_name', 'SUM(i.price) ordersum')
                 ->from('ersEntity\Entity\User', 'u')
+                ->leftJoin('u.country', 'c')
                 ->join('u.packages', 'p')
-                ->join('p.items', 'i', 'WITH', $qb->expr()->neq('i.status', $qb->expr()->literal('cancelled')))
+                ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
                 ->groupBy('u.id')
                 ->getQuery()->getResult();
         
@@ -103,8 +112,9 @@ class StatisticController extends AbstractActionController {
         
         $agegroupStatsPrice = array();
         $agegroupStatsTicket = array();
+        $countryStats = array();
         
-        $defEntry = array('count' => 0, 'amount' => 0, 'amount2' => 0);
+        $defEntry = array('count' => 0, 'amount' => 0);
         
         // initialize all groups with 0
         $agegroupStatsPrice['adult'] = $defEntry;
@@ -127,6 +137,13 @@ class StatisticController extends AbstractActionController {
             $aggregatePrice['count']++;
             $aggregatePrice['amount'] += $user['ordersum'];
             $aggregateTicket['count']++;
+            
+            $countryId = $user['country_id'] ?: 0;
+            $countryName = $user['country_name'] ?: "unknown";
+            if(!isset($countryStats[$countryId])) {
+                $countryStats[$countryId] = array('name' => $countryName, 'count' => 0);
+            }
+            $countryStats[$countryId]['count']++;
         }
         
         
@@ -137,7 +154,7 @@ class StatisticController extends AbstractActionController {
                 ->select('prod.displayName', 'COUNT(DISTINCT u.id) AS usercount', 'COUNT(i.id) itemcount')
                 ->from('ersEntity\Entity\Package', 'p')
                 ->join('p.participant', 'u')
-                ->join('p.items', 'i')
+                ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
                 ->join('i.product', 'prod')
                 ->groupBy('prod.id')
                 ->getQuery()->getResult();
@@ -150,14 +167,15 @@ class StatisticController extends AbstractActionController {
                 ->findBy(array('type' => 'select'));
         
         $variantStats = array();
+        /* @var $variant \ersEntity\Entity\ProductVariant */
         foreach($variants as $variant) {
             $variantStats[$variant->getName()] = array();
             foreach($variant->getProductVariantValues() as $value) {
-                $repository = $em->getRepository("ersEntity\Entity\ItemVariant");
-
-                $qb = $repository->createQueryBuilder('i')
-                        ->select('count(i.id)')
-                        ->where('i.ProductVariantValue_id = :value_id')
+                $qb = $em->createQueryBuilder()
+                        ->select('count(DISTINCT i.id)')
+                        ->from('ersEntity\Entity\ItemVariant', 'ivar')
+                        ->join('ivar.item', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
+                        ->where('ivar.ProductVariantValue_id = :value_id')
                         ->setParameter('value_id', $value->getId());
                 
                 $count = $qb->getQuery()->getSingleScalarResult();
@@ -165,11 +183,21 @@ class StatisticController extends AbstractActionController {
             }
         }
         
+        
+        // postprocess countries: sort descending by count and move "unknown" to the front
+        uasort($countryStats, function($a, $b){ return $b['count'] - $a['count']; });
+        if(isset($countryStats[0])) {
+            $unknownData = $countryStats[0];
+            unset($countryStats[0]);
+            array_unshift($countryStats, $unknownData);
+        }
+        
         return new ViewModel(array(
            'stats_agegroupPrice' => $agegroupStatsPrice,
            'stats_agegroupTicket' => $agegroupStatsTicket,
            'stats_productType' => $productStats,
-           'stats_variant' => $variantStats
+           'stats_variant' => $variantStats,
+           'stats_country' => $countryStats,
         ));
     }
     
@@ -177,7 +205,7 @@ class StatisticController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $allStats = array();
+        $activeStats = array();
         $matchingStats = array();
         
         $bankaccounts = $em->getRepository("ersEntity\Entity\BankAccount")
@@ -187,32 +215,29 @@ class StatisticController extends AbstractActionController {
         foreach($bankaccounts as $bankaccount) {
             $statementFormat = json_decode($bankaccount->getStatementFormat());
             
-            // TODO maybe exclude disabled statements in both views?
             $qb = $em->createQueryBuilder()
-                    ->select('COUNT(s.id) AS stmtcount', 'SUM(col.value) AS amount')
+                    ->select('COUNT(s.id) AS stmtcount', 'SUM(col.value) AS amount, MAX(s.created) AS latestentry')
                     ->from('ersEntity\Entity\BankAccount', 'acc')
-                    ->join('acc.bankStatements', 's')
+                    ->join('acc.bankStatements', 's', 'WITH', "s.status != 'disabled'")
                     ->join('s.bankStatementCols', 'col', 'WITH', 'col.column = :colNum')
                     ->where('acc.id = :accountId')
                     
                     ->setParameter('accountId', $bankaccount->getId())
                     ->setParameter('colNum', $statementFormat->amount);
             
-            $allStats[$bankaccount->getName()] = $qb
+            $activeStats[$bankaccount->getName()] = $qb
                     ->getQuery()->getSingleResult();
             
-            // extend the query to filter statements based on whether on not they have a match
+            // extend the query to only include matched statements
             $matchingStats[$bankaccount->getName()] = $qb
-                    ->andWhere('(SELECT COUNT(m.id) FROM ersEntity\Entity\Match m WHERE m.BankStatement_id = s.id) > 0')
+                    ->andWhere("s.status = 'matched'")
                     ->getQuery()->getSingleResult();
-            
-            // TODO only count matches that have status == "active"?
         }
         
         
         
         return new ViewModel(array(
-            'allStats' => $allStats,
+            'activeStats' => $activeStats,
             'matchingStats' => $matchingStats,
         ));
     }
