@@ -200,6 +200,7 @@ class OrderController extends AbstractActionController {
         $forrest->set('user', 'admin/order', array('action' => 'detail', 'id' => $id));
         $forrest->set('package', 'admin/order', array('action' => 'detail', 'id' => $id));
         $forrest->set('item', 'admin/order', array('action' => 'detail', 'id' => $id));
+        $forrest->set('matching', 'admin/order', array('action' => 'detail', 'id' => $id));
         
         return new ViewModel(array(
             'order' => $order,
