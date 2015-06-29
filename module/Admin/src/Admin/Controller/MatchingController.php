@@ -330,6 +330,16 @@ class MatchingController extends AbstractActionController {
                     ->findOneBy(array('id' => $id));
                 
                 $match->setStatus('disabled');
+                $em->persist($match);
+                
+                $order = $match->getOrder();
+                $order->setPaymentStatus('unpaid');
+                $em->persist($order);
+                
+                foreach($order->getItems() as $item) {
+                    $item->setStatus('ordered');
+                    $em->persist($item);
+                }
                 #$em->remove($match);
                 $em->flush();
                 
