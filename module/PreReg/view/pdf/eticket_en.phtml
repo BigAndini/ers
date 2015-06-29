@@ -150,17 +150,6 @@
                 switch($agegroup->getName()):
                     case 'U6':
                     case 'U16': ?>
-                        <p><strong>Print</strong> this ticket and never give it 
-                            to a third person. A parent or 
-                            <strong>legal guardian must sign</strong> the 
-                            information concerning obligatory supervision and 
-                            the disclaimer. <strong>Bring</strong> this ticket 
-                            to the EJC and present it at the registration desk. 
-                            If you attend the EJC on your own, we also need a 
-                            <strong>copy of your legal guardian’s ID 
-                                card</strong>.</p>
-                        <?php break;
-                    case 'U18': ?>
                         <p><strong>Dear chaperon, please print</strong> this 
                             ticket and never give it to a third person. A parent 
                             or <strong>legal guardian</strong> must add and 
@@ -171,6 +160,17 @@
                             parent or legal guardian of the child but a 
                             chaperon, we also need a <strong>copy of a valid ID 
                                 card of the child’s legal guardian</strong>.</p>
+                        <?php break;
+                    case 'U18': ?>
+                        <p><strong>Print</strong> this ticket and never give it 
+                            to a third person. A parent or 
+                            <strong>legal guardian must sign</strong> the 
+                            information concerning obligatory supervision and 
+                            the disclaimer. <strong>Bring</strong> this ticket 
+                            to the EJC and present it at the registration desk. 
+                            If you attend the EJC on your own, we also need a 
+                            <strong>copy of your legal guardian’s ID 
+                                card</strong>.</p>
                         <?php break;
                 endswitch; 
             else: ?>
@@ -251,11 +251,16 @@
                                         adult (age of 18 or above) and has the 
                                         ability to look after my son / daughter. 
                                         The host will not check this. I will add 
-                                        a copy of a valid ID card of myself (as 
-                                        stated above). Otherwise, attending will 
-                                        not be possible for my son / daughter. I 
+                                        a copy of a valid ID card of myself. 
+                                        Otherwise, attending will not be 
+                                        possible for my son / daughter. I 
                                         accept the disclaimer.</p>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><span class="sign-field">name of chaperon</span></td>
+                                <td><span class="sign-field">chaperon's date of birth</span></td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -301,11 +306,6 @@
                                         at the EJC is impossible. I accept the 
                                         disclaimer.</p>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td><span class="sign-field">name of chaperon</span></td>
-                                <td><span class="sign-field">chaperon's date of birth</span></td>
                             </tr>
                             <tr>
                                 <td></td>

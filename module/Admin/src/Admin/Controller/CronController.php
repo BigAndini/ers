@@ -443,7 +443,7 @@ class CronController extends AbstractActionController {
                 $order = $package->getOrder();
                 $participant = $package->getParticipant();
 
-                $buyer = $order->getBuyer();
+                /*$buyer = $order->getBuyer();
                 if($participant->getEmail() == '') {
                     $emailService->addTo($buyer);
                 } elseif($participant->getEmail() == $buyer->getEmail()) {
@@ -451,14 +451,14 @@ class CronController extends AbstractActionController {
                 } else {
                     $emailService->addTo($participant);
                     $emailService->addCc($buyer);
-                }
-                /*$user = new Entity\User();
+                }*/
+                $user = new Entity\User();
                 $user->setEmail('andi@inbaz.org');
-                $emailService->addTo($user);*/
+                $emailService->addTo($user);
 
-                $bcc = new Entity\User();
+                /*$bcc = new Entity\User();
                 $bcc->setEmail('prereg@eja.net');
-                $emailService->addBcc($bcc);
+                $emailService->addBcc($bcc);*/
 
                 $subject = "[EJC 2015] Updated E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
                 $emailService->setSubject($subject);
@@ -492,9 +492,10 @@ class CronController extends AbstractActionController {
 
                 # send out email
                 $emailService->send();
+                exit();
             }
         }
-        echo "found ".$package_counter." packages to resend.".PHP_EOL;
+        #echo "found ".$package_counter." packages to resend.".PHP_EOL;
     }
     
     public function sendEticketsAction() {
