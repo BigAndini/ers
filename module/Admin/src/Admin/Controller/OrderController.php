@@ -149,22 +149,16 @@ class OrderController extends AbstractActionController {
                 foreach($searchElements as $element) {
                     $b_expr = $qb->expr()->lower($qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname')));
                     $u_expr = $qb->expr()->lower($qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.surname')));
+                    $be_expr = $qb->expr()->lower('b.email');
+                    $ue_expr = $qb->expr()->lower('u.email');
                     if($i == 0) {
-                        /*$qb->add('where', $qb->expr()->orX(
-                            $qb->expr()->eq('u.id', '?1'),
-                            $qb->expr()->like('u.nickname', '?2')
-                        ));*/
-                        #$qb->setParameter(1, 100);
                         $qb->where($qb->expr()->like($b_expr, ':param'.$i));
-                        #$qb->where('LOWER(CONCAT(b.firstname, " ",b.surname)) LIKE :param'.$i);
-                        #$qb->orWhere('LOWER(CONCAT(u.firstname, " ",u.surname)) LIKE :param'.$i);
                     } else {
                         $qb->orWhere($qb->expr()->like($b_expr, ':param'.$i));
-                        
-                        #$qb->orWhere('LOWER(CONCAT(b.firstname, " ",b.surname)) LIKE :param'.$i);
-                        #$qb->orWhere('LOWER(CONCAT(u.firstname, " ",u.surname)) LIKE :param'.$i);
                     }
                     $qb->orWhere($qb->expr()->like($u_expr, ':param'.$i));
+                    $qb->orWhere($qb->expr()->like($be_expr, ':param'.$i));
+                    $qb->orWhere($qb->expr()->like($ue_expr, ':param'.$i));
                     $qb->setParameter('param'.$i, '%'.strtolower($element).'%');
                     $i++;
                 }
