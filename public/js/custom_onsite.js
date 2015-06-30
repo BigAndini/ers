@@ -62,4 +62,35 @@ jQuery(function($) {
             });
         }
     });
+    
+    
+    // package detail controls
+    var $selectAllButton = $('.select-all-button');
+    var $confirmButton = $('.confirm-items-button');
+    var $itemCheckboxes = $('.item-ship-checkbox').not(':disabled');
+    
+    $selectAllButton.click(function() {
+        if($selectAllButton.text() === 'Select all')
+            $itemCheckboxes.prop('checked', true).change();
+        else
+            $itemCheckboxes.prop('checked', false).change();
+    });
+    
+    $itemCheckboxes.change(function(){
+        var $container = $(this).closest('li');
+        if($(this).prop('checked'))
+            $container.addClass('light-green-bg');
+        else
+            $container.removeClass('light-green-bg');
+        
+        $confirmButton.prop('disabled', !$itemCheckboxes.is(':checked'));
+        
+        if($itemCheckboxes.not(':checked').length === 0)
+            $selectAllButton.text('Select none');
+        else
+            $selectAllButton.text('Select all');
+    });
+    
+    if($itemCheckboxes.length === 0)
+        $selectAllButton.prop('disabled', true);
 });

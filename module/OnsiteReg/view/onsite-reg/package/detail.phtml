@@ -1,6 +1,6 @@
 <?php
 $title = "Package " . $package->getCode()->getValue();
-$this->headTitle($title);
+$this->headTitle($package->getParticipant()->getFullName());
 
 $form->setAttribute('action', $this->url('onsite/package', array('action' => 'ship')));
 $form->prepare();
@@ -11,6 +11,11 @@ $itemStatusMessages = [
     "cancelled" => "The item was cancelled.",
     "unknown" => "No status information available about the item.",
 ];
+
+// General TODO:
+// - add shipped field
+// - partition items into shipped/unshipped
+// - redirect controller
 ?>
 
 <?php echo $this->partial('partial/search-box', array('form' => $searchForm)); ?>
@@ -30,7 +35,7 @@ $itemStatusMessages = [
             <table class="table table-striped">
                 <tr>
                     <th>Name:</th>
-                    <td><?php echo $this->escapeHtml($package->getParticipant()->getFirstname() . ' ' . $package->getParticipant()->getSurname()); ?></td>
+                    <td><?php echo $this->escapeHtml($package->getParticipant()->getFullName()); ?></td>
                 </tr>
                 <tr>
                     <th>Date of birth:</th>
@@ -38,7 +43,11 @@ $itemStatusMessages = [
                 </tr>
                 <tr>
                     <th>Age:</th>
-                    <td><?php echo $package->getParticipant()->getAge() ?: '-'; ?></td>
+                    <td><?php echo ($package->getParticipant()->getAge() === NULL ? '-' : $package->getParticipant()->getAge()); ?></td>
+                </tr>
+                <tr>
+                    <th>E-Mail:</th>
+                    <td><?php echo $this->escapeHtml($package->getParticipant()->getEmail() ?: '-'); ?></td>
                 </tr>
             </table>
         </div>
@@ -48,7 +57,7 @@ $itemStatusMessages = [
             <div class="panel-body">
                 <?php echo $this->form()->openTag($form); ?>
                 <ul class="list-unstyled">
-                <?php foreach ($package->getItems() as $item):
+                <?php foreach ($package->getAllItems() as $item):
                     $status = $item->getStatus() ?: 'unknown';
                     $itemOK = ($status === 'paid');
                     ?>
@@ -108,6 +117,27 @@ $itemStatusMessages = [
                     <th>Payment status:</th>
                     <td><?php echo $this->escapeHtml($order->getPaymentStatus()); ?></td>
                 </tr>
+                <tr colspan="2">
+                    <td>
+                        <p><b>Packages:</b></p>
+                        <ul class="list">
+                        <?php foreach($order->getPackages() as $other): ?>
+                            <li><p>
+                            <?php
+                            echo $this->escapeHtml($other->getParticipant()->getFullName()) . '&nbsp;(';
+                            if($other == $package)
+                                echo '<u title="current">';
+                            else
+                                echo '<a href="' . $this->url('onsite/package', array('action' => 'detail', 'id' => $other->getId())) . '">';
+                            echo $this->escapeHtml($other->getCode()->getValue());
+                            
+                            echo ($other == $package ? '</u>' : '</a>') . ')';
+                            ?>
+                            </p></li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
@@ -115,7 +145,7 @@ $itemStatusMessages = [
 
 
     <div class="col-md-3 col-sm-4">
-        <div class="panel panel-<?php echo ($ticketAgegroup === NULL ? 'success' : 'warning'); ?>">
+        <div class="panel panel-<?php echo ($ticketAgegroup === NULL ? 'success' : /*($ticketAgegroup->getName() === 'U18' ?*/ 'warning' /*: 'danger')*/); ?>">
             <div class="panel-heading"><h3 class="panel-title">Agegroup</h3></div>
             <div class="panel-body">
 
@@ -125,17 +155,18 @@ $itemStatusMessages = [
                     switch ($ticketAgegroup->getName()):
                         case 'U6':
                             ?>
-                            <p>Check the disclaimer on the ticket and verify the age.</p>
+                            <p>Check the disclaimer on the ticket and make sure the parent or chaperon is present.<br>
+                                Verify the age.</p>
                             <?php
                             break;
                         case 'U16':
                             ?>
-                            <p>Check the disclaimer on the ticket.</p>
+                            <p>Check the disclaimer on the ticket and make sure the parent or chaperon is present.</p>
                             <?php
                             break;
                         case 'U18':
                             ?>
-                            <p>Check the disclaimer on the ticket and make sure the chaperon is present.</p>
+                            <p>Check the disclaimer on the ticket.</p>
                             <?php
                             break;
                         default:
@@ -150,48 +181,13 @@ $itemStatusMessages = [
             </div>
         </div>
 
-        <div class="panel panel-<?php echo ($allItemsPaid ? 'success' : 'danger'); ?>">
+        <div class="panel panel-<?php echo ($package->getStatus() === 'paid' ? 'success' : 'danger'); ?>">
             <div class="panel-heading"><h3 class="panel-title">Payment status</h3></div>
             <div class="panel-body">
-                <?php if ($allItemsPaid): ?>
-                    <p class="text-success h3"><i class="fa fa-check"></i> paid</p>
-                    <p class="text-success">All items are paid and were not yet collected.</p>
-                <?php else: ?>
-                    <p class="text-danger h3"><i class="fa fa-warning"></i> unknown</p>
-                    <p class="text-danger"> There are items that are unpaid or were already collected.</p>
-                <?php endif; ?>
+                <p class="text-<?php echo ($package->getStatus() === 'paid' ? 'success' : 'danger'); ?> h3">
+                    <i class="fa fa-<?php echo ($package->getStatus() === 'paid' ? 'check' : 'warning'); ?>"></i>
+                    <?php echo $this->escapeHtml($package->getStatus() ?: 'unknown'); ?></p>
             </div>
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    var $selectAllButton = $('.select-all-button');
-    var $confirmButton = $('.confirm-items-button');
-    var $itemCheckboxes = $('.item-ship-checkbox');
-    
-    $selectAllButton.click(function() {
-        if($selectAllButton.text() === 'Select all')
-            $itemCheckboxes.not(':disabled').prop('checked', true).change();
-        else
-            $itemCheckboxes.not(':disabled').prop('checked', false).change();
-    });
-    
-    $itemCheckboxes.change(function(){
-        var $container = $(this).closest('li');
-        if($(this).prop('checked'))
-            $container.addClass('light-green-bg');
-        else
-            $container.removeClass('light-green-bg');
-        
-        $confirmButton.prop('disabled', !$itemCheckboxes.is(':checked'));
-        
-        if($itemCheckboxes.not(':checked').length === 0)
-            $selectAllButton.text('Select none');
-        else
-            $selectAllButton.text('Select all');
-    });
-    
-    if($itemCheckboxes.not(':disabled').length === 0)
-        $selectAllButton.prop('disabled', true);
-</script>

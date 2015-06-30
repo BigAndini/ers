@@ -38,8 +38,6 @@ class PackageController extends AbstractActionController {
         $agegroupService = $this->getServiceLocator()->get('PreReg\Service\AgegroupService:ticket');
         $ticketAgegroup = $agegroupService->getAgegroupByUser($package->getParticipant());
         
-        $allItemsPaid = $package->getItems()->forAll(function($_, $item){ return $item->getStatus() === 'paid'; });
-        
         $form = new Form\ConfirmPackage();
         $form->bind($package);
         
@@ -49,7 +47,6 @@ class PackageController extends AbstractActionController {
             'package' => $package,
             'order' => $package->getOrder(),
             'ticketAgegroup' => $ticketAgegroup,
-            'allItemsPaid' => $allItemsPaid,
             'form' => $form,
             'searchForm' => $searchForm,
         ));

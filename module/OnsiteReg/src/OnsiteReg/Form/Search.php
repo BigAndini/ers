@@ -23,10 +23,9 @@ class Search extends Form
             'name' => 'q',
             'attributes' => array(
                 'required' => 'required',
-                'type'  => 'text',
-                'class' => 'form-control form-element',
-                'style' => 'width: 100%;',
-                'placeholder' => 'Code / Name / Birthdate...',
+                'type'  => 'search',
+                'class' => 'form-control form-element onsite-search-box',
+                'placeholder' => 'Code / Name / Date of birth / E-Mail / ID ...',
             ),
             'options' => array(
                 'label' => '',
