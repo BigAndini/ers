@@ -14,11 +14,9 @@ use OnsiteReg\Form;
 
 class PackageController extends AbstractActionController {
     public function indexAction() {
-        $form = new Form\Search();
-        return new ViewModel(array(
-            'form' => $form,
-        ));
+        return $this->redirect()->toRoute('onsite/search');
     }
+    
     public function detailAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
@@ -45,17 +43,24 @@ class PackageController extends AbstractActionController {
         $form = new Form\ConfirmPackage();
         $form->bind($package);
         
+        $searchForm = new Form\Search();
+        
         return new ViewModel(array(
             'package' => $package,
             'order' => $package->getOrder(),
             'ticketAgegroup' => $ticketAgegroup,
             'allItemsPaid' => $allItemsPaid,
             'form' => $form,
+            'searchForm' => $searchForm,
         ));
     }
     
     public function shipAction() {
-        return $this->redirect()->toRoute('onsite/search');
+        echo "<pre>";
+        var_dump($this->getRequest()->getPost());
+        echo "</pre>";
+        return $this->getResponse();
+        //return $this->redirect()->toRoute('onsite/search');
     }
     
 }

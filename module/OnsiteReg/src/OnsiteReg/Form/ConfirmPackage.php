@@ -34,8 +34,8 @@ class ConfirmPackage extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Register',
-                'class' => 'btn btn-lg btn-success',
+                'value' => 'Confirm',
+                'class' => 'btn btn-lg btn-warning confirm-items-button',
             ),
         ));
     }

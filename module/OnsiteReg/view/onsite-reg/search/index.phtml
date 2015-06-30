@@ -1,31 +1,8 @@
 <?php
-$title = "Search";
-$this->headTitle($title);
+$this->headTitle("Search");
 ?>
 
-<h2>
-    <span class="green">ERS Onsite Registration</span>
-</h2>
-
-<?php
-$form = $this->form;
-$form->setAttribute('action', $this->url('onsite/search'));
-$form->prepare();
-?>
-
-<?php echo $this->form()->openTag($form); ?>
-<div class="row">
-    <div class="col-xs-8 input-group-lg">
-        <?php
-        //echo $this->formHidden($form->get('csrf'));
-        echo $this->formRow($form->get('q'));
-        ?>
-    </div>
-    <div class="col-xs-4">
-        <input class="btn btn-lg btn-success" value="Search" type="submit">
-    </div>
-</div>
-<?php echo $this->form()->closeTag(); ?>
+<?php echo $this->partial('partial/search-box'); ?>
 
 <?php if ($query !== NULL): ?>
     <h4>Search results for "<?php echo $this->escapeHtml($query); ?>"</h4>
@@ -40,27 +17,25 @@ $form->prepare();
             </tr>
         </thead>
         <tbody>
+            <?php foreach($results as $package): ?>
             <tr>
-                <td>2VD2PR16</td>
-                <td>K4VW9H22</td>
-                <td>Max Mustermann</td>
-                <td>16.06.1981</td>
-                <td><a class="btn btn-success" href="<?php echo $this->url('onsite/package', array('action' => 'detail', 'id' => 1)); ?>">Register</a></td>
+                <td><?php echo $this->escapeHtml($package->getOrder()->getCode()->getValue()); ?></td>
+                <td><?php echo $this->escapeHtml($package->getCode()->getValue()); ?></td>
+                <td><?php echo $this->escapeHtml($package->getParticipant()->getFullName()); ?></td>
+                <td>
+                    <?php
+                    $bd = $package->getParticipant()->getBirthday();
+                    echo ($bd ? $bd->format('d.m.Y') : '-');
+                    ?>
+                </td>
+                <td><a class="btn btn-default" href="<?php echo $this->url('onsite/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Register</a></td>
             </tr>
+            <?php endforeach;
+            if(empty($results)): ?>
             <tr>
-                <td>6M4HC676</td>
-                <td>K4VW9H22</td>
-                <td>John Doe</td>
-                <td>11.07.1998</td>
-                <td><a class="btn btn-success" href="<?php echo $this->url('onsite/package', array('action' => 'detail', 'id' => 1817)); ?>">Register</a></td>
+                <td colspan="5" class="text-center gray">No packages found</td>
             </tr>
-            <tr>
-                <td>6M4HC676</td>
-                <td>6KHKRN36</td>
-                <td>Lukas Bonauer</td>
-                <td>07.09.1997</td>
-                <td><a class="btn btn-success" href="<?php echo $this->url('onsite/package', array('action' => 'detail', 'id' => 2538)); ?>">Register</a></td>
-            </tr>
+            <?php endif; ?>
         </tbody>
     </table>
 <?php endif; ?>

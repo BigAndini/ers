@@ -4,17 +4,27 @@ $this->headTitle($title);
 
 $form->setAttribute('action', $this->url('onsite/package', array('action' => 'ship')));
 $form->prepare();
+
+$itemStatusMessages = [
+    "unpaid" => "The item was not paid.",
+    "shipped" => "The item was already collected.",
+    "cancelled" => "The item was cancelled.",
+    "unknown" => "No status information available about the item.",
+];
 ?>
 
-<a class="btn btn-default" href="<?php echo $this->url('onsite'); ?>"><i class="fa fa-arrow-left"></i> back to landing page</a>
-<a class="btn btn-default" href="<?php echo $this->url('onsite/search', array(), array('query' => array('q' => 'asdf'))); ?>"><i class="fa fa-arrow-left"></i> back to last search</a>
+<?php echo $this->partial('partial/search-box', array('form' => $searchForm)); ?>
 
-<h2>
+<!--<a class="btn btn-default" href="<?php echo $this->url('onsite'); ?>"><i class="fa fa-arrow-left"></i> back to landing page</a>
+<a class="btn btn-default" href="<?php echo $this->url('onsite/search', array(), array('query' => array('q' => 'asdf'))); ?>"><i class="fa fa-arrow-left"></i> back to last search</a>
+-->
+
+<h3>
     <span class="green"><?php echo $this->escapeHtml($title); ?></span>
-</h2>
+</h3>
 
 <div class="row">
-    <div class="col-sm-8">
+    <div class="col-md-9 col-sm-8">
         <div class="panel panel-default">
             <div class="panel-heading"><h3 class="panel-title">Person</h3></div>
             <table class="table table-striped">
@@ -24,11 +34,11 @@ $form->prepare();
                 </tr>
                 <tr>
                     <th>Date of birth:</th>
-                    <td><?php echo $package->getParticipant()->getBirthday()->format('d.m.Y'); ?></td>
+                    <td><?php echo ($package->getParticipant()->getBirthday() ? $package->getParticipant()->getBirthday()->format('d.m.Y') : '-'); ?></td>
                 </tr>
                 <tr>
                     <th>Age:</th>
-                    <td><?php echo $package->getParticipant()->getAge(); ?></td>
+                    <td><?php echo $package->getParticipant()->getAge() ?: '-'; ?></td>
                 </tr>
             </table>
         </div>
@@ -36,17 +46,50 @@ $form->prepare();
         <div class="panel panel-default">
             <div class="panel-heading"><h3 class="panel-title">Items</h3></div>
             <div class="panel-body">
-                <?php foreach ($package->getItems() as $item): ?>
-                    <div class="package">
-                        <h4><?php echo $this->escapeHtml($item->getName()); ?></h4>
+                <?php echo $this->form()->openTag($form); ?>
+                <ul class="list-unstyled">
+                <?php foreach ($package->getItems() as $item):
+                    $status = $item->getStatus() ?: 'unknown';
+                    $itemOK = ($status === 'paid');
+                    ?>
+                    <label class="block">
+                    <li class="package">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <p class="h4"><?php echo $this->escapeHtml($item->getName()); ?></p>
 
-                        <?php foreach ($item->getItemVariants() AS $itemVariant): ?>
-                            <p><?php echo $this->escapeHtml($itemVariant->getName() . ': ' . $itemVariant->getValue()); ?></p>
-                        <?php endforeach; ?>
-                    </div>
+                                <?php foreach ($item->getItemVariants() AS $itemVariant): ?>
+                                    <div><?php echo $this->escapeHtml($itemVariant->getName() . ': ' . $itemVariant->getValue()); ?></div>
+                                <?php endforeach; ?>
+                            </div>
+                            <p class="col-xs-2">
+                                <?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?>
+                            </p>
+                            <div class="col-xs-3 text-<?php echo ($itemOK ? 'success' : 'warning'); ?>">
+                                <p class="h4">
+                                    <i class="fa fa-<?php echo ($itemOK ? 'check' : 'warning'); ?>"></i>
+                                    <?php echo $this->escapeHtml($status); ?>
+                                </p>
+                                <?php if(isset($itemStatusMessages[$status])): ?>
+                                    <p><?php echo $this->escapeHtml($itemStatusMessages[$status]); ?></p>
+                                <?php endif; ?>
+                            </div>
+                            <div class="col-xs-1">
+                                <input type="checkbox" class="checkbox item-ship-checkbox" name="item[]" value="<?php echo $item->getId(); ?>" <?php echo ($itemOK ? '' : ' disabled') ?>>
+                            </div>
+                        </div>
+                    </li>
+                    </label>
                 <?php endforeach; ?>
+                </ul>
                 
-                <p>TODO: Show more information about the items (which?).</p>
+                <?php echo $this->formHidden($form->get('id')); ?>
+                <?php echo $this->formHidden($form->get('csrf')); ?>
+                <div class="text-right">
+                    <button type="button" class="btn btn-lg btn-default select-all-button">Select all</button>
+                    <?php echo $this->formSubmit($form->get('submit')->setAttribute('disabled', 'disabled')); ?>
+                </div>
+                <?php echo $this->form()->closeTag(); ?>
             </div>
         </div>
 
@@ -67,35 +110,42 @@ $form->prepare();
                 </tr>
             </table>
         </div>
-        
-        <?php echo $this->form($form); ?>
     </div>
 
-    <div class="col-sm-4">
+
+
+    <div class="col-md-3 col-sm-4">
         <div class="panel panel-<?php echo ($ticketAgegroup === NULL ? 'success' : 'warning'); ?>">
             <div class="panel-heading"><h3 class="panel-title">Agegroup</h3></div>
             <div class="panel-body">
 
                 <?php if ($ticketAgegroup !== NULL): ?>
-                    <h3 class="text-warning"><i class="fa fa-warning"></i> <?php echo $this->escapeHtml($ticketAgegroup->getName()); ?></h3>
+                    <p class="h3 text-warning"><i class="fa fa-warning"></i> <?php echo $this->escapeHtml($ticketAgegroup->getName()); ?></p>
                     <?php
                     switch ($ticketAgegroup->getName()):
+                        case 'U6':
+                            ?>
+                            <p>Check the disclaimer on the ticket and verify the age.</p>
+                            <?php
+                            break;
                         case 'U16':
                             ?>
-                            <p>Check the disclaimer on the ticket and make sure the chaperon is present.</p>
-                            <?php break;
+                            <p>Check the disclaimer on the ticket.</p>
+                            <?php
+                            break;
                         case 'U18':
                             ?>
-                            <p>Check the disclaimer on the ticket.</p>
-                            <?php break;
+                            <p>Check the disclaimer on the ticket and make sure the chaperon is present.</p>
+                            <?php
+                            break;
                         default:
                             ?>
                             <p>Unknown.</p>
                     <?php endswitch; ?>
                 <?php else: ?>
-                    <h3 class="text-success"><i class="fa fa-check"></i> adult</h3>
+                    <p class="h3 text-success"><i class="fa fa-check"></i> adult</p>
                     <p>This person is 18 years old or older.</p>
-<?php endif; ?>
+                <?php endif; ?>
 
             </div>
         </div>
@@ -104,13 +154,44 @@ $form->prepare();
             <div class="panel-heading"><h3 class="panel-title">Payment status</h3></div>
             <div class="panel-body">
                 <?php if ($allItemsPaid): ?>
-                    <h3 class="text-success"><i class="fa fa-check"></i> paid</h3>
+                    <p class="text-success h3"><i class="fa fa-check"></i> paid</p>
                     <p class="text-success">All items are paid and were not yet collected.</p>
                 <?php else: ?>
-                    <h3 class="text-danger"><i class="fa fa-warning"></i> unknown</h3>
+                    <p class="text-danger h3"><i class="fa fa-warning"></i> unknown</p>
                     <p class="text-danger"> There are items that are unpaid or were already collected.</p>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    var $selectAllButton = $('.select-all-button');
+    var $confirmButton = $('.confirm-items-button');
+    var $itemCheckboxes = $('.item-ship-checkbox');
+    
+    $selectAllButton.click(function() {
+        if($selectAllButton.text() === 'Select all')
+            $itemCheckboxes.not(':disabled').prop('checked', true).change();
+        else
+            $itemCheckboxes.not(':disabled').prop('checked', false).change();
+    });
+    
+    $itemCheckboxes.change(function(){
+        var $container = $(this).closest('li');
+        if($(this).prop('checked'))
+            $container.addClass('light-green-bg');
+        else
+            $container.removeClass('light-green-bg');
+        
+        $confirmButton.prop('disabled', !$itemCheckboxes.is(':checked'));
+        
+        if($itemCheckboxes.not(':checked').length === 0)
+            $selectAllButton.text('Select none');
+        else
+            $selectAllButton.text('Select all');
+    });
+    
+    if($itemCheckboxes.not(':disabled').length === 0)
+        $selectAllButton.prop('disabled', true);
+</script>
