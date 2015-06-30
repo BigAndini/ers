@@ -604,9 +604,6 @@ class Order implements InputFilterAwareInterface
      */
     public function getRefundSum()
     {
-        if($this->refund_sum == 0) {
-            $this->refund_sum = $this->getSum();
-        }
         return $this->refund_sum;
     }
     
@@ -800,6 +797,16 @@ class Order implements InputFilterAwareInterface
             $items = new ArrayCollection(array_merge($items->toArray(), $package->getItems()->toArray()));
         }
         
+        return $items;
+    }
+    
+    public function getItemsByStatus($status) {
+        $items = new ArrayCollection();
+        foreach($this->getItems() as $item) {
+            if($item->getStatus() == $status) {
+                $items[] = $item;
+            }
+        }
         return $items;
     }
     

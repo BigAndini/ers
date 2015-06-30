@@ -97,7 +97,7 @@ class ProductController extends AbstractActionController {
 
                 $forrest = new Service\BreadcrumbFactory();
                 if(!$forrest->exists('product')) {
-                    $forrest->set('product', 'product');
+                    $forrest->set('product', 'admin/product');
                 }
                 $breadcrumb = $forrest->get('product');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);

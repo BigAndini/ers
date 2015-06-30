@@ -10,6 +10,8 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Admin\Form;
+use Admin\Service;
 
 class RefundController extends AbstractActionController {
     public function indexAction() {
@@ -35,6 +37,59 @@ class RefundController extends AbstractActionController {
         return new ViewModel(array(
             'items' => $items,
             'orders' => $orders,
+        ));
+    }
+    
+    public function enterAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/refund', array());
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('id' => $id));
+
+        #$form = $this->getServiceLocator()->get('Admin\Form\Product');
+        $form = new Form\EnterRefund();
+        #$form->bind($order);
+        $form->get('id')->setValue($order->getId());
+        $form->get('submit')->setAttribute('value', 'Enter');
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            #$form->setInputFilter($product->getInputFilter());
+            $form->setData($request->getPost());
+            
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $data['id']));
+                $order->setRefundSum($order->getRefundSum()+$data['amount']);
+                $em->persist($order);
+                
+                if($order->getRefundSum() == $order->getPrice('refund')) {
+                    foreach($order->getItemsByStatus('refund') as $item) {
+                        $item->setStatus('cancelled');
+                        $em->persist($item);
+                    }
+                }
+                
+                $em->flush();
+
+                $forrest = new Service\BreadcrumbFactory();
+                if(!$forrest->exists('refund')) {
+                    $forrest->set('refund', 'admin/refund');
+                }
+                $breadcrumb = $forrest->get('refund');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+        }
+
+        return new ViewModel(array(
+            'id' => $id,
+            'form' => $form,
+            'order' => $order,
         ));
     }
 }

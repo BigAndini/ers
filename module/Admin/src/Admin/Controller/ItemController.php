@@ -203,7 +203,7 @@ class ItemController extends AbstractActionController {
                 $em->persist($item);
                 
                 $order = $item->getPackage()->getOrder();
-                $order->setStatus('refund');
+                $order->setPaymentStatus('refund');
                 $em->persist($order);
                 
                 $em->flush();
