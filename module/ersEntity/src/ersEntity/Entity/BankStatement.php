@@ -100,6 +100,7 @@ class BankStatement implements InputFilterAwareInterface
     public function __construct()
     {
         $this->matches = new ArrayCollection();
+        $this->bankStatementCols = new ArrayCollection();
     }
     
     /**
