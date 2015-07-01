@@ -255,10 +255,12 @@ class PackageController extends AbstractActionController {
          */
         $order = $package->getOrder();
         
-        $deadlineService = new \PreReg\Service\DeadlineService();
+        $deadlineService = $this->getServiceLocator()
+                ->get('PreReg\Service\DeadlineService:price');
+        /*$deadlineService = new \PreReg\Service\DeadlineService();
         $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
                     ->findBy(array('priceChange' => '1'));
-        $deadlineService->setDeadlines($deadlines);
+        $deadlineService->setDeadlines($deadlines);*/
 
         $deadlineService->setCompareDate($order->getCreated());
         $deadline = $deadlineService->getDeadline();

@@ -119,10 +119,12 @@ class CartController extends AbstractActionController {
                 /*
                  * get deadline
                  */
-                $deadlineService = new Service\DeadlineService();
+                $deadlineService = $this->getServiceLocator()
+                    ->get('PreReg\Service\DeadlineService:price');
+                /*$deadlineService = new Service\DeadlineService();
                 $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
                         ->findBy(array('priceChange' => '1'));
-                $deadlineService->setDeadlines($deadlines);
+                $deadlineService->setDeadlines($deadlines);*/
                 $deadline = $deadlineService->getDeadline();
                 
                 /*

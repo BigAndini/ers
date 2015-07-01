@@ -269,6 +269,33 @@ class Module
                     
                     return $agegroupService;
                 },
+                'PreReg\Service\DeadlineService:price' => function($sm) {
+                    $deadlineService = new Service\DeadlineService();
+                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                    $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                                ->findBy(array('priceChange' => '1'));
+                    $deadlineService->setDeadlines($deadlines);
+                    
+                    return $deadlineService;
+                },
+                'PreReg\Service\DeadlineService:noprice' => function($sm) {
+                    $deadlineService = new Service\DeadlineService();
+                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                    $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                                ->findBy(array('priceChange' => '0'));
+                    $deadlineService->setDeadlines($deadlines);
+                    
+                    return $deadlineService;
+                },
+                'PreReg\Service\DeadlineService:all' => function($sm) {
+                    $deadlineService = new Service\DeadlineService();
+                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                    $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                                ->findAll();
+                    $deadlineService->setDeadlines($deadlines);
+                    
+                    return $deadlineService;
+                },
                 'PreReg\Service\ETicketService' => function($sm) {
                     $eticketService = new Service\ETicketService();
                     $eticketService->setServiceLocator($sm);
