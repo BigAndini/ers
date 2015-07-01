@@ -33,11 +33,6 @@ class DeadlineService
     }
     
     public function getDeadline() {
-        $cartContainer = new Container('cart');
-        if($cartContainer->deadline instanceof Entity\Deadline) {
-            return $cartContainer->deadline;
-        }
-        
         $ret = null;
         $now = $this->getCompareDate();
         foreach($this->deadlines as $deadline) {
@@ -49,12 +44,10 @@ class DeadlineService
                 continue;
             }
             if($deadline->getDeadline()->getTimestamp() < $ret->getDeadline()->getTimestamp()) {
-                #error_log('found earlier deadline: '.$deadline->getDeadline()->format('d.m.Y H:i:s'));
                 $ret = $deadline;
             }
         }
-        $cartContainer->deadline = $ret;
         
-        return $cartContainer->deadline;
+        return $ret;
     }
 }
