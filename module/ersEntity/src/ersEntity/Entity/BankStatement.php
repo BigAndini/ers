@@ -385,12 +385,15 @@ class BankStatement implements InputFilterAwareInterface
      */
     public function getBankStatementColByNumber($num)
     {
-        $columnCriteria = Criteria::create()->where(Criteria::expr()->eq("column", $num));
-        if($this->getBankStatementCols()->matching($columnCriteria)->first()) {
-            return $this->getBankStatementCols()->matching($columnCriteria)->first();
-        } else {
-            return new BankStatementCol();
+        # I don't know why this is not working
+        #$columnCriteria = Criteria::create()->where(Criteria::expr()->eq("column", $num));
+        #return $this->getBankStatementCols()->matching($columnCriteria)->first();
+        foreach($this->getBankStatementCols() as $col) {
+            if($col->getColumn() == $num) {
+                return $col;
+            }
         }
+        return new BankStatementCol();
     }
     
     /**
