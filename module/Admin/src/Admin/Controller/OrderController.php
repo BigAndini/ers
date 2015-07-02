@@ -102,13 +102,15 @@ class OrderController extends AbstractActionController {
                  * search code
                  */
                 $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('o');
-                $qb->join('o.code', 'c');
+                $qb->join('o.code', 'oc');
+                $qb->join('o.packages', 'p');
+                $qb->join('p.code', 'pc');
                 $i = 0;
                 foreach($searchElements as $element) {
                     if($i == 0) {
-                        $qb->where('c.value LIKE :param'.$i);
+                        $qb->where('oc.value LIKE :param'.$i);
                     } else {
-                        $qb->orWhere('c.value LIKE :param'.$i);
+                        $qb->orWhere('oc.value LIKE :param'.$i);
                     }
                     error_log('element: '.$element);
                     $qb->setParameter('param'.$i, $element);
@@ -117,7 +119,8 @@ class OrderController extends AbstractActionController {
                     $code = new Entity\Code();
                     $code->setValue($element);
                     if($code->checkCode()) {
-                        $qb->orWhere('c.value LIKE :param'.$i);
+                        $qb->orWhere('oc.value LIKE :param'.$i);
+                        $qb->orWhere('pc.value LIKE :param'.$i);
                         $qb->setParameter('param'.$i, $code->getValue());
                         $i++;
                     }
@@ -127,10 +130,11 @@ class OrderController extends AbstractActionController {
                 $check_first = $i;
                 foreach($excludeElements as $elemnt) {
                     if($i == $check_first) {
-                        $qb->where('c.value NOT LIKE :param'.$i);
+                        $qb->where('oc.value NOT LIKE :param'.$i);
                     } else {
-                        $qb->orWhere('c.value LIKE :param'.$i);
+                        $qb->orWhere('oc.value NOT LIKE :param'.$i);
                     }
+                    $qb->orWhere('pc.value NOT LIKE :param'.$i);
                     $qb->setParameter('param'.$i, $element);
                     $i++;
                 }
