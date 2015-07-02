@@ -386,7 +386,11 @@ class BankStatement implements InputFilterAwareInterface
     public function getBankStatementColByNumber($num)
     {
         $columnCriteria = Criteria::create()->where(Criteria::expr()->eq("column", $num));
-        return $this->getBankStatementCols()->matching($columnCriteria)->first();
+        if($this->getBankStatementCols()->matching($columnCriteria)->first()) {
+            return $this->getBankStatementCols()->matching($columnCriteria)->first();
+        } else {
+            return new BankStatementCol();
+        }
     }
     
     /**
