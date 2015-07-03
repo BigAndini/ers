@@ -20,4 +20,5 @@ return array(
         'website'           => "http://www.ejc2015.org",
         'onsitereg'         => "http://prereg.eja.net/redirect",
     ),
+    'environment' => 'develop',
 );

@@ -324,11 +324,17 @@ class Module
         );
     }
     public function getViewHelperConfig()
-{
-    return array(
-        'invokables' => array(
-            'formelementerrors' => 'PreReg\Form\View\Helper\FormElementErrors'
-        ),
-    );
-}
+    {
+        return array(
+            'invokables' => array(
+                'formelementerrors' => 'PreReg\Form\View\Helper\FormElementErrors'
+            ),
+            'factories' => array(
+                'config' => function($serviceManager) {
+                    $helper = new \PreReg\View\Helper\Config($serviceManager);
+                    return $helper;
+                },
+            ),
+        );
+    }
 }
