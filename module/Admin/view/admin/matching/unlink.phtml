@@ -60,35 +60,7 @@ $this->headTitle($title);
                     <tr>
                         <th>status</th>
                         <td>
-                            <?php switch($order->getPaymentStatus()):
-                                case 'paid': ?>
-                                    <div class="panel panel-success">
-                                        <div class="panel-heading text-center">
-                                            <?php echo $order->getPaymentStatus(); ?>
-                                        </div>
-                                    </div>
-                                    <?php break;
-                                case 'unpaid': ?>
-                                    <div class="panel panel-warning">
-                                        <div class="panel-heading text-center">
-                                            <?php echo $order->getPaymentStatus(); ?>
-                                        </div>
-                                    </div>
-                                    <?php break;
-                                case 'cancelled': ?>
-                                    <div class="panel panel-danger">
-                                        <div class="panel-heading text-center">
-                                            <?php echo $order->getPaymentStatus(); ?>
-                                        </div>
-                                    </div>
-                                    <?php break;
-                                default: ?>
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading text-center">
-                                            <?php echo $order->getPaymentStatus(); ?>
-                                        </div>
-                                    </div>
-                            <?php endswitch; ?>
+                            <?php echo $this->partial('partial/order-paymentstatus.phtml', array('order' => $order)); ?>
                         </td>
                     </tr>
                 </table>
