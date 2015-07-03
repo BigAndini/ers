@@ -71,12 +71,13 @@ class AjaxController extends AbstractActionController {
                     )
                 )
             );
+            $qb->setParameter(3, 'matched');
+            $qb->setParameter(4, 'disabled');
         }
         
         $qb->setParameter(1, $id);
         $qb->setParameter(2, 'disabled');
-        $qb->setParameter(3, 'matched');
-        $qb->setParameter(4, 'disabled');
+        
         $statements = $qb->getQuery()->getResult();
 
         $viewModel->setVariable("statements", $statements);

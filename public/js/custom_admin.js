@@ -58,6 +58,7 @@ jQuery(function($) {
 
             $(this).addClass("panelisopen");
             
+            $( "#bankaccount" + bankaccountId ).html('<div class="panel-body"><p style="position: relative; margin: .5em auto; width: 20px;"><i class="fa-li fa fa-spinner fa-spin"></i></p></div>');
             $.get( "/admin/ajax/matching-bankstatement/" + bankaccountId, function( data ) {
                 $( "#bankaccount" + bankaccountId ).html( data );
                 $('#statement-accordion .accordion-toggle').click(function () {
@@ -74,7 +75,11 @@ jQuery(function($) {
                         });
                     }
                 });
-            });
+            })
+                        .fail(function() {
+                            alert('failed to load bank statements');
+                    $( "#bankaccount" + bankaccountId ).html('<div class="panel-body"><p style="position: relative; margin: 0em auto; width: 20px;"><i class="fa fa-warning"></i></p></div>');
+                        });;
         }
     });
     
