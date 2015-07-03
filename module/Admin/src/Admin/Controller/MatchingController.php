@@ -281,6 +281,9 @@ class MatchingController extends AbstractActionController {
                         $match->setComment($data['comment']);
                         
                         $em->persist($match);
+                        
+                        $statement->setStatus('matched');
+                        $em->persist($statement);
                     }
                 }
                 $em->flush();
