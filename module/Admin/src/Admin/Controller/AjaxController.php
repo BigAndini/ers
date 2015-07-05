@@ -59,24 +59,26 @@ class AjaxController extends AbstractActionController {
                     $qb->expr()->neq('s.status', '?2')
                 )
             );
+            $qb->setParameter(1, $id);
+            $qb->setParameter(2, 'disabled');
         } else {
             $qb->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq('s.BankAccount_id', '?1'),
-                    $qb->expr()->neq('s.status', '?2'),
+                    $qb->expr()->eq('s.status', '?2')
+                    /*$qb->expr()->neq('s.status', '?2'),
                     $qb->expr()->neq('s.status', '?3'),
                     $qb->expr()->orX(
                         $qb->expr()->isNull('m.BankStatement_id'),
                         $qb->expr()->neq('m.status', '?4')
-                    )
+                    )*/
                 )
             );
-            $qb->setParameter(3, 'matched');
-            $qb->setParameter(4, 'disabled');
+            $qb->setParameter(1, $id);
+            $qb->setParameter(2, 'new');
+            /*$qb->setParameter(3, 'matched');
+            $qb->setParameter(4, 'disabled');*/
         }
-        
-        $qb->setParameter(1, $id);
-        $qb->setParameter(2, 'disabled');
         
         $statements = $qb->getQuery()->getResult();
 
