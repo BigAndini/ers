@@ -14,89 +14,51 @@ use OnsiteReg\Form;
 use ersEntity\Entity;
 
 class RedirectController extends AbstractActionController {
-    public function doAction() {
-        $id = $this->params()->fromRoute('id', 0);
-        /*if (!$id) {
-            #return $this->redirect()->toRoute('admin/order', array());
-            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
-        }*/
-        
-        #$default_redirect_target = 'http://ejc2015.org/volunteer/';
-        
-        /*
-         * If not logged in redirect to default redirect target
-         * http://ejc2015.org/volunteer/
-         */
-        /*if(!$this->zfcUserAuthentication()->hasIdentity()) {
-            return $this->redirect()->toUrl($default_redirect_target);
+    const DEFAULT_REDIRECT_TARGET = 'http://ejc2015.org/volunteer/';
+    
+    public function indexAction() {
+        // if not logged in or no according rights redirect to default redirect target
+        if(!$this->isAllowed('redirect', 'do')) {
+            error_log('unauthorized access to redirect page');
+            return $this->redirect()->toUrl(self::DEFAULT_REDIRECT_TARGET);
         }
-        $user = $this->zfcUserAuthentication()->getIdentity();*/
-        
-        /*
-         * If logged in check for according rights. If no right redirect to 
-         * default redirect target.
-         * http://ejc2015.org/volunteer/
-         */
-        /*$onsite_role = new Entity\Role();
-        $onsite_role->setRoleId('onsite');
-        $admin_role = new Entity\Role();
-        $admin_role->setRoleId('admin');
-        $supradm_role = new Entity\Role();
-        $supradm_role->setRoleId('supradm');*/
         
         
-        /*if(!$this->isAllowed('redirect', 'do')) {
-            error_log('user is not allowed');
-            return $this->redirect()->toUrl($default_redirect_target);
-        }*/
-        
-        #error_log('user is allowed');
-        
-        /*
-         * check the code that was given
-         */
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
+        
+        // get the corresponding code
+        $codeValue = $this->params()->fromRoute('code', '');
+        /* @var $code \ersEntity\Entity\Code */
         $code = $em->getRepository("ersEntity\Entity\Code")
-                ->findOneBy(array('value' => $id));
+                ->findOneBy(array('value' => $codeValue));
         
         if(!$code) {
-            error_log('unable to find code in system');
+            error_log('unable to find code in system: ' . $id);
+            return $this->notFoundAction();
         }
         
-        /*
-         * search for a package with this code
-         */
-        $package = $em->getRepository("ersEntity\Entity\Package")
-                ->findOneBy(array('Code_id' => $code->getId()));
+        $package = $code->getPackage();
+        $item = $code->getItem();
+        
+        if(!$package && $item) {
+            // if the code belongs to an item, use its containing package
+            $package = $item->getPackage();
+        }
+        
         if($package) {
-            error_log('found package for code '.$code->getValue());
-            #return $this->redirect()->toUrl($default_redirect_target);
+            // go to the onsite view of the package
             return $this->redirect()->toRoute('onsite/package', array('action' => 'detail', 'id' => $package->getId()));
         }
         
-        
-        /*
-         * search for an order with this code
-         */
-        $order = $em->getRepository("ersEntity\Entity\Order")
-                ->findOneBy(array('Code_id' => $code->getId()));
+        // only remaining option is that the code belongs to an order
+        $order = ($code->getOrders()->isEmpty() ? NULL : $code->getOrders()->first());
         if($order) {
-            error_log('found order for code '.$code->getValue());
-            return $this->redirect()->toUrl($default_redirect_target);
+            // currently, we do not redirect anywhere for order codes
+            return $this->notFoundAction();
         }
         
-        /*
-         * search for an item with this code
-         */
-        $item = $em->getRepository("ersEntity\Entity\Item")
-                ->findOneBy(array('Code_id' => $code->getId()));
-        if($package) {
-            error_log('found item for code '.$code->getValue());
-            return $this->redirect()->toUrl($default_redirect_target);
-        }
-        
-        error_log('unable to find any codes');
-        return $this->redirect()->toUrl($default_redirect_target);
+        error_log('detected orphaned code ' . $code->getValue() . ': it has no entities associated with it');
+        return $this->notFoundAction();
     }
 }

@@ -13,7 +13,6 @@ return array(
             'OnsiteReg\Controller\Index'       => 'OnsiteReg\Controller\IndexController',
             'OnsiteReg\Controller\Search'      => 'OnsiteReg\Controller\SearchController',
             'OnsiteReg\Controller\Package'      => 'OnsiteReg\Controller\PackageController',
-            'OnsiteReg\Controller\Order'      => 'OnsiteReg\Controller\OrderController',
             'OnsiteReg\Controller\Redirect'    => 'OnsiteReg\Controller\RedirectController',
         ),
     ),
@@ -92,7 +91,6 @@ return array(
             'onsite' => array(
                 'type' => 'segment',
                 'options' => array(
-                    #'route' => '/admin[/]',
                     'route' => '/onsite',
                     'defaults' => array(
                         'controller' => 'OnsiteReg\Controller\Index',
@@ -101,20 +99,6 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
-                    'test' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route'    => '/test[/:action][/:id]',
-                            'constraints' => array(
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id'     => '[0-9]+',
-                            ),
-                            'defaults' => array(
-                                'controller' => 'OnsiteReg\Controller\Test',
-                                'action'     => 'index',
-                            ),
-                        ),
-                    ),
                     'search' => array(
                         'type' => 'segment',
                         'options' => array(
@@ -135,29 +119,19 @@ return array(
                             ),
                         ),
                     ),
-                    'order' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route'    => '/order[/:action][/:id]',
-                            'defaults' => array(
-                                'controller' => 'OnsiteReg\Controller\Order',
-                                'action'     => 'index',
-                            ),
-                        ),
+                ),
+            ),
+            
+            'redirect' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/redirect[/:code]',
+                    'constraints' => array(
+                        'code'     => '[A-Z0-9]+',
                     ),
-                    'redirect' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route'    => '/redirect[/:action][/:id]',
-                            'constraints' => array(
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id'     => '[A-Z0-9]+',
-                            ),
-                            'defaults' => array(
-                                'controller' => 'OnsiteReg\Controller\Redirect',
-                                'action'     => 'index',
-                            ),
-                        ),
+                    'defaults' => array(
+                        'controller' => 'OnsiteReg\Controller\Redirect',
+                        'action'     => 'index',
                     ),
                 ),
             ),
