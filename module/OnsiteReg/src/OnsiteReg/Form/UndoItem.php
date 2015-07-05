@@ -11,20 +11,13 @@ namespace OnsiteReg\Form;
 use Zend\Form\Form;
 
 
-class ConfirmPackage extends Form
+class UndoItem extends Form
 {
     public function __construct($name = null)
     {
-        parent::__construct('ConfirmPackage');
+        parent::__construct('UndoItems');
         $this->setAttribute('method', 'post');
         
-        $this->add(array(
-            'name' => 'id',
-            'attributes' => array(
-                'type'  => 'hidden',
-            ),
-        ));
-       
         $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 
@@ -35,7 +28,7 @@ class ConfirmPackage extends Form
             'attributes' => array(
                 'type'  => 'submit',
                 'value' => 'Confirm',
-                'class' => 'btn btn-lg btn-warning confirm-items-button',
+                'class' => 'btn btn-danger',
             ),
         ));
     }

@@ -26,7 +26,7 @@ class PackageController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         /* @var $package \ersEntity\Entity\Package */
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository('ersEntity\Entity\Package')
                 ->find($id);
         
 //        $forrest = new \PreReg\Service\BreadcrumbFactory();
@@ -38,13 +38,24 @@ class PackageController extends AbstractActionController {
         $agegroupService = $this->getServiceLocator()->get('PreReg\Service\AgegroupService:ticket');
         $ticketAgegroup = $agegroupService->getAgegroupByUser($package->getParticipant());
         
-        $form = new Form\ConfirmPackage();
+        $unshippedItems = [];
+        $shippedItems = [];
+        foreach($package->getAllItems() as $item) {
+            if($item->getShipped())
+                $shippedItems[] = $item;
+            else
+                $unshippedItems[] = $item;
+        }
+        
+        $form = new Form\ConfirmItems();
         $form->bind($package);
         
         $searchForm = new Form\Search();
         
         return new ViewModel(array(
             'package' => $package,
+            'shippedItems' => $shippedItems,
+            'unshippedItems' => $unshippedItems,
             'order' => $package->getOrder(),
             'ticketAgegroup' => $ticketAgegroup,
             'form' => $form,
@@ -53,11 +64,106 @@ class PackageController extends AbstractActionController {
     }
     
     public function shipAction() {
-        echo "<pre>";
-        var_dump($this->getRequest()->getPost());
-        echo "</pre>";
-        return $this->getResponse();
-        //return $this->redirect()->toRoute('onsite/search');
+        if(!$this->getRequest()->isPost()) {
+            return $this->redirect()->toRoute('onsite/search');
+        }
+        
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $id = $this->params()->fromRoute('id', 0);
+        $package = $em->getRepository('ersEntity\Entity\Package')->find($id);
+        if(!$package) {
+            return $this->notFoundAction();
+        }
+            
+        $postData = $this->getRequest()->getPost();
+        
+        $form = new Form\ConfirmItems();
+        $form->setData($postData);
+        
+        $toDetailRedirect = $this->redirect()->toRoute('onsite/package', ['action' => 'detail', 'id' => $package->getId()]);
+        
+        if($form->isValid()) {
+            $itemIds = $postData->items;
+            
+            foreach($itemIds as $itemId) {
+                $matchedItems = $package->getAllItems()->filter(function($item) use ($itemId){ return $item->getId() === (int)$itemId; });
+                if($matchedItems->count() !== 1) {
+                    $this->flashMessenger()->addErrorMessage('No item with id ' . $itemId . ' was not found in the package!');
+                    return $toDetailRedirect;
+                }
+                
+                $item = $matchedItems->first();
+                
+                if($item->getShipped()) {
+                    $this->flashMessenger()->addErrorMessage('The item ' . $item->getName() . ' was changed since it was last displayed. Please try again!');
+                    return $toDetailRedirect;
+                }
+                
+                if($item->getStatus() !== 'paid') {
+                    $this->flashMessenger()->addErrorMessage('The item ' . $item->getName() . ' cannot be set to shipped because it is not paid.');
+                    return $toDetailRedirect;
+                }
+                
+                $item->setShipped(true);
+                $em->persist($item);
+                error_log('set item ' . $item->getId() . ' of package ' . $package->getId() . ' to shipped');
+            }
+            $em->flush();
+            
+            $this->flashMessenger()->addSuccessMessage('The items were successfully marked as shipped!');
+        }
+        else {
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
+            
+            foreach(call_user_func_array('array_merge', $form->getMessages()) as $error) {
+                $this->flashMessenger()->addErrorMessage($error);
+            }
+        }
+        
+        return $toDetailRedirect;
+    }
+    
+    public function undoItemAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $packageId = $this->params()->fromRoute('id', 0);
+        $itemId = $this->params()->fromRoute('item-id', 0);
+        
+        $package = $em->getRepository('ersEntity\Entity\Package')->find($packageId);
+        
+        if(!$package)
+            return $this->notFoundAction();
+        
+        $matchedItems = $package->getAllItems()->filter(function($item) use ($itemId){ return $item->getId() === (int)$itemId; });
+        if($matchedItems->count() !== 1) {
+            $this->flashMessenger()->addErrorMessage('No item with id ' . $itemId . ' was not found in the package!');
+            return $this->redirect()->toRoute('onsite/package', ['action' => 'detail', 'id' => $package->getId()]);
+        }
+        
+        $item = $matchedItems->first();
+        $form = new Form\UndoItem();
+        
+        if($this->getRequest()->isPost()) {
+            $form->setData($this->getRequest()->getPost());
+            if($form->isValid()) {
+                $item->setShipped(false);
+                $em->persist($item);
+                $em->flush();
+
+                $this->flashMessenger()->addSuccessMessage('The item was successfully marked as unshipped again!');
+                return $this->redirect()->toRoute('onsite/package', ['action' => 'detail', 'id' => $package->getId()]);
+            }
+        }
+        
+        return new ViewModel([
+            'package' => $package,
+            'item' => $item,
+            'form' => $form,
+        ]);
     }
     
 }

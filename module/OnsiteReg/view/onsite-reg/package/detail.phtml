@@ -2,27 +2,23 @@
 $title = "Package " . $package->getCode()->getValue();
 $this->headTitle($package->getParticipant()->getFullName());
 
-$form->setAttribute('action', $this->url('onsite/package', array('action' => 'ship')));
+$form->setAttribute('action', $this->url('onsite/package', array('action' => 'ship', 'id' => $package->getId())));
 $form->prepare();
 
-$itemStatusMessages = [
-    "unpaid" => "The item was not paid.",
-    "shipped" => "The item was already collected.",
-    "cancelled" => "The item was cancelled.",
-    "unknown" => "No status information available about the item.",
-];
+echo $this->flashMessenger()
+        ->setMessageOpenFormat('<div%s><p>')
+        ->setMessageSeparatorString('</p><p>')
+        ->setMessageCloseString('</p></div>')
+        ->render('error', ['alert', 'alert-danger']);
 
-// General TODO:
-// - add shipped field
-// - partition items into shipped/unshipped
-// - redirect controller
+echo $this->flashMessenger()
+        ->setMessageOpenFormat('<div%s><p>')
+        ->setMessageSeparatorString('</p><p>')
+        ->setMessageCloseString('</p></div>')
+        ->render('success', ['alert', 'alert-success']);
+
+echo $this->partial('partial/search-box', array('form' => $searchForm));
 ?>
-
-<?php echo $this->partial('partial/search-box', array('form' => $searchForm)); ?>
-
-<!--<a class="btn btn-default" href="<?php echo $this->url('onsite'); ?>"><i class="fa fa-arrow-left"></i> back to landing page</a>
-<a class="btn btn-default" href="<?php echo $this->url('onsite/search', array(), array('query' => array('q' => 'asdf'))); ?>"><i class="fa fa-arrow-left"></i> back to last search</a>
--->
 
 <h3>
     <span class="green"><?php echo $this->escapeHtml($title); ?></span>
@@ -53,55 +49,49 @@ $itemStatusMessages = [
         </div>
 
         <div class="panel panel-default">
-            <div class="panel-heading"><h3 class="panel-title">Items</h3></div>
+            <div class="panel-heading"><h3 class="panel-title">Unshipped items</h3></div>
             <div class="panel-body">
-                <?php echo $this->form()->openTag($form); ?>
-                <ul class="list-unstyled">
-                <?php foreach ($package->getAllItems() as $item):
-                    $status = $item->getStatus() ?: 'unknown';
-                    $itemOK = ($status === 'paid');
-                    ?>
-                    <label class="block">
-                    <li class="package">
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <p class="h4"><?php echo $this->escapeHtml($item->getName()); ?></p>
+                <?php if(empty($unshippedItems)): ?>
+                    <span class="gray">No unshipped items for this package.</span>
+                <?php else: ?>
+                    <?php echo $this->form()->openTag($form); ?>
 
-                                <?php foreach ($item->getItemVariants() AS $itemVariant): ?>
-                                    <div><?php echo $this->escapeHtml($itemVariant->getName() . ': ' . $itemVariant->getValue()); ?></div>
-                                <?php endforeach; ?>
-                            </div>
-                            <p class="col-xs-2">
-                                <?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?>
-                            </p>
-                            <div class="col-xs-3 text-<?php echo ($itemOK ? 'success' : 'warning'); ?>">
-                                <p class="h4">
-                                    <i class="fa fa-<?php echo ($itemOK ? 'check' : 'warning'); ?>"></i>
-                                    <?php echo $this->escapeHtml($status); ?>
-                                </p>
-                                <?php if(isset($itemStatusMessages[$status])): ?>
-                                    <p><?php echo $this->escapeHtml($itemStatusMessages[$status]); ?></p>
-                                <?php endif; ?>
-                            </div>
-                            <div class="col-xs-1">
-                                <input type="hidden" name="old_states[<?php echo $item->getId(); ?>]" value="<?php echo (int)$item->getShipped(); ?>">
-                                <input type="checkbox" class="checkbox item-ship-checkbox" name="new_states[<?php echo $item->getId(); ?>]" value="1" <?php echo ($itemOK ? '' : ' disabled') . ($item->getShipped() ? ' checked' : '') ?>>
-                            </div>
-                        </div>
-                    </li>
-                    </label>
-                <?php endforeach; ?>
-                </ul>
-                
-                <?php echo $this->formHidden($form->get('id')); ?>
-                <?php echo $this->formHidden($form->get('csrf')); ?>
-                <div class="text-right">
-                    <button type="button" class="btn btn-lg btn-default select-all-button">Select all</button>
-                    <?php echo $this->formSubmit($form->get('submit')->setAttribute('disabled', 'disabled')); ?>
-                </div>
-                <?php echo $this->form()->closeTag(); ?>
+                    <ul class="list-unstyled">
+                        <?php
+                        foreach ($unshippedItems as $item):
+                            echo $this->partial('partial/package-detail-item.phtml', ['item' => $item]);
+                        endforeach;
+                        ?>
+                    </ul>
+
+                    <?php echo $this->formHidden($form->get('id')); ?>
+                    <?php echo $this->formHidden($form->get('csrf')); ?>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-lg btn-default select-all-button">Select all</button>
+                        <?php echo $this->formSubmit($form->get('submit')->setAttribute('disabled', 'disabled')); ?>
+                    </div>
+
+                    <?php echo $this->form()->closeTag(); ?>
+                <?php endif; ?>
             </div>
         </div>
+
+        <?php if(!empty($shippedItems)): ?>
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Shipped items</h3></div>
+            <div class="panel-body">
+                <?php echo $this->form()->openTag($form); ?>
+
+                <ul class="list-unstyled">
+                    <?php
+                    foreach ($shippedItems as $item):
+                        echo $this->partial('partial/package-detail-item.phtml', ['item' => $item]);
+                    endforeach;
+                    ?>
+                </ul>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <div class="panel panel-default">
             <div class="panel-heading"><h3 class="panel-title">Order</h3></div>

@@ -112,7 +112,7 @@ return array(
                     'package' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route'    => '/package[/:action][/:id]',
+                            'route'    => '/package[/:action][/:id][/:item-id]',
                             'defaults' => array(
                                 'controller' => 'OnsiteReg\Controller\Package',
                                 'action'     => 'index',

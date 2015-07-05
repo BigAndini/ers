@@ -70,10 +70,8 @@ jQuery(function($) {
     var $itemCheckboxes = $('.item-ship-checkbox').not(':disabled');
     
     $selectAllButton.click(function() {
-        if($selectAllButton.text() === 'Select all')
-            $itemCheckboxes.prop('checked', true).change();
-        else
-            $itemCheckboxes.prop('checked', false).change();
+        var newState = ($selectAllButton.text() === 'Select all');
+        $itemCheckboxes.prop('checked', newState).change();
     });
     
     $itemCheckboxes.change(function(){
