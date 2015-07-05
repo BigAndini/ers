@@ -51,6 +51,10 @@ class UserController extends AbstractActionController {
             if ($form->isValid()) {
                 $user->populate($form->getData());
                 
+                if($user->getEmail() == '') {
+                    $user->setEmail(NULL);
+                }
+                
                 $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
@@ -113,7 +117,11 @@ class UserController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $em->persist($form->getData());
+                $user = $form->getData();
+                if($user->getEmail() == '') {
+                    $user->setEmail(NULL);
+                }
+                $em->persist($user);
                 $em->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);

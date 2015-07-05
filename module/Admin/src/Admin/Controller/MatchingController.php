@@ -335,6 +335,10 @@ class MatchingController extends AbstractActionController {
                 $match->setStatus('disabled');
                 $em->persist($match);
                 
+                $bs = $match->getBankStatement();
+                $bs->setStatus('new');
+                $em->persist($bs);
+                
                 $order = $match->getOrder();
                 $order->setPaymentStatus('unpaid');
                 $em->persist($order);
