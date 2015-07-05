@@ -163,6 +163,11 @@ class Item implements InputFilterAwareInterface
      * @ORM\JoinColumn(name="Code_id", referencedColumnName="id")
      */
     protected $code;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $shipped = false;
 
     public function __construct()
     {
@@ -830,6 +835,29 @@ class Item implements InputFilterAwareInterface
     }
 
     /**
+     * Set the value of shipped.
+     *
+     * @param boolean $shipped
+     * @return \ersEntity\Entity\Item
+     */
+    public function setShipped($shipped)
+    {
+        $this->shipped = $shipped;
+        
+        return $this;
+    }
+
+    /**
+     * Get the value of shipped.
+     *
+     * @return boolean
+     */
+    public function getShipped()
+    {
+        return $this->shipped;
+    }
+
+    /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
      * 
      * @param \Zend\InputFilter\InputFilterInterface $inputFilter
@@ -970,7 +998,7 @@ class Item implements InputFilterAwareInterface
             'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 
             'amount', 'info', 'status', 'personalized', 'itemVariants', 
             'itemPackageRelatedBySurItemIds', 'itemPackageRelatedBySubItemIds',
-            'agegroup', 'updated', 'created');
+            'agegroup', 'shipped', 'updated', 'created');
         $relationFields = array('product', 'package', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -1021,6 +1049,7 @@ class Item implements InputFilterAwareInterface
             'itemPackageRelatedBySurItemIds',
             'itemPackageRelatedBySubItemIds',
             'agegroup',
+            'shipped',
             'updated', 
             'created'
             );

@@ -84,7 +84,8 @@ $itemStatusMessages = [
                                 <?php endif; ?>
                             </div>
                             <div class="col-xs-1">
-                                <input type="checkbox" class="checkbox item-ship-checkbox" name="item[]" value="<?php echo $item->getId(); ?>" <?php echo ($itemOK ? '' : ' disabled') ?>>
+                                <input type="hidden" name="old_states[<?php echo $item->getId(); ?>]" value="<?php echo (int)$item->getShipped(); ?>">
+                                <input type="checkbox" class="checkbox item-ship-checkbox" name="new_states[<?php echo $item->getId(); ?>]" value="1" <?php echo ($itemOK ? '' : ' disabled') . ($item->getShipped() ? ' checked' : '') ?>>
                             </div>
                         </div>
                     </li>

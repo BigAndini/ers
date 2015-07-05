@@ -14,7 +14,7 @@ use OnsiteReg\Form;
 
 class PackageController extends AbstractActionController {
     public function indexAction() {
-        return $this->redirect()->toRoute('onsite/search');
+        return $this->redirect()->toRoute('onsite');
     }
     
     public function detailAction() {
