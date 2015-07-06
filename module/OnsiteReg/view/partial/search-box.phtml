@@ -1,0 +1,24 @@
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('onsite/search'));
+$form->prepare();
+?>
+
+<h2>
+    <span class="green">ERS Onsite Registration</span>
+</h2>
+
+<?php echo $this->form()->openTag($form); ?>
+<div class="row">
+    <div class="col-md-9 col-sm-8 input-group-lg">
+        <?php
+        //echo $this->formHidden($form->get('csrf'));
+        echo $this->formRow($form->get('q'));
+        ?>
+    </div>
+    <div class="col-md-3 col-sm-4">
+        <input class="btn btn-lg btn-success" value="Search" type="submit">
+        <a class="btn btn-lg btn-warning" href="market://search?q=i-nigma">QR-Code</a>
+    </div>
+</div>
+<?php echo $this->form()->closeTag(); ?>

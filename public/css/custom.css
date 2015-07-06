@@ -537,3 +537,7 @@ a:hover, a:focus {
     overflow: auto;
     height: 500px;
 }
+
+.block {
+    display:block;
+}

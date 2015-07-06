@@ -11,7 +11,9 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'OnsiteReg\Controller\Index'       => 'OnsiteReg\Controller\IndexController',
-            'OnsiteReg\Controller\Redirect'       => 'OnsiteReg\Controller\RedirectController',
+            'OnsiteReg\Controller\Search'      => 'OnsiteReg\Controller\SearchController',
+            'OnsiteReg\Controller\Package'      => 'OnsiteReg\Controller\PackageController',
+            'OnsiteReg\Controller\Redirect'    => 'OnsiteReg\Controller\RedirectController',
         ),
     ),
     'navigation' => array(
@@ -89,7 +91,6 @@ return array(
             'onsite' => array(
                 'type' => 'segment',
                 'options' => array(
-                    #'route' => '/admin[/]',
                     'route' => '/onsite',
                     'defaults' => array(
                         'controller' => 'OnsiteReg\Controller\Index',
@@ -98,33 +99,39 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
-                    'test' => array(
+                    'search' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route'    => '/test[/:action][/:id]',
-                            'constraints' => array(
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id'     => '[0-9]+',
-                            ),
+                            'route'    => '/search',
                             'defaults' => array(
-                                'controller' => 'OnsiteReg\Controller\Test',
+                                'controller' => 'OnsiteReg\Controller\Search',
                                 'action'     => 'index',
                             ),
                         ),
                     ),
-                    'redirect' => array(
+                    'package' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route'    => '/redirect[/:action][/:id]',
-                            'constraints' => array(
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id'     => '[A-Z0-9]+',
-                            ),
+                            'route'    => '/package[/:action][/:id][/:item-id]',
                             'defaults' => array(
-                                'controller' => 'OnsiteReg\Controller\Redirect',
+                                'controller' => 'OnsiteReg\Controller\Package',
                                 'action'     => 'index',
                             ),
                         ),
+                    ),
+                ),
+            ),
+            
+            'redirect' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/redirect[/:code]',
+                    'constraints' => array(
+                        'code'     => '[A-Z0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'OnsiteReg\Controller\Redirect',
+                        'action'     => 'index',
                     ),
                 ),
             ),
