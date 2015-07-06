@@ -1,0 +1,14 @@
+<?php
+
+$title = 'Change owner for item '.$item->getName();
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Do you really want to change the owner for the item <?php echo $item->getName(); ?>?</p>
+<?php
+$url = $this->url('admin/item', array(
+    'action' => 'change-owner',
+    'id'     => $item->getId(),
+));
+?>
