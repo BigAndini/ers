@@ -10,6 +10,7 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Session\Container;
 use ersEntity\Entity;
 use Admin\Form;
 use Admin\Service;
@@ -30,6 +31,52 @@ class UserController extends AbstractActionController {
          ));
     }
 
+    private function getCountryOptions($countryId = null) {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $qb1 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
+        $qb1->where($qb1->expr()->isNotNull('n.ordering'));
+        $qb1->orderBy('n.ordering', 'ASC');
+        $result1 = $qb1->getQuery()->getResult();
+        
+        $qb2 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
+        $qb2->where($qb2->expr()->isNull('n.ordering'));
+        $qb2->orderBy('n.name', 'ASC');
+        $result2 = $qb2->getQuery()->getResult();
+
+        $countries = array_merge($result1, $result2);
+
+        $cartContainer = new Container('cart');
+        $countryContainerId = $cartContainer->Country_id;
+        
+        $options = array();
+        $selected = false;
+        if($countryId == null && $countryContainerId == null) {
+            $selected = true;
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'no Country',
+            'selected' => $selected,
+        );
+        foreach($countries as $country) {
+            $selected = false;
+            if($countryContainerId == $country->getId()) {
+                $selected = true;
+            }
+            if($countryId == $country->getId()) {
+                $selected = true;
+            }
+            $options[] = array(
+                'value' => $country->getId(),
+                'label' => $country->getName(),
+                'selected' => $selected,
+            );
+        }
+        return $options;
+    }
+    
     public function addAction()
     {
         $forrest = new Service\BreadcrumbFactory();
@@ -40,19 +87,28 @@ class UserController extends AbstractActionController {
         
         $form = new Form\User();
         $form->get('submit')->setValue('Add');
+        $form->get('Country_id')->setValueOptions($this->getCountryOptions());
         
         $request = $this->getRequest();
         if ($request->isPost()) {
             $user = new Entity\User();
             
-            $form->setInputFilter($user->getInputFilter());
+            #$form->setInputFilter($user->getInputFilter());
+            $inputFilter = $this->getServiceLocator()
+                    ->get('Admin\InputFilter\User');
+            $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
                 $user->populate($form->getData());
                 
                 if($user->getEmail() == '') {
-                    $user->setEmail(NULL);
+                    $user->setEmail(null);
+                }
+                
+                if($user->getCountryId() == 0) {
+                    $user->setCountry(null);
+                    $user->setCountryId(null);
                 }
                 
                 $em = $this->getServiceLocator()
@@ -94,23 +150,10 @@ class UserController extends AbstractActionController {
         $form = new Form\User();
         $form->bind($user);
         $form->get('submit')->setAttribute('value', 'Edit');
+        $form->get('Country_id')->setValueOptions($this->getCountryOptions());
 
-        /*$roles = $em->getRepository("ersEntity\Entity\Role")->findAll();
-        $userRoles = $user->getRoles();
-        $roleValue = array();
-        foreach($roles as $role) {
-            $roleValue[] = array(
-                'value' => $role->getId(),
-                'label' => $role->getRoleId(),
-                'selected' => is_numeric($userRoles->indexOf($role)) ? true : false,
-                'disabled' => $role->getActive() ? true : false,
-            );
-        }
-        $form->get('roles')->setValueOptions($roleValue);*/
-        
         $request = $this->getRequest();
         if ($request->isPost()) {
-            #$inputFilter = new InputFilter\User();
             $inputFilter = $this->getServiceLocator()
                     ->get('Admin\InputFilter\User');
             $form->setInputFilter($inputFilter->getInputFilter());
@@ -120,6 +163,10 @@ class UserController extends AbstractActionController {
                 $user = $form->getData();
                 if($user->getEmail() == '') {
                     $user->setEmail(NULL);
+                }
+                if($user->getCountryId() == 0) {
+                    $user->setCountry(null);
+                    $user->setCountryId(null);
                 }
                 $em->persist($user);
                 $em->flush();

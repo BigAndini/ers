@@ -90,24 +90,23 @@ class User extends Form
                 ),
             ), 
         ));
-        #$this->get('birthday')->setFormat('Y-m-d');
         $this->get('birthday')->setFormat('d.m.Y');
  
-        /*$this->add(array( 
-            'name' => 'roles', 
-            'type' => 'Zend\Form\Element\MultiCheckbox', 
+        $this->add(array(
+            'name' => 'Country_id',
+            'type'  => 'Zend\Form\Element\Select',
             'attributes' => array(
-                #'required' => 'required',
+                'required' => 'required',
                 'class' => 'form-control form-element',
             ),
-            'options' => array( 
-                'label' => 'Roles', 
+            'options' => array(
+                'label' => 'Where are you from?',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
-            ), 
-        ));*/
- 
+            ),
+        ));
+        
         $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 

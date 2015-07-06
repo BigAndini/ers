@@ -385,4 +385,25 @@ class ItemController extends AbstractActionController {
             'breadcrumb' => $forrest->get('item'),
         ));
     }
+    
+    public function changeOwnerAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $item = $em->getRepository("ersEntity\Entity\Item")
+                ->findOneBy(array('id' => $id));
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('item')) {
+            $forrest->set('item', 'admin/order');
+        }
+        
+        return new ViewModel(array(
+            'item' => $item,
+            'breadcrumb' => $forrest->get('item'),
+        ));
+    }
 }
