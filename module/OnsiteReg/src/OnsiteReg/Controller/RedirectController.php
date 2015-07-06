@@ -9,18 +9,14 @@
 namespace OnsiteReg\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use OnsiteReg\Form;
-use ersEntity\Entity;
 
 class RedirectController extends AbstractActionController {
-    const DEFAULT_REDIRECT_TARGET = 'http://ejc2015.org/volunteer/';
     
     public function indexAction() {
         // if not logged in or no according rights redirect to default redirect target
         if(!$this->isAllowed('redirect', 'do')) {
             error_log('unauthorized access to redirect page');
-            return $this->redirect()->toUrl(self::DEFAULT_REDIRECT_TARGET);
+            return $this->redirect()->toRoute('login');
         }
         
         
