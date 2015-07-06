@@ -1,0 +1,184 @@
+<?php
+$title = "Package " . $package->getCode()->getValue();
+$this->headTitle($package->getParticipant()->getFullName());
+
+$form->setAttribute('action', $this->url('onsite/package', array('action' => 'ship', 'id' => $package->getId())));
+$form->prepare();
+
+echo $this->flashMessenger()
+        ->setMessageOpenFormat('<div%s><p>')
+        ->setMessageSeparatorString('</p><p>')
+        ->setMessageCloseString('</p></div>')
+        ->render('error', ['alert', 'alert-danger']);
+
+echo $this->flashMessenger()
+        ->setMessageOpenFormat('<div%s><p>')
+        ->setMessageSeparatorString('</p><p>')
+        ->setMessageCloseString('</p></div>')
+        ->render('success', ['alert', 'alert-success']);
+
+echo $this->partial('partial/search-box', array('form' => $searchForm));
+?>
+
+<h3>
+    <span class="green"><?php echo $this->escapeHtml($title); ?></span>
+</h3>
+
+<div class="row">
+    <div class="col-md-9 col-sm-8">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Person</h3></div>
+            <table class="table table-striped">
+                <tr>
+                    <th>Name:</th>
+                    <td><?php echo $this->escapeHtml($package->getParticipant()->getFullName()); ?></td>
+                </tr>
+                <tr>
+                    <th>Date of birth:</th>
+                    <td><?php echo ($package->getParticipant()->getBirthday() ? $package->getParticipant()->getBirthday()->format('d.m.Y') : '-'); ?></td>
+                </tr>
+                <tr>
+                    <th>Age:</th>
+                    <td><?php echo ($package->getParticipant()->getAge() === NULL ? '-' : $package->getParticipant()->getAge()); ?></td>
+                </tr>
+                <tr>
+                    <th>E-Mail:</th>
+                    <td><?php echo $this->escapeHtml($package->getParticipant()->getEmail() ?: '-'); ?></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Unshipped items</h3></div>
+            <div class="panel-body">
+                <?php if(empty($unshippedItems)): ?>
+                    <span class="gray">No unshipped items for this package.</span>
+                <?php else: ?>
+                    <?php echo $this->form()->openTag($form); ?>
+
+                    <ul class="list-unstyled">
+                        <?php
+                        foreach ($unshippedItems as $item):
+                            echo $this->partial('partial/package-detail-item.phtml', ['item' => $item]);
+                        endforeach;
+                        ?>
+                    </ul>
+
+                    <?php echo $this->formHidden($form->get('id')); ?>
+                    <?php echo $this->formHidden($form->get('csrf')); ?>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-lg btn-default select-all-button">Select all</button>
+                        <?php echo $this->formSubmit($form->get('submit')->setAttribute('disabled', 'disabled')); ?>
+                    </div>
+
+                    <?php echo $this->form()->closeTag(); ?>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <?php if(!empty($shippedItems)): ?>
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Shipped items</h3></div>
+            <div class="panel-body">
+                <?php echo $this->form()->openTag($form); ?>
+
+                <ul class="list-unstyled">
+                    <?php
+                    foreach ($shippedItems as $item):
+                        echo $this->partial('partial/package-detail-item.phtml', ['item' => $item]);
+                    endforeach;
+                    ?>
+                </ul>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">Order</h3></div>
+            <table class="table table-striped">
+                <tr>
+                    <th>Code:</th>
+                    <td><a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $order->getId())); ?>"><?php echo $this->escapeHtml($order->getCode()->getValue()); ?></a></td>
+                </tr>
+                <tr>
+                    <th>Order date:</th>
+                    <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
+                </tr>
+                <tr>
+                    <th>Payment status:</th>
+                    <td><?php echo $this->escapeHtml($order->getPaymentStatus()); ?></td>
+                </tr>
+                <tr colspan="2">
+                    <td>
+                        <p><b>Packages:</b></p>
+                        <ul class="list">
+                        <?php foreach($order->getPackages() as $other): ?>
+                            <li><p>
+                            <?php
+                            echo $this->escapeHtml($other->getParticipant()->getFullName()) . '&nbsp;(';
+                            if($other == $package)
+                                echo '<u title="current">';
+                            else
+                                echo '<a href="' . $this->url('onsite/package', array('action' => 'detail', 'id' => $other->getId())) . '">';
+                            echo $this->escapeHtml($other->getCode()->getValue());
+                            
+                            echo ($other == $package ? '</u>' : '</a>') . ')';
+                            ?>
+                            </p></li>
+                        <?php endforeach; ?>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="col-md-3 col-sm-4">
+        <div class="panel panel-<?php echo ($ticketAgegroup === NULL ? 'success' : /*($ticketAgegroup->getName() === 'U18' ?*/ 'warning' /*: 'danger')*/); ?>">
+            <div class="panel-heading"><h3 class="panel-title">Agegroup</h3></div>
+            <div class="panel-body">
+
+                <?php if ($ticketAgegroup !== NULL): ?>
+                    <p class="h3 text-warning"><i class="fa fa-warning"></i> <?php echo $this->escapeHtml($ticketAgegroup->getName()); ?></p>
+                    <?php
+                    switch ($ticketAgegroup->getName()):
+                        case 'U6':
+                            ?>
+                            <p>Check the disclaimer on the ticket and make sure the parent or chaperon is present.<br>
+                                Verify the age.</p>
+                            <?php
+                            break;
+                        case 'U16':
+                            ?>
+                            <p>Check the disclaimer on the ticket and make sure the parent or chaperon is present.</p>
+                            <?php
+                            break;
+                        case 'U18':
+                            ?>
+                            <p>Check the disclaimer on the ticket.</p>
+                            <?php
+                            break;
+                        default:
+                            ?>
+                            <p>Unknown.</p>
+                    <?php endswitch; ?>
+                <?php else: ?>
+                    <p class="h3 text-success"><i class="fa fa-check"></i> adult</p>
+                    <p>This person is 18 years old or older.</p>
+                <?php endif; ?>
+
+            </div>
+        </div>
+
+        <div class="panel panel-<?php echo ($package->getStatus() === 'paid' ? 'success' : 'danger'); ?>">
+            <div class="panel-heading"><h3 class="panel-title">Payment status</h3></div>
+            <div class="panel-body">
+                <p class="text-<?php echo ($package->getStatus() === 'paid' ? 'success' : 'danger'); ?> h3">
+                    <i class="fa fa-<?php echo ($package->getStatus() === 'paid' ? 'check' : 'warning'); ?>"></i>
+                    <?php echo $this->escapeHtml($package->getStatus() ?: 'unknown'); ?></p>
+            </div>
+        </div>
+    </div>
+</div>

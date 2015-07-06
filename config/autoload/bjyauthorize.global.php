@@ -165,8 +165,10 @@ return [
                 ['controller' => 'PreReg\Controller\Profile',                                 'roles' => ['user']],
                 
                 /* Onsite */
-                ['controller' => 'OnsiteReg\Controller\Index',                'roles' => ['supradm']],
-                ['controller' => 'OnsiteReg\Controller\Redirect',             'roles' => ['onsite', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Index',                'roles' => ['onsite', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Search',                'roles' => ['onsite', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Package',                'roles' => ['onsite', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Redirect',             'roles' => ['guest', 'onsite', 'admin', 'supradm']],
                 
                 /* Admin */
                 #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],

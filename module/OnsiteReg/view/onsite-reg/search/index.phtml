@@ -1,0 +1,60 @@
+<?php
+$displayLimit = 50;
+$resultsNum = count($results);
+
+$this->headTitle("Search");
+?>
+
+<?php echo $this->partial('partial/search-box'); ?>
+
+<?php if ($query !== NULL): ?>
+    <h4>Search results for "<?php echo $this->escapeHtml($query); ?>" (<?php echo ($resultsNum > $displayLimit ? $displayLimit . ' of ' . $resultsNum : $resultsNum); ?>)</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order code</th>
+                <th>Package code</th>
+                <th>Name</th>
+                <th>Date of birth</th>
+                <th>E-Mail</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            foreach(array_slice($results, 0, $displayLimit) as $package):
+                $packageStatus = $package->getStatus();
+            ?>
+            <tr>
+                <td><?php echo $this->escapeHtml($package->getOrder()->getCode()->getValue()); ?></td>
+                <td><?php echo $this->escapeHtml($package->getCode()->getValue()); ?></td>
+                <td><?php echo $this->escapeHtml($package->getParticipant()->getFullName()); ?></td>
+                <td>
+                    <?php
+                    $bd = $package->getParticipant()->getBirthday();
+                    echo ($bd ? $bd->format('d.m.Y') : '-');
+                    ?>
+                </td>
+                <td><?php echo $this->escapeHtml($package->getParticipant()->getEmail() ?: '-'); ?></td>
+                <td>
+                    <p class="h4 text-<?php echo ($packageStatus === 'paid' ? 'success' : 'warning'); ?>">
+                        <i class="fa fa-<?php echo ($packageStatus === 'paid' ? 'check' : 'warning'); ?>"></i>
+                        <?php echo $this->escapeHtml($packageStatus ?: 'unknown'); ?>
+                    </p>
+                </td>
+                <td><a class="btn btn-default" href="<?php echo $this->url('onsite/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Register</a></td>
+            </tr>
+            <?php endforeach;
+            if(empty($results)): ?>
+            <tr>
+                <td colspan="7" class="text-center gray">No packages found</td>
+            </tr>
+            <?php elseif($resultsNum > $displayLimit): ?>
+            <tr>
+                <td colspan="7" class="text-center gray h4"><?php echo ($resultsNum - $displayLimit); ?> more results. Please narrow down your search.</td>
+            </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+<?php endif; ?>

@@ -408,6 +408,10 @@ class User implements UserInterface, ProviderInterface
         return $this->surname;
     }
     
+    public function getFullName() {
+        return $this->getFirstname() . ' ' . $this->getSurname();
+    }
+    
     /**
      * Set the value of Country_id.
      *
@@ -568,6 +572,22 @@ class User implements UserInterface, ProviderInterface
     public function getBirthday()
     {
         return $this->birthday;
+    }
+    
+    /**
+     * Get the age of the user relative to a date, or null if no birthday is set.
+     * 
+     * @param \DateTime $now the date to use for the current date; default: now
+     * @return int|null
+     */
+    public function getAge(\DateTime $now = NULL)
+    {
+        if(!$now)
+            $now = new \DateTime();
+        if(!$this->birthday)
+            return null;
+        
+        return (int) $now->diff($this->birthday)->format('%y');
     }
     
     /**
