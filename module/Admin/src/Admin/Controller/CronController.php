@@ -636,4 +636,76 @@ class CronController extends AbstractActionController {
             $em->flush();
         }
     }
+    
+    public function emailStatusAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $users = $em->getRepository("ersEntity\Entity\User")
+                ->findAll();
+        
+        echo "checking ".count($users)." emails".PHP_EOL;
+        foreach($users as $user) {
+            if($user->getEmail() == '') {
+                continue;
+            }
+            
+            echo "checking email status for ".$user->getEmail()."... ";
+            $result = $this->validateEmail($user->getEmail());
+            if($result) {
+                echo "OK!".PHP_EOL;
+                $user->setEmailStatus('ok');
+            } else {
+                echo "failed!".PHP_EOL;
+                $user->setEmailStatus('fail');
+            }
+            $em->persist($user);
+            $em->flush();
+        }
+    }
+    
+    private function validateEmail($email){
+        list($name,$Domain) = split('@',$email);
+        $result=getmxrr($Domain,$POFFS);
+        if(!$result){
+            $POFFS[0]=$Domain;
+        }
+        $timeout=5;
+        $oldErrorLevel=error_reporting(!E_WARNING);
+        $result=false;
+        foreach($POFFS as $PO)
+        {
+            $sock = fsockopen($PO, 25, $errno, $errstr,  $timeout);
+            if($sock){
+                
+                fwrite($sock, "HELO inbaz.org\n");
+                $response = $this->getSockResponse($sock);
+                fwrite($sock, "MAIL FROM: <prereg@inbaz.org>\n");
+                $response = $this->getSockResponse($sock);
+                fwrite($sock, "RCPT TO: <".$email.">\n");
+                $response = $this->getSockResponse($sock);
+                list($code,$msg)=explode(' ',$response);
+                fwrite($sock, "RSET\n");
+                $response = $this->getSockResponse($sock);
+                fwrite($sock, "quit\n");
+                fclose($sock);
+                if ($code == '250') {
+                    $result= true;
+                    break;
+                }
+            }
+        }
+        error_reporting($oldErrorLevel);
+        return $result;
+    }
+    
+    private function getSockResponse($sock){
+        $response="";
+        while(substr($response,-2)!=="\r\n") {
+            $data=fread($sock,4096);
+            if($data=="")break;
+            $response .=$data;
+        }
+        return $response;
+    }
 }
