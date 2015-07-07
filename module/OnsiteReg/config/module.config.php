@@ -21,42 +21,16 @@ return array(
             'home' => array(
                 'label' => 'Home',
                 'route' => 'home',
-                'resource'  => 'controller/OnsiteReg\Controller\Index',
-            ),
-            'product' => array(
-                'label' => 'Products',
-                'route' => 'product',
-                'resource'  => 'controller/OnsiteReg\Controller\Product',
-            ),
-            'participant' => array(
-                'label' => 'My Persons',
-                'route' => 'participant',
-                'resource'  => 'controller/OnsiteReg\Controller\Participant',
-            ),
-            'order' => array(
-                'label' => 'My Shopping Cart',
-                'route' => 'order',
-                'resource'  => 'controller/OnsiteReg\Controller\Order',
+                'resource'  => 'controller/PreReg\Controller\Index',
             ),
         ),
         'onsite_top_nav' => array(
-            'order' => array(
-                'label' => 'My Shopping Cart',
-                'route' => 'order',
-                'resource'  => 'controller/OnsiteReg\Controller\Order',
-            ),
             'login' => array(
                 'label' => 'Login',
                 'route' => 'zfcuser/login',
                 #'action' => 'login',
                 'resource'  => 'controller/zfcuser:login',
             ),
-            /*'register' => array(
-                'label' => 'Register',
-                'route' => 'zfcuser/register',
-                #'action' => 'register',
-                'resource'  => 'controller/zfcuser:register',
-            ),*/
             'profile' => array(
                 'label' => 'My Profile',
                 'route' => 'profile',
@@ -82,7 +56,7 @@ return array(
                 'label' => 'Help',
                 'route' => 'info',
                 'action' => 'help',
-                'resource'  => 'controller/OnsiteReg\Controller\Info',
+                'resource'  => 'controller/PreReg\Controller\Info',
             ),
         ),
     ),
