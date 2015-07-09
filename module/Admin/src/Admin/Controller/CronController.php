@@ -141,6 +141,7 @@ class CronController extends AbstractActionController {
          * check status of unpaid orders
          */
         
+        #TODO: find order which contain items in status != paid and != cancelled and != refund
         $orders = $em->getRepository("ersEntity\Entity\Order")
                 ->findBy(array('payment_status' => 'unpaid'));
         foreach($orders as $order) {

@@ -297,4 +297,8 @@ class TestController extends AbstractActionController {
         
         return $viewModel;
     }
+    
+    public function colTestAction() {
+        return new ViewModel();
+    }
 }
