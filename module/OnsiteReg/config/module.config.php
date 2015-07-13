@@ -19,7 +19,7 @@ return array(
     'navigation' => array(
         'onsite_main_nav' => array(
             'home' => array(
-                'label' => 'Home',
+                'label' => 'Frontend',
                 'route' => 'home',
                 'resource'  => 'controller/PreReg\Controller\Product',
             ),

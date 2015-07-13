@@ -92,5 +92,6 @@ jQuery(function($) {
     if($itemCheckboxes.length === 0)
         $selectAllButton.prop('disabled', true);
     
-    $('.onsite-search-box').focus();
+    if(!$('.package-detail-view').length)
+        $('.onsite-search-box').focus();
 });

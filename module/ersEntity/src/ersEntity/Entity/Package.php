@@ -539,6 +539,36 @@ class Package implements InputFilterAwareInterface
             return 'undefined';
         }
     }
+    
+    /**
+     * Equivalent to getStatus(), but also considers the shipped status of the item.
+     * Introduced for display in Onsite, implemented as a separate method so it does not break anything else status-related.
+     * 
+     * @return string
+     */
+    public function getStatusWithShipped() {
+        $status = array();
+        foreach($this->getItems() as $item) {
+            $item_status = $item->getStatus();
+            if($item->getShipped()) {
+                $item_status = 'shipped';
+            }
+            elseif($item_status == 'zero_ok') {
+                $item_status = 'paid';
+            }
+            
+            if(isset($status[$item_status])) {
+                $status[$item_status]++;
+            } else {
+                $status[$item_status] = 1;
+            }
+        }
+        if(count($status) == 1) {
+            return key($status);
+        } else {
+            return 'undefined';
+        }
+    }
 
     /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
