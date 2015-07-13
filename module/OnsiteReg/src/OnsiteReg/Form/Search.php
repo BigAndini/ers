@@ -17,14 +17,13 @@ class Search extends Form
     {
         parent::__construct('Search');
         $this->setAttribute('method', 'get');
-        $this->setAttribute('class', 'form-inline form-group');
         
         $this->add(array(
             'name' => 'q',
             'attributes' => array(
                 'required' => 'required',
                 'type'  => 'search',
-                'class' => 'form-control form-element onsite-search-box',
+                'class' => 'form-control onsite-search-box',
                 'placeholder' => 'Code / Name / Date of birth / E-Mail / ID ...',
             ),
             'options' => array(

@@ -21,7 +21,7 @@ return array(
             'home' => array(
                 'label' => 'Home',
                 'route' => 'home',
-                'resource'  => 'controller/PreReg\Controller\Index',
+                'resource'  => 'controller/PreReg\Controller\Product',
             ),
         ),
         'onsite_top_nav' => array(
@@ -35,7 +35,7 @@ return array(
                 'label' => 'My Profile',
                 'route' => 'profile',
                 'action' => '',
-                'resource'  => 'controller/OnsiteReg\Controller\Profile',
+                'resource'  => 'controller/PreReg\Controller\Profile',
             ),
             'logout' => array(
                 'label' => 'Logout',
@@ -48,15 +48,10 @@ return array(
                 'route' => 'admin',
                 'resource'  => 'controller/Admin\Controller\Index',
             ),
-            'help' => array(
-                /*'label' => '<span class="fa-stack fa-lg">
-                        <i class="fa fa-circle fa-stack-2x green"></i>
-                        <i class="fa fa-question fa-stack-1x fa-inverse"></i>
-                    </span>',*/
-                'label' => 'Help',
-                'route' => 'info',
-                'action' => 'help',
-                'resource'  => 'controller/PreReg\Controller\Info',
+            'onsite' => array(
+                'label' => 'Onsite',
+                'route' => 'onsite',
+                'resource'  => 'controller/OnsiteReg\Controller\Index',
             ),
         ),
     ),
