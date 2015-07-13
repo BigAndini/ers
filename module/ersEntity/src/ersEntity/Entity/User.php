@@ -315,7 +315,11 @@ class User implements UserInterface, ProviderInterface
      */
     public function setEmail($email)
     {
-        $this->email = $email;
+        if($email == '') {
+            $this->email = null;
+        } else {
+            $this->email = $email;
+        }
     }
     
     /**

@@ -52,11 +52,11 @@ return array(
             ),*/
         ),
         'top_nav' => array(
-            'order' => array(
+            /*'order' => array(
                 'label' => 'My Shopping Cart',
                 'route' => 'order',
                 'resource'  => 'controller/PreReg\Controller\Order',
-            ),
+            ),*/
             'login' => array(
                 'label' => 'Login',
                 'route' => 'zfcuser/login',

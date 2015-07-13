@@ -47,21 +47,32 @@
         </div>
         <?php endif; ?>
         <nav class="navbar navbar-default navbar-inverse" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar">foo</span>
-                    <span class="icon-bar">bar</span>
-                    <span class="icon-bar">baz</span>
-                </button>
-                <a class="navbar-brand" href="<?php echo $this->url('onsite') ?>"><?php echo 'ERS Onsite Reg'; ?></a>
-            </div>
-            <?php echo $this->navigation()
-                ->menu('onsite_top_nav')
-                ->setUlClass('nav nav-pills nav-top-right'); ?>
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="<?php echo $this->url('onsite') ?>"><?php echo 'ERS Onsite Reg'; ?></a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <?php 
+                    $partial = array('partial/onsite-main-nav.phtml', 'onsite_main_nav');
+                    $this->navigation()->menu('onsite_main_nav')->setPartial($partial);
+                    echo $this->navigation()->menu('onsite_main_nav')->render() 
+                    ?>
 
-            <?php $partial = array('partial/onsite-main-nav.phtml', 'onsite_main_nav') ?>
-            <?php $this->navigation()->menu('onsite_main_nav')->setPartial($partial) ?>
-            <?php echo $this->navigation()->menu('onsite_main_nav')->render() ?>
+                    <?php 
+                    echo $this->navigation()
+                        ->menu('onsite_top_nav')
+                        ->setPartial(null)
+                        ->setUlClass('nav navbar-nav navbar-right'); 
+                    ?>
+                </div><!--/.nav-collapse -->
+            </div>
+            
+            
         </nav>
         <div class="container">
             <?php echo $this->content; ?>

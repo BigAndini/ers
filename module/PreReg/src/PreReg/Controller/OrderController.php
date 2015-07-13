@@ -298,7 +298,7 @@ class OrderController extends AbstractActionController {
         return new ViewModel(array(
             'form' => $form,
             'order' => $cartContainer->order,
-            'paymenttypes' => $pts,
+            'paymenttypes' => $paymenttypes,
         ));
     }
     

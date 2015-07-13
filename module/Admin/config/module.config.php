@@ -296,6 +296,15 @@ return array(
                         )
                     )
                 ),
+                'email-status' => array(
+                    'options' => array(
+                        'route'    => 'email-status',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'email-status'
+                        )
+                    )
+                ),
                 'gen-user-list' => array(
                     'options' => array(
                         'route'    => 'gen-user-list',
