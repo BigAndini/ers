@@ -319,7 +319,12 @@ class Module
                     $inputFilter = new InputFilter\Register();
                     $inputFilter->setServiceLocator($sm);
                     return $inputFilter;
-                }
+                },
+                'PreReg\InputFilter\PaymentType' => function($sm) {
+                    $inputFilter = new InputFilter\PaymentType();
+                    $inputFilter->setServiceLocator($sm);
+                    return $inputFilter;
+                },
             ),
         );
     }

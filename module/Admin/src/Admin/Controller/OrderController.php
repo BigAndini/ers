@@ -36,142 +36,134 @@ class OrderController extends AbstractActionController {
         
         $form = new Form\SearchOrder();
         
-        $result = array();
-        
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $inputFilter = new InputFilter\SearchOrder();
-            $form->setInputFilter($inputFilter->getInputFilter());
-            $form->setData($request->getPost());
+        $result = array();         
+        /*
+         * - use "" (quotes) to search exakt strings with spaces
+         * - use - (minus) to exclude a string
+         * - use space as and operator
+         * - use (a,b,c) as or operator
+         */
+        $searchText = $this->params()->fromQuery('q');
+        if(!empty($searchText)) {
 
-            if ($form->isValid()) {
-                $data = $form->getData();
-                
-                /*
-                 * - use "" (quotes) to search exakt strings with spaces
-                 * - use - (minus) to exclude a string
-                 * - use space as and operator
-                 * - use (a,b,c) as or operator
-                 */
-                $searchText = $data['q'];
-                
-                $matches = array();
-                preg_match('/"[^"]+"/', $searchText, $matches);
-                $searchElements = preg_replace('/"/', '', $matches);
-                
-                $logger->info('found matches:');
-                $logger->info($matches);
-                $searchArray = split(' ', $searchText);
-                $exclude = false;
-                
-                $excludeElements = array();
-                foreach($searchArray as $element) {
-                    if(preg_match('/^"/', $element)) {
-                        $exclude = true;
-                    }
-                    if(!$exclude) {
-                        if(preg_match('/^-/', $element)) {
-                            $excludeElements[] = preg_replace('/^-/','',$element);
-                        } else {
-                            $searchElements[] = $element;
-                        }
-                    }
-                    if(preg_match('/"$/', $element)) {
-                        $exclude = false;
-                    }
+            $form->get('q')->setValue($searchText);
+
+            $matches = array();
+            preg_match('/"[^"]+"/', $searchText, $matches);
+            $searchElements = preg_replace('/"/', '', $matches);
+
+            $logger->info('found matches:');
+            $logger->info($matches);
+            $searchArray = split(' ', $searchText);
+            $exclude = false;
+
+            $excludeElements = array();
+            foreach($searchArray as $element) {
+                if(preg_match('/^"/', $element)) {
+                    $exclude = true;
                 }
-                
-                $logger->info('search elements:');
-                $logger->info($searchElements);
-                
-                $logger->info('exclude elements:');
-                $logger->info($excludeElements);
-                
-                $searchString = array(
-                    
-                );
-                
-                #error_log('searchText: '.$searchText);
-                
-                $em = $this->getServiceLocator()
-                    ->get('Doctrine\ORM\EntityManager');
-                
-                $result = array();
-                
-                /*
-                 * search code
-                 */
-                $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('o');
-                $qb->join('o.code', 'oc');
-                $qb->join('o.packages', 'p');
-                $qb->join('p.code', 'pc');
-                $i = 0;
-                foreach($searchElements as $element) {
-                    if($i == 0) {
-                        $qb->where('oc.value LIKE :param'.$i);
+                if(!$exclude) {
+                    if(preg_match('/^-/', $element)) {
+                        $excludeElements[] = preg_replace('/^-/','',$element);
                     } else {
-                        $qb->orWhere('oc.value LIKE :param'.$i);
+                        $searchElements[] = $element;
                     }
-                    error_log('element: '.$element);
-                    $qb->setParameter('param'.$i, $element);
-                    $i++;
-                    
-                    $code = new Entity\Code();
-                    $code->setValue($element);
-                    if($code->checkCode()) {
-                        $qb->orWhere('oc.value LIKE :param'.$i);
-                        $qb->orWhere('pc.value LIKE :param'.$i);
-                        $qb->setParameter('param'.$i, $code->getValue());
-                        $i++;
-                    }
-                    
                 }
-                
-                $check_first = $i;
-                foreach($excludeElements as $elemnt) {
-                    if($i == $check_first) {
-                        $qb->where('oc.value NOT LIKE :param'.$i);
-                    } else {
-                        $qb->orWhere('oc.value NOT LIKE :param'.$i);
-                    }
-                    $qb->orWhere('pc.value NOT LIKE :param'.$i);
-                    $qb->setParameter('param'.$i, $element);
-                    $i++;
+                if(preg_match('/"$/', $element)) {
+                    $exclude = false;
                 }
-                
-                $result = array_merge($result, $qb->getQuery()->getResult());
-                
-                /*
-                 * search firstname, surname, email, birthdate
-                 * of buyer and participant
-                 */
-                $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('o');
-                $qb->join('o.buyer', 'b');
-                $qb->join('o.packages', 'p');
-                $qb->join('p.participant', 'u');
-                $i = 0;
-                foreach($searchElements as $element) {
-                    $b_expr = $qb->expr()->lower($qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname')));
-                    $u_expr = $qb->expr()->lower($qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.surname')));
-                    $be_expr = $qb->expr()->lower('b.email');
-                    $ue_expr = $qb->expr()->lower('u.email');
-                    if($i == 0) {
-                        $qb->where($qb->expr()->like($b_expr, ':param'.$i));
-                    } else {
-                        $qb->orWhere($qb->expr()->like($b_expr, ':param'.$i));
-                    }
-                    $qb->orWhere($qb->expr()->like($u_expr, ':param'.$i));
-                    $qb->orWhere($qb->expr()->like($be_expr, ':param'.$i));
-                    $qb->orWhere($qb->expr()->like($ue_expr, ':param'.$i));
-                    $qb->setParameter('param'.$i, '%'.strtolower($element).'%');
-                    $i++;
-                }
-                #error_log($qb->getQuery()->getSql());
-                $result = array_merge($result, $qb->getQuery()->getResult());
-                
-            } else {
-                $logger->warn($form->getMessages());
             }
+
+            $logger->info('search elements:');
+            $logger->info($searchElements);
+
+            $logger->info('exclude elements:');
+            $logger->info($excludeElements);
+
+            $searchString = array(
+
+            );
+
+            #error_log('searchText: '.$searchText);
+
+            $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+
+            $result = array();
+
+            /*
+             * search code
+             */
+            $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('o');
+            $qb->join('o.code', 'oc');
+            $qb->join('o.packages', 'p');
+            $qb->join('p.code', 'pc');
+            $i = 0;
+            foreach($searchElements as $element) {
+                if($i == 0) {
+                    $qb->where('oc.value LIKE :param'.$i);
+                } else {
+                    $qb->orWhere('oc.value LIKE :param'.$i);
+                }
+                error_log('element: '.$element);
+                $qb->setParameter('param'.$i, $element);
+                $i++;
+
+                $code = new Entity\Code();
+                $code->setValue($element);
+                if($code->checkCode()) {
+                    $qb->orWhere('oc.value LIKE :param'.$i);
+                    $qb->orWhere('pc.value LIKE :param'.$i);
+                    $qb->setParameter('param'.$i, $code->getValue());
+                    $i++;
+                }
+
+            }
+
+            $check_first = $i;
+            foreach($excludeElements as $elemnt) {
+                if($i == $check_first) {
+                    $qb->where('oc.value NOT LIKE :param'.$i);
+                } else {
+                    $qb->orWhere('oc.value NOT LIKE :param'.$i);
+                }
+                $qb->orWhere('pc.value NOT LIKE :param'.$i);
+                $qb->setParameter('param'.$i, $element);
+                $i++;
+            }
+
+            $result = array_merge($result, $qb->getQuery()->getResult());
+
+            /*
+             * search firstname, surname, email, birthdate
+             * of buyer and participant
+             */
+            $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('o');
+            $qb->join('o.buyer', 'b');
+            $qb->join('o.packages', 'p');
+            $qb->join('p.participant', 'u');
+            $i = 0;
+            foreach($searchElements as $element) {
+                $b_expr = $qb->expr()->lower($qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname')));
+                $u_expr = $qb->expr()->lower($qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.surname')));
+                $be_expr = $qb->expr()->lower('b.email');
+                $ue_expr = $qb->expr()->lower('u.email');
+                if($i == 0) {
+                    $qb->where($qb->expr()->like($b_expr, ':param'.$i));
+                } else {
+                    $qb->orWhere($qb->expr()->like($b_expr, ':param'.$i));
+                }
+                $qb->orWhere($qb->expr()->like($u_expr, ':param'.$i));
+                $qb->orWhere($qb->expr()->like($be_expr, ':param'.$i));
+                $qb->orWhere($qb->expr()->like($ue_expr, ':param'.$i));
+                $qb->setParameter('param'.$i, '%'.strtolower($element).'%');
+                $i++;
+            }
+            #error_log($qb->getQuery()->getSql());
+            $result = array_merge($result, $qb->getQuery()->getResult());
+
+        } else {
+            $logger->warn($form->getMessages());
         }
         
         return new ViewModel(array(
@@ -429,6 +421,247 @@ class OrderController extends AbstractActionController {
         }
         
         return new ViewModel(array(
+            'order' => $order,
+            'breadcrumb' => $forrest->get('order'),
+        ));
+    }
+    
+    public function sendPaymentReminderAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            $logger->info('there is no id');
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('id' => $id));
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('order')) {
+            $forrest->set('order', 'admin/order');
+        }
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $ret = $request->getPost('del', 'No');
+
+            if ($ret == 'Yes') {
+                $id = (int) $request->getPost('id');
+                
+                $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $id));
+                
+                # prepare email (participant, buyer)
+                $emailService = new ersService\EmailService();
+                $emailService->setFrom('prereg@eja.net');
+
+                $buyer = $order->getBuyer();
+                $emailService->addTo($buyer);
+
+                $bcc = new Entity\User();
+                $bcc->setEmail('prereg@eja.net');
+                $emailService->addBcc($bcc);
+
+                $subject = "[EJC 2015] Payment reminder for your order: ".$order->getCode()->getValue();
+                $emailService->setSubject($subject);
+
+                $viewModel = new ViewModel(array(
+                    'order' => $order,
+                ));
+                $viewModel->setTemplate('email/payment-reminder.phtml');
+                $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+                $html = $viewRender->render($viewModel);
+
+                $emailService->setHtmlMessage($html);
+
+                $emailService->send();
+                
+                $breadcrumb = $forrest->get('order');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            }
+        }
+        
+        return new ViewModel(array(
+            'order' => $order,
+            'breadcrumb' => $forrest->get('order'),
+        ));
+    }
+    
+    public function changeBuyerAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ersEntity\Entity\Order")
+                ->findOneBy(array('id' => $id));
+        
+        $form = new Form\SearchUser();
+        
+        $results = [];
+        
+        $q = trim($this->params()->fromQuery('q'));
+
+        if (!empty($q)) {
+            $form->get('q')->setValue($q);
+
+            $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+            $qb = $em->createQueryBuilder()
+                    ->select('u')
+                    ->from('ersEntity\Entity\User', 'u')
+                    ->orderBy('u.firstname')
+                    ->where('1=1');
+            
+            /*$qb = $em->createQueryBuilder()
+                    ->select('p')
+                    ->from('ersEntity\Entity\Package', 'p')
+                    ->join('p.participant', 'u')
+                    ->join('p.code', 'pcode')
+                    ->join('p.order', 'o')
+                    ->join('o.code', 'ocode')
+                    ->join('o.buyer', 'b')
+                    ->orderBy('u.firstname')
+                    ->where('1=1');*/
+
+            if (preg_match('~^\d+$~', $q)) {
+                // if the entire query consists of nothing but a number, treat it as a user ID
+                $qb->andWhere('u.id = :id');
+                $qb->setParameter(':id', (int) $q);
+            } else {
+                $exprUName = $qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.surname'));
+                //$exprBName = $qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname'));
+
+                $words = preg_split('~\s+~', $q);
+                $i = 0;
+                foreach ($words as $word) {
+                    try {
+                        $wordAsDate = new \DateTime($word);
+                    } catch (\Exception $ex) {
+                        $wordAsDate = NULL;
+                    }
+
+                    $param = ':p' . $i;
+                    $paramDate = ':pd' . $i;
+                    $qb->andWhere(
+                            $qb->expr()->orX(
+                                    $qb->expr()->like($exprUName, $param), //
+                                    $qb->expr()->like('u.email', $param), //
+                                    //$qb->expr()->like($exprBName, $param),
+                                    #$qb->expr()->like('pcode.value', $param), //
+                                    #$qb->expr()->like('ocode.value', $param), //
+                                    ($wordAsDate ? $qb->expr()->eq('u.birthday', $paramDate) : '1=0')
+                            )
+                    );
+
+                    $qb->setParameter($param, '%' . $word . '%');
+                    if($wordAsDate)
+                        $qb->setParameter($paramDate, $wordAsDate);
+
+                    $i++;
+                }
+            }
+
+            $results = $qb->getQuery()->getResult();
+        }
+        
+        $forrest = new Service\BreadcrumbFactory();
+        $query = array('q' => $q);
+        $forrest->set('order', 'admin/order', 
+                array(
+                    'action' => 'change-buyer',
+                    'id' => $order->getId()
+                ), 
+                array(
+                    'query' => $query,
+                    #'fragment' => $fragment,
+                )
+            );
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'order' => $order,
+            'results' => $results,
+        ));
+    }
+    
+    public function acceptBuyerChangeAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $user_id = (int) $this->params()->fromQuery('user_id', 0);
+        $order_id = (int) $this->params()->fromQuery('order_id', 0);
+        
+        $form = new Form\AcceptBuyerChange();
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $inputFilter = $this->getServiceLocator()
+                    ->get('Admin\InputFilter\AcceptBuyerChange');
+            #$inputFilter = new InputFilter\AcceptBuyerChange();
+            $form->setInputFilter($inputFilter->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $user = $em->getRepository("ersEntity\Entity\User")
+                    ->findOneBy(array('id' => $data['user_id']));
+                
+                $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $data['order_id']));
+                
+                $log = new Entity\Log();
+                $log->setUser($this->zfcUserAuthentication()->getIdentity());
+                $log->setData('changed buyer for order '.$order->getCode()->getValue().': '.$data['comment']);
+                $em->persist($log);
+                $em->flush();
+                
+                $order->setBuyer($user);
+                $em->persist($order);
+                $em->flush();
+                
+                return $this->redirect()->toRoute('admin/order', array(
+                    'action' => 'detail', 
+                    'id' => $order->getId()
+                ));
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+        
+        $user = null;
+        if($user_id != 0) {
+            $user = $em->getRepository("ersEntity\Entity\User")
+                    ->findOneBy(array('id' => $user_id));
+        }
+        
+        $order = null;
+        if($order_id != 0) {
+            $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $order_id));
+        }
+        
+        $form->get('order_id')->setValue($order->getId());
+        $form->get('user_id')->setValue($user->getId());
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('order')) {
+            $forrest->set('order', 'admin/order', 
+                    array('action' => 'search')
+                );
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'user' => $user,
             'order' => $order,
             'breadcrumb' => $forrest->get('order'),
         ));

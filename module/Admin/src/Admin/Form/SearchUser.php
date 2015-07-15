@@ -11,63 +11,35 @@ namespace Admin\Form;
 use Zend\Form\Form;
 
 
-class SearchOrder extends Form
+class SearchUser extends Form
 {
     public function __construct($name = null)
     {
         parent::__construct('SearchOrder');
         $this->setAttribute('method', 'get');
         
-        /*$this->add(array(
-            'type' => 'checkbox',
-            'name' => 'paid',
-            'attributes' => array(
-                'class' => 'checkbox',
-            ),
-            'options' => array(
-                'label' => 'Search only for paid orders',
-                'label_attributes' => array(
-                    'class'  => 'media-object',
-                ),
-            ),
-        ));
-        
-        $this->add(array(
-            'type' => 'checkbox',
-            'name' => 'match',
-            'attributes' => array(
-                'class' => 'checkbox',
-            ),
-            'options' => array(
-                'label' => 'Search only for matched orders',
-                'label_attributes' => array(
-                    'class'  => 'media-object',
-                ),
-            ),
-        ));*/
-        
         $this->add(array(
             'name' => 'q',
             'attributes' => array(
                 'type'  => 'text',
                 'class' => 'form-control form-element',
-                'placeholder' => 'code, first name, last name, birthdate, e-mail...',
+                'placeholder' => 'first name, last name, birthdate, e-mail...',
             ),
             'options' => array(
                 'label' => '',
                 'label_attributes' => array(
-                    'class'  => 'media-object',
+                    'class'  => 'media-object input-group-lg',
                 ),
             ),
         ));
         
  
-        /*$this->add(array( 
+        $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 
-        ));*/
+        ));
         
-        /*$this->add(array(
+        $this->add(array(
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
@@ -75,6 +47,6 @@ class SearchOrder extends Form
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),
-        ));*/
+        ));
     }
 }

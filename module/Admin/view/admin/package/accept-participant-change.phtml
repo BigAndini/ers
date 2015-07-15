@@ -1,0 +1,107 @@
+<?php
+
+$title = 'Accept Participant Change for Package '.$package->getCode()->getValue();
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php if($user == null || $package == null) : ?>
+<h3>It was not possible to collect all data to change participant.</h3>
+<p><a href="<?php echo $this->url('admin/package', array('action' => 'search')); ?>">back to package search</a></p>
+<?php else: ?>
+<div class="row">
+    <div class="col-md-12">
+        <h3>Transfer the package with code <?php echo $package->getCode()->getValue() ?></h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h3>from:</h3>
+        <?php $participant = $package->getParticipant(); ?>
+        <table class="table table-striped">
+            <tr>
+                <th>Name:</th>
+                <td><?php echo $participant->getFirstname().' '.$participant->getSurname(); ?></td>
+            </tr>
+            <tr>
+                <th>Age:</th>
+                <td>
+                    <p><?php 
+                        if($participant->getBirthday() != null) {
+                            $now = new \DateTime();
+                            echo $now->diff($participant->getBirthday())->format('%y'); 
+                            echo ' years';
+                        }
+                    ?></p> 
+                </td>
+            </tr>
+            <tr>
+                <th>E-Mail:</th>
+                <td><?php echo $participant->getEmail(); ?></td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <h3>to:</h3>
+        <table class="table table-striped">
+            <tr>
+                <th>Name:</th>
+                <td><?php echo $user->getFirstname().' '.$user->getSurname(); ?></td>
+            </tr>
+            <tr>
+                <th>Age:</th>
+                <td>
+                    <p><?php 
+                        if($user->getBirthday() != null) {
+                            $now = new \DateTime();
+                            echo $now->diff($user->getBirthday())->format('%y'); 
+                            echo ' years';
+                        }
+                    ?></p> 
+                </td>
+            </tr>
+            <tr>
+                <th>E-Mail:</th>
+                <td><?php echo $user->getEmail(); ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <?php
+        $form = $this->form;
+        $query = array(
+            'package_id' => $package->getId(),
+            'user_id' => $user->getId(),
+        );
+        $form->setAttribute('action', $this->url('admin/order', 
+                array(
+                    'action' => 'accept-participant-change'
+                ),
+                array(
+                    'query' => $query,
+                    #'fragment' => $fragment,
+                )
+                ));
+        $form->prepare();
+
+        echo $this->form()->openTag($form); ?>
+        <?php echo $this->formHidden($form->get('package_id')); ?>
+        <?php echo $this->formHidden($form->get('user_id')); ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <?php echo $this->formRow($form->get('comment')); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <?php echo $this->formHidden($form->get('csrf')); ?>
+                <?php echo $this->formSubmit($form->get('submit')); ?>
+                <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+            </div>
+        </div>
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>
+<?php endif; ?>

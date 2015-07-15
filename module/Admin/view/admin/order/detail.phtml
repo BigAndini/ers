@@ -43,6 +43,12 @@ $this->headTitle($title);
                 <?php endif; ?>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">Send E-Tickets</a>
                 </li>
+                <li>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'send-payment-reminder', 'id' => $order->getId())); ?>">Send Payment Reminder</a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'change-buyer', 'id' => $order->getId())); ?>">Change Buyer</a>
+                </li>
             </ul>
         </li>
         <li class="dropdown">
@@ -107,15 +113,19 @@ $this->headTitle($title);
                                     <ul id="page_2" class="dropdown-menu">
                                         <?php if($participant != 'unassigned items'):?>
                                             <li>
-                                                <a href="<?php echo $this->url('admin/user', array('action' => 'edit', 'id' => $user->getId())); ?>">Edit Participant Detail</a>
+                                                <a href="<?php echo $this->url('admin/user', array('action' => 'edit', 'id' => $user->getId())); ?>">edit participant detail</a>
                                             </li>
                                         <?php else: ?>
                                             <li class="disabled">
                                                 <a data-toggle="tooltip" data-placement="bottom"  title="Package is not assigned. Please use change owner." href="<?php echo $this->url('admin/user', array('action' => 'edit', 'id' => $user->getId())); ?>">Edit Participant Detail</a>
                                             </li>
                                         <?php endif; ?>
-                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
-                                            <a href="<?php echo $this->url('admin/order', array('action' => 'change-owner', 'id' => $package->getId())); ?>">Change Participant</a>
+                                        <!--<li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">-->
+                                        <li>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'change-participant', 'id' => $package->getId())); ?>">change participant</a>
+                                        </li>
+                                        <li>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'move', 'id' => $package->getId())); ?>">move package to another order</a>
                                         </li>
                                     </ul>
                                 </li>

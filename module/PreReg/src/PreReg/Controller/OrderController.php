@@ -277,6 +277,8 @@ class OrderController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = new InputFilter\PaymentType();
+            $inputFilter = $this->getServiceLocator()
+                    ->get('PreReg\InputFilter\PaymentType');
             $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
@@ -298,7 +300,7 @@ class OrderController extends AbstractActionController {
         return new ViewModel(array(
             'form' => $form,
             'order' => $cartContainer->order,
-            'paymenttypes' => $pts,
+            'paymenttypes' => $paymenttypes,
         ));
     }
     

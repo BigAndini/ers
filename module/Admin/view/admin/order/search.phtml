@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Search Order';
+$title = 'Search for an Order';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -11,51 +11,62 @@ $this->headTitle($title);
         $form = $this->form;
         $form->setAttribute('action', $this->url('admin/order', 
                 array('action' => 'search')
-                #array('query' => $params)
                 ));
         $form->prepare();
 
-        echo $this->form()->openTag($form);
-        echo $this->formRow($form->get('q'));
-        echo $this->formHidden($form->get('csrf'));
-        echo $this->formSubmit($form->get('submit')); 
-        echo $this->form()->closeTag(); ?>
+        echo $this->form()->openTag($form); ?>
+        <div class="input-group input-group-lg">
+            <?php echo $this->formRow($form->get('q')); ?>
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+            </span>
+        </div><!-- /input-group -->
+        <?php echo $this->form()->closeTag(); ?>
     </div>
 </div>
-    
+
 <?php if(count($result) > 0): ?>
-<table class="table">
-    <tr>
-        <th>Code</th>
-        <th>Date</th>
-        <th>Buyer</th>
-        <th>Payment type</th>
-        <th>Price</th>
-        <th>Status</th>
-        <th></th>
-    </tr>
-    <?php foreach($result as $order): ?>
-    <tr>
-        <td><?php echo $order->getCode()->getValue(); ?></td>
-        <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
-        <td>
-            <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>
-            <br />
-            <a href="mailto:<?php echo $order->getBuyer()->getEmail(); ?>"><?php echo $order->getBuyer()->getEmail(); ?></a>
-        </td>
-        <td>
-            <?php echo $order->getPaymentType()->getName(); ?>
-        </td>
-        <td>
-            <?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?>
-        </td>
-        <td>
-            <?php echo $order->getPaymentStatus(); ?>
-        </td>
-        <td>
-            <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $order->getId()));?>"><?php echo $this->translate('Detail'); ?></a>
-        </td>
-    </tr>
-    <?php endforeach; ?>
-</table>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Search results for "<?php echo $form->get('q')->getValue(); ?>" (<?php echo count($result) ?>)</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table">
+                <tr>
+                    <th>Code</th>
+                    <th>Date</th>
+                    <th>Buyer</th>
+                    <th>Payment type</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+                <?php foreach($result as $order): ?>
+                <tr>
+                    <td><?php echo $order->getCode()->getValue(); ?></td>
+                    <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
+                    <td>
+                        <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>
+                        <br />
+                        <a href="mailto:<?php echo $order->getBuyer()->getEmail(); ?>"><?php echo $order->getBuyer()->getEmail(); ?></a>
+                    </td>
+                    <td>
+                        <?php echo $order->getPaymentType()->getName(); ?>
+                    </td>
+                    <td>
+                        <?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?>
+                    </td>
+                    <td>
+                        <?php echo $order->getPaymentStatus(); ?>
+                    </td>
+                    <td>
+                        <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $order->getId()));?>"><?php echo $this->translate('Detail'); ?></a>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </table>
+        </div>
+    </div>
 <?php endif; ?>

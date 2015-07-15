@@ -115,7 +115,7 @@ class Item implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    protected $transfer_id;
+    protected $transferred_item_id;
     
     /**
      * @ORM\Column(type="datetime")
@@ -163,6 +163,13 @@ class Item implements InputFilterAwareInterface
      * @ORM\JoinColumn(name="Code_id", referencedColumnName="id")
      */
     protected $code;
+    
+    /**
+     * @ORM\OneToOne(targetEntity="Item")
+     * @ORM\JoinColumn(name="transferred_item_id", referencedColumnName="id", nullable=true)
+     */
+    protected $transferred_item;
+
     
     /**
      * @ORM\Column(type="boolean")
@@ -525,26 +532,26 @@ class Item implements InputFilterAwareInterface
     }
     
     /**
-     * Set the value of transfer_id.
+     * Set the value of transferred_item_id.
      *
-     * @param datetime $transfer_id
+     * @param datetime $transferred_item_id
      * @return \Entity\Item
      */
-    public function setTransferId($transfer_id)
+    public function setTransferredItemId($transferred_item_id)
     {
-        $this->transfer_id = $transfer_id;
+        $this->transferred_item_id = $transferred_item_id;
 
         return $this;
     }
 
     /**
-     * Get the value of transfer_id.
+     * Get the value of transferred_item_id.
      *
      * @return datetime
      */
-    public function getTransferId()
+    public function getTransferredItemId()
     {
-        return $this->transfer_id;
+        return $this->transferred_item_id;
     }
     
     /**
@@ -855,6 +862,29 @@ class Item implements InputFilterAwareInterface
     public function getShipped()
     {
         return $this->shipped;
+    }
+    
+    /**
+     * Set the value of transferred_item.
+     *
+     * @param Item $item
+     * @return \Entity\Item
+     */
+    public function setTransferredItem(Item $item = null)
+    {
+        $this->transferred_item = $item;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of transferred_item.
+     *
+     * @return Item
+     */
+    public function getTransferredItem()
+    {
+        return $this->transferred_item;
     }
 
     /**

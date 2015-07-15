@@ -561,4 +561,293 @@ class PackageController extends AbstractActionController {
             'breadcrumb' => $forrest->get('package'),
         ));
     }
+    
+    public function changeParticipantAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $package = $em->getRepository("ersEntity\Entity\Package")
+                ->findOneBy(array('id' => $id));
+        
+        $form = new Form\SearchPackage();
+        
+        $results = [];
+        
+        $q = trim($this->params()->fromQuery('q'));
+
+        if (!empty($q)) {
+            $form->get('q')->setValue($q);
+
+            $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+            $qb = $em->createQueryBuilder()
+                    ->select('u')
+                    ->from('ersEntity\Entity\User', 'u')
+                    ->orderBy('u.firstname')
+                    ->where('1=1');
+            
+            /*$qb = $em->createQueryBuilder()
+                    ->select('p')
+                    ->from('ersEntity\Entity\Package', 'p')
+                    ->join('p.participant', 'u')
+                    ->join('p.code', 'pcode')
+                    ->join('p.order', 'o')
+                    ->join('o.code', 'ocode')
+                    ->join('o.buyer', 'b')
+                    ->orderBy('u.firstname')
+                    ->where('1=1');*/
+
+            if (preg_match('~^\d+$~', $q)) {
+                // if the entire query consists of nothing but a number, treat it as a user ID
+                $qb->andWhere('u.id = :id');
+                $qb->setParameter(':id', (int) $q);
+            } else {
+                $exprUName = $qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.surname'));
+                //$exprBName = $qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname'));
+
+                $words = preg_split('~\s+~', $q);
+                $i = 0;
+                foreach ($words as $word) {
+                    try {
+                        $wordAsDate = new \DateTime($word);
+                    } catch (\Exception $ex) {
+                        $wordAsDate = NULL;
+                    }
+
+                    $param = ':p' . $i;
+                    $paramDate = ':pd' . $i;
+                    $qb->andWhere(
+                            $qb->expr()->orX(
+                                    $qb->expr()->like($exprUName, $param), //
+                                    $qb->expr()->like('u.email', $param), //
+                                    //$qb->expr()->like($exprBName, $param),
+                                    #$qb->expr()->like('pcode.value', $param), //
+                                    #$qb->expr()->like('ocode.value', $param), //
+                                    ($wordAsDate ? $qb->expr()->eq('u.birthday', $paramDate) : '1=0')
+                            )
+                    );
+
+                    $qb->setParameter($param, '%' . $word . '%');
+                    if($wordAsDate)
+                        $qb->setParameter($paramDate, $wordAsDate);
+
+                    $i++;
+                }
+            }
+
+            $results = $qb->getQuery()->getResult();
+            error_log('found '.count($results).' user');
+        }
+        
+        $forrest = new Service\BreadcrumbFactory();
+        $query = array('q' => $q);
+        $forrest->set('package', 'admin/package', 
+                array(
+                    'action' => 'change-participant',
+                    'id' => $package->getId()
+                ), 
+                array(
+                    'query' => $query,
+                    #'fragment' => $fragment,
+                )
+            );
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'package' => $package,
+            'results' => $results,
+        ));
+    }
+    public function acceptParticipantChangeAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $user_id = (int) $this->params()->fromQuery('user_id', 0);
+        $package_id = (int) $this->params()->fromQuery('package_id', 0);
+        
+        error_log('found user_id: '.$user_id);
+        error_log('found package_id: '.$package_id);
+        
+        $form = new Form\AcceptParticipantChange();
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $inputFilter = $this->getServiceLocator()
+                    ->get('Admin\InputFilter\AcceptParticipantChange');
+            $form->setInputFilter($inputFilter->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $user = $em->getRepository("ersEntity\Entity\User")
+                    ->findOneBy(array('id' => $data['user_id']));
+                
+                $package = $em->getRepository("ersEntity\Entity\Package")
+                    ->findOneBy(array('id' => $data['package_id']));
+                
+                $log = new Entity\Log();
+                $log->setUser($this->zfcUserAuthentication()->getIdentity());
+                $log->setData('changed participant for package '.$package->getCode()->getValue().': '.$data['comment']);
+                $em->persist($log);
+                $em->flush();
+                
+                $newPackage = new Entity\Package();
+                $code = new Entity\Code();
+                $code->genCode();
+                $newPackage->setCode($code);
+                foreach($package->getItems() as $item) {
+                    $newItem = clone $item;
+                    $newPackage->addItem($newItem);
+                    $item->setStatus('transferred');
+                    $item->setTransferredItem($newItem);
+                    
+                    $em->persist($item);
+                    $em->persist($newItem);
+                }
+                $newPackage->setTransferredPackage($package);
+                $package->setParticipant($user);
+                $package->setStatus('transferred');
+                
+                $em->persist($newPackage);
+                $em->persist($package);
+                $em->flush();
+                
+                $order = $package->getOrder();
+                
+                return $this->redirect()->toRoute('admin/order', array(
+                    'action' => 'detail', 
+                    'id' => $order->getId()
+                ));
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+        
+        $user = null;
+        if($user_id != 0) {
+            error_log('searching user with id: '.$user_id);
+            $user = $em->getRepository("ersEntity\Entity\User")
+                    ->findOneBy(array('id' => $user_id));
+        }
+        
+        $package = null;
+        if($package_id != 0) {
+            error_log('searching package with id: '.$package_id);
+            $package = $em->getRepository("ersEntity\Entity\Package")
+                    ->findOneBy(array('id' => $package_id));
+        }
+        
+        $form->get('package_id')->setValue($package->getId());
+        $form->get('user_id')->setValue($user->getId());
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('package')) {
+            $forrest->set('package', 'admin/package', 
+                    array('action' => 'search')
+                );
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'user' => $user,
+            'package' => $package,
+            'breadcrumb' => $forrest->get('package'),
+        ));
+    }
+    
+    public function moveAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $package = $em->getRepository("ersEntity\Entity\Package")
+                ->findOneBy(array('id' => $id));
+        
+        $form = new Form\SearchOrder();
+        
+        $results = [];
+        
+        $q = trim($this->params()->fromQuery('q'));
+
+        if (!empty($q)) {
+            $form->get('q')->setValue($q);
+
+            $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+            $qb = $em->createQueryBuilder()
+                    ->select('u')
+                    ->from('ersEntity\Entity\User', 'u')
+                    ->orderBy('u.firstname')
+                    ->where('1=1');
+            
+            /*$qb = $em->createQueryBuilder()
+                    ->select('p')
+                    ->from('ersEntity\Entity\Package', 'p')
+                    ->join('p.participant', 'u')
+                    ->join('p.code', 'pcode')
+                    ->join('p.order', 'o')
+                    ->join('o.code', 'ocode')
+                    ->join('o.buyer', 'b')
+                    ->orderBy('u.firstname')
+                    ->where('1=1');*/
+
+            if (preg_match('~^\d+$~', $q)) {
+                // if the entire query consists of nothing but a number, treat it as a user ID
+                $qb->andWhere('u.id = :id');
+                $qb->setParameter(':id', (int) $q);
+            } else {
+                $exprUName = $qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.surname'));
+                //$exprBName = $qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname'));
+
+                $words = preg_split('~\s+~', $q);
+                $i = 0;
+                foreach ($words as $word) {
+                    try {
+                        $wordAsDate = new \DateTime($word);
+                    } catch (\Exception $ex) {
+                        $wordAsDate = NULL;
+                    }
+
+                    $param = ':p' . $i;
+                    $paramDate = ':pd' . $i;
+                    $qb->andWhere(
+                            $qb->expr()->orX(
+                                    $qb->expr()->like($exprUName, $param), //
+                                    $qb->expr()->like('u.email', $param), //
+                                    //$qb->expr()->like($exprBName, $param),
+                                    #$qb->expr()->like('pcode.value', $param), //
+                                    #$qb->expr()->like('ocode.value', $param), //
+                                    ($wordAsDate ? $qb->expr()->eq('u.birthday', $paramDate) : '1=0')
+                            )
+                    );
+
+                    $qb->setParameter($param, '%' . $word . '%');
+                    if($wordAsDate)
+                        $qb->setParameter($paramDate, $wordAsDate);
+
+                    $i++;
+                }
+            }
+
+            $results = $qb->getQuery()->getResult();
+            error_log('found '.count($results).' user');
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'package' => $package,
+            'results' => $results,
+        ));
+    }
 }

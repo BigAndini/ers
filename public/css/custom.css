@@ -541,3 +541,7 @@ a:hover, a:focus {
 .block {
     display:block;
 }
+
+.form-control {
+    font-weight: normal;
+}
