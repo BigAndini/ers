@@ -28,7 +28,7 @@ class UndoItem extends Form
             'attributes' => array(
                 'type'  => 'submit',
                 'value' => 'Confirm',
-                'class' => 'btn btn-danger',
+                'class' => 'btn btn-lg btn-danger',
             ),
         ));
     }

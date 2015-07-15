@@ -13,7 +13,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface; 
 use Zend\InputFilter\InputFilterInterface; 
 
-class AcceptParticipantChange implements InputFilterAwareInterface 
+class AcceptParticipantChangePackage implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
     protected $sm;

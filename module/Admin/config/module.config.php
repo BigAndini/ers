@@ -228,6 +228,11 @@ return array(
                 'route' => 'admin',
                 'resource'  => 'controller/Admin\Controller\Index',
             ),
+            'onsite' => array(
+                'label' => 'Onsite',
+                'route' => 'onsite',
+                'resource'  => 'controller/OnsiteReg\Controller\Index',
+            ),
         ),
     ),
     'console' => array(

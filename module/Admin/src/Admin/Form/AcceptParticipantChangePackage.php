@@ -11,11 +11,11 @@ namespace Admin\Form;
 use Zend\Form\Form;
 
 
-class AcceptParticipantChange extends Form
+class AcceptParticipantChangePackage extends Form
 {
     public function __construct($name = null)
     {
-        parent::__construct('AcceptParticipantChange');
+        parent::__construct('AcceptParticipantChangePackage');
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'form-horizontal');
         

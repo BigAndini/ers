@@ -1,7 +1,6 @@
 <?php
 $itemStatusMessages = [
     'ordered' => 'The item was not paid.',
-    'shipped' => 'The item was delivered.',
     'cancelled' => 'The item was cancelled.',
     'unknown' => 'No status information available about the item.',
 ];
@@ -22,32 +21,42 @@ $itemOK = ($status === 'paid');
 ?>
 <li><label class="block package">
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-5">
             <p class="h4 item-name"><?php echo $this->escapeHtml($item->getName()); ?></p>
 
-            <?php foreach ($item->getItemVariants() AS $itemVariant): ?>
-                <div><?php echo $this->escapeHtml($itemVariant->getName() . ': ' . $itemVariant->getValue()); ?></div>
-            <?php endforeach; ?>
+            <?php
+            foreach ($item->getItemVariants() AS $itemVariant) {
+                echo '<div>';
+                echo $this->escapeHtml($itemVariant->getName()) . ': ';
+                if($itemVariant->getName() === 'show')
+                    echo '<span class="h2 text-primary">' . date('D H:i', strtotime($itemVariant->getValue())) . '</span>';
+                else
+                    echo $this->escapeHtml($itemVariant->getValue());
+                
+                echo '</div>';
+            }
+            ?>
         </div>
         <div class="col-xs-2">
-            <?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?>
+            <p class="h4"><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></p>
         </div>
         
         <?php if($item->getShipped()): ?>
-            <div class="col-xs-4 text-primary">
+            <div class="col-xs-5 text-primary">
+                <div class="floatRight">
+                    <a href="<?php echo $this->url('onsite/package', ['action' => 'undo-item', 'id' => $item->getPackage()->getId(), 'item-id' => $item->getId()])
+                    ?>" class="btn btn-lg btn-danger">Undo</a>
+                </div>
+                
                 <p class="h4">
                     <i class="fa fa-barcode"></i> shipped
                 </p>
-                <p>The item was delivered.</p>
-
-                <a href="<?php echo $this->url('onsite/package', ['action' => 'undo-item', 'id' => $item->getPackage()->getId(), 'item-id' => $item->getId()])
-                ?>" class="btn btn-sm btn-danger">Undo</a>
             </div>
         
         <?php else: ?>
-            <div class="col-xs-3 text-<?php echo ($itemOK ? 'success' : 'warning'); ?>">
+            <div class="col-xs-4 text-<?php echo ($itemOK ? 'success' : 'warning'); ?>">
                 <p class="h4">
-                    <i class="fa <?php echo ($itemOK ? 'fa-success' : 'fa-warning'); ?>"></i>
+                    <i class="fa <?php echo ($itemOK ? 'fa-check' : 'fa-warning'); ?>"></i>
                     <?php echo $this->escapeHtml($status); ?>
                 </p>
                 <?php

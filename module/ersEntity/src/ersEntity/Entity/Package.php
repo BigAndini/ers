@@ -147,6 +147,18 @@ class Package implements InputFilterAwareInterface
      */
     public function __clone() {
         $this->id = null;
+        
+        # duplicate active items for new package
+        $items = new ArrayCollection();
+        foreach($this->getItems() as $item) {
+            $items[] = clone $item;
+        }
+        $this->items = $items;
+        
+        # generate new code for new package
+        $code = new Code();
+        $code->genCode();
+        $this->setCode($code);
     }
     
     /**
@@ -374,6 +386,8 @@ class Package implements InputFilterAwareInterface
             #$item->setSessionId($id);
             $item->setSessionId($this->order->getSessionId('item'));
         }
+        $item->setPackage($this);
+        
         $this->items[] = $item;
 
         return $this;
@@ -595,6 +609,36 @@ class Package implements InputFilterAwareInterface
     public function getTransferredPackage()
     {
         return $this->transferred_package;
+    }
+    
+    /*
+     * Equivalent to getStatus(), but also considers the shipped status of the item.
+     * Introduced for display in Onsite, implemented as a separate method so it does not break anything else status-related.
+     * 
+     * @return string
+     */
+    public function getStatusWithShipped() {
+        $status = array();
+        foreach($this->getItems() as $item) {
+            $item_status = $item->getStatus();
+            if($item->getShipped()) {
+                $item_status = 'shipped';
+            }
+            elseif($item_status == 'zero_ok') {
+                $item_status = 'paid';
+            }
+            
+            if(isset($status[$item_status])) {
+                $status[$item_status]++;
+            } else {
+                $status[$item_status] = 1;
+            }
+        }
+        if(count($status) == 1) {
+            return key($status);
+        } else {
+            return 'undefined';
+        }
     }
 
     /**
