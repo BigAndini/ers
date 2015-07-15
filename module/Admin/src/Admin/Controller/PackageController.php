@@ -669,10 +669,7 @@ class PackageController extends AbstractActionController {
         $user_id = (int) $this->params()->fromQuery('user_id', 0);
         $package_id = (int) $this->params()->fromQuery('package_id', 0);
         
-        error_log('found user_id: '.$user_id);
-        error_log('found package_id: '.$package_id);
-        
-        $form = new Form\AcceptParticipantChange();
+        $form = new Form\AcceptParticipantChangePackage();
         
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
@@ -680,7 +677,7 @@ class PackageController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = $this->getServiceLocator()
-                    ->get('Admin\InputFilter\AcceptParticipantChange');
+                    ->get('Admin\InputFilter\AcceptParticipantChangePackage');
             $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
@@ -696,27 +693,38 @@ class PackageController extends AbstractActionController {
                 $log->setUser($this->zfcUserAuthentication()->getIdentity());
                 $log->setData('changed participant for package '.$package->getCode()->getValue().': '.$data['comment']);
                 $em->persist($log);
-                $em->flush();
+                #$em->flush();
                 
+                # initialize new package
                 $newPackage = new Entity\Package();
                 $code = new Entity\Code();
                 $code->genCode();
                 $newPackage->setCode($code);
+                
+                # set order for package
+                $newPackage->setOrder($package->getOrder());
+                
                 foreach($package->getItems() as $item) {
+                    if($item->hasParentItems()) {
+                        continue;
+                    }
                     $newItem = clone $item;
                     $newPackage->addItem($newItem);
                     $item->setStatus('transferred');
                     $item->setTransferredItem($newItem);
                     
+                    $code = new Entity\Code();
+                    $code->genCode();
+                    $newItem->setCode($code);
+                    
                     $em->persist($item);
                     $em->persist($newItem);
                 }
                 $newPackage->setTransferredPackage($package);
-                $package->setParticipant($user);
-                $package->setStatus('transferred');
+                $newPackage->setParticipant($user);
                 
                 $em->persist($newPackage);
-                $em->persist($package);
+                #$em->persist($package);
                 $em->flush();
                 
                 $order = $package->getOrder();
@@ -739,7 +747,6 @@ class PackageController extends AbstractActionController {
         
         $package = null;
         if($package_id != 0) {
-            error_log('searching package with id: '.$package_id);
             $package = $em->getRepository("ersEntity\Entity\Package")
                     ->findOneBy(array('id' => $package_id));
         }
@@ -749,7 +756,7 @@ class PackageController extends AbstractActionController {
         
         $forrest = new Service\BreadcrumbFactory();
         if(!$forrest->exists('package')) {
-            $forrest->set('package', 'admin/package', 
+            $forrest->set('package', 'admin/order', 
                     array('action' => 'search')
                 );
         }

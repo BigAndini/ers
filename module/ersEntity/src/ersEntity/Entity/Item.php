@@ -208,7 +208,27 @@ class Item implements InputFilterAwareInterface
      */
     public function __clone() {
         $this->id = null;
-        $this->Code_id = null;
+        #$this->Code_id = null;
+        
+        $code = new Code();
+        $code->genCode();
+        $this->setCode($code);
+        
+        $itemVariants = new ArrayCollection();
+        foreach($this->getItemVariants() as $variant) {
+            $newVariant = clone $variant;
+            $newVariant->setItem($this);
+            $itemVariants[] = $newVariant;
+        }
+        $this->itemVariants = $itemVariants;
+        
+        $itemPackageRelatedBySubItemIds = new ArrayCollection();
+        foreach($this->getItemPackageRelatedBySurItemIds() as $package) {
+            $newPackage = clone $package;
+            $newPackage->setSurItem($this);
+            $itemPackageRelatedBySubItemIds[] = $newPackage;
+        }
+        $this->itemPackageRelatedBySubItemIds = $itemPackageRelatedBySubItemIds;
     }
 
     /**

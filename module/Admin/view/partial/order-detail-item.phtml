@@ -83,6 +83,9 @@
                 case 'zero_ok': ?>
                     <i data-toggle="tooltip" data-placement="bottom" class="fa fa-child" title="0 € child ticket"></i>
                     <?php break;
+                case 'transferred': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-forward" title="transferred"></i>
+                    <?php break;
                 default: ?>
                     <i data-toggle="tooltip" data-placement="bottom" class="fa fa-question" title="unknown"></i>
                     <?php break;
@@ -114,8 +117,9 @@
                         <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
                             <a href="<?php echo $this->url('admin/item', array('action' => 'change-item', 'id' => $item->getId())); ?>">change item</a>
                         </li>
-                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
-                            <a href="<?php echo $this->url('admin/item', array('action' => 'change-owner', 'id' => $item->getId())); ?>">change participant</a>
+                        <!--<li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">-->
+                        <li>
+                            <a href="<?php echo $this->url('admin/item', array('action' => 'change-participant', 'id' => $item->getId())); ?>">change participant</a>
                         </li>
                         <?php if($item->getStatus() == 'zero_ok'): ?>
                             <li>

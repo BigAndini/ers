@@ -109,6 +109,16 @@ class Module
                     $inputFilter->setServiceLocator($sm);
                     return $inputFilter;
                 },
+                'Admin\InputFilter\AcceptParticipantChangeItem' => function($sm){
+                    $inputFilter   = new InputFilter\AcceptParticipantChangeItem();
+                    $inputFilter->setServiceLocator($sm);
+                    return $inputFilter;
+                },
+                'Admin\InputFilter\AcceptParticipantChangePackage' => function($sm){
+                    $inputFilter   = new InputFilter\AcceptParticipantChangePackage();
+                    $inputFilter->setServiceLocator($sm);
+                    return $inputFilter;
+                },
             ),
         );
     }

@@ -1,0 +1,78 @@
+<?php
+
+$title = 'Change Participant for Package '.$item->getCode()->getValue();
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2 col-lg-7 col-md-offset-3">
+        <h3>Search Person <a class="small" href="<?php echo $this->url('admin/user', array('action' => 'add')); ?>">add person</a></h3>
+        <?php
+        $form = $this->form;
+        $form->setAttribute('action', $this->url('admin/item', 
+                array(
+                    'action' => 'change-participant',
+                    'id' => $item->getId()
+                    )
+                ));
+        $form->prepare();
+
+        echo $this->form()->openTag($form); ?>
+        <div class="input-group input-group-lg">
+            <?php echo $this->formRow($form->get('q')); ?>
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+            </span>
+        </div><!-- /input-group -->
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>
+    
+<?php if(count($results) > 0): ?>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Search results for "<?php echo $form->get('q')->getValue(); ?>" (<?php echo count($results) ?>)</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <?php foreach ($results as $user) : ?>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p><?php echo $user->getFirstname().' '.$user->getSurname(); ?></p>
+                    </div>
+                    <div class="col-md-3">
+                        <p><?php echo $user->getEmail(); ?></p>
+                    </div>
+                    <div class="col-md-1">
+                        <p><?php 
+                            if($user->getBirthday() != null) {
+                                $now = new \DateTime();
+                                echo $now->diff($user->getBirthday())->format('%y'); 
+                                echo ' years';
+                            }
+                        ?></p>    
+                    </div>
+                    <div class="col-md-3">
+                        <?php $query = array(
+                            'item_id' => $item->getId(),
+                            'user_id' => $user->getId(),
+                        ); ?>
+                        <a class="btn btn-primary" href="<?php echo $this->url('admin/item', 
+                            array(
+                                'action' => 'accept-participant-change',
+                            ),
+                            array(
+                                'query' => $query,
+                                #'fragment' => $fragment,
+                            )
+                        ); ?>">change</a>
+                        <?php echo $this->form()->closeTag(); ?>
+                    </div>
+                </div>
+                <hr>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>

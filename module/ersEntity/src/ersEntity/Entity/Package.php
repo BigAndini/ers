@@ -147,6 +147,18 @@ class Package implements InputFilterAwareInterface
      */
     public function __clone() {
         $this->id = null;
+        
+        # duplicate active items for new package
+        $items = new ArrayCollection();
+        foreach($this->getItems() as $item) {
+            $items[] = clone $item;
+        }
+        $this->items = $items;
+        
+        # generate new code for new package
+        $code = new Code();
+        $code->genCode();
+        $this->setCode($code);
     }
     
     /**
@@ -374,6 +386,8 @@ class Package implements InputFilterAwareInterface
             #$item->setSessionId($id);
             $item->setSessionId($this->order->getSessionId('item'));
         }
+        $item->setPackage($this);
+        
         $this->items[] = $item;
 
         return $this;
