@@ -20,6 +20,6 @@ class TopNavigationFactory extends AbstractNavigationFactory
      */
     protected function getName()
     {
-        return 'top_nav';
+        return 'onsite_top_nav';
     }
 }
