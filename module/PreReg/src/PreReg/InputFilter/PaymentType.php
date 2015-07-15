@@ -15,7 +15,16 @@ use Zend\InputFilter\InputFilterInterface;
 
 class PaymentType implements InputFilterAwareInterface 
 { 
-    protected $inputFilter; 
+    protected $inputFilter;
+    protected $sm;
+    
+    public function setServiceLocator($sm) {
+        $this->sm = $sm;
+    }
+    
+    public function getServiceLocator() {
+        return $this->sm;
+    }
     
     public function setInputFilter(InputFilterInterface $inputFilter) 
     { 
@@ -36,14 +45,37 @@ class PaymentType implements InputFilterAwareInterface
                     array('name' => 'Int'), 
                 ),
                 'validators' => array(
-                    /*array (
-                        'name' => 'NotEmpty',
+                    array ( 
+                        'name' => 'Callback', 
                         'options' => array(
                             'messages' => array(
-                                'isEmpty' => 'To continue you need to select a payment type.',
-                            )
+                                \Zend\Validator\Callback::INVALID_VALUE => 'Please choose an available payment type.',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                # check if order with the id of $value exists
+                                if(!is_numeric($value)) {
+                                    return false;
+                                }
+                
+                                $em = $this->getServiceLocator()
+                                    ->get('Doctrine\ORM\EntityManager');
+                                
+                                $paymenttype = $em->getRepository("ersEntity\Entity\PaymentType")
+                                    ->findOneBy(array('id' => $value));
+                                
+                                $now = new \DateTime();
+                                if(
+                                    $now->getTimestamp() < $paymenttype->getActiveUntil()->getDeadline()->getTimestamp() &&
+                                    $now->getTimestamp() > $paymenttype->getActiveFrom()->getDeadline()->getTimestamp()
+                                    ) {
+                                    return true;
+                                }
+                                
+                                return false;
+                            },
+                            
                         ),
-                    ),*/
+                    ),
                 ),
             ]));
             

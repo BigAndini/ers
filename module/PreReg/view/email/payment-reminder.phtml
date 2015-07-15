@@ -5,25 +5,58 @@
             * {
                 font-family: sans-serif;
             }
+            .header, .footer {
+            	width: 100%;
+            	text-align: center;
+            	padding: 1em;
+            }
+            .header {
+            	margin-top: 0px;
+            	background-color: #85b32a;
+            	color: #fff;
+            }
             .clear-both {
                 clear: both;
+            }
+            .header > a {
+            	color: #fff;
+            	font-weight: bold;
+            	text-decoration: none;
+            }
+            .footer {
+            	background-color: #eeeeee;
             }
         </style>
     </head>
     <body>
+        <div class='header'>EJC 2015 - 01.-09.08.2015 in Bruneck, South Tyrol, Italy - <a href='http://www.ejc2015.org'>www.ejc2015.org</a></div>
+        
         <p>Dear <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>,</p>
 
-        <p>Unfortunately, we haven’t received any payment in conjunction with 
-        your order from %date% with the order ID %matching_hash% yet.<br />
-        Please transfer the entire amount of your order within the coming 7 
-        days. Otherwise, we’ll have to cancel your order. Thank you for your 
-        appreciation!</p>
+        <p>you registered for the EJC at <?php echo $order->getCreated()->format('d.m.Y') ?> and we hope you're looking forward to it.
+        We haven't sent you an e-ticket yet, because we haven't received payment for your order.</p>
+
+        <p>Please do one of the following until 20.07.2015 at the latest.</p>
+        <ul>
+            <li>Please pay your order at 
+                <a href="http://prereg.eja.net<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>">
+                    http://prereg.eja.net<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>
+                </a>
+            </li>
+            <li>Let us know if you'd like to transfer your ticket to somebody else (necessary data: first name, last name, date of birth and email address of the new participant)</li>
+            <li>If none of the above options are possible for you, let us know if you'd like us to cancel your ticket.</li>
+        </ul>
 
         <p>Best regards,<br />
         Your European Juggling Association and the local EJC 2015 organizers</p>
         
-        <hr />
-
-        <?php echo $this->partial('email/order-confirmation.phtml', array('order' => $order)); ?>
+        <div class='footer'>This mail was sent to you by the EJC Registration 
+            System (ERS), operated by the European Juggling Association (EJA) on 
+            behalf of EJC 2015.<br />If you have any questions about your 
+            pre-registration, please contact the EJA pre-registration 
+            coordinator at <a href='mailto:prereg@eja.net'>prereg@eja.net</a>.<br />
+            For more information about EJC 2015, please visit 
+            <a href='http://www.ejc2015.org'>http://www.ejc2015.org</a> or 
+            contact <a href='mailto:info@ejc2015.org'>info@ejc2015.org</a>.</div>
     </body>
 </html>

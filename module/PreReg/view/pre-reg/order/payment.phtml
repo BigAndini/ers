@@ -38,24 +38,32 @@ echo $this->navigation()
                     if(
                             $now->getTimestamp() < $paymenttype->getActiveUntil()->getDeadline()->getTimestamp() &&
                             $now->getTimestamp() > $paymenttype->getActiveFrom()->getDeadline()->getTimestamp()
-                            ) :
-                        if($order->getPaymentTypeId() != null && $order->getPaymentTypeId() == $paymenttype->getId()) :
+                            ): ?>
+                        <?php if($order->getPaymentTypeId() != null && $order->getPaymentTypeId() == $paymenttype->getId()) :
                             $checked = true;
                         else:
                             $checked = false;
                         endif; ?>
                         <label class="payment-type">
-                        <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
-                        <?php echo $paymenttype->getName(); ?>
+                            <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
+                            <?php echo $paymenttype->getName(); ?>
                         </label>
                     <?php elseif($now->getTimestamp() < $paymenttype->getActiveFrom()->getDeadline()->getTimestamp()): ?>
-                    <p class="alert alert-warning">
-                        <i class="fa fa-warning"></i> This payment type is not available, yet. It will be available from <?php echo $paymenttype->getActiveFrom()->getDeadline()->format('d.m.Y'); ?> until <?php echo $paymenttype->getActiveUntil()->getDeadline()->format('d.m.Y'); ?>. Please choose another payment type.
-                    </p>
+                        <label class="payment-type">
+                            <input style="display: inline;" disabled="disabled" type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
+                            <?php echo $paymenttype->getName(); ?>
+                        </label>
+                        <p class="alert alert-warning">
+                            <i class="fa fa-warning"></i> This payment type is not available, yet. It will be available from <?php echo $paymenttype->getActiveFrom()->getDeadline()->format('d.m.Y'); ?> until <?php echo $paymenttype->getActiveUntil()->getDeadline()->format('d.m.Y'); ?>. Please choose another payment type.
+                        </p>
                     <?php else: ?>
-                    <p class="alert alert-warning">
-                        <i class="fa fa-warning"></i> This payment type was available until <?php echo $paymenttype->getActiveUntil()->getDeadline()->format('d.m.Y'); ?>. Please choose another payment type.
-                    </p>
+                        <label class="payment-type">
+                            <input style="display: inline;" disabled="disabled" type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
+                            <?php echo $paymenttype->getName(); ?>
+                        </label>
+                        <p class="alert alert-warning">
+                            <i class="fa fa-warning"></i> This payment type was available until <?php echo $paymenttype->getActiveUntil()->getDeadline()->format('d.m.Y'); ?>. Please choose another payment type.
+                        </p>
                     <?php endif; ?>
                     <p class="payment-desc">
                         <!--<?php echo $paymenttype->getShortDescription(); ?> <a href="<?php echo $this->url('info', array('action' => 'payment', 'id' => $paymenttype->getId()))?>">more info...</a>-->

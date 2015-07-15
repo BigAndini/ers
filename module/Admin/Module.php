@@ -101,9 +101,12 @@ class Module
                 },
                 'Admin\InputFilter\User' => function($sm){
                     $inputFilter   = new InputFilter\User();
-                    
                     $inputFilter->setServiceLocator($sm);
-                    
+                    return $inputFilter;
+                },
+                'Admin\InputFilter\AcceptBuyerChange' => function($sm){
+                    $inputFilter   = new InputFilter\AcceptBuyerChange();
+                    $inputFilter->setServiceLocator($sm);
                     return $inputFilter;
                 },
             ),

@@ -68,6 +68,11 @@ class Package implements InputFilterAwareInterface
     protected $Code_id;
     
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $transferred_package_id;
+    
+    /**
      * @ORM\Column(type="string", length=45, nullable=true)
      */
     protected $ticket_status;
@@ -105,6 +110,12 @@ class Package implements InputFilterAwareInterface
      * @ORM\JoinColumn(name="Code_id", referencedColumnName="id")
      */
     protected $code;
+    
+    /**
+     * @ORM\OneToOne(targetEntity="Package")
+     * @ORM\JoinColumn(name="transferred_package_id", referencedColumnName="id", nullable=true)
+     */
+    protected $transferred_package;
 
     public function __construct()
     {
@@ -256,6 +267,29 @@ class Package implements InputFilterAwareInterface
     public function getCodeId()
     {
         return $this->Code_id;
+    }
+    
+    /**
+     * Set the value of transferred_package_id.
+     *
+     * @param datetime $transferred_package_id
+     * @return \Entity\Item
+     */
+    public function setTransferredPackageId($transferred_package_id)
+    {
+        $this->transferred_package_id = $transferred_package_id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of transferred_package_id.
+     *
+     * @return datetime
+     */
+    public function getTransferredPackageId()
+    {
+        return $this->transferred_package_id;
     }
 
     /**
@@ -538,6 +572,29 @@ class Package implements InputFilterAwareInterface
         } else {
             return 'undefined';
         }
+    }
+    
+    /**
+     * Set the value of transferred_package.
+     *
+     * @param Package $package
+     * @return \Entity\Package
+     */
+    public function setTransferredPackage(Package $package = null)
+    {
+        $this->transferred_package = $package;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of transferred_package.
+     *
+     * @return Package
+     */
+    public function getTransferredPackage()
+    {
+        return $this->transferred_package;
     }
 
     /**

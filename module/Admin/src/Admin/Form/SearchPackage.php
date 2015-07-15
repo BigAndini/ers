@@ -11,7 +11,7 @@ namespace Admin\Form;
 use Zend\Form\Form;
 
 
-class SearchOrder extends Form
+class SearchPackage extends Form
 {
     public function __construct($name = null)
     {

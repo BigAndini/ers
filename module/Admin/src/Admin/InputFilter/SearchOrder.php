@@ -17,33 +17,22 @@ class SearchOrder implements InputFilterAwareInterface
 { 
     protected $inputFilter; 
     
-    public function setInputFilter(InputFilterInterface $inputFilter) 
-    { 
+    public function setInputFilter(InputFilterInterface $inputFilter) { 
         throw new \Exception("Not used"); 
     } 
     
-      public function getInputFilter()
-    {
-        if (!$this->inputFilter) 
-        { 
+    public function getInputFilter() {
+        if (!$this->inputFilter) { 
             $inputFilter = new InputFilter(); 
             $factory = new InputFactory();             
 
             $inputFilter->add($factory->createInput([ 
                 'name' => 'q', 
-                #'required' => true, 
+                'required' => false,
                 'filters' => array( 
                     array('name' => 'StringTrim'), 
                 ),
                 'validators' => array(
-                    /*array (
-                        'name' => 'NotEmpty',
-                        'options' => array(
-                            'messages' => array(
-                                'isEmpty' => 'To continue you need to select a payment type.',
-                            )
-                        ),
-                    ),*/
                 ),
             ]));
             
