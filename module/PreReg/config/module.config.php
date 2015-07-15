@@ -86,6 +86,11 @@ return array(
                 'route' => 'admin',
                 'resource'  => 'controller/Admin\Controller\Index',
             ),
+            'onsite' => array(
+                'label' => 'Onsite',
+                'route' => 'onsite',
+                'resource'  => 'controller/OnsiteReg\Controller\Index',
+            ),
             'help' => array(
                 /*'label' => '<span class="fa-stack fa-lg">
                         <i class="fa fa-circle fa-stack-2x green"></i>
