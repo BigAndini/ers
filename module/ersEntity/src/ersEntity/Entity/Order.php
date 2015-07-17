@@ -1159,7 +1159,7 @@ class Order implements InputFilterAwareInterface
         foreach($this->getPackages() as $package) {
             foreach($package->getItems() as $item) {
                 if($status == null) {
-                    if($item->getStatus() != 'cancelled') {
+                    if($item->getStatus() != 'cancelled' && $item->getStatus() != 'transferred') {
                         $price += $item->getPrice();
                     }
                 } else {
