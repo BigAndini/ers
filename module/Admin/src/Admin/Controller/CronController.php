@@ -505,9 +505,9 @@ class CronController extends AbstractActionController {
     public function sendEticketsAction() {
         $request = $this->getRequest();
         
-        /*$long_real = (bool) $request->getParam('real',false);
+        $long_real = (bool) $request->getParam('real',false);
         $short_real = (bool) $request->getParam('r',false);
-        $isReal = ($long_real | $short_real);*/
+        $isReal = ($long_real | $short_real);
         
         #$long_count = (int) $request->getParam('count',false);
         #$short_count = (int) $request->getParam('c',false);
@@ -516,26 +516,10 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        # zero tickets should not be send out
-        /*echo "checking for zero euro week tickets... ";
-        $repository = $em->getRepository("ersEntity\Entity\Item");
-        $qb = $repository->createQueryBuilder('i')
-                ->select('i')
-                ->where('i.price = 0')
-                ->andWhere("i.status != 'zero_ok'")
-                ->andWhere("i.status != 'check_zero'")
-                ->andWhere('i.Product_id = 1');
-
-        $zeroItems = $qb->getQuery()->getResult();
-        foreach($zeroItems as $item) {
-            $item->setStatus('check_zero');
-            $em->persist($item);
-        }
-        $em->flush();*/
-        
         # correct package ticket_status
         $qb = $em->getRepository("ersEntity\Entity\Package")->createQueryBuilder('p');
         $qb->where('p.ticket_status IS NULL');
+        $qb->orWhere("p.ticket_status = 'not_send'");
         $noStatusPackages = $qb->getQuery()->getResult();
         echo count($noStatusPackages)." packages need to be corrected.".PHP_EOL;
         foreach($noStatusPackages as $package) {
@@ -551,7 +535,7 @@ class CronController extends AbstractActionController {
             }
             if($productId[1] > 1) {
                 $order = $package->getOrder();
-                echo "Found more than one week ticket in package ".$package->getCode()->getValue()." (".$order->getCode()->getValue().").".PHP_EOL;
+                echo "Found more than one week ticket in package ".$package->getCode()->getValue()." (order: ".$order->getCode()->getValue().").".PHP_EOL;
             }
             # if the package status is paid and
             # there is only one week ticket in this package
@@ -572,8 +556,20 @@ class CronController extends AbstractActionController {
         
         $packages = $em->getRepository("ersEntity\Entity\Package")
             ->findBy(array('ticket_status' => 'can_send'), array(), 100);
-        echo "Sending out e-tickets for ".count($packages)." packages.".PHP_EOL;
-
+        echo "Can send out e-tickets for ".count($packages)." packages.".PHP_EOL;
+        
+        if(!$isReal) {
+            echo "Use -r parameter to really send out all etickets.".PHP_EOL;
+            exit();
+        }
+        
+        echo PHP_EOL;
+        for($i=10; $i > 0; $i--) {
+            echo "Really sending out e-tickets in... ".$i." seconds (ctrl+c to abort)   \r";
+            sleep(1);
+        }
+        echo PHP_EOL;
+        
         foreach($packages as $package) {
             # prepare email (participant, buyer)
             $emailService = new Service\EmailService();
