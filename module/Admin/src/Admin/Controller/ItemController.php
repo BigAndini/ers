@@ -118,6 +118,10 @@ class ItemController extends AbstractActionController {
                     ->findOneBy(array('id' => $id));
                 
                 $item->setStatus('cancelled');
+                foreach($item->getSubItems() as $subItem) {
+                    $subItem->setStatus('cancelled');
+                    $em->persist($subItem);
+                }
                 $em->persist($item);
                 
                 $em->flush();

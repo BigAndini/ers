@@ -527,6 +527,12 @@ class CronController extends AbstractActionController {
                 '1' => 0,
             );
             foreach($package->getItems() as $item) {
+                if($item->getStatus() == 'cancelled') {
+                    continue;
+                }
+                if($item->getStatus() == 'transferred') {
+                    continue;
+                }
                 if(!isset($productId[$item->getProductId()])) {
                     $productId[$item->getProductId()] = 1;
                 } else {
