@@ -144,7 +144,14 @@ $this->headTitle($title);
                                         <?php else: ?>
                                         <li>
                                         <?php endif; ?>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'send-eticket', 'id' => $package->getId())); ?>">Send E-Ticket</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'send-eticket', 'id' => $package->getId())); ?>">
+                                                <?php if($package->getTicketStatus() == 'send_out'): ?>
+                                                    resend e-ticket
+                                                <?php else: ?>
+                                                    send e-ticket
+                                                <?php endif; ?>
+                                                
+                                            </a>
                                         </li>
                                         <li>
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">Download E-Ticket</a>
