@@ -14,6 +14,7 @@ use Zend\Crypt\Password\Bcrypt;
 use PreReg\Form;
 use PreReg\InputFilter;
 use PreReg\Service;
+use ersEntity\Service as ersService;
 use ersEntity\Entity;
 
 class ProfileController extends AbstractActionController {
@@ -135,7 +136,7 @@ class ProfileController extends AbstractActionController {
                     $em->persist($user);
                     $em->flush();
                     
-                    $emailService = new Service\EmailFactory();
+                    $emailService = new ersService\EmailService();
                     #$emailService->setFrom('prereg@eja.net');
         
                     $emailService->addTo($user);
