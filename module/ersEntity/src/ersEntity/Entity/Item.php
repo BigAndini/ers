@@ -168,6 +168,11 @@ class Item implements InputFilterAwareInterface
      * @ORM\Column(type="boolean")
      */
     protected $shipped = false;
+    
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $shipped_date;
 
     public function __construct()
     {
@@ -858,6 +863,29 @@ class Item implements InputFilterAwareInterface
     }
 
     /**
+     * Set the value of shipped_date.
+     *
+     * @param \DateTime $shipped_date
+     * @return \ersEntity\Entity\Item
+     */
+    public function setShippedDate($shipped_date)
+    {
+        $this->shipped_date = $shipped_date;
+        
+        return $this;
+    }
+
+    /**
+     * Get the value of shipped_date.
+     *
+     * @return \DateTime
+     */
+    public function getShippedDate()
+    {
+        return $this->shipped_date;
+    }
+
+    /**
      * Not used, Only defined to be compatible with InputFilterAwareInterface.
      * 
      * @param \Zend\InputFilter\InputFilterInterface $inputFilter
@@ -998,7 +1026,7 @@ class Item implements InputFilterAwareInterface
             'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 
             'amount', 'info', 'status', 'personalized', 'itemVariants', 
             'itemPackageRelatedBySurItemIds', 'itemPackageRelatedBySubItemIds',
-            'agegroup', 'shipped', 'updated', 'created');
+            'agegroup', 'shipped', 'shipped_datetime', 'updated', 'created');
         $relationFields = array('product', 'package', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
@@ -1050,6 +1078,7 @@ class Item implements InputFilterAwareInterface
             'itemPackageRelatedBySubItemIds',
             'agegroup',
             'shipped',
+            'shipped_date',
             'updated', 
             'created'
             );

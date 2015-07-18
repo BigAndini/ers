@@ -107,6 +107,7 @@ class PackageController extends AbstractActionController {
                 }
                 
                 $item->setShipped(true);
+                $item->setShippedDate(new \DateTime());
                 $em->persist($item);
                 error_log('set item ' . $item->getId() . ' of package ' . $package->getId() . ' to shipped');
             }
@@ -151,6 +152,7 @@ class PackageController extends AbstractActionController {
             $form->setData($this->getRequest()->getPost());
             if($form->isValid()) {
                 $item->setShipped(false);
+                $item->setShippedDate(null);
                 $em->persist($item);
                 $em->flush();
 
