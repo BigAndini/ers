@@ -35,7 +35,11 @@ $itemOK = ($status === 'paid');
                 
                 echo '</div>';
             }
+            
+            if(!$item->getPersonalized()):
             ?>
+                <p>agegroup: <span class="h3 text-primary"><?= ($item->getAgegroup() ? 'U' . (date('Y') - $item->getAgegroup()->format('Y')) : 'adult') ?></span></p>
+            <?php endif; ?>
         </div>
         <div class="col-xs-2">
             <p class="h4"><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></p>
