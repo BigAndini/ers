@@ -83,8 +83,14 @@
                 case 'zero_ok': ?>
                     <i data-toggle="tooltip" data-placement="bottom" class="fa fa-child" title="0 € child ticket"></i>
                     <?php break;
-                case 'transferred': ?>
-                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-forward" title="transferred"></i>
+                case 'transferred': 
+                    $transferredPackage = $item->getTransferredItem()->getPackage();
+                    $transferredParticipant = $transferredPackage->getParticipant();
+                    $transferredOrder = $transferredPackage->getOrder();
+                    ?>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $transferredOrder->getId())); ?>">
+                        <i data-toggle="tooltip" data-placement="bottom" class="fa fa-forward" title="transferred to <?php echo $transferredParticipant->getFirstname().' '.$transferredParticipant->getSurname(); ?>"></i>
+                    </a>
                     <?php break;
                 default: ?>
                     <i data-toggle="tooltip" data-placement="bottom" class="fa fa-question" title="unknown"></i>
