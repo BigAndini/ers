@@ -310,6 +310,15 @@ return array(
                         )
                     )
                 ),
+                'item-agegroup' => array(
+                    'options' => array(
+                        'route'    => 'item-agegroup',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'item-agegroup'
+                        )
+                    )
+                ),
                 'gen-user-list' => array(
                     'options' => array(
                         'route'    => 'gen-user-list',

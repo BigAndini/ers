@@ -711,4 +711,66 @@ class CronController extends AbstractActionController {
         }
         return $response;
     }
+    
+    public function itemAgegroupAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $qb = $em->getRepository("ersEntity\Entity\Item")->createQueryBuilder('i');
+        $qb->where('i.agegroup IS NULL');
+        $items = $qb->getQuery()->getResult();
+        /*$items = $em->getRepository("ersEntity\Entity\Item")
+                ->findAll();*/
+        
+        echo "checking ".count($items)." items".PHP_EOL;
+        
+        $count = 0;
+        foreach($items as $item) {
+            $package = $item->getPackage();
+            
+            $agegroupService = $this->getServiceLocator()
+                    ->get('PreReg\Service\AgegroupService:price');
+            switch($item->getProductId()) {
+                case 1:
+                    # week ticket
+                    $participant = $package->getParticipant();
+                    $agegroup = $agegroupService->getAgegroupByDate($participant->getBirthday());
+                    
+                    if($agegroup) {
+                        $item->setAgegroup($agegroup->getAgegroup());
+                        $em->persist($item);
+
+                        foreach($item->getChildItems() as $cItem) {
+                            $cItem->setAgegroup($agegroup->getAgegroup());
+                            $em->persist($cItem);
+                        }
+                    }
+                    break;
+                case 4:
+                    # day ticket
+                    $participant = $package->getParticipant();
+                    $agegroup = $agegroupService->getAgegroupByDate($participant->getBirthday());
+                    
+                    if($agegroup) {
+                        $item->setAgegroup($agegroup->getAgegroup());
+                        $em->persist($item);
+                    }
+                    break;
+                case 5:
+                    # gala-show ticket
+                    if($item->getPrice() != 0) {
+                        # gala-show ticket for 0 € are handled by the week ticket case
+                        echo "This is a gala show ticket for ".$item->getPrice()." € (".$item->getId().")".PHP_EOL;
+                        $count += 1;
+                    }
+                    break;
+                default:
+                    echo "Don't know what to do with product id ".$item->getProductId().", yet.".PHP_EOL;
+                    break;
+            }
+        }
+        $em->flush();
+        
+        echo "found ".$count." items with no owner".PHP_EOL;
+    }
 }
