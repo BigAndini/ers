@@ -1,8 +1,16 @@
 <?php
 $this->headTitle("Start");
+
+
+echo $this->flashMessenger()
+        ->setMessageOpenFormat('<div%s><p>')
+        ->setMessageSeparatorString('</p><p>')
+        ->setMessageCloseString('</p></div>')
+        ->render('error', ['alert', 'alert-danger']);
+
+echo $this->partial('partial/search-box');
 ?>
 
-<?php echo $this->partial('partial/search-box'); ?>
 
 <div class="text-center">
     <p class="text-primary h3"><br>Smile and say hello :)</p>

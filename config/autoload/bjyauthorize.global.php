@@ -112,7 +112,7 @@ return [
                     // allow guests and users (and admins, through inheritance)
                     // the "wear" privilege on the resource "pants"
                     #[['guest', 'user'], 'pants', 'wear'],
-                    [['onsite', 'admin', 'supradm'], 'redirect', 'do'],
+                    [['onsitereg', 'admin', 'supradm'], 'redirect', 'do'],
                 ],
 
                 // Don't mix allow/deny rules if you are using role inheritance.
@@ -165,10 +165,10 @@ return [
                 ['controller' => 'PreReg\Controller\Profile',                                 'roles' => ['user']],
                 
                 /* Onsite */
-                ['controller' => 'OnsiteReg\Controller\Index',                'roles' => ['onsite', 'admin', 'supradm']],
-                ['controller' => 'OnsiteReg\Controller\Search',                'roles' => ['onsite', 'admin', 'supradm']],
-                ['controller' => 'OnsiteReg\Controller\Package',                'roles' => ['onsite', 'admin', 'supradm']],
-                ['controller' => 'OnsiteReg\Controller\Redirect',             'roles' => ['guest', 'onsite', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Index',                'roles' => ['onsitereg', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Search',                'roles' => ['onsitereg', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Package',                'roles' => ['onsitereg', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Redirect',             'roles' => ['guest', 'onsitereg', 'admin', 'supradm']],
                 
                 /* Admin */
                 #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],

@@ -65,23 +65,51 @@ jQuery(function($) {
     
     
     // package detail controls
+    var $confirmAgegroupCheckbox = $('#confirm-agegroup-checkbox');
     var $selectAllButton = $('.select-all-button');
     var $confirmButton = $('.confirm-items-button');
     var $itemCheckboxes = $('.item-ship-checkbox').not(':disabled');
+    
+    function updateConfirmButton() {
+        var anythingSelected = $itemCheckboxes.is(':checked');
+        var agegroupConfirmed = ($confirmAgegroupCheckbox.length == 0 || $confirmAgegroupCheckbox.prop('checked'));
+        $confirmButton.prop('disabled', !anythingSelected || !agegroupConfirmed);
+    }
+    
+    $confirmAgegroupCheckbox.change(function() {
+        var replaceClasses = [
+            ['panel-warning', 'panel-success'],
+            //['fa-warning', 'fa-check'],
+            ['text-warning', 'text-success']
+        ];
+        
+        var $container = $(this).closest('.panel');
+        var oldClass = ($(this).prop('checked') ? 0 : 1);
+        var newClass = ($(this).prop('checked') ? 1 : 0);
+        for(var i=0; i<replaceClasses.length; i++) {
+            $container
+                    .find('.' + replaceClasses[i][oldClass])
+                    .addBack('.' + replaceClasses[i][oldClass])
+                    .removeClass(replaceClasses[i][oldClass])
+                    .addClass(replaceClasses[i][newClass]);
+        }
+        
+        updateConfirmButton();
+    });
     
     $selectAllButton.click(function() {
         var newState = ($selectAllButton.text() === 'Select all');
         $itemCheckboxes.prop('checked', newState).change();
     });
     
-    $itemCheckboxes.change(function(){
+    $itemCheckboxes.change(function() {
         var $container = $(this).closest('li');
         if($(this).prop('checked'))
             $container.addClass('light-green-bg');
         else
             $container.removeClass('light-green-bg');
         
-        $confirmButton.prop('disabled', !$itemCheckboxes.is(':checked'));
+        updateConfirmButton();
         
         if($itemCheckboxes.not(':checked').length === 0)
             $selectAllButton.text('Select none');
