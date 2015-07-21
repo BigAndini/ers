@@ -61,12 +61,17 @@ echo $this->flashMessenger()
         </div>
     </div>
     
-    <div class="col-xs-3">
+    <div class="col-xs-3" style="padding: 0;">
         <div class="panel panel-<?php echo ($ticketAgegroup === NULL ? 'success' : /*($ticketAgegroup->getName() === 'U18' ?*/ 'warning' /*: 'danger')*/); ?>">
             <div class="panel-heading"><h3 class="panel-title">Agegroup</h3></div>
             <div class="panel-body">
                 <?php if ($ticketAgegroup !== NULL): ?>
+                    <label>
                     <p class="h3 text-warning"><i class="fa fa-warning"></i> <?php echo $this->escapeHtml($ticketAgegroup->getName()); ?></p>
+                    <?php if(!empty($unshippedItems)): ?>
+                    <input type="checkbox" id="confirm-agegroup-checkbox" form="ConfirmItems" required>&nbsp;&nbsp;double check e-ticket
+                    <?php endif; ?>
+                    </label>
                 <?php else: ?>
                     <p class="h3 text-success"><i class="fa fa-check"></i> adult</p>
                 <?php endif; ?>

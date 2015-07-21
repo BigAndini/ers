@@ -31,7 +31,9 @@ class RedirectController extends AbstractActionController {
         
         if(!$code) {
             error_log('unable to find code in system: ' . $id);
-            return $this->notFoundAction();
+            //return $this->notFoundAction();
+            $this->flashMessenger()->addErrorMessage('The code "' . $codeValue . '" could not be found in the system!');
+            return $this->redirect()->toRoute('onsite');
         }
         
         $package = $code->getPackage();
@@ -50,8 +52,9 @@ class RedirectController extends AbstractActionController {
         // only remaining option is that the code belongs to an order
         $order = ($code->getOrders()->isEmpty() ? NULL : $code->getOrders()->first());
         if($order) {
-            // currently, we do not redirect anywhere for order codes
-            return $this->notFoundAction();
+            // perform an onsite search for the order code
+            // note that for EJC 2015, order codes were not stored in QR codes, but this seems like a sensible approach
+            return $this->redirect()->toRoute('onsite/search', [], ['query' => ['q' => $code->getValue()]]);
         }
         
         error_log('detected orphaned code ' . $code->getValue() . ': it has no entities associated with it');

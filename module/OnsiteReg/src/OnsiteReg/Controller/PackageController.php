@@ -107,7 +107,14 @@ class PackageController extends AbstractActionController {
                 }
                 
                 $item->setShipped(true);
+                $item->setShippedDate(new \DateTime());
                 $em->persist($item);
+                
+                $log = new \ersEntity\Entity\Log();
+                $log->setUser($this->zfcUserAuthentication()->getIdentity());
+                $log->setData('SHIPPED Item ' . $item->getName() . ' of package ' . $package->getCode()->getValue() . '.');
+                $em->persist($log);
+                
                 error_log('set item ' . $item->getId() . ' of package ' . $package->getId() . ' to shipped');
             }
             $em->flush();
@@ -151,8 +158,17 @@ class PackageController extends AbstractActionController {
             $form->setData($this->getRequest()->getPost());
             if($form->isValid()) {
                 $item->setShipped(false);
+                $item->setShippedDate(null);
                 $em->persist($item);
+                
+                $log = new \ersEntity\Entity\Log();
+                $log->setUser($this->zfcUserAuthentication()->getIdentity());
+                $log->setData('UNSHIPPED Item ' . $item->getName() . ' of package ' . $package->getCode()->getValue() . '.');
+                $em->persist($log);
+                
                 $em->flush();
+                
+                error_log('reset item ' . $item->getId() . ' of package ' . $package->getId() . ' to unshipped');
 
                 $this->flashMessenger()->addSuccessMessage('The item was successfully marked as unshipped again!');
                 return $this->redirect()->toRoute('onsite/package', ['action' => 'detail', 'id' => $package->getId()]);
