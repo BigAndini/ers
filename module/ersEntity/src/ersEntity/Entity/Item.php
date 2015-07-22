@@ -1076,7 +1076,7 @@ class Item implements InputFilterAwareInterface
             'Code_id', 'name', 'shortDescription', 'longDescription', 'price', 
             'amount', 'info', 'status', 'personalized', 'itemVariants', 
             'itemPackageRelatedBySurItemIds', 'itemPackageRelatedBySubItemIds',
-            'agegroup', 'shipped', 'shipped_datetime', 'updated', 'created');
+            'agegroup', 'shipped', 'shipped_date', 'updated', 'created');
         $relationFields = array('product', 'package', 'code');
         $copiedFields = array();
         foreach ($relationFields as $relationField) {
