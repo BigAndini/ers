@@ -119,6 +119,11 @@ class Module
                     $inputFilter->setServiceLocator($sm);
                     return $inputFilter;
                 },
+                'Admin\InputFilter\AcceptMovePackage' => function($sm){
+                    $inputFilter   = new InputFilter\AcceptMovePackage();
+                    $inputFilter->setServiceLocator($sm);
+                    return $inputFilter;
+                },
             ),
         );
     }
