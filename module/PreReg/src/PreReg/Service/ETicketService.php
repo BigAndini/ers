@@ -319,6 +319,9 @@ class ETicketService
          */
         $items = array();
         foreach($this->getPackage()->getItems() as $item) {
+            if($item->getStatus() == 'transferred') {
+                continue;
+            }
             $items[$item->getProductId()][] = $item;
         }
         
