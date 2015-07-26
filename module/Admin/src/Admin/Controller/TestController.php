@@ -43,8 +43,6 @@ class TestController extends AbstractActionController {
         $finalData = array();
         $finalData[] = array(
             'code',
-            'buyer firstname',
-            'buyer surname',
             'participant firstname',
             'participant surname',
             'list of items',
@@ -62,12 +60,8 @@ class TestController extends AbstractActionController {
             }
             $finalData[] = array(
                 utf8_decode($package->getCode()->getValue()),
-                utf8_decode($order->getBuyer()->getFirstname()),
-                utf8_decode($order->getBuyer()->getSurname()),
-                utf8_decode($order->getBuyer()->getEmail()),
                 utf8_decode($package->getParticipant()->getFirstname()),
                 utf8_decode($package->getParticipant()->getSurname()),
-                utf8_decode($package->getParticipant()->getEmail()),
                 utf8_decode($item_list),
                 utf8_decode($order->getCreated()->format('d.m.Y H:i:s')),
             );

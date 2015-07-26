@@ -7,7 +7,7 @@ $this->headTitle($title);
 
 <?php if($user == null || $package == null) : ?>
 <h3>It was not possible to collect all data to change participant.</h3>
-<p><a href="<?php echo $this->url('admin/package', array('action' => 'search')); ?>">back to package search</a></p>
+<p><a href="<?php echo $this->url('admin/order', array('action' => 'search')); ?>">back to order search</a></p>
 <?php else: ?>
 <div class="row">
     <div class="col-md-12">

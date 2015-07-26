@@ -22,9 +22,18 @@ $this->headTitle($title);
         <div class="input-group input-group-lg">
             <?php echo $this->formRow($form->get('q')); ?>
             <span class="input-group-btn">
-                <button class="btn btn-primary" type="button"><i class="fa fa-search"></i></button>
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
             </span>
         </div><!-- /input-group -->
+    </div>
+    <div class="col-md-2 col-lg-2">
+        <h3>new order</h3>
+        <a class="btn btn-success btn-lg" href="<?php echo $this->url('admin/package', 
+                array('action' => 'accept-move'),
+                array('query' => array(
+                    'package_id' => $package->getId(),
+                ))
+                ); ?>"><i class="fa fa-plus"></i></a>
         <?php echo $this->form()->closeTag(); ?>
     </div>
 </div>
@@ -67,7 +76,7 @@ $this->headTitle($title);
                                 'query' => $query,
                                 #'fragment' => $fragment,
                             )
-                        ); ?>">change</a>
+                        ); ?>">to this order</a>
                         <?php echo $this->form()->closeTag(); ?>
                     </div>
                 </div>

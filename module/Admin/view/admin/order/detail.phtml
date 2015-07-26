@@ -194,7 +194,7 @@ $this->headTitle($title);
                             continue;
                         }
                         echo $this->partial('partial/order-detail-item.phtml', array('item' => $item));
-                        if($item->getStatus() != 'cancelled') {
+                        if($item->getStatus() != 'cancelled' && $item->getStatus() != 'transferred') {
                             $subtotal += $item->getPrice();
                             $sum += $item->getPrice();
                         }

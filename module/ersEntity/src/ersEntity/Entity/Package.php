@@ -575,6 +575,9 @@ class Package implements InputFilterAwareInterface
             if($item_status == 'zero_ok') {
                 $item_status = 'paid';
             }
+            if($item_status == 'transferred') {
+                continue;
+            }
             if(isset($status[$item_status])) {
                 $status[$item_status]++;
             } else {

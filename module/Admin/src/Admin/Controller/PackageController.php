@@ -857,4 +857,124 @@ class PackageController extends AbstractActionController {
             'results' => $results,
         ));
     }
+    
+    public function acceptMoveAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $order_id = (int) $this->params()->fromQuery('order_id', 0);
+        $package_id = (int) $this->params()->fromQuery('package_id', 0);
+        
+        $form = new Form\AcceptMovePackage();
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $inputFilter = $this->getServiceLocator()
+                    ->get('Admin\InputFilter\AcceptMovePackage');
+            $form->setInputFilter($inputFilter->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $package = $em->getRepository("ersEntity\Entity\Package")
+                    ->findOneBy(array('id' => $data['package_id']));
+                
+                if($data['order_id'] == '') {
+                    $order = new Entity\Order();
+                    $code = new Entity\Code();
+                    $code->genCode();
+                    $order->setCode($code);
+                    
+                    $buyer = $package->getParticipant();
+                    $order->setBuyer($buyer);
+                } else {
+                    $order = $em->getRepository("ersEntity\Entity\Order")
+                        ->findOneBy(array('id' => $data['order_id']));
+                    
+                    
+                    
+                }
+                
+                $oldOrder = $package->getOrder();
+                $log = new Entity\Log();
+                $log->setUser($this->zfcUserAuthentication()->getIdentity());
+                $log->setData('moved package '.$package->getCode()->getValue().' from order '.$oldOrder->getCode()->getValue().' to order '.$order->getCode()->getValue().': '.$data['comment']);
+                
+                $em->persist($log);
+                
+                # initialize new package
+                $newPackage = new Entity\Package();
+                $code = new Entity\Code();
+                $code->genCode();
+                $newPackage->setCode($code);
+                
+                # set order for package
+                $newPackage->setOrder($package->getOrder());
+                
+                foreach($package->getItems() as $item) {
+                    if($item->hasParentItems()) {
+                        continue;
+                    }
+                    $newItem = clone $item;
+                    $newPackage->addItem($newItem);
+                    $item->setStatus('transferred');
+                    $item->setTransferredItem($newItem);
+                    
+                    $code = new Entity\Code();
+                    $code->genCode();
+                    $newItem->setCode($code);
+                    
+                    $em->persist($item);
+                    $em->persist($newItem);
+                }
+                $newPackage->setTransferredPackage($package);
+                $newPackage->setOrder($order);
+                $order->addPackage($newPackage);
+                
+                $em->persist($newPackage);
+                $em->persist($order);
+                #$em->persist($package);
+                $em->flush();
+                
+                return $this->redirect()->toRoute('admin/order', array(
+                    'action' => 'detail', 
+                    'id' => $oldOrder->getId()
+                ));
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+        
+        $order = null;
+        if($order_id != 0) {
+            error_log('searching order with id: '.$order_id);
+            $order = $em->getRepository("ersEntity\Entity\Order")
+                    ->findOneBy(array('id' => $order_id));
+            $form->get('order_id')->setValue($order->getId());
+        }
+        
+        $package = null;
+        if($package_id != 0) {
+            $package = $em->getRepository("ersEntity\Entity\Package")
+                    ->findOneBy(array('id' => $package_id));
+            $form->get('package_id')->setValue($package->getId());
+        }
+        
+        $forrest = new Service\BreadcrumbFactory();
+        if(!$forrest->exists('package')) {
+            $forrest->set('package', 'admin/order', 
+                    array('action' => 'search')
+                );
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'order' => $order,
+            'package' => $package,
+            'breadcrumb' => $forrest->get('package'),
+        ));
+    }
 }
