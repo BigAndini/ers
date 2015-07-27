@@ -81,6 +81,11 @@ class Module
                     $emailService->setServiceLocator($sm);
                     return $emailService;
                 },
+                'ersEntity\Service\CloneService' => function ($sm) {
+                    $service = new Service\CloneService();
+                    $service->setServiceLocator($sm);
+                    return $service;
+                },
             ),
         );
     }

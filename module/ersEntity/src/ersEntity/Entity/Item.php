@@ -213,11 +213,17 @@ class Item implements InputFilterAwareInterface
      */
     public function __clone() {
         $this->id = null;
-        #$this->Code_id = null;
+        
+        $this->session_id = null;
+        $this->itemPackageRelatedBySurItemIds = new ArrayCollection();
+        $this->itemPackageRelatedBySubItemIds = new ArrayCollection();
+        #$this->itemVariants = new ArrayCollection();
         
         $code = new Code();
         $code->genCode();
         $this->setCode($code);
+        
+        $this->setPackage(null);
         
         $itemVariants = new ArrayCollection();
         foreach($this->getItemVariants() as $variant) {
@@ -227,13 +233,16 @@ class Item implements InputFilterAwareInterface
         }
         $this->itemVariants = $itemVariants;
         
-        $itemPackageRelatedBySubItemIds = new ArrayCollection();
-        foreach($this->getItemPackageRelatedBySurItemIds() as $package) {
+        /*$itemPackages = $this->getItemPackageRelatedBySurItemIds();
+        $this->itemPackageRelatedBySubItemIds = new ArrayCollection();
+        foreach($itemPackages as $package) {
             $newPackage = clone $package;
             $newPackage->setSurItem($this);
-            $itemPackageRelatedBySubItemIds[] = $newPackage;
-        }
-        $this->itemPackageRelatedBySubItemIds = $itemPackageRelatedBySubItemIds;
+            #$itemPackageRelatedBySubItemIds[] = $newPackage;
+            $this->addItemPackageRelatedBySurItemId($newPackage);
+        }*/
+        
+        $this->created = null;
     }
 
     /**
@@ -312,6 +321,9 @@ class Item implements InputFilterAwareInterface
     public function setPackageId($Package_id)
     {
         $this->Package_id = $Package_id;
+        foreach($this->getChildItems() as $cItem) {
+            $cItem->setPackageId($Package_id);
+        }
 
         return $this;
     }
@@ -496,6 +508,9 @@ class Item implements InputFilterAwareInterface
     public function setStatus($status)
     {
         $this->status = $status;
+        foreach($this->getChildItems() as $cItem) {
+            $cItem->setStatus($status);
+        }
 
         return $this;
     }
@@ -821,6 +836,14 @@ class Item implements InputFilterAwareInterface
     public function setPackage(Package $package = null)
     {
         $this->package = $package;
+        foreach($this->getChildItems() as $cItem) {
+            $cItem->setPackage($package);
+            if($package) {
+                $cItem->setPackageId($package->getId());
+            } else {
+                $cItem->setPackageId(null);
+            }
+        }
 
         return $this;
     }

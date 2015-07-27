@@ -773,4 +773,37 @@ class CronController extends AbstractActionController {
         
         echo "found ".$count." items with no owner".PHP_EOL;
     }
+    
+    public function correctItemStatusAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $qb = $em->getRepository("ersEntity\Entity\Item")->createQueryBuilder('i');
+        $qb->where("i.status = 'transferred'");
+        #$qb->orWhere("p.ticket_status = 'not_send'");
+        $transferred_items = $qb->getQuery()->getResult();
+        echo "found ".count($transferred_items)." transferred items.".PHP_EOL;
+
+        foreach($transferred_items as $item) {
+            $tItem = $item->getTransferredItem();
+            if(!$tItem) {
+                continue;
+            }
+            if(!$tItem->hasChildItems()) {
+                continue;
+            }
+            foreach($item->getChildItems() as $cItem) {
+                $cItem->setStatus('transferred');
+                $em->persist($item);
+            }
+            foreach($tItem->getChildItems() as $cItem) {
+                if($tItem->getPackageId() != $cItem->getPackageId()) {
+                    echo "Package Ids do not match: ".$tItem->getPackageId()." != ".$cItem->getPackageId().PHP_EOL;
+                    $cItem->setPackage($tItem->getPackage());   
+                    $em->persist($cItem);
+                }
+            }
+        }
+        $em->flush();
+    }
 }

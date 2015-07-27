@@ -109,7 +109,9 @@ class ItemPackage implements InputFilterAwareInterface
     public function __clone() {
         $this->id = null;
         $this->setSurItem(null);
-        $this->setSubItem(clone $this->getSubItem());
+        #$this->setSubItem(clone $this->getSubItem());
+        $this->setSubItem(null);
+        $this->created = null;
     }
 
     /**

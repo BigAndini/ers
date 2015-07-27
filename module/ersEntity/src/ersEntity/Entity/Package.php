@@ -16,6 +16,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
+use ersEntity\Service;
 
 /**
  * Entity\Package
@@ -88,7 +89,7 @@ class Package implements InputFilterAwareInterface
     protected $created;
 
     /**
-     * @ORM\OneToMany(targetEntity="Item", mappedBy="package",cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Item", mappedBy="package", cascade={"persist"})
      * @ORM\JoinColumn(name="id", referencedColumnName="Package_id")
      */
     protected $items;
@@ -106,7 +107,7 @@ class Package implements InputFilterAwareInterface
     protected $participant;
 
     /**
-     * @ORM\OneToOne(targetEntity="Code", inversedBy="package",cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Code", inversedBy="package", cascade={"persist"})
      * @ORM\JoinColumn(name="Code_id", referencedColumnName="id")
      */
     protected $code;
@@ -147,18 +148,19 @@ class Package implements InputFilterAwareInterface
      */
     public function __clone() {
         $this->id = null;
+        $this->session_id = null;
         
-        # duplicate active items for new package
-        $items = new ArrayCollection();
-        foreach($this->getItems() as $item) {
-            $items[] = clone $item;
-        }
-        $this->items = $items;
+        $this->items = new ArrayCollection();
         
         # generate new code for new package
         $code = new Code();
         $code->genCode();
         $this->setCode($code);
+        
+        $this->setOrder(null);
+        $this->setOrderId(null);
+        
+        $this->created = null;
     }
     
     /**
@@ -387,6 +389,10 @@ class Package implements InputFilterAwareInterface
             $item->setSessionId($this->order->getSessionId('item'));
         }
         $item->setPackage($this);
+        foreach($item->getChildItems() as $cItem) {
+            $cItem->setPackage($this);
+            $cItem->setPackageId($this->getId());
+        }
         
         $this->items[] = $item;
 

@@ -693,35 +693,19 @@ class PackageController extends AbstractActionController {
                 $log->setUser($this->zfcUserAuthentication()->getIdentity());
                 $log->setData('changed participant for package '.$package->getCode()->getValue().': '.$data['comment']);
                 $em->persist($log);
-                #$em->flush();
                 
                 # initialize new package
-                $newPackage = new Entity\Package();
-                $code = new Entity\Code();
-                $code->genCode();
-                $newPackage->setCode($code);
+                $cloneService = $this->getServiceLocator()
+                    ->get('ersEntity\Service\CloneService');
+                $cloneService->setTransfer(true);
+                $newPackage = $cloneService->clonePackage($package);
                 
                 # set order for package
                 $newPackage->setOrder($package->getOrder());
                 
-                foreach($package->getItems() as $item) {
-                    if($item->hasParentItems()) {
-                        continue;
-                    }
-                    $newItem = clone $item;
-                    $newPackage->addItem($newItem);
-                    $item->setStatus('transferred');
-                    $item->setTransferredItem($newItem);
-                    
-                    $code = new Entity\Code();
-                    $code->genCode();
-                    $newItem->setCode($code);
-                    
-                    $em->persist($item);
-                    $em->persist($newItem);
-                }
-                $newPackage->setTransferredPackage($package);
+                #$package->setTransferredPackage($newPackage);
                 $newPackage->setParticipant($user);
+                
                 
                 $em->persist($newPackage);
                 #$em->persist($package);
