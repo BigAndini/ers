@@ -319,6 +319,15 @@ return array(
                         )
                     )
                 ),
+                'correct-item-status' => array(
+                    'options' => array(
+                        'route'    => 'correct-item-status',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-item-status'
+                        )
+                    )
+                ),
                 'gen-user-list' => array(
                     'options' => array(
                         'route'    => 'gen-user-list',
