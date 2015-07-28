@@ -868,8 +868,15 @@ class PackageController extends AbstractActionController {
                 
                 if($data['order_id'] == '') {
                     $order = new Entity\Order();
+                    
                     $code = new Entity\Code();
                     $code->genCode();
+                    $codecheck = 1;
+                    while($codecheck != null) {
+                        $code->genCode();
+                        $codecheck = $em->getRepository("ersEntity\Entity\Code")
+                            ->findOneBy(array('value' => $code->getValue()));
+                    }
                     $order->setCode($code);
                     
                     $buyer = $package->getParticipant();
