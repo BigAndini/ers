@@ -3,49 +3,61 @@
 $title = 'Tickets for EJC 2015';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
-
-<div class="row">
-    <div class="col-lg-6">
-        <p>Click on any item to add further information and place it in your shopping cart.</p>
+<?php if($deadline): ?>
+    <h1><?php echo $this->escapeHtml($title); ?></h1>
+    <div class="row">
+        <div class="col-lg-6">
+            <p>Click on any item to add further information and place it in your shopping cart.</p>
+        </div>
+        <div class="col-lg-6">
+            <p class="text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
+        </div>
     </div>
-    <div class="col-lg-6">
-        <p class="text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
+
+    <?php 
+    foreach ($products as $product) : 
+        if(count($product->getProductPrices()) == 0):
+            continue;
+        endif;
+    ?>
+    <a class="product-item" href="<?php echo $this->url('product', array('action' => 'add', 'product_id' => $product->getId()));?>">
+        <span class="product-title"><?php echo $product->getName(); ?></span>
+        <span class="product-short-description"><?php echo $product->getShortDescription(); ?></span>
+        <table class='table table-notbordered price-table'>
+            <?php foreach($agegroups as $ag): ?>
+            <tr>
+                <td>
+                    <span class="product-price-list product-price-active"><?php echo $ag->getName(); ?></span>
+                </td>
+                <td>
+                    <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+            <tr>
+                <td>
+                    <span class="product-price-list product-price-active">normal</span>
+                </td>
+                <td>
+                    <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
+                </td>
+            </tr>
+
+        </table>
+        <div class="clear-both"></div>
+    </a>
+    <hr />
+
+    <?php endforeach;
+else: ?>
+    <div class="jumbotron">
+        <h1>
+            <?php echo $this->escapeHtml('PreReg is closed'); ?>
+        </h1>
+        <div class="row">
+            <div class="col-lg-offset-2 col-lg-8">
+                <p>The PreReg is already closed. For more information, please visit our homepage on <a href="http://ejc2015.org/registration/">http://ejc2015.org/registration/</a></p>
+            </div>
+        </div>
     </div>
-</div>
-
-<?php 
-foreach ($products as $product) : 
-    if(count($product->getProductPrices()) == 0):
-        continue;
-    endif;
-?>
-<a class="product-item" href="<?php echo $this->url('product', array('action' => 'add', 'product_id' => $product->getId()));?>">
-    <span class="product-title"><?php echo $product->getName(); ?></span>
-    <span class="product-short-description"><?php echo $product->getShortDescription(); ?></span>
-    <table class='table table-notbordered price-table'>
-        <?php foreach($agegroups as $ag): ?>
-        <tr>
-            <td>
-                <span class="product-price-list product-price-active"><?php echo $ag->getName(); ?></span>
-            </td>
-            <td>
-                <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-        <tr>
-            <td>
-                <span class="product-price-list product-price-active">normal</span>
-            </td>
-            <td>
-                <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
-            </td>
-        </tr>
-
-    </table>
-    <div class="clear-both"></div>
-</a>
-<hr />
-
-<?php endforeach; ?>
+<?php endif;
