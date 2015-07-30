@@ -525,21 +525,39 @@ class ItemController extends AbstractActionController {
                 
                 # initialize new package
                 $newPackage = new Entity\Package();
-                $pCode = new Entity\Code();
-                $pCode->genCode();
-                $newPackage->setCode($pCode);
+                $code = new Entity\Code();
+                $code->genCode();
+                $codecheck = 1;
+                while($codecheck != null) {
+                    $code->genCode();
+                    $codecheck = $em->getRepository("ersEntity\Entity\Code")
+                        ->findOneBy(array('value' => $code->getValue()));
+                }
+                $newPackage->setCode($code);
                 
                 # set order for package
                 $newPackage->setOrder($package->getOrder());
                 
-                $newItem = clone $item;
+                $cloneService = $this->getServiceLocator()
+                    ->get('ersEntity\Service\CloneService');
+                $cloneService->setTransfer(true);
+                $newItem = $cloneService->cloneItem($item);
+                
+                #$newItem = clone $item;
                 $newPackage->addItem($newItem);
                 $item->setStatus('transferred');
-                $item->setTransferredItem($newItem);
+                #$item->setTransferredItem($newItem);
 
-                $iCode = new Entity\Code();
-                $iCode->genCode();
-                $newItem->setCode($iCode);
+                
+                $code = new Entity\Code();
+                $code->genCode();
+                $codecheck = 1;
+                while($codecheck != null) {
+                    $code->genCode();
+                    $codecheck = $em->getRepository("ersEntity\Entity\Code")
+                        ->findOneBy(array('value' => $code->getValue()));
+                }
+                $newItem->setCode($code);
 
                 $em->persist($item);
                 $em->persist($newItem);
