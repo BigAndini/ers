@@ -75,10 +75,11 @@ class CloneService
         
         $newItem = clone $item;
         
+        error_log('found item packages: '.count($item->getItemPackageRelatedBySurItemIds()));
         foreach($item->getItemPackageRelatedBySurItemIds() as $itemPackage) {
             $newItemPackage = $this->cloneItemPackage($itemPackage);
-            $newItem->addItemPackageRelatedBySurItemId($newItemPackage);
             $newItemPackage->setSurItem($newItem);
+            $newItem->addItemPackageRelatedBySurItemId($newItemPackage);
             $em->persist($newItemPackage);
         }
         $em->persist($newItem);
@@ -104,7 +105,7 @@ class CloneService
         $newSubItem = $this->cloneItem($itemPackage->getSubItem());
         $newItemPackage->setSubItem($newSubItem);
         
-        $em->persist($newItemPackage);
+        #$em->persist($newItemPackage);
         
         return $newItemPackage;
     }
