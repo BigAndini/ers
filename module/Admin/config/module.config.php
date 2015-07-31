@@ -65,6 +65,12 @@ return array(
                         'action' => 'bankaccounts',
                         'resource'  => 'controller/Admin\Controller\Statistic',
                     ),
+                    'onsite' => array(
+                        'label' => 'Onsite',
+                        'route' => 'admin/statistic',
+                        'action' => 'onsite',
+                        'resource'  => 'controller/Admin\Controller\Statistic',
+                    ),
                 ),
             ),
             'shop' => array(

@@ -10,6 +10,8 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\DBAL\DriverManager;
 
 class StatisticController extends AbstractActionController {
     public function indexAction() {
@@ -97,7 +99,14 @@ class StatisticController extends AbstractActionController {
          */
         $qb = $em->createQueryBuilder();
         $users = $qb
-                ->select('u.birthday', 'c.id country_id', 'c.name country_name', 'SUM(i.price) ordersum')
+                ->select(
+                        'u.birthday', 
+                        'c.id country_id', 
+                        'c.name country_name', 
+                        'SUM(i.price) ordersum',
+                        'i.shipped shipped',
+                        'i.status status'
+                        )
                 ->from('ersEntity\Entity\User', 'u')
                 ->leftJoin('u.country', 'c')
                 ->join('u.packages', 'p')
@@ -114,7 +123,12 @@ class StatisticController extends AbstractActionController {
         $agegroupStatsTicket = array();
         $countryStats = array();
         
-        $defEntry = array('count' => 0, 'amount' => 0);
+        $defEntry = array(
+            'count' => 0, # number of participants
+            'amount' => 0, # amount of money
+            'paid' => 0, # number of participants who paid
+            'onsite' => 0, # number of participants onsite
+            );
         
         // initialize all groups with 0
         $agegroupStatsPrice['adult'] = $defEntry;
@@ -137,6 +151,13 @@ class StatisticController extends AbstractActionController {
             $aggregatePrice['count']++;
             $aggregatePrice['amount'] += $user['ordersum'];
             $aggregateTicket['count']++;
+            
+            if($user['status'] == 'paid') {
+                $aggregateTicket['paid']++;
+            }
+            if($user['shipped'] == 1) {
+                $aggregateTicket['onsite']++;
+            }
             
             $countryId = $user['country_id'] ?: 0;
             $countryName = $user['country_name'] ?: "unknown";
@@ -239,6 +260,31 @@ class StatisticController extends AbstractActionController {
         return new ViewModel(array(
             'activeStats' => $activeStats,
             'matchingStats' => $matchingStats,
+        ));
+    }
+    
+    public function onsiteAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $qb = $em->getRepository("ersEntity\Entity\Item")->createQueryBuilder('i');
+        $qb->where("i.shipped = 1");
+        $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->eq("i.Product_id", "1"),
+                $qb->expr()->eq("i.Product_id", "4")));
+        $shippedItems = $qb->getQuery()->getResult();
+        
+        $itemStats = array();
+        foreach($shippedItems as $item) {
+            if(isset($itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')])) {
+                $itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')]++;
+            } else {
+                $itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')] = 1;
+            }
+        }
+        
+        return new ViewModel(array(
+            'itemStats' => $itemStats,
         ));
     }
 }
