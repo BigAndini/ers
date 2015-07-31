@@ -47,6 +47,8 @@ $this->headTitle($title);
                     <tr>
                         <th>Agegroup</th>
                         <th>Participant count</th>
+                        <th>paid</th>
+                        <th>onsite</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,6 +56,8 @@ $this->headTitle($title);
                     <tr>
                         <td><?php echo $this->escapeHtml($agegroup); ?></td>
                         <td><?php echo $value['count']; ?></td>
+                        <td><?php echo $value['paid']; ?></td>
+                        <td><?php echo $value['onsite']; ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -61,6 +65,8 @@ $this->headTitle($title);
                     <tr>
                         <th>total sum</th>
                         <th><?php echo array_sum(array_column($stats_agegroupTicket, 'count')); ?></th>
+                        <th><?php echo array_sum(array_column($stats_agegroupTicket, 'paid')); ?></th>
+                        <th><?php echo array_sum(array_column($stats_agegroupTicket, 'onsite')); ?></th>
                     </tr>
                 </tfoot>
             </table>
