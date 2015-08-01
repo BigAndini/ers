@@ -19,6 +19,7 @@ $this->headTitle($title);
                 <tbody>
                     <?php 
                     $thisDate = '';
+                    $itemSum = 0;
                     foreach($itemStats as $date => $stat): 
                         if($thisDate != $date): 
                             $thisDate = $date; ?>
@@ -29,16 +30,18 @@ $this->headTitle($title);
                         <?php foreach($stat as $hour => $count): ?>
                         <tr>
                             <td><?php echo $hour; ?></td>
-                            <td><?php echo $count; ?></td>
+                            <td><?php 
+                            echo $count; 
+                            $itemSum+=$count;
+                            ?></td>
                         </tr>
                         <?php endforeach; ?>
-                        
                     <?php endforeach; ?>
                 </tbody>
                 <tfoot>
                     <tr>
                         <th>total sum</th>
-                        <th><?php echo array_sum($itemStats); ?></th>
+                        <th><?php echo $itemSum; ?></th>
                     </tr>
                 </tfoot>
             </table>
