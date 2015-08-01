@@ -35,6 +35,12 @@ $this->headTitle($title);
                         
                     <?php endforeach; ?>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th>total sum</th>
+                        <th><?php echo array_sum($itemStats); ?></th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>

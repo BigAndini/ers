@@ -47,6 +47,7 @@ class TestController extends AbstractActionController {
             'participant surname',
             'list of items',
             'date of purchase',
+            'status',
         );
         foreach ($packages as $package) {
             $order = $package->getOrder();
@@ -58,12 +59,15 @@ class TestController extends AbstractActionController {
                 }
                 $item_list .= "\r\n";
             }
+            $item_list = preg_replace('/\r\n$/', '', $item_list);
+            
             $finalData[] = array(
                 utf8_decode($package->getCode()->getValue()),
                 utf8_decode($package->getParticipant()->getFirstname()),
                 utf8_decode($package->getParticipant()->getSurname()),
                 utf8_decode($item_list),
                 utf8_decode($order->getCreated()->format('d.m.Y H:i:s')),
+                utf8_decode($package->getStatus()),
             );
         }
         $handle = fopen( $filename, "w" );
