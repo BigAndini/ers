@@ -16,7 +16,7 @@ class RedirectController extends AbstractActionController {
         // if not logged in or no according rights redirect to default redirect target
         if(!$this->isAllowed('redirect', 'do')) {
             error_log('unauthorized access to redirect page');
-            return $this->redirect()->toRoute('login');
+            return $this->redirect()->toRoute('user/login');
         }
         
         

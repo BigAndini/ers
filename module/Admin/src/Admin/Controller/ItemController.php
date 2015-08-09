@@ -467,7 +467,6 @@ class ItemController extends AbstractActionController {
             }
 
             $results = $qb->getQuery()->getResult();
-            error_log('found '.count($results).' user');
         }
         
         $forrest = new Service\BreadcrumbFactory();
