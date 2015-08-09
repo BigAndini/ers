@@ -7,7 +7,7 @@ $this->headTitle($title);
 
 <div class="row">
     <div class="col-md-8 col-md-offset-2 col-lg-7 col-md-offset-3">
-        <h3>Search Person</h3>
+        <h3>Search Person <a class="small" href="<?php echo $this->url('admin/user', array('action' => 'add')); ?>">add person</a></h3>
         <?php
         $form = $this->form;
         $form->setAttribute('action', $this->url('admin/package', 
