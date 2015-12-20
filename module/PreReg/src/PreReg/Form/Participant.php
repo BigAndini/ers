@@ -127,7 +127,7 @@ class Participant extends Form
                 'type'  => 'submit',
                 'value' => 'Save',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-success',
+                'class' => 'btn btn-primary',
             ),
         ));
     }

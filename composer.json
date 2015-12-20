@@ -1,26 +1,27 @@
 {
     "name": "inbaz/ers",
-    "description": "EJC Registration System (ERS)",
+    "description": "Event Registration System (ERS)",
     "license": "BSD-3-Clause",
     "keywords": [
         "zf2",
         "prereg",
         "onsitereg",
-        "payment matching"
+        "payment matching",
+        "event registration system"
     ],
     "homepage": "http://prereg.eja.net/",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
         "zendframework/zendframework": "2.*",
         "doctrine/doctrine-orm-module": "0.*",
         "zendframework/zend-developer-tools": "dev-master",
-        "zf-commons/zfc-user-doctrine-orm": "~1.0",
         "ckeditor/ckeditor": "dev-stable",
         "html2text/html2text": "2.0.1",
         "fastnloud/zf2-dkim": "1.*",
         "zf-commons/zfc-base": "0.*",
 	"zf-commons/zfc-user": "1.*",
+        "zf-commons/zfc-user-doctrine-orm": "~1.0",
         "bjyoungblood/bjy-authorize": "1.4.*",
         "dino/dompdf-module": "dev-master",
         "adminweb/qrcode-zf2-module": "0.0.10",
@@ -30,6 +31,22 @@
         "speckcommerce/speck-paypal" : "dev-master",
         "org_heigl/piwik" : "1.0.*",
         "goalio/goalio-rememberme": "1.*",
-        "goalio/goalio-rememberme-doctrine-orm": "1.*"
+        "goalio/goalio-rememberme-doctrine-orm": "1.*",
+        "behat/behat": "@stable",
+        "behat/mink": "@stable",
+        "behat/mink-extension": "@stable",
+        "behat/mink-goutte-driver": "@stable",
+        "behat/mink-sahi-driver": "@stable"
+    },
+    "require-dev": {
+        
+    },
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "autoload": {
+        "psr-0": {
+            "Behat\\Behat": "src/"
+        }
     }
 }

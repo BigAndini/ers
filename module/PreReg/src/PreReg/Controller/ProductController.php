@@ -11,23 +11,23 @@ namespace PreReg\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use PreReg\Form;
-use PreReg\Service;
+use ersBase\Service;
 use Zend\Session\Container;
-use ersEntity\Entity;
+use ersBase\Entity;
 
 class ProductController extends AbstractActionController {
     public function indexAction()
     {
-        $this->getServiceLocator()->get('PreReg\Service\TicketCounterService')
+        $this->getServiceLocator()->get('ersBase\Service\TicketCounterService')
                 ->checkLimits();
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $forrest->reset();
         $forrest->set('participant', 'product');
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $tmp = $em->getRepository("ersEntity\Entity\Product")
+        $tmp = $em->getRepository("ersBase\Entity\Product")
             ->findBy(
                     array(
                         'active' => 1,
@@ -45,15 +45,11 @@ class ProductController extends AbstractActionController {
             }
         }
         
-        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+        $agegroups = $em->getRepository("ersBase\Entity\Agegroup")
                     ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
         
         $deadlineService = $this->getServiceLocator()
-                ->get('PreReg\Service\DeadlineService:price');
-        /*$deadlineService = new Service\DeadlineService();
-        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
-            ->findAll();
-        $deadlineService->setDeadlines($deadlines);*/
+                ->get('ersBase\Service\DeadlineService:price');
         $deadline = $deadlineService->getDeadline();
         
         $cartContainer = new Container('cart');
@@ -63,6 +59,7 @@ class ProductController extends AbstractActionController {
             'agegroups' => $agegroups,
             'deadline' => $deadline,
             'order' => $cartContainer->order,
+            'ers_config' => $this->getServiceLocator()->get('Config')['ERS'],
         ));
     }
     
@@ -101,7 +98,7 @@ class ProductController extends AbstractActionController {
         /*
          * Build and set breadcrumbs
          */
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('product')) {
             $forrest->set('product', 'product');
         }
@@ -139,7 +136,7 @@ class ProductController extends AbstractActionController {
          */
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $product = $em->getRepository("ersEntity\Entity\Product")
+        $product = $em->getRepository("ersBase\Entity\Product")
                 ->findOneBy(array('id' => $product_id));
         
         $form = $this->getServiceLocator()->get('PreReg\Form\ProductView');
@@ -150,7 +147,7 @@ class ProductController extends AbstractActionController {
         /*
          * Get variants for this product and subproducts
          */
-        $variants = $em->getRepository("ersEntity\Entity\ProductVariant")
+        $variants = $em->getRepository("ersBase\Entity\ProductVariant")
                 ->findBy(array('Product_id' => $product_id));
         $defaults = $this->params()->fromQuery();
         #$form->setVariants($variants, $defaults);
@@ -160,11 +157,11 @@ class ProductController extends AbstractActionController {
             $package_info[$variant->getId()] = false;
         }
         
-        $productPackages = $em->getRepository("ersEntity\Entity\ProductPackage")
+        $productPackages = $em->getRepository("ersBase\Entity\ProductPackage")
                 ->findBy(array('Product_id' => $product_id));
         foreach($productPackages as $package) {
             $subProduct = $package->getSubProduct();
-            $subVariants = $em->getRepository("ersEntity\Entity\ProductVariant")
+            $subVariants = $em->getRepository("ersBase\Entity\ProductVariant")
                 ->findBy(array('Product_id' => $subProduct->getId()));
             foreach($subVariants as $variant) {
                 $package_info[$variant->getId()] = true;
@@ -178,11 +175,7 @@ class ProductController extends AbstractActionController {
          * get the according deadline
          */
         $deadlineService = $this->getServiceLocator()
-                ->get('PreReg\Service\DeadlineService:price');
-        /*$deadlineService = new Service\DeadlineService();
-        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
-                    ->findBy(array('priceChange' => '1'));
-        $deadlineService->setDeadlines($deadlines);*/
+                ->get('ersBase\Service\DeadlineService:price');
         $deadline = $deadlineService->getDeadline();
         
         /*
@@ -233,7 +226,7 @@ class ProductController extends AbstractActionController {
                  */
                 $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-                $product = $em->getRepository("ersEntity\Entity\Product")
+                $product = $em->getRepository("ersBase\Entity\Product")
                         ->findOneBy(array('id' => $data['Product_id']));
 
                 /*
@@ -245,11 +238,11 @@ class ProductController extends AbstractActionController {
 
                     if($participant instanceof Entity\User) {
                         $agegroupService = $this->getServiceLocator()
-                                ->get('PreReg\Service\AgegroupService');
+                                ->get('ersBase\Service\AgegroupService');
                         $agegroup = $agegroupService->getAgegroupByUser($participant);
                     }
                 } elseif($agegroup_id != 0) {
-                    $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")
+                    $agegroup = $em->getRepository("ersBase\Entity\Agegroup")
                             ->findOneBy(array('id' => $agegroup_id));
                 } else {
                     $logger->emerg('Unable to add/edit product!');
@@ -278,7 +271,7 @@ class ProductController extends AbstractActionController {
                  */
                 $variant_data = $data['pv'];
                 foreach($product->getProductVariants() as $variant) {
-                    $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                    $value = $em->getRepository("ersBase\Entity\ProductVariantValue")
                         ->findOneBy(array('id' => $variant_data[$variant->getId()]));
                     if($value && !$value->getDisabled()) {
                         $itemVariant = new Entity\ItemVariant();
@@ -293,7 +286,7 @@ class ProductController extends AbstractActionController {
                 /*
                  * check product packages and add data to item entity
                  */
-                $productPackages = $em->getRepository("ersEntity\Entity\ProductPackage")
+                $productPackages = $em->getRepository("ersBase\Entity\ProductPackage")
                     ->findBy(array('Product_id' => $product->getId()));
                 foreach($productPackages as $package) {
                     $subProduct = $package->getSubProduct();
@@ -310,7 +303,7 @@ class ProductController extends AbstractActionController {
 
                     $add = false;
                     foreach($subProduct->getProductVariants() as $variant) {
-                        $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                        $value = $em->getRepository("ersBase\Entity\ProductVariantValue")
                             ->findOneBy(array('id' => $variant_data[$variant->getId()]));
                         if($value && !$value->getDisabled()) {
                             $add = true;
@@ -359,7 +352,7 @@ class ProductController extends AbstractActionController {
                 /*
                  * go the route of the breadcrumbs and find the way back. :)
                  */
-                $forrest = new Service\BreadcrumbFactory();
+                $forrest = new Service\BreadcrumbService();
                 if(!$forrest->exists('cart')) {
                     $forrest->set('cart', 'product');
                 }
@@ -405,7 +398,7 @@ class ProductController extends AbstractActionController {
         $chooser = $cartContainer->chooser;
         $cartContainer->chooser = false;
 
-        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+        $agegroups = $em->getRepository("ersBase\Entity\Agegroup")
                     ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
         
         return new ViewModel(array(
@@ -421,7 +414,7 @@ class ProductController extends AbstractActionController {
         ));
     }
     
-    private function getPersonOptions(\ersEntity\Entity\Product $product, $participant_id=null) {
+    private function getPersonOptions(\ersBase\Entity\Product $product, $participant_id=null) {
         $cartContainer = new Container('cart');
         $options = array();
         foreach($cartContainer->order->getParticipants() as $v) {
@@ -464,7 +457,7 @@ class ProductController extends AbstractActionController {
     private function getAgegroupOptions($agegroup_id = null) {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+        $agegroups = $em->getRepository("ersBase\Entity\Agegroup")
                     ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
         $options = array();
         
@@ -496,7 +489,7 @@ class ProductController extends AbstractActionController {
     }
     
     public function editAction() {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('product')) {
             $forrest->set('product', 'product', array('action' => 'edit'));
         }
@@ -511,7 +504,7 @@ class ProductController extends AbstractActionController {
     }
     
     public function deleteAction() {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         
         if(!$forrest->exists('product')) {
             $forrest->set('product', 'order');
@@ -534,7 +527,7 @@ class ProductController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $product = $em->getRepository("ersEntity\Entity\Product")
+        $product = $em->getRepository("ersBase\Entity\Product")
                 ->findOneBy(array('id' => $product_id));
         
         $request = $this->getRequest();

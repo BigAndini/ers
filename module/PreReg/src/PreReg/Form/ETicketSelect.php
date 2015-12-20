@@ -64,7 +64,7 @@ class ETicketSelect extends Form
                 'type'  => 'submit',
                 'value' => 'Go',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-success',
+                'class' => 'btn btn-primary',
             ),
         ));
     }

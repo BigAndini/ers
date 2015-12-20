@@ -10,19 +10,19 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersEntity\Entity;
+use ersBase\Entity;
 use Zend\Session\Container;
 #use Admin\Form;
-use Admin\Service;
+use ersBase\Service;
 
 class ProductController extends AbstractActionController {
     public function indexAction()
     {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $products = $em->getRepository("ersEntity\Entity\Product")->findBy(array(), array('ordering' => 'ASC'));
+        $products = $em->getRepository("ersBase\Entity\Product")->findBy(array(), array('ordering' => 'ASC'));
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $forrest->set('product', 'admin/product');
         $forrest->set('product-variant', 'admin/product');
         $forrest->set('product-variant-value', 'admin/product');
@@ -52,7 +52,7 @@ class ProductController extends AbstractActionController {
                 $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                $tax = $em->getRepository("ersEntity\Entity\Tax")->findOneBy(array('id' => $product->getTaxId()));
+                $tax = $em->getRepository("ersBase\Entity\Tax")->findOneBy(array('id' => $product->getTaxId()));
                 $product->setTax($tax);
                 
                 $em->persist($product);
@@ -80,7 +80,7 @@ class ProductController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
+        $product = $em->getRepository("ersBase\Entity\Product")->findOneBy(array('id' => $id));
 
         $form = $this->getServiceLocator()->get('Admin\Form\Product');
         $form->bind($product);
@@ -95,7 +95,7 @@ class ProductController extends AbstractActionController {
                 $em->persist($form->getData());
                 $em->flush();
 
-                $forrest = new Service\BreadcrumbFactory();
+                $forrest = new Service\BreadcrumbService();
                 if(!$forrest->exists('product')) {
                     $forrest->set('product', 'admin/product');
                 }
@@ -121,19 +121,19 @@ class ProductController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $product = $em->getRepository("ersEntity\Entity\Product")
+        $product = $em->getRepository("ersBase\Entity\Product")
                 ->findOneBy(array('id' => $id));
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $forrest->set('product', 'admin/product', array('action' => 'view', 'id' => $id));
         $forrest->set('product-package', 'admin/product', array('action' => 'view', 'id' => $id));
         $forrest->set('product-price', 'admin/product', array('action' => 'view', 'id' => $id));
         $forrest->set('product-variant', 'admin/product', array('action' => 'view', 'id' => $id));
         $forrest->set('product-variant-value', 'admin/product', array('action' => 'view', 'id' => $id));
         
-        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+        $deadlines = $em->getRepository("ersBase\Entity\Deadline")
                 ->findBy(array('priceChange' => '1'), array('deadline' => 'ASC'));
-        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+        $agegroups = $em->getRepository("ersBase\Entity\Agegroup")
                 ->findBy(array('priceChange' => '1'), array('agegroup' => 'ASC'));
         
         return new ViewModel(array(
@@ -153,7 +153,7 @@ class ProductController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $old_product = $em->getRepository("ersEntity\Entity\Product")->findOneBy(array('id' => $id));
+        $old_product = $em->getRepository("ersBase\Entity\Product")->findOneBy(array('id' => $id));
         
         $product = clone $old_product;
 
@@ -174,7 +174,7 @@ class ProductController extends AbstractActionController {
                 #$this->copyProductPrices($id, $new_id);   
                 #$this->copyProductVariants($id, $new_id);
 
-                $forrest = new Service\BreadcrumbFactory();
+                $forrest = new Service\BreadcrumbService();
                 $breadcrumb = $forrest->get('product');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
@@ -197,9 +197,9 @@ class ProductController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $Product = $em->getRepository("ersEntity\Entity\Product")
+        $Product = $em->getRepository("ersBase\Entity\Product")
                 ->findOneBy(array('id' => $id));
-        $Items = $em->getRepository("ersEntity\Entity\Item")
+        $Items = $em->getRepository("ersBase\Entity\Item")
                 ->findBy(array('Product_id' => $id));
 
         $request = $this->getRequest();
@@ -208,7 +208,7 @@ class ProductController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $Product = $em->getRepository("ersEntity\Entity\Product")
+                $Product = $em->getRepository("ersBase\Entity\Product")
                     ->findOneBy(array('id' => $id));
                 
                 $this->removeProductPrices($Product);
@@ -231,7 +231,7 @@ class ProductController extends AbstractActionController {
     private function removeProductPrices(Entity\Product $Product) {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $ProductPrices = $em->getRepository("ersEntity\Entity\ProductPrice")
+        $ProductPrices = $em->getRepository("ersBase\Entity\ProductPrice")
                 ->findBy(array('Product_id' => $Product->getId()));
         foreach($ProductPrices as $price) {
             $em->remove($price);
@@ -240,10 +240,10 @@ class ProductController extends AbstractActionController {
     private function removeProductVariants(Entity\Product $Product) {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $ProductVariants = $em->getRepository("ersEntity\Entity\ProductVariant")
+        $ProductVariants = $em->getRepository("ersBase\Entity\ProductVariant")
                 ->findBy(array('Product_id' => $Product->getId()));
         foreach($ProductVariants as $variant) {
-            $ProductVariantValues = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+            $ProductVariantValues = $em->getRepository("ersBase\Entity\ProductVariantValue")
                     ->findBy(array('ProductVariant_id' => $variant->getId()), array('ordering' => 'ASC'));
             foreach($ProductVariantValues as $value) {
                 $em->remove($value);

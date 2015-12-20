@@ -81,13 +81,13 @@ return [
             ],*/
             /*\BjyAuthorize\Provider\Role\ObjectRepositoryProvider::class => [
                 // class name of the entity representing the role
-                'role_entity_class' => 'ersEntity\Entity\Role',
+                'role_entity_class' => 'ersBase\Entity\Role',
                 // service name of the object manager
                 'object_manager'    => 'Doctrine\ORM\EntityManager',
             ],*/
             'BjyAuthorize\Provider\Role\ObjectRepositoryProvider' => array(
                 'object_manager'    => 'doctrine.entitymanager.orm_default',
-                'role_entity_class' => 'ersEntity\Entity\Role',
+                'role_entity_class' => 'ersBase\Entity\Role',
              ),
         ],
 

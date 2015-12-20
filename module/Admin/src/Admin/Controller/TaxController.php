@@ -10,9 +10,9 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersEntity\Entity;
+use ersBase\Entity;
 use Admin\Form;
-use Admin\Service;
+use ersBase\Service;
 
 class TaxController extends AbstractActionController {
     public function indexAction()
@@ -20,13 +20,13 @@ class TaxController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
-            'taxes' => $em->getRepository("ersEntity\Entity\Tax")->findBy(array(), array('percentage' => 'ASC')),
+            'taxes' => $em->getRepository("ersBase\Entity\Tax")->findBy(array(), array('percentage' => 'ASC')),
         ));
     }
 
     public function addAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('tax')) {
             $forrest->set('tax', 'admin/tax');
         }
@@ -60,7 +60,7 @@ class TaxController extends AbstractActionController {
 
     public function editAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $breadcrumb = $forrest->get('tax');
         if(!$forrest->exists('tax')) {
             $forrest->set('tax', 'admin/tax');
@@ -74,7 +74,7 @@ class TaxController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $tax = $em->getRepository("ersEntity\Entity\Tax")->findOneBy(array('id' => $id));
+        $tax = $em->getRepository("ersBase\Entity\Tax")->findOneBy(array('id' => $id));
 
         $form  = new Form\Tax();
         $form->bind($tax);
@@ -104,7 +104,7 @@ class TaxController extends AbstractActionController {
 
     public function deleteAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('tax')) {
             $forrest->set('tax', 'admin/tax');
         }
@@ -124,7 +124,7 @@ class TaxController extends AbstractActionController {
             if ($del == 'Yes') {
                 
                 $id = (int) $request->getPost('id');
-                $tax = $em->getRepository("ersEntity\Entity\Tax")
+                $tax = $em->getRepository("ersBase\Entity\Tax")
                         ->findOneBy(array('id' => $id));
                 $em->remove($tax);
                 $em->flush();
@@ -135,7 +135,7 @@ class TaxController extends AbstractActionController {
 
         return new ViewModel(array(
             'id'    => $id,
-            'tax' => $tax = $em->getRepository("ersEntity\Entity\Tax")
+            'tax' => $tax = $em->getRepository("ersBase\Entity\Tax")
                 ->findOneBy(array('id' => $id)),
             'breadcrumb' => $breadcrumb,
         ));

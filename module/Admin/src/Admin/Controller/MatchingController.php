@@ -12,13 +12,13 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Admin\Form;
 use Admin\InputFilter;
-use ersEntity\Entity;
-use Admin\Service;
+use ersBase\Entity;
+use ersBase\Service;
 
 class MatchingController extends AbstractActionController {
     public function indexAction() {
         $page = (int) $query = $this->params()->fromQuery('page', 1);
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $forrest->set('matching', 'admin/matching');
         
         $em = $this->getServiceLocator()
@@ -27,10 +27,10 @@ class MatchingController extends AbstractActionController {
         $limit = 50;
         $offset = ($limit * ($page - 1));
         # findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
-        $matchings = $em->getRepository("ersEntity\Entity\Match")
+        $matchings = $em->getRepository("ersBase\Entity\Match")
                 ->findBy(array('status' => 'active'), array('updated' => 'DESC'), $limit, $offset);
         
-        $qb = $em->getRepository("ersEntity\Entity\Match")->createQueryBuilder('m');
+        $qb = $em->getRepository("ersBase\Entity\Match")->createQueryBuilder('m');
         $qb->select('count(m.id)');
         $count = $qb->getQuery()->getSingleScalarResult();
         $pagecount = floor($count/$limit);
@@ -47,7 +47,7 @@ class MatchingController extends AbstractActionController {
         #$logger->info($param_orders);
         #$logger->info($param_statements);
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $forrest->set('matching', 'admin/matching', array('action' => 'manual'));
         
         $form = new Form\ManualMatch();
@@ -62,10 +62,10 @@ class MatchingController extends AbstractActionController {
          * TODO: Add filter to select status of orders. unpaid is the default 
          * status but underpaid would be nice, too.
          */
-        $orders = $em->getRepository("ersEntity\Entity\Order")
+        $orders = $em->getRepository("ersBase\Entity\Order")
                 ->findBy(array('payment_status' => 'unpaid'));
         
-        #$repository = $em->getRepository("ersEntity\Entity\Order");
+        #$repository = $em->getRepository("ersBase\Entity\Order");
 
         #$qb = $repository->createQueryBuilder('o');
         #$qb->leftJoin('o.matches', 'm');
@@ -87,13 +87,13 @@ class MatchingController extends AbstractActionController {
         /*
          * add bankaccounts to view model
          */
-        $bankaccounts = $em->getRepository("ersEntity\Entity\BankAccount")
+        $bankaccounts = $em->getRepository("ersBase\Entity\BankAccount")
             ->findBy(array());
         
         /*
          * add bank statements to as value options to form
          */
-        $statements = $em->getRepository("ersEntity\Entity\BankStatement")
+        $statements = $em->getRepository("ersBase\Entity\BankStatement")
                 ->findAll();
         $statement_options = array();
         foreach($statements as $statement) {
@@ -121,7 +121,7 @@ class MatchingController extends AbstractActionController {
                  */
                 $orders = array();
                 foreach($data['orders'] as $order_id) {
-                    $orders[] = $em->getRepository("ersEntity\Entity\Order")
+                    $orders[] = $em->getRepository("ersBase\Entity\Order")
                         ->findBy(array('id' => $order_id));
                 }
                 
@@ -130,7 +130,7 @@ class MatchingController extends AbstractActionController {
                  */
                 $statements = array();
                 foreach($data['statements'] as $statement_id) {
-                    $statements[] = $em->getRepository("ersEntity\Entity\BankStatement")
+                    $statements[] = $em->getRepository("ersBase\Entity\BankStatement")
                         ->findBy(array('id' => $statement_id));
                 }
                 
@@ -183,7 +183,7 @@ class MatchingController extends AbstractActionController {
         $orders = array();
         $order_options = array();
         foreach($param_orders as $order_id) {
-            $orders[] = $em->getRepository("ersEntity\Entity\Order")
+            $orders[] = $em->getRepository("ersBase\Entity\Order")
                 ->findOneBy(array('id' => $order_id));
             $order_options[] = array(
                 'label' => $order_id,
@@ -196,7 +196,7 @@ class MatchingController extends AbstractActionController {
         $statements = array();
         $statement_options = array();
         foreach($param_statements as $statement_id) {
-            $statements[] = $em->getRepository("ersEntity\Entity\BankStatement")
+            $statements[] = $em->getRepository("ersBase\Entity\BankStatement")
                 ->findOneBy(array('id' => $statement_id));
             $statement_options[] = array(
                 'label' => $statement_id,
@@ -228,7 +228,7 @@ class MatchingController extends AbstractActionController {
                  */
                 $orders = array();
                 foreach($data['Order_id'] as $order_id) {
-                    $orders[] = $em->getRepository("ersEntity\Entity\Order")
+                    $orders[] = $em->getRepository("ersBase\Entity\Order")
                         ->findOneBy(array('id' => $order_id));
                 }
                 
@@ -245,7 +245,7 @@ class MatchingController extends AbstractActionController {
                  */
                 $statements = array();
                 foreach($data['BankStatement_id'] as $statement_id) {
-                    $statements[] = $em->getRepository("ersEntity\Entity\BankStatement")
+                    $statements[] = $em->getRepository("ersBase\Entity\BankStatement")
                         ->findOneBy(array('id' => $statement_id));
                 }
                 
@@ -311,7 +311,7 @@ class MatchingController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/matching', array());
         }
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('matching')) {
             $forrest->set('matching', 'admin/matching', array('action' => 'manual'));
         }
@@ -319,7 +319,7 @@ class MatchingController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $match = $em->getRepository("ersEntity\Entity\Match")
+        $match = $em->getRepository("ersBase\Entity\Match")
                 ->findOneBy(array('id' => $id));
         
         $request = $this->getRequest();
@@ -329,7 +329,7 @@ class MatchingController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $match = $em->getRepository("ersEntity\Entity\Match")
+                $match = $em->getRepository("ersBase\Entity\Match")
                     ->findOneBy(array('id' => $id));
                 
                 $match->setStatus('disabled');
@@ -364,10 +364,10 @@ class MatchingController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $forrest->set('matching', 'admin/matching', array('action' => 'disable'));
         
-        $statements = $em->getRepository("ersEntity\Entity\BankStatement")
+        $statements = $em->getRepository("ersBase\Entity\BankStatement")
                 ->findBy(array('status' => 'disabled'), array('updated' => 'DESC'));
         
         return new ViewModel(array(
@@ -382,10 +382,10 @@ class MatchingController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $statement = $em->getRepository("ersEntity\Entity\BankStatement")
+        $statement = $em->getRepository("ersBase\Entity\BankStatement")
                 ->findOneBy(array('id' => $id));
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('matching')) {
             $forrest->set('matching', 'admin/matching', array('action' => 'manual'));
         }
@@ -397,7 +397,7 @@ class MatchingController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $statement = $em->getRepository("ersEntity\Entity\BankStatement")
+                $statement = $em->getRepository("ersBase\Entity\BankStatement")
                     ->findOneBy(array('id' => $id));
                 
                 $statement->setStatus('disabled');
@@ -422,10 +422,10 @@ class MatchingController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $statement = $em->getRepository("ersEntity\Entity\BankStatement")
+        $statement = $em->getRepository("ersBase\Entity\BankStatement")
                 ->findOneBy(array('id' => $id));
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('matching')) {
             $forrest->set('matching', 'admin/matching', array('action' => 'disabled'));
         }
@@ -437,7 +437,7 @@ class MatchingController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $statement = $em->getRepository("ersEntity\Entity\BankStatement")
+                $statement = $em->getRepository("ersBase\Entity\BankStatement")
                     ->findOneBy(array('id' => $id));
                 
                 $statement->setStatus('new');

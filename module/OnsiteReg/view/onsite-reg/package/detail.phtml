@@ -113,7 +113,12 @@ echo $this->flashMessenger()
             <?php echo $this->formHidden($form->get('csrf')); ?>
             <div class="text-right">
                 <button type="button" class="btn btn-lg btn-default select-all-button">Select all</button>
-                <?php echo $this->formSubmit($form->get('submit')->setAttribute('disabled', 'disabled')); ?>
+                <?php
+                    $form->get('submit')->setAttribute('disabled', 'disabled');
+                    $form->get('submit')->setAttribute('class', 'btn btn-lg btn-danger confirm-items-button');
+                    echo $this->formSubmit($form->get('submit')); 
+                    
+                ?>
             </div>
 
             <?php echo $this->form()->closeTag(); ?>

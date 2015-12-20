@@ -60,7 +60,7 @@ class AcceptParticipantChangeItem implements InputFilterAwareInterface
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $item = $em->getRepository("ersEntity\Entity\Item")
+                                $item = $em->getRepository("ersBase\Entity\Item")
                                     ->findOneBy(array('id' => $value));
                 
                                 if($item) {
@@ -96,7 +96,7 @@ class AcceptParticipantChangeItem implements InputFilterAwareInterface
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $user = $em->getRepository("ersEntity\Entity\User")
+                                $user = $em->getRepository("ersBase\Entity\User")
                                     ->findOneBy(array('id' => $value));
                 
                                 if($user) {

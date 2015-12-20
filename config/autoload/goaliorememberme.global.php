@@ -14,7 +14,7 @@ $settings = array(
      * instead of the default one provided. Default is ZfcUser\Entity\User.
      */
     //'remember_me_entity_class' => 'GoalioRememberMe\Entity\RememberMe',
-    #'remember_me_entity_class' => 'ersEntity\Entity\User',
+    #'remember_me_entity_class' => 'ersBase\Entity\User',
 
     /**
      * Remember me cookie expire time

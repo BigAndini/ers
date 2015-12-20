@@ -25,8 +25,8 @@ class PackageController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        /* @var $package \ersEntity\Entity\Package */
-        $package = $em->getRepository('ersEntity\Entity\Package')
+        /* @var $package \ersBase\Entity\Package */
+        $package = $em->getRepository('ersBase\Entity\Package')
                 ->find($id);
         
 //        $forrest = new \PreReg\Service\BreadcrumbFactory();
@@ -72,7 +72,7 @@ class PackageController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         $id = $this->params()->fromRoute('id', 0);
-        $package = $em->getRepository('ersEntity\Entity\Package')->find($id);
+        $package = $em->getRepository('ersBase\Entity\Package')->find($id);
         if(!$package) {
             return $this->notFoundAction();
         }
@@ -110,7 +110,7 @@ class PackageController extends AbstractActionController {
                 $item->setShippedDate(new \DateTime());
                 $em->persist($item);
                 
-                $log = new \ersEntity\Entity\Log();
+                $log = new \ersBase\Entity\Log();
                 $log->setUser($this->zfcUserAuthentication()->getIdentity());
                 $log->setData('SHIPPED Item ' . $item->getName() . ' of package ' . $package->getCode()->getValue() . '.');
                 $em->persist($log);
@@ -140,7 +140,7 @@ class PackageController extends AbstractActionController {
         $packageId = $this->params()->fromRoute('id', 0);
         $itemId = $this->params()->fromRoute('item-id', 0);
         
-        $package = $em->getRepository('ersEntity\Entity\Package')->find($packageId);
+        $package = $em->getRepository('ersBase\Entity\Package')->find($packageId);
         
         if(!$package)
             return $this->notFoundAction();
@@ -161,7 +161,7 @@ class PackageController extends AbstractActionController {
                 $item->setShippedDate(null);
                 $em->persist($item);
                 
-                $log = new \ersEntity\Entity\Log();
+                $log = new \ersBase\Entity\Log();
                 $log->setUser($this->zfcUserAuthentication()->getIdentity());
                 $log->setData('UNSHIPPED Item ' . $item->getName() . ' of package ' . $package->getCode()->getValue() . '.');
                 $em->persist($log);

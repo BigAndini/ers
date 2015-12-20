@@ -11,7 +11,7 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Admin\Form;
-use Admin\Service;
+use ersBase\Service;
 
 class RefundController extends AbstractActionController {
     public function indexAction() {
@@ -21,9 +21,9 @@ class RefundController extends AbstractActionController {
         /*
          * search for orders that do contain items in status refund
          */
-        /*$qb = $em->getRepository("ersEntity\Entity\Order")
+        /*$qb = $em->getRepository("ersBase\Entity\Order")
                 ->createQueryBuild('o');*/
-        $qb = $em->getRepository("ersEntity\Entity\Order")
+        $qb = $em->getRepository("ersBase\Entity\Order")
                 ->createQueryBuilder('o');
         $qb->join('o.packages', 'p');
         $qb->join('p.items', 'i');
@@ -31,7 +31,7 @@ class RefundController extends AbstractActionController {
         
         $orders = $qb->getQuery()->getResult();
         
-        $items = $em->getRepository("ersEntity\Entity\Item")
+        $items = $em->getRepository("ersBase\Entity\Item")
                 ->findBy(array('status' => 'refund'), array('updated' => 'DESC'));
         
         return new ViewModel(array(
@@ -47,7 +47,7 @@ class RefundController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ersEntity\Entity\Order")
+        $order = $em->getRepository("ersBase\Entity\Order")
                 ->findOneBy(array('id' => $id));
 
         #$form = $this->getServiceLocator()->get('Admin\Form\Product');
@@ -63,7 +63,7 @@ class RefundController extends AbstractActionController {
             
             if ($form->isValid()) {
                 $data = $form->getData();
-                $order = $em->getRepository("ersEntity\Entity\Order")
+                $order = $em->getRepository("ersBase\Entity\Order")
                     ->findOneBy(array('id' => $data['id']));
                 $order->setRefundSum($order->getRefundSum()+$data['amount']);
                 $em->persist($order);
@@ -77,7 +77,7 @@ class RefundController extends AbstractActionController {
                 
                 $em->flush();
 
-                $forrest = new Service\BreadcrumbFactory();
+                $forrest = new Service\BreadcrumbService();
                 if(!$forrest->exists('refund')) {
                     $forrest->set('refund', 'admin/refund');
                 }

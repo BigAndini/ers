@@ -12,8 +12,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use PreReg\Form;
-use ersEntity\Entity;
-use PreReg\Service;
+use ersBase\Entity;
+use ersBase\Service;
 use PreReg\InputFilter;
 
 class BuyerController extends AbstractActionController {
@@ -31,7 +31,7 @@ class BuyerController extends AbstractActionController {
         $form = new Form\Buyer(); 
         $request = $this->getRequest(); 
 
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if($request->isPost()) 
         { 
             $user = new Entity\User();
@@ -74,7 +74,7 @@ class BuyerController extends AbstractActionController {
      */
     public function editAction() 
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $breadcrumb = $forrest->get('buyer');
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
@@ -131,7 +131,7 @@ class BuyerController extends AbstractActionController {
             return $this->redirect()->toRoute('participant');
         }
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('participant')) {
             $forrest->set('participant', 'participant');
         }

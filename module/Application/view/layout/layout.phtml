@@ -5,8 +5,8 @@
         <meta charset="utf-8">
         <meta property="og:locale" content="en_GB" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="EJC Registration System - EJC 2015" />
-        <meta property="og:description" content="Get your ticket for the EJC 2015 now!" />
+        <meta property="og:title" content="EJC Registration System - EJC 2016" />
+        <meta property="og:description" content="Get your ticket for the EJC 2016 now!" />
         <meta property="og:url" content="<?php echo $this->serverUrl(); ?>" />
         <meta property="og:site_name" content="EJC Registration System - ERS" />
         <meta property="og:image" content="<?php echo $this->serverUrl('/img/newsfeed.jpg'); ?>" />
@@ -47,6 +47,20 @@
                 ->prependFile($this->basePath() . '/js/html5shiv.js',   'text/javascript', array('conditional' => 'lt IE 9',))
         ; ?>
 
+        <?php if (isset($this->config()['environment']) && $this->config()['environment'] != 'production') : ?>
+        <!-- Hotjar Tracking Code for prereg.eja.net -->
+        <script>
+            (function(h,o,t,j,a,r){
+                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                h._hjSettings={hjid:82996,hjsv:5};
+                a=o.getElementsByTagName('head')[0];
+                r=o.createElement('script');r.async=1;
+                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                a.appendChild(r);
+            })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
+        </script>
+        <?php endif; ?>
+        
     </head>
     <body>
         <?php if (!isset($this->config()['environment'])) : ?>
@@ -59,7 +73,7 @@
         </div>
         <?php endif; ?>
         <!--<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">-->
-        <nav class="navbar navbar-inverse" role="navigation">
+        <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -68,11 +82,8 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a href="<?php echo $this->url('home') ?>">
-                        <span class="navbar-brand" style="margin-top: -7px;">
-                            <img src="/img/ejc_logo.png" alt="" />
-                        </span>
-                        <span class="navbar-brand">
-                            <?php echo $this->translate('Registration System') ?>
+                        <span class="navbar-brand" style="margin-top: -10px;">
+                            <img src="/img/logo_small.jpg" alt="EJC 2016" />
                         </span>
                     </a>
                 </div>

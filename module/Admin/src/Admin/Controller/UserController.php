@@ -11,23 +11,23 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
-use ersEntity\Entity;
+use ersBase\Entity;
 use Admin\Form;
-use Admin\Service;
+use ersBase\Service;
 use Admin\InputFilter;
 
 class UserController extends AbstractActionController {
     
     public function indexAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $forrest->set('user', 'admin/user');
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'users' => $em->getRepository("ersEntity\Entity\User")->findAll(),
+            'users' => $em->getRepository("ersBase\Entity\User")->findAll(),
          ));
     }
 
@@ -35,12 +35,12 @@ class UserController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
+        $qb1 = $em->getRepository("ersBase\Entity\Country")->createQueryBuilder('n');
         $qb1->where($qb1->expr()->isNotNull('n.ordering'));
         $qb1->orderBy('n.ordering', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
-        $qb2 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
+        $qb2 = $em->getRepository("ersBase\Entity\Country")->createQueryBuilder('n');
         $qb2->where($qb2->expr()->isNull('n.ordering'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();
@@ -79,7 +79,7 @@ class UserController extends AbstractActionController {
     
     public function addAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('user')) {
             $forrest->set('user', 'admin/user');
         }
@@ -131,7 +131,7 @@ class UserController extends AbstractActionController {
 
     public function editAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('user')) {
             $forrest->set('user', 'admin/user');
         }
@@ -145,7 +145,7 @@ class UserController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository("ersEntity\Entity\User")->findOneBy(array('id' => $id));
+        $user = $em->getRepository("ersBase\Entity\User")->findOneBy(array('id' => $id));
         
         $form = new Form\User();
         $form->bind($user);
@@ -187,7 +187,7 @@ class UserController extends AbstractActionController {
 
     public function deleteAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('user')) {
             $forrest->set('user', 'admin/user');
         }
@@ -200,7 +200,7 @@ class UserController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository("ersEntity\Entity\User")
+        $user = $em->getRepository("ersBase\Entity\User")
                 ->findOneBy(array('id' => $id));
 
         $request = $this->getRequest();
@@ -209,7 +209,7 @@ class UserController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $user = $em->getRepository("ersEntity\Entity\User")
+                $user = $em->getRepository("ersBase\Entity\User")
                     ->findOneBy(array('id' => $id));
                 $em->remove($user);
                 $em->flush();

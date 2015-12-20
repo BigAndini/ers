@@ -60,7 +60,7 @@ class Module
                     $form   = new Form\Product();
                     
                     $em = $sm->get('doctrine.entitymanager');
-                    $taxes = $em->getRepository("ersEntity\Entity\Tax")->findAll();
+                    $taxes = $em->getRepository("ersBase\Entity\Tax")->findAll();
                     
                     $options = array();
                     foreach($taxes as $tax) {
@@ -75,7 +75,7 @@ class Module
                     $form = new Form\Role();
                     
                     $em = $sm->get('doctrine.entitymanager');
-                    $roles = $em->getRepository("ersEntity\Entity\UserRole")->findBy(array(), array('roleId' => 'ASC'));
+                    $roles = $em->getRepository("ersBase\Entity\UserRole")->findBy(array(), array('roleId' => 'ASC'));
                     
                     $options = array();
                     $options[null] = 'no parent';

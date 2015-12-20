@@ -10,9 +10,9 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersEntity\Entity;
+use ersBase\Entity;
 #use Admin\Form;
-use Admin\Service;
+use ersBase\Service;
 
 class RoleController extends AbstractActionController {
     
@@ -22,13 +22,13 @@ class RoleController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'roles' => $em->getRepository("ersEntity\Entity\Role")->findBy(array(),array('roleId' => 'ASC')),
+            'roles' => $em->getRepository("ersBase\Entity\Role")->findBy(array(),array('roleId' => 'ASC')),
          ));
     }
 
     public function addAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('role')) {
             $forrest->set('role', 'admin/role');
         }
@@ -52,7 +52,7 @@ class RoleController extends AbstractActionController {
                     ->get('Doctrine\ORM\EntityManager');
                 
                 if(is_numeric($role->getParentId()) && $role->getParentId() > 0) {
-                    $parent = $em->getRepository("ersEntity\Entity\Role")
+                    $parent = $em->getRepository("ersBase\Entity\Role")
                         ->findOneBy(array('id' => $role->getParentId()));
                 
                     $role->setParent($parent);
@@ -78,7 +78,7 @@ class RoleController extends AbstractActionController {
 
     public function editAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('role')) {
             $forrest->set('role', 'admin/role');
         }
@@ -92,7 +92,7 @@ class RoleController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $role = $em->getRepository("ersEntity\Entity\Role")->findOneBy(array('id' => $id));
+        $role = $em->getRepository("ersBase\Entity\Role")->findOneBy(array('id' => $id));
 
         #$form = new Form\Role();
         $form = $this->getServiceLocator()->get('Admin\Form\Role');
@@ -124,7 +124,7 @@ class RoleController extends AbstractActionController {
 
     public function deleteAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('role')) {
             $forrest->set('role', 'admin/role');
         }
@@ -136,7 +136,7 @@ class RoleController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $role = $em->getRepository("ersEntity\Entity\Role")
+        $role = $em->getRepository("ersBase\Entity\Role")
                 ->findOneBy(array('id' => $id));
 
         $request = $this->getRequest();
@@ -145,7 +145,7 @@ class RoleController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $role = $em->getRepository("ersEntity\Entity\Role")
+                $role = $em->getRepository("ersBase\Entity\Role")
                     ->findOneBy(array('id' => $id));
                 $em->remove($role);
                 $em->flush();
@@ -154,7 +154,7 @@ class RoleController extends AbstractActionController {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        $childs = $em->getRepository("ersEntity\Entity\Role")
+        $childs = $em->getRepository("ersBase\Entity\Role")
                 ->findBy(array('Parent_id' => $id));
         
         return new ViewModel(array(

@@ -10,7 +10,7 @@ $this->headTitle($title);
 <?php if((count($orders) == 1 && count($statements) >= 1) || (count($orders) >= 1 && count($statements) == 1)): ?>
     <div class="row">
         <div class="col-md-6">
-            <div class="panel panel-success">
+            <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="panel-title">orders for this match</span>
                 </div>
@@ -21,7 +21,7 @@ $this->headTitle($title);
                         $order_sum += $order->getOrderSum();
                         $buyer = $order->getBuyer();
                         ?>
-                        <div class="panel panel-success">
+                        <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-11">
@@ -38,7 +38,7 @@ $this->headTitle($title);
                                 <?php foreach($order->getPackages() as $package): 
                                     $participant = $package->getParticipant();
                                     ?>
-                                    <div class="panel panel-success">
+                                    <div class="panel panel-default">
                                         <div class="panel-body">
                                             <h3><?php echo $participant->getFirstname().' '.$participant->getSurname(); ?></h3>
                                         </div>
@@ -51,7 +51,7 @@ $this->headTitle($title);
             </div>
         </div>
         <div class="col-md-6">
-            <div class="panel panel-success">
+            <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="panel-title">statements for this match</span>
                 </div>
@@ -61,7 +61,7 @@ $this->headTitle($title);
                     foreach($statements as $statement):
                         $statement_sum += (float) $statement->getAmount()->getValue();
                         ?>
-                        <div class="panel panel-success">
+                        <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-1">

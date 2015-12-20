@@ -8,10 +8,11 @@
 
 namespace PreReg;
 
-use ersEntity\Entity;
+use ersBase\Entity;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Session\SessionManager;
 use Zend\Session\Container;
+use Zend\Mvc\MvcEvent;
 
 class Module
 {
@@ -72,7 +73,7 @@ class Module
                             return $response;
                        }
                         
-                        $emailService = $sm->get('ersEntity\Service\EmailService');
+                        $emailService = $sm->get('ersBase\Service\EmailService');
                         $emailService->sendExceptionEmail($e->getParam('exception'));
                     }
                 }
@@ -85,6 +86,7 @@ class Module
             $user_id = $authEvent->getIdentity();
             $loginService->setUserId($user_id);
             $loginService->onLogin();
+            error_log('this is on the login');
             return true;
         });
         
@@ -251,10 +253,10 @@ class Module
                     
                     return $form;
                 },
-                'PreReg\Service\AgegroupService:price' => function($sm) {
+                /*'PreReg\Service\AgegroupService:price' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    $agegroups = $em->getRepository("ersBase\Entity\Agegroup")
                                 ->findBy(array('priceChange' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
@@ -263,7 +265,7 @@ class Module
                 'PreReg\Service\AgegroupService:ticket' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    $agegroups = $em->getRepository("ersBase\Entity\Agegroup")
                                 ->findBy(array('ticketChange' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
@@ -272,7 +274,7 @@ class Module
                 'PreReg\Service\DeadlineService:price' => function($sm) {
                     $deadlineService = new Service\DeadlineService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                    $deadlines = $em->getRepository("ersBase\Entity\Deadline")
                                 ->findBy(array('priceChange' => '1'));
                     $deadlineService->setDeadlines($deadlines);
                     
@@ -281,7 +283,7 @@ class Module
                 'PreReg\Service\DeadlineService:noprice' => function($sm) {
                     $deadlineService = new Service\DeadlineService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                    $deadlines = $em->getRepository("ersBase\Entity\Deadline")
                                 ->findBy(array('priceChange' => '0'));
                     $deadlineService->setDeadlines($deadlines);
                     
@@ -290,26 +292,26 @@ class Module
                 'PreReg\Service\DeadlineService:all' => function($sm) {
                     $deadlineService = new Service\DeadlineService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                    $deadlines = $em->getRepository("ersBase\Entity\Deadline")
                                 ->findAll();
                     $deadlineService->setDeadlines($deadlines);
                     
                     return $deadlineService;
-                },
-                'PreReg\Service\ETicketService' => function($sm) {
+                },*/
+                /*'PreReg\Service\ETicketService' => function($sm) {
                     $eticketService = new Service\ETicketService();
                     $eticketService->setServiceLocator($sm);
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $products = $em->getRepository("ersEntity\Entity\Product")
+                    $products = $em->getRepository("ersBase\Entity\Product")
                                 ->findBy(array('visible' => '1'), array('ordering' => 'ASC'));
                     $eticketService->setProducts($products);
                     return $eticketService;
-                },
-                'PreReg\Service\TicketCounterService' => function($sm) {
+                },*/
+                /*'PreReg\Service\TicketCounterService' => function($sm) {
                     $ticketCounterService = new Service\TicketCounterService();
                     $ticketCounterService->setServiceLocator($sm);
                     return $ticketCounterService;
-                },
+                },*/
                 'PreReg\Service\LoginService' => function($sm) {
                     $loginService = new Service\LoginService();
                     $loginService->setServiceLocator($sm);

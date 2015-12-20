@@ -13,3 +13,4 @@ test/secret.py
 tmp/*
 vendor/bin
 vendor/*
+/composer.phar

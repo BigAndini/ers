@@ -20,6 +20,17 @@ body {
 
 /* CSS colors */
 
+/*a {
+    color: #85b32a;
+}
+a:hover, a:focus {
+    color: #70d900;
+}
+
+.ui-widget-content a {
+    color: #85b32a;
+}*/
+
 .gray, .grey {
     color: #aaa;
 }
@@ -27,11 +38,11 @@ body {
     background: #aaa;
 }
 
-.green {
-    color: #85b32a;
+.primary-color {
+    color: #f48029;
 }
-.green-bg {
-    background: #85b32a;
+.primary-background {
+    background: #f48029;
 }
 
 .light-green {
@@ -472,17 +483,6 @@ label.buyer-label {
 }
 .jumbotron h1 {
     margin-bottom: 30px;
-}
-
-a {
-    color: #85b32a;
-}
-a:hover, a:focus {
-    color: #70d900;
-}
-
-.ui-widget-content a {
-    color: #85b32a;
 }
 
 .ui-tabs .ui-tabs-panel {

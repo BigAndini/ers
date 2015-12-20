@@ -73,7 +73,14 @@ jQuery(function($) {
     function updateConfirmButton() {
         var anythingSelected = $itemCheckboxes.is(':checked');
         var agegroupConfirmed = ($confirmAgegroupCheckbox.length == 0 || $confirmAgegroupCheckbox.prop('checked'));
-        $confirmButton.prop('disabled', !anythingSelected || !agegroupConfirmed);
+        if(!anythingSelected || !agegroupConfirmed) {
+            $confirmButton.prop('disabled', true);
+            $confirmButton.prop('class', 'btn btn-lg btn-danger confirm-items-button');
+        } else {
+            $confirmButton.prop('disabled', false);
+            $confirmButton.prop('class', 'btn btn-lg btn-success confirm-items-button');
+        }
+        
     }
     
     $confirmAgegroupCheckbox.change(function() {

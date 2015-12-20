@@ -10,15 +10,17 @@ namespace PreReg\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use PreReg\Service;
+use ersBase\Service;
 use PreReg\Form;
 
 class InfoController extends AbstractActionController {
     public function indexAction() {
-        return new ViewModel();
+        return new ViewModel(array(
+            'ers_config' => $this->getServiceLocator()->get('Config')['ERS'],
+        ));
     }
     public function termsAction() {
-        $forrest = new Service\BreadcrumbFactory;
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('terms')) {
             $forrest->set('terms', 'home');
         }
@@ -47,11 +49,11 @@ class InfoController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $breadcrumb = $forrest->get('paymenttype');
         
         return new ViewModel(array(
-            'paymenttype' => $em->getRepository("ersEntity\Entity\PaymentType")->findOneBy(array('id' => $id)),
+            'paymenttype' => $em->getRepository("ersBase\Entity\PaymentType")->findOneBy(array('id' => $id)),
             'breadcrumb' => $breadcrumb,
         ));
     }
@@ -93,7 +95,7 @@ class InfoController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+        $agegroups = $em->getRepository("ersBase\Entity\Agegroup")
                 ->findBy(array('ticketChange' => '1'), array('agegroup' => 'ASC'));
         
         $sel = false;
@@ -141,7 +143,7 @@ class InfoController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")
+        $agegroup = $em->getRepository("ersBase\Entity\Agegroup")
                 ->findOneBy(array('id' => $agegroup_id));
         
         return new ViewModel(array(

@@ -80,7 +80,7 @@ class Buyer extends Form
                 'type'  => 'submit',
                 'value' => 'Save & Continue',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-success',
+                'class' => 'btn btn-primary',
             ),
         ));
     }
