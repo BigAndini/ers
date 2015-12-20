@@ -25,8 +25,8 @@ class RedirectController extends AbstractActionController {
         
         // get the corresponding code
         $codeValue = $this->params()->fromRoute('code', '');
-        /* @var $code \ersEntity\Entity\Code */
-        $code = $em->getRepository("ersEntity\Entity\Code")
+        /* @var $code \ersBase\Entity\Code */
+        $code = $em->getRepository("ersBase\Entity\Code")
                 ->findOneBy(array('value' => $codeValue));
         
         if(!$code) {

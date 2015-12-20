@@ -11,7 +11,8 @@ namespace Admin\Service;
 use Zend\Session\Container;
 
 /**
- * breadcrumb factory
+ * breadcrumb factory DEPRECATED!!!
+ * use ersBase\Service\BreadcrumbService instead.
  */
 class BreadcrumbFactory
 {

@@ -14,7 +14,7 @@ $config = array(
         'QRCode',
         'CKEditorModule',
         'Application',
-        'ersEntity',
+        'ersBase',
         'Admin',
         'PreReg',
         'OnsiteReg',

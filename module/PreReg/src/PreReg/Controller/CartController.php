@@ -11,8 +11,8 @@ namespace PreReg\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
-use ersEntity\Entity;
-use PreReg\Service;
+use ersBase\Entity;
+use ersBase\Service;
 use PreReg\Form;
 
 class CartController extends AbstractActionController {
@@ -90,7 +90,7 @@ class CartController extends AbstractActionController {
                  */
                 $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-                $product = $em->getRepository("ersEntity\Entity\Product")
+                $product = $em->getRepository("ersBase\Entity\Product")
                         ->findOneBy(array('id' => $data['Product_id']));
 
                 /*
@@ -107,10 +107,10 @@ class CartController extends AbstractActionController {
                     $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
 
                     $agegroupService = $this->getServiceLocator()
-                            ->get('PreReg\Service\AgegroupService');
+                            ->get('ersBase\Service\AgegroupService');
                     $agegroup = $agegroupService->getAgegroupByUser($participant);
                 } elseif($agegroup_id != 0) {
-                    $agegroup = $em->getRepository("ersEntity\Entity\Agegroup")
+                    $agegroup = $em->getRepository("ersBase\Entity\Agegroup")
                             ->findOneBy(array('id' => $agegroup_id));
                 } else {
                     $logger->emerg('Unable to add/edit product!');
@@ -120,9 +120,9 @@ class CartController extends AbstractActionController {
                  * get deadline
                  */
                 $deadlineService = $this->getServiceLocator()
-                    ->get('PreReg\Service\DeadlineService:price');
+                    ->get('ersBase\Service\DeadlineService:price');
                 /*$deadlineService = new Service\DeadlineService();
-                $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                $deadlines = $em->getRepository("ersBase\Entity\Deadline")
                         ->findBy(array('priceChange' => '1'));
                 $deadlineService->setDeadlines($deadlines);*/
                 $deadline = $deadlineService->getDeadline();
@@ -141,7 +141,7 @@ class CartController extends AbstractActionController {
                  */
                 $variant_data = $data['pv'];
                 foreach($product->getProductVariants() as $variant) {
-                    $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                    $value = $em->getRepository("ersBase\Entity\ProductVariantValue")
                         ->findOneBy(array('id' => $variant_data[$variant->getId()]));
                     if($value) {
                         $itemVariant = new Entity\ItemVariant();
@@ -156,7 +156,7 @@ class CartController extends AbstractActionController {
                 /*
                  * check product packages and add data to item entity
                  */
-                $productPackages = $em->getRepository("ersEntity\Entity\ProductPackage")
+                $productPackages = $em->getRepository("ersBase\Entity\ProductPackage")
                     ->findBy(array('Product_id' => $product->getId()));
                 foreach($productPackages as $package) {
                     $subProduct = $package->getSubProduct();
@@ -169,7 +169,7 @@ class CartController extends AbstractActionController {
                     $subItem->populate($product_data);
 
                     foreach($subProduct->getProductVariants() as $variant) {
-                        $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                        $value = $em->getRepository("ersBase\Entity\ProductVariantValue")
                             ->findOneBy(array('id' => $variant_data[$variant->getId()]));
                         if($value) {
                             $itemVariant = new Entity\ItemVariant();
@@ -211,7 +211,7 @@ class CartController extends AbstractActionController {
                 /*
                  * go the route of the breadcrumbs and find the way back. :)
                  */
-                $forrest = new Service\BreadcrumbFactory();
+                $forrest = new Service\BreadcrumbService();
                 if(!$forrest->exists('cart')) {
                     $forrest->set('cart', 'product');
                 }
@@ -227,7 +227,7 @@ class CartController extends AbstractActionController {
     }
     
     public function resetAction() {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('cart')) {
             $forrest->set('cart', 'order');
         }

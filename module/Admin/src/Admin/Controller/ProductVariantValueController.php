@@ -10,10 +10,10 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersEntity\Entity;
+use ersBase\Entity;
 use Zend\Session\Container;
 use Admin\Form;
-use Admin\Service;
+use ersBase\Service;
 
 class ProductVariantValueController extends AbstractActionController 
 {    
@@ -32,7 +32,7 @@ class ProductVariantValueController extends AbstractActionController
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
-            'productvariant' => $em->getRepository("ersEntity\Entity\ProductVariantValue")->findOneBy(array('id' => $id)),
+            'productvariant' => $em->getRepository("ersBase\Entity\ProductVariantValue")->findOneBy(array('id' => $id)),
         ));
     }
     
@@ -43,7 +43,7 @@ class ProductVariantValueController extends AbstractActionController
             return $this->redirect()->toRoute('admin/product-variant-value');
         }
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('product-variant-value')) {
             $forrest->set('product-variant-value', 'admin/product');
         }
@@ -63,7 +63,7 @@ class ProductVariantValueController extends AbstractActionController
                     ->get('Doctrine\ORM\EntityManager');
 
                 $value->populate($form->getData());
-                $productvariant = $em->getRepository("ersEntity\Entity\ProductVariant")->findOneBy(array('id' => $value->getProductVariantId()));
+                $productvariant = $em->getRepository("ersBase\Entity\ProductVariant")->findOneBy(array('id' => $value->getProductVariantId()));
                 $value->setProductVariant($productvariant);
                 
                 $em->persist($value);
@@ -95,12 +95,12 @@ class ProductVariantValueController extends AbstractActionController
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('product-variant-value')) {
             $forrest->set('product-variant-value', 'admin/product');
         }
         
-        $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")->findOneBy(array('id' => $id));
+        $value = $em->getRepository("ersBase\Entity\ProductVariantValue")->findOneBy(array('id' => $id));
 
         $form  = new Form\ProductVariantValue();
         $form->bind($value);
@@ -146,20 +146,20 @@ class ProductVariantValueController extends AbstractActionController
             if ($del == 'Yes') {
                 
                 $id = (int) $request->getPost('id');
-                $value = $em->getRepository("ersEntity\Entity\ProductVariantValue")
+                $value = $em->getRepository("ersBase\Entity\ProductVariantValue")
                         ->findOneBy(array('id' => $id));
                 $em->remove($value);
                 $em->flush();
             }
 
-            $forrest = new Service\BreadcrumbFactory();
+            $forrest = new Service\BreadcrumbService();
             $breadcrumb = $forrest->get('product-variant-value');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
         return new ViewModel(array(
             'id'    => $id,
-            'value' => $em->getRepository("ersEntity\Entity\ProductVariantValue")
+            'value' => $em->getRepository("ersBase\Entity\ProductVariantValue")
                         ->findOneBy(array('id' => $id)),
         ));
     }

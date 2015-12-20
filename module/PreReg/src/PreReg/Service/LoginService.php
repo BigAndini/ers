@@ -8,7 +8,7 @@
 
 namespace PreReg\Service;
 
-use ersEntity\Entity;
+use ersBase\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Session\Container;
 
@@ -56,7 +56,7 @@ class LoginService
     public function setUserId($user_id) {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $this->setUser($em->getRepository("ersEntity\Entity\User")
+        $this->setUser($em->getRepository("ersBase\Entity\User")
                 ->findOneBy(array('id' => $user_id)));
     }
     
@@ -109,7 +109,7 @@ class LoginService
                 if(isset($countries[$newUser->getCountryId()])) {
                     $country = $countries[$newUser->getCountryId()];
                 } else {
-                    $country = $em->getRepository("ersEntity\Entity\Country")
+                    $country = $em->getRepository("ersBase\Entity\Country")
                         ->findOneBy(array('id' => $newUser->getCountryId()));
                     $countries[$country->getId()] = $country;
                 }
@@ -131,7 +131,7 @@ class LoginService
             /*
              * add users from former orders
              */
-            $orders = $em->getRepository("ersEntity\Entity\Order")
+            $orders = $em->getRepository("ersBase\Entity\Order")
                 ->findBy(array('Buyer_id' => $this->getUser()->getId()));
         
             foreach($orders as $order) {
@@ -144,7 +144,7 @@ class LoginService
                         if(isset($countries[$newUser->getCountryId()])) {
                             $country = $countries[$newUser->getCountryId()];
                         } else {
-                            $country = $em->getRepository("ersEntity\Entity\Country")
+                            $country = $em->getRepository("ersBase\Entity\Country")
                                 ->findOneBy(array('id' => $newUser->getCountryId()));
                             $countries[$country->getId()] = $country;
                             error_log('found country: '.$country->getName());

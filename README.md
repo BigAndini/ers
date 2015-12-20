@@ -1,14 +1,14 @@
-ERS (EJC Registration System)
+ERS (Event Registration System)
 =============================
 
 Introduction
 ------------
 
-The EJC Registration System has these main tasks:
-1. Give the EJC core orga team the ability to configure all needed tickets easily. (Admin)
+The Event Registration System has these main tasks:
+1. Give the event core orga team the ability to configure all needed tickets easily. (Admin)
 1. Give jugglers the possibility to buy tickets for the European Juggling Convention. (PreReg)
 2. Give the organisation team onsite the possibility to easily check what the participants have booked. (OnsiteReg)
-3. Create needed statistics after the EJC. (Stats)
+3. Create needed statistics after the event. (Stats)
 
 Installation instructions
 -------------------------

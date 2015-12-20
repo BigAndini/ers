@@ -285,7 +285,7 @@ class CreditCard extends Form
                 'type'  => 'submit',
                 'value' => 'pay now',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-success media-object',
+                'class' => 'btn btn-primary media-object',
             ),
         ));
     }

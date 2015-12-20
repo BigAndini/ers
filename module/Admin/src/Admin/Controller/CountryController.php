@@ -10,25 +10,25 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersEntity\Entity;
+use ersBase\Entity;
 use Admin\Form;
-use Admin\Service;
+use ersBase\Service;
 
 class CountryController extends AbstractActionController {
     public function indexAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $forrest->set('country', 'admin/country');
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
+        $qb1 = $em->getRepository("ersBase\Entity\Country")->createQueryBuilder('n');
         $qb1->where($qb1->expr()->isNotNull('n.ordering'));
         $qb1->orderBy('n.ordering', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
-        $qb2 = $em->getRepository("ersEntity\Entity\Country")->createQueryBuilder('n');
+        $qb2 = $em->getRepository("ersBase\Entity\Country")->createQueryBuilder('n');
         $qb2->where($qb2->expr()->isNull('n.ordering'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();
@@ -42,7 +42,7 @@ class CountryController extends AbstractActionController {
 
     public function editAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $breadcrumb = $forrest->get('country');
         if(!$forrest->exists('country')) {
             $forrest->set('country', 'admin/country');
@@ -54,7 +54,7 @@ class CountryController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $country = $em->getRepository("ersEntity\Entity\Country")->findOneBy(array('id' => $id));
+        $country = $em->getRepository("ersBase\Entity\Country")->findOneBy(array('id' => $id));
 
         $form  = new Form\Country();
         $form->bind($country);
@@ -89,7 +89,7 @@ class CountryController extends AbstractActionController {
 
     public function deleteAction()
     {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('tax')) {
             $forrest->set('tax', 'admin/tax');
         }
@@ -109,7 +109,7 @@ class CountryController extends AbstractActionController {
             if ($del == 'Yes') {
                 
                 $id = (int) $request->getPost('id');
-                $tax = $em->getRepository("ersEntity\Entity\Tax")
+                $tax = $em->getRepository("ersBase\Entity\Tax")
                         ->findOneBy(array('id' => $id));
                 $em->remove($tax);
                 $em->flush();
@@ -120,7 +120,7 @@ class CountryController extends AbstractActionController {
 
         return new ViewModel(array(
             'id'    => $id,
-            'tax' => $tax = $em->getRepository("ersEntity\Entity\Tax")
+            'tax' => $tax = $em->getRepository("ersBase\Entity\Tax")
                 ->findOneBy(array('id' => $id)),
             'breadcrumb' => $breadcrumb,
         ));

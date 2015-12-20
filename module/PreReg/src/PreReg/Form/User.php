@@ -114,7 +114,7 @@ class User extends Form
                 'type'  => 'submit',
                 'value' => 'Ok',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-success',
+                'class' => 'btn btn-primary',
             ),
         ));
     }

@@ -1,7 +1,6 @@
-<h1><?php echo $this->translate('A 404 error occurred') ?></h1>
-<h2>Sorry!</h2>
+<h1>Sorry!</h1>
 <p>The page you are looking for doesn't exist. If you think this is an error, 
-    please let us know at <a href="mailto:info@ejc2015.org">info@ejc2015.org</a>.</p>
+    please let us know at <a href="mailto:admin@eja.net">admin@eja.net</a>.</p>
 
 <h3>You might be looking for:</h3>
 <ul>
@@ -10,6 +9,8 @@
     <li>the <a href="<?php echo $this->url('zfcuser/login'); ?>">login</a> to access your previous purchases</li>
 </ul>
 
+<hr>
+<h1><?php echo $this->translate('A 404 error occurred') ?></h1>
 <h2><?php echo $this->message ?></h2>
 
 <?php if (isset($this->reason) && $this->reason): ?>

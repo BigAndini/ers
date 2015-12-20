@@ -8,10 +8,12 @@
 
 namespace OnsiteReg;
 
-use ersEntity\Entity;
+use ersBase\Entity;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Session\SessionManager;
 use Zend\Session\Container;
+use Zend\Mvc\MvcEvent;
+use ersBase\Service;
 
 class Module
 {
@@ -71,7 +73,7 @@ class Module
                             return $response;
                        }
                         
-                        $emailService = $sm->get('ersEntity\Service\EmailService');
+                        $emailService = $sm->get('ersBase\Service\EmailService');
                         $emailService->sendExceptionEmail($e->getParam('exception'));
                     }
                 }
@@ -253,7 +255,7 @@ class Module
                 'OnsiteReg\Service\AgegroupService:price' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    $agegroups = $em->getRepository("ersBase\Entity\Agegroup")
                                 ->findBy(array('priceChange' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
@@ -262,7 +264,7 @@ class Module
                 'OnsiteReg\Service\AgegroupService:ticket' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository("ersEntity\Entity\Agegroup")
+                    $agegroups = $em->getRepository("ersBase\Entity\Agegroup")
                                 ->findBy(array('ticketChange' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     

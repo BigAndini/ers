@@ -10,10 +10,10 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersEntity\Entity;
-use ersEntity\Service as ersService;
+use ersBase\Entity;
+use ersBase\Service as ersService;
 use Admin\Form;
-use Admin\Service;
+use ersBase\Service;
 use Admin\InputFilter;
 
 class PackageController extends AbstractActionController {
@@ -23,7 +23,7 @@ class PackageController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'agegroups' => $em->getRepository("ersEntity\Entity\Agegroup")
+            'agegroups' => $em->getRepository("ersBase\Entity\Agegroup")
                 ->findBy(array(), array('agegroup' => 'ASC')),
         ));
     }
@@ -34,7 +34,7 @@ class PackageController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/order', array());
         }
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
             $forrest->set('package', 'admin/package', array('action' => 'detail', 'id' => $id));
         }
@@ -43,7 +43,7 @@ class PackageController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository("ersBase\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
         return new ViewModel(array(
@@ -58,10 +58,10 @@ class PackageController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository("ersBase\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
             $forrest->set('package', 'admin/order');
         }
@@ -73,7 +73,7 @@ class PackageController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $package = $em->getRepository("ersEntity\Entity\Package")
+                $package = $em->getRepository("ersBase\Entity\Package")
                     ->findOneBy(array('id' => $id));
                 
                 foreach($package->getItems() as $item) {
@@ -101,10 +101,10 @@ class PackageController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository("ersBase\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
             $forrest->set('package', 'admin/order');
         }
@@ -116,7 +116,7 @@ class PackageController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $package = $em->getRepository("ersEntity\Entity\Package")
+                $package = $em->getRepository("ersBase\Entity\Package")
                     ->findOneBy(array('id' => $id));
                 
                 foreach($package->getItems() as $item) {
@@ -144,10 +144,10 @@ class PackageController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository("ersBase\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
             $forrest->set('package', 'admin/order');
         }
@@ -159,7 +159,7 @@ class PackageController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $package = $em->getRepository("ersEntity\Entity\Package")
+                $package = $em->getRepository("ersBase\Entity\Package")
                     ->findOneBy(array('id' => $id));
                 
                 foreach($package->getItems() as $item) {
@@ -187,10 +187,10 @@ class PackageController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository("ersBase\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
             $forrest->set('package', 'admin/order');
         }
@@ -202,7 +202,7 @@ class PackageController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $package = $em->getRepository("ersEntity\Entity\Package")
+                $package = $em->getRepository("ersBase\Entity\Package")
                     ->findOneBy(array('id' => $id));
                 
                 foreach($package->getItems() as $item) {
@@ -230,10 +230,10 @@ class PackageController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository("ersBase\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
             $forrest->set('package', 'admin/order');
         }
@@ -247,7 +247,7 @@ class PackageController extends AbstractActionController {
          * get agegroup
          */
         $agegroupService = $this->getServiceLocator()
-            ->get('PreReg\Service\AgegroupService:price');
+            ->get('ersBase\Service\AgegroupService:price');
         $agegroup = $agegroupService->getAgegroupByDate($participant->getBirthday());
         
         /*
@@ -256,9 +256,9 @@ class PackageController extends AbstractActionController {
         $order = $package->getOrder();
         
         $deadlineService = $this->getServiceLocator()
-                ->get('PreReg\Service\DeadlineService:price');
-        /*$deadlineService = new \PreReg\Service\DeadlineService();
-        $deadlines = $em->getRepository("ersEntity\Entity\Deadline")
+                ->get('ersBase\Service\DeadlineService:price');
+        /*$deadlineService = new \ersBase\Service\DeadlineService();
+        $deadlines = $em->getRepository("ersBase\Entity\Deadline")
                     ->findBy(array('priceChange' => '1'));
         $deadlineService->setDeadlines($deadlines);*/
 
@@ -273,7 +273,7 @@ class PackageController extends AbstractActionController {
 
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $package = $em->getRepository("ersEntity\Entity\Package")
+                $package = $em->getRepository("ersBase\Entity\Package")
                     ->findOneBy(array('id' => $id));
                 
                 $itemArray = $this->recalcPackage($package, $agegroup, $deadline);
@@ -348,7 +348,7 @@ class PackageController extends AbstractActionController {
                 $codecheck = 1;
                 while($codecheck != null) {
                     $code->genCode();
-                    $codecheck = $em->getRepository("ersEntity\Entity\Code")
+                    $codecheck = $em->getRepository("ersBase\Entity\Code")
                         ->findOneBy(array('value' => $code->getValue()));
                 }
                 $newItem->setCodeId(null);
@@ -378,7 +378,7 @@ class PackageController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository("ersBase\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
         /*$languages = array(
@@ -409,7 +409,7 @@ class PackageController extends AbstractActionController {
         $form->get('submit')->setValue('Download');
         $form->get('id')->setValue($package->getId());
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
             $forrest->set('package', 'admin/order');
         }
@@ -421,11 +421,11 @@ class PackageController extends AbstractActionController {
             if ($form->isValid()) {
                 $id = (int) $request->getPost('id');
                 
-                $package = $em->getRepository("ersEntity\Entity\Package")
+                $package = $em->getRepository("ersBase\Entity\Package")
                     ->findOneBy(array('id' => $id));
                 
                 $eticketService = $this->getServiceLocator()
-                    ->get('PreReg\Service\ETicketService');
+                    ->get('ersBase\Service\ETicketService');
                 
                 #$eticketService->setLanguage($request->getPost('language'));
                 $eticketService->setPackage($package);
@@ -460,7 +460,7 @@ class PackageController extends AbstractActionController {
     }
     
     public function sendEticketAction() {
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
             $forrest->set('package', 'admin/order');
         }
@@ -474,7 +474,7 @@ class PackageController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository("ersBase\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
         $request = $this->getRequest();
@@ -484,7 +484,7 @@ class PackageController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $package = $em->getRepository("ersEntity\Entity\Package")
+                $package = $em->getRepository("ersBase\Entity\Package")
                     ->findOneBy(array('id' => $id));
                 
                 if($package->getStatus() != 'paid') {
@@ -527,7 +527,7 @@ class PackageController extends AbstractActionController {
 
                 # generate e-ticket pdf
                 $eticketService = $this->getServiceLocator()
-                    ->get('PreReg\Service\ETicketService');
+                    ->get('ersBase\Service\ETicketService');
 
                 $eticketService->setLanguage('en');
                 $eticketService->setPackage($package);
@@ -546,7 +546,7 @@ class PackageController extends AbstractActionController {
                 $em->persist($package);
                 $em->flush();
                 
-                /*$eticketService = $this->getServiceLocator()->get('PreReg\Service\ETicketService');
+                /*$eticketService = $this->getServiceLocator()->get('ersBase\Service\ETicketService');
                 $eticketService->setPackage($package);
                 $filePath = $eticketService->generatePdf();
                 $logger->info('filename: '.$filePath);*/
@@ -571,7 +571,7 @@ class PackageController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository("ersBase\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
         $form = new Form\SearchPackage();
@@ -587,13 +587,13 @@ class PackageController extends AbstractActionController {
 
             $qb = $em->createQueryBuilder()
                     ->select('u')
-                    ->from('ersEntity\Entity\User', 'u')
+                    ->from('ersBase\Entity\User', 'u')
                     ->orderBy('u.firstname')
                     ->where('1=1');
             
             /*$qb = $em->createQueryBuilder()
                     ->select('p')
-                    ->from('ersEntity\Entity\Package', 'p')
+                    ->from('ersBase\Entity\Package', 'p')
                     ->join('p.participant', 'u')
                     ->join('p.code', 'pcode')
                     ->join('p.order', 'o')
@@ -644,7 +644,7 @@ class PackageController extends AbstractActionController {
             error_log('found '.count($results).' user');
         }
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         $query = array('q' => $q);
         $forrest->set('package', 'admin/package', 
                 array(
@@ -683,10 +683,10 @@ class PackageController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $data = $form->getData();
-                $user = $em->getRepository("ersEntity\Entity\User")
+                $user = $em->getRepository("ersBase\Entity\User")
                     ->findOneBy(array('id' => $data['user_id']));
                 
-                $package = $em->getRepository("ersEntity\Entity\Package")
+                $package = $em->getRepository("ersBase\Entity\Package")
                     ->findOneBy(array('id' => $data['package_id']));
                 
                 $log = new Entity\Log();
@@ -696,7 +696,7 @@ class PackageController extends AbstractActionController {
                 
                 # initialize new package
                 $cloneService = $this->getServiceLocator()
-                    ->get('ersEntity\Service\CloneService');
+                    ->get('ersBase\Service\CloneService');
                 $cloneService->setTransfer(true);
                 $newPackage = $cloneService->clonePackage($package);
                 
@@ -725,20 +725,20 @@ class PackageController extends AbstractActionController {
         $user = null;
         if($user_id != 0) {
             error_log('searching user with id: '.$user_id);
-            $user = $em->getRepository("ersEntity\Entity\User")
+            $user = $em->getRepository("ersBase\Entity\User")
                     ->findOneBy(array('id' => $user_id));
         }
         
         $package = null;
         if($package_id != 0) {
-            $package = $em->getRepository("ersEntity\Entity\Package")
+            $package = $em->getRepository("ersBase\Entity\Package")
                     ->findOneBy(array('id' => $package_id));
         }
         
         $form->get('package_id')->setValue($package->getId());
         $form->get('user_id')->setValue($user->getId());
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
             $forrest->set('package', 'admin/order', 
                     array('action' => 'search')
@@ -762,7 +762,7 @@ class PackageController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository("ersBase\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
         $form = new Form\SearchOrder();
@@ -778,13 +778,13 @@ class PackageController extends AbstractActionController {
 
             $qb = $em->createQueryBuilder()
                     ->select('u')
-                    ->from('ersEntity\Entity\User', 'u')
+                    ->from('ersBase\Entity\User', 'u')
                     ->orderBy('u.firstname')
                     ->where('1=1');
             
             /*$qb = $em->createQueryBuilder()
                     ->select('p')
-                    ->from('ersEntity\Entity\Package', 'p')
+                    ->from('ersBase\Entity\Package', 'p')
                     ->join('p.participant', 'u')
                     ->join('p.code', 'pcode')
                     ->join('p.order', 'o')
@@ -863,7 +863,7 @@ class PackageController extends AbstractActionController {
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                $package = $em->getRepository("ersEntity\Entity\Package")
+                $package = $em->getRepository("ersBase\Entity\Package")
                     ->findOneBy(array('id' => $data['package_id']));
                 
                 if($data['order_id'] == '') {
@@ -874,7 +874,7 @@ class PackageController extends AbstractActionController {
                     $codecheck = 1;
                     while($codecheck != null) {
                         $code->genCode();
-                        $codecheck = $em->getRepository("ersEntity\Entity\Code")
+                        $codecheck = $em->getRepository("ersBase\Entity\Code")
                             ->findOneBy(array('value' => $code->getValue()));
                     }
                     $order->setCode($code);
@@ -882,7 +882,7 @@ class PackageController extends AbstractActionController {
                     $buyer = $package->getParticipant();
                     $order->setBuyer($buyer);
                 } else {
-                    $order = $em->getRepository("ersEntity\Entity\Order")
+                    $order = $em->getRepository("ersBase\Entity\Order")
                         ->findOneBy(array('id' => $data['order_id']));
                     
                     
@@ -942,19 +942,19 @@ class PackageController extends AbstractActionController {
         $order = null;
         if($order_id != 0) {
             error_log('searching order with id: '.$order_id);
-            $order = $em->getRepository("ersEntity\Entity\Order")
+            $order = $em->getRepository("ersBase\Entity\Order")
                     ->findOneBy(array('id' => $order_id));
             $form->get('order_id')->setValue($order->getId());
         }
         
         $package = null;
         if($package_id != 0) {
-            $package = $em->getRepository("ersEntity\Entity\Package")
+            $package = $em->getRepository("ersBase\Entity\Package")
                     ->findOneBy(array('id' => $package_id));
             $form->get('package_id')->setValue($package->getId());
         }
         
-        $forrest = new Service\BreadcrumbFactory();
+        $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
             $forrest->set('package', 'admin/order', 
                     array('action' => 'search')

@@ -11,7 +11,7 @@ namespace PreReg\Form;
 use Zend\Form\Form;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
-use ersEntity\Entity;
+use ersBase\Entity;
 use Zend\Session\Container;
 
 class ProductView extends Form
@@ -95,7 +95,7 @@ class ProductView extends Form
                 'type'  => 'submit',
                 'value' => 'Go',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-success',
+                'class' => 'btn btn-primary',
             ),
         ));
         

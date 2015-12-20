@@ -10,7 +10,7 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersEntity\Entity;
+use ersBase\Entity;
 use Admin\Form;
 use Admin\Service;
 use Admin\DataTables;
@@ -27,9 +27,9 @@ class TestController extends AbstractActionController {
 
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        /*$orders = $em->getRepository("ersEntity\Entity\Order")
+        /*$orders = $em->getRepository("ersBase\Entity\Order")
                 ->findBy(array(), array('created' => 'ASC'));*/
-        $packages = $em->getRepository("ersEntity\Entity\Package")
+        $packages = $em->getRepository("ersBase\Entity\Package")
                 ->findBy(array(), array('created' => 'ASC'));
         
         $filename = getcwd() . "/tmp/excel-" . date( "m-d-Y" ) . ".xls";
@@ -106,13 +106,13 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository("ersEntity\Entity\Order")->createQueryBuilder('n');
+        $qb = $em->getRepository("ersBase\Entity\Order")->createQueryBuilder('n');
         
         /*$em = $this->getEntityManager();
         $queryBuilder = $em->createQueryBuilder();
         
         $queryBuilder->add('select', 'p , q')
-              ->add('from', '\ersEntity\Entity\Order q')
+              ->add('from', '\ersBase\Entity\Order q')
               ->leftJoin('q.product', 'p');*/
         
         
@@ -136,7 +136,7 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orders = $em->getRepository("ersEntity\Entity\Order")
+        $orders = $em->getRepository("ersBase\Entity\Order")
                 ->findBy(array('payment_status' => 'paid'));
         
         $orderSum = 0;
@@ -156,7 +156,7 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orders = $em->getRepository("ersEntity\Entity\Order")
+        $orders = $em->getRepository("ersBase\Entity\Order")
                 ->findBy(array('total_sum' => 0));
         error_log('found '.count($orders).' orders');
         $count = 0;
@@ -177,11 +177,11 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository("ersEntity\Entity\Order")
+        $order = $em->getRepository("ersBase\Entity\Order")
                 ->findOneBy(array('id' => 52));
         error_log('packages: '.count($order->getPackages()));
         
-        $user = $em->getRepository("ersEntity\Entity\User")
+        $user = $em->getRepository("ersBase\Entity\User")
                 ->findOneBy(array('id' => 549));
         error_log($user->getFirstname().' '.$user->getSurname());
         error_log('country: '.$user->getCountry()->getName());
@@ -193,10 +193,10 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $package = $em->getRepository("ersEntity\Entity\Package")
+        $package = $em->getRepository("ersBase\Entity\Package")
                 ->findOneBy(array('id' => 52));
         
-        $products = $em->getRepository("ersEntity\Entity\Product")
+        $products = $em->getRepository("ersBase\Entity\Product")
                 ->findAll();
         
         $config = $this->getServiceLocator()->get('Config');

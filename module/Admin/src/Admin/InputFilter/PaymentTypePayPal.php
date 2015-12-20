@@ -147,9 +147,9 @@ class PaymentTypePayPal implements InputFilterAwareInterface
                                 return true;
                             }
                             
-                            $activeFrom = $em->getRepository("ersEntity\Entity\Deadline")
+                            $activeFrom = $em->getRepository("ersBase\Entity\Deadline")
                                 ->findOneBy(array('id' => $value));
-                            $activeUntil = $em->getRepository("ersEntity\Entity\Deadline")
+                            $activeUntil = $em->getRepository("ersBase\Entity\Deadline")
                                 ->findOneBy(array('id' => $context['activeUntil_id']));
                             
                             $diff = $activeFrom->getDeadline()->getTimestamp() - $activeUntil->getDeadline()->getTimestamp();
@@ -209,9 +209,9 @@ class PaymentTypePayPal implements InputFilterAwareInterface
                                 return true;
                             }
                             
-                            $activeFrom = $em->getRepository("ersEntity\Entity\Deadline")
+                            $activeFrom = $em->getRepository("ersBase\Entity\Deadline")
                                 ->findOneBy(array('id' => $context['activeFrom_id']));
-                            $activeUntil = $em->getRepository("ersEntity\Entity\Deadline")
+                            $activeUntil = $em->getRepository("ersBase\Entity\Deadline")
                                 ->findOneBy(array('id' => $value));
                             
                             $diff = $activeFrom->getDeadline()->getTimestamp() - $activeUntil->getDeadline()->getTimestamp();

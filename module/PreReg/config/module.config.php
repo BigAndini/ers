@@ -181,6 +181,20 @@ return array(
                     ),
                 ),
             ),
+            'ajax' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/ajax[/:action][/:name]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'name'   => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'PreReg\Controller\Ajax',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'home' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
@@ -358,8 +372,8 @@ return array(
         'shared' => array(
             'DOMPDF' => false,
             'ViewPdfRenderer' => false,
-            'PreReg\Service\ETicketService' => false,
-            'PreReg\Service\AgegroupService:ticket' => false,
+            #'PreReg\Service\ETicketService' => false,
+            #'PreReg\Service\AgegroupService:ticket' => false,
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',

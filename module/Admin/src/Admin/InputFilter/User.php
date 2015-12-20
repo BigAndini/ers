@@ -194,7 +194,7 @@ class User implements InputFilterAwareInterface
                                 }*/
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
-                                $user = $em->getRepository("ersEntity\Entity\User")
+                                $user = $em->getRepository("ersBase\Entity\User")
                                         ->findOneBy(array('email' => $value));
                                 if($user && $user->getId() != $context['id']) {
                                     return false;

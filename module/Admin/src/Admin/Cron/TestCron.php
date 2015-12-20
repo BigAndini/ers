@@ -8,14 +8,14 @@
 
 namespace Admin\Cron;
 
-use ersEntity\Entity;
+use ersBase\Entity;
 
 class TestCron {
     public function runCron() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orders = $em->getRepository("ersEntity\Entity\Order")
+        $orders = $em->getRepository("ersBase\Entity\Order")
                 ->findBy(array(), array('created' => 'DESC'));
         
         $logger = $this->getServiceLocator()->get('Logger');

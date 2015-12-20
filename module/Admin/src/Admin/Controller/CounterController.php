@@ -10,7 +10,7 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersEntity\Entity;
+use ersBase\Entity;
 use Admin\Form;
 
 class CounterController extends AbstractActionController {
@@ -21,7 +21,7 @@ class CounterController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'counters' => $em->getRepository("ersEntity\Entity\Counter")->findAll(),
+            'counters' => $em->getRepository("ersBase\Entity\Counter")->findAll(),
          ));
     }
 
@@ -41,7 +41,7 @@ class CounterController extends AbstractActionController {
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $counter->populate($form->getData());
-                $counter->addProductVariantValue($em->getRepository('ersEntity\Entity\ProductVariantValue')->find((int)$form->get('productVariantValue')->getValue()));
+                $counter->addProductVariantValue($em->getRepository('ersBase\Entity\ProductVariantValue')->find((int)$form->get('productVariantValue')->getValue()));
                 
                 $em->persist($counter);
                 $em->flush();
@@ -69,7 +69,7 @@ class CounterController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $counter = $em->getRepository("ersEntity\Entity\Counter")->find($id);
+        $counter = $em->getRepository("ersBase\Entity\Counter")->find($id);
         if(!$counter) {
             return $this->notFoundAction();
         }
@@ -90,7 +90,7 @@ class CounterController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $counter->getProductVariantValues()->clear();
-                $counter->addProductVariantValue($em->getRepository('ersEntity\Entity\ProductVariantValue')->find((int)$form->get('productVariantValue')->getValue()));
+                $counter->addProductVariantValue($em->getRepository('ersBase\Entity\ProductVariantValue')->find((int)$form->get('productVariantValue')->getValue()));
                 
                 $em->persist($counter);
                 $em->flush();
@@ -116,7 +116,7 @@ class CounterController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $counter = $em->getRepository("ersEntity\Entity\Counter")
+        $counter = $em->getRepository("ersBase\Entity\Counter")
                 ->find($id);
         if(!$counter) {
             return $this->notFoundAction();
@@ -128,7 +128,7 @@ class CounterController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $counter = $em->getRepository("ersEntity\Entity\Counter")
+                $counter = $em->getRepository("ersBase\Entity\Counter")
                     ->findOneBy(array('id' => $id));
                 $em->remove($counter);
                 $em->flush();
