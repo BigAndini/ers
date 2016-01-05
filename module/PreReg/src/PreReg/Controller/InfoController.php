@@ -10,7 +10,7 @@ namespace PreReg\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersBase\Service;
+use ErsBase\Service;
 use PreReg\Form;
 
 class InfoController extends AbstractActionController {
@@ -53,7 +53,7 @@ class InfoController extends AbstractActionController {
         $breadcrumb = $forrest->get('paymenttype');
         
         return new ViewModel(array(
-            'paymenttype' => $em->getRepository("ersBase\Entity\PaymentType")->findOneBy(array('id' => $id)),
+            'paymenttype' => $em->getRepository("ErsBase\Entity\PaymentType")->findOneBy(array('id' => $id)),
             'breadcrumb' => $breadcrumb,
         ));
     }
@@ -95,7 +95,7 @@ class InfoController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $agegroups = $em->getRepository("ersBase\Entity\Agegroup")
+        $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
                 ->findBy(array('ticketChange' => '1'), array('agegroup' => 'ASC'));
         
         $sel = false;
@@ -143,7 +143,7 @@ class InfoController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $agegroup = $em->getRepository("ersBase\Entity\Agegroup")
+        $agegroup = $em->getRepository("ErsBase\Entity\Agegroup")
                 ->findOneBy(array('id' => $agegroup_id));
         
         return new ViewModel(array(

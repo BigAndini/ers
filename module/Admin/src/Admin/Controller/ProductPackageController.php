@@ -10,9 +10,9 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersBase\Entity;
+use ErsBase\Entity;
 use Admin\Form;
-use ersBase\Service;
+use ErsBase\Service;
 
 class ProductPackageController extends AbstractActionController {
     
@@ -30,7 +30,7 @@ class ProductPackageController extends AbstractActionController {
     private function getProductOptions(Entity\Product $thisProduct = null, $productId = null) {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $products = $em->getRepository("ersBase\Entity\Product")
+        $products = $em->getRepository("ErsBase\Entity\Product")
                 ->findBy(array(), array('ordering' => 'ASC'));
         $options = array();
         foreach($products as $product) {
@@ -66,7 +66,7 @@ class ProductPackageController extends AbstractActionController {
         $form = new Form\ProductPackage();
         $form->get('submit')->setValue('Add');
         
-        $thisProduct = $em->getRepository("ersBase\Entity\Product")
+        $thisProduct = $em->getRepository("ErsBase\Entity\Product")
                 ->findOneBy(array('id' => $id));
         $form->get('SubProduct_id')->setValueOptions($this->getProductOptions($thisProduct));
         $form->get('Product_id')->setValue($id);
@@ -81,12 +81,12 @@ class ProductPackageController extends AbstractActionController {
                 $productPackage->populate($form->getData());
                 
                 if($productPackage->getSubProductId() != 0) {
-                    $subProduct = $em->getRepository("ersBase\Entity\Product")
+                    $subProduct = $em->getRepository("ErsBase\Entity\Product")
                         ->findOneBy(array('id' => $productPackage->getSubProductId()));
                     $productPackage->setSubProduct($subProduct);
                 }
                 if($productPackage->getProductId() != 0) {
-                    $product = $em->getRepository("ersBase\Entity\Product")
+                    $product = $em->getRepository("ErsBase\Entity\Product")
                         ->findOneBy(array('id' => $productPackage->getProductId()));
                     $productPackage->setProduct($product);
                 }
@@ -127,14 +127,14 @@ class ProductPackageController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $productPackage = $em->getRepository("ersBase\Entity\ProductPackage")
+        $productPackage = $em->getRepository("ErsBase\Entity\ProductPackage")
                 ->findOneBy(array('id' => $id));
 
         $form = new Form\ProductPackage();
         $form->bind($productPackage);
         $form->get('submit')->setAttribute('value', 'Edit');
 
-        $thisProduct = $em->getRepository("ersBase\Entity\Product")
+        $thisProduct = $em->getRepository("ErsBase\Entity\Product")
                 ->findOneBy(array('id' => $productPackage->getProductId()));
         $form->get('SubProduct_id')->setValueOptions($this->getProductOptions($thisProduct, $subproduct_id));
         $form->get('Product_id')->setValue($id);
@@ -147,12 +147,12 @@ class ProductPackageController extends AbstractActionController {
             if ($form->isValid()) {
                 $productPackage = $form->getData();
                 if($productPackage->getSubProductId() != 0) {
-                    $subProduct = $em->getRepository("ersBase\Entity\Product")
+                    $subProduct = $em->getRepository("ErsBase\Entity\Product")
                         ->findOneBy(array('id' => $productPackage->getSubProductId()));
                     $productPackage->setSubProduct($subProduct);
                 }
                 if($productPackage->getProductId() != 0) {
-                    $product = $em->getRepository("ersBase\Entity\Product")
+                    $product = $em->getRepository("ErsBase\Entity\Product")
                         ->findOneBy(array('id' => $productPackage->getProductId()));
                     $productPackage->setProduct($product);
                 }
@@ -182,11 +182,11 @@ class ProductPackageController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $productPackage = $em->getRepository("ersBase\Entity\ProductPackage")
+        $productPackage = $em->getRepository("ErsBase\Entity\ProductPackage")
                 ->findOneBy(array('id' => $id));
-        $product = $em->getRepository("ersBase\Entity\Product")
+        $product = $em->getRepository("ErsBase\Entity\Product")
                 ->findOneBy(array('id' => $productPackage->getProductId()));
-        $subproduct = $em->getRepository("ersBase\Entity\Product")
+        $subproduct = $em->getRepository("ErsBase\Entity\Product")
                 ->findOneBy(array('id' => $productPackage->getSubProductId()));
 
         $request = $this->getRequest();
@@ -195,7 +195,7 @@ class ProductPackageController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $productPackage = $em->getRepository("ersBase\Entity\ProductPackage")
+                $productPackage = $em->getRepository("ErsBase\Entity\ProductPackage")
                     ->findOneBy(array('id' => $id));
                 $em->remove($productPackage);
                 $em->flush();

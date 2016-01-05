@@ -11,7 +11,7 @@ namespace PreReg\Form;
 use Zend\Form\Form;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
-use ersBase\Entity;
+use ErsBase\Entity;
 use Zend\Session\Container;
 
 class ProductView extends Form

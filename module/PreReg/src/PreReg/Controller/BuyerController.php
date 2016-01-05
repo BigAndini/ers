@@ -12,8 +12,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use PreReg\Form;
-use ersBase\Entity;
-use ersBase\Service;
+use ErsBase\Entity;
+use ErsBase\Service;
 use PreReg\InputFilter;
 
 class BuyerController extends AbstractActionController {

@@ -12,8 +12,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use PreReg\Form;
-use ersBase\Entity;
-use ersBase\Service;
+use ErsBase\Entity;
+use ErsBase\Service;
 use PreReg\InputFilter;
 
 class ParticipantController extends AbstractActionController {
@@ -37,7 +37,7 @@ class ParticipantController extends AbstractActionController {
         
         foreach($participants as $participant) {
             if($participant->getCountryId()) {
-                $country = $em->getRepository("ersBase\Entity\Country")
+                $country = $em->getRepository("ErsBase\Entity\Country")
                         ->findOneBy(array('id' => $participant->getCountryId()));
                 $participant->setCountry($country);
             }
@@ -52,12 +52,12 @@ class ParticipantController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository("ersBase\Entity\Country")->createQueryBuilder('n');
+        $qb1 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
         $qb1->where($qb1->expr()->isNotNull('n.ordering'));
         $qb1->orderBy('n.ordering', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
-        $qb2 = $em->getRepository("ersBase\Entity\Country")->createQueryBuilder('n');
+        $qb2 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
         $qb2->where($qb2->expr()->isNull('n.ordering'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();

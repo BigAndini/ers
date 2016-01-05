@@ -12,7 +12,7 @@ namespace PreReg\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 #use Application\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersBase\Service;
+use ErsBase\Service;
 
 class AjaxController extends AbstractActionController
 {    

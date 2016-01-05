@@ -10,9 +10,9 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersBase\Entity;
+use ErsBase\Entity;
 use Admin\Form;
-use ersBase\Service;
+use ErsBase\Service;
 
 class TaxController extends AbstractActionController {
     public function indexAction()
@@ -20,7 +20,7 @@ class TaxController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
-            'taxes' => $em->getRepository("ersBase\Entity\Tax")->findBy(array(), array('percentage' => 'ASC')),
+            'taxes' => $em->getRepository("ErsBase\Entity\Tax")->findBy(array(), array('percentage' => 'ASC')),
         ));
     }
 
@@ -74,7 +74,7 @@ class TaxController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $tax = $em->getRepository("ersBase\Entity\Tax")->findOneBy(array('id' => $id));
+        $tax = $em->getRepository("ErsBase\Entity\Tax")->findOneBy(array('id' => $id));
 
         $form  = new Form\Tax();
         $form->bind($tax);
@@ -124,7 +124,7 @@ class TaxController extends AbstractActionController {
             if ($del == 'Yes') {
                 
                 $id = (int) $request->getPost('id');
-                $tax = $em->getRepository("ersBase\Entity\Tax")
+                $tax = $em->getRepository("ErsBase\Entity\Tax")
                         ->findOneBy(array('id' => $id));
                 $em->remove($tax);
                 $em->flush();
@@ -135,7 +135,7 @@ class TaxController extends AbstractActionController {
 
         return new ViewModel(array(
             'id'    => $id,
-            'tax' => $tax = $em->getRepository("ersBase\Entity\Tax")
+            'tax' => $tax = $em->getRepository("ErsBase\Entity\Tax")
                 ->findOneBy(array('id' => $id)),
             'breadcrumb' => $breadcrumb,
         ));

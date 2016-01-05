@@ -54,7 +54,7 @@ class Counter extends Form
                     'class'  => 'media-object',
                 ),
                 'object_manager' => $em,
-                'target_class' => 'ersBase\Entity\ProductVariantValue',
+                'target_class' => 'ErsBase\Entity\ProductVariantValue',
                 'label_generator' => function($entity){ return $entity->getProductVariant()->getName() . ' - ' . $entity->getValue(); },
                 'display_empty_item' => true,
                 'empty_item_label' => 'Select variant ...',

@@ -11,9 +11,9 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
-use ersBase\Entity;
+use ErsBase\Entity;
 use Admin\Form;
-use ersBase\Service;
+use ErsBase\Service;
 use Admin\InputFilter;
 
 class UserController extends AbstractActionController {
@@ -27,7 +27,7 @@ class UserController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'users' => $em->getRepository("ersBase\Entity\User")->findAll(),
+            'users' => $em->getRepository("ErsBase\Entity\User")->findAll(),
          ));
     }
 
@@ -35,12 +35,12 @@ class UserController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository("ersBase\Entity\Country")->createQueryBuilder('n');
+        $qb1 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
         $qb1->where($qb1->expr()->isNotNull('n.ordering'));
         $qb1->orderBy('n.ordering', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
-        $qb2 = $em->getRepository("ersBase\Entity\Country")->createQueryBuilder('n');
+        $qb2 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
         $qb2->where($qb2->expr()->isNull('n.ordering'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();
@@ -145,7 +145,7 @@ class UserController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository("ersBase\Entity\User")->findOneBy(array('id' => $id));
+        $user = $em->getRepository("ErsBase\Entity\User")->findOneBy(array('id' => $id));
         
         $form = new Form\User();
         $form->bind($user);
@@ -200,7 +200,7 @@ class UserController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository("ersBase\Entity\User")
+        $user = $em->getRepository("ErsBase\Entity\User")
                 ->findOneBy(array('id' => $id));
 
         $request = $this->getRequest();
@@ -209,7 +209,7 @@ class UserController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $user = $em->getRepository("ersBase\Entity\User")
+                $user = $em->getRepository("ErsBase\Entity\User")
                     ->findOneBy(array('id' => $id));
                 $em->remove($user);
                 $em->flush();

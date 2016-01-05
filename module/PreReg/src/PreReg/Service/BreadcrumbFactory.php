@@ -12,7 +12,7 @@ use Zend\Session\Container;
 
 /**
  * breadcrumb factory DEPRECATED!!!
- * use ersBase\Service\BreadcrumbService instead.
+ * use ErsBase\Service\BreadcrumbService instead.
  */
 class BreadcrumbFactory
 {

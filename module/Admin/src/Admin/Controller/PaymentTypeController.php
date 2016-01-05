@@ -10,7 +10,7 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersBase\Entity;
+use ErsBase\Entity;
 use Admin\Form;
 use Admin\InputFilter;
 
@@ -22,7 +22,7 @@ class PaymentTypeController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'paymenttypes' => $em->getRepository("ersBase\Entity\PaymentType")
+            'paymenttypes' => $em->getRepository("ErsBase\Entity\PaymentType")
                 ->findBy(array(), array('ordering' => 'ASC')),
         ));
     }
@@ -44,7 +44,7 @@ class PaymentTypeController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $deadlines = $em->getRepository("ersBase\Entity\Deadline")
+        $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
                 ->findBy(array(), array('deadline' => 'ASC'));
         $options = array();
         foreach($deadlines as $deadline) {
@@ -78,14 +78,14 @@ class PaymentTypeController extends AbstractActionController {
                 if($paymenttype->getActiveFromId() == 0) {
                     $paymenttype->setActiveFromId(null);
                 } else {
-                    $activeFrom = $em->getRepository("ersBase\Entity\Deadline")
+                    $activeFrom = $em->getRepository("ErsBase\Entity\Deadline")
                         ->findOneBy(array('id' => $paymenttype->getActiveFromId()));
                     $paymenttype->setActiveFrom($activeFrom);
                 }
                 if($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $activeUntil = $em->getRepository("ersBase\Entity\Deadline")
+                    $activeUntil = $em->getRepository("ErsBase\Entity\Deadline")
                         ->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
                     $paymenttype->setActiveUntil($activeUntil);
                 }
@@ -112,7 +112,7 @@ class PaymentTypeController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $deadlines = $em->getRepository("ersBase\Entity\Deadline")
+        $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
                 ->findBy(array(), array('deadline' => 'ASC'));
         $options = array();
         foreach($deadlines as $deadline) {
@@ -146,14 +146,14 @@ class PaymentTypeController extends AbstractActionController {
                 if($paymenttype->getActiveFromId() == 0) {
                     $paymenttype->setActiveFromId(null);
                 } else {
-                    $activeFrom = $em->getRepository("ersBase\Entity\Deadline")
+                    $activeFrom = $em->getRepository("ErsBase\Entity\Deadline")
                         ->findOneBy(array('id' => $paymenttype->getActiveFromId()));
                     $paymenttype->setActiveFrom($activeFrom);
                 }
                 if($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $activeUntil = $em->getRepository("ersBase\Entity\Deadline")
+                    $activeUntil = $em->getRepository("ErsBase\Entity\Deadline")
                         ->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
                     $paymenttype->setActiveUntil($activeUntil);
                 }
@@ -180,7 +180,7 @@ class PaymentTypeController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $deadlines = $em->getRepository("ersBase\Entity\Deadline")
+        $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
                 ->findBy(array(), array('deadline' => 'ASC'));
         $options = array();
         foreach($deadlines as $deadline) {
@@ -214,14 +214,14 @@ class PaymentTypeController extends AbstractActionController {
                 if($paymenttype->getActiveFromId() == 0) {
                     $paymenttype->setActiveFromId(null);
                 } else {
-                    $activeFrom = $em->getRepository("ersBase\Entity\Deadline")
+                    $activeFrom = $em->getRepository("ErsBase\Entity\Deadline")
                         ->findOneBy(array('id' => $paymenttype->getActiveFromId()));
                     $paymenttype->setActiveFrom($activeFrom);
                 }
                 if($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $activeUntil = $em->getRepository("ersBase\Entity\Deadline")
+                    $activeUntil = $em->getRepository("ErsBase\Entity\Deadline")
                         ->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
                     $paymenttype->setActiveUntil($activeUntil);
                 }
@@ -248,7 +248,7 @@ class PaymentTypeController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $deadlines = $em->getRepository("ersBase\Entity\Deadline")
+        $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
                 ->findBy(array(), array('deadline' => 'ASC'));
         $options = array();
         foreach($deadlines as $deadline) {
@@ -282,14 +282,14 @@ class PaymentTypeController extends AbstractActionController {
                 if($paymenttype->getActiveFromId() == 0) {
                     $paymenttype->setActiveFromId(null);
                 } else {
-                    $activeFrom = $em->getRepository("ersBase\Entity\Deadline")
+                    $activeFrom = $em->getRepository("ErsBase\Entity\Deadline")
                         ->findOneBy(array('id' => $paymenttype->getActiveFromId()));
                     $paymenttype->setActiveFrom($activeFrom);
                 }
                 if($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $activeUntil = $em->getRepository("ersBase\Entity\Deadline")
+                    $activeUntil = $em->getRepository("ErsBase\Entity\Deadline")
                         ->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
                     $paymenttype->setActiveUntil($activeUntil);
                 }
@@ -353,9 +353,9 @@ class PaymentTypeController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $paymenttype = $em->getRepository("ersBase\Entity\PaymentType")->findOneBy(array('id' => $id));
+        $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")->findOneBy(array('id' => $id));
             
-        $deadlines = $em->getRepository("ersBase\Entity\Deadline")
+        $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
                 ->findBy(array(), array('deadline' => 'ASC'));
         $from_options = array();
         $until_options = array();
@@ -419,13 +419,13 @@ class PaymentTypeController extends AbstractActionController {
                 if($paymenttype->getActiveFromId() == 0) {
                     $paymenttype->setActiveFromId(null);
                 } else {
-                    $activeFrom = $em->getRepository("ersBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveFromId()));
+                    $activeFrom = $em->getRepository("ErsBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveFromId()));
                     $paymenttype->setActiveFrom($activeFrom);
                 }
                 if($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $activeUntil = $em->getRepository("ersBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
+                    $activeUntil = $em->getRepository("ErsBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
                     $paymenttype->setActiveUntil($activeUntil);
                 }
                 
@@ -456,9 +456,9 @@ class PaymentTypeController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $paymenttype = $em->getRepository("ersBase\Entity\PaymentType")->findOneBy(array('id' => $id));
+        $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")->findOneBy(array('id' => $id));
             
-        $deadlines = $em->getRepository("ersBase\Entity\Deadline")
+        $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
                 ->findBy(array(), array('deadline' => 'ASC'));
         $from_options = array();
         $until_options = array();
@@ -522,13 +522,13 @@ class PaymentTypeController extends AbstractActionController {
                 if($paymenttype->getActiveFromId() == 0) {
                     $paymenttype->setActiveFromId(null);
                 } else {
-                    $activeFrom = $em->getRepository("ersBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveFromId()));
+                    $activeFrom = $em->getRepository("ErsBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveFromId()));
                     $paymenttype->setActiveFrom($activeFrom);
                 }
                 if($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $activeUntil = $em->getRepository("ersBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
+                    $activeUntil = $em->getRepository("ErsBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
                     $paymenttype->setActiveUntil($activeUntil);
                 }
                 
@@ -559,9 +559,9 @@ class PaymentTypeController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $paymenttype = $em->getRepository("ersBase\Entity\PaymentType")->findOneBy(array('id' => $id));
+        $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")->findOneBy(array('id' => $id));
             
-        $deadlines = $em->getRepository("ersBase\Entity\Deadline")
+        $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
                 ->findBy(array(), array('deadline' => 'ASC'));
         $from_options = array();
         $until_options = array();
@@ -625,13 +625,13 @@ class PaymentTypeController extends AbstractActionController {
                 if($paymenttype->getActiveFromId() == 0) {
                     $paymenttype->setActiveFromId(null);
                 } else {
-                    $activeFrom = $em->getRepository("ersBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveFromId()));
+                    $activeFrom = $em->getRepository("ErsBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveFromId()));
                     $paymenttype->setActiveFrom($activeFrom);
                 }
                 if($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $activeUntil = $em->getRepository("ersBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
+                    $activeUntil = $em->getRepository("ErsBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
                     $paymenttype->setActiveUntil($activeUntil);
                 }
                 
@@ -662,9 +662,9 @@ class PaymentTypeController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $paymenttype = $em->getRepository("ersBase\Entity\PaymentType")->findOneBy(array('id' => $id));
+        $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")->findOneBy(array('id' => $id));
             
-        $deadlines = $em->getRepository("ersBase\Entity\Deadline")
+        $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
                 ->findBy(array(), array('deadline' => 'ASC'));
         $from_options = array();
         $until_options = array();
@@ -728,13 +728,13 @@ class PaymentTypeController extends AbstractActionController {
                 if($paymenttype->getActiveFromId() == 0) {
                     $paymenttype->setActiveFromId(null);
                 } else {
-                    $activeFrom = $em->getRepository("ersBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveFromId()));
+                    $activeFrom = $em->getRepository("ErsBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveFromId()));
                     $paymenttype->setActiveFrom($activeFrom);
                 }
                 if($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $activeUntil = $em->getRepository("ersBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
+                    $activeUntil = $em->getRepository("ErsBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
                     $paymenttype->setActiveUntil($activeUntil);
                 }
                 
@@ -764,7 +764,7 @@ class PaymentTypeController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $paymenttype = $em->getRepository("ersBase\Entity\PaymentType")->findOneBy(array('id' => $id));
+        $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")->findOneBy(array('id' => $id));
 
         $form = new Form\PaymentType();
         $form->bind($paymenttype);
@@ -797,9 +797,9 @@ class PaymentTypeController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $paymenttype = $em->getRepository("ersBase\Entity\PaymentType")
+        $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")
                 ->findOneBy(array('id' => $id));
-        $orders = $em->getRepository("ersBase\Entity\Order")
+        $orders = $em->getRepository("ErsBase\Entity\Order")
                 ->findOneBy(array('PaymentType_id' => $id));
 
         $request = $this->getRequest();
@@ -808,7 +808,7 @@ class PaymentTypeController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $paymenttype = $em->getRepository("ersBase\Entity\PaymentType")
+                $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")
                     ->findOneBy(array('id' => $id));
                 $em->remove($paymenttype);
                 $em->flush();
