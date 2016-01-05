@@ -34,7 +34,7 @@ $this->headTitle($title);
         <tr>
             <td>Country:</td>
             <td>
-                <?php if($user->getCountry() instanceof \ersBase\Entity\Country): ?>
+                <?php if($user->getCountry() instanceof \ErsBase\Entity\Country): ?>
                     <?php echo $user->getCountry()->getName(); ?>
                 <?php endif; ?>
             </td>

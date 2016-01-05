@@ -10,9 +10,9 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersBase\Entity;
+use ErsBase\Entity;
 use Admin\Form;
-use ersBase\Service;
+use ErsBase\Service;
 use Admin\InputFilter;
 
 class ItemController extends AbstractActionController {
@@ -22,7 +22,7 @@ class ItemController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'agegroups' => $em->getRepository("ersBase\Entity\Agegroup")
+            'agegroups' => $em->getRepository("ErsBase\Entity\Agegroup")
                 ->findBy(array(), array('agegroup' => 'ASC')),
         ));
     }
@@ -36,7 +36,7 @@ class ItemController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $package = $em->getRepository("ersBase\Entity\Package")
+        $package = $em->getRepository("ErsBase\Entity\Package")
                 ->findOneBy(array('id' => $id));
         
         return new ViewModel(array(
@@ -58,7 +58,7 @@ class ItemController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $item = $em->getRepository("ersBase\Entity\Item")
+        $item = $em->getRepository("ErsBase\Entity\Item")
                 ->findOneBy(array('id' => $id));
         
         $forrest = new Service\BreadcrumbService();
@@ -73,7 +73,7 @@ class ItemController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $item = $em->getRepository("ersBase\Entity\Item")
+                $item = $em->getRepository("ErsBase\Entity\Item")
                     ->findOneBy(array('id' => $id));
                 
                 $item->setStatus('ordered');
@@ -99,7 +99,7 @@ class ItemController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $item = $em->getRepository("ersBase\Entity\Item")
+        $item = $em->getRepository("ErsBase\Entity\Item")
                 ->findOneBy(array('id' => $id));
         
         $forrest = new Service\BreadcrumbService();
@@ -114,7 +114,7 @@ class ItemController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $item = $em->getRepository("ersBase\Entity\Item")
+                $item = $em->getRepository("ErsBase\Entity\Item")
                     ->findOneBy(array('id' => $id));
                 
                 $item->setStatus('cancelled');
@@ -144,7 +144,7 @@ class ItemController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $item = $em->getRepository("ersBase\Entity\Item")
+        $item = $em->getRepository("ErsBase\Entity\Item")
                 ->findOneBy(array('id' => $id));
         
         $forrest = new Service\BreadcrumbService();
@@ -159,7 +159,7 @@ class ItemController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $item = $em->getRepository("ersBase\Entity\Item")
+                $item = $em->getRepository("ErsBase\Entity\Item")
                     ->findOneBy(array('id' => $id));
                 
                 $item->setStatus('ordered');
@@ -185,7 +185,7 @@ class ItemController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $item = $em->getRepository("ersBase\Entity\Item")
+        $item = $em->getRepository("ErsBase\Entity\Item")
                 ->findOneBy(array('id' => $id));
         
         $forrest = new Service\BreadcrumbService();
@@ -200,7 +200,7 @@ class ItemController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $item = $em->getRepository("ersBase\Entity\Item")
+                $item = $em->getRepository("ErsBase\Entity\Item")
                     ->findOneBy(array('id' => $id));
                 
                 $item->setStatus('refund');
@@ -230,7 +230,7 @@ class ItemController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $item = $em->getRepository("ersBase\Entity\Item")
+        $item = $em->getRepository("ErsBase\Entity\Item")
                 ->findOneBy(array('id' => $id));
         
         $forrest = new Service\BreadcrumbService();
@@ -245,7 +245,7 @@ class ItemController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $item = $em->getRepository("ersBase\Entity\Item")
+                $item = $em->getRepository("ErsBase\Entity\Item")
                     ->findOneBy(array('id' => $id));
                 
                 $item->setStatus('ordered');
@@ -274,7 +274,7 @@ class ItemController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $item = $em->getRepository("ersBase\Entity\Item")
+        $item = $em->getRepository("ErsBase\Entity\Item")
                 ->findOneBy(array('id' => $id));
         
         $forrest = new Service\BreadcrumbService();
@@ -289,7 +289,7 @@ class ItemController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $item = $em->getRepository("ersBase\Entity\Item")
+                $item = $em->getRepository("ErsBase\Entity\Item")
                     ->findOneBy(array('id' => $id));
                 
                 $item->setStatus('zero_ok');
@@ -315,7 +315,7 @@ class ItemController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $item = $em->getRepository("ersBase\Entity\Item")
+        $item = $em->getRepository("ErsBase\Entity\Item")
                 ->findOneBy(array('id' => $id));
         
         $forrest = new Service\BreadcrumbService();
@@ -330,7 +330,7 @@ class ItemController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $item = $em->getRepository("ersBase\Entity\Item")
+                $item = $em->getRepository("ErsBase\Entity\Item")
                     ->findOneBy(array('id' => $id));
                 
                 $item->setStatus('ordered');
@@ -356,7 +356,7 @@ class ItemController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $item = $em->getRepository("ersBase\Entity\Item")
+        $item = $em->getRepository("ErsBase\Entity\Item")
                 ->findOneBy(array('id' => $id));
         
         $forrest = new Service\BreadcrumbService();
@@ -371,7 +371,7 @@ class ItemController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $item = $em->getRepository("ersBase\Entity\Item")
+                $item = $em->getRepository("ErsBase\Entity\Item")
                     ->findOneBy(array('id' => $id));
                 
                 $item->setStatus('paid');
@@ -397,7 +397,7 @@ class ItemController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $item = $em->getRepository("ersBase\Entity\Item")
+        $item = $em->getRepository("ErsBase\Entity\Item")
                 ->findOneBy(array('id' => $id));
         
         $form = new Form\SearchPackage();
@@ -413,13 +413,13 @@ class ItemController extends AbstractActionController {
 
             $qb = $em->createQueryBuilder()
                     ->select('u')
-                    ->from('ersBase\Entity\User', 'u')
+                    ->from('ErsBase\Entity\User', 'u')
                     ->orderBy('u.firstname')
                     ->where('1=1');
             
             /*$qb = $em->createQueryBuilder()
                     ->select('p')
-                    ->from('ersBase\Entity\Package', 'p')
+                    ->from('ErsBase\Entity\Package', 'p')
                     ->join('p.participant', 'u')
                     ->join('p.code', 'pcode')
                     ->join('p.order', 'o')
@@ -508,10 +508,10 @@ class ItemController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $data = $form->getData();
-                $user = $em->getRepository("ersBase\Entity\User")
+                $user = $em->getRepository("ErsBase\Entity\User")
                     ->findOneBy(array('id' => $data['user_id']));
                 
-                $item = $em->getRepository("ersBase\Entity\Item")
+                $item = $em->getRepository("ErsBase\Entity\Item")
                     ->findOneBy(array('id' => $data['item_id']));
                 
                 $log = new Entity\Log();
@@ -529,7 +529,7 @@ class ItemController extends AbstractActionController {
                 $codecheck = 1;
                 while($codecheck != null) {
                     $code->genCode();
-                    $codecheck = $em->getRepository("ersBase\Entity\Code")
+                    $codecheck = $em->getRepository("ErsBase\Entity\Code")
                         ->findOneBy(array('value' => $code->getValue()));
                 }
                 $newPackage->setCode($code);
@@ -538,7 +538,7 @@ class ItemController extends AbstractActionController {
                 $newPackage->setOrder($package->getOrder());
                 
                 $cloneService = $this->getServiceLocator()
-                    ->get('ersBase\Service\CloneService');
+                    ->get('ErsBase\Service\CloneService');
                 $cloneService->setTransfer(true);
                 $newItem = $cloneService->cloneItem($item);
                 
@@ -553,7 +553,7 @@ class ItemController extends AbstractActionController {
                 $codecheck = 1;
                 while($codecheck != null) {
                     $code->genCode();
-                    $codecheck = $em->getRepository("ersBase\Entity\Code")
+                    $codecheck = $em->getRepository("ErsBase\Entity\Code")
                         ->findOneBy(array('value' => $code->getValue()));
                 }
                 $newItem->setCode($code);
@@ -582,13 +582,13 @@ class ItemController extends AbstractActionController {
         $user = null;
         if($user_id != 0) {
             error_log('searching user with id: '.$user_id);
-            $user = $em->getRepository("ersBase\Entity\User")
+            $user = $em->getRepository("ErsBase\Entity\User")
                     ->findOneBy(array('id' => $user_id));
         }
         
         $item = null;
         if($item_id != 0) {
-            $item = $em->getRepository("ersBase\Entity\Item")
+            $item = $em->getRepository("ErsBase\Entity\Item")
                     ->findOneBy(array('id' => $item_id));
         }
         

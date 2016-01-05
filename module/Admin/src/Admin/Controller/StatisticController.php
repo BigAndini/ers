@@ -27,7 +27,7 @@ class StatisticController extends AbstractActionController {
         /*$qb = $em->createQueryBuilder();
         $order_data = $qb
                 ->select('COUNT(DISTINCT o.id) ordercount', 'SUM(i.price) ordersum')
-                ->from('ersBase\Entity\Order', 'o')
+                ->from('ErsBase\Entity\Order', 'o')
                 ->join('o.packages', 'p')
                 ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
                 ->getQuery()->getSingleResult();
@@ -35,7 +35,7 @@ class StatisticController extends AbstractActionController {
         $qb = $em->createQueryBuilder();
         $paymentFees = $qb
                 ->select('(pay.fixFee + SUM(i.price)*pay.percentageFee/100) AS fee')
-                ->from('ersBase\Entity\Order', 'o')
+                ->from('ErsBase\Entity\Order', 'o')
                 ->join('o.paymentType', 'pay')
                 ->join('o.packages', 'p')
                 ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
@@ -46,7 +46,7 @@ class StatisticController extends AbstractActionController {
         $order_data['paymentfees'] = array_sum(array_map(function($row){ return floatval($row['fee']); }, $paymentFees));
         
         $fastResults = $em->createQueryBuilder()
-                ->select('SUM(o.total_sum) totalsum_fast', 'SUM(o.order_sum) ordersum_fast')->from('ersBase\Entity\Order o')
+                ->select('SUM(o.total_sum) totalsum_fast', 'SUM(o.order_sum) ordersum_fast')->from('ErsBase\Entity\Order o')
                 ->getQuery()->getSingleResult();
         
         $order_data['ordersum_fast'] = $fastResults['ordersum_fast'];
@@ -60,7 +60,7 @@ class StatisticController extends AbstractActionController {
         
         $paymentStatusStats = $em->createQueryBuilder()
                 ->select(array_merge(array('o.payment_status AS label'), $orderSelectFields))
-                ->from('ersBase\Entity\Order', 'o')
+                ->from('ErsBase\Entity\Order', 'o')
                 ->groupBy('o.payment_status')
                 ->getQuery()->getResult();
         
@@ -75,7 +75,7 @@ class StatisticController extends AbstractActionController {
         
         $paymentTypeStats = $em->createQueryBuilder()
                 ->select(array_merge(array('pt.name AS label'), $orderSelectFields))
-                ->from('ersBase\Entity\PaymentType', 'pt')
+                ->from('ErsBase\Entity\PaymentType', 'pt')
                 ->join('pt.orders', 'o', 'WITH', "o.payment_status != 'cancelled' AND o.payment_status != 'refund'")
                 ->groupBy('pt.id')
                 ->getQuery()->getResult();
@@ -107,7 +107,7 @@ class StatisticController extends AbstractActionController {
                         'i.shipped shipped',
                         'i.status status'
                         )
-                ->from('ersBase\Entity\User', 'u')
+                ->from('ErsBase\Entity\User', 'u')
                 ->leftJoin('u.country', 'c')
                 ->join('u.packages', 'p')
                 ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
@@ -173,7 +173,7 @@ class StatisticController extends AbstractActionController {
          */
         $productStats = $em->createQueryBuilder()
                 ->select('prod.displayName', 'COUNT(DISTINCT u.id) AS usercount', 'COUNT(i.id) itemcount')
-                ->from('ersBase\Entity\Package', 'p')
+                ->from('ErsBase\Entity\Package', 'p')
                 ->join('p.participant', 'u')
                 ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
                 ->join('i.product', 'prod')
@@ -184,17 +184,17 @@ class StatisticController extends AbstractActionController {
         /*
          * === by product variant ===
          */
-        $variants = $em->getRepository("ersBase\Entity\ProductVariant")
+        $variants = $em->getRepository("ErsBase\Entity\ProductVariant")
                 ->findBy(array('type' => 'select'));
         
         $variantStats = array();
-        /* @var $variant \ersBase\Entity\ProductVariant */
+        /* @var $variant \ErsBase\Entity\ProductVariant */
         foreach($variants as $variant) {
             $variantStats[$variant->getName()] = array();
             foreach($variant->getProductVariantValues() as $value) {
                 $qb = $em->createQueryBuilder()
                         ->select('count(DISTINCT i.id)')
-                        ->from('ersBase\Entity\ItemVariant', 'ivar')
+                        ->from('ErsBase\Entity\ItemVariant', 'ivar')
                         ->join('ivar.item', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
                         ->where('ivar.ProductVariantValue_id = :value_id')
                         ->setParameter('value_id', $value->getId());
@@ -229,16 +229,16 @@ class StatisticController extends AbstractActionController {
         $activeStats = array();
         $matchingStats = array();
         
-        $bankaccounts = $em->getRepository("ersBase\Entity\BankAccount")
+        $bankaccounts = $em->getRepository("ErsBase\Entity\BankAccount")
                 ->findAll();
         
-        /* @var $bankaccount \ersBase\Entity\BankAccount */
+        /* @var $bankaccount \ErsBase\Entity\BankAccount */
         foreach($bankaccounts as $bankaccount) {
             $statementFormat = json_decode($bankaccount->getStatementFormat());
             
             $qb = $em->createQueryBuilder()
                     ->select('COUNT(s.id) AS stmtcount', 'SUM(col.value) AS amount, MAX(s.created) AS latestentry')
-                    ->from('ersBase\Entity\BankAccount', 'acc')
+                    ->from('ErsBase\Entity\BankAccount', 'acc')
                     ->join('acc.bankStatements', 's', 'WITH', "s.status != 'disabled'")
                     ->join('s.bankStatementCols', 'col', 'WITH', 'col.column = :colNum')
                     ->where('acc.id = :accountId')
@@ -267,7 +267,7 @@ class StatisticController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository("ersBase\Entity\Item")->createQueryBuilder('i');
+        $qb = $em->getRepository("ErsBase\Entity\Item")->createQueryBuilder('i');
         $qb->where("i.shipped = 1");
         $qb->andWhere($qb->expr()->orX(
                 $qb->expr()->eq("i.Product_id", "1"),

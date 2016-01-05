@@ -12,7 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use PreReg\Service;
-use ersBase\Entity;
+use ErsBase\Entity;
 
 use PreReg\Form;
 
@@ -33,7 +33,7 @@ class PaymentController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ersBase\Entity\Order")
+        $order = $em->getRepository("ErsBase\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
         
         return new ViewModel(array(
@@ -53,7 +53,7 @@ class PaymentController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ersBase\Entity\Order")
+        $order = $em->getRepository("ErsBase\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
         
         return new ViewModel(array(
@@ -73,7 +73,7 @@ class PaymentController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ersBase\Entity\Order")
+        $order = $em->getRepository("ErsBase\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
         
         //setup config object
@@ -123,7 +123,7 @@ class PaymentController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ersBase\Entity\Order")
+        $order = $em->getRepository("ErsBase\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
         
        
@@ -289,7 +289,7 @@ class PaymentController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ersBase\Entity\Order")
+        $order = $em->getRepository("ErsBase\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {

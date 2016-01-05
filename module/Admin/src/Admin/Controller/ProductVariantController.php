@@ -10,9 +10,9 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersBase\Entity;
+use ErsBase\Entity;
 use Admin\Form;
-use ersBase\Service;
+use ErsBase\Service;
 
 class ProductVariantController extends AbstractActionController 
 {    
@@ -53,7 +53,7 @@ class ProductVariantController extends AbstractActionController
                     ->get('Doctrine\ORM\EntityManager');
 
                 $productvariant->populate($form->getData());
-                $product = $em->getRepository("ersBase\Entity\Product")->findOneBy(array('id' => $productvariant->getProductId()));
+                $product = $em->getRepository("ErsBase\Entity\Product")->findOneBy(array('id' => $productvariant->getProductId()));
                 $productvariant->setProduct($product);
                 
                 $em->persist($productvariant);
@@ -73,7 +73,7 @@ class ProductVariantController extends AbstractActionController
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $product = $em->getRepository("ersBase\Entity\Product")->findOneBy(array('id' => $product_id));
+        $product = $em->getRepository("ErsBase\Entity\Product")->findOneBy(array('id' => $product_id));
         
         
         $breadcrumb = $forrest->get('product-variant');
@@ -97,7 +97,7 @@ class ProductVariantController extends AbstractActionController
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $productvariant = $em->getRepository("ersBase\Entity\ProductVariant")->findOneBy(array('id' => $id));
+        $productvariant = $em->getRepository("ErsBase\Entity\ProductVariant")->findOneBy(array('id' => $id));
 
         #$form  = new Form\ProductVariant();
         $form = $this->getServiceLocator()->get('Admin\Form\ProductVariant');
@@ -124,7 +124,7 @@ class ProductVariantController extends AbstractActionController
             }
         }
         
-        $product = $em->getRepository("ersBase\Entity\Product")->findOneBy(array('id' => $productvariant->getProductId()));
+        $product = $em->getRepository("ErsBase\Entity\Product")->findOneBy(array('id' => $productvariant->getProductId()));
 
         return new ViewModel(array(
             'id' => $id,
@@ -152,9 +152,9 @@ class ProductVariantController extends AbstractActionController
             if ($del == 'Yes') {
                 
                 $id = (int) $request->getPost('id');
-                $productvariant = $em->getRepository("ersBase\Entity\ProductVariant")
+                $productvariant = $em->getRepository("ErsBase\Entity\ProductVariant")
                         ->findOneBy(array('id' => $id));
-                $values = $em->getRepository("ersBase\Entity\ProductVariantValue")
+                $values = $em->getRepository("ErsBase\Entity\ProductVariantValue")
                         ->findBy(array('ProductVariant_id' => $productvariant->getId()));
                 foreach($values as $value) {
                     $em->remove($value);
@@ -167,9 +167,9 @@ class ProductVariantController extends AbstractActionController
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        $productvariant = $em->getRepository("ersBase\Entity\ProductVariant")
+        $productvariant = $em->getRepository("ErsBase\Entity\ProductVariant")
                         ->findOneBy(array('id' => $id));
-        $product = $em->getRepository("ersBase\Entity\Product")
+        $product = $em->getRepository("ErsBase\Entity\Product")
                 ->findOneBy(array('id' => $productvariant->getProductId()));
         
         return new ViewModel(array(

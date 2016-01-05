@@ -10,7 +10,7 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ersBase\Entity;
+use ErsBase\Entity;
 use Admin\Form;
 
 class AgegroupController extends AbstractActionController {
@@ -21,7 +21,7 @@ class AgegroupController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'agegroups' => $em->getRepository("ersBase\Entity\Agegroup")
+            'agegroups' => $em->getRepository("ErsBase\Entity\Agegroup")
                 ->findBy(array(), array('agegroup' => 'ASC')),
          ));
     }
@@ -68,7 +68,7 @@ class AgegroupController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $agegroup = $em->getRepository("ersBase\Entity\Agegroup")->findOneBy(array('id' => $id));
+        $agegroup = $em->getRepository("ErsBase\Entity\Agegroup")->findOneBy(array('id' => $id));
 
         $form = new Form\Agegroup();
         $form->bind($agegroup);
@@ -101,7 +101,7 @@ class AgegroupController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $agegroup = $em->getRepository("ersBase\Entity\Agegroup")
+        $agegroup = $em->getRepository("ErsBase\Entity\Agegroup")
                 ->findOneBy(array('id' => $id));
         $productprices = $agegroup->getProductPrices();
 
@@ -111,7 +111,7 @@ class AgegroupController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $agegroup = $em->getRepository("ersBase\Entity\Agegroup")
+                $agegroup = $em->getRepository("ErsBase\Entity\Agegroup")
                     ->findOneBy(array('id' => $id));
                 $em->remove($agegroup);
                 $em->flush();

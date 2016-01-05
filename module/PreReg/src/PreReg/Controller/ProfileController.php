@@ -13,8 +13,8 @@ use Zend\View\Model\ViewModel;
 use Zend\Crypt\Password\Bcrypt;
 use PreReg\Form;
 use PreReg\InputFilter;
-use ersBase\Service;
-use ersBase\Entity;
+use ErsBase\Service;
+use ErsBase\Entity;
 
 class ProfileController extends AbstractActionController {
     /*
@@ -29,7 +29,7 @@ class ProfileController extends AbstractActionController {
 
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository("ersBase\Entity\User")->findOneBy(array('email' => $email));
+        $user = $em->getRepository("ErsBase\Entity\User")->findOneBy(array('email' => $email));
         
         return new ViewModel(array(
             'user' => $user,
@@ -45,7 +45,7 @@ class ProfileController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         $email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
-        $user = $em->getRepository("ersBase\Entity\User")->findOneBy(array('email' => $email));
+        $user = $em->getRepository("ErsBase\Entity\User")->findOneBy(array('email' => $email));
         
         $form = new Form\User(); 
         $request = $this->getRequest(); 
@@ -127,7 +127,7 @@ class ProfileController extends AbstractActionController {
                 
                 $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-                $user = $em->getRepository("ersBase\Entity\User")
+                $user = $em->getRepository("ErsBase\Entity\User")
                         ->findOneBy(array('email' => $data['email']));
                 if($user) {
                     $user->genHashKey();
@@ -176,7 +176,7 @@ class ProfileController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository("ersBase\Entity\User")
+        $user = $em->getRepository("ErsBase\Entity\User")
                 ->findOneBy(array('hashkey' => $hashkey));
         if(!$user) {
             $logger->info('unable to find user with hash key: '.$hashkey);
@@ -207,7 +207,7 @@ class ProfileController extends AbstractActionController {
                 $user->setPassword($password);
                 $user->setHashKey(null);
                 
-                $role = $em->getRepository("ersBase\Entity\Role")
+                $role = $em->getRepository("ErsBase\Entity\Role")
                     ->findOneBy(array('roleId' => 'user'));
                 if(!$user->hasRole($role)) {
                     $user->addRole($role);
@@ -236,7 +236,7 @@ class ProfileController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $participant = $em->getRepository("ersBase\Entity\User")
+        $participant = $em->getRepository("ErsBase\Entity\User")
             ->findOneBy(array('email' => $email));
         
         $form = new Form\Participant(); 
@@ -288,12 +288,12 @@ class ProfileController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository("ersBase\Entity\Country")->createQueryBuilder('n');
+        $qb1 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
         $qb1->where($qb1->expr()->isNotNull('n.ordering'));
         $qb1->orderBy('n.ordering', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
-        $qb2 = $em->getRepository("ersBase\Entity\Country")->createQueryBuilder('n');
+        $qb2 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
         $qb2->where($qb2->expr()->isNull('n.ordering'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();
