@@ -47,6 +47,12 @@ class BreadcrumbService
         return $this->forrest->$id->offsetGet($context);
     }
     
+    public function remove($context) {
+        if($this->exists($context)) {
+            $this->forrest->trace->offsetUnset($context);
+        }
+    }
+    
     public function exists($context) {
         $id = $this->getId();
         if($this->forrest->$id->offsetExists($context)) {

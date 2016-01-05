@@ -17,7 +17,6 @@ use Behat\SahiClient\Client;
  */
 class FeatureContext extends MinkContext
 {
-    protected $client;
     /**
      * Initializes context.
      *
@@ -27,15 +26,6 @@ class FeatureContext extends MinkContext
      */
     public function __construct()
     {
-    }
-    
-    /**
-     * @Given /^I initialized sahi$/
-     */
-    public function iInitializedSahi() {
-        var_dump($this->getSession());
-        #$this->client = new Client();
-        #$this->client->start('firefox');
     }
     
     /**

@@ -7,7 +7,7 @@ Feature: ERS AdminPanel Statistic Orders
     #    Given I am on "/admin/statistic/orders"
     #    Then I should see "You are not authorized to access"
 
-    Scenario: Accessing the admin statistic orders page needs a login
+    Scenatio: Login with an admin user
         Given I am on "/user/login"
         When I fill in the following:
             | identity | test@inbaz.org |
