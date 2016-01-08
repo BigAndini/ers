@@ -256,7 +256,7 @@ class Module
                     $agegroupService = new Service\AgegroupService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
                     $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                                ->findBy(array('priceChange' => '1'));
+                                ->findBy(array('price_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
                     return $agegroupService;
@@ -265,7 +265,7 @@ class Module
                     $agegroupService = new Service\AgegroupService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
                     $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                                ->findBy(array('ticketChange' => '1'));
+                                ->findBy(array('ticket_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
                     return $agegroupService;

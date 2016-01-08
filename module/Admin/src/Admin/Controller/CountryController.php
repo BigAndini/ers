@@ -62,7 +62,7 @@ class CountryController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($country->getInputFilter());
+            #$form->setInputFilter($country->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

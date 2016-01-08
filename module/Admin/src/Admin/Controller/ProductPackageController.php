@@ -75,7 +75,7 @@ class ProductPackageController extends AbstractActionController {
         if ($request->isPost()) {
             $productPackage = new Entity\ProductPackage();
             
-            $form->setInputFilter($productPackage->getInputFilter());
+            #$form->setInputFilter($productPackage->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $productPackage->populate($form->getData());
@@ -141,7 +141,7 @@ class ProductPackageController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($productPackage->getInputFilter());
+            #$form->setInputFilter($productPackage->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

@@ -35,7 +35,7 @@ class AgegroupController extends AbstractActionController {
         if ($request->isPost()) {
             $agegroup = new Entity\Agegroup();
             
-            $form->setInputFilter($agegroup->getInputFilter());
+            #$form->setInputFilter($agegroup->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $agegroup->populate($form->getData());
@@ -76,7 +76,7 @@ class AgegroupController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($agegroup->getInputFilter());
+            #$form->setInputFilter($agegroup->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

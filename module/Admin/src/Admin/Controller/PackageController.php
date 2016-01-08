@@ -259,7 +259,7 @@ class PackageController extends AbstractActionController {
                 ->get('ErsBase\Service\DeadlineService:price');
         /*$deadlineService = new \ErsBase\Service\DeadlineService();
         $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                    ->findBy(array('priceChange' => '1'));
+                    ->findBy(array('price_change' => '1'));
         $deadlineService->setDeadlines($deadlines);*/
 
         $deadlineService->setCompareDate($order->getCreated());
@@ -678,7 +678,7 @@ class PackageController extends AbstractActionController {
         if ($request->isPost()) {
             $inputFilter = $this->getServiceLocator()
                     ->get('Admin\InputFilter\AcceptParticipantChangePackage');
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -857,7 +857,7 @@ class PackageController extends AbstractActionController {
         if ($request->isPost()) {
             $inputFilter = $this->getServiceLocator()
                     ->get('Admin\InputFilter\AcceptMovePackage');
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

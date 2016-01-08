@@ -38,7 +38,7 @@ class BankaccountController extends AbstractActionController {
         if ($request->isPost()) {
             $bankaccount = new Entity\BankAccount();
             
-            $form->setInputFilter($bankaccount->getInputFilter());
+            #$form->setInputFilter($bankaccount->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $bankaccount->populate($form->getData());
@@ -79,7 +79,7 @@ class BankaccountController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($bankaccount->getInputFilter());
+            #$form->setInputFilter($bankaccount->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -200,7 +200,7 @@ class BankaccountController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = new InputFilter\BankAccountFormat();
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

@@ -37,7 +37,7 @@ class CounterController extends AbstractActionController {
         if ($request->isPost()) {
             $counter = new Entity\Counter();
             
-            $form->setInputFilter($counter->getInputFilter());
+            #$form->setInputFilter($counter->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $counter->populate($form->getData());
@@ -85,7 +85,7 @@ class CounterController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($counter->getInputFilter());
+            #$form->setInputFilter($counter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

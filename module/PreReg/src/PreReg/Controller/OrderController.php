@@ -82,7 +82,7 @@ class OrderController extends AbstractActionController {
                 ->get('ErsBase\Service\DeadlineService:price');
         /*$deadlineService = new Service\DeadlineService();
         $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                    ->findBy(array('priceChange' => '1'));
+                    ->findBy(array('price_change' => '1'));
         $deadlineService->setDeadlines($deadlines);*/
         $deadline = $deadlineService->getDeadline();
         
@@ -90,7 +90,7 @@ class OrderController extends AbstractActionController {
                 ->get('ErsBase\Service\AgegroupService');
         #$agegroupService = new Service\AgegroupService();
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                    ->findBy(array('priceChange' => '1'));
+                    ->findBy(array('price_change' => '1'));
         $agegroupService->setAgegroups($agegroups);
         foreach($order->getPackages() as $package) {
             $participant = $package->getParticipant();

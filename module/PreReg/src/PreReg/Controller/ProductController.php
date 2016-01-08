@@ -35,7 +35,7 @@ class ProductController extends AbstractActionController {
                         'deleted' => 0,
                     ),
                     array(
-                        'ordering' => 'ASC'
+                        'position' => 'ASC'
                     )
                 );
         $products = array();
@@ -46,7 +46,7 @@ class ProductController extends AbstractActionController {
         }
         
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
+                    ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
         
         $deadlineService = $this->getServiceLocator()
                 ->get('ErsBase\Service\DeadlineService:price');
@@ -399,7 +399,7 @@ class ProductController extends AbstractActionController {
         $cartContainer->chooser = false;
 
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
+                    ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
         
         return new ViewModel(array(
             'product' => $product,
@@ -458,7 +458,7 @@ class ProductController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
+                    ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
         $options = array();
         
         foreach($agegroups as $agegroup) {

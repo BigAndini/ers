@@ -503,7 +503,7 @@ class ItemController extends AbstractActionController {
         if ($request->isPost()) {
             $inputFilter = $this->getServiceLocator()
                     ->get('Admin\InputFilter\AcceptParticipantChangeItem');
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

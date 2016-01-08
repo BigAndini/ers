@@ -132,9 +132,9 @@ class ProductController extends AbstractActionController {
         $forrest->set('product-variant-value', 'admin/product', array('action' => 'view', 'id' => $id));
         
         $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                ->findBy(array('priceChange' => '1'), array('deadline' => 'ASC'));
+                ->findBy(array('price_change' => '1'), array('deadline' => 'ASC'));
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                ->findBy(array('priceChange' => '1'), array('agegroup' => 'ASC'));
+                ->findBy(array('price_change' => '1'), array('agegroup' => 'ASC'));
         
         return new ViewModel(array(
             'product' => $product,
@@ -163,7 +163,7 @@ class ProductController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($product->getInputFilter());
+            #$form->setInputFilter($product->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

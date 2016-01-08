@@ -96,7 +96,7 @@ class InfoController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                ->findBy(array('ticketChange' => '1'), array('agegroup' => 'ASC'));
+                ->findBy(array('ticket_change' => '1'), array('agegroup' => 'ASC'));
         
         $sel = false;
         if($selected == '') {

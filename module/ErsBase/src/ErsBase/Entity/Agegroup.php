@@ -26,4 +26,14 @@ class Agegroup extends Base\Agegroup
         parent::__construct();
     }
 
+    public function setAgegroup($agegroup)
+    {
+        if($agegroup instanceof \DateTime) {
+            $this->agegroup = $agegroup;
+        } else {
+            $this->agegroup = \DateTime::createFromFormat('d.m.Y', $agegroup);
+        }
+
+        return $this;
+    }
 }

@@ -23,6 +23,13 @@ use ZfcUser\Entity\UserInterface;
  */
 class User extends Base\User implements UserInterface, ProviderInterface
 {
+    /**
+     * Length of hashkey
+     *
+     * @var length
+     */
+    private $length = 30;
+
     public function __construct()
     {
         parent::__construct();
@@ -45,4 +52,26 @@ class User extends Base\User implements UserInterface, ProviderInterface
         $index = $this->roles->indexOf($role);
         return is_numeric($index);
     }
+    
+    /**
+     * Generate hashkey
+     */
+    public function genHashkey() {
+        $alphabet = "0123456789ACDFGHKMNPRUVWXY";
+        $memory = '';
+        $n = '';
+        #srand(mktime());
+        srand(rand()*mktime());
+        for ($i = 0; $i < $this->length; $i++) {
+
+            while($n == '' || $memory == $alphabet[$n]) {
+                $n = rand(0, strlen($alphabet)-1);
+            }
+            $memory = $alphabet[$n];
+            $code[$i] = $alphabet[$n];
+        }
+
+        $this->setHashkey(implode($code));
+    }
+
 }

@@ -42,7 +42,7 @@ class RoleController extends AbstractActionController {
         if ($request->isPost()) {
             $role = new Entity\Role();
             
-            $form->setInputFilter($role->getInputFilter());
+            #$form->setInputFilter($role->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -105,7 +105,7 @@ class RoleController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($role->getInputFilter());
+            #$form->setInputFilter($role->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

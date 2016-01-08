@@ -123,7 +123,7 @@ class CartController extends AbstractActionController {
                     ->get('ErsBase\Service\DeadlineService:price');
                 /*$deadlineService = new Service\DeadlineService();
                 $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                        ->findBy(array('priceChange' => '1'));
+                        ->findBy(array('price_change' => '1'));
                 $deadlineService->setDeadlines($deadlines);*/
                 $deadline = $deadlineService->getDeadline();
                 

@@ -253,65 +253,6 @@ class Module
                     
                     return $form;
                 },
-                /*'PreReg\Service\AgegroupService:price' => function($sm) {
-                    $agegroupService = new Service\AgegroupService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                                ->findBy(array('priceChange' => '1'));
-                    $agegroupService->setAgegroups($agegroups);
-                    
-                    return $agegroupService;
-                },
-                'PreReg\Service\AgegroupService:ticket' => function($sm) {
-                    $agegroupService = new Service\AgegroupService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                                ->findBy(array('ticketChange' => '1'));
-                    $agegroupService->setAgegroups($agegroups);
-                    
-                    return $agegroupService;
-                },
-                'PreReg\Service\DeadlineService:price' => function($sm) {
-                    $deadlineService = new Service\DeadlineService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                                ->findBy(array('priceChange' => '1'));
-                    $deadlineService->setDeadlines($deadlines);
-                    
-                    return $deadlineService;
-                },
-                'PreReg\Service\DeadlineService:noprice' => function($sm) {
-                    $deadlineService = new Service\DeadlineService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                                ->findBy(array('priceChange' => '0'));
-                    $deadlineService->setDeadlines($deadlines);
-                    
-                    return $deadlineService;
-                },
-                'PreReg\Service\DeadlineService:all' => function($sm) {
-                    $deadlineService = new Service\DeadlineService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                                ->findAll();
-                    $deadlineService->setDeadlines($deadlines);
-                    
-                    return $deadlineService;
-                },*/
-                /*'PreReg\Service\ETicketService' => function($sm) {
-                    $eticketService = new Service\ETicketService();
-                    $eticketService->setServiceLocator($sm);
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $products = $em->getRepository("ErsBase\Entity\Product")
-                                ->findBy(array('visible' => '1'), array('ordering' => 'ASC'));
-                    $eticketService->setProducts($products);
-                    return $eticketService;
-                },*/
-                /*'PreReg\Service\TicketCounterService' => function($sm) {
-                    $ticketCounterService = new Service\TicketCounterService();
-                    $ticketCounterService->setServiceLocator($sm);
-                    return $ticketCounterService;
-                },*/
                 'PreReg\Service\LoginService' => function($sm) {
                     $loginService = new Service\LoginService();
                     $loginService->setServiceLocator($sm);

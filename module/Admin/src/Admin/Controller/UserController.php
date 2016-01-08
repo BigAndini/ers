@@ -156,7 +156,7 @@ class UserController extends AbstractActionController {
         if ($request->isPost()) {
             $inputFilter = $this->getServiceLocator()
                     ->get('Admin\InputFilter\User');
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
