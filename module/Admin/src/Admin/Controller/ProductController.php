@@ -20,7 +20,7 @@ class ProductController extends AbstractActionController {
     {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $products = $em->getRepository("ErsBase\Entity\Product")->findBy(array(), array('ordering' => 'ASC'));
+        $products = $em->getRepository("ErsBase\Entity\Product")->findBy(array(), array('position' => 'ASC'));
         
         $forrest = new Service\BreadcrumbService();
         $forrest->set('product', 'admin/product');
@@ -43,7 +43,7 @@ class ProductController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($product->getInputFilter());
+            #$form->setInputFilter($product->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {                
@@ -88,7 +88,7 @@ class ProductController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($product->getInputFilter());
+            #$form->setInputFilter($product->getInputFilter());
             $form->setData($request->getPost());
             
             if ($form->isValid()) {
@@ -244,7 +244,7 @@ class ProductController extends AbstractActionController {
                 ->findBy(array('Product_id' => $Product->getId()));
         foreach($ProductVariants as $variant) {
             $ProductVariantValues = $em->getRepository("ErsBase\Entity\ProductVariantValue")
-                    ->findBy(array('ProductVariant_id' => $variant->getId()), array('ordering' => 'ASC'));
+                    ->findBy(array('ProductVariant_id' => $variant->getId()), array('position' => 'ASC'));
             foreach($ProductVariantValues as $value) {
                 $em->remove($value);
             }

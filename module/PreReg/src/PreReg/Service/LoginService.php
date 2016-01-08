@@ -132,7 +132,7 @@ class LoginService
              * add users from former orders
              */
             $orders = $em->getRepository("ErsBase\Entity\Order")
-                ->findBy(array('Buyer_id' => $this->getUser()->getId()));
+                ->findBy(array('buyer_id' => $this->getUser()->getId()));
         
             foreach($orders as $order) {
                 $count = 1;

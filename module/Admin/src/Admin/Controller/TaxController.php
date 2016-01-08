@@ -38,7 +38,7 @@ class TaxController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $tax = new Entity\Tax();
-            $form->setInputFilter($tax->getInputFilter());
+            #$form->setInputFilter($tax->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -82,7 +82,7 @@ class TaxController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($tax->getInputFilter());
+            #$form->setInputFilter($tax->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

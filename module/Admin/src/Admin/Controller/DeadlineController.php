@@ -35,7 +35,7 @@ class DeadlineController extends AbstractActionController {
         if ($request->isPost()) {
             $deadline = new Entity\Deadline();
             
-            $form->setInputFilter($deadline->getInputFilter());
+            #$form->setInputFilter($deadline->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $deadline->populate($form->getData());
@@ -76,7 +76,7 @@ class DeadlineController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($deadline->getInputFilter());
+            #$form->setInputFilter($deadline->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -108,8 +108,8 @@ class DeadlineController extends AbstractActionController {
         $qb = $em->getRepository("ErsBase\Entity\PaymentType")->createQueryBuilder('n');
         $paymenttypes = $qb->where(
                 $qb->expr()->orX(
-                    $qb->expr()->eq('n.activeFrom_id', $id),
-                    $qb->expr()->eq('n.activeUntil_id', $id)
+                    $qb->expr()->eq('n.active_from_id', $id),
+                    $qb->expr()->eq('n.active_until_id', $id)
             ))->getQuery()->getResult();
         
         $request = $this->getRequest();

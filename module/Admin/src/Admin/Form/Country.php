@@ -26,15 +26,15 @@ class Country extends Form
         ));
  
         $this->add(array(
-            'name' => 'ordering',
+            'name' => 'position',
             'attributes' => array(
                 'required' => 'required',
                 'type'  => 'text',
                 'class' => 'form-control form-element',
-                'placeholder' => 'Ordering...',
+                'placeholder' => 'Position...',
             ),
             'options' => array(
-                'label' => 'Ordering',
+                'label' => 'Position',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),

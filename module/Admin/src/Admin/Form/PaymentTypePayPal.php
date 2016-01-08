@@ -27,14 +27,14 @@ class PaymentTypePayPal extends Form
         ));
         
         $this->add(array( 
-            'name' => 'ordering', 
+            'name' => 'position', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Order...',
+                'placeholder' => 'Position...',
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Order', 
+                'label' => 'Position', 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
