@@ -11,13 +11,31 @@ namespace PreReg\Form;
 use Zend\Form\Form;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterProviderInterface;
+use Zend\Session\Container;
 
-
-class Participant extends Form
-{
-    public $inputFilter;
+class Participant extends Form implements InputFilterProviderInterface
+{    
+    protected $em;
+    protected $sm;
+    public function getEntityManager() {
+        return $this->em;
+    }
+    public function setEntityManager($em) {
+        $this->em = $em;
+    }
     
-    public function __construct($name = null)
+    public function setServiceLocation($sm) {
+        $this->sm = $sm;
+        
+        return $this;
+    }
+    public function getServiceLocator() {
+        return $this->sm;
+    }
+
+
+    public function __construct()
     {
         parent::__construct('Participant');
         
@@ -130,5 +148,193 @@ class Participant extends Form
                 'class' => 'btn btn-primary',
             ),
         ));
+    }
+    
+    /**
+     * Should return an array specification compatible with
+     * {@link Zend\InputFilter\Factory::createInputFilter()}.
+     *
+     * @return array
+     */
+    public function getInputFilterSpecification()
+    {
+        return array(
+            'id' => array(
+                'required' => false,
+                'validators' => array(
+                ),
+            ),
+            'firstname' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'), 
+                    array('name' => 'StringTrim'), 
+                ),
+                'validators' => array(
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 45,
+                        ),
+                    ),
+                    array ( 
+                        'name' => 'Callback', 
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The provided name contains invalid character. These charaters are not allowed: !"§$%()=<>|^;{}[]',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                $alphabet = '!"§$%()=<>|^;{}[]';
+                                $alpha = str_split($alphabet);
+                                foreach($alpha as $char) {
+                                    if(strstr($value, $char)) {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            },
+                            
+                        ),
+                    ),
+                ), 
+            ),
+            'surname' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'), 
+                    array('name' => 'StringTrim'), 
+                ),
+                'validators' => array( 
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 45,
+                        ),
+                    ),
+                    array ( 
+                        'name' => 'Callback', 
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'The provided name contains invalid character. These charaters are not allowed: !"§$%()=<>|^;{}[]',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                $alphabet = '!"§$%()=<>|^;{}[]';
+                                $alpha = str_split($alphabet);
+                                foreach($alpha as $char) {
+                                    if(strstr($value, $char)) {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            },
+                            
+                        ),
+                    ),
+                ),
+            ),
+            'birthday' => array(
+                'required' => true,
+                'filters' => array( 
+                    array('name' => 'StripTags'), 
+                    array('name' => 'StringTrim'), 
+                ), 
+                'validators' => array( 
+                    array(
+                        'name' => 'Date',
+                        'options' => array(
+                            'format' => 'd.m.Y',
+                        ),
+                    ),
+                    array(
+                        'name' => 'Callback', 
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'Please choose a valid birthday',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                $min = \DateTime::createFromFormat('d.m.Y', '01.01.1900');
+                                $max = new \DateTime();
+                                $birthday = \DateTime::createFromFormat('d.m.Y', $value);
+                                if(!$birthday instanceof \DateTime) {
+                                    return false;
+                                }
+                                if($min->getTimestamp() > $birthday->getTimestamp()) {
+                                    return false;
+                                }
+                                if($max->getTimestamp() < $birthday->getTimestamp()) {
+                                    return false;
+                                }
+                                return true;
+                            },
+                        ),
+                    ),
+                ),
+            ),
+            'email' => array(
+                'required' => false,
+                'filters' => array( 
+                    array('name' => 'StripTags'), 
+                    array('name' => 'StringTrim'), 
+                ), 
+                'validators' => array( 
+                    array ( 
+                        'name' => 'EmailAddress', 
+                        'options' => array( 
+                            'messages' => array( 
+                                'emailAddressInvalidFormat' => 'Email address format is not invalid', 
+                            ) 
+                        ), 
+                    ),
+                    array ( 
+                        'name' => 'Callback', 
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'A person with this email address already exists. Login to make changes. Note: the email field is optional.',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                $orderService = $this->getServiceLocator()
+                                        ->get('ErsBase\Service\OrderService');
+                                $order = $orderService->getOrder();
+                                $participants = $order->getParticipants();
+                                foreach($participants as $participant) {
+                                    if($value == $participant->getEmail()) {
+                                        return false;
+                                    }
+                                }
+                                $em = $this->getServiceLocator()
+                                    ->get('Doctrine\ORM\EntityManager');
+                                $user = $em->getRepository('ErsBase\Entity\User')
+                                        ->findOneBy(array('email' => $value));
+                                if($user) {
+                                    return false;
+                                }
+                                return true;
+                            },
+                            
+                        ),
+                    ),
+                ), 
+            ),
+            'Country_id' => array(
+                'required' => true,
+                'filters' => array( 
+                    array('name' => 'Int'), 
+                ), 
+                'validators' => array(
+                ),
+            ),
+            /*'price' => array(
+                'required' => true,
+                'validators' => array(
+                    array(
+                        'name' => 'Float',
+                    ),
+                ),
+            ),*/
+        );
     }
 }

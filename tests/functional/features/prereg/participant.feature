@@ -3,7 +3,7 @@ Feature: ERS Participant Add Page
     As a guest
     I need to access the participant add page
 
-    Scenario: Add/edit/delete a participant
+    Scenario: Add/edit/delete a participant that does not exist, yet.
         Given I am on "/participant/add"
         Then I should see "Add Person"
         And I should see "Note for personal data"
@@ -39,3 +39,5 @@ Feature: ERS Participant Add Page
         And I should not see "Andi Nitsche"
         And I should not see "andi@inbaz.org"
         
+    # Scenario: Add/edit/delete a participant that already exists inactive
+    # Scenario: Add/edit/delete a participant that already exists active

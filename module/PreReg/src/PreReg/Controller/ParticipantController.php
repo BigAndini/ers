@@ -24,16 +24,23 @@ class ParticipantController extends AbstractActionController {
      */
     public function indexAction()
     {
-        $forrest = new Service\BreadcrumbService(); 
-        $forrest->reset();
-        $forrest->set('participant', 'participant');
+        $breadcrumbService = new Service\BreadcrumbService(); 
+        $breadcrumbService->reset();
+        $breadcrumbService->set('participant', 'participant');
      
-        $cartContainer = new Container('cart');
+        #$cartContainer = new Container('cart');
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
         
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
+        /*$em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');*/
         
-        $participants = $cartContainer->order->getParticipants();
+        /*$order = $em->getRepository("ErsBase\Entity\Order")
+                ->findOneBy(array('id' => $cartContainer->order_id));*/
+        
+        #$participants = $cartContainer->order->getParticipants();
+        $participants = $order->getParticipants();
         
         foreach($participants as $participant) {
             if($participant->getCountryId()) {
@@ -53,19 +60,22 @@ class ParticipantController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         $qb1 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
-        $qb1->where($qb1->expr()->isNotNull('n.ordering'));
-        $qb1->orderBy('n.ordering', 'ASC');
+        $qb1->where($qb1->expr()->isNotNull('n.position'));
+        $qb1->orderBy('n.position', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
         $qb2 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
-        $qb2->where($qb2->expr()->isNull('n.ordering'));
+        $qb2->where($qb2->expr()->isNull('n.position'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();
 
         $countries = array_merge($result1, $result2);
 
-        $cartContainer = new Container('cart');
-        $countryContainerId = $cartContainer->Country_id;
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        #$cartContainer = new Container('cart');
+        #$countryContainerId = $cartContainer->Country_id;
+        $countryContainerId = $orderService->getCountryId();
         
         $options = array();
         $selected = false;
@@ -99,34 +109,68 @@ class ParticipantController extends AbstractActionController {
      * able to assign a product afterwards.
      */
     public function addAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
         $form = new Form\Participant(); 
-        $request = $this->getRequest(); 
-
+        #$form->setEntityManager($em);
+        $form->setServiceLocation($this->getServiceLocator());
         $form->get('Country_id')->setValueOptions($this->getCountryOptions());
         
-        $forrest = new Service\BreadcrumbService();
+        $user = new Entity\User();
+        $user->setActive(false);
+        $form->bind($user);
+        
+        $breadcrumbService = new Service\BreadcrumbService();
+        
+        $request = $this->getRequest(); 
         if($request->isPost()) 
         { 
-            $user = new Entity\User();
+            #$inputFilter = new InputFilter\Participant();
+            #$inputFilter->setEntityManager($em);
 
-            $inputFilter = new InputFilter\Participant();
-
-            $form->setInputFilter($inputFilter->getInputFilter()); 
+            #$form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
             
             if($form->isValid())
             { 
-                $user->populate($form->getData()); 
-                $cartContainer = new Container('cart');
-                $cartContainer->order->addParticipant($user);
-                $cartContainer->Country_id = $user->getCountryId();
+                $orderService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\OrderService');
+                $order = $orderService->getOrder();
+                
+                $participant = $em->getRepository('ErsBase\Entity\User')
+                        ->findOneBy(array('email' => $user->getEmail(), 'active' => false));
+                
+                if($participant) {
+                    $participant->loadData($user);
+                    $em->persist($participant);
+                    $orderService->addParticipant($participant);
+                    #$em->persist($participant);
+                } else {
+                    $active_user = $em->getRepository('ErsBase\Entity\User')
+                        ->findOneBy(array('email' => $user->getEmail(), 'active' => true));
+                    
+                    if($active_user) {
+                        # TODO: flash error message: login is needed
+                    } else {
+                        #$em->persist($user);
+                        $orderService->addParticipant($user);
+                    }
+                    
+                }
+                
+                
+                $orderService->setCountryId($user->getCountryId());
                 
                 if($user->getCountryId() == 0) {
                     $user->setCountryId(null);
                     $user->setCountry(null);
                 }
                 
-                $breadcrumb = $forrest->get('participant');
+                $em->persist($order);
+                $em->flush();
+                
+                $breadcrumb = $breadcrumbService->get('participant');
                 if($breadcrumb->route == 'product' && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
                     error_log('setting user info');
                     #$breadcrumb->params['participant_id'] = $user->getSessionId();
@@ -142,13 +186,13 @@ class ParticipantController extends AbstractActionController {
             } 
         }
         
-        if(!$forrest->exists('participant')) {
-            $forrest->set('participant', 'participant');
+        if(!$breadcrumbService->exists('participant')) {
+            $breadcrumbService->set('participant', 'participant');
         }
 
         return new ViewModel(array(
             'form' => $form,
-            'breadcrumb' => $forrest->get('participant'),
+            'breadcrumb' => $breadcrumbService->get('participant'),
         ));
     }
     
@@ -166,35 +210,54 @@ class ParticipantController extends AbstractActionController {
             ));
         }
         
-        $cartContainer = new Container('cart');
-        $participant = $cartContainer->order->getParticipantBySessionId($id);
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
+        
+        $participant = $order->getParticipantById($id);
+        
+        if(!$participant) {
+            # TODO: add flash messenger message with error and return
+        }
+        /*$participant = $em->getRepository('ErsBase\Entity\User')
+                ->findOneBy(array('id' => $id));*/
+        
+        #$cartContainer = new Container('cart');
+        #$participant = $cartContainer->order->getParticipantBySessionId($id);
+        
+        $breadcrumbService = new Service\BreadcrumbService();
         
         $form = new Form\Participant(); 
-        $request = $this->getRequest(); 
-        $forrest = new Service\BreadcrumbService();
-        
+        #$form->setEntityManager($em);
+        $form->setServiceLocation($this->getServiceLocator());
         $form->get('Country_id')->setValueOptions($this->getCountryOptions());
-        
         $form->bind($participant);
         
+        $request = $this->getRequest(); 
         if($request->isPost()) 
         {
-            $inputFilter = new InputFilter\Participant();
-            $form->setInputFilter($inputFilter->getInputFilter()); 
+            #$inputFilter = new InputFilter\Participant();
+            #$form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
                 
             if($form->isValid())
             { 
-                $participant = $form->getData();
-                $cartContainer = new Container('cart');
-                $cartContainer->order->setParticipantBySessionId($participant, $id);
+                #$participant = $form->getData();
+                #$cartContainer = new Container('cart');
+                #$cartContainer->order->setParticipantBySessionId($participant, $id);
                 
                 if($participant->getCountryId() == 0) {
                     $participant->setCountryId(null);
                     $participant->setCountry(null);
                 }
                 
-                $breadcrumb = $forrest->get('participant');
+                $em->persist($participant);
+                $em->flush();
+                
+                $breadcrumb = $breadcrumbService->get('participant');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 $logger = $this->getServiceLocator()->get('Logger');
@@ -202,10 +265,10 @@ class ParticipantController extends AbstractActionController {
             } 
         }
         
-        if(!$forrest->exists('participant')) {
-            $forrest->set('participant', 'participant');
+        if(!$breadcrumbService->exists('participant')) {
+            $breadcrumbService->set('participant', 'participant');
         }
-        $breadcrumb = $forrest->get('participant');
+        $breadcrumb = $breadcrumbService->get('participant');
         return new ViewModel(array(
             'id' => $id,
             'form' => $form,
@@ -222,15 +285,24 @@ class ParticipantController extends AbstractActionController {
             return $this->redirect()->toRoute('participant');
         }
         
-        $forrest = new Service\BreadcrumbService();
-        if(!$forrest->exists('participant')) {
-            $forrest->set('participant', 'participant');
+        $breadcrumbService = new Service\BreadcrumbService();
+        if(!$breadcrumbService->exists('participant')) {
+            $breadcrumbService->set('participant', 'participant');
         }
         
-        $breadcrumb = $forrest->get('participant');
+        $breadcrumb = $breadcrumbService->get('participant');
         
-        $cartContainer = new Container('cart');
-        $participant = $cartContainer->order->getParticipantBySessionId($id);
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $participant = $em->getRepository('ErsBase\Entity\User')
+                ->findOneBy(array('id' => $id));
+        
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
+        #$cartContainer = new Container('cart');
+        #$participant = $cartContainer->order->getParticipantBySessionId($id);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -238,8 +310,22 @@ class ParticipantController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
+        
+                $participant = $em->getRepository('ErsBase\Entity\User')
+                    ->findOneBy(array('id' => $id));
+                $package = $em->getRepository('ErsBase\Entity\Package')
+                    ->findOneBy(array(
+                        'participant_id' => $id, 
+                        'order_id' => $order->getId(),
+                        ));
                 
-                $cartContainer->order->removeParticipantBySessionId($id);
+                $em->remove($package);
+                if(!$participant->getActive()) {
+                    $em->remove($participant);
+                }
+                $em->flush();
+                
+                #$cartContainer->order->removeParticipantBySessionId($id);
             }
 
             return $this->redirect()->toRoute(
@@ -249,7 +335,8 @@ class ParticipantController extends AbstractActionController {
                 );
         }
 
-        $package = $cartContainer->order->getPackageByParticipantSessionId($id);
+        $package = $order->getPackageByParticipantId($id);
+        #$package = $cartContainer->order->getPackageByParticipantSessionId($id);
         
         
         return new ViewModel(array(

@@ -32,13 +32,17 @@ class OrderController extends AbstractActionController {
         $forrest->set('participant', 'order');
         $forrest->set('cart', 'order');
         
-        $cartContainer = new Container('cart');
+        #$cartContainer = new Container('cart');
+        
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
         
         $this->checkItemPrices();
         
         $logger = $this->getServiceLocator()->get('Logger');
         $logger->info('=== shopping cart start ===');
-        foreach($cartContainer->order->getPackages() as $package) {
+        foreach($order->getPackages() as $package) {
             $participant = $package->getParticipant();
             $logger->info('participant: '.$participant->getFirstname().' '.$participant->getSurname());
             $logger->info('has '.count($package->getItems()).' items:');
@@ -62,7 +66,7 @@ class OrderController extends AbstractActionController {
                 ->get('ErsBase\Service\AgegroupService');
         
         return new ViewModel(array(
-            'order' => $cartContainer->order,
+            'order' => $order,
             'agegroupService' => $agegroupService,
         ));
     }
@@ -74,7 +78,11 @@ class OrderController extends AbstractActionController {
     
     private function checkItemPrices() {
         $cartContainer = new Container('cart');
-        $order = $cartContainer->order;
+        
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
+        
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
@@ -97,7 +105,7 @@ class OrderController extends AbstractActionController {
             if($participant == null) {
                 continue;
             }
-            if($participant->getSessionId() == 0) {
+            if($participant->getId() == 0) {
                 continue;
             }
             $agegroup = $agegroupService->getAgegroupByUser($participant);
@@ -150,10 +158,12 @@ class OrderController extends AbstractActionController {
         
         $form = new Form\Register();
         
-        $cartContainer = new Container('cart');
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
         
-        if(is_object($cartContainer->order->getBuyer())) {
-            $buyer = $cartContainer->order->getBuyer();
+        if(is_object($order->getBuyer())) {
+            $buyer = $order->getBuyer();
             error_log($buyer->getFirstname().' '.$buyer->getSurname().' '.$buyer->getEmail());
         } else {
             error_log('No buyer set in this order.');
@@ -161,13 +171,27 @@ class OrderController extends AbstractActionController {
         
         # even if it's not displayed, this is needed to recognize the possible 
         # values.
-        if(count($cartContainer->order->getPackages()) > 1) {
-            $users = $cartContainer->order->getParticipants();
+        if(count($order->getPackages()) > 0) {
+            $users = $order->getParticipants();
             $buyer = array();
+            if($this->zfcUserAuthentication()->hasIdentity()) {
+                $login_email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
+                $disabled = true;
+            } else {
+                $login_email = '';
+                $disabled = false;
+            }
             foreach($users as $participant) {
+                if($participant->getEmail() == $login_email) {
+                    $selected = true;
+                } else {
+                    $selected = false;
+                }
+                error_log($participant);
                 $buyer[] = array(
-                    'value' => $participant->getSessionId(),
+                    'value' => $participant->getId(),
                     'label' => $participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getEmail().')',
+                    'selected' => $selected,
                 );
             }
             $buyer[] = array(
@@ -177,18 +201,8 @@ class OrderController extends AbstractActionController {
             $form->get('buyer_id')->setValueOptions($buyer);
         }
         
-        
-        if($this->zfcUserAuthentication()->hasIdentity()) {
-            $login_email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
-            $participant = $cartContainer->order->getParticipantByEmail($login_email);
-            $form->get('buyer_id')->setValue($participant->getSessionId());
-        } else {
-            $login_email = '';
-        }
-        
         $request = $this->getRequest();
         if ($request->isPost()) {
-            #$inputFilter = new InputFilter\Register();
             $inputFilter = $this->getServiceLocator()
                     ->get('PreReg\InputFilter\Register');
             $em = $this->getServiceLocator()
@@ -204,10 +218,15 @@ class OrderController extends AbstractActionController {
                 $data = $form->getData();
                 
                 
-                $buyer = $cartContainer->order->getParticipantBySessionId($data['buyer_id']);
+                $buyer = $order->getParticipantById($data['buyer_id']);
                         
                 # add purchser to order
-                $cartContainer->order->setBuyer($buyer);
+                $order->setBuyer($buyer);
+                
+                $em = $this->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                $em->persist($order);
+                $em->flush();
                 
                 return $this->redirect()->toRoute('order', array('action' => 'payment'));
             } else {
@@ -220,11 +239,11 @@ class OrderController extends AbstractActionController {
         $forrest->set('participant', 'order', array('action' => 'buyer'));
         $forrest->set('buyer', 'order', array('action' => 'buyer'));
         
-        $participants = $cartContainer->order->getParticipants();
+        $participants = $order->getParticipants();
         
         return new ViewModel(array(
             'form' => $form,
-            'order' => $cartContainer->order,
+            'order' => $order,
             'participants' => $participants,
             'login_email' => $login_email,
         ));
@@ -240,13 +259,17 @@ class OrderController extends AbstractActionController {
         $orderContainer = new Container('order');
         $orderContainer->getManager()->getStorage()->clear('order');
         
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
+        
         $form = new Form\PaymentType();
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $paymenttypes = $em->getRepository("ErsBase\Entity\PaymentType")
-                ->findBy(array(), array('ordering' => 'ASC'));
+                ->findBy(array(), array('position' => 'ASC'));
         $types = array();
         $now = new \DateTime();
         
@@ -290,7 +313,10 @@ class OrderController extends AbstractActionController {
                 $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")
                         ->findOneBy(array('id' => $data['paymenttype_id']));
                 
-                $cartContainer->order->setPaymentType($paymenttype);
+                $order->setPaymentType($paymenttype);
+                
+                $em->persist($order);
+                $em->flush();
                 
                 return $this->redirect()->toRoute('order', array('action' => 'checkout'));
             } else {
@@ -301,7 +327,7 @@ class OrderController extends AbstractActionController {
         
         return new ViewModel(array(
             'form' => $form,
-            'order' => $cartContainer->order,
+            'order' => $order,
             'paymenttypes' => $paymenttypes,
         ));
     }
@@ -313,14 +339,18 @@ class OrderController extends AbstractActionController {
         $cartContainer = new Container('cart');
         $orderContainer = new Container('order');
         
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
+        
         $this->checkItemPrices();
         
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")
-                        ->findOneBy(array('id' => $cartContainer->order->getPaymentTypeId()));
-        $cartContainer->order->setPaymentType($paymenttype);
+                        ->findOneBy(array('id' => $order->getPaymentTypeId()));
+        $order->setPaymentType($paymenttype);
         
         if(isset($orderContainer->order_id)) {
             $order = $em->getRepository("ErsBase\Entity\Order")
@@ -342,47 +372,13 @@ class OrderController extends AbstractActionController {
             $inputFilter = new InputFilter\Checkout();
             $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
-
-            # check if the session cart container has all data to finish this order
             
-            $buyer = $cartContainer->order->getBuyer();
-            $user = $em->getRepository("ErsBase\Entity\User")
-                    ->findOneBy(array('email' => $buyer->getEmail()));
-            if($user instanceof Entity\User) {
-                $cartContainer->order->setBuyer($user);
-                $cartContainer->order->setBuyerId($user->getId());
-            } else {
-                $em->persist($buyer);
-                $cartContainer->order->setBuyer($buyer);
-                $cartContainer->order->setBuyerId($buyer->getId());
-            }
-            
-            $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")
-                    ->findOneBy(array('id' => $cartContainer->order->getPaymentTypeId()));
-            $cartContainer->order->setPaymentType($paymenttype);
-            $cartContainer->order->setPaymentTypeId($paymenttype->getId());
-            
-            # get the order_id
-            $code = new Entity\Code();
-            $code->genCode();
-            $codecheck = 1;
-            while($codecheck != null) {
-                $code->genCode();
-                $codecheck = $em->getRepository("ErsBase\Entity\Code")
-                    ->findOneBy(array('value' => $code->getValue()));
-            }
-            $em->persist($code);
-            $cartContainer->order->setCode($code);
-            $cartContainer->order->setCodeId($code->getId());
-            
-            $packages = $cartContainer->order->getPackages();
-            foreach($packages as $package) {
+            foreach($order->getPackages() as $package) {
                 if(count($package->getItems()) <= 0) {
-                    $cartContainer->order->removePackage($package);
+                    $order->removePackage($package);
+                    $em->remove($package);
                     continue;
                 }
-                $package->setOrder($cartContainer->order);
-                $package->setOrderId($cartContainer->order->getId());
                 
                 $participant = $package->getParticipant();
                 
@@ -406,12 +402,12 @@ class OrderController extends AbstractActionController {
                         $user->addRole($role);
                         $em->persist($user);
                     }
-                    $package->setParticipantId($user->getId());
+                    #$package->setParticipantId($user->getId());
                     
                 } else {
                     $em->persist($participant);
                     $package->setParticipant($participant);
-                    $package->setParticipantId($participant->getId());
+                    #$package->setParticipantId($participant->getId());
                 }
                 
                 $country = $em->getRepository("ErsBase\Entity\Country")
@@ -422,33 +418,10 @@ class OrderController extends AbstractActionController {
                     $participant->setCountry($country);
                 }
                 
-                $code = new Entity\Code();
-                $code->genCode();
-                $codecheck = 1;
-                while($codecheck != null) {
-                    $code->genCode();
-                    $codecheck = $em->getRepository("ErsBase\Entity\Code")
-                        ->findOneBy(array('value' => $code->getValue()));
-                }
-                $em->persist($code);
-                $package->setCode($code);
-                $package->setCodeId($code->getId());
-                
-                foreach($package->getItems() as $item) {
-                    $product = $em->getRepository("ErsBase\Entity\Product")
-                        ->findOneBy(array('id' => $item->getProductId()));
-                    $item->setProduct($product);
-                    $item->setPackage($package);
-                    $code = new Entity\Code();
-                    $code->genCode();
-                    $codecheck = 1;
-                    while($codecheck != null) {
-                        $code->genCode();
-                        $codecheck = $em->getRepository("ErsBase\Entity\Code")
-                            ->findOneBy(array('value' => $code->getValue()));
-                    }
-                    $item->setCode($code);
-                    foreach($item->getItemVariants() as $variant) {
+                #foreach($package->getItems() as $item) {
+                #    $item->setPackage($package);
+                    
+                    /*foreach($item->getItemVariants() as $variant) {
                         $variant->setItem($item);
                         
                         $productVariant = $em->getRepository("ErsBase\Entity\ProductVariant")
@@ -458,21 +431,13 @@ class OrderController extends AbstractActionController {
                         $productVariantValue = $em->getRepository("ErsBase\Entity\ProductVariantValue")
                             ->findOneBy(array('id' => $variant->getProductVariantValueId()));
                         $variant->setProductVariantValue($productVariantValue);
-                    }
-                    foreach($item->getChildItems() as $subItem) {
+                    }*/
+                    /*foreach($item->getChildItems() as $subItem) {
                         $subProduct = $em->getRepository("ErsBase\Entity\Product")
                             ->findOneBy(array('id' => $subItem->getProductId()));
                         $subItem->setProduct($subProduct);
                         $subItem->setPackage($package);
-                        $code = new Entity\Code();
-                        $code->genCode();
-                        $codecheck = 1;
-                        while($codecheck != null) {
-                            $code->genCode();
-                            $codecheck = $em->getRepository("ErsBase\Entity\Code")
-                                ->findOneBy(array('value' => $code->getValue()));
-                        }
-                        $subItem->setCode($code);
+                        
                         foreach($subItem->getItemVariants() as $variant) {
                             $variant->setItem($subItem);
                             
@@ -484,57 +449,58 @@ class OrderController extends AbstractActionController {
                                 ->findOneBy(array('id' => $variant->getProductVariantValueId()));
                             $variant->setProductVariantValue($productVariantValue);
                         }
-                    }
-                }
+                    }*/
+                #}
                 
-                $em->persist($package);
+                #$em->persist($package);
             }
             $orderStatus = new Entity\OrderStatus();
-            $orderStatus->setOrder($cartContainer->order);
+            $orderStatus->setOrder($order);
             $orderStatus->setValue('unpaid');
             $em->persist($orderStatus);
-            $cartContainer->order->addOrderStatus($orderStatus);
+            $order->addOrderStatus($orderStatus);
             
-            $em->persist($cartContainer->order);
+            $order->setStatus('ordered');
+            $em->persist($order);
             $em->flush();
         
-            $orderContainer->order_id = $cartContainer->order->getId();
+            $orderContainer->order_id = $order->getId();
             
             $cartContainer->init = 0;
             
             $emailService = $this->getServiceLocator()
                 ->get('ErsBase\Service\EmailService');
-            $emailService->sendConfirmationEmail($cartContainer->order->getId());
-            #$this->sendConfirmationEmail($cartContainer->order->getId());
+            $emailService->sendConfirmationEmail($order->getId());
+            #$this->sendConfirmationEmail($order->getId());
             
             $forrest = new Service\BreadcrumbService();
             $forrest->remove('terms');
-            switch(strtolower($cartContainer->order->getPaymentType()->getType())) {
+            switch(strtolower($order->getPaymentType()->getType())) {
                 case 'banktransfer':
                     return $this->redirect()->toRoute('payment', 
                             array(
                                 'action' => 'banktransfer',
-                                'hashkey' => $cartContainer->order->getHashkey(),
+                                'hashkey' => $order->getHashkey(),
                                 ));
                 case 'cheque':
                     return $this->redirect()->toRoute('payment', 
                             array(
                                 'action' => 'cheque',
-                                'hashkey' => $cartContainer->order->getHashkey(),
+                                'hashkey' => $order->getHashkey(),
                                 ));
                 case 'creditcard':
                     return $this->redirect()->toRoute(
                             'payment', 
                             array(
                                 'action' => 'creditcard',
-                                'hashkey' => $cartContainer->order->getHashkey(),
+                                'hashkey' => $order->getHashkey(),
                                 ));
                 case 'paypal':
                     return $this->redirect()->toRoute(
                             'payment', 
                             array(
                                 'action' => 'paypal',
-                                'hashkey' => $cartContainer->order->getHashkey(),
+                                'hashkey' => $order->getHashkey(),
                                 ));
                     break;
                 default:
@@ -549,17 +515,17 @@ class OrderController extends AbstractActionController {
          * Check the buyers email, if it's not valid, delete buyer
          */
         $email_validator = new Validator\EmailAddress();
-        $buyer = $cartContainer->order->getBuyer();
+        $buyer = $order->getBuyer();
         if($buyer) {
-            $email = $cartContainer->order->getBuyer()->getEmail();
+            $email = $order->getBuyer()->getEmail();
             if (!$email_validator->isValid($email)) {
-                $cartContainer->order->setBuyer();
+                $order->setBuyer();
             }    
         }
 
         return new ViewModel(array(
             'form' => $form,
-            'order' => $cartContainer->order,
+            'order' => $order,
         ));
     }
     
@@ -637,7 +603,7 @@ class OrderController extends AbstractActionController {
         #$cartContainer->getManager()->getStorage()->clear('cart');
         $cartContainer->init = 0;
         return new ViewModel(array(
-            'order' => $cartContainer->order,
+            'order' => $order,
         ));*/
         
         $hashkey = $this->params()->fromRoute('hashkey', '');

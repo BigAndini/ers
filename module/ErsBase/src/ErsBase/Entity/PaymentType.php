@@ -26,4 +26,29 @@ class PaymentType extends Base\PaymentType
         parent::__construct();
     }
 
+    public function setActiveFrom(Deadline $deadline) {
+        return $this->setDeadlineRelatedByActiveFromId($deadline);
+    }
+    public function getActiveFrom() {
+        return $this->getDeadlineRelatedByActiveFromId();
+    }
+    
+    public function setActiveUntil(Deadline $deadline) {
+        return $this->setDeadlineRelatedByActiveUntilId($deadline);
+    }
+    public function getActiveUntil() {
+        return $this->getDeadlineRelatedByActiveUntilId();
+    }
+    
+    /**
+     * Calculates fees for this payment type for a given amount
+     * 
+     * @return float
+     */
+    public function calcFee($amount) {
+        $fixFee = $this->getFixFee();
+        $percentageFee = $amount*$this->getPercentageFee()/100;
+        return $fixFee+$percentageFee;
+    }
+    
 }

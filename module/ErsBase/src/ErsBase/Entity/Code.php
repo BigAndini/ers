@@ -21,6 +21,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Code extends Base\Code
 {
+    protected $length = 6;
+    
     public function __construct()
     {
         parent::__construct();

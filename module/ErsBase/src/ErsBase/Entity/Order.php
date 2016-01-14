@@ -16,11 +16,17 @@ use Doctrine\Common\Collections\ArrayCollection;
  * ErsBase\Entity\Order
  *
  * @ORM\Entity()
- * @ORM\Table(name="`order`", indexes={@ORM\Index(name="fk_Order_User1_idx", columns={"buyer_id"}), @ORM\Index(name="fk_order_payment_type1_idx", columns={"payment_type_id"}), @ORM\Index(name="fk_order_code1_idx", columns={"code_id"})})
+ * @ORM\Table(name="`order`", indexes={@ORM\Index(name="fk_Order_User1_idx", columns={"buyer_id"}), @ORM\Index(name="fk_order_payment_type1_idx", columns={"payment_type_id"}), @ORM\Index(name="fk_order_code1_idx", columns={"code_id"}), @ORM\Index(name="fk_order_status1_idx", columns={"status_id"})})
  * @ORM\HasLifecycleCallbacks
  */
 class Order extends Base\Order
 {
+    
+    /*
+     * package id
+     */
+    protected $package_id;
+    
     public function __construct()
     {
         parent::__construct();
@@ -29,14 +35,28 @@ class Order extends Base\Order
         $this->orderStatus = new ArrayCollection();
         
         $this->genHash();
+        $code = new Code();
+        $code->genCode();
+        $this->setCode($code);
         
-        $package = new Package();
-        $unassigned = new User();
-        $unassigned->setSessionId(0);
-        $package->setSessionId(0);
-        $package->setParticipant($unassigned);
-
-        $this->addPackage($package);
+        /*$unassigned = new User();
+        $unassigned->setFirstname('dummy');
+        $unassigned->setSurname('dummy');
+        $unassigned->setActive(false);
+        $unassigned->setSessionId(0);*/
+        
+        #$this->setBuyer($unassigned);
+        
+        #$package = new Package();
+        #$package->setSessionId(0);
+        #$package->setParticipant($unassigned);
+        #$package->setOrder($this);
+        
+        #$code = new Code();
+        #$code->genCode();
+        #$package->setCode($code);
+        
+        #$this->addPackage($package);
     }
 
     /**
@@ -155,8 +175,6 @@ class Order extends Base\Order
     public function addPackage(Package $package)
     {
         if(!is_numeric($package->getSessionId())) {
-            #$id = \count($this->getPackages())+1;
-            #$package->setSessionId($id);
             $package->setSessionId($this->getSessionId('package'));
         }
         $this->packages[] = $package;
@@ -197,6 +215,20 @@ class Order extends Base\Order
     public function getPackageByParticipantSessionId($id) {
         foreach($this->getPackages() as $package) {
             if($package->getParticipant()->getSessionId() == $id) {
+                return $package;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Get Package by participant id.
+     * 
+     * @return Entity\Package
+     */
+    public function getPackageByParticipantId($id) {
+        foreach($this->getPackages() as $package) {
+            if($package->getParticipant()->getId() == $id) {
                 return $package;
             }
         }
@@ -249,7 +281,7 @@ class Order extends Base\Order
     #public function getItem($participant_id, $item_id) {
         foreach($this->getPackages() as $package) {
             foreach($package->getItems() as $item) {
-                if($item->getSessionId() == $item_id) {
+                if($item->getId() == $item_id) {
                     return $item;
                 }
             }
@@ -325,7 +357,7 @@ class Order extends Base\Order
      * @return OrderStatus
      */
     public function findOrderStatus($value) {
-        foreach($this->getOrderStatus() as $status) {
+        foreach($this->getOrderStatuses() as $status) {
             if($status->getValue() == $value) {
                 return $status;
             }
@@ -454,12 +486,14 @@ class Order extends Base\Order
     
     public function addParticipant(User $participant) {
         $package = new Package();
-        $sessionId = $this->getSessionId('package');
-        $participant->setSessionId($sessionId);
+        #$sessionId = $this->getSessionId('package');
+        #$participant->setSessionId($sessionId);
         $package->setParticipant($participant);
-        $package->setSessionId($sessionId);
+        #$package->setSessionId($sessionId);
         
-        $this->packages[] = $package;
+        $this->addPackage($package);
+        $package->setOrder($this);
+        #$this->packages[] = $package;
         
         return $this;
     }

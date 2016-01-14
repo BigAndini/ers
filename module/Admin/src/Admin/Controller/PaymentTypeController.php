@@ -23,7 +23,7 @@ class PaymentTypeController extends AbstractActionController {
         
         return new ViewModel(array(
             'paymenttypes' => $em->getRepository("ErsBase\Entity\PaymentType")
-                ->findBy(array(), array('ordering' => 'ASC')),
+                ->findBy(array(), array('position' => 'ASC')),
         ));
     }
 

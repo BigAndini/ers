@@ -1,5 +1,4 @@
 <?php
-// module/RegistrationSystem/view/registration-system/admin/index.phtml:
 
 $title = 'Payment Type Overview';
 $this->headTitle($title);
@@ -24,7 +23,7 @@ $this->headTitle($title);
     </tr>
 <?php foreach ($paymenttypes as $paymenttype) : ?>
     <tr>
-        <td><?php echo $paymenttype->getOrder(); ?></td>
+        <td><?php echo $paymenttype->getPosition(); ?></td>
         <td>
             <?php if($paymenttype->getVisible()) : ?>
                 <i class="fa fa-eye"></i>

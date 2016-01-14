@@ -6,10 +6,10 @@ $this->headTitle($title);
 <?php if($deadline): ?>
     <h1><?php echo $this->escapeHtml($title); ?></h1>
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-md-6">
             <p>Click on any item to add further information and place it in your shopping cart.</p>
         </div>
-        <div class="col-lg-6">
+        <div class="col-md-6">
             <p class="text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
         </div>
     </div>
@@ -55,7 +55,7 @@ else: ?>
             <?php echo $this->escapeHtml('PreReg is closed'); ?>
         </h1>
         <div class="row">
-            <div class="col-lg-offset-2 col-lg-8">
+            <div class="col-md-offset-2 col-md-8">
                 <p>The PreReg is already closed. For more information, please visit our homepage on <a href="<?php echo $ers_config['registration_info'] ?>"><?php echo $ers_config['registration_info'] ?></a></p>
             </div>
         </div>

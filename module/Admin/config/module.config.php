@@ -32,6 +32,7 @@ return array(
             'Admin\Controller\Matching'             => 'Admin\Controller\MatchingController',
             'Admin\Controller\Refund'               => 'Admin\Controller\RefundController',
             'Admin\Controller\Ajax'                 => 'Admin\Controller\AjaxController',
+            'Admin\Controller\Status'               => 'Admin\Controller\StatusController',
             'Admin\Controller\Test'                 => 'Admin\Controller\TestController',
         ),
     ),
@@ -106,6 +107,11 @@ return array(
                         'label' => 'Counter',
                         'route' => 'admin/counter',
                         'resource'  => 'controller/Admin\Controller\Counter',
+                    ),
+                    'status' => array(
+                        'label' => 'Status',
+                        'route' => 'admin/status',
+                        'resource'  => 'controller/Admin\Controller\Status',
                     ),
                 ),
             ),
@@ -509,6 +515,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Counter',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'status' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/status[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Status',
                                 'action' => 'index',
                             ),
                         ),

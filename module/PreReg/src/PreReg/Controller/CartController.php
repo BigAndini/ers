@@ -245,20 +245,11 @@ class CartController extends AbstractActionController {
                 $cartContainer->init = 0;
                 $emptycart = true;
             }
-
-            #return $this->redirect()->toRoute('home');
         }
         
         return new ViewModel(array(
             'breadcrumb' => $breadcrumb,
             'emptycart' => $emptycart,
         ));
-    }
-    
-    /*
-     * remove Item from cart
-     */
-    public function removeAction() {
-        
     }
 }

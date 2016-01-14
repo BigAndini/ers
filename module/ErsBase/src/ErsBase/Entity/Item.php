@@ -24,6 +24,9 @@ class Item extends Base\Item
     public function __construct()
     {
         parent::__construct();
+        $code = new Code();
+        $code->genCode();
+        $this->setCode($code);
     }
 
     /**

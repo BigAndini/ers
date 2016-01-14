@@ -196,6 +196,7 @@ return [
                 ['controller' => 'Admin\Controller\Matching',            'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Ajax',                'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Refund',              'roles' => ['admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Status',              'roles' => ['admin', 'supradm']],
                 
                 /* Cron */
                 ['controller' => 'Admin\Controller\Cron',  'roles' => ['guest']],

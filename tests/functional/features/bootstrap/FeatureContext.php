@@ -29,6 +29,36 @@ class FeatureContext extends MinkContext
     }
     
     /**
+     * @BeforeSuite
+     */
+    public static function prepare($event)
+    {
+        // prepare system for test suite
+        // before it runs
+        echo "prepare".PHP_EOL;
+    }
+
+    /**
+     * @AfterScenario @Add a buyer info
+     */
+    public function cleanBuyer(ScenarioEvent $event)
+    {
+        // clean database after scenarios,
+        // tagged with @database
+        echo "cleanBuyer".PHP_EOL;
+    }
+    
+    /**
+     * @BeforeScenario @Add a buyer info
+     */
+    public function prepareBuyer(ScenarioEvent $event)
+    {
+        // clean database after scenarios,
+        // tagged with @database
+        echo "prepareBuyer".PHP_EOL;
+    }
+    
+    /**
      * @Given /^I am logged in as "([^"]*)" with "([^"]*)"$/
      */
     public function IAmLoggedInAs($username, $password) {

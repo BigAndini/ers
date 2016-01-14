@@ -1,0 +1,24 @@
+<?php
+
+$title = 'Delete Order Status';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Are you sure that you want to delete status group
+    <strong><?php echo $this->escapeHtml($status->getName()); ?></strong> with
+    <strong><?php echo $this->escapeHtml($status->getPercentage()); ?>%</strong>?
+</p>
+<?php
+$url = $this->url('admin/status', array(
+    'action' => 'delete',
+    'id'     => $this->id,
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $status->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+    <a href="<?php echo $this->url('admin/status');?>">Cancel</a>
+</div>
+</form>

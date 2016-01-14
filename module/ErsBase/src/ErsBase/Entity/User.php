@@ -42,6 +42,15 @@ class User extends Base\User implements UserInterface, ProviderInterface
         return $this->getFirstname().' '.$this->getSurname().' ('.$this->getEmail().')';
     }
     
+    public function loadData(User $user) {
+        $this->setFirstname($user->getFirstname());
+        $this->setSurname($user->getSurname());
+        $this->setBirthday($user->getBirthday());
+        $this->setCountry($user->getCountry());
+        
+        return $this;
+    }
+    
     /**
      * Check if user already has a specific role
      * 
@@ -74,4 +83,21 @@ class User extends Base\User implements UserInterface, ProviderInterface
         $this->setHashkey(implode($code));
     }
 
+    /**
+     * Set the value of birthday.
+     *
+     * @param \DateTime $birthday
+     * @return \ErsBase\Entity\Base\User
+     */
+    public function setBirthday($birthday)
+    {
+        if($birthday instanceof \DateTime) {
+            $this->birthday = $birthday;
+        } elseif(is_string($birthday)) {
+            $this->birthday = \DateTime::createFromFormat('d.m.Y', $birthday);
+            #$this->birthday = new \DateTime($birthday);
+        }
+        
+        return $this;
+    }
 }

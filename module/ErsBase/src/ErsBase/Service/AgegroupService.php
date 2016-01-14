@@ -8,7 +8,7 @@
 
 namespace ErsBase\Service;
 
-#use ErsBase\Entity;
+use ErsBase\Entity;
 
 class AgegroupService
 {

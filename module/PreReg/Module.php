@@ -101,14 +101,53 @@ class Module
     
     public function bootstrapSession($e)
     {
+        if(\Zend\Console\Console::isConsole()) {
+            return;
+        }
+        
         $session = $e->getApplication()
-                     ->getServiceManager()
-                     ->get('Zend\Session\SessionManager');
+                    ->getServiceManager()
+                    ->get('Zend\Session\SessionManager');
         $session->start();
         
         #error_log(var_export($_SESSION, true));
         
         $container = new Container('initialized');
+        if (!isset($container->init)) {
+            error_log('initializing session');
+            $serviceManager = $e->getApplication()->getServiceManager();
+            $request        = $serviceManager->get('Request');
+
+            $session->regenerateId(true);
+            $container->init          = 1;
+            $container->remoteAddr    = $request->getServer()->get('REMOTE_ADDR');
+            $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
+
+            $config = $serviceManager->get('Config');
+            if (!isset($config['session'])) {
+                return;
+            }
+
+            $sessionConfig = $config['session'];
+            if (isset($sessionConfig['validators'])) {
+                $chain   = $session->getValidatorChain();
+
+                foreach ($sessionConfig['validators'] as $validator) {
+                    switch ($validator) {
+                        case 'Zend\Session\Validator\HttpUserAgent':
+                            $validator = new $validator($container->httpUserAgent);
+                            break;
+                        case 'Zend\Session\Validator\RemoteAddr':
+                            $validator  = new $validator($container->remoteAddr);
+                            break;
+                        default:
+                            $validator = new $validator();
+                    }
+
+                    $chain->attach('session.validate', array($validator, 'isValid'));
+                }
+            }
+        }
         
         $expiration_time = 3600;
         $container->setExpirationSeconds( $expiration_time, 'initialized' );
@@ -118,7 +157,7 @@ class Module
         }
         #$container->getManager()->getStorage()->clear('initialized');
         if (!isset($container->init) || $container->lifetime < time()) {
-            #error_log('reset session');
+            error_log('reset session due to expiration');
             $container->getManager()->getStorage()->clear('initialized');
             $container = new Container('initialized');
             $container->init = 1;
@@ -129,18 +168,31 @@ class Module
             $container->lifetime = time()+$expiration_time;
         }
         
-        $cartContainer = new Container('cart');
         #$cartContainer->getManager()->getStorage()->clear('cart');
-        if(!isset($cartContainer->init) || $cartContainer->init != 1) {
+        #$cartContainer->init = 0;
+        /*if(!isset($cartContainer->init) || $cartContainer->init != 1) {
             #error_log('reset cart');
             $cartContainer->getManager()->getStorage()->clear('cart');
-            $cartContainer->order = new Entity\Order();
+            
+            $app = $e->getApplication();
+            $serviceManager = $app->getServiceManager();
+            $em = $serviceManager->get('Doctrine\ORM\EntityManager');
+            
+            $code = new Entity\Code();
+            $code->genCode();
+            $order = new Entity\Order();
+            $order->setCode($code);
+            $em->persist($order);
+            $em->flush();
+            
+            $cartContainer->order_id = $order->getId();
+            #$cartContainer->order = new Entity\Order();
             $cartContainer->init = 1;
-        }
-        $cartContainer->chooserCount--;
+        }*/
+        /*$cartContainer->chooserCount--;
         if($cartContainer->chooserCount <= 0) {
             $cartContainer->chooser = false;
-        }
+        }*/
         /*
          * shopping cart debugging
          */

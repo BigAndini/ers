@@ -137,13 +137,18 @@ class Module
                     return $ticketCounterService;
                 },
                 'ErsBase\Service\ETicketService' => function($sm) {
-                    $eticketService = new Service\ETicketService();
-                    $eticketService->setServiceLocator($sm);
+                    $service = new Service\ETicketService();
+                    $service->setServiceLocator($sm);
                     $em = $sm->get('Doctrine\ORM\EntityManager');
                     $products = $em->getRepository("ErsBase\Entity\Product")
                                 ->findBy(array('visible' => '1'), array('ordering' => 'ASC'));
-                    $eticketService->setProducts($products);
-                    return $eticketService;
+                    $service->setProducts($products);
+                    return $service;
+                },
+                'ErsBase\Service\OrderService' => function($sm) {
+                    $service = new Service\OrderService();
+                    $service->setServiceLocator($sm);
+                    return $service;
                 },
             ),
         );

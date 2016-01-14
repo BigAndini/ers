@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * ErsBase\Entity\Package
  *
  * @ORM\Entity()
- * @ORM\Table(name="package", indexes={@ORM\Index(name="fk_Package_Order1_idx", columns={"Order_id"}), @ORM\Index(name="fk_Package_User1_idx", columns={"Participant_id"}), @ORM\Index(name="fk_Package_Barcode1_idx", columns={"Code_id"}), @ORM\Index(name="fk_package_package1_idx", columns={"transferred_package_id"})})
+ * @ORM\Table(name="package", indexes={@ORM\Index(name="fk_Package_User1_idx", columns={"participant_id"}), @ORM\Index(name="fk_package_package1_idx", columns={"transferred_package_id"}), @ORM\Index(name="fk_package_code1_idx", columns={"code_id"}), @ORM\Index(name="fk_package_order1_idx", columns={"order_id"})})
  * @ORM\HasLifecycleCallbacks
  */
 class Package extends Base\Package
@@ -32,6 +32,9 @@ class Package extends Base\Package
     public function __construct()
     {
         parent::__construct();
+        $code = new Code();
+        $code->genCode();
+        $this->setCode($code);
     }
     
     /**
@@ -106,11 +109,11 @@ class Package extends Base\Package
      */
     public function addItem(Item $item)
     {
-        if(!is_numeric($item->getSessionId())) {
+        /*if(!is_numeric($item->getSessionId())) {
             #$id = \count($this->getItems())+1;
             #$item->setSessionId($id);
             $item->setSessionId($this->order->getSessionId('item'));
-        }
+        }*/
         $item->setPackage($this);
         foreach($item->getChildItems() as $cItem) {
             $cItem->setPackage($this);

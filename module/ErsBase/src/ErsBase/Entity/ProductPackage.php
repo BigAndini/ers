@@ -24,5 +24,48 @@ class ProductPackage extends Base\ProductPackage
     {
         parent::__construct();
     }
+    
+    /**
+     * Set Product entity related by `product_id` (many to one).
+     *
+     * @param \Entity\Product $product
+     * @return \Entity\ProductPackage
+     */
+    public function setProduct(Product $product = null)
+    {
+        return $this->setProductRelatedByProductId($product);
+    }
+
+    /**
+     * Get Product entity related by `product_id` (many to one).
+     *
+     * @return \Entity\Product
+     */
+    public function getProduct()
+    {
+        return $this->getProductRelatedByProductId($product);
+    }
+
+
+    /**
+     * Set Product entity related by `SubProduct_id` (many to one).
+     *
+     * @param \Entity\Product $product
+     * @return \Entity\ProductPackage
+     */
+    public function setSubProduct(Product $product = null)
+    {
+        return $this->setProductRelatedBySubProductId($product);
+    }
+
+    /**
+     * Get Product entity related by `SubProduct_id` (many to one).
+     *
+     * @return \Entity\Product
+     */
+    public function getSubProduct()
+    {
+        return $this->getProductRelatedBySubProductId();
+    }
 
 }

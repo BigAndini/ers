@@ -207,7 +207,7 @@ class OrderController extends AbstractActionController {
                 ->findOneBy(array('id' => $id));
         
         $paymenttypes = $em->getRepository("ErsBase\Entity\PaymentType")
-                ->findBy(array(), array('ordering' => 'ASC'));
+                ->findBy(array(), array('position' => 'ASC'));
         $types = array();
         $now = new \DateTime();
         

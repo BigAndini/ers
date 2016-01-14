@@ -31,7 +31,7 @@ class ProductPackageController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $products = $em->getRepository("ErsBase\Entity\Product")
-                ->findBy(array(), array('ordering' => 'ASC'));
+                ->findBy(array(), array('position' => 'ASC'));
         $options = array();
         foreach($products as $product) {
             $selected = false;
