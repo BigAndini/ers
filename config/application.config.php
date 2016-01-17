@@ -18,7 +18,6 @@ $config = array(
         'Admin',
         'PreReg',
         'OnsiteReg',
-        'SpeckPaypal',
         'OrgHeiglPiwik',
         'GoalioRememberMe',
         'GoalioRememberMeDoctrineORM',
