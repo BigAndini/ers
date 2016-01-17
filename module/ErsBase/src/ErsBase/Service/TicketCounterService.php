@@ -42,7 +42,7 @@ class TicketCounterService {
 
             $i = 0;
             foreach ($counter->getProductVariantValues() as $variantValue) {
-                $qb->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.ProductVariantValue_id = :pvvid' . $i);
+                $qb->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.product_variant_value_id = :pvvid' . $i);
                 $qb->setParameter(':pvvid' . $i, $variantValue->getId());
                 $i++;
             }
