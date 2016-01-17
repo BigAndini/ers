@@ -34,6 +34,7 @@ return array(
             'Admin\Controller\Ajax'                 => 'Admin\Controller\AjaxController',
             'Admin\Controller\Status'               => 'Admin\Controller\StatusController',
             'Admin\Controller\Test'                 => 'Admin\Controller\TestController',
+            'Admin\Controller\Overview'             => 'Admin\Controller\OverviewController',
         ),
     ),
     'navigation' => array(
@@ -120,6 +121,20 @@ return array(
                 'route' => 'admin/product',
                 #'action' => 'reset',
                 'resource'  => 'controller/Admin\Controller\Product',
+            ),
+            'Overview' => array(
+                'label' => 'Overview',
+                'route' => 'admin/overview',
+                #'action' => 'reset',
+                'resource'  => 'controller/Admin\Controller\Overview',
+                'pages' => array(
+                    'config' => array(
+                        'label' => 'Config',
+                        'route' => 'admin/overview',
+                        'action' => 'config',
+                        'resource'  => 'controller/Admin\Controller\Overview',
+                    ),
+                ),
             ),
             'user' => array(
                 'label' => 'User',
@@ -487,6 +502,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\PaymentType',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'overview' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/overview[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Overview',
                                 'action' => 'index',
                             ),
                         ),

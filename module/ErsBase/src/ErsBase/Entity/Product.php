@@ -116,6 +116,10 @@ class Product extends Base\Product
         return $ret;
     }
     
+    public function getPriceCount() {
+        return \count($this->getProductPrices());
+    }
+    
     /**
      * Get former prices for this product
      * 

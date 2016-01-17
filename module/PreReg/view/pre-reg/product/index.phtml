@@ -23,6 +23,7 @@ $this->headTitle($title);
     <a class="product-item" href="<?php echo $this->url('product', array('action' => 'add', 'product_id' => $product->getId()));?>">
         <span class="product-title"><?php echo $product->getName(); ?></span>
         <span class="product-short-description"><?php echo $product->getShortDescription(); ?></span>
+        <?php if($product->getPriceCount() != 1): ?>
         <table class='table table-notbordered price-table'>
             <?php foreach($agegroups as $ag): ?>
             <tr>
@@ -34,6 +35,7 @@ $this->headTitle($title);
                 </td>
             </tr>
             <?php endforeach; ?>
+            
             <tr>
                 <td>
                     <span class="product-price-list product-price-active">normal</span>
@@ -42,8 +44,16 @@ $this->headTitle($title);
                     <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
                 </td>
             </tr>
-
         </table>
+        <?php else: ?>
+        <table class='table table-notbordered price-table'>
+            <tr>
+                <td>
+                    <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
+                </td>
+            </tr>
+        </table>
+        <?php endif; ?>
         <div class="clear-both"></div>
     </a>
     <hr />

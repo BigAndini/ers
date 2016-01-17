@@ -11,6 +11,12 @@
     ],
     "homepage": "http://prereg.eja.net/",
     "minimum-stability": "dev",
+    "repositories": [
+        {
+            "url": "https://github.com/inbaz/zf2behat-extension.git",
+            "type": "git"
+        }
+    ],
     "require": {
         "php": ">=5.4.0",
         "zendframework/zendframework": "2.*",
@@ -28,7 +34,6 @@
         "satsume/ckeditor-module": "dev-master",
         "dudapiotr/zftable": "3.*",
         "eddiejaoude/zf2-logger" : "0.*",
-        "speckcommerce/speck-paypal" : "dev-master",
         "org_heigl/piwik" : "1.0.*",
         "goalio/goalio-rememberme": "1.*",
         "goalio/goalio-rememberme-doctrine-orm": "1.*",
@@ -36,7 +41,8 @@
         "behat/mink": "@stable",
         "behat/mink-extension": "@stable",
         "behat/mink-goutte-driver": "@stable",
-        "behat/mink-sahi-driver": "@stable"
+        "behat/mink-sahi-driver": "@stable",
+        "inbaz/zf2behat-extension" : "dev-master"
     },
     "require-dev": {
         
