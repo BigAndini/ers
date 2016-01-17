@@ -24,12 +24,12 @@ class CountryController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         $qb1 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
-        $qb1->where($qb1->expr()->isNotNull('n.ordering'));
-        $qb1->orderBy('n.ordering', 'ASC');
+        $qb1->where($qb1->expr()->isNotNull('n.position'));
+        $qb1->orderBy('n.position', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
         $qb2 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
-        $qb2->where($qb2->expr()->isNull('n.ordering'));
+        $qb2->where($qb2->expr()->isNull('n.position'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();
 
@@ -62,7 +62,7 @@ class CountryController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($country->getInputFilter());
+            #$form->setInputFilter($country->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

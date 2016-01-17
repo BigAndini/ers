@@ -35,7 +35,7 @@ class ProductController extends AbstractActionController {
                         'deleted' => 0,
                     ),
                     array(
-                        'ordering' => 'ASC'
+                        'position' => 'ASC'
                     )
                 );
         $products = array();
@@ -46,19 +46,22 @@ class ProductController extends AbstractActionController {
         }
         
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
+                    ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
         
         $deadlineService = $this->getServiceLocator()
                 ->get('ErsBase\Service\DeadlineService:price');
         $deadline = $deadlineService->getDeadline();
         
-        $cartContainer = new Container('cart');
+        #$cartContainer = new Container('cart');
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
         
         return new ViewModel(array(
             'products' => $products,
             'agegroups' => $agegroups,
             'deadline' => $deadline,
-            'order' => $cartContainer->order,
+            #'order' => $cartContainer->order,
+            'order' => $orderService->getOrder(),
             'ers_config' => $this->getServiceLocator()->get('Config')['ERS'],
         ));
     }
@@ -66,13 +69,13 @@ class ProductController extends AbstractActionController {
     /*
      * initialize shopping cart
      */
-    private function initializeCart() {
+    /*private function initializeCart() {
         $cartContainer = new Container('cart');
         if(!isset($cartContainer->init) && $cartContainer->init == 1) {
             $cartContainer->order = new Entity\Order();
             $cartContainer->init = 1;
         }
-    }
+    }*/
     
     public function addAction() {
         /*
@@ -183,7 +186,7 @@ class ProductController extends AbstractActionController {
          */
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $this->initializeCart();
+        #$this->initializeCart();
         $cartContainer = new Container('cart');
         
         $formfail = false;
@@ -216,7 +219,11 @@ class ProductController extends AbstractActionController {
                 /*
                  *  check if participant already has a personalized ticket
                  */
-                $package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
+                $orderService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\OrderService');
+                $order = $orderService->getOrder();
+                #$package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
+                $package = $order->getPackageByParticipantId($participant_id);
                 if($package != null && $package->hasPersonalizedItem()) {
                     $logger->warn('Package for participant '.$participant_id.' already has a personalized item. What should I do?');
                 }
@@ -234,7 +241,8 @@ class ProductController extends AbstractActionController {
                  */
                 $agegroup = null;
                 if($participant_id != 0) {
-                    $participant = $cartContainer->order->getParticipantBySessionId($participant_id);
+                    #$participant = $cartContainer->order->getParticipantBySessionId($participant_id);
+                    $participant = $order->getParticipantById($participant_id);
 
                     if($participant instanceof Entity\User) {
                         $agegroupService = $this->getServiceLocator()
@@ -276,7 +284,10 @@ class ProductController extends AbstractActionController {
                     if($value && !$value->getDisabled()) {
                         $itemVariant = new Entity\ItemVariant();
                         $itemVariant->populateFromEntity($variant, $value);
+                        $itemVariant->setProductVariant($variant);
+                        $itemVariant->setProductVariantValue($value);
                         $item->addItemVariant($itemVariant);
+                        $itemVariant->setItem($item);
                         #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
                     } else {
                         $logger->warn('Unable to find value for variant: '.$variant->getName().' (id: '.$variant->getId().')');
@@ -309,7 +320,10 @@ class ProductController extends AbstractActionController {
                             $add = true;
                             $itemVariant = new Entity\ItemVariant();
                             $itemVariant->populateFromEntity($variant, $value);
+                            $itemVariant->setProductVariant($variant);
+                            $itemVariant->setProductVariantValue($value);
                             $subItem->addItemVariant($itemVariant);
+                            $itemVariant->setItem($subItem);
                             #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
                         } else {
                             $logger->warn('Unable to find value for variant of subItem: '.$variant->getName().' (id: '.$variant->getId().')');
@@ -328,7 +342,8 @@ class ProductController extends AbstractActionController {
                  * delete the item we have edited when we're in edit mode
                  */
                 if(is_numeric($item_id) && $item_id != 0) {
-                    $cartContainer->order->removeItem($item_id);
+                    $order->removeItem($item_id);
+                    #$cartContainer->order->removeItem($item_id);
                 }
                 
                 /*if(isset($cartContainer->editItem) && $cartContainer->editItem instanceof Entity\Item) {
@@ -339,7 +354,11 @@ class ProductController extends AbstractActionController {
                 /*
                  * add the newly created item
                  */
-                $cartContainer->order->addItem($item, $participant_id);
+                #$cartContainer->order->addItem($item, $participant_id);
+                $order->addItem($item, $participant_id);
+                
+                $em->persist($order);
+                $em->flush();
                 
                 /*
                  * the chooser for product, shopping cart or stay on product 
@@ -399,7 +418,7 @@ class ProductController extends AbstractActionController {
         $cartContainer->chooser = false;
 
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
+                    ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
         
         return new ViewModel(array(
             'product' => $product,
@@ -417,7 +436,11 @@ class ProductController extends AbstractActionController {
     private function getPersonOptions(\ErsBase\Entity\Product $product, $participant_id=null) {
         $cartContainer = new Container('cart');
         $options = array();
-        foreach($cartContainer->order->getParticipants() as $v) {
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
+        #foreach($cartContainer->order->getParticipants() as $v) {
+        foreach($order->getParticipants() as $v) {
             $disabled = false;
             if($v->getFirstname() == '') {
                 $disabled = true;
@@ -458,7 +481,7 @@ class ProductController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                    ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
+                    ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
         $options = array();
         
         foreach($agegroups as $agegroup) {
@@ -519,11 +542,17 @@ class ProductController extends AbstractActionController {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
+        
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
         $cartContainer = new Container('cart');
-        #$participant = $cartContainer->order->getParticipantBySessionId($participant_id);
-        $participant = $cartContainer->order->getParticipantByItemId($item_id);
-        #$item = $cartContainer->order->getItem($participant_id, $item_id);
-        $item = $cartContainer->order->getItem($item_id);
+        
+        #$participant = $cartContainer->order->getParticipantByItemId($item_id);
+        $participant = $order->getParticipantByItemId($item_id);
+        
+        #$item = $cartContainer->order->getItem($item_id);
+        $item = $order->getItem($item_id);
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -541,7 +570,11 @@ class ProductController extends AbstractActionController {
                 #$package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
                 
                 #$cartContainer->order->removeItem($package->getSessionId(), $item_id);
-                $cartContainer->order->removeItem($item_id);
+                #$cartContainer->order->removeItem($item_id);
+                $order->removeItem($item_id);
+                
+                $em->persist($order);
+                $em->flush();
             }
 
             $breadcrumb = $forrest->get('product');

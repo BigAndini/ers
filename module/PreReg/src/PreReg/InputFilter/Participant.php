@@ -195,7 +195,11 @@ class Participant implements InputFilterAwareInterface
                                     return true;
                                 }*/
                                 $cartContainer = new Container('cart');
-                                $participants = $cartContainer->order->getParticipants();
+                                $em = $this->getEntityManager();
+                                $order = $em->getRepository('ErsBase\Entity\Order')
+                                        ->findOneBy(array('id' => $cartContainer->order_id));
+                                #$participants = $cartContainer->order->getParticipants();
+                                $participants = $order->getParticipants();
                                 foreach($participants as $participant) {
                                     if($value == $participant->getEmail() && $participant->getSessionId() != $context['session_id']) {
                                         return false;

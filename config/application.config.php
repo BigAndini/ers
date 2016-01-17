@@ -7,7 +7,7 @@ $config = array(
         'ZfcUser',
         'ZfcUserDoctrineORM',
         'BjyAuthorize',
-        'ZendDeveloperTools',
+        #'ZendDeveloperTools',
         'DoctrineModule',
         'DoctrineORMModule',
         'DOMPDFModule',

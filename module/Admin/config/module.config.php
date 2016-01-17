@@ -32,7 +32,9 @@ return array(
             'Admin\Controller\Matching'             => 'Admin\Controller\MatchingController',
             'Admin\Controller\Refund'               => 'Admin\Controller\RefundController',
             'Admin\Controller\Ajax'                 => 'Admin\Controller\AjaxController',
+            'Admin\Controller\Status'               => 'Admin\Controller\StatusController',
             'Admin\Controller\Test'                 => 'Admin\Controller\TestController',
+            'Admin\Controller\Overview'             => 'Admin\Controller\OverviewController',
         ),
     ),
     'navigation' => array(
@@ -107,6 +109,11 @@ return array(
                         'route' => 'admin/counter',
                         'resource'  => 'controller/Admin\Controller\Counter',
                     ),
+                    'status' => array(
+                        'label' => 'Status',
+                        'route' => 'admin/status',
+                        'resource'  => 'controller/Admin\Controller\Status',
+                    ),
                 ),
             ),
             'product' => array(
@@ -114,6 +121,20 @@ return array(
                 'route' => 'admin/product',
                 #'action' => 'reset',
                 'resource'  => 'controller/Admin\Controller\Product',
+            ),
+            'Overview' => array(
+                'label' => 'Overview',
+                'route' => 'admin/overview',
+                #'action' => 'reset',
+                'resource'  => 'controller/Admin\Controller\Overview',
+                'pages' => array(
+                    'config' => array(
+                        'label' => 'Config',
+                        'route' => 'admin/overview',
+                        'action' => 'config',
+                        'resource'  => 'controller/Admin\Controller\Overview',
+                    ),
+                ),
             ),
             'user' => array(
                 'label' => 'User',
@@ -485,6 +506,20 @@ return array(
                             ),
                         ),
                     ),
+                    'overview' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/overview[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Overview',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
                     'ajax' => array(
                         'type' => 'segment',
                         'options' => array(
@@ -509,6 +544,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Counter',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'status' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/status[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Status',
                                 'action' => 'index',
                             ),
                         ),

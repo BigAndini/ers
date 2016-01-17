@@ -45,7 +45,7 @@ class ProductVariantController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $productvariant = new Entity\ProductVariant();
-            $form->setInputFilter($productvariant->getInputFilter());
+            #$form->setInputFilter($productvariant->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -106,7 +106,7 @@ class ProductVariantController extends AbstractActionController
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($productvariant->getInputFilter());
+            #$form->setInputFilter($productvariant->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

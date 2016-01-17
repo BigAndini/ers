@@ -123,7 +123,7 @@ class CartController extends AbstractActionController {
                     ->get('ErsBase\Service\DeadlineService:price');
                 /*$deadlineService = new Service\DeadlineService();
                 $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                        ->findBy(array('priceChange' => '1'));
+                        ->findBy(array('price_change' => '1'));
                 $deadlineService->setDeadlines($deadlines);*/
                 $deadline = $deadlineService->getDeadline();
                 
@@ -245,20 +245,11 @@ class CartController extends AbstractActionController {
                 $cartContainer->init = 0;
                 $emptycart = true;
             }
-
-            #return $this->redirect()->toRoute('home');
         }
         
         return new ViewModel(array(
             'breadcrumb' => $breadcrumb,
             'emptycart' => $emptycart,
         ));
-    }
-    
-    /*
-     * remove Item from cart
-     */
-    public function removeAction() {
-        
     }
 }

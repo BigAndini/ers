@@ -207,7 +207,7 @@ class OrderController extends AbstractActionController {
                 ->findOneBy(array('id' => $id));
         
         $paymenttypes = $em->getRepository("ErsBase\Entity\PaymentType")
-                ->findBy(array(), array('ordering' => 'ASC'));
+                ->findBy(array(), array('position' => 'ASC'));
         $types = array();
         $now = new \DateTime();
         
@@ -247,7 +247,7 @@ class OrderController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = new InputFilter\PaymentType();
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -606,7 +606,7 @@ class OrderController extends AbstractActionController {
             $inputFilter = $this->getServiceLocator()
                     ->get('Admin\InputFilter\AcceptBuyerChange');
             #$inputFilter = new InputFilter\AcceptBuyerChange();
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

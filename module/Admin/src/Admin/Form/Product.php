@@ -39,14 +39,14 @@ class Product extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'ordering',
+            'name' => 'position',
             'attributes' => array(
                 'type'  => 'text',
                 'class' => 'form-control form-element',
-                'placeholder' => 'Order...',
+                'placeholder' => 'Position...',
             ),
             'options' => array(
-                'label' => 'Order',
+                'label' => 'Position',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),

@@ -23,7 +23,7 @@ class PaymentTypeController extends AbstractActionController {
         
         return new ViewModel(array(
             'paymenttypes' => $em->getRepository("ErsBase\Entity\PaymentType")
-                ->findBy(array(), array('ordering' => 'ASC')),
+                ->findBy(array(), array('position' => 'ASC')),
         ));
     }
 
@@ -69,7 +69,7 @@ class PaymentTypeController extends AbstractActionController {
             $inputFilter = new InputFilter\PaymentTypeBankTransfer();
             $inputFilter->setEntityManager($em);
             
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $paymenttype->populate($form->getData());
@@ -137,7 +137,7 @@ class PaymentTypeController extends AbstractActionController {
             $inputFilter = new InputFilter\PaymentTypeCheque();
             $inputFilter->setEntityManager($em);
             
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $paymenttype->populate($form->getData());
@@ -205,7 +205,7 @@ class PaymentTypeController extends AbstractActionController {
             $inputFilter = new InputFilter\PaymentTypePayPal();
             $inputFilter->setEntityManager($em);
             
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $paymenttype->populate($form->getData());
@@ -273,7 +273,7 @@ class PaymentTypeController extends AbstractActionController {
             $inputFilter = new InputFilter\PaymentTypeBankTransfer();
             $inputFilter->setEntityManager($em);
             
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $paymenttype->populate($form->getData());
@@ -318,7 +318,7 @@ class PaymentTypeController extends AbstractActionController {
         if ($request->isPost()) {
             $paymenttype = new Entity\PaymentType();
             
-            $form->setInputFilter($paymenttype->getInputFilter());
+            #$form->setInputFilter($paymenttype->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -772,7 +772,7 @@ class PaymentTypeController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($paymenttype->getInputFilter());
+            #$form->setInputFilter($paymenttype->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

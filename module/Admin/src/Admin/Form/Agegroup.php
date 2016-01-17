@@ -60,7 +60,7 @@ class Agegroup extends Form
         
         $this->add(array(
             'type' => 'checkbox',
-            'name' => 'priceChange',
+            'name' => 'price_change',
             'attributes' => array(
                 'class' => 'checkbox',
             ),
@@ -74,7 +74,7 @@ class Agegroup extends Form
         
         $this->add(array(
             'type' => 'checkbox',
-            'name' => 'ticketChange',
+            'name' => 'ticket_change',
             'attributes' => array(
                 'class' => 'checkbox',
             ),

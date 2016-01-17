@@ -108,7 +108,7 @@ class MatchingController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = new InputFilter\ManualMatch();
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -210,7 +210,7 @@ class MatchingController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = new InputFilter\AcceptMatch();
-            $form->setInputFilter($inputFilter->getInputFilter());
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

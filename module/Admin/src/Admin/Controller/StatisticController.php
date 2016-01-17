@@ -115,9 +115,9 @@ class StatisticController extends AbstractActionController {
                 ->getQuery()->getResult();
         
         $agegroupServicePrice = $this->getServiceLocator()
-                ->get('PreReg\Service\AgegroupService:price');
+                ->get('ErsBase\Service\AgegroupService:price');
         $agegroupServiceTicket = $this->getServiceLocator()
-                ->get('PreReg\Service\AgegroupService:ticket');
+                ->get('ErsBase\Service\AgegroupService:ticket');
         
         $agegroupStatsPrice = array();
         $agegroupStatsTicket = array();
@@ -172,9 +172,9 @@ class StatisticController extends AbstractActionController {
          * === by product type ===
          */
         $productStats = $em->createQueryBuilder()
-                ->select('prod.displayName', 'COUNT(DISTINCT u.id) AS usercount', 'COUNT(i.id) itemcount')
+                ->select('prod.display_name', 'COUNT(DISTINCT u.id) AS usercount', 'COUNT(i.id) itemcount')
                 ->from('ErsBase\Entity\Package', 'p')
-                ->join('p.participant', 'u')
+                ->join('p.user', 'u')
                 ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
                 ->join('i.product', 'prod')
                 ->groupBy('prod.id')

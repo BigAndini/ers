@@ -25,13 +25,15 @@ echo $this->navigation()
 </div>
 <div>
     <h1>Select Buyer</h1>
-    <?php if(count($order->getPackages()) > 1): ?>
+    <?php if(count($order->getPackages()) > 0): ?>
     <p><strong>All eTickets will be emailed to the buyer.</strong> If you 
         order items for multiple persons and provided their email addresses, 
         they will automatically receive a copy of their eTicket.</p>
     <h3>Choose Buyer</h3>
     <?php echo $this->formElementErrors($form->get('buyer_id')); ?>
-    <?php foreach($participants as $participant): ?>
+    <?php 
+    error_log('found '.count($participants).' participants');
+    foreach($participants as $participant): ?>
         <?php if($participant->getEmail() == '' || $participant->getFirstname() == '' || $participant->getSurname() == '' || $login_email != ''): 
             $disabled = true;
         else:
@@ -47,20 +49,20 @@ echo $this->navigation()
                 <?php if($login_email != '' && $participant->getEmail() == $login_email):
                     echo $this->formHidden($form->get('buyer_id'));
                 endif; ?>
-                <input type="radio" <?php echo $checked ? 'checked="checked"' : '' ?> <?php echo $disabled ? 'disabled="disabled"' : ''; ?> name="buyer_id" value="<?php echo $participant->getSessionId() ?>" />
+                <input type="radio" <?php echo $checked ? 'checked="checked"' : '' ?> <?php echo $disabled ? 'disabled="disabled"' : ''; ?> name="buyer_id" value="<?php echo $participant->getId() ?>" />
                 <?php echo $participant->getFirstname().' '.$participant->getSurname(); ?>
                 <span style="font-size: 14px;">
                     <?php if($participant->getBirthday() != null): ?>
-                    <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>
+                    <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getId())); ?>">edit</a>
                     <?php else: ?>
-                    <a href="<?php echo $this->url('buyer', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">edit</a>
+                    <a href="<?php echo $this->url('buyer', array('action' => 'edit', 'id' => $participant->getId())); ?>">edit</a>
                     <?php endif; ?>
                 </span>
             </label>
             <?php if($participant->getEmail() != ''): ?>
                 <p>Email: <?php echo $participant->getEmail(); ?></p>
             <?php else: ?>
-                <p><a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getSessionId())); ?>">Add email address</a> to choose this participant as buyer.</p>
+                <p><a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getId())); ?>">Add email address</a> to choose this participant as buyer.</p>
             <?php endif; ?>
 
             <?php if($participant->getBirthday() != null): ?>

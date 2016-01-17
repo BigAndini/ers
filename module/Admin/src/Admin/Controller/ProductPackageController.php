@@ -31,7 +31,7 @@ class ProductPackageController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $products = $em->getRepository("ErsBase\Entity\Product")
-                ->findBy(array(), array('ordering' => 'ASC'));
+                ->findBy(array(), array('position' => 'ASC'));
         $options = array();
         foreach($products as $product) {
             $selected = false;
@@ -75,7 +75,7 @@ class ProductPackageController extends AbstractActionController {
         if ($request->isPost()) {
             $productPackage = new Entity\ProductPackage();
             
-            $form->setInputFilter($productPackage->getInputFilter());
+            #$form->setInputFilter($productPackage->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $productPackage->populate($form->getData());
@@ -141,7 +141,7 @@ class ProductPackageController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($productPackage->getInputFilter());
+            #$form->setInputFilter($productPackage->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

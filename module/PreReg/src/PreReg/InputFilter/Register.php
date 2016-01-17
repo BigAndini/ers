@@ -30,7 +30,6 @@ class Register implements InputFilterAwareInterface
     }
     
     public function setServiceLocator($sm) {
-        error_log('service manager class'.get_class($sm));
         $this->sm = $sm;
     }
     public function getServiceLocator() {
@@ -98,7 +97,11 @@ class Register implements InputFilterAwareInterface
                             ),
                             'callback' => function($value, $context=array()) {
                                 $cartContainer = new Container('cart');
-                                $participant = $cartContainer->order->getParticipantBySessionId($value);
+                                $orderService = $this->getServiceLocator()
+                                        ->get('ErsBase\Service\OrderService');
+                                $order = $orderService->getOrder();
+                                error_log('value: '.$value);
+                                $participant = $order->getParticipantById($value);
                                 
                                 $auth = $this->getServiceLocator()
                                         ->get('zfcuser_auth_service');
@@ -111,7 +114,10 @@ class Register implements InputFilterAwareInterface
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $user = $em->getRepository("ErsBase\Entity\User")->findOneBy(array('email' => $participant->getEmail()));
+                                $user = $em->getRepository("ErsBase\Entity\User")->findOneBy(array(
+                                    'email' => $participant->getEmail(),
+                                    'active' => true,
+                                    ));
                                 if($user == null) {
                                     return true;
                                 }

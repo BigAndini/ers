@@ -41,8 +41,8 @@ echo $this->navigation()
                     <?php echo $participant; ?>
                     <?php if($edit_participant): ?>
                     <span style="font-size: 14px;">
-                        <a href="<?php echo $this->url('participant', array('action'=>'edit', 'id' => $user->getSessionId()));?>"><?php echo $this->translate('Edit'); ?></a>
-                        <a href="<?php echo $this->url('participant', array('action'=>'delete', 'id' => $user->getSessionId()));?>"><?php echo $this->translate('Delete'); ?></a>
+                        <a href="<?php echo $this->url('participant', array('action'=>'edit', 'id' => $user->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
+                        <a href="<?php echo $this->url('participant', array('action'=>'delete', 'id' => $user->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
                     </span>
                     <?php endif; ?>
                 </h3>
@@ -108,8 +108,8 @@ echo $this->navigation()
                             <td>
                                 <?php
                                 if($participant != 'further items') :
-                                    if($user->getSessionId() != null) :
-                                        $variants['participant_id'] = \urlencode($user->getSessionId());
+                                    if($user->getId() != null) :
+                                        $variants['participant_id'] = \urlencode($user->getId());
                                         $fragment = 'person';
                                     endif;
                                 else:
@@ -129,7 +129,7 @@ echo $this->navigation()
                                             'action' => 'edit', 
                                             'product_id' => $item->getProductId(), 
                                             #'participant_id' => $user_id,
-                                            'item_id' => $item->getSessionId(),
+                                            'item_id' => $item->getId(),
                                         ),
                                         array(
                                             'query' => $variants,
@@ -140,7 +140,7 @@ echo $this->navigation()
                                             'action' => 'delete', 
                                             'product_id' => $item->getProductId(), 
                                             #'participant_id' => $user_id,
-                                            'item_id' => $item->getSessionId()
+                                            'item_id' => $item->getId()
                                         ),
                                         array(
                                             /*'query' => array(

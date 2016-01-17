@@ -36,9 +36,9 @@ class ProductPriceController extends AbstractActionController {
         $product = $em->getRepository("ErsBase\Entity\Product")
                 ->findOneBy(array('id' => $id));
         $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                ->findBy(array('priceChange' => '1'), array('deadline' => 'ASC'));
+                ->findBy(array('price_change' => '1'), array('deadline' => 'ASC'));
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                ->findBy(array('priceChange' => '1'), array('agegroup' => 'DESC'));
+                ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
         
         return new ViewModel(array(
             'product'   => $product,
@@ -57,7 +57,7 @@ class ProductPriceController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                ->findBy(array('priceChange' => '1'), array('deadline' => 'ASC'));
+                ->findBy(array('price_change' => '1'), array('deadline' => 'ASC'));
         $options = array();
         foreach($deadlines as $deadline) {
             $selected = false;
@@ -92,7 +92,7 @@ class ProductPriceController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                ->findBy(array('priceChange' => '1'), array('agegroup' => 'ASC'));
+                ->findBy(array('price_change' => '1'), array('agegroup' => 'ASC'));
         $options = array();
         foreach($agegroups as $agegroup) {
             $selected = false;
@@ -144,7 +144,7 @@ class ProductPriceController extends AbstractActionController {
         if ($request->isPost()) {
             $productprice = new Entity\ProductPrice();
             
-            $form->setInputFilter($productprice->getInputFilter());
+            #$form->setInputFilter($productprice->getInputFilter());
             $form->setData($request->getPost());
             
             if ($form->isValid()) {
@@ -224,7 +224,7 @@ class ProductPriceController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($productprice->getInputFilter());
+            #$form->setInputFilter($productprice->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $productprice = $form->getData();
