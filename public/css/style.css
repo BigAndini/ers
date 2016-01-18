@@ -49,3 +49,7 @@ div.container a.brand {
 .orange-bg {
     background: #f48029;
 }
+
+.ui-datepicker-title select {
+    color: #333;
+}
