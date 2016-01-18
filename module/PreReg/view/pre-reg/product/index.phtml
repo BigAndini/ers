@@ -23,37 +23,7 @@ $this->headTitle($title);
     <a class="product-item" href="<?php echo $this->url('product', array('action' => 'add', 'product_id' => $product->getId()));?>">
         <span class="product-title"><?php echo $product->getName(); ?></span>
         <span class="product-short-description"><?php echo $product->getShortDescription(); ?></span>
-        <?php if($product->getPriceCount() != 1): ?>
-        <table class='table table-notbordered price-table'>
-            <?php foreach($agegroups as $ag): ?>
-            <tr>
-                <td>
-                    <span class="product-price-list product-price-active"><?php echo $ag->getName(); ?></span>
-                </td>
-                <td>
-                    <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-            
-            <tr>
-                <td>
-                    <span class="product-price-list product-price-active">normal</span>
-                </td>
-                <td>
-                    <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
-                </td>
-            </tr>
-        </table>
-        <?php else: ?>
-        <table class='table table-notbordered price-table'>
-            <tr>
-                <td>
-                    <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?></span>
-                </td>
-            </tr>
-        </table>
-        <?php endif; ?>
+        <?php echo $this->partial('partial/product-price.phtml', array('agegroups' => $agegroups, 'product' => $product)); ?>
         <div class="clear-both"></div>
     </a>
     <hr />

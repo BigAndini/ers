@@ -53,33 +53,10 @@
                     <?php echo $product->getLongDescription(); ?>
                 </div>
                 <div class="col-lg-6">
-                    <p class="small text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
-                    <dl class="dl-horizontal">
-                        <?php foreach($agegroups as $ag): ?>
-                        <?php 
-                        #$class = '';
-                        $class = 'product-price-active';
-                        /*if($agegroup != null && $agegroup->getId() == $ag->getId()):
-                            $class = 'product-price-active';
-                        endif;*/ ?>
-                        <dt class="product-price<?php echo ' '.$class ?>">
-                            <?php echo $ag->getName(); ?>
-                        </dt>
-                        <dd class="product-price<?php echo ' '.$class ?>">
-                            <?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?>
-                        </dd>
-                        <?php endforeach; ?>
-                        <?php 
-                        #$class = '';
-                        $class = 'product-price-active';
-                        /*if($participant->getSessionId() == 0 || $agegroup == null):
-                            $class = 'product-price-active';
-                        endif;*/ ?>
-                        <dt class="product-price<?php echo ' '.$class ?>">normal</dt>
-                        <dd class="product-price<?php echo ' '.$class ?>">
-                            <?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), 'EUR', null, 'de_DE'); ?>
-                        </dd>
-                    </dl>
+                    <?php if($product->getPriceCount() != 1): ?>
+                        <p class="small text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
+                    <?php endif; ?>
+                    <?php echo $this->partial('partial/product-price.phtml', array('agegroups' => $agegroups, 'product' => $product)); ?>
                 </div>
             </div>
             <div class="row">
