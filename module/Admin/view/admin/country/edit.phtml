@@ -1,9 +1,10 @@
 <?php
 
-$title = 'Edit Country ordering of '.$country->getName();
+$title = 'Edit country position of '.$country->getName();
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
+<p class="alert alert-info"><i class="fa fa-info-circle"></i> You can reset the position for this country by choosing <strong>0</strong> as position.</p>
 
 <?php
 $form = $this->form;
