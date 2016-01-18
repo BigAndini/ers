@@ -60,7 +60,7 @@
                     <?php if($product->getPriceCount() != 1): ?>
                         <p class="small text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
                     <?php endif; ?>
-                    <?php echo $this->partial('partial/product-price.phtml', array('agegroups' => $agegroups, 'product' => $product)); ?>
+                    <?php echo $this->partial('partial/product-price.phtml', array('agegroups' => $agegroups, 'deadline' => $deadline, 'product' => $product)); ?>
                 </div>
             </div>
             <div class="row">

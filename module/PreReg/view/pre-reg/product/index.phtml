@@ -23,7 +23,7 @@ $this->headTitle($title);
     <a class="product-item" href="<?php echo $this->url('product', array('action' => 'add', 'product_id' => $product->getId()));?>">
         <span class="product-title"><?php echo $product->getName(); ?></span>
         <span class="product-short-description"><?php echo $product->getShortDescription(); ?></span>
-        <?php echo $this->partial('partial/product-price.phtml', array('agegroups' => $agegroups, 'product' => $product)); ?>
+        <?php echo $this->partial('partial/product-price.phtml', array('agegroups' => $agegroups, 'deadline' => $deadline, 'product' => $product)); ?>
         <div class="clear-both"></div>
     </a>
     <hr />

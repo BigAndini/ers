@@ -25,4 +25,17 @@ class ItemPackage extends Base\ItemPackage
         parent::__construct();
     }
 
+    public function setSurItem($item) {
+        return $this->setItemRelatedBySurItemId($item);
+    }
+    public function getSurItem() {
+        return $this->getItemRelatedBySurItemId($item);
+    }
+    
+    public function setSubItem($item) {
+        return $this->setItemRelatedBySubItemId($item);
+    }
+    public function getSubItem() {
+        return $this->getItemRelatedBySubItemId($item);
+    }
 }
