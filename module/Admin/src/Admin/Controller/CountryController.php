@@ -69,8 +69,8 @@ class CountryController extends AbstractActionController {
                 #$tax->populate($form->getData());
                 #$em->persist($tax);
                 $country = $form->getData();
-                if($country->getOrder() == 0) {
-                    $country->setOrder(null);
+                if($country->getPosition() == 0) {
+                    $country->setPosition(null);
                 }
                 $em->persist($country);
                 $em->flush();

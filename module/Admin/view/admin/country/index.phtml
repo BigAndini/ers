@@ -8,14 +8,14 @@ $this->headTitle($title);
 
 <table class="table">
     <tr>
-        <th>Order</th>
+        <th>Pos.</th>
         <th>Name</th>
         <th>Code</th>
         <th>&nbsp;</th>
     </tr>
 <?php foreach ($countries as $country) : ?>
     <tr>
-        <td><?php echo $country->getOrder(); ?></td>
+        <td><?php echo $country->getPosition(); ?></td>
         <td><?php echo $country->getName(); ?></td>
         <td><?php echo $country->getCode(); ?></td>
         <td>
