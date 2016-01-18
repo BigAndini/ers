@@ -141,6 +141,8 @@ class ProductController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ErsBase\Entity\Product")
                 ->findOneBy(array('id' => $product_id));
+        $status = $em->getRepository('ErsBase\Entity\Status')
+                ->findOneBy(array('value' => 'order pending'));
         
         $form = $this->getServiceLocator()->get('PreReg\Form\ProductView');
         #$url = $this->url()->fromRoute('cart', array('action' => 'add'));
@@ -268,6 +270,7 @@ class ProductController extends AbstractActionController {
                  */
                 $item = new Entity\Item();
                 $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
+                $item->setStatus($status);
                 $item->setAmount(1);
                 if($agegroup != null) {
                     $item->setAgegroup($agegroup->getAgegroup());
@@ -303,6 +306,7 @@ class ProductController extends AbstractActionController {
                     $subProduct = $package->getSubProduct();
                     $subItem = new Entity\Item();
                     $subItem->setPrice(0);
+                    $subItem->setStatus($status);
                     $subItem->setAmount($package->getAmount());
                     if($agegroup) {
                         $subItem->setAgegroup($agegroup->getAgegroup());
