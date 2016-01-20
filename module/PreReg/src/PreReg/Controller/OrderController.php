@@ -65,6 +65,7 @@ class OrderController extends AbstractActionController {
         $agegroupService = $this->getServiceLocator()
                 ->get('ErsBase\Service\AgegroupService');
         
+        $order->logInfo();
         return new ViewModel(array(
             'order' => $order,
             'agegroupService' => $agegroupService,
@@ -454,13 +455,16 @@ class OrderController extends AbstractActionController {
                 
                 #$em->persist($package);
             }
-            $orderStatus = new Entity\OrderStatus();
-            $orderStatus->setOrder($order);
-            $orderStatus->setValue('unpaid');
-            $em->persist($orderStatus);
-            $order->addOrderStatus($orderStatus);
+            #$orderStatus = new Entity\OrderStatus();
+            #$orderStatus->setOrder($order);
+            #$orderStatus->setValue('unpaid');
+            #$em->persist($orderStatus);
+            #$order->addOrderStatus($orderStatus);
+            $status = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+            $order->setStatus($status);
             
-            $order->setStatus('ordered');
+            #$order->setStatus('ordered');
             $em->persist($order);
             $em->flush();
         

@@ -57,15 +57,26 @@ class Package extends Base\Package
         $this->created = null;
     }
     
+    public function __toString() {
+        $output = '';
+        $output .= $this->getParticipant();
+        
+        foreach($this->getItems() as $item) {
+            $output .= $item.PHP_EOL;
+        }
+        
+        return $output;
+    }
+    
     /**
      * Get session_id
      * 
      * @return int
      */
-    public function getSessionId()
+    /*public function getSessionId()
     {
         return $this->session_id;
-    }
+    }*/
     
     /**
      * Set session_id.
@@ -74,9 +85,9 @@ class Package extends Base\Package
      *
      * @return void
      */
-    public function setSessionId($id) {
+    /*public function setSessionId($id) {
         $this->session_id = $id;
-    }
+    }*/
     
     /**
      * Set User entity (many to one).
@@ -134,6 +145,23 @@ class Package extends Base\Package
         $item = $this->getItemBySessionId($id);
         return $this->removeItem($item);
     }
+    
+    /**
+     * Remove Item entity by id
+     * 
+     * @param type $id
+     */
+    public function removeItemById($id) {
+        $item = $this->getItemById($id);
+        if(!$item) {
+            throw new \Exception('Unable to remove item with id '.$id);
+        }
+        error_log('remove item '.$item->getId().' from package '.$this->getId());
+        foreach($this->getItems() as $item) {
+            error_log($item);
+        }
+        return $this->removeItem($item);
+    }
 
     /**
      * Get Item entity collection (one to many).
@@ -158,8 +186,10 @@ class Package extends Base\Package
      * @return \Entity\Item
      */
     public function getItemById($id) {
-        if(isset($this->items[$id])) {
-            return $this->items[$id];
+        foreach($this->getItems() as $item) {
+            if($item->getId() == $id) {
+                return $item;
+            }
         }
         return false;
     }
@@ -214,7 +244,7 @@ class Package extends Base\Package
      * 
      * @return string
      */
-    public function getStatus() {
+    /*public function getStatus() {
         $status = array();
         foreach($this->getItems() as $item) {
             $item_status = $item->getStatus();
@@ -235,7 +265,7 @@ class Package extends Base\Package
         } else {
             return 'undefined';
         }
-    }
+    }*/
     
     /**
      * Set the value of transferred_package.

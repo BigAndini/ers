@@ -15,8 +15,23 @@ use PreReg\Form;
 
 class InfoController extends AbstractActionController {
     public function indexAction() {
+        $breadcrumbService = new Service\BreadcrumbService(); 
+        $breadcrumbService->reset();
+        $breadcrumbService->set('participant', 'product');
+        
+        $form = new Form\Participant(); 
+        #$form->setEntityManager($em);
+        $form->setServiceLocation($this->getServiceLocator());
+        $optionService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OptionService');
+        $form->get('Country_id')->setValueOptions($optionService->getCountryOptions());
+        
+        $form->get('submit')->setAttribute('class', 'btn btn-lg btn-primary');
+        $form->get('submit')->setValue('Register now!');
+        
         return new ViewModel(array(
             'ers_config' => $this->getServiceLocator()->get('Config')['ERS'],
+            'form' => $form,
         ));
     }
     public function termsAction() {

@@ -6,30 +6,50 @@ $this->headTitle('EJC Registration System');
 <div class="jumbotron">
     <h1>
         <?php echo $this->escapeHtml('Welcome to the'); ?>
-        <br />
-        <span class="primary-color"><?php echo $this->escapeHtml('EJC Registration System'); ?></span>
+        <span class="primary-color text-nowrap"><?php echo $this->escapeHtml('EJC Registration System'); ?></span>
     </h1>
     <div class="row">
-        <div class="col-lg-2"></div>
-        <div class="col-lg-8">
+        <div class="col-md-7">
             <p class="justify">The European Juggling Convention (EJC) <?php echo $ers_config['year']; ?>
-                will take place from <?php echo $ers_config['start']->format('d.m.Y').' - '.$ers_config['end']->format('d.m.Y'); ?>
+                will take place from <strong><?php echo $ers_config['start']->format('d.m.Y').' - '.$ers_config['end']->format('d.m.Y'); ?></strong>
                 in Almere (The Netherlands). You can find all up-to-date information on 
                 <a class="primary-color" href="<?php echo $ers_config['website']; ?>" target="_blank"><?php echo $ers_config['website']; ?></a>.</p>
 
             <p class="justify">On this website you can purchase tickets for <?php echo $ers_config['name_with_year']; ?> as well as other items such as galashow tickets, bus tickets and your festival t-shirt.</p>
 
-            <p class="justify">You would help us enormously by registering as early as possible. When you’ve done this, tell all your friends to do so too and <span class="orange">Come and make it gezellig with us!</span></p>
+            <p class="justify">You would help us enormously by registering as early as possible. When you’ve done this, tell all your friends to do so too and <a class="primary-color" href="http://www.ejc2016.org/" target="_blank">Come and make it gezellig with us!</a></p>
 
             <p class="justify">Please also note that the prices of all tickets increases as EJC comes closer. Visit <a class="primary-color" href="http://www.ejc2016.org/registration" target="_blank">www.ejc2016.org/registration</a> to see all ticket prices at a glance.</p>
+            
+            <!--<div class='text-right'>
+                <a class="btn btn-vlg btn-primary" href="<?php echo $this->url('product') ?>">Go to product overview</a>
+            </div>-->
         </div>
-        <div class="col-lg-2"></div>
+        <div class="col-md-5">
+        <?php
+        $form = $this->form;
+        $form->setAttribute('action', $this->url('participant', array('action' => 'add')));
+        $form->prepare();
+
+        echo $this->form()->openTag($form); ?>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <?php echo $this->formRow($form->get('firstname')); ?>
+            </div>
+            <div class="col-md-6">
+                <?php echo $this->formRow($form->get('surname')); ?>
+            </div>
+        </div>
+        <?php echo $this->formRow($form->get('birthday'));
+        echo $this->formRow($form->get('email'));
+        echo $this->formRow($form->get('Country_id'));
+        
+        echo $this->formHidden($form->get('csrf')); ?>
+        <?php echo $this->formSubmit($form->get('submit')); ?>
+        <?php echo $this->form()->closeTag(); ?>
+        </div>
     </div>
     
-    <div class='row'>
-        <div class="col-lg-7"></div>
-        <div class="col-lg-5 start-button">
-            <a class="btn btn-vlg btn-primary" href="<?php echo $this->url('product') ?>">Go to product overview</a>
-        </div>
-    </div>
+    
 </div>

@@ -268,9 +268,17 @@ class ProductController extends AbstractActionController {
                 /*
                  * build up item entity
                  */
+                if($item_id) {
+                    $order->removeItem($item_id);
+                    error_log($order);
+                    $em->persist($order);
+                    error_log($order);
+                    $em->flush();
+                }
                 $item = new Entity\Item();
                 $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
                 $item->setStatus($status);
+                $item->setProduct($product);
                 $item->setAmount(1);
                 if($agegroup != null) {
                     $item->setAgegroup($agegroup->getAgegroup());
@@ -307,6 +315,7 @@ class ProductController extends AbstractActionController {
                     $subItem = new Entity\Item();
                     $subItem->setPrice(0);
                     $subItem->setStatus($status);
+                    $subItem->setProduct($subProduct);
                     $subItem->setAmount($package->getAmount());
                     if($agegroup) {
                         $subItem->setAgegroup($agegroup->getAgegroup());
@@ -328,7 +337,6 @@ class ProductController extends AbstractActionController {
                             $itemVariant->setProductVariantValue($value);
                             $subItem->addItemVariant($itemVariant);
                             $itemVariant->setItem($subItem);
-                            #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
                         } else {
                             $logger->warn('Unable to find value for variant of subItem: '.$variant->getName().' (id: '.$variant->getId().')');
                         }
@@ -350,15 +358,9 @@ class ProductController extends AbstractActionController {
                     #$cartContainer->order->removeItem($item_id);
                 }
                 
-                /*if(isset($cartContainer->editItem) && $cartContainer->editItem instanceof Entity\Item) {
-                    $cartContainer->order->removeItem($cartContainer->editItem->getSessionId());
-                    unset($cartContainer->editItem);
-                }*/
-                
                 /*
                  * add the newly created item
                  */
-                #$cartContainer->order->addItem($item, $participant_id);
                 $order->addItem($item, $participant_id);
                 
                 $em->persist($order);
@@ -456,11 +458,11 @@ class ProductController extends AbstractActionController {
                 $disabled = true;
             }
             $selected = false;
-            if($v->getSessionId() == $participant_id) {
+            if($v->getId() == $participant_id) {
                 $selected = true;
             }
             $options[] = array(
-                'value' => $v->getSessionId(),
+                'value' => $v->getId(),
                 'label' => $v->getFirstname().' '.$v->getSurname(),
                 'selected' => $selected,
                 'disabled' => $disabled,
@@ -520,7 +522,7 @@ class ProductController extends AbstractActionController {
         if(!$forrest->exists('product')) {
             $forrest->set('product', 'product', array('action' => 'edit'));
         }
-        $forrest->set('participant', 'product', array('action' => 'edit'));
+        #$forrest->set('participant', 'product', array('action' => 'edit'));
         
         $viewModel = $this->addAction();
         if($viewModel instanceof ViewModel) {
@@ -538,10 +540,8 @@ class ProductController extends AbstractActionController {
         }
         
         $product_id = (int) $this->params()->fromRoute('product_id', 0);
-        #$participant_id = (int) $this->params()->fromRoute('participant_id', 0);
         $item_id = (int) $this->params()->fromRoute('item_id', 0);
         if (!is_numeric($product_id) || !is_numeric($item_id)) {
-        #if (!is_numeric($product_id) || !is_numeric($participant_id) || !is_numeric($item_id)) {
             $breadcrumb = $forrest->get('product');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
@@ -550,32 +550,33 @@ class ProductController extends AbstractActionController {
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
-        $cartContainer = new Container('cart');
         
-        #$participant = $cartContainer->order->getParticipantByItemId($item_id);
         $participant = $order->getParticipantByItemId($item_id);
         
-        #$item = $cartContainer->order->getItem($item_id);
         $item = $order->getItem($item_id);
         
-        $em = $this->getServiceLocator()
+        /*$em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ErsBase\Entity\Product")
-                ->findOneBy(array('id' => $product_id));
+                ->findOneBy(array('id' => $product_id));*/
+        
+        $product = $item->getProduct();
         
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
-                #$participant_id = (int) $request->getPost('participant_id');
                 $item_id = (int) $request->getPost('item_id');
-                
-                #$package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
-                
-                #$cartContainer->order->removeItem($package->getSessionId(), $item_id);
-                #$cartContainer->order->removeItem($item_id);
+                #$order->logInfo();
                 $order->removeItem($item_id);
+                #$order->logInfo();
+          
+                /*$em = $this->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                $item = $em->getRepository("ErsBase\Entity\Item")
+                    ->findOneBy(array('id' => $item_id));
+                $em->remove($item);*/
                 
                 $em->persist($order);
                 $em->flush();

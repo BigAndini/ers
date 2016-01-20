@@ -29,13 +29,13 @@ class ItemPackage extends Base\ItemPackage
         return $this->setItemRelatedBySurItemId($item);
     }
     public function getSurItem() {
-        return $this->getItemRelatedBySurItemId($item);
+        return $this->getItemRelatedBySurItemId();
     }
     
     public function setSubItem($item) {
         return $this->setItemRelatedBySubItemId($item);
     }
     public function getSubItem() {
-        return $this->getItemRelatedBySubItemId($item);
+        return $this->getItemRelatedBySubItemId();
     }
 }

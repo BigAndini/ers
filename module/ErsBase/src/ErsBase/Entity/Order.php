@@ -22,6 +22,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Order extends Base\Order
 {
     
+    /**
+     * define length of hashkey
+     * 
+     * @var length
+     */
+    private $length = 30;
+    
     /*
      * package id
      */
@@ -58,14 +65,29 @@ class Order extends Base\Order
         
         #$this->addPackage($package);
     }
-
-    /**
-     * define length of hashkey
-     * 
-     * @var length
-     */
-    private $length = 30;
     
+    public function logInfo() {
+        error_log('=== order info ===');
+        foreach($this->getPackages() as $package) {
+            error_log('--- ('.$package->getId().')'.$package->getParticipant().' ---');
+            foreach($package->getItems() as $item) {
+                if($item->hasParentItems()) {
+                    continue;
+                }
+                error_log(' * '.$item);
+            }
+        }
+        error_log('==================');
+    }
+    
+    public function __toString() {
+        $output = '';
+        foreach($this->getPackages() as $package) {
+            $output .= $package.PHP_EOL;
+        }
+        return $output;
+    }
+
     /**
      * Generate hashkey
      */
@@ -174,9 +196,9 @@ class Order extends Base\Order
      */
     public function addPackage(Package $package)
     {
-        if(!is_numeric($package->getSessionId())) {
+        /*if(!is_numeric($package->getSessionId())) {
             $package->setSessionId($this->getSessionId('package'));
-        }
+        }*/
         $this->packages[] = $package;
 
         return $this;
@@ -187,19 +209,19 @@ class Order extends Base\Order
      * 
      * @return Entity\Package
      */
-    public function getPackageBySessionId($id) {
+    /*public function getPackageBySessionId($id) {
         foreach($this->getPackages() as $package) {
             if($package->getSessionId() == $id) {
                 return $package;
             }
         }
         return false;
-    }
+    }*/
     
     public function getPackageByItemId($item_id) {
         foreach($this->getPackages() as $package) {
             foreach($package->getItems() as $item) {
-                if($item->getSessionId() == $item_id) {
+                if($item->getId() == $item_id) {
                     return $package;
                 }
             }
@@ -281,6 +303,7 @@ class Order extends Base\Order
     #public function getItem($participant_id, $item_id) {
         foreach($this->getPackages() as $package) {
             foreach($package->getItems() as $item) {
+                error_log($item->getId().' == '.$item_id);
                 if($item->getId() == $item_id) {
                     return $item;
                 }
@@ -331,11 +354,9 @@ class Order extends Base\Order
      * @return \Entity\Order
      */
     public function removeItem($item_id) {
-    #public function removeItem($package_id, $item_id) {
         $package = $this->getPackageByItemId($item_id);
-        #$package = $this->getPackageBySessionId($package_id);
         if($package) {
-            $package->removeItemBySessionId($item_id);    
+            $package->removeItemById($item_id);    
         }
         
         return $this;
@@ -451,7 +472,7 @@ class Order extends Base\Order
     public function getParticipantByItemId($item_id) {
         foreach($this->getPackages() as $package) {
             foreach($package->getItems() as $item) {
-                if($item->getSessionId() == $item_id) {
+                if($item->getId() == $item_id) {
                     return $package->getParticipant();
                 }
             }

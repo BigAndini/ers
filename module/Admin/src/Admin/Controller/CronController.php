@@ -806,4 +806,28 @@ class CronController extends AbstractActionController {
         }
         $em->flush();
     }
+    
+    public function cleanPendingOrdersAction() {
+        echo "in clean pending orders".PHP_EOL;
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $qb = $em->getRepository("ErsBase\Entity\Order")->createQueryBuilder('o');
+        $qb->join('o.status', 's');
+        $qb->where('s.value', ':status');
+        $qb->setParameter('status', 'order pending');
+        
+        $orders = $qb->getQuery()->getResult();
+        echo 'found '.count($orders).' orders'.PHP_EOL;
+        foreach($orders as $order) {
+            $now = new \DateTime();
+            $now->modify('-1 day');
+            if($order->getUpdated() < $now) {
+                echo 'after: '.$order->getUpdated()->format('d.m.Y').PHP_EOL;
+            } else {
+                echo 'before: '.$order->getUpdated()->format('d.m.Y').PHP_EOL;
+            }
+        }
+        
+    }
 }

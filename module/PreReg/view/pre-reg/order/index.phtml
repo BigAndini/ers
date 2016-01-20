@@ -41,8 +41,8 @@ echo $this->navigation()
                     <?php echo $participant; ?>
                     <?php if($edit_participant): ?>
                     <span style="font-size: 14px;">
-                        <a href="<?php echo $this->url('participant', array('action'=>'edit', 'id' => $user->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-                        <a href="<?php echo $this->url('participant', array('action'=>'delete', 'id' => $user->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+                        <a href="<?php echo $this->url('participant', array('action'=>'edit', 'id' => $user->getId()));?>"><i class="fa fa-edit"></i></a>
+                        <a href="<?php echo $this->url('participant', array('action'=>'delete', 'id' => $user->getId()));?>"><i class="fa fa-trash"></i></a>
                     </span>
                     <?php endif; ?>
                 </h3>
@@ -58,6 +58,9 @@ echo $this->navigation()
                     <?php
                     $subtotal = 0;
                     foreach ($package->getItems() as $item) : 
+                        if($item->hasParentItems()) {
+                            continue;
+                        }
                         $subtotal += $item->getPrice();
                         $sum += $item->getPrice();
                         ?>
@@ -113,7 +116,7 @@ echo $this->navigation()
                                         $fragment = 'person';
                                     endif;
                                 else:
-                                    error_log(var_export($item->getAgegroup(), true));
+                                    #error_log(var_export($item->getAgegroup(), true));
                                     $agegroup = $agegroupService->getAgegroupByDate($item->getAgegroup());
                                     if($agegroup):
                                         $variants['agegroup_id'] = $agegroup->getId();
@@ -124,7 +127,7 @@ echo $this->navigation()
                                 endif;
                                 
                                 ?>
-                                <a href="<?php echo $this->url('product', 
+                                <a class="btn btn-default" href="<?php echo $this->url('product', 
                                         array(
                                             'action' => 'edit', 
                                             'product_id' => $item->getProductId(), 
@@ -134,19 +137,18 @@ echo $this->navigation()
                                         array(
                                             'query' => $variants,
                                             'fragment' => $fragment,
-                                        )) ?>">edit</a>
-                                <a href="<?php echo $this->url('product', 
+                                        )) ?>"><i class="fa fa-edit"></i></a>
+                                <a class="btn btn-danger" href="<?php echo $this->url('product', 
                                         array(
                                             'action' => 'delete', 
                                             'product_id' => $item->getProductId(), 
-                                            #'participant_id' => $user_id,
                                             'item_id' => $item->getId()
                                         ),
                                         array(
                                             /*'query' => array(
                                                 'participant_id' => $user_id,
                                             )*/
-                                        )) ?>">delete</a>
+                                        )) ?>"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

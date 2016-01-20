@@ -55,55 +55,6 @@ class ParticipantController extends AbstractActionController {
         ));
     }
     
-    private function getCountryOptions($countryId = null) {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $qb1 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
-        $qb1->where($qb1->expr()->isNotNull('n.position'));
-        $qb1->orderBy('n.position', 'ASC');
-        $result1 = $qb1->getQuery()->getResult();
-        
-        $qb2 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
-        $qb2->where($qb2->expr()->isNull('n.position'));
-        $qb2->orderBy('n.name', 'ASC');
-        $result2 = $qb2->getQuery()->getResult();
-
-        $countries = array_merge($result1, $result2);
-
-        $orderService = $this->getServiceLocator()
-                ->get('ErsBase\Service\OrderService');
-        #$cartContainer = new Container('cart');
-        #$countryContainerId = $cartContainer->Country_id;
-        $countryContainerId = $orderService->getCountryId();
-        
-        $options = array();
-        $selected = false;
-        if($countryId == null && $countryContainerId == null) {
-            $selected = true;
-        }
-        $options[] = array(
-            'value' => 0,
-            'label' => 'no Country',
-            'selected' => $selected,
-        );
-        foreach($countries as $country) {
-            $selected = false;
-            if($countryContainerId == $country->getId()) {
-                $selected = true;
-            }
-            if($countryId == $country->getId()) {
-                $selected = true;
-            }
-            $options[] = array(
-                'value' => $country->getId(),
-                'label' => $country->getName(),
-                'selected' => $selected,
-            );
-        }
-        return $options;
-    }
-    
     /*
      * add a participant user object to the session for which the buyer is 
      * able to assign a product afterwards.
@@ -115,7 +66,10 @@ class ParticipantController extends AbstractActionController {
         $form = new Form\Participant(); 
         #$form->setEntityManager($em);
         $form->setServiceLocation($this->getServiceLocator());
-        $form->get('Country_id')->setValueOptions($this->getCountryOptions());
+        $optionService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OptionService');
+        #$form->get('Country_id')->setValueOptions($this->getCountryOptions());
+        $form->get('Country_id')->setValueOptions($optionService->getCountryOptions());
         
         $user = new Entity\User();
         $user->setActive(false);
@@ -155,10 +109,12 @@ class ParticipantController extends AbstractActionController {
                     } else {
                         #$em->persist($user);
                         $orderService->addParticipant($user);
-                    }
-                    
+                    }   
                 }
                 
+                foreach($order->getPackages() as $package) {
+                    error_log('package status: '.$package->getStatus().' ('.$package->getParticipant().')');
+                }
                 
                 $orderService->setCountryId($user->getCountryId());
                 
@@ -171,9 +127,7 @@ class ParticipantController extends AbstractActionController {
                 $em->flush();
                 
                 $breadcrumb = $breadcrumbService->get('participant');
-                if($breadcrumb->route == 'product' && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
-                    error_log('setting user info');
-                    #$breadcrumb->params['participant_id'] = $user->getSessionId();
+                if($breadcrumb->route == 'product' && isset($breadcrumb->params['action']) && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
                     unset($breadcrumb->params['agegroup_id']);
                     $breadcrumb->options['fragment'] = 'person';
                     $breadcrumb->options['query']['participant_id'] = $user->getSessionId();
@@ -233,7 +187,10 @@ class ParticipantController extends AbstractActionController {
         $form = new Form\Participant(); 
         #$form->setEntityManager($em);
         $form->setServiceLocation($this->getServiceLocator());
-        $form->get('Country_id')->setValueOptions($this->getCountryOptions());
+        #$form->get('Country_id')->setValueOptions($this->getCountryOptions());
+        $optionService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OptionService');
+        $form->get('Country_id')->setValueOptions($optionService->getCountryOptions());
         $form->bind($participant);
         
         $request = $this->getRequest(); 
