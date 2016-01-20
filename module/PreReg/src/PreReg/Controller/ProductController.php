@@ -552,14 +552,7 @@ class ProductController extends AbstractActionController {
         $order = $orderService->getOrder();
         
         $participant = $order->getParticipantByItemId($item_id);
-        
         $item = $order->getItem($item_id);
-        
-        /*$em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $product = $em->getRepository("ErsBase\Entity\Product")
-                ->findOneBy(array('id' => $product_id));*/
-        
         $product = $item->getProduct();
         
         $request = $this->getRequest();
@@ -572,9 +565,9 @@ class ProductController extends AbstractActionController {
                 $order->removeItem($item_id);
                 #$order->logInfo();
           
-                /*$em = $this->getServiceLocator()
+                $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-                $item = $em->getRepository("ErsBase\Entity\Item")
+                /*$item = $em->getRepository("ErsBase\Entity\Item")
                     ->findOneBy(array('id' => $item_id));
                 $em->remove($item);*/
                 
