@@ -71,10 +71,7 @@ class Module
                             //Attach the "break" as a listener with a high priority
                             $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack,-10000);
                             return $response;
-                       }
-                        
-                        $emailService = $sm->get('ErsBase\Service\EmailService');
-                        $emailService->sendExceptionEmail($e->getParam('exception'));
+                        }
                     }
                 }
             );

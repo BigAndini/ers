@@ -14,7 +14,6 @@ $this->headTitle($title);
         <th>Visible</th>
         <th>Name</th>
         <th>Variant</th>
-        <th colspan="2">Base Price</th>
         <th>&nbsp;</th>
         <th>&nbsp;</th>
     </tr>
@@ -46,23 +45,6 @@ $this->headTitle($title);
                 <a href="<?php echo $this->url('admin/product-variant', array('action' => 'edit', 'id' => $variant->getId()));?>">edit</a>
                 <a href="<?php echo $this->url('admin/product-variant', array('action' => 'copy', 'id' => $variant->getId()));?>">copy</a>
                 <a href="<?php echo $this->url('admin/product-variant', array('action' => 'delete', 'id' => $variant->getId()));?>">delete</a></p>
-            <?php endforeach; ?>
-        </td>
-        <td colspan="2">
-            <a href="<?php echo $this->url('admin/product-price', array('action'=>'add', 'id' => $product->getId()));?>"><?php echo $this->translate('Add Product Price'); ?></a>
-            <?php foreach($product->getProductPrices() as $price) : ?>
-            <p>
-                <span>
-                    <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
-                    <?php if($price->getDeadlineId() != null) : ?>
-                    (<?php echo $price->getDeadline()->getDeadline()->format('Y-m-d H:i:s'); ?>)
-                    <?php else : ?>
-                    (no Deadline)
-                    <?php endif; ?>
-                    
-                </span>
-                <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId()));?>">edit</a>
-                <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId()));?>">delete</a></p>
             <?php endforeach; ?>
         </td>
         <td>&nbsp;</td>
