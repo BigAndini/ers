@@ -5,9 +5,6 @@ $title = 'User Overview';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-<p>
-    <a href="<?php echo $this->url('admin/user', array('action'=>'add'));?>">Add User</a>
-</p>
 
 <table class="table">
     <tr>
@@ -15,7 +12,9 @@ $this->headTitle($title);
         <th>email</th>
         <th>age</th>
         <th>roles</th>
-        <th>&nbsp;</th>
+        <th>
+            <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/user', array('action'=>'add'));?>"><i class="fa fa-plus"></i></a>
+        </th>
     </tr>
 <?php foreach ($users as $user) : ?>
     <tr>
@@ -33,7 +32,8 @@ $this->headTitle($title);
             <?php endforeach; ?>
         </td>
         <td>
-            <a href="<?php echo $this->url('admin/user', array('action'=>'edit', 'id' => $user->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
+            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/user', array('action'=>'edit', 'id' => $user->getId()));?>"><i class="fa fa-edit"></i></a>
+            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/user', array('action'=>'role', 'id' => $user->getId()));?>"><i class="fa fa-group"></i></a>
         </td>
     </tr>
 <?php endforeach; ?>

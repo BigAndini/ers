@@ -111,6 +111,8 @@ class UserController extends AbstractActionController {
                     $user->setCountryId(null);
                 }
                 
+                $user->setActive(true);
+                
                 $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
@@ -222,6 +224,14 @@ class UserController extends AbstractActionController {
         return new ViewModel(array(
             'id'    => $id,
             'user' => $user,
+            'breadcrumb' => $breadcrumb,
+        ));
+    }
+    
+    public function roleAction() {
+        return new ViewModel(array(
+            'id' => $id,
+            'form' => $form,
             'breadcrumb' => $breadcrumb,
         ));
     }
