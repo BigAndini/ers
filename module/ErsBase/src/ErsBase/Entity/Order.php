@@ -205,18 +205,10 @@ class Order extends Base\Order
     }
 
     /**
-     * Get Package by session id.
+     * Get Package by id.
      * 
      * @return Entity\Package
      */
-    /*public function getPackageBySessionId($id) {
-        foreach($this->getPackages() as $package) {
-            if($package->getSessionId() == $id) {
-                return $package;
-            }
-        }
-        return false;
-    }*/
     
     public function getPackageByItemId($item_id) {
         foreach($this->getPackages() as $package) {
@@ -281,7 +273,7 @@ class Order extends Base\Order
      */
     public function addItem(Item $item, $Participant_id)
     {
-        $package = $this->getPackageByParticipantSessionId($Participant_id);
+        $package = $this->getPackageByParticipantId($Participant_id);
         if($package) {
             $package->setOrder($this);
             $package->addItem($item);
@@ -303,7 +295,7 @@ class Order extends Base\Order
     #public function getItem($participant_id, $item_id) {
         foreach($this->getPackages() as $package) {
             foreach($package->getItems() as $item) {
-                error_log($item->getId().' == '.$item_id);
+                #error_log($item->getId().' == '.$item_id);
                 if($item->getId() == $item_id) {
                     return $item;
                 }
@@ -338,7 +330,7 @@ class Order extends Base\Order
     public function getItemsByStatus($status) {
         $items = new ArrayCollection();
         foreach($this->getItems() as $item) {
-            if($item->getStatus() == $status) {
+            if($item->getStatus()->getValue() == $status) {
                 $items[] = $item;
             }
         }
@@ -353,7 +345,7 @@ class Order extends Base\Order
      * 
      * @return \Entity\Order
      */
-    public function removeItem($item_id) {
+    public function removeItemById($item_id) {
         $package = $this->getPackageByItemId($item_id);
         if($package) {
             $package->removeItemById($item_id);    
@@ -363,43 +355,46 @@ class Order extends Base\Order
     }
 
     /**
+     * DEPRECATED: OrderStatus is not used anymore
      * get the last set OrderStatus
      * 
      * @return Entity\OrderStatus
      */
-    public function getLastOrderStatus() {
+    /*public function getLastOrderStatus() {
         return array_pop($this->orderStatus);
-    }
+    }*/
     
     /**
+     * DEPRECATED: OrderStatus is not used anymore
      * find a status for this order
      * 
      * @param type $value
      * @return OrderStatus
      */
-    public function findOrderStatus($value) {
+    /*public function findOrderStatus($value) {
         foreach($this->getOrderStatuses() as $status) {
             if($status->getValue() == $value) {
                 return $status;
             }
         }
         return new OrderStatus();
-    }
+    }*/
     
     /**
+     * DEPRECATED: OrderStatus is not used anymore
      * check whether this order has this status or not
      * 
      * @param type $value
      * @return boolean
      */
-    public function hasOrderStatus($value) {
+    /*public function hasOrderStatus($value) {
         foreach($this->getOrderStatus() as $status) {
             if($status->getValue() == $value) {
                 return true;
             }
         }
         return false;
-    }
+    }*/
 
     /**
      * Get Participants of Packages
@@ -419,19 +414,20 @@ class Order extends Base\Order
     }
     
     /**
+     * DEPRECATED: Session id is not used anymore
      * Get Participant by session_id
      * 
      * @return Entity\User
      * @return false
      */
-    public function getParticipantBySessionId($id) {
+    /*public function getParticipantBySessionId($id) {
         foreach($this->getParticipants() as $participant) {
             if($participant->getSessionId() == $id) {
                 return $participant;
             }
         }
         return false;
-    }
+    }*/
     
     /**
      * Get Participant by email
@@ -484,11 +480,12 @@ class Order extends Base\Order
     }
     
     /**
+     * DEPRECATED: Session id is not used anymore
      * Set Participant by session_id
      * 
      * @return boolean
      */
-    public function setParticipantBySessionId(User $user, $id) {
+    /*public function setParticipantBySessionId(User $user, $id) {
         foreach($this->getPackages() as $package) {
             if($package->getParticipant()->getSessionId() == $id) {
                 $package->setParticipant($user);
@@ -496,16 +493,16 @@ class Order extends Base\Order
             }
         }
         return false;
-    }
+    }*/
     
     /**
+     * DEPRECATED: moved to ErsBase\Service\OrderService
      * Add Participant (add new Package and set participant)
      * 
      * @param \Entity\User $participant
      * @return \Entity\Order
      */
-    
-    public function addParticipant(User $participant) {
+    /*public function addParticipant(User $participant) {
         $package = new Package();
         #$sessionId = $this->getSessionId('package');
         #$participant->setSessionId($sessionId);
@@ -517,7 +514,7 @@ class Order extends Base\Order
         #$this->packages[] = $package;
         
         return $this;
-    }
+    }*/
     
     /**
      * Remove Package entity by participant

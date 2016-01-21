@@ -13,14 +13,18 @@ $form->prepare();
 echo $this->form()->openTag($form);
 ?>
 <div class="row">
-    <div class="col-md-3">
-        <?php 
-        echo $this->formRow($form->get('firstname'));
-        echo $this->formRow($form->get('surname'));
-        echo $this->formRow($form->get('birthday'));
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-md-6">
+                <?php echo $this->formRow($form->get('firstname')); ?>
+            </div>
+            <div class="col-md-6">
+                <?php echo $this->formRow($form->get('surname')); ?>
+            </div>
+        </div>
+        <?php echo $this->formRow($form->get('birthday'));
         echo $this->formRow($form->get('email'));
-        echo $this->formRow($form->get('Country_id'));
-        ?>
+        echo $this->formRow($form->get('Country_id')); ?>
     </div>
     <div class="col-md-5">
         <p><strong>Note for personal data:</strong> Please enter your  first name, surname and 
@@ -36,6 +40,7 @@ echo $this->form()->openTag($form);
         <p><strong>Note for edit details:</strong> You can edit this person's 
             details at any time by clicking My Persons in the menu</p>
     </div>
+    <div class="col-md-3"></div>
 </div>
 <?php
 echo $this->formHidden($form->get('csrf'));

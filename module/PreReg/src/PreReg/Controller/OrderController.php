@@ -419,52 +419,12 @@ class OrderController extends AbstractActionController {
                     $participant->setCountry($country);
                 }
                 
-                #foreach($package->getItems() as $item) {
-                #    $item->setPackage($package);
-                    
-                    /*foreach($item->getItemVariants() as $variant) {
-                        $variant->setItem($item);
-                        
-                        $productVariant = $em->getRepository("ErsBase\Entity\ProductVariant")
-                            ->findOneBy(array('id' => $variant->getProductVariantId()));
-                        $variant->setProductVariant($productVariant);
-                        
-                        $productVariantValue = $em->getRepository("ErsBase\Entity\ProductVariantValue")
-                            ->findOneBy(array('id' => $variant->getProductVariantValueId()));
-                        $variant->setProductVariantValue($productVariantValue);
-                    }*/
-                    /*foreach($item->getChildItems() as $subItem) {
-                        $subProduct = $em->getRepository("ErsBase\Entity\Product")
-                            ->findOneBy(array('id' => $subItem->getProductId()));
-                        $subItem->setProduct($subProduct);
-                        $subItem->setPackage($package);
-                        
-                        foreach($subItem->getItemVariants() as $variant) {
-                            $variant->setItem($subItem);
-                            
-                            $productVariant = $em->getRepository("ErsBase\Entity\ProductVariant")
-                                ->findOneBy(array('id' => $variant->getProductVariantId()));
-                            $variant->setProductVariant($productVariant);
-                            
-                            $productVariantValue = $em->getRepository("ErsBase\Entity\ProductVariantValue")
-                                ->findOneBy(array('id' => $variant->getProductVariantValueId()));
-                            $variant->setProductVariantValue($productVariantValue);
-                        }
-                    }*/
-                #}
-                
-                #$em->persist($package);
             }
-            #$orderStatus = new Entity\OrderStatus();
-            #$orderStatus->setOrder($order);
-            #$orderStatus->setValue('unpaid');
-            #$em->persist($orderStatus);
-            #$order->addOrderStatus($orderStatus);
+            
             $status = $em->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
             $order->setStatus($status);
             
-            #$order->setStatus('ordered');
             $em->persist($order);
             $em->flush();
         
@@ -475,7 +435,6 @@ class OrderController extends AbstractActionController {
             $emailService = $this->getServiceLocator()
                 ->get('ErsBase\Service\EmailService');
             $emailService->sendConfirmationEmail($order->getId());
-            #$this->sendConfirmationEmail($order->getId());
             
             $forrest = new Service\BreadcrumbService();
             $forrest->remove('terms');
@@ -532,47 +491,6 @@ class OrderController extends AbstractActionController {
             'order' => $order,
         ));
     }
-    
-    /*private function sendConfirmationEmail($order_id) {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        #$session_order = new Container('order');
-        $order = $em->getRepository("ErsBase\Entity\Order")
-                    ->findOneBy(array('id' => $order_id));
-        $buyer = $order->getBuyer();
-        
-        $emailService = new Service\EmailFactory();
-        $emailService->setFrom('prereg@eja.net');
-        
-        $emailService->addTo($buyer);
-        $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
-        $emailService->setSubject($subject);
-        
-        $viewModel = new ViewModel(array(
-            'order' => $order,
-        ));
-        $viewModel->setTemplate('email/order-confirmation.phtml');
-        $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-        $html = $viewRender->render($viewModel);
-        
-        $emailService->setHtmlMessage($html);
-        
-        $terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v4.pdf';
-        $terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
-        $emailService->addAttachment($terms1);
-        $emailService->addAttachment($terms2);
-        
-        $emailService->send();
-        
-        $orderStatus = new Entity\OrderStatus();
-        $orderStatus->setOrder($order);
-        $orderStatus->setValue('confirmation sent');
-        $em->persist($orderStatus);
-        $em->flush();
-        
-        return true;
-    }*/
     
     private function genTermsPDF() {
         $pdfView = new ViewModel();

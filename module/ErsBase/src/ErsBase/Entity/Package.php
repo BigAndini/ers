@@ -137,14 +137,15 @@ class Package extends Base\Package
     }
     
     /**
+     * DEPRECATED: Session id is not used anymore
      * Remove Item entity by session id
      * 
      * @param type $id
      */
-    public function removeItemBySessionId($id) {
+    /*public function removeItemBySessionId($id) {
         $item = $this->getItemBySessionId($id);
         return $this->removeItem($item);
-    }
+    }*/
     
     /**
      * Remove Item entity by id
@@ -161,6 +162,22 @@ class Package extends Base\Package
             error_log($item);
         }
         return $this->removeItem($item);
+    }
+    
+    /**
+     * Remove Item entity from collection (one to many).
+     *
+     * @param \ErsBase\Entity\Base\Item $item
+     * @return \ErsBase\Entity\Base\Package
+     */
+    public function removeItem(Item $item)
+    {
+        foreach($item->getChildItems() as $cItem) {
+            $this->items->removeElement($cItem);
+        }
+        $this->items->removeElement($item);
+
+        return $this;
     }
 
     /**

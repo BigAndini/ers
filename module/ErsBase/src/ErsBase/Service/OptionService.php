@@ -86,4 +86,82 @@ class OptionService
         }
         return $options;
     }
+    
+    public function getPersonOptions(\ErsBase\Entity\Product $product, $participant_id=null) {
+        $cartContainer = new Container('cart');
+        $options = array();
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
+        #foreach($cartContainer->order->getParticipants() as $v) {
+        foreach($order->getParticipants() as $v) {
+            $disabled = false;
+            if($v->getFirstname() == '') {
+                $disabled = true;
+            }
+            if($v->getSurname() == '') {
+                $disabled = true;
+            }
+            if($v->getBirthday() == null) {
+                $disabled = true;
+            }
+            $selected = false;
+            if($v->getId() == $participant_id) {
+                $selected = true;
+            }
+            $options[] = array(
+                'value' => $v->getId(),
+                'label' => $v->getFirstname().' '.$v->getSurname(),
+                'selected' => $selected,
+                'disabled' => $disabled,
+            );
+        }
+        $selected = false;
+        if($participant_id == 0) {
+            $selected = true;
+        }
+        if(!$product->getPersonalized() && count($options) > 0) {
+            array_unshift($options, array(
+                'value' => 0,
+                'label' => 'do not assign this product',
+                'selected' => $selected,
+                ));
+        }
+        
+        return $options;
+    }
+    
+    public function getAgegroupOptions($agegroup_id = null) {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
+                    ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
+        $options = array();
+        
+        foreach($agegroups as $agegroup) {
+            if($agegroup_id == $agegroup->getId()) {
+                $selected = true;
+            } else {
+                $selected = false;
+            }
+            $options[] = array(
+                'value' => $agegroup->getId(),
+                'label' => $agegroup->getName(),
+                'selected' => $selected,
+            );
+        }
+        if($agegroup_id == null) {
+            $selected = false;
+        } elseif($agegroup_id == 0) {
+            $selected = true;
+        } else {
+            $selected = false;
+        }
+        $options[] = array(
+                'value' => '0',
+                'label' => 'normal',
+                'selected' => $selected,
+            );
+        return $options;
+    }
 }

@@ -317,10 +317,11 @@ class EmailService
         
         $this->send();
         
-        $orderStatus = new Entity\OrderStatus();
-        $orderStatus->setOrder($order);
-        $orderStatus->setValue('confirmation sent');
-        $em->persist($orderStatus);
+        #$orderStatus = new Entity\OrderStatus();
+        #$orderStatus->setOrder($order);
+        #$orderStatus->setValue('confirmation sent');
+        #$em->persist($orderStatus);
+        # TODO: Create log entry that email was sent.
         $em->flush();
         
         return true;
