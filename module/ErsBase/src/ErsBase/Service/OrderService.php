@@ -64,8 +64,8 @@ class OrderService
                 $cartContainer->order_id = $order->getId();
             }
             
-            $this->addLoggedInUser($order);
             $this->order = $order;
+            $this->addLoggedInUser();
             return $order;
         } else {
             #error_log('reset cart');
@@ -83,27 +83,28 @@ class OrderService
             $cartContainer->order_id = $order->getId();
             error_log($cartContainer->order_id);
             
-            $this->addLoggedInUser($order);
             $this->order = $order;
+            $this->addLoggedInUser();
+            
             return $order;
         }
     }
     
-    public function addLoggedInUser($order) {
+    public function addLoggedInUser() {
         $auth = $this->getServiceLocator()
                 ->get('zfcuser_auth_service');
         if ($auth->hasIdentity()) {
             $login_email = $auth->getIdentity()->getEmail();
-            foreach($order->getParticipants() as $participant) {
-                if($login_email == $participant->getEmail()) {
-                    return;
-                }
+
+            $order = $this->getOrder();
+            $package = $order->getPackageByParticipantEmail($login_email);
+            if(!$package) {
+                $em = $this->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                $user = $em->getRepository('ErsBase\Entity\User')
+                        ->findOneBy(array('email' => $login_email));
+                $this->addParticipant($user);
             }
-            $em = $this->getServiceLocator()
-                ->get('Doctrine\ORM\EntityManager');
-            $user = $em->getRepository('ErsBase\Entity\User')
-                    ->findOneBy(array('email' => $login_email));
-            $order->addParticipant($user);
         }
         
     }
@@ -131,12 +132,32 @@ class OrderService
                 ->get('Doctrine\ORM\EntityManager');
         $status = $em->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'order pending'));
+        if(!$status) {
+            throw new \Exception('Please setup status "order pending"');
+        }
         $package->setStatus($status);
+        $status->addPackage($package);
+        
         $package->setParticipant($participant);
         
         $this->getOrder()->addPackage($package);
         $package->setOrder($this->getOrder());
         
         return $this->getOrder();
+    }
+    
+    public function removeItemById($item_id) {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $item = $em->getRepository("ErsBase\Entity\Item")
+            ->findOneBy(array('id' => $item_id));
+        if(!$item) {
+            throw new \Exception('Unable to remove item with id: '.$item_id);
+        }
+        foreach($item->getChildItems() as $cItem) {
+            $em->remove($cItem);
+        }
+        $em->remove($item);
+        $em->flush();
     }
 }

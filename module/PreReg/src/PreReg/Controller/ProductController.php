@@ -132,6 +132,7 @@ class ProductController extends AbstractActionController {
         }
         $forrest->set('participant', 'product', $params2, $options);
         $forrest->set('cart', 'product', $params2, $options);
+        $forrest->set('product', 'product', $params2, $options);
         $forrest->set('bc_stay', 'product', $params2, $options);
         
         /*
@@ -224,7 +225,6 @@ class ProductController extends AbstractActionController {
                 $orderService = $this->getServiceLocator()
                         ->get('ErsBase\Service\OrderService');
                 $order = $orderService->getOrder();
-                #$package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
                 $package = $order->getPackageByParticipantId($participant_id);
                 if($package != null && $package->hasPersonalizedItem()) {
                     $logger->warn('Package for participant '.$participant_id.' already has a personalized item. What should I do?');
@@ -243,7 +243,6 @@ class ProductController extends AbstractActionController {
                  */
                 $agegroup = null;
                 if($participant_id != 0) {
-                    #$participant = $cartContainer->order->getParticipantBySessionId($participant_id);
                     $participant = $order->getParticipantById($participant_id);
 
                     if($participant instanceof Entity\User) {
@@ -271,6 +270,7 @@ class ProductController extends AbstractActionController {
                 $item = new Entity\Item();
                 $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
                 $item->setStatus($status);
+                $item->setProduct($product);
                 $item->setAmount(1);
                 if($agegroup != null) {
                     $item->setAgegroup($agegroup->getAgegroup());
@@ -298,6 +298,15 @@ class ProductController extends AbstractActionController {
                 }
                 
                 /*
+                 * delete the item we edit when we're in edit mode
+                 */
+                if(is_numeric($item_id) && $item_id != 0) {
+                    #$order->removeItem($item_id);
+                    $orderService->removeItemById($item_id);
+                    #$cartContainer->order->removeItem($item_id);
+                }
+                
+                /*
                  * check product packages and add data to item entity
                  */
                 $productPackages = $em->getRepository("ErsBase\Entity\ProductPackage")
@@ -305,8 +314,8 @@ class ProductController extends AbstractActionController {
                 foreach($productPackages as $package) {
                     $subProduct = $package->getSubProduct();
                     $subItem = new Entity\Item();
-                    $subItem->setPrice(0);
                     $subItem->setStatus($status);
+                    $subItem->setProduct($subProduct);
                     $subItem->setAmount($package->getAmount());
                     if($agegroup) {
                         $subItem->setAgegroup($agegroup->getAgegroup());
@@ -315,6 +324,7 @@ class ProductController extends AbstractActionController {
                     $product_data['Product_id'] = $product_data['id'];
                     unset($product_data['id']);
                     $subItem->populate($product_data);
+                    $subItem->setPrice(0);
 
                     $add = false;
                     foreach($subProduct->getProductVariants() as $variant) {
@@ -328,7 +338,6 @@ class ProductController extends AbstractActionController {
                             $itemVariant->setProductVariantValue($value);
                             $subItem->addItemVariant($itemVariant);
                             $itemVariant->setItem($subItem);
-                            #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
                         } else {
                             $logger->warn('Unable to find value for variant of subItem: '.$variant->getName().' (id: '.$variant->getId().')');
                         }
@@ -343,22 +352,8 @@ class ProductController extends AbstractActionController {
                 }
                 
                 /*
-                 * delete the item we have edited when we're in edit mode
-                 */
-                if(is_numeric($item_id) && $item_id != 0) {
-                    $order->removeItem($item_id);
-                    #$cartContainer->order->removeItem($item_id);
-                }
-                
-                /*if(isset($cartContainer->editItem) && $cartContainer->editItem instanceof Entity\Item) {
-                    $cartContainer->order->removeItem($cartContainer->editItem->getSessionId());
-                    unset($cartContainer->editItem);
-                }*/
-                
-                /*
                  * add the newly created item
                  */
-                #$cartContainer->order->addItem($item, $participant_id);
                 $order->addItem($item, $participant_id);
                 
                 $em->persist($order);
@@ -376,13 +371,12 @@ class ProductController extends AbstractActionController {
                  * go the route of the breadcrumbs and find the way back. :)
                  */
                 $forrest = new Service\BreadcrumbService();
-                if(!$forrest->exists('cart')) {
-                    $forrest->set('cart', 'product');
+                if(!$forrest->exists('product')) {
+                    $forrest->set('product', 'product');
                 }
-                $breadcrumb = $forrest->get('cart');
-                $logger->info(var_export($breadcrumb, true));
+                $breadcrumb = $forrest->get('product');
 
-                #return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
@@ -398,7 +392,9 @@ class ProductController extends AbstractActionController {
         /*
          * build participant select options
          */
-        $person_options = $this->getPersonOptions($product, $participant_id);
+        $optionService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OptionService');
+        $person_options = $optionService->getPersonOptions($product, $participant_id);
         $form->get('participant_id')->setAttribute('options', $person_options);
         
         /*
@@ -411,7 +407,7 @@ class ProductController extends AbstractActionController {
         /*
          * Get and build agegroup select options
          */
-        $form->get('agegroup_id')->setAttribute('options', $this->getAgegroupOptions($agegroup_id));
+        $form->get('agegroup_id')->setAttribute('options', $optionService->getAgegroupOptions($agegroup_id));
         
         /*
          * get all variables for ViewModel
@@ -437,94 +433,25 @@ class ProductController extends AbstractActionController {
         ));
     }
     
-    private function getPersonOptions(\ErsBase\Entity\Product $product, $participant_id=null) {
-        $cartContainer = new Container('cart');
-        $options = array();
-        $orderService = $this->getServiceLocator()
-                ->get('ErsBase\Service\OrderService');
-        $order = $orderService->getOrder();
-        #foreach($cartContainer->order->getParticipants() as $v) {
-        foreach($order->getParticipants() as $v) {
-            $disabled = false;
-            if($v->getFirstname() == '') {
-                $disabled = true;
-            }
-            if($v->getSurname() == '') {
-                $disabled = true;
-            }
-            if($v->getBirthday() == null) {
-                $disabled = true;
-            }
-            $selected = false;
-            if($v->getSessionId() == $participant_id) {
-                $selected = true;
-            }
-            $options[] = array(
-                'value' => $v->getSessionId(),
-                'label' => $v->getFirstname().' '.$v->getSurname(),
-                'selected' => $selected,
-                'disabled' => $disabled,
-            );
-        }
-        $selected = false;
-        if($participant_id == 0) {
-            $selected = true;
-        }
-        if(!$product->getPersonalized() && count($options) > 0) {
-            array_unshift($options, array(
-                'value' => 0,
-                'label' => 'do not assign this product',
-                'selected' => $selected,
-                ));
-        }
-        
-        return $options;
-    }
-    
-    private function getAgegroupOptions($agegroup_id = null) {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
-                    ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
-        $options = array();
-        
-        foreach($agegroups as $agegroup) {
-            if($agegroup_id == $agegroup->getId()) {
-                $selected = true;
-            } else {
-                $selected = false;
-            }
-            $options[] = array(
-                'value' => $agegroup->getId(),
-                'label' => $agegroup->getName(),
-                'selected' => $selected,
-            );
-        }
-        if($agegroup_id == null) {
-            $selected = false;
-        } elseif($agegroup_id == 0) {
-            $selected = true;
-        } else {
-            $selected = false;
-        }
-        $options[] = array(
-                'value' => '0',
-                'label' => 'normal',
-                'selected' => $selected,
-            );
-        return $options;
-    }
     
     public function editAction() {
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('product')) {
             $forrest->set('product', 'product', array('action' => 'edit'));
         }
-        $forrest->set('participant', 'product', array('action' => 'edit'));
+        #$forrest->set('participant', 'product', array('action' => 'edit'));
         
         $viewModel = $this->addAction();
         if($viewModel instanceof ViewModel) {
             $viewModel->setTemplate('pre-reg/product/edit');
+        } else {
+            $forrest = new Service\BreadcrumbService();
+            if(!$forrest->exists('product')) {
+                $forrest->set('product', 'product');
+            }
+            $breadcrumb = $forrest->get('product');
+
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
         return $viewModel;
@@ -538,10 +465,8 @@ class ProductController extends AbstractActionController {
         }
         
         $product_id = (int) $this->params()->fromRoute('product_id', 0);
-        #$participant_id = (int) $this->params()->fromRoute('participant_id', 0);
         $item_id = (int) $this->params()->fromRoute('item_id', 0);
         if (!is_numeric($product_id) || !is_numeric($item_id)) {
-        #if (!is_numeric($product_id) || !is_numeric($participant_id) || !is_numeric($item_id)) {
             $breadcrumb = $forrest->get('product');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
@@ -550,35 +475,23 @@ class ProductController extends AbstractActionController {
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
-        $cartContainer = new Container('cart');
         
-        #$participant = $cartContainer->order->getParticipantByItemId($item_id);
         $participant = $order->getParticipantByItemId($item_id);
-        
-        #$item = $cartContainer->order->getItem($item_id);
         $item = $order->getItem($item_id);
-        
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $product = $em->getRepository("ErsBase\Entity\Product")
-                ->findOneBy(array('id' => $product_id));
+        $product = $item->getProduct();
         
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
-                #$participant_id = (int) $request->getPost('participant_id');
                 $item_id = (int) $request->getPost('item_id');
                 
-                #$package = $cartContainer->order->getPackageByParticipantSessionId($participant_id);
+                $orderService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\OrderService');
+                $orderService->removeItemById($item_id);
                 
-                #$cartContainer->order->removeItem($package->getSessionId(), $item_id);
-                #$cartContainer->order->removeItem($item_id);
-                $order->removeItem($item_id);
-                
-                $em->persist($order);
-                $em->flush();
+                #$order->removeItemById($item_id);
             }
 
             $breadcrumb = $forrest->get('product');

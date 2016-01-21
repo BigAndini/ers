@@ -143,7 +143,7 @@ class BankaccountController extends AbstractActionController {
         
         $statements = $em->getRepository("ErsBase\Entity\BankStatement")
                 ->findBy(
-                        array('BankAccount_id' => $bankaccount->getId()),
+                        array('bank_account_id' => $bankaccount->getId()),
                         array(),
                         5
                         );

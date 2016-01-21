@@ -16,14 +16,14 @@ $this->headTitle($title);
 $url = $this->url('product', array(
     'action' => 'delete',
     'product_id'     => $product->getId(),
-    'participant_id'     => $participant->getSessionId(),
-    'item_id'     => $item->getSessionId(),
+    'participant_id'     => $participant->getId(),
+    'item_id'     => $item->getId(),
 ));
 ?>
 <form action="<?php echo $url; ?>" method="post">
 <div>
-    <input type="hidden" name="participant_id" value="<?php echo (int) $participant->getSessionId(); ?>" />
-    <input type="hidden" name="item_id" value="<?php echo (int) $item->getSessionId(); ?>" />
+    <input type="hidden" name="participant_id" value="<?php echo (int) $participant->getId(); ?>" />
+    <input type="hidden" name="item_id" value="<?php echo (int) $item->getId(); ?>" />
     <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
     <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
 </div>

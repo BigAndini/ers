@@ -150,6 +150,11 @@ class Module
                     $service->setServiceLocator($sm);
                     return $service;
                 },
+                'ErsBase\Service\OptionService' => function($sm) {
+                    $service = new Service\OptionService();
+                    $service->setServiceLocator($sm);
+                    return $service;
+                },
             ),
         );
     }

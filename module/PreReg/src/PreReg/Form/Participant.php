@@ -308,7 +308,7 @@ class Participant extends Form implements InputFilterProviderInterface
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 $user = $em->getRepository('ErsBase\Entity\User')
-                                        ->findOneBy(array('email' => $value));
+                                        ->findOneBy(array('email' => $value, 'active' => true));
                                 if($user) {
                                     return false;
                                 }

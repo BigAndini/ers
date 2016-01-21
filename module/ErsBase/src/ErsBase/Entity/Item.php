@@ -21,14 +21,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Item extends Base\Item
 {
-    public function __construct()
-    {
-        parent::__construct();
-        $code = new Code();
-        $code->genCode();
-        $this->setCode($code);
-    }
-
     /**
      *
      * @var int
@@ -36,6 +28,14 @@ class Item extends Base\Item
      * a session container.
      */
     protected $session_id;
+    
+    public function __construct()
+    {
+        parent::__construct();
+        $code = new Code();
+        $code->genCode();
+        $this->setCode($code);
+    }
 
     /**
      * Set id of this object to null if it's cloned
@@ -72,6 +72,17 @@ class Item extends Base\Item
         }*/
         
         $this->created = null;
+    }
+    
+    public function __toString() {
+        $variants = '';
+        foreach($this->getItemVariants() as $variant) {
+            $variants .= $variant->getName().': '.$variant->getValue().'; ';
+        }
+        foreach($this->getChildItems() as $cItem) {
+            error_log('  * '.$cItem);
+        }
+        return '('.$this->getId().')'.$this->getName().'('.$variants.')';
     }
 
     /**

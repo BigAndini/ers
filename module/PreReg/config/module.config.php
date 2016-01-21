@@ -279,8 +279,8 @@ return array(
             'product' => array(
                 'type' => 'segment',
                 'options' => array(
-                    #'route'    => '/product[/][:action][/:product_id][/:participant_id][/:item_id]',
                     'route'    => '/product[/][:action][/:product_id][/:item_id]',
+                    #'route'    => '/product[/][:action][/:id]',
                     'constraints' => array(
                         'action'            => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'product_id'        => '[0-9]+',

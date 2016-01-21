@@ -25,4 +25,7 @@ class Status extends Base\Status
         parent::__construct();
     }
 
+    public function __toString() {
+        return $this->getValue();
+    }
 }

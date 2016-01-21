@@ -50,6 +50,10 @@ div.container a.brand {
     background: #f48029;
 }
 
+.ui-widget-content a {
+    color: #f48029;
+}
+
 .ui-datepicker-title select {
     color: #333;
 }

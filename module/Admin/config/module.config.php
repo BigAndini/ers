@@ -292,6 +292,15 @@ return array(
                         )
                     )
                 ),
+                'clean-pending-orders' => array(
+                    'options' => array(
+                        'route'    => 'clean-pending-orders',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'clean-pending-orders'
+                        )
+                    )
+                ),
                 'remove-matches' => array(
                     'options' => array(
                         'route'    => 'remove-matches',

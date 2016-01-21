@@ -279,7 +279,7 @@ class ProductView extends Form
                         ),
                         'callback' => function($value, $context=array()) {
                             $cartContainer = new Container('cart');
-                            $participant = $cartContainer->order->getParticipantBySessionId($value);
+                            $participant = $cartContainer->order->getParticipantById($value);
                             if(is_object($participant)) {
                                 if(!$participant->getBirthday() instanceof \DateTime) {
                                     return false;

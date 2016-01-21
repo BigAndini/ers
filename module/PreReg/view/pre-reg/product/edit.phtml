@@ -63,12 +63,12 @@
                 <div class="col-lg-6 ui-tabs-panel ui-widget-content ui-corner-all">
                     <div id="person-detail">
                         <ul>
-                            <?php if(!$product->getPersonalized()): ?>
+                            <?php if(!$product->getPersonalized() && $product->getPriceCount() != 1): ?>
                                 <li><a href="#agegroup">Agegroup</a></li>
                             <?php endif; ?>
                             <li><a href="#person">Person</a></li>
                         </ul>
-                        <?php if(!$product->getPersonalized()): ?>
+                        <?php if(!$product->getPersonalized() && $product->getPriceCount() != 1): ?>
                             <div id="agegroup">
                                 <?php
                                 echo $this->formRow($form->get('agegroup_id')); 

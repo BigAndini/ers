@@ -80,10 +80,13 @@ class LoginService
     
     private function setLoginUserAsBuyer() {
         if($this->getUser()) {
-            $cartContainer = new Container('cart');
-            $package = $cartContainer->order->getPackageByParticipantEmail($this->getUser()->getEmail());
+            $orderService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\OrderService');
+            $package = $orderService->getOrder()
+                    ->getPackageByParticipantEmail($this->getUser()->getEmail());
             if($package && $package->getParticipant()) {
-                $cartContainer->order->setBuyer($package->getParticipant());
+                $orderService->getOrder()
+                        ->setBuyer($package->getParticipant());
             }
         } else {
             error_log('unable to find login user');
@@ -95,7 +98,8 @@ class LoginService
             ->get('Doctrine\ORM\EntityManager');
         
         if($this->getUser()) {
-            $cartContainer = new Container('cart');
+            $orderService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\OrderService');
             $countries = array();
             
             /*
@@ -119,12 +123,14 @@ class LoginService
                 $newUser->setCountryId(null);
             }
 
-            $package = $cartContainer->order->getPackageByParticipantEmail($login_user->getEmail());
+            $package = $orderService->getOrder()
+                    ->getPackageByParticipantEmail($login_user->getEmail());
             if($package) {
                 $package->setParticipant($newUser);
                 error_log('changed logged in user in package: '.$newUser->getFirstname().' '.$newUser->getSurname());
             } else {
-                $cartContainer->order->addParticipant($newUser);
+                $orderService->getOrder()
+                        ->addParticipant($newUser);
                 error_log('added logged in user to my persons: '.$newUser->getFirstname().' '.$newUser->getSurname());
             }
                     
@@ -137,7 +143,8 @@ class LoginService
             foreach($orders as $order) {
                 $count = 1;
                 foreach($order->getParticipants() as $user) {
-                    $package = $cartContainer->order->getPackageByParticipantEmail($user->getEmail());
+                    $package = $orderService->getOrder()
+                            ->getPackageByParticipantEmail($user->getEmail());
                     $newUser = new Entity\User();
                     $newUser->populate($user->getArrayCopy());
                     if($newUser->getCountryId()) {
@@ -157,10 +164,10 @@ class LoginService
                     
                     
                     if($package) {
-                        $newUser->setSessionId($package->getParticipant()->getSessionId());
                         $package->setParticipant($newUser);
                     } else {
-                        $cartContainer->order->addParticipant($newUser);
+                        $orderService->getOrder()
+                            ->addParticipant($newUser);
                     }
                     $count++;
                 }
