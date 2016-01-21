@@ -129,7 +129,7 @@ class LoginService
                 $package->setParticipant($newUser);
                 error_log('changed logged in user in package: '.$newUser->getFirstname().' '.$newUser->getSurname());
             } else {
-                $orderService->getOrder()
+                $orderService
                         ->addParticipant($newUser);
                 error_log('added logged in user to my persons: '.$newUser->getFirstname().' '.$newUser->getSurname());
             }

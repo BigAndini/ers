@@ -315,6 +315,16 @@ class Module
                     $inputFilter->setServiceLocator($sm);
                     return $inputFilter;
                 },
+                'PreReg\InputFilter\Participant' => function($sm) {
+                    $inputFilter = new InputFilter\Participant();
+                    $inputFilter->setServiceLocator($sm);
+                    return $inputFilter;
+                },
+                'PreReg\Form\Participant' => function($sm) {
+                    $form = new Form\Participant();
+                    $form->setServiceLocator($sm);
+                    return $form;
+                },
                 'PreReg\InputFilter\PaymentType' => function($sm) {
                     $inputFilter = new InputFilter\PaymentType();
                     $inputFilter->setServiceLocator($sm);

@@ -54,8 +54,8 @@ class ProfileController extends AbstractActionController {
         
         if($request->isPost()) 
         {
-            $inputFilter = new InputFilter\User();
-            $form->setInputFilter($inputFilter->getInputFilter()); 
+            #$inputFilter = new InputFilter\User();
+            #$form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
                 
             if($form->isValid())
@@ -239,7 +239,9 @@ class ProfileController extends AbstractActionController {
         $participant = $em->getRepository("ErsBase\Entity\User")
             ->findOneBy(array('email' => $email));
         
-        $form = new Form\Participant(); 
+        #$form = new Form\Participant(); 
+        $form = $this->getServiceLocator()
+                ->get('PreReg\Form\Participant');
         $request = $this->getRequest(); 
         
         $forrest = new Service\BreadcrumbService();
@@ -253,8 +255,8 @@ class ProfileController extends AbstractActionController {
         
         if($request->isPost()) 
         {
-            $inputFilter = new InputFilter\Participant();
-            $form->setInputFilter($inputFilter->getInputFilter()); 
+            #$inputFilter = new InputFilter\Participant();
+            #$form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
                 
             if($form->isValid())

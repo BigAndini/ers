@@ -18,6 +18,15 @@ class Participant implements InputFilterAwareInterface
 { 
     protected $inputFilter; 
     protected $em;
+    protected $sm;
+    
+    public function setServiceLocator($sm) {
+        $this->sm = $sm;
+    }
+    
+    public function getServiceLocator() {
+        return $this->sm;
+    }
     
     public function setEntityManager(\Doctrine\ORM\EntityManager $em) {
         $this->em = $em;
@@ -195,7 +204,8 @@ class Participant implements InputFilterAwareInterface
                                     return true;
                                 }*/
                                 $cartContainer = new Container('cart');
-                                $em = $this->getEntityManager();
+                                $em = $this->getServiceLocator()
+                                    ->get('Doctrine\ORM\EntityManager');
                                 $order = $em->getRepository('ErsBase\Entity\Order')
                                         ->findOneBy(array('id' => $cartContainer->order_id));
                                 #$participants = $cartContainer->order->getParticipants();

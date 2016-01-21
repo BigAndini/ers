@@ -25,7 +25,7 @@ class Participant extends Form implements InputFilterProviderInterface
         $this->em = $em;
     }
     
-    public function setServiceLocation($sm) {
+    public function setServiceLocator($sm) {
         $this->sm = $sm;
         
         return $this;
@@ -42,7 +42,7 @@ class Participant extends Form implements InputFilterProviderInterface
         $this->setAttribute('method', 'post'); 
         
         $this->add(array(
-            'name' => 'session_id',
+            'name' => 'id',
             'attributes' => array(
                 'type'  => 'hidden',
             ),
@@ -307,6 +307,11 @@ class Participant extends Form implements InputFilterProviderInterface
                                 }
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
+                                $user = $em->getRepository('ErsBase\Entity\User')
+                                        ->findOneBy(array('id' => $context['id']));
+                                if($user && $user->getEmail() == $value) {
+                                    return true;
+                                }
                                 $user = $em->getRepository('ErsBase\Entity\User')
                                         ->findOneBy(array('email' => $value, 'active' => true));
                                 if($user) {

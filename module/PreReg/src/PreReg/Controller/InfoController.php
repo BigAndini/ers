@@ -21,7 +21,7 @@ class InfoController extends AbstractActionController {
         
         $form = new Form\Participant(); 
         #$form->setEntityManager($em);
-        $form->setServiceLocation($this->getServiceLocator());
+        $form->setServiceLocator($this->getServiceLocator());
         $optionService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OptionService');
         $form->get('Country_id')->setValueOptions($optionService->getCountryOptions());
