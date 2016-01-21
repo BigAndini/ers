@@ -65,7 +65,7 @@ class ParticipantController extends AbstractActionController {
         
         $form = new Form\Participant(); 
         #$form->setEntityManager($em);
-        $form->setServiceLocation($this->getServiceLocator());
+        $form->setServiceLocator($this->getServiceLocator());
         $optionService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OptionService');
         #$form->get('Country_id')->setValueOptions($this->getCountryOptions());
@@ -186,7 +186,7 @@ class ParticipantController extends AbstractActionController {
         
         $form = new Form\Participant(); 
         #$form->setEntityManager($em);
-        $form->setServiceLocation($this->getServiceLocator());
+        $form->setServiceLocator($this->getServiceLocator());
         #$form->get('Country_id')->setValueOptions($this->getCountryOptions());
         $optionService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OptionService');
