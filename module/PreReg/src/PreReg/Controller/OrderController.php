@@ -38,7 +38,7 @@ class OrderController extends AbstractActionController {
                 ->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         
-        $this->checkItemPrices();
+        #$this->checkItemPrices();
         
         $logger = $this->getServiceLocator()->get('Logger');
         $logger->info('=== shopping cart start ===');
@@ -77,9 +77,7 @@ class OrderController extends AbstractActionController {
         return $view;
     }
     
-    private function checkItemPrices() {
-        $cartContainer = new Container('cart');
-        
+    /*private function checkItemPrices() {
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
@@ -89,15 +87,10 @@ class OrderController extends AbstractActionController {
         
         $deadlineService = $this->getServiceLocator()
                 ->get('ErsBase\Service\DeadlineService:price');
-        /*$deadlineService = new Service\DeadlineService();
-        $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                    ->findBy(array('price_change' => '1'));
-        $deadlineService->setDeadlines($deadlines);*/
         $deadline = $deadlineService->getDeadline();
         
         $agegroupService = $this->getServiceLocator()
                 ->get('ErsBase\Service\AgegroupService');
-        #$agegroupService = new Service\AgegroupService();
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
                     ->findBy(array('price_change' => '1'));
         $agegroupService->setAgegroups($agegroups);
@@ -122,7 +115,7 @@ class OrderController extends AbstractActionController {
                 
             }
         }
-    }
+    }*/
     
     /**
      * Action that allows viewing an order by the hash key
@@ -165,9 +158,6 @@ class OrderController extends AbstractActionController {
         
         if(is_object($order->getBuyer())) {
             $buyer = $order->getBuyer();
-            error_log($buyer->getFirstname().' '.$buyer->getSurname().' '.$buyer->getEmail());
-        } else {
-            error_log('No buyer set in this order.');
         }
         
         # even if it's not displayed, this is needed to recognize the possible 
@@ -188,7 +178,6 @@ class OrderController extends AbstractActionController {
                 } else {
                     $selected = false;
                 }
-                error_log($participant);
                 $buyer[] = array(
                     'value' => $participant->getId(),
                     'label' => $participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getEmail().')',
@@ -344,7 +333,7 @@ class OrderController extends AbstractActionController {
                 ->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         
-        $this->checkItemPrices();
+        #$this->checkItemPrices();
         
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');

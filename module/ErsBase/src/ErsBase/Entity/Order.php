@@ -292,10 +292,8 @@ class Order extends Base\Order
      * @return false
      */
     public function getItem($item_id) {
-    #public function getItem($participant_id, $item_id) {
         foreach($this->getPackages() as $package) {
             foreach($package->getItems() as $item) {
-                #error_log($item->getId().' == '.$item_id);
                 if($item->getId() == $item_id) {
                     return $item;
                 }
@@ -543,11 +541,11 @@ class Order extends Base\Order
         foreach($this->getPackages() as $package) {
             foreach($package->getItems() as $item) {
                 if($status == null) {
-                    if($item->getStatus() != 'cancelled' && $item->getStatus() != 'transferred') {
+                    if($item->getStatus()->getValue() != 'cancelled' && $item->getStatus()->getValue() != 'transferred') {
                         $price += $item->getPrice();
                     }
                 } else {
-                    if($item->getStatus() != $status) {
+                    if($item->getStatus()->getValue() != $status) {
                         $price += $item->getPrice();
                     }
                 }

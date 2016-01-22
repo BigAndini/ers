@@ -581,7 +581,6 @@ class ItemController extends AbstractActionController {
         
         $user = null;
         if($user_id != 0) {
-            error_log('searching user with id: '.$user_id);
             $user = $em->getRepository("ErsBase\Entity\User")
                     ->findOneBy(array('id' => $user_id));
         }

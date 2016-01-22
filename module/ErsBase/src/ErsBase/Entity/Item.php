@@ -79,12 +79,12 @@ class Item extends Base\Item
         foreach($this->getItemVariants() as $variant) {
             $variants .= $variant->getName().': '.$variant->getValue().'; ';
         }
-        foreach($this->getChildItems() as $cItem) {
+        /* foreach($this->getChildItems() as $cItem) {
             error_log('  * '.$cItem);
-        }
+        }*/
         return '('.$this->getId().')'.$this->getName().'('.$variants.')';
     }
-
+    
     /**
      * Set the value of Package_id.
      *

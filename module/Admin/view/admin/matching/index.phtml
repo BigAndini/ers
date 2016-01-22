@@ -88,18 +88,12 @@ $this->headTitle($title);
                     <tr>
                         <th>amount</th>
                         <td>
-                            <?php if(!is_numeric($order->getOrderSum())):
-                                error_log('order sum is bad!');
-                            endif; ?>
                             <?php echo $this->currencyFormat($order->getOrderSum(), 'EUR', null, 'de_DE'); ?>
                         </td>
                     </tr>
                     <tr>
                         <th>incl. fees</th>
                         <td>
-                            <?php if(!is_numeric($order->getTotalSum())):
-                                error_log('total sum is bad!');
-                            endif; ?>
                             <?php echo $this->currencyFormat($order->getTotalSum(), 'EUR', null, 'de_DE'); ?>
                         </td>
                     </tr>
@@ -123,9 +117,6 @@ $this->headTitle($title);
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-md-4">
-                            <?php if(!is_numeric($order->getTotalSum())):
-                                error_log('the other total sum is bad!');
-                            endif; ?>
                             <?php echo $this->currencyFormat($order->getTotalSum(), 'EUR', null, 'de_DE'); ?>
                         </div>
                         <div class="col-md-4 text-center">

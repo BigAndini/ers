@@ -52,7 +52,7 @@ class OrderService
             $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $cartContainer->order_id));
             if(!$order) {
-                error_log('Cannot find order with id '.$cartContainer->order_id.'. Creating new order...');
+                # Cannot find order with given id: Creating new order...
                 $order = new Entity\Order();
                 $status = $em->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'order pending'));
@@ -68,10 +68,6 @@ class OrderService
             $this->addLoggedInUser();
             return $order;
         } else {
-            #error_log('reset cart');
-            #$cartContainer->getManager()->getStorage()->clear('cart');
-            
-            error_log('order_id is not set or is not numeric: '.$cartContainer->order_id.'. Creating new order...');
             $order = new Entity\Order();
             $status = $em->getRepository('ErsBase\Entity\Status')
                 ->findOneBy(array('value' => 'order pending'));
@@ -81,7 +77,6 @@ class OrderService
             $em->flush();
             
             $cartContainer->order_id = $order->getId();
-            error_log($cartContainer->order_id);
             
             $this->order = $order;
             $this->addLoggedInUser();

@@ -141,8 +141,7 @@ class TestController extends AbstractActionController {
                     ->findOneBy(array('id' => '87'));
         
         if($order == null) {
-            error_log('unable to find order');
-            return;
+            throw new \Exception('unable to find order');
         }
         
         $pdfView = new ViewModel();

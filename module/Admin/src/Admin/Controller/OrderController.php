@@ -83,8 +83,6 @@ class OrderController extends AbstractActionController {
 
             );
 
-            #error_log('searchText: '.$searchText);
-
             $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
 
@@ -104,7 +102,6 @@ class OrderController extends AbstractActionController {
                 } else {
                     $qb->orWhere('oc.value LIKE :param'.$i);
                 }
-                error_log('element: '.$element);
                 $qb->setParameter('param'.$i, $element);
                 $i++;
 
@@ -158,7 +155,6 @@ class OrderController extends AbstractActionController {
                 $qb->setParameter('param'.$i, '%'.strtolower($element).'%');
                 $i++;
             }
-            #error_log($qb->getQuery()->getSql());
             $result = array_merge($result, $qb->getQuery()->getResult());
 
         } else {

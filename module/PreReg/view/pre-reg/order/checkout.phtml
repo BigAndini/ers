@@ -67,7 +67,7 @@ echo $this->navigation()
                 if($user->getFirstname() == '' && $user->getSurname() == '') :
                     $participant = 'further items';
                 else:
-                    $participant = $user->getFirstname().' '.$user->getSurname();
+                    $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getAge()->format('%Y years').')';
                 endif;
         ?>
             <div class="package">
@@ -83,6 +83,9 @@ echo $this->navigation()
                     <?php
                     $subtotal = 0;
                     foreach ($package->getItems() as $item) : 
+                        if($item->hasParentItems()) {
+                            continue;
+                        }
                         $subtotal += $item->getPrice();
                         $sum += $item->getPrice();
                         ?>

@@ -100,7 +100,6 @@ class Register implements InputFilterAwareInterface
                                 $orderService = $this->getServiceLocator()
                                         ->get('ErsBase\Service\OrderService');
                                 $order = $orderService->getOrder();
-                                error_log('value: '.$value);
                                 $participant = $order->getParticipantById($value);
                                 
                                 $auth = $this->getServiceLocator()

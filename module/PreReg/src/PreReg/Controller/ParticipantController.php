@@ -112,10 +112,6 @@ class ParticipantController extends AbstractActionController {
                     }   
                 }
                 
-                foreach($order->getPackages() as $package) {
-                    error_log('package status: '.$package->getStatus().' ('.$package->getParticipant().')');
-                }
-                
                 $orderService->setCountryId($user->getCountryId());
                 
                 if($user->getCountryId() == 0) {
@@ -176,15 +172,10 @@ class ParticipantController extends AbstractActionController {
         if(!$participant) {
             # TODO: add flash messenger message with error and return
         }
-        /*$participant = $em->getRepository('ErsBase\Entity\User')
-                ->findOneBy(array('id' => $id));*/
-        
-        #$cartContainer = new Container('cart');
-        #$participant = $cartContainer->order->getParticipantBySessionId($id);
         
         $breadcrumbService = new Service\BreadcrumbService();
         
-        $form = new Form\Participant(); 
+        $form = new Form\Participant();
         #$form->setEntityManager($em);
         $form->setServiceLocator($this->getServiceLocator());
         #$form->get('Country_id')->setValueOptions($this->getCountryOptions());
