@@ -15,7 +15,7 @@ class RedirectController extends AbstractActionController {
     public function indexAction() {
         // if not logged in or no according rights redirect to default redirect target
         if(!$this->isAllowed('redirect', 'do')) {
-            error_log('unauthorized access to redirect page');
+            # unauthorized access to redirect page
             return $this->redirect()->toRoute('user/login');
         }
         
@@ -30,7 +30,7 @@ class RedirectController extends AbstractActionController {
                 ->findOneBy(array('value' => $codeValue));
         
         if(!$code) {
-            error_log('unable to find code in system: ' . $id);
+            # unable to find code in system
             //return $this->notFoundAction();
             $this->flashMessenger()->addErrorMessage('The code "' . $codeValue . '" could not be found in the system!');
             return $this->redirect()->toRoute('onsite');

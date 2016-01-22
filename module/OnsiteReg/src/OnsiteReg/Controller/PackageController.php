@@ -115,6 +115,7 @@ class PackageController extends AbstractActionController {
                 $log->setData('SHIPPED Item ' . $item->getName() . ' of package ' . $package->getCode()->getValue() . '.');
                 $em->persist($log);
                 
+                # TODO: create log entry for this.
                 error_log('set item ' . $item->getId() . ' of package ' . $package->getId() . ' to shipped');
             }
             $em->flush();
@@ -168,8 +169,6 @@ class PackageController extends AbstractActionController {
                 
                 $em->flush();
                 
-                error_log('reset item ' . $item->getId() . ' of package ' . $package->getId() . ' to unshipped');
-
                 $this->flashMessenger()->addSuccessMessage('The item was successfully marked as unshipped again!');
                 return $this->redirect()->toRoute('onsite/package', ['action' => 'detail', 'id' => $package->getId()]);
             }

@@ -88,8 +88,6 @@ class LoginService
                 $orderService->getOrder()
                         ->setBuyer($package->getParticipant());
             }
-        } else {
-            error_log('unable to find login user');
         }
     }
     
@@ -127,11 +125,9 @@ class LoginService
                     ->getPackageByParticipantEmail($login_user->getEmail());
             if($package) {
                 $package->setParticipant($newUser);
-                error_log('changed logged in user in package: '.$newUser->getFirstname().' '.$newUser->getSurname());
             } else {
                 $orderService
                         ->addParticipant($newUser);
-                error_log('added logged in user to my persons: '.$newUser->getFirstname().' '.$newUser->getSurname());
             }
                     
             /*
@@ -154,7 +150,6 @@ class LoginService
                             $country = $em->getRepository("ErsBase\Entity\Country")
                                 ->findOneBy(array('id' => $newUser->getCountryId()));
                             $countries[$country->getId()] = $country;
-                            error_log('found country: '.$country->getName());
                         }
                         $newUser->setCountry($country);
                     } else {

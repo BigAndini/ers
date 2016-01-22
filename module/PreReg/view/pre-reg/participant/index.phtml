@@ -24,7 +24,6 @@ $this->headTitle($title);
             </td>
             <td><?php echo $participant->getEmail();?></td>
             <td>
-                <?php error_log($participant->getId()); ?>
                 <?php if(is_object($participant->getCountry())):
                     $country = $participant->getCountry();
                     echo $country->getName();

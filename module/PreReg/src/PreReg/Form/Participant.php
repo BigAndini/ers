@@ -299,24 +299,33 @@ class Participant extends Form implements InputFilterProviderInterface
                                 $orderService = $this->getServiceLocator()
                                         ->get('ErsBase\Service\OrderService');
                                 $order = $orderService->getOrder();
+                                
+                                $em = $this->getServiceLocator()
+                                    ->get('Doctrine\ORM\EntityManager');
+                                
+                                # check if user with id has this email -> ok
+                                $user = $em->getRepository('ErsBase\Entity\User')
+                                        ->findOneBy(array('id' => $context['id']));
+                                if($user && $user->getEmail() == $value) {
+                                    return true;
+                                }
+                                
+                                # check if another user already has this email -> not ok
                                 $participants = $order->getParticipants();
                                 foreach($participants as $participant) {
                                     if($value == $participant->getEmail()) {
                                         return false;
                                     }
                                 }
-                                $em = $this->getServiceLocator()
-                                    ->get('Doctrine\ORM\EntityManager');
-                                $user = $em->getRepository('ErsBase\Entity\User')
-                                        ->findOneBy(array('id' => $context['id']));
-                                if($user && $user->getEmail() == $value) {
-                                    return true;
-                                }
+                                
+                                # check if a active user exists with this email -> not ok
                                 $user = $em->getRepository('ErsBase\Entity\User')
                                         ->findOneBy(array('email' => $value, 'active' => true));
                                 if($user) {
                                     return false;
                                 }
+                                
+                                # if nothing of the above matches -> ok
                                 return true;
                             },
                             

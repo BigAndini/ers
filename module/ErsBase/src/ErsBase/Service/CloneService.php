@@ -75,7 +75,6 @@ class CloneService
         
         $newItem = clone $item;
         
-        error_log('found item packages: '.count($item->getItemPackageRelatedBySurItemIds()));
         foreach($item->getItemPackageRelatedBySurItemIds() as $itemPackage) {
             $newItemPackage = $this->cloneItemPackage($itemPackage);
             $newItemPackage->setSurItem($newItem);

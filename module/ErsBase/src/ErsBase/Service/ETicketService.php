@@ -132,7 +132,6 @@ class ETicketService
             $this->_agegroup = $agegroup;
         } else {
             $this->_agegroup = null;
-            #error_log('no agegroup found');
         }
     }
     

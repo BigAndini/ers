@@ -32,7 +32,7 @@ echo $this->navigation()
                     $participant = 'further items';
                     $edit_participant = false;
                 else:
-                    $participant = $user->getFirstname().' '.$user->getSurname();
+                    $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getAge()->format('%Y years').')';
                     $edit_participant = true;
                 endif;
         ?>
@@ -116,7 +116,6 @@ echo $this->navigation()
                                         $fragment = 'person';
                                     endif;
                                 else:
-                                    #error_log(var_export($item->getAgegroup(), true));
                                     $agegroup = $agegroupService->getAgegroupByDate($item->getAgegroup());
                                     if($agegroup):
                                         $variants['agegroup_id'] = $agegroup->getId();

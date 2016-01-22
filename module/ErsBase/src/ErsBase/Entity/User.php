@@ -100,4 +100,15 @@ class User extends Base\User implements UserInterface, ProviderInterface
         
         return $this;
     }
+    
+    /**
+     * Get the age of a user
+     * 
+     * @param string $format
+     * @return \DateTime
+     */
+    public function getAge() {
+        $now = new \DateTime();
+        return $this->getBirthday()->diff($now);
+    }
 }

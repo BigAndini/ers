@@ -158,10 +158,8 @@ class TestController extends AbstractActionController {
         
         $orders = $em->getRepository("ErsBase\Entity\Order")
                 ->findBy(array('total_sum' => 0));
-        error_log('found '.count($orders).' orders');
         $count = 0;
         foreach($orders as $order) {
-            #error_log($order->getId().' '.$order->getSum().' '.$order->getPrice());
             $order->setTotalSum($order->getSum());
             $order->setOrderSum($order->getPrice());
             $em->persist($order);
@@ -171,22 +169,6 @@ class TestController extends AbstractActionController {
             }
             $count++;
         }
-    }
-    
-    public function doctrineAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $order = $em->getRepository("ErsBase\Entity\Order")
-                ->findOneBy(array('id' => 52));
-        error_log('packages: '.count($order->getPackages()));
-        
-        $user = $em->getRepository("ErsBase\Entity\User")
-                ->findOneBy(array('id' => 549));
-        error_log($user->getFirstname().' '.$user->getSurname());
-        error_log('country: '.$user->getCountry()->getName());
-        
-        return new ViewModel(array());
     }
     
     public function eticketHtmlAction() {

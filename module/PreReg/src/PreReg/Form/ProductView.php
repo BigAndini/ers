@@ -220,7 +220,7 @@ class ProductView extends Form
                     
                     break;
                 default:
-                    error_log(get_class().': Don\'t know what to do with type '.$variant->getType());
+                    throw new \Exception(get_class().': Don\'t know what to do with type '.$variant->getType());
                     break;
             }
            

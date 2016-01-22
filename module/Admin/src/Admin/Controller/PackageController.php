@@ -641,7 +641,6 @@ class PackageController extends AbstractActionController {
             }
 
             $results = $qb->getQuery()->getResult();
-            error_log('found '.count($results).' user');
         }
         
         $forrest = new Service\BreadcrumbService();
@@ -724,7 +723,6 @@ class PackageController extends AbstractActionController {
         
         $user = null;
         if($user_id != 0) {
-            error_log('searching user with id: '.$user_id);
             $user = $em->getRepository("ErsBase\Entity\User")
                     ->findOneBy(array('id' => $user_id));
         }
@@ -832,7 +830,6 @@ class PackageController extends AbstractActionController {
             }
 
             $results = $qb->getQuery()->getResult();
-            error_log('found '.count($results).' user');
         }
         
         return new ViewModel(array(
@@ -941,7 +938,6 @@ class PackageController extends AbstractActionController {
         
         $order = null;
         if($order_id != 0) {
-            error_log('searching order with id: '.$order_id);
             $order = $em->getRepository("ErsBase\Entity\Order")
                     ->findOneBy(array('id' => $order_id));
             $form->get('order_id')->setValue($order->getId());

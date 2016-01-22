@@ -102,8 +102,6 @@ class Module
                      ->get('Zend\Session\SessionManager');
         $session->start();
         
-        #error_log(var_export($_SESSION, true));
-        
         $container = new Container('initialized');
         
         $expiration_time = 3600;
@@ -112,9 +110,7 @@ class Module
             error_log('Session is not valid');
             $container->init = 0;
         }
-        #$container->getManager()->getStorage()->clear('initialized');
         if (!isset($container->init) || $container->lifetime < time()) {
-            #error_log('reset session');
             $container->getManager()->getStorage()->clear('initialized');
             $container = new Container('initialized');
             $container->init = 1;
@@ -128,7 +124,6 @@ class Module
         $cartContainer = new Container('cart');
         #$cartContainer->getManager()->getStorage()->clear('cart');
         if(!isset($cartContainer->init) || $cartContainer->init != 1) {
-            #error_log('reset cart');
             $cartContainer->getManager()->getStorage()->clear('cart');
             $cartContainer->order = new Entity\Order();
             $cartContainer->init = 1;
@@ -137,26 +132,6 @@ class Module
         if($cartContainer->chooserCount <= 0) {
             $cartContainer->chooser = false;
         }
-        /*
-         * shopping cart debugging
-         */
-        /*error_log('=== Order Info ===');
-        error_log('paymenttype_id: '.$cartContainer->order->getPaymentTypeId());
-        error_log('buyer_id: '.$cartContainer->order->getBuyerId());
-        $buyer = $cartContainer->order->getBuyer();
-        if($buyer) {
-            error_log('buyer email: '.$cartContainer->order->getBuyer()->getEmail());
-        }
-        foreach($cartContainer->order->getPackages() as $package) {
-            error_log('  --- Package Info ---');
-            error_log('  participant_id: '.$package->getParticipantId());
-            $items = $package->getItems();
-            foreach($items as $item) {
-                error_log(' - '.$item->getName().' (Product_id: '.$item->getProductId().')');
-            }
-            error_log('  --------------------');
-        }
-        error_log('==================');*/
     }
     
     public function getAutoloaderConfig()

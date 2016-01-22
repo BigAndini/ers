@@ -157,10 +157,6 @@ class Package extends Base\Package
         if(!$item) {
             throw new \Exception('Unable to remove item with id '.$id);
         }
-        error_log('remove item '.$item->getId().' from package '.$this->getId());
-        foreach($this->getItems() as $item) {
-            error_log($item);
-        }
         return $this->removeItem($item);
     }
     
