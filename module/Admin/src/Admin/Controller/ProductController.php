@@ -82,7 +82,8 @@ class ProductController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $product = $em->getRepository("ErsBase\Entity\Product")->findOneBy(array('id' => $id));
 
-        $form = $this->getServiceLocator()->get('Admin\Form\Product');
+        $form = $this->getServiceLocator()
+                ->get('Admin\Form\Product');
         $form->bind($product);
         $form->get('submit')->setAttribute('value', 'Edit');
 

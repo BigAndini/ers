@@ -80,7 +80,7 @@ class Product extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'shortDescription',
+            'name' => 'short_description',
             'attributes' => array(
                 'type'  => 'text',
                 'class' => 'form-control form-element',
@@ -109,7 +109,7 @@ class Product extends Form
         ));*/
         
         $this->add(array( 
-            'name' => 'longDescription', 
+            'name' => 'long_description', 
             #'type' => 'Zend\Form\Element\Textarea', 
             'type' => 'CKEditorModule\Form\Element\CKEditor',
             'attributes' => array( 
@@ -131,7 +131,7 @@ class Product extends Form
         
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',
-            'name' => 'taxId',
+            'name' => 'tax_id',
             'attributes' => array(
                 'class' => 'form-control form-element',
             ),

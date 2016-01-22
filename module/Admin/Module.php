@@ -67,7 +67,7 @@ class Module
                         $options[$tax->getId()] = $tax->getName().' - '.$tax->getPercentage().'%';
                     }
 
-                    $form->get('taxId')->setValueOptions($options);
+                    $form->get('tax_id')->setValueOptions($options);
                     
                     return $form;
                 },
