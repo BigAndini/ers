@@ -23,10 +23,10 @@ echo $this->formHidden($form->get('deleted'));
 echo $this->formRow($form->get('position'));
 echo $this->formRow($form->get('visible'));
 echo $this->formRow($form->get('name'));
-echo $this->formRow($form->get('shortDescription'));
-echo $this->formRow($form->get('longDescription'));
+echo $this->formRow($form->get('short_description'));
+echo $this->formRow($form->get('long_description'));
 echo $this->formRow($form->get('personalized'));
-echo $this->formRow($form->get('taxId'));
+echo $this->formRow($form->get('tax_id'));
 echo $this->formSubmit($form->get('submit'));
 ?>
 <a href="<?php echo $this->url('admin/product');?>">Cancel</a>
