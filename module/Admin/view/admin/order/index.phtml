@@ -17,21 +17,34 @@ $this->headTitle($title);
     </tr>
 <?php foreach ($orders as $order) : ?>
     <?php $status = 'undefined';
-    if($order->findOrderStatus('paid')->getValue() != ''):
+    if($order->getStatus()->getValue() == 'paid'):
         $status = 'paid';
-    elseif($order->findOrderStatus('unpaid')->getValue() != ''):
+    elseif($order->getStatus()->getValue() != 'ordered'):
         $status = 'unpaid';
     endif; ?>
     <tr>
         <td><?php echo $order->getCode()->getValue(); ?></td>
         <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
         <td>
-            <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>
+            <?php 
+            if($order->getBuyer()):
+                echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname();     
+            ?>
             <br />
             <a href="mailto:<?php echo $order->getBuyer()->getEmail(); ?>"><?php echo $order->getBuyer()->getEmail(); ?></a>
+            <?php else:
+                echo "no buyer could be found";
+            endif;
+            ?>
         </td>
         <td>
-            <?php echo $order->getPaymentType()->getName(); ?>
+            <?php 
+            if($order->getPaymentType()):
+                echo $order->getPaymentType()->getName();
+            else:
+                echo "no payment type could be found";
+            endif;
+            ?>
         </td>
         <td>
             <?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?>

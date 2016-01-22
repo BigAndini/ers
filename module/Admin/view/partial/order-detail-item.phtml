@@ -63,25 +63,25 @@
     <td><?php echo $item->getAmount(); ?></td>
     <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
     <td class="text-nowrap">
-        <span class="h3 green">
-            <?php switch($item->getStatus()):
+        <span class="h3 color-primary">
+            <?php switch($item->getStatus()->getValue()):
                 case 'ordered': ?>
-                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-shopping-cart" title="ordered"></i>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-shopping-cart color-primary" title="ordered"></i>
                     <?php break;
                 case 'paid': ?>
-                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-money" title="paid"></i>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-money color-primary" title="paid"></i>
                     <?php break;
                 case 'refund': ?>
-                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-reply" title="refund"></i>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-reply color-primary" title="refund"></i>
                     <?php break;
                 case 'cancelled': ?>
-                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-ban" title="cancelled"></i>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-ban color-primary" title="cancelled"></i>
                     <?php break;
                 case 'shipped': ?>
-                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-barcode" title="shipped"></i>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-barcode color-primary" title="shipped"></i>
                     <?php break;
                 case 'zero_ok': ?>
-                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-child" title="0 € child ticket"></i>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-child color-primary" title="0 € child ticket"></i>
                     <?php break;
                 case 'transferred': 
                     $transferredPackage = $item->getTransferredItem()->getPackage();
@@ -89,11 +89,11 @@
                     $transferredOrder = $transferredPackage->getOrder();
                     ?>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $transferredOrder->getId())); ?>">
-                        <i data-toggle="tooltip" data-placement="bottom" class="fa fa-forward" title="transferred to <?php echo $transferredParticipant->getFirstname().' '.$transferredParticipant->getSurname(); ?>"></i>
+                        <i data-toggle="tooltip" data-placement="bottom" class="fa fa-forward color-primary" title="transferred to <?php echo $transferredParticipant->getFirstname().' '.$transferredParticipant->getSurname(); ?>"></i>
                     </a>
                     <?php break;
                 default: ?>
-                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-question" title="unknown"></i>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-question color-primary" title="unknown"></i>
                     <?php break;
             endswitch; ?>
         </span>

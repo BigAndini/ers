@@ -178,7 +178,7 @@ class OrderController extends AbstractActionController {
         $order = $em->getRepository("ErsBase\Entity\Order")
                 ->findOneBy(array('id' => $id));
         $paymentDetails = $em->getRepository("ErsBase\Entity\PaymentDetail")
-                ->findBy(array('Order_id' => $id), array('created' => 'DESC'));
+                ->findBy(array('order_id' => $id), array('created' => 'DESC'));
         
         $forrest = new Service\BreadcrumbService();
         $forrest->set('order', 'admin/order', array('action' => 'detail', 'id' => $id));
@@ -375,7 +375,7 @@ class OrderController extends AbstractActionController {
                     $emailService->addBcc($bcc);
 
                     $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
-                    $subject = "[EJC 2015] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+                    $subject = "[EJC 2015] e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
                     $emailService->setSubject($subject);
 
                     $viewModel = new ViewModel(array(

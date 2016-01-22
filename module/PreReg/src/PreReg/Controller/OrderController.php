@@ -415,6 +415,14 @@ class OrderController extends AbstractActionController {
             $order->setStatus($status);
             
             $em->persist($order);
+            
+            # add log entry
+            $log = new Entity\Log();
+            $log->setOrder($order);
+            $log->setUser($order->getBuyer());
+            $log->setData($order->getCode()->getValue().' ordered');
+            $em->persist($log);
+            
             $em->flush();
         
             $orderContainer->order_id = $order->getId();

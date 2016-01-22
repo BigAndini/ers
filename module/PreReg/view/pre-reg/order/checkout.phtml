@@ -25,7 +25,7 @@ echo $this->navigation()
             <?php $buyer = $order->getBuyer(); ?>
             <?php if($buyer) : ?>
                 <h2><?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?></h2>
-                <p>The buyer will receive all eTickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is paid and will be able to download the eTicket on his own as well.</p>
+                <p>The buyer will receive all e-Tickets for all registered participants. If you have provided an email address for a participant this participant will be informed once the ticket is paid and will be able to download the e-Ticket on his own as well.</p>
                 <h3>We will send all information to: <?php echo $buyer->getEmail(); ?></h3>
             <?php else: ?>
                 <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
@@ -45,11 +45,11 @@ echo $this->navigation()
                 <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
             <?php endif; ?>
             <!--<h3>Bank Transfer</h3>
-            <p>After successfull purchase you will see the bank account data to transfer the money to. When we matched your payment to your order you will be informed and can download your eTickets.</p>
+            <p>After successfull purchase you will see the bank account data to transfer the money to. When we matched your payment to your order you will be informed and can download your e-Tickets.</p>
             <h3>Credit Card</h3>
-            <p>After purchase you will see the credit card formular. After successful payment you will be able to download your eTickets.</p>
+            <p>After purchase you will see the credit card formular. After successful payment you will be able to download your e-Tickets.</p>
             <h3>PayPal</h3>
-            <p>After purchase you will be redirected to a PayPal page. After successful payment you will be able to download your eTickets.</p>-->    
+            <p>After purchase you will be redirected to a PayPal page. After successful payment you will be able to download your e-Tickets.</p>-->    
         </div>
     </div>
 </div>

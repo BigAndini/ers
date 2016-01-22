@@ -13,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Session\Container;
 
 /**
- * eTicket Serivce
+ * Login Serivce
  */
 class LoginService
 {

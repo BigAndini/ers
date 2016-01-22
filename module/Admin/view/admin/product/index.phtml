@@ -5,55 +5,55 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <p>
-    <a href="<?php echo $this->url('admin/product', array('action'=>'add'));?>">Add Product</a>
+    
 </p>
 
 <table class="table">
     <tr>
-        <th>Order</th>
+        <th>Pos.</th>
         <th>Visible</th>
         <th>Name</th>
-        <th>Variant</th>
-        <th>&nbsp;</th>
-        <th>&nbsp;</th>
+        <!--<th>Variant</th>-->
+        <th>
+            <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/product', array('action'=>'add'));?>"><i class="fa fa-plus"></i></a>
+        </th>
     </tr>
 <?php foreach ($products as $product) : ?>
     <tr>
         <td><?php echo $this->escapeHtml($product->getPosition());?></td>
         <td>
             <?php if($product->getVisible()) : ?>
-                <i class="fa fa-eye"></i>
+                <i class="fa fa-lg fa-eye"></i>
             <?php else: ?>
-                <i class="fa fa-eye-slash"></i>
+                <i class="fa fa-lg fa-eye-slash"></i>
             <?php endif; ?>
         </td>
         <td><?php 
             if($product->getPersonalized()) : ?> 
                 <!--<img src="/img/icons/32px/user.png" alt="(personalized)" title="This product needs to be linked to a user" />-->
-                <i class="fa fa-user"></i>
+                <i class="fa fa-lg fa-user"></i>
             <?php endif;?>
             <?php if(count($product->getChildProducts()) > 0): ?>
-                <i class="fa fa-archive"></i>
+                <i class="fa fa-lg fa-archive"></i>
             <?php endif; ?>
             <?php echo $this->escapeHtml($product->getName()); ?>
         </td>
-        <td>
-            <a href="<?php echo $this->url('admin/product-variant', array('action'=>'add', 'id' => $product->getId()));?>"><?php echo $this->translate('Add Product Variant'); ?></a>
+        <!--<td>
+            <a href="<?php echo $this->url('admin/product-variant', array('action'=>'add', 'id' => $product->getId()));?>"><i class="fa fa-plus"></i></a>
             <?php foreach($product->getProductVariants() as $variant) : ?>
             <p>
                 <span><?php echo $variant->getName(); ?></span>
-                <a href="<?php echo $this->url('admin/product-variant', array('action' => 'edit', 'id' => $variant->getId()));?>">edit</a>
-                <a href="<?php echo $this->url('admin/product-variant', array('action' => 'copy', 'id' => $variant->getId()));?>">copy</a>
-                <a href="<?php echo $this->url('admin/product-variant', array('action' => 'delete', 'id' => $variant->getId()));?>">delete</a></p>
+                <a href="<?php echo $this->url('admin/product-variant', array('action' => 'edit', 'id' => $variant->getId()));?>"><i class="fa fa-edit"></i></a>
+                <a href="<?php echo $this->url('admin/product-variant', array('action' => 'copy', 'id' => $variant->getId()));?>"><i class="fa fa-copy"></i></a>
+                <a href="<?php echo $this->url('admin/product-variant', array('action' => 'delete', 'id' => $variant->getId()));?>"><i class="fa fa-trash"></i></a></p>
             <?php endforeach; ?>
-        </td>
-        <td>&nbsp;</td>
+        </td>-->
         <td>
-            <a href="<?php echo $this->url('admin/product', array('action' => 'view', 'id' => $product->getId()));?>"><?php echo $this->translate('Detail'); ?></a>
-            <a href="<?php echo $this->url('admin/product-price', array('action' => 'view', 'id' => $product->getId()));?>"><?php echo $this->translate('Price'); ?></a>
-            <a href="<?php echo $this->url('admin/product', array('action' => 'edit', 'id' => $product->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-            <a href="<?php echo $this->url('admin/product', array('action' => 'copy', 'id' => $product->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
-            <a href="<?php echo $this->url('admin/product', array('action' => 'delete', 'id' => $product->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/product', array('action' => 'view', 'id' => $product->getId()));?>"><i class="fa fa-search"></i></a>
+            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/product-price', array('action' => 'view', 'id' => $product->getId()));?>"><i class="fa fa-money"></i></a>
+            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/product', array('action' => 'edit', 'id' => $product->getId()));?>"><i class="fa fa-edit"></i></a>
+            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/product', array('action' => 'copy', 'id' => $product->getId()));?>"><i class="fa fa-copy"></i></a>
+            <a class="btn btn-sm btn-danger" href="<?php echo $this->url('admin/product', array('action' => 'delete', 'id' => $product->getId()));?>"><i class="fa fa-trash"></i></a>
         </td>
     </tr>
 <?php endforeach; ?>

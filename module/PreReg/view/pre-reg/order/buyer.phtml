@@ -26,9 +26,9 @@ echo $this->navigation()
 <div>
     <h1>Select Buyer</h1>
     <?php if(count($order->getPackages()) > 0): ?>
-    <p><strong>All eTickets will be emailed to the buyer.</strong> If you 
+    <p><strong>All e-Tickets will be emailed to the buyer.</strong> If you 
         order items for multiple persons and provided their email addresses, 
-        they will automatically receive a copy of their eTicket.</p>
+        they will automatically receive a copy of their e-Ticket.</p>
     <h3>Choose Buyer</h3>
     <?php echo $this->formElementErrors($form->get('buyer_id')); ?>
     <?php 
@@ -51,11 +51,7 @@ echo $this->navigation()
                 <input type="radio" <?php echo $checked ? 'checked="checked"' : '' ?> <?php echo $disabled ? 'disabled="disabled"' : ''; ?> name="buyer_id" value="<?php echo $participant->getId() ?>" />
                 <?php echo $participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getAge()->format('%Y years').')'; ?>
                 <span style="font-size: 14px;">
-                    <?php if($participant->getBirthday() != null): ?>
                     <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getId())); ?>">edit</a>
-                    <?php else: ?>
-                    <a href="<?php echo $this->url('buyer', array('action' => 'edit', 'id' => $participant->getId())); ?>">edit</a>
-                    <?php endif; ?>
                 </span>
             </label>
             <?php if($participant->getEmail() != ''): ?>
@@ -71,14 +67,13 @@ echo $this->navigation()
         </div>
     <?php endforeach; ?>
     <?php
-        #echo $this->formRow($form->get('buyer_id'));
     else: 
         $form->get('buyer_id')->setAttribute('value', 0);
         echo $this->formHidden($form->get('buyer_id'));
     endif;
     ?>
     <div>
-        <a class="btn btn-primary<?php echo $login_email == '' ? '' : ' disabled'; ?>" href="<?php echo $this->url('buyer', array('action' => 'add')); ?>">add Buyer</a>
+        <a class="btn btn-primary<?php echo $login_email == '' ? '' : ' disabled'; ?>" href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add Buyer</a>
     </div>
 </div>
 

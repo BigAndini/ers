@@ -1,7 +1,7 @@
 <?php
 
 $participant = $package->getParticipant();
-$title = 'Download E-Ticket for '.$participant->getFirstname().' '.$participant->getSurname().' ('.$package->getCode()->getValue().')';
+$title = 'Download e-Ticket for '.$participant->getFirstname().' '.$participant->getSurname().' ('.$package->getCode()->getValue().')';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
