@@ -211,7 +211,7 @@ class Participant implements InputFilterAwareInterface
                                 #$participants = $cartContainer->order->getParticipants();
                                 $participants = $order->getParticipants();
                                 foreach($participants as $participant) {
-                                    if($value == $participant->getEmail() && $participant->getSessionId() != $context['session_id']) {
+                                    if($value == $participant->getEmail() && $participant->getId() != $context['id']) {
                                         return false;
                                     }
                                 }
