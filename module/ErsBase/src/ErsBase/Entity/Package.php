@@ -69,27 +69,6 @@ class Package extends Base\Package
     }
     
     /**
-     * Get session_id
-     * 
-     * @return int
-     */
-    /*public function getSessionId()
-    {
-        return $this->session_id;
-    }*/
-    
-    /**
-     * Set session_id.
-     *
-     * @param int $id
-     *
-     * @return void
-     */
-    /*public function setSessionId($id) {
-        $this->session_id = $id;
-    }*/
-    
-    /**
      * Set User entity (many to one).
      *
      * @param \ErsBase\Entity\Base\User $user
@@ -120,11 +99,6 @@ class Package extends Base\Package
      */
     public function addItem(Item $item)
     {
-        /*if(!is_numeric($item->getSessionId())) {
-            #$id = \count($this->getItems())+1;
-            #$item->setSessionId($id);
-            $item->setSessionId($this->order->getSessionId('item'));
-        }*/
         $item->setPackage($this);
         foreach($item->getChildItems() as $cItem) {
             $cItem->setPackage($this);
@@ -135,17 +109,6 @@ class Package extends Base\Package
 
         return $this;
     }
-    
-    /**
-     * DEPRECATED: Session id is not used anymore
-     * Remove Item entity by session id
-     * 
-     * @param type $id
-     */
-    /*public function removeItemBySessionId($id) {
-        $item = $this->getItemBySessionId($id);
-        return $this->removeItem($item);
-    }*/
     
     /**
      * Remove Item entity by id
@@ -208,19 +171,20 @@ class Package extends Base\Package
     }
     
     /**
+     * DEPREACTED session id is not used anymore
      * Get Item entity by session id
      * 
      * @return \Entity\Item
      * @return false
      */
-    public function getItemBySessionId($id) {
+    /*public function getItemBySessionId($id) {
         foreach($this->getItems() as $item) {
             if($item->getSessionId() == $id) {
                 return $item;
             }
         }
         return false;
-    }
+    }*/
     
     /**
      * Check if item exists

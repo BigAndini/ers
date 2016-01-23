@@ -24,10 +24,11 @@ class BuyerController extends AbstractActionController {
     
     
     /*
+     * DEPRECATED participant controller is used instead
      * add a buyer user object to the session when none of the participants 
      * is the buyer
      */
-    public function addAction() {
+    /*public function addAction() {
         $form = new Form\Buyer(); 
         $request = $this->getRequest(); 
 
@@ -65,14 +66,15 @@ class BuyerController extends AbstractActionController {
             'form' => $form,
             'breadcrumb' => $forrest->get('buyer'),
         ));
-    }
+    }*/
     
     /*
+     * DEPRECATED participant controller is used instead
      * edit a participant which is already added to this session or for which 
      * this user already bought a product. This user is only able to edit the 
      * details if the participant himself hasn't logged in to his account, yet.
      */
-    public function editAction() 
+    /*public function editAction() 
     {
         $forrest = new Service\BreadcrumbService();
         $breadcrumb = $forrest->get('buyer');
@@ -120,7 +122,7 @@ class BuyerController extends AbstractActionController {
             'form' => $form,
             'breadcrumb' => $breadcrumb,
         ));
-    }
+    }*/
     
     public function deleteAction() {
         # maybe we do not need to delete a participant here, because the 
