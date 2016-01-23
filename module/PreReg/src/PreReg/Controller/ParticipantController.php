@@ -28,18 +28,13 @@ class ParticipantController extends AbstractActionController {
         $breadcrumbService->reset();
         $breadcrumbService->set('participant', 'participant');
      
-        #$cartContainer = new Container('cart');
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         
-        /*$em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');*/
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
         
-        /*$order = $em->getRepository("ErsBase\Entity\Order")
-                ->findOneBy(array('id' => $cartContainer->order_id));*/
-        
-        #$participants = $cartContainer->order->getParticipants();
         $participants = $order->getParticipants();
         
         foreach($participants as $participant) {
@@ -176,9 +171,7 @@ class ParticipantController extends AbstractActionController {
         $breadcrumbService = new Service\BreadcrumbService();
         
         $form = new Form\Participant();
-        #$form->setEntityManager($em);
         $form->setServiceLocator($this->getServiceLocator());
-        #$form->get('Country_id')->setValueOptions($this->getCountryOptions());
         $optionService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OptionService');
         $form->get('Country_id')->setValueOptions($optionService->getCountryOptions());
@@ -187,16 +180,10 @@ class ParticipantController extends AbstractActionController {
         $request = $this->getRequest(); 
         if($request->isPost()) 
         {
-            #$inputFilter = new InputFilter\Participant();
-            #$form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
                 
             if($form->isValid())
             { 
-                #$participant = $form->getData();
-                #$cartContainer = new Container('cart');
-                #$cartContainer->order->setParticipantBySessionId($participant, $id);
-                
                 if($participant->getCountryId() == 0) {
                     $participant->setCountryId(null);
                     $participant->setCountry(null);
@@ -225,9 +212,6 @@ class ParticipantController extends AbstractActionController {
     }
     
     public function deleteAction() {
-        # maybe we do not need to delete a participant here, because the 
-        # participants user object is only held in the session and will be 
-        # deleted after session is not valid anymore.
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('participant');
@@ -243,14 +227,14 @@ class ParticipantController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $participant = $em->getRepository('ErsBase\Entity\User')
-                ->findOneBy(array('id' => $id));
+        /*$participant = $em->getRepository('ErsBase\Entity\User')
+                ->findOneBy(array('id' => $id));*/
         
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
-        #$cartContainer = new Container('cart');
-        #$participant = $cartContainer->order->getParticipantBySessionId($id);
+        
+        $participant = $order->getParticipantById($id);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -259,21 +243,32 @@ class ParticipantController extends AbstractActionController {
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
         
-                $participant = $em->getRepository('ErsBase\Entity\User')
-                    ->findOneBy(array('id' => $id));
-                $package = $em->getRepository('ErsBase\Entity\Package')
+                $participant = $order->getParticipantById($id);
+                if(!$participant) {
+                    throw new \Exception('Unable to find participant with id: '.$id);
+                }
+                $package = $order->getPackageByParticipantId($id);
+                if(!$package) {
+                    throw new \Exception('Unable to find package for participant id: '.$id);
+                }
+                
+                /*$participant = $em->getRepository('ErsBase\Entity\User')
+                    ->findOneBy(array('id' => $id));*/
+                /*$package = $em->getRepository('ErsBase\Entity\Package')
                     ->findOneBy(array(
                         'participant_id' => $id, 
                         'order_id' => $order->getId(),
-                        ));
+                        ));*/
                 
                 $em->remove($package);
-                if(!$participant->getActive()) {
-                    $em->remove($participant);
-                }
                 $em->flush();
-                
-                #$cartContainer->order->removeParticipantBySessionId($id);
+                if(!$participant->getActive()) {
+                    foreach($participant->getPackages() as $oldPackage) {
+                        $em->remove($oldPackage);
+                    }
+                    $em->remove($participant);
+                    $em->flush();
+                }
             }
 
             return $this->redirect()->toRoute(

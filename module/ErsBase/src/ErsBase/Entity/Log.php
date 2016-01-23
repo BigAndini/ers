@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * ErsBase\Entity\Log
  *
  * @ORM\Entity()
- * @ORM\Table(name="log", indexes={@ORM\Index(name="fk_Log_User1_idx", columns={"User_id"})})
+ * @ORM\Table(name="log", indexes={@ORM\Index(name="fk_log_item1_idx", columns={"item_id"}), @ORM\Index(name="fk_log_package1_idx", columns={"package_id"}), @ORM\Index(name="fk_log_order1_idx", columns={"order_id"}), @ORM\Index(name="fk_log_user1_idx", columns={"user_id"})})
  * @ORM\HasLifecycleCallbacks
  */
 class Log extends Base\Log

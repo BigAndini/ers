@@ -90,6 +90,17 @@ class OptionService
     public function getPersonOptions(\ErsBase\Entity\Product $product, $participant_id=null) {
         $cartContainer = new Container('cart');
         $options = array();
+        if($participant_id == null) {
+            $selected = true;
+        } else {
+            $selected = false;
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'select a person',
+            'selected' => $selected,
+            'disabled' => true,
+        );
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
@@ -120,13 +131,14 @@ class OptionService
         if($participant_id == 0) {
             $selected = true;
         }
-        if(!$product->getPersonalized() && count($options) > 0) {
+        # there will be no possibility to not assign a ticket/product this year
+        /*if(!$product->getPersonalized() && count($options) > 0 ) {
             array_unshift($options, array(
                 'value' => 0,
                 'label' => 'do not assign this product',
                 'selected' => $selected,
                 ));
-        }
+        }*/
         
         return $options;
     }

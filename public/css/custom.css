@@ -548,3 +548,31 @@ label.buyer-label {
 .form-control {
     font-weight: normal;
 }
+
+/*.nav-checkout-item {
+    white-space: nowrap;
+}*/
+.nav-checkout-item a {
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    padding: 10px 5px 10px 15px;
+    width: 100%;
+    display: block;
+    float: left;
+    margin-right: 10px;
+}
+.nav-checkout-item a.active {
+    /*background-color: #fce7d7;*/
+    background-color: #fff3eb;
+}
+.nav-checkout-item a:hover, 
+.nav-checkout-item a:focus {
+    text-decoration: none;
+    background-color: #d9edf7;
+}
+.nav-checkout-item i {
+    /*padding: 12px 0;*/
+}
+.nav-checkout-arrow {
+    margin-top: 35px;
+}

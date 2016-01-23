@@ -147,6 +147,14 @@ class OrderController extends AbstractActionController {
      * collect data for the buyer
      */
     public function buyerAction() {
+        $container = new Container('initialized');
+        if(!is_array($container->checkout)) {
+            $container->checkout = array();
+        }
+        $container->checkout['/order/overview'] = 1;
+        error_log('lifetime: '.$container->lifetime);
+        error_log(var_export($container->checkout,true));
+        
         $orderContainer = new Container('order');
         $orderContainer->getManager()->getStorage()->clear('order');
         
@@ -217,6 +225,8 @@ class OrderController extends AbstractActionController {
                     ->get('Doctrine\ORM\EntityManager');
                 $em->persist($order);
                 $em->flush();
+                
+                $container->checkout['/order/buyer'] = 1;
                 
                 return $this->redirect()->toRoute('order', array('action' => 'payment'));
             } else {
@@ -308,6 +318,12 @@ class OrderController extends AbstractActionController {
                 $em->persist($order);
                 $em->flush();
                 
+                $container = new Container('initialized');
+                if(!is_array($container->checkout)) {
+                    $container->checkout = array();
+                }
+                $container->checkout['/order/payment'] = 1;
+                
                 return $this->redirect()->toRoute('order', array('action' => 'checkout'));
             } else {
                 $logger = $this->getServiceLocator()->get('Logger');
@@ -326,6 +342,12 @@ class OrderController extends AbstractActionController {
      * last check and checkout
      */
     public function checkoutAction() {
+        $container = new Container('initialized');
+        if(!is_array($container->checkout)) {
+            $container->checkout = array();
+        }
+        $container->checkout['/order/checkout'] = 1;
+                
         $cartContainer = new Container('cart');
         $orderContainer = new Container('order');
         

@@ -156,7 +156,6 @@ class ProductController extends AbstractActionController {
         $variants = $em->getRepository("ErsBase\Entity\ProductVariant")
                 ->findBy(array('Product_id' => $product_id));
         $defaults = $this->params()->fromQuery();
-        #$form->setVariants($variants, $defaults);
         
         $package_info = array();
         foreach($variants as $variant) {

@@ -49,7 +49,7 @@
 
         <?php if (isset($this->config()['environment']) && $this->config()['environment'] != 'production') : ?>
         <!-- Hotjar Tracking Code for prereg.eja.net -->
-        <script>
+        <!--<script>
             (function(h,o,t,j,a,r){
                 h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
                 h._hjSettings={hjid:82996,hjsv:5};
@@ -58,7 +58,7 @@
                 r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
                 a.appendChild(r);
             })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
-        </script>
+        </script>-->
         <?php endif; ?>
         
     </head>
@@ -88,12 +88,31 @@
                     </a>
                 </div>
                 <div class="collapse navbar-collapse">
-                    <?php echo $this->navigation()
+                    <?php 
+                    $partial = array('partial/main-nav.phtml', 'main_nav');
+                    $this->navigation()
                             ->menu('main_nav')
-                            ->setUlClass('nav navbar-nav'); ?>
-                    <?php echo $this->navigation()
+                            ->setPartial($partial);
+                    echo $this->navigation()
+                            ->menu('main_nav')
+                            ->render(); 
+                    ?>
+
+                    <?php 
+                    $right_partial = array('partial/main-right-nav.phtml', 'top_nav');
+                    $this->navigation()
                             ->menu('top_nav')
-                            ->setUlClass('nav navbar-nav navbar-right'); ?>
+                            ->setPartial($right_partial);
+                    echo $this->navigation()
+                            ->menu('top_nav')
+                            ->render(); 
+                    ?>
+                    <?php /*echo $this->navigation()
+                            ->menu('main_nav')
+                            ->setUlClass('nav navbar-nav');*/ ?>
+                    <?php /*echo $this->navigation()
+                            ->menu('top_nav')
+                            ->setUlClass('nav navbar-nav navbar-right');*/ ?>
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
