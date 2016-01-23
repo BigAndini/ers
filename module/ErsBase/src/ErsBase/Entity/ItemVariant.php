@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * ErsBase\Entity\ItemVariant
  *
  * @ORM\Entity()
- * @ORM\Table(name="item_variant", indexes={@ORM\Index(name="fk_ItemVariant_Item1_idx", columns={"Item_id"})})
+ * @ORM\Table(name="item_variant", indexes={@ORM\Index(name="fk_ItemVariant_Item1_idx", columns={"Item_id"}), @ORM\Index(name="fk_item_variant_product_variant1_idx", columns={"product_variant_id"}), @ORM\Index(name="fk_item_variant_product_variant_value1_idx", columns={"product_variant_value_id"})})
  * @ORM\HasLifecycleCallbacks
  */
 class ItemVariant extends Base\ItemVariant

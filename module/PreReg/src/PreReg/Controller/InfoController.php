@@ -20,7 +20,6 @@ class InfoController extends AbstractActionController {
         $breadcrumbService->set('participant', 'product');
         
         $form = new Form\Participant(); 
-        #$form->setEntityManager($em);
         $form->setServiceLocator($this->getServiceLocator());
         $optionService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OptionService');
