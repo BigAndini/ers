@@ -32,7 +32,7 @@ $url = $this->url('participant', array(
 ?>
 <form action="<?php echo $url; ?>" method="post">
 <div>
-    <input type="hidden" name="id" value="<?php echo (int) $participant->getSessionId(); ?>" />
+    <input type="hidden" name="id" value="<?php echo (int) $participant->getId(); ?>" />
     <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
     <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
 </div>

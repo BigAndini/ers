@@ -102,6 +102,10 @@ class Register implements InputFilterAwareInterface
                                 $order = $orderService->getOrder();
                                 $participant = $order->getParticipantById($value);
                                 
+                                if(!$participant) {
+                                    throw new \Exception('Unable to find participant with id '.$value);
+                                }
+                                
                                 $auth = $this->getServiceLocator()
                                         ->get('zfcuser_auth_service');
                                 if ($auth->hasIdentity()) {

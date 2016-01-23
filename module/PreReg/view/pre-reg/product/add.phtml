@@ -67,12 +67,13 @@
                 <div class="col-lg-6 ui-tabs-panel ui-widget-content ui-corner-all">
                     <div id="person-detail">
                         <ul>
-                            <?php if(!$product->getPersonalized() && $product->getPriceCount() != 1): ?>
+                            <?php # agegroup is disabled at all this year
+                            if(!$product->getPersonalized() && $product->getPriceCount() != 1 && false): ?>
                                 <li><a href="#agegroup">Agegroup</a></li>
                             <?php endif; ?>
                             <li><a href="#person">Person</a></li>
                         </ul>
-                        <?php if(!$product->getPersonalized() && $product->getPriceCount() != 1): ?>
+                        <?php if(!$product->getPersonalized() && $product->getPriceCount() != 1 && false): ?>
                             <div id="agegroup">
                                 <?php 
                                 echo $this->formRow($form->get('agegroup_id')); 

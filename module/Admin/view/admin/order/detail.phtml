@@ -37,11 +37,11 @@ $this->headTitle($title);
                     <a href="<?php echo $this->url('admin/order', array('action' => 'resend-confirmation', 'id' => $order->getId())); ?>">Resend Confirmation</a>
                 </li>
                 <?php if($order->getPaymentStatus() != 'paid'): ?>
-                <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid orders.">
+                <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="e-Tickets cannot be send for unpaid orders.">
                 <?php else: ?>
                 <li>
                 <?php endif; ?>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">Send E-Tickets</a>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">Send e-Tickets</a>
                 </li>
                 <li>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'send-payment-reminder', 'id' => $order->getId())); ?>">Send Payment Reminder</a>
@@ -78,7 +78,7 @@ $this->headTitle($title);
         <?php 
         $sum = 0;
         foreach ($order->getPackages() as $package) : 
-            if(count($package->getAllItems()) == 0) {
+            if(count($package->getItems()) == 0) {
                 continue;
             }
             $user = $package->getParticipant();
@@ -140,7 +140,7 @@ $this->headTitle($title);
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Change Package Detail</a>
                                         </li>
                                         <?php if($package->getStatus() != 'paid'): ?>
-                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid packages.">
+                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="e-Tickets cannot be send for unpaid packages.">
                                         <?php else: ?>
                                         <li>
                                         <?php endif; ?>
@@ -154,7 +154,7 @@ $this->headTitle($title);
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">Download E-Ticket</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">Download e-Ticket</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -179,7 +179,7 @@ $this->headTitle($title);
                     </div>
                 </div>
 
-                <?php if(count($package->getAllItems()) != 0): ?>
+                <?php if(count($package->getItems()) != 0): ?>
                 <table class="table">
                     <tr>
                         <th>Product</th>
@@ -189,7 +189,7 @@ $this->headTitle($title);
                     </tr>
                     <?php
                     $subtotal = 0;
-                    foreach ($package->getAllItems() as $item):
+                    foreach ($package->getItems() as $item):
                         if($item->hasParentItems()) {
                             continue;
                         }
@@ -211,25 +211,25 @@ $this->headTitle($title);
                     <div class="col-md-12 text-right">
                         <ul class="list-inline">
                             <li data-toggle="tooltip" data-placement="bottom" title="there is no match for this item, yet">
-                                <i class="fa fa-shopping-cart green"></i> ordered
+                                <i class="fa fa-shopping-cart primary-color"></i> ordered
                             </li>
                             <li data-toggle="tooltip" data-placement="bottom" title="this item is paid">
-                                <i class="fa fa-money green"></i> paid
+                                <i class="fa fa-money primary-color"></i> paid
                             </li>
                             <li data-toggle="tooltip" data-placement="bottom" title="0 € child ticket">
-                                <i class="fa fa-child green"></i> 0 € child ticket
+                                <i class="fa fa-child primary-color"></i> 0 € child ticket
                             </li>
                             <li data-toggle="tooltip" data-placement="bottom" title="this item will be refund">
-                                <i class="fa fa-reply green"></i> refund
+                                <i class="fa fa-reply primary-color"></i> refund
                             </li>
                             <li data-toggle="tooltip" data-placement="bottom" title="this item was cancelled">
-                                <i class="fa fa-ban green"></i> cancelled    
+                                <i class="fa fa-ban primary-color"></i> cancelled    
                             </li>
                             <li data-toggle="tooltip" data-placement="bottom" title="this item was transferred to another participant">
-                                <i class="fa fa-forward green"></i> transferred
+                                <i class="fa fa-forward primary-color"></i> transferred
                             </li>
                             <li data-toggle="tooltip" data-placement="bottom" title="badge is already collected by participant">
-                                <i class="fa fa-barcode green"></i> shipped
+                                <i class="fa fa-barcode primary-color"></i> shipped
                             </li>
                         </ul>
                     </div>

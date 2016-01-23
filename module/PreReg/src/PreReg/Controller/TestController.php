@@ -241,7 +241,7 @@ class TestController extends AbstractActionController {
             'qrcode' => $base64_qrcode,
             'barcode' => $base64_barcode,
         ));
-        $filename = "EJC2015_eTicket_".preg_replace('/\ /', '_', $name);
+        $filename = "EJC2015_e-ticket_".preg_replace('/\ /', '_', $name);
         $pdf->setOption("filename", $filename);
         return $pdf;
         */
@@ -265,7 +265,7 @@ class TestController extends AbstractActionController {
         $pdfEngine->render();
         $pdfContent = $pdfEngine->output();
         
-        $filename = "EJC2015_eTicket_".preg_replace('/\ /', '_', $name);
+        $filename = "EJC2015_e-ticket_".preg_replace('/\ /', '_', $name);
         file_put_contents(getcwd().'/public/img/'.$filename.'.pdf', $pdfContent);
         
         return new ViewModel();

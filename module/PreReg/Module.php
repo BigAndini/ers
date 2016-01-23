@@ -162,6 +162,7 @@ class Module
             $container = new Container('initialized');
             $container->init = 1;
             $container->lifetime = time()+$expiration_time;
+            $container->checkout = array();
             
             $container->getManager()->getStorage()->clear('cart');
         } else {
@@ -337,13 +338,18 @@ class Module
     {
         return array(
             'invokables' => array(
-                'formelementerrors' => 'PreReg\Form\View\Helper\FormElementErrors'
+                'formelementerrors' => 'PreReg\Form\View\Helper\FormElementErrors',
+                'checkoutactive' => 'PreReg\View\Helper\CheckoutActive',
             ),
             'factories' => array(
                 'config' => function($serviceManager) {
                     $helper = new \PreReg\View\Helper\Config($serviceManager);
                     return $helper;
                 },
+                'checkoutactive' => function($sm) {
+                    $helper = new \PreReg\View\Helper\CheckoutActive();
+                    return $helper;
+                }
             ),
         );
     }

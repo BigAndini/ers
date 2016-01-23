@@ -1,35 +1,26 @@
-<ul class="nav navbar-nav">
-    <?php $count = 0 ?>
-    <?php foreach ($this->container as $page): ?>
-        <?php /* @var $page Zend\Navigation\Page\Mvc */ ?>
-        <?php // when using partials we need to manually check for ACL conditions ?>
-        <?php if( ! $page->isVisible() || !$this->navigation()->accept($page)) continue; ?>
-        <?php $hasChildren = $page->hasPages() ?>
-        <?php if( ! $hasChildren): ?>
-        <li <?php if($page->isActive()) { echo 'class="active"'; } ?>>
-            <a class="nav-header" href="<?php echo $page->getHref() ?>">
+<div class='row nav-checkout'>
+    <?php 
+    $count = 1;
+    foreach ($this->container as $page):
+        /* @var $page Zend\Navigation\Page\Mvc */
+        // when using partials we need to manually check for ACL conditions
+        if( ! $page->isVisible() || !$this->navigation()->accept($page)) continue;
+            $hasChildren = $page->hasPages(); 
+        ?>
+        <div class='col-md-3 nav-checkout-item'>
+            <a class="nav-header h4<?php if($page->isActive()) { echo ' active'; } ?>" href="<?php echo $page->getHref() ?>">
+                <span class='nav-checkout-number'><?php echo $count; ?></span>
                 <?php echo $this->translate($page->getLabel()) ?>
+                <?php if($this->checkoutactive($page->getHref())): ?>
+                    <i class='fa fa-check pull-right primary-color'></i>
+                <?php endif; ?>
+                
             </a>
-        </li>
-        <?php else: ?>
-        <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <span><?php echo $this->translate($page->getLabel()) ?><span class="caret"></span></span>
-            </a>
-
-            <ul class="dropdown-menu" id="page_<?php echo $count ?>">
-            <?php foreach($page->getPages() as $child): ?>
-                <?php // when using partials we need to manually check for ACL conditions ?>
-                <?php if( ! $child->isVisible() || !$this->navigation()->accept($child)) continue; ?>
-                <li>
-                    <a href="<?php echo $child->getHref() ?>">
-                        <?php echo $this->translate($child->getLabel()) ?>
-                    </a>
-                </li>
-            <?php endforeach ?>
-            </ul>
-         </li>   
-        <?php endif ?>
-        <?php $count++ ?>
-    <?php endforeach ?>
-</ul>
+            <?php if(count($this->container) != $count): ?>
+                <!--<i class='fa fa-lg fa-arrow-right nav-checkout-arrow'></i>-->
+            <?php endif; ?>
+        </div>
+        <?php 
+        $count++;
+    endforeach; ?>
+</div>

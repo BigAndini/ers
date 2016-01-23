@@ -293,7 +293,7 @@ class Participant extends Form implements InputFilterProviderInterface
                         'name' => 'Callback', 
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'A person with this email address already exists. Login to make changes. Note: the email field is optional.',
+                                \Zend\Validator\Callback::INVALID_VALUE => 'A person with this email address already exists. To make changes to your existing order contact prereg@jea.net.',
                             ),
                             'callback' => function($value, $context=array()) {
                                 $orderService = $this->getServiceLocator()
