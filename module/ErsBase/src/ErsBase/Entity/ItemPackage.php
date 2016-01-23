@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * ErsBase\Entity\ItemPackage
  *
  * @ORM\Entity()
- * @ORM\Table(name="item_package", indexes={@ORM\Index(name="fk_ItemPackage_Item1_idx", columns={"SurItem_id"}), @ORM\Index(name="fk_ItemPackage_Item2_idx", columns={"SubItem_id"})})
+ * @ORM\Table(name="item_package", indexes={@ORM\Index(name="fk_item_package_item1_idx", columns={"Subitem_id"}), @ORM\Index(name="fk_item_package_item2_idx", columns={"Suritem_id"})})
  * @ORM\HasLifecycleCallbacks
  */
 class ItemPackage extends Base\ItemPackage

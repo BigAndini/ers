@@ -179,12 +179,12 @@ class Order extends Base\Order
      * @param \Entity\Package $package
      * @return \Entity\Order
      */
-    /*public function addPackage(Package $package)
+    public function addPackage(Package $package)
     {
         $this->packages[] = $package;
 
         return $this;
-    }*/
+    }
 
     /**
      * Get Package by id.

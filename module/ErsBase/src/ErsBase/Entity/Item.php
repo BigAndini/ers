@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * ErsBase\Entity\Item
  *
  * @ORM\Entity()
- * @ORM\Table(name="item", indexes={@ORM\Index(name="fk_Item_Product1_idx", columns={"Product_id"}), @ORM\Index(name="fk_Item_Package1_idx", columns={"Package_id"}), @ORM\Index(name="fk_Item_Barcode1_idx", columns={"Code_id"}), @ORM\Index(name="fk_item_item1_idx", columns={"transferred_item_id"})})
+ * @ORM\Table(name="item", indexes={@ORM\Index(name="fk_Item_Product1_idx", columns={"Product_id"}), @ORM\Index(name="fk_Item_Package1_idx", columns={"Package_id"}), @ORM\Index(name="fk_item_item1_idx", columns={"transferred_item_id"}), @ORM\Index(name="fk_item_code1_idx", columns={"code_id"}), @ORM\Index(name="fk_item_status1_idx", columns={"status_id"})})
  * @ORM\HasLifecycleCallbacks
  */
 class Item extends Base\Item

@@ -16,19 +16,11 @@ use Doctrine\Common\Collections\ArrayCollection;
  * ErsBase\Entity\Package
  *
  * @ORM\Entity()
- * @ORM\Table(name="package", indexes={@ORM\Index(name="fk_Package_User1_idx", columns={"participant_id"}), @ORM\Index(name="fk_package_package1_idx", columns={"transferred_package_id"}), @ORM\Index(name="fk_package_code1_idx", columns={"code_id"}), @ORM\Index(name="fk_package_order1_idx", columns={"order_id"})})
+ * @ORM\Table(name="package", indexes={@ORM\Index(name="fk_Package_User1_idx", columns={"participant_id"}), @ORM\Index(name="fk_package_package1_idx", columns={"transferred_package_id"}), @ORM\Index(name="fk_package_code1_idx", columns={"code_id"}), @ORM\Index(name="fk_package_order1_idx", columns={"order_id"}), @ORM\Index(name="fk_package_status1_idx", columns={"status_id"})})
  * @ORM\HasLifecycleCallbacks
  */
 class Package extends Base\Package
 {
-    /**
-     *
-     * @var int
-     * variable to keep an id which is only used while this entity is hold in 
-     * a session container.
-     */
-    protected $session_id;
-
     public function __construct()
     {
         parent::__construct();
@@ -42,7 +34,7 @@ class Package extends Base\Package
      */
     public function __clone() {
         $this->id = null;
-        $this->session_id = null;
+        #$this->session_id = null;
         
         $this->items = new ArrayCollection();
         
