@@ -66,4 +66,8 @@ jQuery(function($) {
             ui.newPanel.find('select').prop('disabled', false);
         }
     });
+    
+    if($('#chooser').hasClass('in')) {
+        $('#chooser').modal('show');
+    }
 });
