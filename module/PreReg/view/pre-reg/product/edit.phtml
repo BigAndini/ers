@@ -1,21 +1,5 @@
 <?php $this->headTitle($product->getName()); ?>
 <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);?>"><?php echo $this->translate('back to Overview'); ?></a>
-<?php if($chooser): ?>
-<div class="p_overlay">
-    <div class="p_overlay_inner">
-        <h3>
-            Changed <span class="green"><?php echo $product->getName(); ?></span> in your shopping cart.
-        </h3>
-        <div class="floatLeft">
-            <a class="btn btn-default" href="<?php echo $this->url('product'); ?>">&lt; products</a>
-        </div>
-        <div class="floatRight">
-            <a class="btn btn-success" href="<?php echo $this->url('order'); ?>">shopping cart &gt;</a>
-        </div>
-        <div class="clear-both"></div>
-    </div>
-</div>
-<?php endif; ?>
 
 <?php if(count($product->getProductPrices()) == 0): ?>
     <p class="desc-short">This product is unavailable</p>
@@ -99,7 +83,8 @@
                             echo $this->formHidden($form->get('agegroup_id'));
                             ?>
                             <p><strong>Tip:</strong><br />You can 
-                                <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add a new person</a>
+                                <!--<a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add a new person</a>-->
+                                <a href="#" data-toggle="modal" data-target="#addParticipant">add a new person</a>
                                 or edit the details of any person with "My Persons" from the main menu.</p>
                         </div>
                     </div>
@@ -140,4 +125,70 @@
     </div>
     <?php echo $this->form()->closeTag(); ?>
 </div>
-<?php endif; ?>
+<div id="addParticipant" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add new participant</h4>
+            </div>
+            <div class="modal-body">
+                <p>Some text in the modal.</p>
+                <?php
+                $participantForm = $this->participantForm;
+                $participantForm->setAttribute('action', $this->url('participant', array('action' => 'add')));
+                $participantForm->prepare();
+
+                echo $this->form()->openTag($participantForm); ?>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <?php echo $this->formRow($participantForm->get('firstname')); ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?php echo $this->formRow($participantForm->get('surname')); ?>
+                    </div>
+                </div>
+                <?php echo $this->formRow($participantForm->get('birthday'));
+                echo $this->formRow($participantForm->get('email'));
+                echo $this->formRow($participantForm->get('Country_id'));
+
+                echo $this->formHidden($participantForm->get('csrf')); ?>
+                <?php echo $this->formSubmit($participantForm->get('submit')); ?>
+                <?php echo $this->form()->closeTag(); ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="chooser" class="modal fade<?php if($chooser) { echo ' in'; } ?>" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Added <span class="color-primary"><?php echo $product->getName(); ?></span> to your shopping cart.
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p><a class="btn btn-primary" href="<?php echo $this->url('product'); ?>"><i class="fa fa-caret-left"></i> add more products</a></p>
+                        <p><a class="btn btn-primary" href="<?php echo $this->url(
+                            $bc_stay->route, 
+                            $bc_stay->params, 
+                            $bc_stay->options
+                            ); ?>"><i class="fa fa-caret-left"></i> add this product again</a></p>
+                    </div>
+                    <div class="col-sm-6">
+                        <a class="btn btn-primary pull-right" href="<?php echo $this->url('order'); ?>">shopping cart <i class="fa fa-caret-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif;

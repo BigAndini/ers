@@ -419,11 +419,16 @@ class ProductController extends AbstractActionController {
         $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
                     ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
         
+        $participantForm = new Form\Participant(); 
+        $participantForm->setServiceLocator($this->getServiceLocator());
+        $participantForm->get('Country_id')->setValueOptions($optionService->getCountryOptions());
+        
         return new ViewModel(array(
             'product' => $product,
             'formfail' => $formfail,
             #'item' => $item,
             'form' => $form,
+            'participantForm' => $participantForm,
             'breadcrumb' => $breadcrumb,
             'bc_stay' => $forrest->get('bc_stay'),
             'chooser' => $chooser,

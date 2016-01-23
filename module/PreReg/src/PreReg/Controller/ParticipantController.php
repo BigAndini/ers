@@ -59,11 +59,9 @@ class ParticipantController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         $form = new Form\Participant(); 
-        #$form->setEntityManager($em);
         $form->setServiceLocator($this->getServiceLocator());
         $optionService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OptionService');
-        #$form->get('Country_id')->setValueOptions($this->getCountryOptions());
         $form->get('Country_id')->setValueOptions($optionService->getCountryOptions());
         
         $user = new Entity\User();
@@ -121,7 +119,7 @@ class ParticipantController extends AbstractActionController {
                 if($breadcrumb->route == 'product' && isset($breadcrumb->params['action']) && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
                     unset($breadcrumb->params['agegroup_id']);
                     $breadcrumb->options['fragment'] = 'person';
-                    $breadcrumb->options['query']['participant_id'] = $user->getSessionId();
+                    $breadcrumb->options['query']['participant_id'] = $user->getId();
                 }
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
@@ -252,14 +250,6 @@ class ParticipantController extends AbstractActionController {
                     throw new \Exception('Unable to find package for participant id: '.$id);
                 }
                 
-                /*$participant = $em->getRepository('ErsBase\Entity\User')
-                    ->findOneBy(array('id' => $id));*/
-                /*$package = $em->getRepository('ErsBase\Entity\Package')
-                    ->findOneBy(array(
-                        'participant_id' => $id, 
-                        'order_id' => $order->getId(),
-                        ));*/
-                
                 $em->remove($package);
                 $em->flush();
                 if(!$participant->getActive()) {
@@ -279,8 +269,6 @@ class ParticipantController extends AbstractActionController {
         }
 
         $package = $order->getPackageByParticipantId($id);
-        #$package = $cartContainer->order->getPackageByParticipantSessionId($id);
-        
         
         return new ViewModel(array(
             'id'    => $id,
