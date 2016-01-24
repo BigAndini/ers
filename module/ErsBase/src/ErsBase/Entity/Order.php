@@ -175,12 +175,17 @@ class Order extends Base\Order
     /**
      * Not needed here anymore the method of the base entity is used instead
      * Add Package entity to collection (one to many).
+     * 
+     * This function is doing strange things. When it's removed doctrine throws 
+     * a segmentation fault. Therefore this function does exactly the same as 
+     * the one of the base class.
      *
      * @param \Entity\Package $package
      * @return \Entity\Order
      */
     public function addPackage(Package $package)
     {
+        #$this->addPackage($package);
         $this->packages[] = $package;
 
         return $this;
