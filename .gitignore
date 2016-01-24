@@ -9,8 +9,10 @@ nbproject
 *.swp
 *.pyc
 composer.lock
+composer.phar
+# Auto-generated files from Doctrine's proxy generator
+/data/DoctrineORMModule/Proxy/
 test/secret.py
 tmp/*
 vendor/bin
 vendor/*
-composer.phar
