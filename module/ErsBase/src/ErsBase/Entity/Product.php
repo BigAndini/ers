@@ -105,7 +105,7 @@ class Product extends Base\Product
         
         if($ret->getCharge() == null && $search) {
             /*
-             * start searching only by agegroup
+             * start search only by agegroup
              */
             $ret = $this->getProductPrice($agegroup, null, false);
             if($ret->getCharge() == null) {

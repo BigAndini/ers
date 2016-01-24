@@ -246,7 +246,7 @@ class ProductController extends AbstractActionController {
 
                     if($participant instanceof Entity\User) {
                         $agegroupService = $this->getServiceLocator()
-                                ->get('ErsBase\Service\AgegroupService');
+                                ->get('ErsBase\Service\AgegroupService:price');
                         $agegroup = $agegroupService->getAgegroupByUser($participant);
                     }
                 } elseif($agegroup_id != 0) {
@@ -267,6 +267,7 @@ class ProductController extends AbstractActionController {
                  * build up item entity
                  */
                 $item = new Entity\Item();
+                
                 $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
                 $item->setStatus($status);
                 $item->setProduct($product);
