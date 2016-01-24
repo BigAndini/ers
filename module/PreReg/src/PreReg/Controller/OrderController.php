@@ -91,7 +91,7 @@ class OrderController extends AbstractActionController {
         
         $agegroupService = $this->getServiceLocator()
                 ->get('ErsBase\Service\AgegroupService');
-        $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
+        $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
                     ->findBy(array('price_change' => '1'));
         $agegroupService->setAgegroups($agegroups);
         foreach($order->getPackages() as $package) {
@@ -104,7 +104,7 @@ class OrderController extends AbstractActionController {
             }
             $agegroup = $agegroupService->getAgegroupByUser($participant);
             foreach($package->getItems() as $item) {
-                $product = $em->getRepository("ErsBase\Entity\Product")
+                $product = $em->getRepository('ErsBase\Entity\Product')
                     ->findOneBy(array('id' => $item->getProductId()));
                 if($product != null) {
                     $productPrice = $product->getProductPrice($agegroup, $deadline);
@@ -129,7 +129,7 @@ class OrderController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {
@@ -268,7 +268,7 @@ class OrderController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $paymenttypes = $em->getRepository("ErsBase\Entity\PaymentType")
+        $paymenttypes = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findBy(array(), array('position' => 'ASC'));
         $types = array();
         $now = new \DateTime();
@@ -310,7 +310,7 @@ class OrderController extends AbstractActionController {
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")
+                $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
                         ->findOneBy(array('id' => $data['paymenttype_id']));
                 
                 $order->setPaymentType($paymenttype);
@@ -360,12 +360,12 @@ class OrderController extends AbstractActionController {
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
-        $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")
+        $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
                         ->findOneBy(array('id' => $order->getPaymentTypeId()));
         $order->setPaymentType($paymenttype);
         
         if(isset($orderContainer->order_id)) {
-            $order = $em->getRepository("ErsBase\Entity\Order")
+            $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $orderContainer->order_id));
             if($order) {
                 return $this->redirect()->toRoute(
@@ -402,11 +402,11 @@ class OrderController extends AbstractActionController {
                 if($participant->getEmail() == '') {
                     $participant->setEmail(null);
                 } else {
-                    $user = $em->getRepository("ErsBase\Entity\User")
+                    $user = $em->getRepository('ErsBase\Entity\User')
                         ->findOneBy(array('email' => $participant->getEmail()));
                 }
                 
-                $role = $em->getRepository("ErsBase\Entity\Role")
+                $role = $em->getRepository('ErsBase\Entity\Role')
                         ->findOneBy(array('roleId' => 'participant'));
                 if($user instanceof Entity\User) {
                     $package->setParticipant($user);
@@ -422,7 +422,7 @@ class OrderController extends AbstractActionController {
                     #$package->setParticipantId($participant->getId());
                 }
                 
-                $country = $em->getRepository("ErsBase\Entity\Country")
+                $country = $em->getRepository('ErsBase\Entity\Country')
                         ->findOneBy(array('id' => $participant->getCountryId()));
                 if(!$country) {
                     $participant->setCountry(null);
@@ -555,7 +555,7 @@ class OrderController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {
@@ -604,7 +604,7 @@ class OrderController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {
@@ -637,7 +637,7 @@ class OrderController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {

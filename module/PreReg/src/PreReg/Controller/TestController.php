@@ -40,7 +40,7 @@ class TestController extends AbstractActionController {
             $code = new Entity\Code();
             $code->genCode();
             
-            $code = $em->getRepository("ErsBase\Entity\Code")->findOneBy(array('value' => $code->getValue()));
+            $code = $em->getRepository('ErsBase\Entity\Code')->findOneBy(array('value' => $code->getValue()));
             #if(in_array($code->getValue(), $codes)) {
             if($code) {
                 $logger->info('found existing code after '.$count.' tries.');
@@ -76,7 +76,7 @@ class TestController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository("ErsBase\Entity\User")->findOneBy(array('email' => 'andi@sixhop.net'));
+        $user = $em->getRepository('ErsBase\Entity\User')->findOneBy(array('email' => 'andi@sixhop.net'));
         $user = new Entity\User();
         $user->setEmail('andi@inbaz.org');
         $emailService->addTo($user);
@@ -137,7 +137,7 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => '87'));
         
         if($order == null) {
@@ -275,7 +275,7 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                 #->findOneBy(array('id' => '297'));
                 ->findOneBy(array('id' => '12'));
                 #->findOneBy(array('id' => '54'));
@@ -296,7 +296,7 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => '17'));
         $viewModel = new ViewModel(array(
             'order' => $order,
@@ -319,7 +319,7 @@ class TestController extends AbstractActionController {
         
         #$logger = $this->getServiceLocator()->get('Logger');
         
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => '17'));
         $viewModel = new ViewModel(array(
             'order' => $order,

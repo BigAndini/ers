@@ -31,14 +31,14 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orderStatus = $em->getRepository("ErsBase\Entity\OrderStatus")
+        $orderStatus = $em->getRepository('ErsBase\Entity\OrderStatus')
                 ->findBy(array('value' => 'cron'));
         foreach($orderStatus as $status) {
             $em->remove($status);
         }
         $em->flush();
         
-        $orders = $em->getRepository("ErsBase\Entity\Order")
+        $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findBy(array(), array('created' => 'DESC'));
         
         $logger = $this->getServiceLocator()->get('Logger');
@@ -78,7 +78,7 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $statements = $em->getRepository("ErsBase\Entity\BankStatement")
+        $statements = $em->getRepository('ErsBase\Entity\BankStatement')
                 ->findAll();
         
         $longest_match = 0;
@@ -103,7 +103,7 @@ class CronController extends AbstractActionController {
             if(is_array($ret)) {
                 $found = false;
                 foreach($ret as $code) {
-                    $order_code = $em->getRepository("ErsBase\Entity\Code")
+                    $order_code = $em->getRepository('ErsBase\Entity\Code')
                         ->findOneBy(array('value' => $code->getValue()));
                     if($order_code) {
                         $found = true;
@@ -115,7 +115,7 @@ class CronController extends AbstractActionController {
                     if(is_array($ret)) {
                         $found = false;
                         foreach($ret as $code) {
-                            $order_code = $em->getRepository("ErsBase\Entity\Code")
+                            $order_code = $em->getRepository('ErsBase\Entity\Code')
                                 ->findOneBy(array('value' => $code->getValue()));
                             if($order_code) {
                                 $found = true;
@@ -142,7 +142,7 @@ class CronController extends AbstractActionController {
          */
         
         #TODO: find order which contain items in status != paid and != cancelled and != refund
-        $orders = $em->getRepository("ErsBase\Entity\Order")
+        $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findBy(array('payment_status' => 'unpaid'));
         foreach($orders as $order) {
             $statement_amount = $order->getStatementAmount();
@@ -187,7 +187,7 @@ class CronController extends AbstractActionController {
         $bankaccount = $statement->getBankAccount();
         #$statement_format = json_decode($bankaccount->getStatementFormat());
         
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
             ->findOneBy(array('Code_id' => $code->getId()));
         
         $statement->setStatus('matched');
@@ -203,7 +203,7 @@ class CronController extends AbstractActionController {
         /*
          * set andi as admin for auto-matching
          */
-        $admin = $em->getRepository("ErsBase\Entity\User")
+        $admin = $em->getRepository('ErsBase\Entity\User')
             ->findOneBy(array('id' => 1));
         $match->setAdmin($admin);
         
@@ -327,7 +327,7 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $matches = $em->getRepository("ErsBase\Entity\Match")
+        $matches = $em->getRepository('ErsBase\Entity\Match')
                 ->findAll();
         
         foreach($matches as $match) {
@@ -343,7 +343,7 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $users = $em->getRepository("ErsBase\Entity\User")
+        $users = $em->getRepository('ErsBase\Entity\User')
                 ->findAll();
         
         $fp = fopen('/tmp/users.csv', 'w');
@@ -368,12 +368,12 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        #$order = $em->getRepository("ErsBase\Entity\Order")
+        #$order = $em->getRepository('ErsBase\Entity\Order')
                 #->findOneBy(array('id' => '297'));
                 #->findOneBy(array('id' => '12'));
                 #->findOneBy(array('id' => '54'));
         
-        $orders = $em->getRepository("ErsBase\Entity\Order")
+        $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findAll();
         $count = 0;
         $eticketService = $this->getServiceLocator()
@@ -398,7 +398,7 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orders = $em->getRepository("ErsBase\Entity\Order")
+        $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findAll();
         $count = 0;
         foreach($orders as $order) {
@@ -422,7 +422,7 @@ class CronController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         # find user under 18
-        $qb = $em->getRepository("ErsBase\Entity\User")->createQueryBuilder('u');
+        $qb = $em->getRepository('ErsBase\Entity\User')->createQueryBuilder('u');
         $qb->where("u.birthday > '1998-07-30'");
         $users = $qb->getQuery()->getResult();
         echo "found ".count($users)." users under 18.".PHP_EOL;
@@ -517,7 +517,7 @@ class CronController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         # correct package ticket_status
-        $qb = $em->getRepository("ErsBase\Entity\Package")->createQueryBuilder('p');
+        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
         $qb->where('p.ticket_status IS NULL');
         $qb->orWhere("p.ticket_status = 'not_send'");
         $noStatusPackages = $qb->getQuery()->getResult();
@@ -560,7 +560,7 @@ class CronController extends AbstractActionController {
         }
         $em->flush();
         
-        $packages = $em->getRepository("ErsBase\Entity\Package")
+        $packages = $em->getRepository('ErsBase\Entity\Package')
             ->findBy(array('ticket_status' => 'can_send'), array(), 100);
         echo "Can send out e-tickets for ".count($packages)." packages.".PHP_EOL;
         
@@ -644,7 +644,7 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $users = $em->getRepository("ErsBase\Entity\User")
+        $users = $em->getRepository('ErsBase\Entity\User')
                 ->findAll();
         
         echo "checking ".count($users)." emails".PHP_EOL;
@@ -716,10 +716,10 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository("ErsBase\Entity\Item")->createQueryBuilder('i');
+        $qb = $em->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
         $qb->where('i.agegroup IS NULL');
         $items = $qb->getQuery()->getResult();
-        /*$items = $em->getRepository("ErsBase\Entity\Item")
+        /*$items = $em->getRepository('ErsBase\Entity\Item')
                 ->findAll();*/
         
         echo "checking ".count($items)." items".PHP_EOL;
@@ -778,7 +778,7 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository("ErsBase\Entity\Item")->createQueryBuilder('i');
+        $qb = $em->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
         $qb->where("i.status = 'transferred'");
         #$qb->orWhere("p.ticket_status = 'not_send'");
         $transferred_items = $qb->getQuery()->getResult();
@@ -812,7 +812,7 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository("ErsBase\Entity\Order")->createQueryBuilder('o');
+        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
         $qb->join('o.status', 's');
         $qb->where('s.value', ':status');
         $qb->setParameter('status', 'order pending');

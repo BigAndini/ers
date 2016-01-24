@@ -15,7 +15,7 @@ class TestCron {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orders = $em->getRepository("ErsBase\Entity\Order")
+        $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findBy(array(), array('created' => 'DESC'));
         
         $logger = $this->getServiceLocator()->get('Logger');

@@ -56,7 +56,7 @@ class LoginService
     public function setUserId($user_id) {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $this->setUser($em->getRepository("ErsBase\Entity\User")
+        $this->setUser($em->getRepository('ErsBase\Entity\User')
                 ->findOneBy(array('id' => $user_id)));
     }
     
@@ -111,7 +111,7 @@ class LoginService
                 if(isset($countries[$newUser->getCountryId()])) {
                     $country = $countries[$newUser->getCountryId()];
                 } else {
-                    $country = $em->getRepository("ErsBase\Entity\Country")
+                    $country = $em->getRepository('ErsBase\Entity\Country')
                         ->findOneBy(array('id' => $newUser->getCountryId()));
                     $countries[$country->getId()] = $country;
                 }
@@ -133,7 +133,7 @@ class LoginService
             /*
              * add users from former orders
              */
-            $orders = $em->getRepository("ErsBase\Entity\Order")
+            $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findBy(array('buyer_id' => $this->getUser()->getId()));
         
             foreach($orders as $order) {
@@ -147,7 +147,7 @@ class LoginService
                         if(isset($countries[$newUser->getCountryId()])) {
                             $country = $countries[$newUser->getCountryId()];
                         } else {
-                            $country = $em->getRepository("ErsBase\Entity\Country")
+                            $country = $em->getRepository('ErsBase\Entity\Country')
                                 ->findOneBy(array('id' => $newUser->getCountryId()));
                             $countries[$country->getId()] = $country;
                         }
