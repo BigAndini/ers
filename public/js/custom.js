@@ -37,6 +37,10 @@ jQuery(function($) {
                 $(input).val('15.04.1978');
             }
         }*/
+        onChangeMonthYear:function(y, m, i){                                
+            var d = i.selectedDay;
+            $(this).datepicker('setDate', new Date(y, m - 1, d));
+        }
     });
     $('.datetimepicker').datetimepicker({
         timeFormat: "HH:mm:ss",
