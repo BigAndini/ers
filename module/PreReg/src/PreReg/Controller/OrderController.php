@@ -152,8 +152,6 @@ class OrderController extends AbstractActionController {
             $container->checkout = array();
         }
         $container->checkout['/order/overview'] = 1;
-        error_log('lifetime: '.$container->lifetime);
-        error_log(var_export($container->checkout,true));
         
         $orderContainer = new Container('order');
         $orderContainer->getManager()->getStorage()->clear('order');
@@ -297,7 +295,7 @@ class OrderController extends AbstractActionController {
         }
         $form->get('paymenttype_id')->setValueOptions($types);
         
-        $cartContainer = new Container('cart');
+        #$cartContainer = new Container('cart');
         
         $request = $this->getRequest();
         if ($request->isPost()) {

@@ -126,8 +126,7 @@ class LoginService
             if($package) {
                 $package->setParticipant($newUser);
             } else {
-                $orderService
-                        ->addParticipant($newUser);
+                $orderService->addParticipant($newUser);
             }
                     
             /*
@@ -161,8 +160,7 @@ class LoginService
                     if($package) {
                         $package->setParticipant($newUser);
                     } else {
-                        $orderService->getOrder()
-                            ->addParticipant($newUser);
+                        $orderService->addParticipant($newUser);
                     }
                     $count++;
                 }

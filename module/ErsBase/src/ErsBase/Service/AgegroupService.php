@@ -13,9 +13,17 @@ use ErsBase\Entity;
 class AgegroupService
 {
     protected $agegroups;
+    protected $sm;
     
     public function __construct() {
         $this->agegroups = array();
+    }
+    
+    public function setServiceLocator($sm) {
+        $this->sm = $sm;
+    }
+    public function getServiceLocator() {
+        return $this->sm;
     }
     
     public function setAgegroups($agegroups) {
