@@ -15,7 +15,7 @@ jQuery(function($) {
         firstDay: 1,
         changeMonth: true, 
         changeYear: true, 
-        yearRange: '1900:2015',
+        yearRange: '1900:2016',
 	sliderAccessArgs: { touchonly: false },
         /*beforeShow: function(input, inst) {
             if($(input).val() == '') {

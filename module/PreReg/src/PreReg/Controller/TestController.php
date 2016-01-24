@@ -157,7 +157,7 @@ class TestController extends AbstractActionController {
         $pdfEngine->render();
         $pdfContent = $pdfEngine->output();
         
-        $filename = "EJC2015_Invoice";
+        $filename = "EJC2016_Invoice";
         file_put_contents(getcwd().'/public/img/'.$filename.'.pdf', $pdfContent);
         
         return new ViewModel();
@@ -265,7 +265,7 @@ class TestController extends AbstractActionController {
         $pdfEngine->render();
         $pdfContent = $pdfEngine->output();
         
-        $filename = "EJC2015_e-ticket_".preg_replace('/\ /', '_', $name);
+        $filename = "EJC2016_e-ticket_".preg_replace('/\ /', '_', $name);
         file_put_contents(getcwd().'/public/img/'.$filename.'.pdf', $pdfContent);
         
         return new ViewModel();

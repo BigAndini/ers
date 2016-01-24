@@ -374,8 +374,8 @@ class OrderController extends AbstractActionController {
                     $bcc->setEmail('prereg@eja.net');
                     $emailService->addBcc($bcc);
 
-                    $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
-                    $subject = "[EJC 2015] e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+                    $subject = "Your registration for EJC 2016 (order ".$order->getCode()->getValue().")";
+                    $subject = "[EJC 2016] e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
                     $emailService->setSubject($subject);
 
                     $viewModel = new ViewModel(array(
@@ -460,7 +460,7 @@ class OrderController extends AbstractActionController {
                 $bcc->setEmail('prereg@eja.net');
                 $emailService->addBcc($bcc);
 
-                $subject = "[EJC 2015] Payment reminder for your order: ".$order->getCode()->getValue();
+                $subject = "[EJC 2016] Payment reminder for your order: ".$order->getCode()->getValue();
                 $emailService->setSubject($subject);
 
                 $viewModel = new ViewModel(array(
