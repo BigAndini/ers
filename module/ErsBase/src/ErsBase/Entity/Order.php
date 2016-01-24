@@ -76,8 +76,8 @@ class Order extends Base\Order
         $alphabet = "0123456789ACDFGHKMNPRUVWXY";
         $memory = '';
         $n = '';
-        #srand(mktime()); 
-        srand(rand()*mktime());
+        #srand(time());
+        srand(rand()*time());
         for ($i = 0; $i < $this->length; $i++) {
             
             while($n == '' || $memory == $alphabet[$n]) {
