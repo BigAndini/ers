@@ -144,7 +144,7 @@ class OrderService
     public function removeItemById($item_id) {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $item = $em->getRepository("ErsBase\Entity\Item")
+        $item = $em->getRepository('ErsBase\Entity\Item')
             ->findOneBy(array('id' => $item_id));
         if(!$item) {
             throw new \Exception('Unable to remove item with id: '.$item_id);

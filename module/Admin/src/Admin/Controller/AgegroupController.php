@@ -21,7 +21,7 @@ class AgegroupController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'agegroups' => $em->getRepository("ErsBase\Entity\Agegroup")
+            'agegroups' => $em->getRepository('ErsBase\Entity\Agegroup')
                 ->findBy(array(), array('agegroup' => 'ASC')),
          ));
     }
@@ -68,7 +68,7 @@ class AgegroupController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $agegroup = $em->getRepository("ErsBase\Entity\Agegroup")->findOneBy(array('id' => $id));
+        $agegroup = $em->getRepository('ErsBase\Entity\Agegroup')->findOneBy(array('id' => $id));
 
         $form = new Form\Agegroup();
         $form->bind($agegroup);
@@ -101,7 +101,7 @@ class AgegroupController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $agegroup = $em->getRepository("ErsBase\Entity\Agegroup")
+        $agegroup = $em->getRepository('ErsBase\Entity\Agegroup')
                 ->findOneBy(array('id' => $id));
         $productprices = $agegroup->getProductPrices();
 
@@ -111,7 +111,7 @@ class AgegroupController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $agegroup = $em->getRepository("ErsBase\Entity\Agegroup")
+                $agegroup = $em->getRepository('ErsBase\Entity\Agegroup')
                     ->findOneBy(array('id' => $id));
                 $em->remove($agegroup);
                 $em->flush();

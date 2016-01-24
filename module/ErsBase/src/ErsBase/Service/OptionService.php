@@ -44,12 +44,12 @@ class OptionService
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
+        $qb1 = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
         $qb1->where($qb1->expr()->isNotNull('n.position'));
         $qb1->orderBy('n.position', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
-        $qb2 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
+        $qb2 = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
         $qb2->where($qb2->expr()->isNull('n.position'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();
@@ -146,7 +146,7 @@ class OptionService
     public function getAgegroupOptions($agegroup_id = null) {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
+        $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
                     ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
         $options = array();
         

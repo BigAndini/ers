@@ -20,7 +20,7 @@ class StatusController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
-            'status' => $em->getRepository("ErsBase\Entity\Status")->findBy(array(), array('position' => 'ASC')),
+            'status' => $em->getRepository('ErsBase\Entity\Status')->findBy(array(), array('position' => 'ASC')),
         ));
     }
 
@@ -71,7 +71,7 @@ class StatusController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $status = $em->getRepository("ErsBase\Entity\Status")->findOneBy(array('id' => $id));
+        $status = $em->getRepository('ErsBase\Entity\Status')->findOneBy(array('id' => $id));
 
         $form  = new Form\Status();
         $form->bind($status);
@@ -117,7 +117,7 @@ class StatusController extends AbstractActionController {
             if ($del == 'Yes') {
                 
                 $id = (int) $request->getPost('id');
-                $status = $em->getRepository("ErsBase\Entity\Status")
+                $status = $em->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('id' => $id));
                 $em->remove($status);
                 $em->flush();
@@ -128,7 +128,7 @@ class StatusController extends AbstractActionController {
 
         return new ViewModel(array(
             'id'    => $id,
-            'status' => $status = $em->getRepository("ErsBase\Entity\Status")
+            'status' => $status = $em->getRepository('ErsBase\Entity\Status')
                 ->findOneBy(array('id' => $id)),
             'breadcrumb' => $breadcrumb,
         ));

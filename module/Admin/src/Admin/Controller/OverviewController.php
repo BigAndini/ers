@@ -32,13 +32,13 @@ class OverviewController extends AbstractActionController {
         $breadcrumbService->set('product', 'admin/overview/config');
         
         return new ViewModel(array(
-            'taxes' => $em->getRepository("ErsBase\Entity\Tax")->findAll(),
-            'deadlines' => $em->getRepository("ErsBase\Entity\Deadline")->findAll(),
-            'agegroups' => $em->getRepository("ErsBase\Entity\Agegroup")->findAll(),
-            'paymenttypes' => $em->getRepository("ErsBase\Entity\PaymentType")->findAll(),
-            'counters' => $em->getRepository("ErsBase\Entity\Counter")->findAll(),
-            'statuses' => $em->getRepository("ErsBase\Entity\Status")->findAll(),
-            'products' => $em->getRepository("ErsBase\Entity\Product")->findAll(),
+            'taxes' => $em->getRepository('ErsBase\Entity\Tax')->findAll(),
+            'deadlines' => $em->getRepository('ErsBase\Entity\Deadline')->findAll(),
+            'agegroups' => $em->getRepository('ErsBase\Entity\Agegroup')->findAll(),
+            'paymenttypes' => $em->getRepository('ErsBase\Entity\PaymentType')->findAll(),
+            'counters' => $em->getRepository('ErsBase\Entity\Counter')->findAll(),
+            'statuses' => $em->getRepository('ErsBase\Entity\Status')->findAll(),
+            'products' => $em->getRepository('ErsBase\Entity\Product')->findAll(),
         ));
     }
 }

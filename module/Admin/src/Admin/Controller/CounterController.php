@@ -21,7 +21,7 @@ class CounterController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'counters' => $em->getRepository("ErsBase\Entity\Counter")->findAll(),
+            'counters' => $em->getRepository('ErsBase\Entity\Counter')->findAll(),
          ));
     }
 
@@ -69,7 +69,7 @@ class CounterController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $counter = $em->getRepository("ErsBase\Entity\Counter")->find($id);
+        $counter = $em->getRepository('ErsBase\Entity\Counter')->find($id);
         if(!$counter) {
             return $this->notFoundAction();
         }
@@ -116,7 +116,7 @@ class CounterController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $counter = $em->getRepository("ErsBase\Entity\Counter")
+        $counter = $em->getRepository('ErsBase\Entity\Counter')
                 ->find($id);
         if(!$counter) {
             return $this->notFoundAction();
@@ -128,7 +128,7 @@ class CounterController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $counter = $em->getRepository("ErsBase\Entity\Counter")
+                $counter = $em->getRepository('ErsBase\Entity\Counter')
                     ->findOneBy(array('id' => $id));
                 $em->remove($counter);
                 $em->flush();

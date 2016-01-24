@@ -184,7 +184,7 @@ class StatisticController extends AbstractActionController {
         /*
          * === by product variant ===
          */
-        $variants = $em->getRepository("ErsBase\Entity\ProductVariant")
+        $variants = $em->getRepository('ErsBase\Entity\ProductVariant')
                 ->findBy(array('type' => 'select'));
         
         $variantStats = array();
@@ -229,7 +229,7 @@ class StatisticController extends AbstractActionController {
         $activeStats = array();
         $matchingStats = array();
         
-        $bankaccounts = $em->getRepository("ErsBase\Entity\BankAccount")
+        $bankaccounts = $em->getRepository('ErsBase\Entity\BankAccount')
                 ->findAll();
         
         /* @var $bankaccount \ErsBase\Entity\BankAccount */
@@ -267,7 +267,7 @@ class StatisticController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository("ErsBase\Entity\Item")->createQueryBuilder('i');
+        $qb = $em->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
         $qb->where("i.shipped = 1");
         $qb->andWhere($qb->expr()->orX(
                 $qb->expr()->eq("i.Product_id", "1"),

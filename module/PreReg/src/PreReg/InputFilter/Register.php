@@ -117,7 +117,7 @@ class Register implements InputFilterAwareInterface
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $user = $em->getRepository("ErsBase\Entity\User")->findOneBy(array(
+                                $user = $em->getRepository('ErsBase\Entity\User')->findOneBy(array(
                                     'email' => $participant->getEmail(),
                                     'active' => true,
                                     ));

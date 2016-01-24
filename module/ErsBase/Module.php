@@ -89,7 +89,7 @@ class Module
                 'ErsBase\Service\AgegroupService:price' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
+                    $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('price_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
@@ -98,7 +98,7 @@ class Module
                 'ErsBase\Service\AgegroupService:ticket' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
+                    $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('ticket_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
@@ -107,7 +107,7 @@ class Module
                 'ErsBase\Service\DeadlineService:price' => function($sm) {
                     $deadlineService = new Service\DeadlineService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
+                    $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
                                 ->findBy(array('price_change' => '1'));
                     $deadlineService->setDeadlines($deadlines);
                     
@@ -116,7 +116,7 @@ class Module
                 'ErsBase\Service\DeadlineService:noprice' => function($sm) {
                     $deadlineService = new Service\DeadlineService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
+                    $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
                                 ->findBy(array('price_change' => '0'));
                     $deadlineService->setDeadlines($deadlines);
                     
@@ -125,7 +125,7 @@ class Module
                 'ErsBase\Service\DeadlineService:all' => function($sm) {
                     $deadlineService = new Service\DeadlineService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
+                    $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
                                 ->findAll();
                     $deadlineService->setDeadlines($deadlines);
                     
@@ -140,7 +140,7 @@ class Module
                     $service = new Service\ETicketService();
                     $service->setServiceLocator($sm);
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $products = $em->getRepository("ErsBase\Entity\Product")
+                    $products = $em->getRepository('ErsBase\Entity\Product')
                                 ->findBy(array('visible' => '1'), array('ordering' => 'ASC'));
                     $service->setProducts($products);
                     return $service;
