@@ -423,7 +423,7 @@ class CronController extends AbstractActionController {
         
         # find user under 18
         $qb = $em->getRepository("ErsBase\Entity\User")->createQueryBuilder('u');
-        $qb->where("u.birthday > '1997-08-01'");
+        $qb->where("u.birthday > '1998-07-30'");
         $users = $qb->getQuery()->getResult();
         echo "found ".count($users)." users under 18.".PHP_EOL;
         
@@ -461,7 +461,7 @@ class CronController extends AbstractActionController {
                 $bcc->setEmail('prereg@eja.net');
                 $emailService->addBcc($bcc);
 
-                $subject = "[EJC 2015] Updated e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+                $subject = "[EJC 2016] Updated e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
                 $emailService->setSubject($subject);
 
                 $viewModel = new ViewModel(array(
@@ -601,7 +601,7 @@ class CronController extends AbstractActionController {
             $bcc->setEmail('prereg@eja.net');
             $emailService->addBcc($bcc);
 
-            $subject = "[EJC 2015] e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+            $subject = "[EJC 2016] e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
             $emailService->setSubject($subject);
 
             $viewModel = new ViewModel(array(

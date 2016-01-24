@@ -298,7 +298,7 @@ class EmailService
         $bcc->setEmail($this->getFrom());
         $this->addBcc($bcc);
         
-        $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
+        $subject = "Your registration for EJC 2016 (order ".$order->getCode()->getValue().")";
         $this->setSubject($subject);
         
         $viewModel = new ViewModel(array(
