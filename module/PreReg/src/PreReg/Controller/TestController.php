@@ -313,37 +313,4 @@ class TestController extends AbstractActionController {
         $response->setContent($html);
         return $response;
     }
-    public function mailEncodingAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        #$logger = $this->getServiceLocator()->get('Logger');
-        
-        $order = $em->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => '17'));
-        $viewModel = new ViewModel(array(
-            'order' => $order,
-        ));
-        #$viewModel->setTemplate('email/purchase-info.phtml');
-        $viewModel->setTemplate('email/order-confirmation.phtml');
-        $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-        $html = $viewRender->render($viewModel);
-        
-        #$logger->info('html: '.$html);
-        
-        $emailService = new Service\EmailFactory();
-        $emailService->setFrom('prereg@eja.net');
-        
-        $buyer = new Entity\User();
-        $buyer->setEmail('andi@inbaz.org');
-        $emailService->addTo($buyer);
-        $emailService->setSubject('order confirmation');
-        
-        
-        $emailService->setHtmlMessage($html);
-        #$emailService->setTextMessage('Encoding Test: 42,- €');
-        $emailService->send();
-        
-        return true;
-    }
 }
