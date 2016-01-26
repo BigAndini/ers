@@ -155,14 +155,13 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Add new participant</h4>
             </div>
+            <?php
+            $participantForm = $this->participantForm;
+            $participantForm->setAttribute('action', $this->url('participant', array('action' => 'add')));
+            $participantForm->prepare();
+
+            echo $this->form()->openTag($participantForm); ?>
             <div class="modal-body">
-                <?php
-                $participantForm = $this->participantForm;
-                $participantForm->setAttribute('action', $this->url('participant', array('action' => 'add')));
-                $participantForm->prepare();
-
-                echo $this->form()->openTag($participantForm); ?>
-
                 <div class="row">
                     <div class="col-md-6">
                         <?php echo $this->formRow($participantForm->get('firstname')); ?>
@@ -173,15 +172,16 @@
                 </div>
                 <?php echo $this->formRow($participantForm->get('birthday'));
                 echo $this->formRow($participantForm->get('email'));
-                echo $this->formRow($participantForm->get('Country_id'));
+                echo $this->formRow($participantForm->get('Country_id')); ?>
 
-                echo $this->formHidden($participantForm->get('csrf')); ?>
-                <?php echo $this->formSubmit($participantForm->get('submit')); ?>
-                <?php echo $this->form()->closeTag(); ?>
+                
             </div>
             <div class="modal-footer">
+                <?php echo $this->formSubmit($participantForm->get('submit')); ?>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
+            <?php echo $this->formHidden($participantForm->get('csrf')); ?>    
+            <?php echo $this->form()->closeTag(); ?>
         </div>
     </div>
 </div>

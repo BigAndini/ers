@@ -242,23 +242,8 @@ class ParticipantController extends AbstractActionController {
                 $id = (int) $request->getPost('id');
         
                 $participant = $order->getParticipantById($id);
-                if(!$participant) {
-                    throw new \Exception('Unable to find participant with id: '.$id);
-                }
-                $package = $order->getPackageByParticipantId($id);
-                if(!$package) {
-                    throw new \Exception('Unable to find package for participant id: '.$id);
-                }
                 
-                $em->remove($package);
-                $em->flush();
-                if(!$participant->getActive()) {
-                    foreach($participant->getPackages() as $oldPackage) {
-                        $em->remove($oldPackage);
-                    }
-                    $em->remove($participant);
-                    $em->flush();
-                }
+                $orderService->removeParticipant($participant);
             }
 
             return $this->redirect()->toRoute(
