@@ -31,11 +31,16 @@
             <td><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></td>
         </tr>
         <tr>
-            <td>reason for payment</td>
+            <td>Reason for payment</td>
             <td><?php echo $order->getCode()->getValue(); ?></td>
         </tr>
     </table>
-    <p>Don't forget to add the reason for payment: <strong><?php echo $order->getCode()->getValue(); ?></strong></p>
+
+    <p>
+        Make sure to fill in this reason for payment <strong><?php echo $order->getCode()->getValue(); ?></strong>
+        as the reference for the transfer.
+        Otherwise we won't be able to match your payment and your order can't be processed.
+    </p>
 
     <?php endif; ?>
 </div>
