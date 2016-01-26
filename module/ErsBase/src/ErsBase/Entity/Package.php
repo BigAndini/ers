@@ -61,6 +61,18 @@ class Package extends Base\Package
     }
     
     /**
+    * @ORM\PreRemove
+    */
+    /*public function deleteAllItems()
+    {
+        foreach ($this->getItems() as $item) {
+            error_log('remove item from package: '.$item->getName());
+            $this->removeItem($item);
+            $item->setPackage(null);
+        }
+    }*/
+    
+    /**
      * Set User entity (many to one).
      *
      * @param \ErsBase\Entity\Base\User $user

@@ -42,7 +42,32 @@ $ curl -sS https://getcomposer.org/installer | php
 $ php composer.phar install
 ```    
 
-### 5. Generate database scheme and load basic data
+### 5. Setup doctrine
+
+Put this into config/autoload/doctrine.local.php. You can find an example in
+config/autoload/doctrine.dist.php
+
+```
+return array(
+    'doctrine' => array(
+        'connection' => array(
+            'orm_default' => array(
+                'driverClass' =>'Doctrine\DBAL\Driver\PDOMySql\Driver',
+                'params' => array(
+                    'host'     => 'localhost',
+                    'port'     => '3306',
+                    'user'     => 'user',
+                    'password' => 'password',
+                    'dbname'   => 'database',
+                )
+            )
+        )
+    )
+);
+```
+
+
+### 6. Generate database scheme and load basic data
 
 ```
 $ php vendor/bin/doctrine-module orm:validate-schema
@@ -51,7 +76,7 @@ $ php vendor/bin/doctrine-module orm:schema-tool:update --force
 $ php vendor/bin/doctrine-module dbal:import data/initial.sql
 ```
 
-### 6. Add admin user
+### 7. Add admin user
 
 ```
 INSERT INTO `user` (`email`, `active`) VALUES ('your.mail@example.org', '1');
@@ -64,13 +89,13 @@ INSERT INTO `user_has_role` (`user_id`, `role_id`) VALUES ('1', '4');
 INSERT INTO `user_has_role` (`user_id`, `role_id`) VALUES ('1', '5');
 ```
 
-### 7. Set admin users password
+### 8. Set admin users password
 
 Goto http://yourdomain.org/profile/request-password, fill in your e-mail 
 address and request the mail in which you can find further instructions how to
 setup the password for your user.
 
-### 8. Login and go on with the basic setup
+### 9. Login and go on with the basic setup
 
 Go to Shop menu item and create basic information from top to bottom. After that
 add your first products through the Product menu item.

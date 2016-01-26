@@ -141,6 +141,51 @@ class OrderService
         return $this->getOrder();
     }
     
+    public function removeParticipant(Entity\User $participant, $flush=true) {
+        if(!$participant) {
+            throw new \Exception('Unable to find participant with id: '.$id);
+        }
+        
+        # remove package of the active order
+        $package = $this->getOrder()->getPackageByParticipantId($participant->getId());
+        if(!$package) {
+            throw new \Exception('Unable to find package for participant id: '.$participant->getId());
+        }
+        
+        $this->removePackage($package, false);
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        #$em->remove($package);
+        if(!$participant->getActive()) {
+            foreach($participant->getPackages() as $oldPackage) {
+                $this->removePackage($oldPackage, false);
+                #$em->remove($oldPackage);
+            }
+            $em->remove($participant);
+        }
+        if($flush) {
+            $em->flush();
+        }
+    }
+    
+    public function removePackage(Entity\Package $package, $flush=true) {
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        foreach($package->getItems() as $item) {
+            error_log('removing item '.$item->getName().' ('.$item->getId().')');
+            $item->setPackage(null);
+            $package->removeItem($item);
+            $em->remove($item);
+        }
+        $package->setParticipant(null);
+        $em->remove($package);
+        if($flush) {
+            $em->flush();
+        }
+    }
+    
     public function removeItemById($item_id) {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -150,8 +195,10 @@ class OrderService
             throw new \Exception('Unable to remove item with id: '.$item_id);
         }
         foreach($item->getChildItems() as $cItem) {
+            error_log('remove child item '.$cItem->getName());
             $em->remove($cItem);
         }
+        error_log('remove item '.$item->getName());
         $em->remove($item);
         $em->flush();
     }
