@@ -114,7 +114,7 @@ class PaymentController extends AbstractActionController {
     /**
      * Formular for paying the order via credit card
      */
-    public function creditcardAction() {
+    public function iPaymentAction() {
         $hashkey = $this->params()->fromRoute('hashkey', '');
         
         if($hashkey == '') {
@@ -149,8 +149,87 @@ class PaymentController extends AbstractActionController {
             return $this->redirect()->toRoute('order', array('action' => 'cc-error'));
         }
         
+        #https://ipayment.de/merchant/99999/processor.php?trxuser_id=99999&trxpassword=0&trx_amount=12300&trx_paymenttyp=cc&trx_currency=EUR&redirect_url=http://ejc2016.ers.inbaz.org/thankyou&hidden_trigger_url=https://ejc2016.ers.inbaz.org/payment/cc-check
         
-        #$form = new Form\CreditCard();
+        $logger->info('trxuser_id: '.$trxuser_id);
+        $logger->info('trx_amount: '.$trx_amount);
+        $logger->info('trx_currency: '.$trx_currency);
+        $logger->info('trxpassword: '.$trxpassword);
+        $logger->info('sec_key: '.$sec_key);
+        
+        $logger->info('sec_string: '.$trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
+        
+        $trx_securityhash = \md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
+        
+        $logger->info('trx_securityhash: '.$trx_securityhash);
+        
+        $param = array(
+            'trxuser_id' => $trxuser_id,
+            'trxpassword' => $trxpassword,
+            'trx_amount' => $trx_amount,
+            'trx_paymenttyp' => 'cc',
+            'trx_currency' => $trx_currency,
+            'trx_redirect_url' => $this->url()->fromRoute(
+                        'order', 
+                        array(
+                            'action' => 'thankyou',
+                            'hashkey' => $order->getHashkey(),
+                            ), 
+                        array('force_canonical' => true)
+                ),
+            'hidden_trigger_url' => $this->url()->fromRoute(
+                        'payment', 
+                        array(
+                            'action' => 'cc-check',
+                            'hashkey' => $order->getHashkey(),
+                            ), 
+                        array('force_canonical' => true)
+                ),
+            'trx_securityhash' => $trx_securityhash,
+        );
+        
+        $ipayment_url = $action.'?'.http_build_query($param);
+        
+        return new ViewModel(array(
+            'ipayment_url' => $ipayment_url,
+        ));
+    }
+    
+    public function creditcardAction() {
+        $hashkey = $this->params()->fromRoute('hashkey', '');
+        
+        if($hashkey == '') {
+            return $this->notFoundAction();
+        }
+        
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository("ErsBase\Entity\Order")
+                ->findOneBy(array('hashkey' => $hashkey));
+        
+       
+        
+        $config = $this->getServiceLocator()->get('Config');
+        
+        $account_id     = $config['ERS\iPayment']['account_id'];
+        $trxuser_id     = $config['ERS\iPayment']['trxuser_id'];
+        $trx_currency   = $config['ERS\iPayment']['trx_currency'];
+        $trxpassword    = $config['ERS\iPayment']['trxpassword'];
+        $sec_key        = $config['ERS\iPayment']['sec_key'];
+        $tmp_action     = $config['ERS\iPayment']['action'];
+        $action = preg_replace('/%account_id%/', $account_id, $tmp_action);
+        
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        if($order != null) {
+            $a = new \NumberFormatter("de-DE", \NumberFormatter::PATTERN_DECIMAL);
+            $a->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
+            $a->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
+            $trx_amount = $a->format($order->getSum()*100); # amount in cents
+        } else {
+            return $this->redirect()->toRoute('order', array('action' => 'cc-error'));
+        }
+        
         $form = $this->getServiceLocator()->get('PreReg\Form\CreditCard');
         
         #$form->setAttribute('action', 'https://ipayment.de/merchant/'.$trxuser_id.'/processor/2.0/');
@@ -188,11 +267,11 @@ class PaymentController extends AbstractActionController {
         $form->get('trxuser_id')->setValue($trxuser_id);
         $form->get('trxpassword')->setValue($trxpassword);
         
-        $logger->info('trxuser_id: '.$trxuser_id);
+        /*$logger->info('trxuser_id: '.$trxuser_id);
         $logger->info('trx_amount: '.$trx_amount);
         $logger->info('trx_currency: '.$trx_currency);
         $logger->info('trxpassword: '.$trxpassword);
-        $logger->info('sec_key: '.$sec_key);
+        $logger->info('sec_key: '.$sec_key);*/
         
         $trx_securityhash = \md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
         #$logger->info('trx_securityhash: '.$trx_securityhash);
@@ -200,7 +279,6 @@ class PaymentController extends AbstractActionController {
         $form->get('trx_securityhash')->setValue($trx_securityhash);
         $form->get('trx_amount')->setValue($trx_amount);
         $form->get('trx_currency')->setValue($trx_currency);
-        #$form->get('trx_securityhash')->setValue($trx_securityhash);
         if($order != null) {
             $form->get('shopper_id')->setValue($order->getCode()->getValue());
         }
@@ -278,7 +356,6 @@ class PaymentController extends AbstractActionController {
             // Error because hash do not match!
             $logger->emerg('Unable to finish payment, checksums do not match.');
             return $response;
-            #exit;
         }
         
         $hashkey = $this->params()->fromRoute('hashkey', '');
@@ -297,18 +374,24 @@ class PaymentController extends AbstractActionController {
             return $response;
         }
         
+        $status = $em->getRepository("ErsBase\Entity\Status")
+                ->findOneBy(array('value' => 'paid'));
+        
         $order->setPaymentStatus('paid');
         foreach($order->getItems() as $item) {
-            $item->setStatus('paid');
+            #$item->setStatus('paid');
+            $item->setStatus($status);
             $em->persist($item);
         }
         
-        $orderStatus = new Entity\OrderStatus;
+        $order->setStatus($status);
+        
+        /*$orderStatus = new Entity\OrderStatus;
         $orderStatus->setOrder($order);
         $orderStatus->setValue('paid');
-        $order->addOrderStatus($orderStatus);
+        $order->addOrderStatus($orderStatus);*/
         $em->persist($order);
-        $em->persist($orderStatus);
+        #$em->persist($orderStatus);
         $em->flush();
         
         return $response;

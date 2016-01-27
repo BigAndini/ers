@@ -6,7 +6,7 @@ elseif($order->findOrderStatus('unpaid')->getValue() != ''):
     $status = 'unpaid';
 endif;*/
 if($order):
-    $title = 'Order '.$order->getCode()->getValue().' ('.$order->getPaymentStatus().')';
+    $title = 'Order '.$order->getCode()->getValue().' ('.$order->getStatus()->getValue().')';
 else:
     $title = 'Order not found';
 endif;
