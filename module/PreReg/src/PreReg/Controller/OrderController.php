@@ -475,6 +475,13 @@ class OrderController extends AbstractActionController {
                                 'action' => 'creditcard',
                                 'hashkey' => $order->getHashkey(),
                                 ));
+                case 'ipayment':
+                    return $this->redirect()->toRoute(
+                            'payment', 
+                            array(
+                                'action' => 'ipayment',
+                                'hashkey' => $order->getHashkey(),
+                                ));
                 case 'paypal':
                     return $this->redirect()->toRoute(
                             'payment', 
