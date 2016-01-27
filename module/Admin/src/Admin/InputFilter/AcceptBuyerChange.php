@@ -61,7 +61,7 @@ class AcceptBuyerChange implements InputFilterAwareInterface
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $order = $em->getRepository("ErsBase\Entity\Order")
+                                $order = $em->getRepository('ErsBase\Entity\Order')
                                     ->findOneBy(array('id' => $value));
                 
                                 if($order) {
@@ -97,7 +97,7 @@ class AcceptBuyerChange implements InputFilterAwareInterface
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $user = $em->getRepository("ErsBase\Entity\User")
+                                $user = $em->getRepository('ErsBase\Entity\User')
                                     ->findOneBy(array('id' => $value));
                 
                                 if($user) {

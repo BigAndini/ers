@@ -21,9 +21,9 @@ class RefundController extends AbstractActionController {
         /*
          * search for orders that do contain items in status refund
          */
-        /*$qb = $em->getRepository("ErsBase\Entity\Order")
+        /*$qb = $em->getRepository('ErsBase\Entity\Order')
                 ->createQueryBuild('o');*/
-        $qb = $em->getRepository("ErsBase\Entity\Order")
+        $qb = $em->getRepository('ErsBase\Entity\Order')
                 ->createQueryBuilder('o');
         $qb->join('o.packages', 'p');
         $qb->join('p.items', 'i');
@@ -31,7 +31,7 @@ class RefundController extends AbstractActionController {
         
         $orders = $qb->getQuery()->getResult();
         
-        $items = $em->getRepository("ErsBase\Entity\Item")
+        $items = $em->getRepository('ErsBase\Entity\Item')
                 ->findBy(array('status' => 'refund'), array('updated' => 'DESC'));
         
         return new ViewModel(array(
@@ -47,7 +47,7 @@ class RefundController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('id' => $id));
 
         #$form = $this->getServiceLocator()->get('Admin\Form\Product');
@@ -63,7 +63,7 @@ class RefundController extends AbstractActionController {
             
             if ($form->isValid()) {
                 $data = $form->getData();
-                $order = $em->getRepository("ErsBase\Entity\Order")
+                $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $data['id']));
                 $order->setRefundSum($order->getRefundSum()+$data['amount']);
                 $em->persist($order);

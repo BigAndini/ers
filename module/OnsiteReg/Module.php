@@ -227,7 +227,7 @@ class Module
                 'OnsiteReg\Service\AgegroupService:price' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
+                    $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('price_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
@@ -236,7 +236,7 @@ class Module
                 'OnsiteReg\Service\AgegroupService:ticket' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository("ErsBase\Entity\Agegroup")
+                    $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('ticket_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     

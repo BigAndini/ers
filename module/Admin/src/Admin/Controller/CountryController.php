@@ -23,12 +23,12 @@ class CountryController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
+        $qb1 = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
         $qb1->where($qb1->expr()->isNotNull('n.position'));
         $qb1->orderBy('n.position', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
-        $qb2 = $em->getRepository("ErsBase\Entity\Country")->createQueryBuilder('n');
+        $qb2 = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
         $qb2->where($qb2->expr()->isNull('n.position'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();
@@ -54,7 +54,7 @@ class CountryController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $country = $em->getRepository("ErsBase\Entity\Country")->findOneBy(array('id' => $id));
+        $country = $em->getRepository('ErsBase\Entity\Country')->findOneBy(array('id' => $id));
 
         $form  = new Form\Country();
         $form->bind($country);
@@ -109,7 +109,7 @@ class CountryController extends AbstractActionController {
             if ($del == 'Yes') {
                 
                 $id = (int) $request->getPost('id');
-                $tax = $em->getRepository("ErsBase\Entity\Tax")
+                $tax = $em->getRepository('ErsBase\Entity\Tax')
                         ->findOneBy(array('id' => $id));
                 $em->remove($tax);
                 $em->flush();
@@ -120,7 +120,7 @@ class CountryController extends AbstractActionController {
 
         return new ViewModel(array(
             'id'    => $id,
-            'tax' => $tax = $em->getRepository("ErsBase\Entity\Tax")
+            'tax' => $tax = $em->getRepository('ErsBase\Entity\Tax')
                 ->findOneBy(array('id' => $id)),
             'breadcrumb' => $breadcrumb,
         ));

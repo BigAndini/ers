@@ -147,9 +147,9 @@ class PaymentTypeBankTransfer implements InputFilterAwareInterface
                                 return true;
                             }
                             
-                            $activeFrom = $em->getRepository("ErsBase\Entity\Deadline")
+                            $activeFrom = $em->getRepository('ErsBase\Entity\Deadline')
                                 ->findOneBy(array('id' => $value));
-                            $activeUntil = $em->getRepository("ErsBase\Entity\Deadline")
+                            $activeUntil = $em->getRepository('ErsBase\Entity\Deadline')
                                 ->findOneBy(array('id' => $context['activeUntil_id']));
                             
                             $diff = $activeFrom->getDeadline()->getTimestamp() - $activeUntil->getDeadline()->getTimestamp();
@@ -209,9 +209,9 @@ class PaymentTypeBankTransfer implements InputFilterAwareInterface
                                 return true;
                             }
                             
-                            $activeFrom = $em->getRepository("ErsBase\Entity\Deadline")
+                            $activeFrom = $em->getRepository('ErsBase\Entity\Deadline')
                                 ->findOneBy(array('id' => $context['activeFrom_id']));
-                            $activeUntil = $em->getRepository("ErsBase\Entity\Deadline")
+                            $activeUntil = $em->getRepository('ErsBase\Entity\Deadline')
                                 ->findOneBy(array('id' => $value));
                             
                             $diff = $activeFrom->getDeadline()->getTimestamp() - $activeUntil->getDeadline()->getTimestamp();

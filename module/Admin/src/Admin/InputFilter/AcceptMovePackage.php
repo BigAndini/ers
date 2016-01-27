@@ -60,7 +60,7 @@ class AcceptMovePackage implements InputFilterAwareInterface
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $package = $em->getRepository("ErsBase\Entity\Package")
+                                $package = $em->getRepository('ErsBase\Entity\Package')
                                     ->findOneBy(array('id' => $value));
                 
                                 if($package) {
@@ -100,7 +100,7 @@ class AcceptMovePackage implements InputFilterAwareInterface
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $order = $em->getRepository("ErsBase\Entity\Order")
+                                $order = $em->getRepository('ErsBase\Entity\Order')
                                     ->findOneBy(array('id' => $value));
                 
                                 if($order) {

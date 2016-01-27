@@ -40,7 +40,7 @@ class TestController extends AbstractActionController {
             $code = new Entity\Code();
             $code->genCode();
             
-            $code = $em->getRepository("ErsBase\Entity\Code")->findOneBy(array('value' => $code->getValue()));
+            $code = $em->getRepository('ErsBase\Entity\Code')->findOneBy(array('value' => $code->getValue()));
             #if(in_array($code->getValue(), $codes)) {
             if($code) {
                 $logger->info('found existing code after '.$count.' tries.');
@@ -76,7 +76,7 @@ class TestController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository("ErsBase\Entity\User")->findOneBy(array('email' => 'andi@sixhop.net'));
+        $user = $em->getRepository('ErsBase\Entity\User')->findOneBy(array('email' => 'andi@sixhop.net'));
         $user = new Entity\User();
         $user->setEmail('andi@inbaz.org');
         $emailService->addTo($user);
@@ -137,7 +137,7 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => '87'));
         
         if($order == null) {
@@ -157,7 +157,7 @@ class TestController extends AbstractActionController {
         $pdfEngine->render();
         $pdfContent = $pdfEngine->output();
         
-        $filename = "EJC2015_Invoice";
+        $filename = "EJC2016_Invoice";
         file_put_contents(getcwd().'/public/img/'.$filename.'.pdf', $pdfContent);
         
         return new ViewModel();
@@ -265,7 +265,7 @@ class TestController extends AbstractActionController {
         $pdfEngine->render();
         $pdfContent = $pdfEngine->output();
         
-        $filename = "EJC2015_e-ticket_".preg_replace('/\ /', '_', $name);
+        $filename = "EJC2016_e-ticket_".preg_replace('/\ /', '_', $name);
         file_put_contents(getcwd().'/public/img/'.$filename.'.pdf', $pdfContent);
         
         return new ViewModel();
@@ -275,7 +275,7 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                 #->findOneBy(array('id' => '297'));
                 ->findOneBy(array('id' => '12'));
                 #->findOneBy(array('id' => '54'));
@@ -296,7 +296,7 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => '17'));
         $viewModel = new ViewModel(array(
             'order' => $order,
@@ -312,38 +312,5 @@ class TestController extends AbstractActionController {
                 #->addHeaderLine('Content-Length', filesize($filename));
         $response->setContent($html);
         return $response;
-    }
-    public function mailEncodingAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        #$logger = $this->getServiceLocator()->get('Logger');
-        
-        $order = $em->getRepository("ErsBase\Entity\Order")
-                    ->findOneBy(array('id' => '17'));
-        $viewModel = new ViewModel(array(
-            'order' => $order,
-        ));
-        #$viewModel->setTemplate('email/purchase-info.phtml');
-        $viewModel->setTemplate('email/order-confirmation.phtml');
-        $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-        $html = $viewRender->render($viewModel);
-        
-        #$logger->info('html: '.$html);
-        
-        $emailService = new Service\EmailFactory();
-        $emailService->setFrom('prereg@eja.net');
-        
-        $buyer = new Entity\User();
-        $buyer->setEmail('andi@inbaz.org');
-        $emailService->addTo($buyer);
-        $emailService->setSubject('order confirmation');
-        
-        
-        $emailService->setHtmlMessage($html);
-        #$emailService->setTextMessage('Encoding Test: 42,- €');
-        $emailService->send();
-        
-        return true;
     }
 }

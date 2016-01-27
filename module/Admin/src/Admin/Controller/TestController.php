@@ -27,9 +27,9 @@ class TestController extends AbstractActionController {
 
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        /*$orders = $em->getRepository("ErsBase\Entity\Order")
+        /*$orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findBy(array(), array('created' => 'ASC'));*/
-        $packages = $em->getRepository("ErsBase\Entity\Package")
+        $packages = $em->getRepository('ErsBase\Entity\Package')
                 ->findBy(array(), array('created' => 'ASC'));
         
         $filename = getcwd() . "/tmp/excel-" . date( "m-d-Y" ) . ".xls";
@@ -106,7 +106,7 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository("ErsBase\Entity\Order")->createQueryBuilder('n');
+        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('n');
         
         /*$em = $this->getEntityManager();
         $queryBuilder = $em->createQueryBuilder();
@@ -136,7 +136,7 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orders = $em->getRepository("ErsBase\Entity\Order")
+        $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findBy(array('payment_status' => 'paid'));
         
         $orderSum = 0;
@@ -156,7 +156,7 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orders = $em->getRepository("ErsBase\Entity\Order")
+        $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findBy(array('total_sum' => 0));
         $count = 0;
         foreach($orders as $order) {
@@ -175,10 +175,10 @@ class TestController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $package = $em->getRepository("ErsBase\Entity\Package")
+        $package = $em->getRepository('ErsBase\Entity\Package')
                 ->findOneBy(array('id' => 52));
         
-        $products = $em->getRepository("ErsBase\Entity\Product")
+        $products = $em->getRepository('ErsBase\Entity\Product')
                 ->findAll();
         
         $config = $this->getServiceLocator()->get('Config');
