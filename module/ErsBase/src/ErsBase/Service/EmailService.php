@@ -243,7 +243,7 @@ class EmailService
         $this->setFrom('prereg@eja.net');
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $role = $em->getRepository("ErsBase\Entity\Role")
+        $role = $em->getRepository('ErsBase\Entity\Role')
                     ->findOneBy(array('roleId' => 'supradm'));
         $users = $role->getUsers();
         if(count($users) <= 0) {
@@ -286,7 +286,7 @@ class EmailService
             ->get('Doctrine\ORM\EntityManager');
         
         #$session_order = new Container('order');
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $order_id));
         $buyer = $order->getBuyer();
         
@@ -298,7 +298,7 @@ class EmailService
         $bcc->setEmail($this->getFrom());
         $this->addBcc($bcc);
         
-        $subject = "Your registration for EJC 2015 (order ".$order->getCode()->getValue().")";
+        $subject = "Your registration for EJC 2016 (order ".$order->getCode()->getValue().")";
         $this->setSubject($subject);
         
         $viewModel = new ViewModel(array(

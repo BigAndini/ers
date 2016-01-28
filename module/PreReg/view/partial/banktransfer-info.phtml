@@ -5,8 +5,6 @@
         choose the items you want.</p>
     <?php else: ?>
     <p>Please transfer the amount by SEPA bank transfer to the following account:</p>
-    <p>To <strong>make the organisers' life easier</strong>, please add the reason for 
-        payment: <strong><?php echo $order->getCode()->getValue(); ?></strong></p>
     <table class="table">
         <tr>
             <td>Owner</td>
@@ -33,9 +31,16 @@
             <td><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></td>
         </tr>
         <tr>
-            <td>reason for payment</td>
+            <td>Reason for payment</td>
             <td><?php echo $order->getCode()->getValue(); ?></td>
         </tr>
     </table>
+
+    <p>
+        Make sure to fill in this reason for payment <strong><?php echo $order->getCode()->getValue(); ?></strong>
+        as the reference for the transfer.
+        Otherwise we won't be able to match your payment and your order can't be processed.
+    </p>
+
     <?php endif; ?>
 </div>

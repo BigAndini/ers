@@ -60,7 +60,7 @@ class AcceptParticipantChangePackage implements InputFilterAwareInterface
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $package = $em->getRepository("ErsBase\Entity\Package")
+                                $package = $em->getRepository('ErsBase\Entity\Package')
                                     ->findOneBy(array('id' => $value));
                 
                                 if($package) {
@@ -96,7 +96,7 @@ class AcceptParticipantChangePackage implements InputFilterAwareInterface
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $user = $em->getRepository("ErsBase\Entity\User")
+                                $user = $em->getRepository('ErsBase\Entity\User')
                                     ->findOneBy(array('id' => $value));
                 
                                 if($user) {

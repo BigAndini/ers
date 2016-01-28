@@ -39,7 +39,7 @@ class ParticipantController extends AbstractActionController {
         
         foreach($participants as $participant) {
             if($participant->getCountryId()) {
-                $country = $em->getRepository("ErsBase\Entity\Country")
+                $country = $em->getRepository('ErsBase\Entity\Country')
                         ->findOneBy(array('id' => $participant->getCountryId()));
                 $participant->setCountry($country);
             }

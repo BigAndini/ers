@@ -21,7 +21,7 @@ class DeadlineController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'deadlines' => $em->getRepository("ErsBase\Entity\Deadline")
+            'deadlines' => $em->getRepository('ErsBase\Entity\Deadline')
                 ->findBy(array(), array('deadline' => 'ASC')),
          ));
     }
@@ -68,7 +68,7 @@ class DeadlineController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $deadline = $em->getRepository("ErsBase\Entity\Deadline")->findOneBy(array('id' => $id));
+        $deadline = $em->getRepository('ErsBase\Entity\Deadline')->findOneBy(array('id' => $id));
 
         $form = new Form\Deadline();
         $form->bind($deadline);
@@ -101,11 +101,11 @@ class DeadlineController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $deadline = $em->getRepository("ErsBase\Entity\Deadline")
+        $deadline = $em->getRepository('ErsBase\Entity\Deadline')
                 ->findOneBy(array('id' => $id));
         $productprices = $deadline->getProductPrices();
         
-        $qb = $em->getRepository("ErsBase\Entity\PaymentType")->createQueryBuilder('n');
+        $qb = $em->getRepository('ErsBase\Entity\PaymentType')->createQueryBuilder('n');
         $paymenttypes = $qb->where(
                 $qb->expr()->orX(
                     $qb->expr()->eq('n.active_from_id', $id),
@@ -118,7 +118,7 @@ class DeadlineController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $deadline = $em->getRepository("ErsBase\Entity\Deadline")
+                $deadline = $em->getRepository('ErsBase\Entity\Deadline')
                     ->findOneBy(array('id' => $id));
                 $em->remove($deadline);
                 $em->flush();
