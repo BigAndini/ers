@@ -486,8 +486,8 @@ class CronController extends AbstractActionController {
 
                 $emailService->addAttachment($eticketFile);
 
-                #$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v4.pdf';
-                #$terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
+                #$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v5.pdf';
+                #$terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v4.pdf';
                 #$emailService->addAttachment($terms1);
                 #$emailService->addAttachment($terms2);
 
@@ -626,8 +626,8 @@ class CronController extends AbstractActionController {
 
             $emailService->addAttachment($eticketFile);
 
-            #$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v4.pdf';
-            #$terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v2.pdf';
+            #$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v5.pdf';
+            #$terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v4.pdf';
             #$emailService->addAttachment($terms1);
             #$emailService->addAttachment($terms2);
             
