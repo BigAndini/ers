@@ -8,24 +8,9 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <style type="text/css">
-        * {
-            font-family: sans-serif;
-        }
-        .orange {
-            color: #f48029;
-        }
-        .footer {
-            width: 100%;
-            text-align: center;
-            padding: 1em;
-        }
-        .footer {
-            background-color: #eeeeee;
-        }
-    </style>
 </head>
 <body>
+<div style="font-family: sans-serif;">
     <p>Dear <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>,</p>
 
     <p>
@@ -47,7 +32,7 @@
 
     <p>
         Thank you for registering for the <?php echo $ejc_with_number; ?>!
-        Your registration makes it easier for us to organize a <span class="orange">gezellig</span> EJC
+        Your registration makes it easier for us to organize a <span style="color: #f48029;">gezellig</span> EJC
         for you and all fellow jugglers.
     </p>
 
@@ -143,7 +128,7 @@
         as soon as your payment has been confirmed.
     </p>
 
-    <p class="orange"><b>
+    <p style="color: #f48029;"><b>
         See you in Almere, the Netherlands between
         the 30th of July and the 7th of August 2016 for <?php echo $ejc_with_year; ?>!
     </b></p>
@@ -160,7 +145,10 @@
 
     <?php echo $this->partial('partial/order-info.phtml', array('order' => $order)); ?>
 
-    <div class='footer'>
+    <div style="width: 100%;
+            text-align: center;
+            padding: 1em;
+            background-color: #eeeeee;">
         This mail was sent to you by the EJC Registration System (ERS),
         operated by the European Juggling Association (EJA) on
         behalf of <?= $ejc_with_year ?>.
@@ -173,5 +161,6 @@
         please visit <a href='<?= $ejc_website ?>'><?= $ejc_website ?></a>
         or contact <a href='mailto:<?= $ejc_info_mail ?>'><?= $ejc_info_mail ?></a>.
     </div>
+</div>
 </body>
 </html>
