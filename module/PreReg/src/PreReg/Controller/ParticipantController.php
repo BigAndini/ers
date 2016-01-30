@@ -38,14 +38,14 @@ class ParticipantController extends AbstractActionController {
         foreach($participants as $participant) {
             if($participant->getCountryId()) {
                 $country = $em->getRepository('ErsBase\Entity\Country')
-                        ->findOneBy(array('id' => $participant->getCountryId()));
+                        ->findOneBy(['id' => $participant->getCountryId()]);
                 $participant->setCountry($country);
             }
         }
         
-        return new ViewModel(array(
+        return new ViewModel([
             'participants' => $participants,
-        ));
+        ]);
     }
     
     /*
@@ -81,7 +81,7 @@ class ParticipantController extends AbstractActionController {
                 $order = $orderService->getOrder();
                 
                 $participant = $em->getRepository('ErsBase\Entity\User')
-                        ->findOneBy(array('email' => $user->getEmail(), 'active' => false));
+                        ->findOneBy(['email' => $user->getEmail(), 'active' => false]);
                 
                 if($participant) {
                     $participant->loadData($user);
@@ -90,7 +90,7 @@ class ParticipantController extends AbstractActionController {
                     #$em->persist($participant);
                 } else {
                     $active_user = $em->getRepository('ErsBase\Entity\User')
-                        ->findOneBy(array('email' => $user->getEmail(), 'active' => true));
+                        ->findOneBy(['email' => $user->getEmail(), 'active' => true]);
                     
                     if($active_user) {
                         # TODO: flash error message: login is needed
@@ -132,10 +132,10 @@ class ParticipantController extends AbstractActionController {
             $breadcrumbService->set('participant', 'participant');
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'form' => $form,
             'breadcrumb' => $breadcrumbService->get('participant'),
-        ));
+        ]);
     }
     
     /*
@@ -147,9 +147,9 @@ class ParticipantController extends AbstractActionController {
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('participant', array(
+            return $this->redirect()->toRoute('participant', [
                 'action' => 'add'
-            ));
+            ]);
         }
         
         $em = $this->getServiceLocator()
@@ -201,11 +201,11 @@ class ParticipantController extends AbstractActionController {
             $breadcrumbService->set('participant', 'participant');
         }
         $breadcrumb = $breadcrumbService->get('participant');
-        return new ViewModel(array(
+        return new ViewModel([
             'id' => $id,
             'form' => $form,
             'breadcrumb' => $breadcrumb,
-        ));
+        ]);
     }
     
     public function deleteAction() {
@@ -225,7 +225,7 @@ class ParticipantController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         /*$participant = $em->getRepository('ErsBase\Entity\User')
-                ->findOneBy(array('id' => $id));*/
+                ->findOneBy(['id' => $id]);*/
         
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
@@ -254,11 +254,11 @@ class ParticipantController extends AbstractActionController {
 
         $package = $order->getPackageByParticipantId($id);
         
-        return new ViewModel(array(
+        return new ViewModel([
             'id'    => $id,
             'participant' => $participant,
             'package' => $package,
             'breadcrumb' => $breadcrumb,
-        ));
+        ]);
     }
 }
