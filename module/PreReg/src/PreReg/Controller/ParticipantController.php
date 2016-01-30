@@ -28,12 +28,10 @@ class ParticipantController extends AbstractActionController {
         $breadcrumbService->reset();
         $breadcrumbService->set('participant', 'participant');
      
-        $orderService = $this->getServiceLocator()
-                ->get('ErsBase\Service\OrderService');
+        $orderService = $this->getServiceLocator()->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
         
         $participants = $order->getParticipants();
         
@@ -55,13 +53,11 @@ class ParticipantController extends AbstractActionController {
      * able to assign a product afterwards.
      */
     public function addAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
         
         $form = new Form\Participant(); 
         $form->setServiceLocator($this->getServiceLocator());
-        $optionService = $this->getServiceLocator()
-                ->get('ErsBase\Service\OptionService');
+        $optionService = $this->getServiceLocator()->get('ErsBase\Service\OptionService');
         $form->get('Country_id')->setValueOptions($optionService->getCountryOptions());
         
         $user = new Entity\User();
@@ -81,8 +77,7 @@ class ParticipantController extends AbstractActionController {
             
             if($form->isValid())
             { 
-                $orderService = $this->getServiceLocator()
-                    ->get('ErsBase\Service\OrderService');
+                $orderService = $this->getServiceLocator()->get('ErsBase\Service\OrderService');
                 $order = $orderService->getOrder();
                 
                 $participant = $em->getRepository('ErsBase\Entity\User')
@@ -116,7 +111,11 @@ class ParticipantController extends AbstractActionController {
                 $em->flush();
                 
                 $breadcrumb = $breadcrumbService->get('participant');
-                if($breadcrumb->route == 'product' && isset($breadcrumb->params['action']) && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
+                if (
+                    $breadcrumb->route == 'product' &&
+                    isset($breadcrumb->params['action']) &&
+                    ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')
+                ) {
                     unset($breadcrumb->params['agegroup_id']);
                     $breadcrumb->options['fragment'] = 'person';
                     $breadcrumb->options['query']['participant_id'] = $user->getId();
