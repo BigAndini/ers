@@ -220,15 +220,11 @@ class ParticipantController extends AbstractActionController {
         }
         
         $breadcrumb = $breadcrumbService->get('participant');
-        
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        /*$participant = $em->getRepository('ErsBase\Entity\User')
-                ->findOneBy(['id' => $id]);*/
-        
-        $orderService = $this->getServiceLocator()
-                ->get('ErsBase\Service\OrderService');
+
+        # $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        # $participant = $em->getRepository('ErsBase\Entity\User')->findOneBy(['id' => $id]);
+
+        $orderService = $this->getServiceLocator()->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         
         $participant = $order->getParticipantById($id);
@@ -246,10 +242,10 @@ class ParticipantController extends AbstractActionController {
             }
 
             return $this->redirect()->toRoute(
-                    $breadcrumb->route, 
-                    $breadcrumb->params, 
-                    $breadcrumb->options
-                );
+                $breadcrumb->route,
+                $breadcrumb->params,
+                $breadcrumb->options
+            );
         }
 
         $package = $order->getPackageByParticipantId($id);
