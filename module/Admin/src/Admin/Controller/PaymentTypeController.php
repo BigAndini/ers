@@ -886,7 +886,7 @@ class PaymentTypeController extends AbstractActionController {
         $inputFilter = new InputFilter\PaymentTypeBankTransfer();
         $inputFilter->setEntityManager($em);
 
-        $paymenttype->setInputFilter($inputFilter->getInputFilter());
+        #$paymenttype->setInputFilter($inputFilter->getInputFilter());
         $form->bind($paymenttype);
         $form->get('submit')->setValue('Edit');
     
