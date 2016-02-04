@@ -449,6 +449,9 @@ class OrderController extends AbstractActionController {
             
             $cartContainer->init = 0;
             
+            $container = new Container('initialized');
+            $container->checkout = array();
+            
             $emailService = $this->getServiceLocator()
                 ->get('ErsBase\Service\EmailService');
             $emailService->sendConfirmationEmail($order->getId());
