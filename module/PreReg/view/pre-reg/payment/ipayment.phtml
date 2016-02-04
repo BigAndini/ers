@@ -1,11 +1,8 @@
 <?php
-#$this->headMeta()->appendHttpEquiv('Refresh', '5;URL='.$ipayment_url);
+$this->headMeta()->appendHttpEquiv('Refresh', '5;URL='.$ipayment_url);
 
 ?>
 <div class="jumbotron">
-    <p>You will be redirected to the credit card payment page.</p>
-    <pre>
-        <?php echo $ipayment_url; ?>
-    </pre>
+    <p>You will be redirected to the credit card payment page within 5 seconds.</p>
     <p>If the redirect is not working, please follow this <a href="<?php echo $ipayment_url; ?>">link</a>.</p>
 </div>

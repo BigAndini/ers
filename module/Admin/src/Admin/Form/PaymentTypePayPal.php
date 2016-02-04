@@ -72,7 +72,7 @@ class PaymentTypePayPal extends Form
         )); 
         
         $this->add(array( 
-            'name' => 'shortDescription', 
+            'name' => 'short_description', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
                 'placeholder' => 'Short Description...', 
@@ -88,7 +88,7 @@ class PaymentTypePayPal extends Form
         )); 
  
         $this->add(array( 
-            'name' => 'longDescription', 
+            'name' => 'long_description', 
             #'type' => 'Zend\Form\Element\Textarea', 
             'type' => 'CKEditorModule\Form\Element\CKEditor',
             'attributes' => array( 
@@ -130,7 +130,7 @@ class PaymentTypePayPal extends Form
         )); 
         
         $this->add(array( 
-            'name' => 'fixFee', 
+            'name' => 'fix_fee', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
                 'placeholder' => 'Fix Fee...',
@@ -145,7 +145,7 @@ class PaymentTypePayPal extends Form
         )); 
  
         $this->add(array( 
-            'name' => 'percentageFee', 
+            'name' => 'percentage_fee', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
                 'placeholder' => 'Percentage Fee...',
@@ -160,7 +160,7 @@ class PaymentTypePayPal extends Form
         )); 
  
         $this->add(array(
-            'name' => 'activeFrom_id',
+            'name' => 'active_from_id',
             'type'  => 'Zend\Form\Element\Select',
             'attributes' => array(
                 'required' => 'required',
@@ -174,7 +174,7 @@ class PaymentTypePayPal extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'activeUntil_id',
+            'name' => 'active_until_id',
             'type'  => 'Zend\Form\Element\Select',
             'attributes' => array(
                 'required' => 'required',
