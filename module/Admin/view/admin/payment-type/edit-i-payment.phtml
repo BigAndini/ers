@@ -1,7 +1,6 @@
 <?php
-// module/Album/view/album/album/add.phtml:
 
-$title = 'Edit Payment Type (Credit Card)';
+$title = 'Edit Payment Type (Credit Card iPayment)';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -10,7 +9,7 @@ $form = $this->form;
 $form->setAttribute('action', $this->url(
     'admin/payment-type',
     array(
-        'action' => 'editCreditCard',
+        'action' => 'editIPayment',
         'id'     => $this->id,
     )
 ));
