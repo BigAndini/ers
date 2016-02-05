@@ -28,26 +28,24 @@ class ParticipantController extends AbstractActionController {
         $breadcrumbService->reset();
         $breadcrumbService->set('participant', 'participant');
      
-        $orderService = $this->getServiceLocator()
-                ->get('ErsBase\Service\OrderService');
+        $orderService = $this->getServiceLocator()->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
         
         $participants = $order->getParticipants();
         
         foreach($participants as $participant) {
-            if($participant->getCountryId()) {
+            if ($participant->getCountryId()) {
                 $country = $em->getRepository('ErsBase\Entity\Country')
-                        ->findOneBy(array('id' => $participant->getCountryId()));
+                        ->findOneBy(['id' => $participant->getCountryId()]);
                 $participant->setCountry($country);
             }
         }
         
-        return new ViewModel(array(
+        return new ViewModel([
             'participants' => $participants,
-        ));
+        ]);
     }
     
     /*
@@ -55,59 +53,52 @@ class ParticipantController extends AbstractActionController {
      * able to assign a product afterwards.
      */
     public function addAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $form = new Form\Participant(); 
+        $form = new Form\Participant();
         $form->setServiceLocator($this->getServiceLocator());
-        $optionService = $this->getServiceLocator()
-                ->get('ErsBase\Service\OptionService');
+        $optionService = $this->getServiceLocator()->get('ErsBase\Service\OptionService');
         $form->get('Country_id')->setValueOptions($optionService->getCountryOptions());
-        
+
         $user = new Entity\User();
         $user->setActive(false);
         $form->bind($user);
-        
-        $breadcrumbService = new Service\BreadcrumbService();
-        
-        $request = $this->getRequest(); 
-        if($request->isPost()) 
-        { 
-            #$inputFilter = new InputFilter\Participant();
-            #$inputFilter->setEntityManager($em);
 
-            #$form->setInputFilter($inputFilter->getInputFilter()); 
-            $form->setData($request->getPost()); 
-            
-            if($form->isValid())
-            { 
-                $orderService = $this->getServiceLocator()
-                    ->get('ErsBase\Service\OrderService');
+        $breadcrumbService = new Service\BreadcrumbService();
+
+        $request = $this->getRequest();
+        if ($request->isPost())
+        {
+            $form->setData($request->getPost());
+
+            if ($form->isValid())
+            {
+                $orderService = $this->getServiceLocator()->get('ErsBase\Service\OrderService');
                 $order = $orderService->getOrder();
-                
-                $participant = $em->getRepository('ErsBase\Entity\User')
-                        ->findOneBy(array('email' => $user->getEmail(), 'active' => false));
-                
-                if($participant) {
-                    $participant->loadData($user);
-                    $em->persist($participant);
-                    $orderService->addParticipant($participant);
-                    #$em->persist($participant);
+
+                $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+                if (!$user->getEmail()) {
+                    // No email address was entered. Treat as a new participant.
+                    $orderService->addParticipant($user);
                 } else {
-                    $active_user = $em->getRepository('ErsBase\Entity\User')
-                        ->findOneBy(array('email' => $user->getEmail(), 'active' => true));
-                    
-                    if($active_user) {
-                        # TODO: flash error message: login is needed
+                    $existing_user = $em->getRepository('ErsBase\Entity\User')
+                        ->findOneBy(['email' => $user->getEmail()]);
+
+                    if ($existing_user && !$existing_user->getActive()) {
+                        // Re-use the existing participant and add them to the current order
+                        $existing_user->loadData($user);
+                        $em->persist($existing_user);
+                        $orderService->addParticipant($existing_user);
+                    } elseif ($existing_user && $existing_user->getActive()) {
+                        throw new \Exception("This email address belongs to a registered user. Please log in.");
                     } else {
-                        #$em->persist($user);
+                        // This email address is new. Make a regular participant out of it.
                         $orderService->addParticipant($user);
-                    }   
+                    }
                 }
-                
+
                 $orderService->setCountryId($user->getCountryId());
                 
-                if($user->getCountryId() == 0) {
+                if ($user->getCountryId() == 0) {
                     $user->setCountryId(null);
                     $user->setCountry(null);
                 }
@@ -116,7 +107,11 @@ class ParticipantController extends AbstractActionController {
                 $em->flush();
                 
                 $breadcrumb = $breadcrumbService->get('participant');
-                if($breadcrumb->route == 'product' && isset($breadcrumb->params['action']) && ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')) {
+                if (
+                    $breadcrumb->route == 'product' &&
+                    isset($breadcrumb->params['action']) &&
+                    ($breadcrumb->params['action'] == 'add' || $breadcrumb->params['action'] == 'edit')
+                ) {
                     unset($breadcrumb->params['agegroup_id']);
                     $breadcrumb->options['fragment'] = 'person';
                     $breadcrumb->options['query']['participant_id'] = $user->getId();
@@ -129,14 +124,14 @@ class ParticipantController extends AbstractActionController {
             } 
         }
         
-        if(!$breadcrumbService->exists('participant')) {
+        if (!$breadcrumbService->exists('participant')) {
             $breadcrumbService->set('participant', 'participant');
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'form' => $form,
             'breadcrumb' => $breadcrumbService->get('participant'),
-        ));
+        ]);
     }
     
     /*
@@ -148,9 +143,9 @@ class ParticipantController extends AbstractActionController {
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('participant', array(
+            return $this->redirect()->toRoute('participant', [
                 'action' => 'add'
-            ));
+            ]);
         }
         
         $em = $this->getServiceLocator()
@@ -162,7 +157,7 @@ class ParticipantController extends AbstractActionController {
         
         $participant = $order->getParticipantById($id);
         
-        if(!$participant) {
+        if (!$participant) {
             # TODO: add flash messenger message with error and return
         }
         
@@ -176,13 +171,13 @@ class ParticipantController extends AbstractActionController {
         $form->bind($participant);
         
         $request = $this->getRequest(); 
-        if($request->isPost()) 
+        if ($request->isPost()) 
         {
             $form->setData($request->getPost()); 
                 
-            if($form->isValid())
+            if ($form->isValid())
             { 
-                if($participant->getCountryId() == 0) {
+                if ($participant->getCountryId() == 0) {
                     $participant->setCountryId(null);
                     $participant->setCountry(null);
                 }
@@ -198,15 +193,15 @@ class ParticipantController extends AbstractActionController {
             } 
         }
         
-        if(!$breadcrumbService->exists('participant')) {
+        if (!$breadcrumbService->exists('participant')) {
             $breadcrumbService->set('participant', 'participant');
         }
         $breadcrumb = $breadcrumbService->get('participant');
-        return new ViewModel(array(
+        return new ViewModel([
             'id' => $id,
             'form' => $form,
             'breadcrumb' => $breadcrumb,
-        ));
+        ]);
     }
     
     public function deleteAction() {
@@ -216,20 +211,16 @@ class ParticipantController extends AbstractActionController {
         }
         
         $breadcrumbService = new Service\BreadcrumbService();
-        if(!$breadcrumbService->exists('participant')) {
+        if (!$breadcrumbService->exists('participant')) {
             $breadcrumbService->set('participant', 'participant');
         }
         
         $breadcrumb = $breadcrumbService->get('participant');
-        
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        /*$participant = $em->getRepository('ErsBase\Entity\User')
-                ->findOneBy(array('id' => $id));*/
-        
-        $orderService = $this->getServiceLocator()
-                ->get('ErsBase\Service\OrderService');
+
+        # $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        # $participant = $em->getRepository('ErsBase\Entity\User')->findOneBy(['id' => $id]);
+
+        $orderService = $this->getServiceLocator()->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         
         $participant = $order->getParticipantById($id);
@@ -247,19 +238,19 @@ class ParticipantController extends AbstractActionController {
             }
 
             return $this->redirect()->toRoute(
-                    $breadcrumb->route, 
-                    $breadcrumb->params, 
-                    $breadcrumb->options
-                );
+                $breadcrumb->route,
+                $breadcrumb->params,
+                $breadcrumb->options
+            );
         }
 
         $package = $order->getPackageByParticipantId($id);
         
-        return new ViewModel(array(
+        return new ViewModel([
             'id'    => $id,
             'participant' => $participant,
             'package' => $package,
             'breadcrumb' => $breadcrumb,
-        ));
+        ]);
     }
 }

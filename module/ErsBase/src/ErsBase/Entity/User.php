@@ -84,6 +84,21 @@ class User extends Base\User implements UserInterface, ProviderInterface
     }
 
     /**
+     * Set the value of email.
+     *
+     * @param string $email
+     * @return \ErsBase\Entity\Base\User
+     */
+    public function setEmail($email)
+    {
+        // Treat empty email address as <not set>.
+        // Without this, the database rejects multiple records with email address ''.
+        $this->email = $email ? $email : null;
+
+        return $this;
+    }
+
+    /**
      * Set the value of birthday.
      *
      * @param \DateTime $birthday

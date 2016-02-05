@@ -289,46 +289,31 @@ class Participant extends Form implements InputFilterProviderInterface
                             ) 
                         ), 
                     ),
-                    array ( 
-                        'name' => 'Callback', 
+                    # Check if another user already has this email
+                    array (
+                        'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
                                 \Zend\Validator\Callback::INVALID_VALUE => 'A person with this email address already exists. To make changes to your existing order contact prereg@eja.net or chooser another e-mail',
                             ),
                             'callback' => function($value, $context=array()) {
-                                $orderService = $this->getServiceLocator()
-                                        ->get('ErsBase\Service\OrderService');
-                                $order = $orderService->getOrder();
-                                
-                                $em = $this->getServiceLocator()
-                                    ->get('Doctrine\ORM\EntityManager');
-                                
-                                # check if user with id has this email -> ok
+                                $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
                                 $user = $em->getRepository('ErsBase\Entity\User')
-                                        ->findOneBy(array('id' => $context['id']));
-                                if($user && $user->getEmail() == $value) {
+                                        ->findOneBy(array('email' => $value));
+
+                                # The email address is new -> ok
+                                if (!$user) {
+                                    return true;
+                                }
+
+                                # The email address belongs to the current user -> ok
+                                if($user->getId() == $context['id']) {
                                     return true;
                                 }
                                 
-                                # check if another user already has this email -> not ok
-                                $participants = $order->getParticipants();
-                                foreach($participants as $participant) {
-                                    if($value == $participant->getEmail()) {
-                                        return false;
-                                    }
-                                }
-                                
-                                # check if a active user exists with this email -> not ok
-                                $user = $em->getRepository('ErsBase\Entity\User')
-                                        ->findOneBy(array('email' => $value, 'active' => true));
-                                if($user) {
-                                    return false;
-                                }
-                                
-                                # if nothing of the above matches -> ok
-                                return true;
+                                # The email address belongs to another user -> not ok
+                                return false;
                             },
-                            
                         ),
                     ),
                 ), 
