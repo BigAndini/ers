@@ -29,7 +29,7 @@ echo $this->navigation()
     $form->prepare();
 ?>
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-md-6">
         <div class="order-info">
             <h1>Buyer</h1>
             <?php $buyer = $order->getBuyer(); ?>
@@ -43,7 +43,7 @@ echo $this->navigation()
             <?php endif; ?>
         </div>
     </div>
-    <div class="col-lg-6">
+    <div class="col-md-6">
         <div class="order-info">
             <h1>Payment</h1>
             <?php $paymenttype = $order->getPaymentType(); ?>

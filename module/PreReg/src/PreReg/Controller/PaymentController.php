@@ -169,7 +169,7 @@ class PaymentController extends AbstractActionController {
             'trx_amount' => $trx_amount,
             'trx_paymenttyp' => 'cc',
             'trx_currency' => $trx_currency,
-            'trx_redirect_url' => $this->url()->fromRoute(
+            'redirect_url' => $this->url()->fromRoute(
                         'order', 
                         array(
                             'action' => 'thankyou',
