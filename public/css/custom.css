@@ -166,7 +166,8 @@ a:hover, a:focus {
     /* 
      * width of 390px 
      */
-    width: 550px;
+    /*width: 550px;*/
+    width: 100%;
     padding: 10px 15px;
     float: left;
 }
