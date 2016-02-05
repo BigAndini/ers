@@ -42,9 +42,9 @@ class CheckoutActive extends AbstractHelper {
 
     public function __invoke($name) {
         $container = new Container('initialized');
-        foreach($container->checkout as $key => $item) {
+        /*foreach($container->checkout as $key => $item) {
             error_log($key.': '.$item);
-        }
+        }*/
         if(isset($container->checkout[$name]) && $container->checkout[$name] == 1) {
             return true;
         } else {

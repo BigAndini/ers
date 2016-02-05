@@ -124,6 +124,10 @@ class User extends Base\User implements UserInterface, ProviderInterface
      */
     public function getAge() {
         $now = new \DateTime();
-        return $this->getBirthday()->diff($now);
+        if($this->getBirthday()) {
+            return $this->getBirthday()->diff($now);
+        } else {
+            return new \DateInterval('P0Y');
+        }
     }
 }
