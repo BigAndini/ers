@@ -171,12 +171,10 @@ class ParticipantController extends AbstractActionController {
         $form->bind($participant);
         
         $request = $this->getRequest(); 
-        if ($request->isPost()) 
-        {
+        if ($request->isPost()) {
             $form->setData($request->getPost()); 
                 
-            if ($form->isValid())
-            { 
+            if ($form->isValid()) { 
                 if ($participant->getCountryId() == 0) {
                     $participant->setCountryId(null);
                     $participant->setCountry(null);

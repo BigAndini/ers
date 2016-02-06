@@ -20,14 +20,14 @@ if($order == null || $trx_amount == 0):
     <div>
         <h4>Amount: <?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></h4>
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-md-3">
                 <?php
                 echo $this->form()->openTag($form);
                 echo $this->formCollection($form);
                 echo $this->form()->closeTag();
                 ?>
             </div>
-            <div class="col-lg-3">
+            <div class="col-md-3">
                 <p><strong>Note:</strong> You can find your Card Check Code at 
                     the backsite of your credit card.</p>
                 <img src="/img/scr_kartenpruefziffer_01.jpg" alt=""><br />
