@@ -33,14 +33,14 @@
 
     echo $this->form()->openTag($form); ?>
     <div class="row">
-        <div class="col-lg-5" style="text-align: center; margin: 20px 0;">
+        <div class="col-md-5" style="text-align: center; margin: 20px 0;">
             <!--<i class="fa fa-file-text-o product-icon-lg"></i>-->
             <i class="fa fa-ticket product-icon-lg"></i>
             <!--<img src="/img/no-available-image.png" alt="No available image" width="200">-->
         </div>
-        <div class="col-lg-7">
+        <div class="col-md-7">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <h1><?php echo $this->escapeHtml($product->getName()); ?></h1>
                 </div>
             </div>
@@ -52,11 +52,11 @@
             </div>
             <?php endif; ?>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <p class="desc-short"><?php echo $product->getShortDescription(); ?></p>
                     <?php echo $product->getLongDescription(); ?>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <?php if($product->getPriceCount() != 1): ?>
                         <p class="small text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
                     <?php endif; ?>
@@ -64,7 +64,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-6 ui-tabs-panel ui-widget-content ui-corner-all">
+                <div class="col-md-6 ui-tabs-panel ui-widget-content ui-corner-all">
                     <div id="person-detail">
                         <ul>
                             <?php # agegroup is disabled at all this year
@@ -129,7 +129,7 @@
                         <?php echo $this->formSubmit($form->get('submit')); ?>
                     </p>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     <?php if(count($product->getChildProducts()) > 0): ?>
                     <h3>Included Items:</h3>
                     <?php foreach($product->getChildProducts() as $package): 

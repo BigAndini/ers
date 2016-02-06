@@ -50,7 +50,10 @@ class Module
                     if ($e->getParam('exception')){
                         $sm->get('Logger')->crit($e->getParam('exception'));
                         
-                        $auth = $sm->get('zfcuser_auth_service');
+                        $emailService = $sm->get('ErsBase\Service\EmailService');
+                        $emailService->sendExceptionEmail($e->getParam('exception'));
+                        
+                        /*$auth = $sm->get('zfcuser_auth_service');
                         if (!$auth->hasIdentity()) {
                             $url = $e->getRouter()->assemble(array(), array('name' => 'zfcuser/login'));
                             $response=$e->getResponse();
@@ -71,10 +74,7 @@ class Module
                             //Attach the "break" as a listener with a high priority
                             $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack,-10000);
                             return $response;
-                       }
-                        
-                        $emailService = $sm->get('ErsBase\Service\EmailService');
-                        $emailService->sendExceptionEmail($e->getParam('exception'));
+                        }*/
                     }
                 }
             );
