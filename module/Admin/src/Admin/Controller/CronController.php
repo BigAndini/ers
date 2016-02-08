@@ -834,10 +834,18 @@ class CronController extends AbstractActionController {
     public function calcSumsAction() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $orders = $em->getRepository('ErsBase\Entity\Order')
-                ->findAll();
+        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb->join('o.status', 's');
+        $qb->where($qb->expr()->neq('s.value', ':status'));
+        $qb->setParameter('status', 'order pending');
+        
+        $orders = $qb->getQuery()->getResult();
+        echo 'found '.count($orders).' orders'.PHP_EOL;
+        
         foreach($orders as $order) {
+            echo $order->getCode()->getValue().PHP_EOL;
             $order->getTotalSum();
+            $order->getOrderSum();
             $em->persist($order);
         }
         $em->flush();
