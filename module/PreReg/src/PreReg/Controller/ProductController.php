@@ -202,7 +202,7 @@ class ProductController extends AbstractActionController {
             if($form->isValid())
             { 
                 $data = $request->getPost();
-                $logger->info(var_export($data, true));
+                #$logger->info(var_export($data, true));
 
                 /*
                  * get needed variables

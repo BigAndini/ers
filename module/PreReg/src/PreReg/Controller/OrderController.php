@@ -168,6 +168,7 @@ class OrderController extends AbstractActionController {
         
         # even if it's not displayed, this is needed to recognize the possible 
         # values.
+        $login_email = '';
         if(count($order->getPackages()) > 0) {
             $users = $order->getParticipants();
             $buyer = array();
@@ -175,7 +176,6 @@ class OrderController extends AbstractActionController {
                 $login_email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
                 $disabled = true;
             } else {
-                $login_email = '';
                 $disabled = false;
             }
             foreach($users as $participant) {

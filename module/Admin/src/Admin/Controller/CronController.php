@@ -830,4 +830,16 @@ class CronController extends AbstractActionController {
         }
         
     }
+    
+    public function calcSumsAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $orders = $em->getRepository('ErsBase\Entity\Order')
+                ->findAll();
+        foreach($orders as $order) {
+            $order->getTotalSum();
+            $em->persist($order);
+        }
+        $em->flush();
+    }
 }

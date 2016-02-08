@@ -373,6 +373,15 @@ return array(
                         )
                     )
                 ),
+                'calc-sums' => array(
+                    'options' => array(
+                        'route'    => 'calc-sums',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'calc-sums'
+                        )
+                    )
+                ),
             ),
         ),
     ),
