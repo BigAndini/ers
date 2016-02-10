@@ -312,7 +312,10 @@ class Participant extends Form implements InputFilterProviderInterface
                                 }
                                 
                                 if(count($user->getRoles()) == 0) {
-                                    return true;
+                                    $now = new \DateTime();
+                                    if($now->diff($user->getUpdated()) > 3600) {
+                                        return true;
+                                    }
                                 }
                                 
                                 # The email address belongs to another user -> not ok
