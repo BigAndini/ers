@@ -313,7 +313,8 @@ class Participant extends Form implements InputFilterProviderInterface
                                 
                                 if(count($user->getRoles()) == 0) {
                                     $now = new \DateTime();
-                                    if($now->diff($user->getUpdated()) > 3600) {
+                                    $diff = $now->getTimestamp()-$user->getUpdated()->getTimestamp();
+                                    if($diff > 3600) {
                                         return true;
                                     }
                                 }
