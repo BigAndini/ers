@@ -311,6 +311,10 @@ class Participant extends Form implements InputFilterProviderInterface
                                     return true;
                                 }
                                 
+                                if(count($user->getRoles()) == 0) {
+                                    return true;
+                                }
+                                
                                 # The email address belongs to another user -> not ok
                                 return false;
                             },
