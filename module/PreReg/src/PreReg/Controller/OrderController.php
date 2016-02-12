@@ -295,8 +295,6 @@ class OrderController extends AbstractActionController {
         }
         $form->get('paymenttype_id')->setValueOptions($types);
         
-        #$cartContainer = new Container('cart');
-        
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = new InputFilter\PaymentType();
@@ -383,6 +381,14 @@ class OrderController extends AbstractActionController {
             $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
             
+            $buyer = $order->getBuyer();
+            $buyer_role = $em->getRepository('ErsBase\Entity\Role')
+                        ->findOneBy(array('roleId' => 'buyer'));
+            if(!$buyer->hasRole($buyer_role)) {
+                $buyer->addRole($buyer_role);
+                $em->persist($buyer);
+            }
+            
             foreach($order->getPackages() as $package) {
                 if(count($package->getItems()) <= 0) {
                     $order->removePackage($package);
@@ -404,12 +410,12 @@ class OrderController extends AbstractActionController {
                         ->findOneBy(array('email' => $participant->getEmail()));
                 }
                 
-                $role = $em->getRepository('ErsBase\Entity\Role')
+                $participant_role = $em->getRepository('ErsBase\Entity\Role')
                         ->findOneBy(array('roleId' => 'participant'));
                 if($user instanceof Entity\User) {
                     $package->setParticipant($user);
-                    if(!$user->hasRole($role)) {
-                        $user->addRole($role);
+                    if(!$user->hasRole($participant_role)) {
+                        $user->addRole($participant_role);
                         $em->persist($user);
                     }
                     #$package->setParticipantId($user->getId());
