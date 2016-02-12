@@ -439,6 +439,9 @@ class OrderController extends AbstractActionController {
             $status = $em->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
             $order->setStatus($status);
+         
+            $order->getTotalSum();
+            $order->getOrderSum();
             
             $em->persist($order);
             
