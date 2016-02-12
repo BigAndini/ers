@@ -59,9 +59,12 @@ class StatisticController extends AbstractActionController {
         $orderSelectFields = array('COUNT(o.id) AS ordercount', 'SUM(o.order_sum) AS ordersum, SUM(o.total_sum) AS totalsum');
         
         $paymentStatusStats = $em->createQueryBuilder()
-                ->select(array_merge(array('o.payment_status AS label'), $orderSelectFields))
+                #->select(array_merge(array('o.payment_status AS label'), $orderSelectFields))
+                ->select(array_merge(array('s.value AS label'), $orderSelectFields))
                 ->from('ErsBase\Entity\Order', 'o')
-                ->groupBy('o.payment_status')
+                ->join('o.status', 's')
+                #->groupBy('o.payment_status')
+                ->groupBy('s.value')
                 ->getQuery()->getResult();
         
         
@@ -76,7 +79,9 @@ class StatisticController extends AbstractActionController {
         $paymentTypeStats = $em->createQueryBuilder()
                 ->select(array_merge(array('pt.name AS label'), $orderSelectFields))
                 ->from('ErsBase\Entity\PaymentType', 'pt')
-                ->join('pt.orders', 'o', 'WITH', "o.payment_status != 'cancelled' AND o.payment_status != 'refund'")
+                #->join('pt.orders', 'o', 'WITH', "o.payment_status != 'cancelled' AND o.payment_status != 'refund'")
+                ->join('pt.orders', 'o')
+                ->join('o.status', 's', 'WITH', "s.value != 'cancelled' AND s.value != 'refund'")
                 ->groupBy('pt.id')
                 ->getQuery()->getResult();
         
@@ -105,12 +110,14 @@ class StatisticController extends AbstractActionController {
                         'c.name country_name', 
                         'SUM(i.price) ordersum',
                         'i.shipped shipped',
-                        'i.status status'
+                        's.value status'
                         )
                 ->from('ErsBase\Entity\User', 'u')
                 ->leftJoin('u.country', 'c')
                 ->join('u.packages', 'p')
-                ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
+                #->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
+                ->join('p.items', 'i')
+                ->join('i.status', 's', 'WITH', "s.value != 'cancelled' AND s.value != 'refund'")
                 ->groupBy('u.id')
                 ->getQuery()->getResult();
         
@@ -196,7 +203,7 @@ class StatisticController extends AbstractActionController {
                         ->select('count(DISTINCT i.id)')
                         ->from('ErsBase\Entity\ItemVariant', 'ivar')
                         ->join('ivar.item', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
-                        ->where('ivar.ProductVariantValue_id = :value_id')
+                        ->where('ivar.product_variant_value_id = :value_id')
                         ->setParameter('value_id', $value->getId());
                 
                 $count = $qb->getQuery()->getSingleScalarResult();
