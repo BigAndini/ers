@@ -164,6 +164,16 @@ class OrderService
             }
             $em->remove($participant);
         }
+        if($participant->getId() == $this->getOrder()->getBuyerId()) {
+            $this->getOrder()->setBuyer(null);
+            $this->getOrder()->setBuyerId(null);
+            $container = new Container('initialized');
+            if(!is_array($container->checkout)) {
+                $container->checkout = array();
+            }
+            $container->checkout['/order/buyer'] = 0;
+        }
+        
         if($flush) {
             $em->flush();
         }

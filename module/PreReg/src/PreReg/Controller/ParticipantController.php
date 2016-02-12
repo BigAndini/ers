@@ -76,6 +76,16 @@ class ParticipantController extends AbstractActionController {
 
                 $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
+                if ($user->getCountryId() == 0) {
+                    $user->setCountryId(null);
+                    $user->setCountry(null);
+                } else {
+                    $country = $em->getRepository('ErsBase\Entity\Country')
+                        ->findOneBy(array('id' => $user->getCountryId()));
+                    $user->setCountryId($country->getId());
+                    $user->setCountry($country);
+                }
+                
                 if (!$user->getEmail()) {
                     // No email address was entered. Treat as a new participant.
                     $orderService->addParticipant($user);
@@ -97,11 +107,6 @@ class ParticipantController extends AbstractActionController {
                 }
 
                 $orderService->setCountryId($user->getCountryId());
-                
-                if ($user->getCountryId() == 0) {
-                    $user->setCountryId(null);
-                    $user->setCountry(null);
-                }
                 
                 $em->persist($order);
                 $em->flush();

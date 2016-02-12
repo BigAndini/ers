@@ -382,6 +382,33 @@ return array(
                         )
                     )
                 ),
+                'cleanup-user' => array(
+                    'options' => array(
+                        'route'    => 'cleanup-user',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'cleanup-user'
+                        )
+                    )
+                ),
+                'cleanup-order' => array(
+                    'options' => array(
+                        'route'    => 'cleanup-order',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'cleanup-order'
+                        )
+                    )
+                ),
+                'correct-buyer-role' => array(
+                    'options' => array(
+                        'route'    => 'correct-buyer-role',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-buyer-role'
+                        )
+                    )
+                ),
             ),
         ),
     ),

@@ -850,4 +850,87 @@ class CronController extends AbstractActionController {
         }
         $em->flush();
     }
+    
+    public function cleanupUserAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $qb = $em->getRepository('ErsBase\Entity\User')->createQueryBuilder('u');
+        $qb->leftJoin('u.roles', 'r');
+        $qb->where($qb->expr()->isNull('r.roleId'));
+        $qb->andWhere($qb->expr()->lt('u.updated', ':updated'));
+        $updated = new \DateTime();
+        $updated->sub(new \DateInterval('PT2H'));
+        $qb->setParameter('updated', $updated);
+        $users = $qb->getQuery()->getResult();
+        echo 'found '.count($users).' users'.PHP_EOL;
+        foreach($users as $user) {
+            foreach($user->getOrders() as $order) {
+                if($order->getStatus()->getValue() != 'order pending') {
+                    echo "ERROR: found order ".$order->getId()." which may not be pending. (".$order->getStatus()->getValue().") (user_id: ".$user->getId().")".PHP_EOL;
+                } else {
+                    $em->remove($order);
+                }
+            }
+            foreach($user->getPackages() as $package) {
+                foreach($package->getItems() as $item) {
+                    $em->remove($item);
+                }
+                $em->remove($package);
+            }
+            $em->remove($user);
+        }
+        $em->flush();
+        
+        
+    }
+    
+    public function cleanupOrderAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb->join('o.status', 's');
+        $qb->where($qb->expr()->eq('s.value', ':status'));
+        $qb->andWhere($qb->expr()->lt('o.updated', ':updated'));
+        
+        $updated = new \DateTime();
+        $updated->sub(new \DateInterval('PT2H'));
+        $qb->setParameter('updated', $updated);
+        $qb->setParameter('status', 'order pending');
+        
+        $orders = $qb->getQuery()->getResult();
+        echo 'found '.count($orders).' orders'.PHP_EOL;
+        foreach($orders as $order) {
+            $em->remove($order);
+            foreach($order->getPackages() as $package) {
+                $em->remove($package);
+                foreach($package->getItems() as $item) {
+                    $em->remove($item);
+                }
+            }
+        }
+        $em->flush();
+    }
+    
+    public function correctBuyerRoleAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $orders = $em->getRepository('ErsBase\Entity\Order')
+                ->findAll();
+        
+        foreach($orders as $order) {
+            $buyer = $order->getBuyer();
+            if(!$buyer) {
+                continue;
+            }
+            $buyer_role = $em->getRepository('ErsBase\Entity\Role')
+                        ->findOneBy(array('roleId' => 'buyer'));
+            if(!$buyer->hasRole($buyer_role)) {
+                $buyer->addRole($buyer_role);
+                $em->persist($buyer);
+            }
+        }
+        $em->flush();
+    }
 }
