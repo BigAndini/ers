@@ -55,7 +55,7 @@ class AjaxController extends AbstractActionController {
         if($bankaccount->getVirtual()) {
             $qb->where(
                 $qb->expr()->andX(
-                    $qb->expr()->eq('s.BankAccount_id', '?1'),
+                    $qb->expr()->eq('s.bank_account_id', '?1'),
                     $qb->expr()->neq('s.status', '?2')
                 )
             );
@@ -64,7 +64,7 @@ class AjaxController extends AbstractActionController {
         } else {
             $qb->where(
                 $qb->expr()->andX(
-                    $qb->expr()->eq('s.BankAccount_id', '?1'),
+                    $qb->expr()->eq('s.bank_account_id', '?1'),
                     $qb->expr()->eq('s.status', '?2')
                     /*$qb->expr()->neq('s.status', '?2'),
                     $qb->expr()->neq('s.status', '?3'),
