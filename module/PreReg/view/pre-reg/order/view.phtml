@@ -42,9 +42,15 @@ $this->headTitle($title);
                     <h3>Bank Transfer Details</h3>
                     <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
                 <?php elseif($paymenttype->getType() == 'CreditCard'): ?>
-                    <a href="<?php echo $this->url('payment', array('action' => 'creditcard', 'hashkey' => $order->getHashKey())); ?>">
+                    <a class="btn btn-primary" href="<?php echo $this->url('payment', array('action' => 'creditcard', 'hashkey' => $order->getHashKey())); ?>">
                         Start payment with Credit Card
                     </a>
+                <?php elseif($paymenttype->getType() == 'IPayment'): ?>
+                    <a class="btn btn-primary" href="<?php echo $this->url('payment', array('action' => 'ipayment', 'hashkey' => $order->getHashKey())); ?>">
+                        Start payment with Credit Card
+                    </a>
+                <?php else: ?>
+                    No payment type was recognized (<?php echo $paymenttype->getType(); ?>)
                 <?php endif; ?>
             <?php else: ?>
                 <h3>undefined status</h3>
