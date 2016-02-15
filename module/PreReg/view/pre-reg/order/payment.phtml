@@ -56,12 +56,14 @@ echo $this->navigation()
                         endif; ?>
                         <label class="payment-type">
                             <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
-                            <?php echo $paymenttype->getName(); ?>
+                            <?php echo $paymenttype->getName() ?>
+                            <span class="h5">(payment fee: <?php echo $this->currencyFormat($order->getPaymentFees($paymenttype), 'EUR', null, 'de_DE'); ?>)</span>
                         </label>
                     <?php elseif($now->getTimestamp() < $paymenttype->getActiveFrom()->getDeadline()->getTimestamp()): ?>
                         <label class="payment-type">
                             <input style="display: inline;" disabled="disabled" type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
-                            <?php echo $paymenttype->getName(); ?>
+                            <?php echo $paymenttype->getName() ?>
+                            <span class="h5">(payment fee: <?php echo $this->currencyFormat($order->getPaymentFees($paymenttype), 'EUR', null, 'de_DE'); ?>)</span>
                         </label>
                         <p class="alert alert-warning">
                             <i class="fa fa-warning"></i> This payment type is not available, yet. It will be available from <?php echo $paymenttype->getActiveFrom()->getDeadline()->format('d.m.Y'); ?> until <?php echo $paymenttype->getActiveUntil()->getDeadline()->format('d.m.Y'); ?>. Please choose another payment type.
@@ -69,7 +71,8 @@ echo $this->navigation()
                     <?php else: ?>
                         <label class="payment-type">
                             <input style="display: inline;" disabled="disabled" type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
-                            <?php echo $paymenttype->getName(); ?>
+                            <?php echo $paymenttype->getName() ?>
+                            <span class="h5">(payment fee: <?php echo $this->currencyFormat($order->getPaymentFees($paymenttype), 'EUR', null, 'de_DE'); ?>)</span>
                         </label>
                         <p class="alert alert-warning">
                             <i class="fa fa-warning"></i> This payment type was available until <?php echo $paymenttype->getActiveUntil()->getDeadline()->format('d.m.Y'); ?>. Please choose another payment type.

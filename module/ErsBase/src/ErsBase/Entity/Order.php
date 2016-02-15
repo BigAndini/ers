@@ -494,7 +494,12 @@ class Order extends Base\Order
      * 
      * @return float
      */
-    public function getPaymentFees() {
-        return $this->getPaymentType()->calcFee($this->getPrice());
+    public function getPaymentFees($paymenttype=null) {
+        if(!$paymenttype) {
+            return $this->getPaymentType()->calcFee($this->getPrice());
+        } else {
+            return $paymenttype->calcFee($this->getPrice());
+        }
+        
     }
 }
