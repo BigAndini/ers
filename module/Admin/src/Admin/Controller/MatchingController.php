@@ -62,18 +62,12 @@ class MatchingController extends AbstractActionController {
          * TODO: Add filter to select status of orders. unpaid is the default 
          * status but underpaid would be nice, too.
          */
-        $orders = $em->getRepository('ErsBase\Entity\Order')
-                ->findBy(array('payment_status' => 'unpaid'));
+        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb->join('o.status', 's');
+        $qb->where($qb->expr()->eq('s.value', ':unpaid'));
+        $qb->setParameter('unpaid', 'ordered');
         
-        #$repository = $em->getRepository('ErsBase\Entity\Order');
-
-        #$qb = $repository->createQueryBuilder('o');
-        #$qb->leftJoin('o.matches', 'm');
-        #$qb->where($qb->expr()->isNull('m.Order_id'));
-        #$qb->andWhere("o.payment_status != 'cancelled'");
-        #$qb->andWhere("o.payment_status != 'refund'");
-
-        #$orders = $qb->getQuery()->getResult();
+        $orders = $qb->getQuery()->getResult();
         
         $order_options = array();
         foreach($orders as $order) {
