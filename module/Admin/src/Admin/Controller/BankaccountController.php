@@ -298,6 +298,12 @@ class BankaccountController extends AbstractActionController {
                 ->findBy(array());
         
         $options = array();
+        $options[] = array(
+            'value' => 'choose bank account',
+            'label' => 'choose bank account',
+            'disabled' => true,
+            'selected' => true,
+        );
         foreach($accounts as $account) {
             $options[] = array(
                 'value' => $account->getId(),
