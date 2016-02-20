@@ -51,8 +51,8 @@ class OrderController extends AbstractActionController {
             preg_match('/"[^"]+"/', $searchText, $matches);
             $searchElements = preg_replace('/"/', '', $matches);
 
-            $logger->info('found matches:');
-            $logger->info($matches);
+            #$logger->info('found matches:');
+            #$logger->info($matches);
             $searchArray = split(' ', $searchText);
             $exclude = false;
 
@@ -73,11 +73,11 @@ class OrderController extends AbstractActionController {
                 }
             }
 
-            $logger->info('search elements:');
-            $logger->info($searchElements);
+            #$logger->info('search elements:');
+            #$logger->info($searchElements);
 
-            $logger->info('exclude elements:');
-            $logger->info($excludeElements);
+            #$logger->info('exclude elements:');
+            #$logger->info($excludeElements);
 
             $searchString = array(
 
@@ -135,9 +135,9 @@ class OrderController extends AbstractActionController {
              * of buyer and participant
              */
             $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-            $qb->join('o.buyer', 'b');
+            $qb->join('o.user', 'b'); # get buyer
             $qb->join('o.packages', 'p');
-            $qb->join('p.participant', 'u');
+            $qb->join('p.user', 'u'); # get participant
             $i = 0;
             foreach($searchElements as $element) {
                 $b_expr = $qb->expr()->lower($qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname')));
@@ -713,11 +713,15 @@ class OrderController extends AbstractActionController {
                 $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $id));
                 
+                $status = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'cancelled'));
                 $order->setPaymentStatus('cancelled');
+                $order->setStatus($status);
                 $em->persist($order);
                 
                 foreach($order->getItems() as $item) {
-                    $item->setStatus('cancelled');
+                    #$item->setStatus('cancelled');
+                    $item->setStatus($status);
                     $em->persist($item);
                 }
                 
@@ -805,11 +809,16 @@ class OrderController extends AbstractActionController {
                 $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $id));
                 
+                $status = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'refund'));
+                
                 $order->setPaymentStatus('refund');
+                $order->setStatus($status);
                 $em->persist($order);
                 
                 foreach($order->getItems() as $item) {
-                    $item->setStatus('refund');
+                    #$item->setStatus('refund');
+                    $item->setStatus($status);
                     $em->persist($item);
                 }
                 
@@ -851,11 +860,16 @@ class OrderController extends AbstractActionController {
                 $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $id));
                 
+                $status = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'ordered'));
+                
                 $order->setPaymentStatus('unpaid');
+                $order->setStatus($status);
                 $em->persist($order);
                 
                 foreach($order->getItems() as $item) {
-                    $item->setStatus('ordered');
+                    #$item->setStatus('ordered');
+                    $item->setStatus($status);
                     $em->persist($item);
                 }
                 
