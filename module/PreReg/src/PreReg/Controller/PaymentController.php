@@ -138,6 +138,10 @@ class PaymentController extends AbstractActionController {
         $tmp_action     = $config['ERS\iPayment']['action'];
         $action = preg_replace('/%account_id%/', $account_id, $tmp_action);
         
+        if($action == '') {
+            throw new \Exception('iPayment configuration is missing');
+        }
+        
         $logger = $this->getServiceLocator()->get('Logger');
         
         if($order != null) {
