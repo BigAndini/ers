@@ -149,7 +149,7 @@ class UserController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $user = $em->getRepository('ErsBase\Entity\User')->findOneBy(array('id' => $id));
         
-        $form = new Form\User();
+        $form = new Form\User($this->getServiceLocator());
         $form->bind($user);
         $form->get('submit')->setAttribute('value', 'Edit');
         $form->get('Country_id')->setValueOptions($this->getCountryOptions());

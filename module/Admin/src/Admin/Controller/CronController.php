@@ -99,6 +99,10 @@ class CronController extends AbstractActionController {
                 continue;
             }
             
+            if(empty($statement_format->matchKey)) {
+                echo 'matchKey not set for bank account '.$bankaccount->getName().PHP_EOL;
+                continue;
+            }
             $ret = $this->findCodes($statement->getBankStatementColByNumber($statement_format->matchKey)->getValue());
             if(is_array($ret)) {
                 $found = false;
@@ -188,7 +192,7 @@ class CronController extends AbstractActionController {
         #$statement_format = json_decode($bankaccount->getStatementFormat());
         
         $order = $em->getRepository('ErsBase\Entity\Order')
-            ->findOneBy(array('Code_id' => $code->getId()));
+            ->findOneBy(array('code_id' => $code->getId()));
         
         $statement->setStatus('matched');
 
@@ -205,7 +209,8 @@ class CronController extends AbstractActionController {
          */
         $admin = $em->getRepository('ErsBase\Entity\User')
             ->findOneBy(array('id' => 1));
-        $match->setAdmin($admin);
+        #$match->setAdmin($admin);
+        $match->setUser($admin);
         
         $order->addMatch($match);
 
@@ -231,10 +236,16 @@ class CronController extends AbstractActionController {
             #$orderStatus->setOrder($order);
             #$orderStatus->setValue('paid');
             #$order->addOrderStatus($orderStatus);
+            
+            $paid_status = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'paid'));
+            
             $order->setPaymentStatus('paid');
+            $order->setStatus($paid_status);
             
             foreach($order->getItems() as $item) {
-                $item->setStatus('paid');
+                #$item->setStatus('paid');
+                $item->setStatus($paid_status);
                 $em->persist($item);
             }
 
@@ -242,7 +253,11 @@ class CronController extends AbstractActionController {
             #$em->persist($orderStatus);
         } else {
             foreach($order->getItems() as $item) {
-                $item->setStatus('ordered');
+                $ordered_status = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+                
+                #$item->setStatus('ordered');
+                $item->setStatus($ordered_status);
                 $em->persist($item);
             }
         }

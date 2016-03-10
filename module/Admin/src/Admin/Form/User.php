@@ -9,12 +9,26 @@
 namespace Admin\Form;
 
 use Zend\Form\Form;
+use Zend\InputFilter\InputFilterProviderInterface;
 
-
-class User extends Form
+class User extends Form implements InputFilterProviderInterface
 {
-    public function __construct($name = null)
+    protected $sm;
+    
+    public function setServiceLocator($sm) {
+        $this->sm = $sm;
+        
+        return $this;
+    }
+
+    private function getServiceLocator() {
+        return $this->sm;
+    }
+    
+    public function __construct($sm = null)
     {
+        $this->setServiceLocator($sm);
+        
         parent::__construct('User');
         $this->setAttribute('method', 'post');
         
@@ -121,5 +135,58 @@ class User extends Form
                 'class' => 'btn btn-primary',
             ),
         ));
+    }
+    
+    /**
+     * Should return an array specification compatible with
+     * {@link Zend\InputFilter\Factory::createInputFilter()}.
+     *
+     * @return array
+     */
+    public function getInputFilterSpecification()
+    {
+        return array(
+            'email' => array(
+                'required' => false,
+                'filters' => array( 
+                    array('name' => 'StripTags'), 
+                    array('name' => 'StringTrim'), 
+                ), 
+                'validators' => array(
+                    array ( 
+                        'name' => 'Callback', 
+                        'options' => array(
+                            'messages' => array(
+                                \Zend\Validator\Callback::INVALID_VALUE => 'There is already a person with this email address.',
+                            ),
+                            'callback' => function($value, $context=array()) {
+                                if($value == '' || $value == null) {
+                                    return true;
+                                }
+                                
+                                $em = $this->getServiceLocator()
+                                    ->get('Doctrine\ORM\EntityManager');
+                                $user = $em->getRepository('ErsBase\Entity\User')
+                                        ->findOneBy(array('email' => $value));
+                                
+                                if($user) {
+                                    return false;
+                                }
+                                
+                                return true;
+                            },
+                        ),
+                    ),
+                ),
+            ),
+            /*'price' => array(
+                'required' => true,
+                'validators' => array(
+                    array(
+                        'name' => 'Float',
+                    ),
+                ),
+            ),*/
+        );
     }
 }
