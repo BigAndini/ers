@@ -91,7 +91,7 @@ $this->headTitle($title);
                 <tbody>
                     <?php foreach($stats_productType as $value): ?>
                         <tr>
-                            <td><?php echo $this->escapeHtml($value['displayName']); ?></td>
+                            <td><?php echo $this->escapeHtml($value['display_name']); ?></td>
                             <td><?php echo $value['usercount']; ?></td>
                             <td><?php echo $value['itemcount']; ?></td>
                             <td><?php echo number_format($value['itemcount'] / $value['usercount'], 3); ?></td>
