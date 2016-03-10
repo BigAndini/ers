@@ -164,7 +164,7 @@ class StatisticController extends AbstractActionController {
             }
             if($user['shipped'] == 1) {
                 $aggregateTicket['onsite']++;
-            }
+            } 
             
             $countryId = $user['country_id'] ?: 0;
             $countryName = $user['country_name'] ?: "unknown";

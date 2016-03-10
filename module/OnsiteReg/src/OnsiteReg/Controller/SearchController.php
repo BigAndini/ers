@@ -24,11 +24,11 @@ class SearchController extends AbstractActionController {
             $qb = $em->createQueryBuilder()
                     ->select('p')
                     ->from('ErsBase\Entity\Package', 'p')
-                    ->join('p.participant', 'u')
+                    ->join('p.user', 'u') # participant
                     ->join('p.code', 'pcode')
                     ->join('p.order', 'o')
                     ->join('o.code', 'ocode')
-                    ->join('o.buyer', 'b')
+                    ->join('o.user', 'b') # buyer
                     ->orderBy('u.firstname')
                     ->where('1=1');
 

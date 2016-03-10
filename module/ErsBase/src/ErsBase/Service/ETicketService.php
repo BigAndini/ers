@@ -126,7 +126,7 @@ class ETicketService
         $this->_participant = $participant;
         
         $agegroupService = $this->getServiceLocator()
-                ->get('PreReg\Service\AgegroupService:ticket');
+                ->get('ErsBase\Service\AgegroupService:ticket');
         $agegroup = $agegroupService->getAgegroupByUser($participant);
         if($agegroup) {
             $this->_agegroup = $agegroup;

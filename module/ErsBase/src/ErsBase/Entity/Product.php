@@ -157,4 +157,13 @@ class Product extends Base\Product
     public function getParentProducts() {
         return $this->getProductPackageRelatedBySubProductIds();
     }
+    
+    public function getProductVariantByName($name) {
+        foreach($this->getProductVariants() as $variant) {
+            if($variant->getName() == $name) {
+                return $variant;
+            }
+        }
+        return false;
+    }
 }
