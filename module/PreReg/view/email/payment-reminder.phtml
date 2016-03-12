@@ -36,11 +36,11 @@
         <p>you registered for the EJC at <?php echo $order->getCreated()->format('d.m.Y') ?> and we hope you're looking forward to it.
         We haven't sent you an e-ticket yet, because we haven't received payment for your order.</p>
 
-        <p>Please do one of the following until 20.07.2015 at the latest.</p>
+        <p>Please do one of the following until 20.07.2016 at the latest.</p>
         <ul>
             <li>Please pay your order at 
-                <a href="http://prereg.eja.net<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>">
-                    http://prereg.eja.net<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>
+                <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey()), array('force_canonical' => true)); ?>">
+                    <?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey()), array('force_canonical' => true)); ?>
                 </a>
             </li>
             <li>Let us know if you'd like to transfer your ticket to somebody else (necessary data: first name, last name, date of birth and email address of the new participant)</li>
