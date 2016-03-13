@@ -29,13 +29,13 @@ class PackageController extends AbstractActionController {
         $package = $em->getRepository('ErsBase\Entity\Package')
                 ->find($id);
         
-//        $forrest = new \PreReg\Service\BreadcrumbFactory();
+//        $forrest = new \ErsBase\Service\BreadcrumbFactory();
 //        $forrest->set('order', 'onsite/package', array('action' => 'detail', 'id' => $id));
 //        $forrest->set('user', 'onsite/package', array('action' => 'detail', 'id' => $id));
 //        $forrest->set('package', 'onsite/package', array('action' => 'detail', 'id' => $id));
 //        $forrest->set('item', 'onsite/package', array('action' => 'detail', 'id' => $id));
         
-        $agegroupService = $this->getServiceLocator()->get('PreReg\Service\AgegroupService:ticket');
+        $agegroupService = $this->getServiceLocator()->get('ErsBase\Service\AgegroupService:ticket');
         $ticketAgegroup = $agegroupService->getAgegroupByUser($package->getParticipant());
         
         $unshippedItems = [];

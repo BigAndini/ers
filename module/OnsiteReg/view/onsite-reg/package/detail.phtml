@@ -53,7 +53,7 @@ echo $this->flashMessenger()
                 <p class="h4"><?php echo $this->escapeHtml($package->getParticipant()->getFullName()); ?></p>
                 <?php
                 if($package->getParticipant()->getBirthday())
-                    echo $package->getParticipant()->getBirthday()->format('d.m.Y') . ' (' . $package->getParticipant()->getAge() . ' years)';
+                    echo $package->getParticipant()->getBirthday()->format('d.m.Y') . ' (' . $package->getParticipant()->getAge()->format('%Y') . ' years)';
                 else
                     echo '<span class="gray">unknown birthday</span>';
                 ?>
