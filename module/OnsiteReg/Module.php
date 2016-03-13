@@ -79,7 +79,7 @@ class Module
         $zfcAuthEvents = $sm->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
 
         $zfcAuthEvents->attach( 'authenticate.success', function( $authEvent ) use( $sm ){
-            $loginService =  $sm->get( 'ErsBase\Service\LoginService' );
+            $loginService =  $sm->get( 'PreReg\Service\LoginService' );
             $user_id = $authEvent->getIdentity();
             $loginService->setUserId($user_id);
             $loginService->onLogin();
@@ -87,7 +87,7 @@ class Module
         });
         
         $zfcAuthEvents->attach( 'logout', function( $authEvent ) use( $sm ){
-            $loginService =  $sm->get( 'ErsBase\Service\LoginService' );
+            $loginService =  $sm->get( 'PreReg\Service\LoginService' );
             #$user_id = $authEvent->getIdentity();
             #$loginService->setUserId($user_id);
             $loginService->onLogout();
