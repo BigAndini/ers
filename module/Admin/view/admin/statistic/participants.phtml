@@ -91,7 +91,7 @@ $this->headTitle($title);
                 <tbody>
                     <?php foreach($stats_productType as $value): ?>
                         <tr>
-                            <td><?php echo $this->escapeHtml($value['display_name']); ?></td>
+                            <td><?php echo $this->escapeHtml($value['label']); ?></td>
                             <td><?php echo $value['usercount']; ?></td>
                             <td><?php echo $value['itemcount']; ?></td>
                             <td><?php echo number_format($value['itemcount'] / $value['usercount'], 3); ?></td>
@@ -102,31 +102,33 @@ $this->headTitle($title);
         </div>
         
         <div class="panel panel-default">
-            <div class="panel-heading">Participants by product variant</div>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Variant</th>
-                        <th>Variant value</th>
-                        <th>Item count</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php 
-                    foreach($stats_variant as $variantName => $variantValues):
-                        foreach($variantValues as $valueKey => $valueCount):
-                    ?>
+            <div class="panel-heading">Items by product variant</div>
+            <div class="panel-body">
+                <?php foreach($stats_productVariant as $productData): ?>
+                    <div class="h3"><?php echo $this->escapeHtml($productData["productName"]) ?></div>
+                    <table class="table table-striped">
+                        <thead>
                             <tr>
-                                <td><?php echo $this->escapeHtml($variantName); ?></td>
-                                <td><?php echo $this->escapeHtml($valueKey); ?></td>
-                                <td><?php echo $valueCount; ?></td>
+                                <?php foreach($productData["variantNames"] as $variantName) {
+                                    echo '<th>' . $this->escapeHtml($variantName) . '</th>';
+                                } ?>
+                                <th>Item count</th>
                             </tr>
-                    <?php
-                        endforeach;
-                    endforeach;
-                    ?>
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            <?php foreach($productData["variantData"] as $variantData): ?>
+                                <tr>
+                                    <?php foreach($variantData["variantLabels"] as $variantLabel) {
+                                        echo '<td>' . $this->escapeHtml($variantLabel) . '</td>';
+                                    } ?>
+                                    <td><?php echo $variantData['itemCount']; ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <hr />
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
     

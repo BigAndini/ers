@@ -115,6 +115,7 @@ class Product
     /**
      * @ORM\OneToMany(targetEntity="ProductVariant", mappedBy="product", cascade={"persist", "merge"})
      * @ORM\JoinColumn(name="id", referencedColumnName="Product_id")
+     * @ORM\OrderBy({"position" = "ASC"})
      */
     protected $productVariants;
 
