@@ -948,4 +948,28 @@ class CronController extends AbstractActionController {
         }
         $em->flush();
     }
+    
+    public function correctStatusAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $orders = $em->getRepository('ErsBase\Entity\Order')
+                ->findAll();
+        
+        
+        foreach($orders as $order) {
+            $status = $order->getStatus();
+            foreach($order->getPackages() as $package) {
+                foreach($package->getItems() as $item) {
+                    $item->setStatus($status);
+                    $em->persist($item);
+                }
+                $package->setStatus($status);
+                $em->persist($package);
+            }
+            $order->setTotalSum($order->getSum());
+            $order->setOrderSum($order->getPrice());
+            $em->persist($order);
+        }
+        $em->flush();
+    }
 }

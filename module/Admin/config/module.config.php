@@ -409,6 +409,15 @@ return array(
                         )
                     )
                 ),
+                'correct-status' => array(
+                    'options' => array(
+                        'route'    => 'correct-status',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-status'
+                        )
+                    )
+                ),
             ),
         ),
     ),
