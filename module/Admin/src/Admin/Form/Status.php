@@ -52,6 +52,20 @@ class Status extends Form
             ),
         ));
         $this->add(array(
+            'type' => 'checkbox',
+            'name' => 'active',
+            'attributes' => array(
+                'class' => 'checkbox',
+                'value' => '1',
+            ),
+            'options' => array(
+                'label' => 'Active',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        $this->add(array(
             'name' => 'description',
             'attributes' => array(
                 'type'  => 'int',

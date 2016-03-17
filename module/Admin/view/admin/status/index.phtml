@@ -12,6 +12,7 @@ $this->headTitle($title);
             <tr>
                 <th>Pos.</th>
                 <th>name</th>
+                <th>active</th>
                 <th>description</th>
                 <th>
                     <a class="btn btn-success btn-sm" href="<?php echo $this->url('admin/status', array('action' => 'add')); ?>"><i class="fa fa-plus"></i></a>
@@ -21,6 +22,13 @@ $this->headTitle($title);
             <tr>
                 <td><?php echo $status->getPosition(); ?></td>
                 <td><?php echo $status->getValue(); ?></td>
+                <td>
+                    <?php if($status->getActive()): ?>
+                        <i class="fa fa-check"></i>
+                    <?php else: ?>
+                        <i class="fa fa-times"></i>
+                    <?php endif; ?>
+                </td>
                 <td><?php echo $status->getDescription(); ?></td>
                 <td class="text-nowrap">
                     <a class="btn btn-default btn-sm" href="<?php echo $this->url('admin/status', array('action' => 'edit', 'id' => $status->getId())); ?>"><i class="fa fa-edit"></i></a>
