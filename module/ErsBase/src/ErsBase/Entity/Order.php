@@ -476,7 +476,9 @@ class Order extends Base\Order
      */
     public function getSum() {
         $sum = $this->getPrice();
-        $sum += $this->getPaymentType()->calcFee($sum);
+        if($this->getPaymentType()) {
+            $sum += $this->getPaymentType()->calcFee($sum);
+        }
         return $sum;
     }
     
