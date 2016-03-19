@@ -10,8 +10,6 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\DBAL\DriverManager;
 
 class StatisticController extends AbstractActionController {
     public function indexAction() {
@@ -174,8 +172,9 @@ class StatisticController extends AbstractActionController {
             $countryStats[$countryId]['count']++;
         }
         
-        // postprocess countries: sort descending by count and move "unknown" (ID 0) to the front
-        uasort($countryStats, function($a, $b){ return $b['count'] - $a['count']; });
+        // postprocess countries: sort descending by count (then by name)
+        uasort($countryStats, function($a, $b){ return ($b['count'] - $a['count']) ?: strcmp($a['name'], $b['name']); });
+        // move 'unknown' (ID 0) to front
         if(isset($countryStats[0])) {
             $unknownData = $countryStats[0];
             unset($countryStats[0]);
@@ -224,31 +223,34 @@ class StatisticController extends AbstractActionController {
         /* @var $product \ErsBase\Entity\Product */
         foreach($allProducts as $product) {
             $qb = $em->createQueryBuilder()
-                        ->select('COUNT(i.id) itemcount')
-                        ->from('ErsBase\Entity\Item', 'i')
-                        ->join('i.status', 's', 'WITH', 's.active = 1')
-                        ->where('i.Product_id = :prod_id')
-                        ->setParameter('prod_id', $product->getId());
+                    ->select('COUNT(i.id) itemcount')
+                    ->from('ErsBase\Entity\Item', 'i')
+                    ->join('i.status', 's', 'WITH', 's.active = 1')
+                    ->where('i.Product_id = :prod_id')
+                    ->setParameter('prod_id', $product->getId());
             
             $variantNames = [];
-            $variantValueColumns = [];
+            $variantValueIdColumns = []; // list of query variables that hold the ProductVariantValue.id results
+            $variantValueLabelColumns = []; // list of query variables that hold the ProductVariantValue.value results
             $i = 0;
             foreach($product->getProductVariants() as $variant) {
                 $variantNames[] = $variant->getName();
                 
-                $idParamName = 'variantId' . $i; // parameter to bind the variant id to
                 $ivarName = 'ivar' . $i; // internal name of the "ItemVariant" entities
+                $idParamName = 'variantId' . $i; // parameter to bind the variant id to
                 $varValName = 'varvalue' . $i; // internal name of the "ProductVariantValue" entities
-                $varValCol = 'label' . $i; // column name of the string value of the variant
+                $varValIdCol = 'valueId' . $i; // column name of the id of the ProductVariantValue
+                $varValLabelCol = 'label' . $i; // column name of the string value of the ProductVariantValue
                 
                 $qb = $qb->join('i.itemVariants', $ivarName, 'WITH', "$ivarName.product_variant_id = :$idParamName")
                          ->join("$ivarName.productVariantValue", $varValName)
-                         ->addSelect("$varValName.value $varValCol")
+                         ->addSelect("$varValName.id $varValIdCol", "$varValName.value $varValLabelCol")
                          ->addGroupBy("$varValName.id")
                          ->addOrderBy("$varValName.position")
                          ->setParameter($idParamName, $variant->getId());
                 
-                $variantValueColumns[] = $varValCol;
+                $variantValueIdColumns[] = $varValIdCol;
+                $variantValueLabelColumns[] = $varValLabelCol;
                 
                 $i++;
             }
@@ -256,14 +258,22 @@ class StatisticController extends AbstractActionController {
             // skip products that don't have any variants
             if(empty($variantNames)) continue;
             
-            
             $variantData = [];
-            foreach($qb->getQuery()->getResult() as $row) {
-                // TODO show ALL possible combinations of variant values, not only ones where items are present
-                $variantData[] = [
-                    "variantLabels" => array_map(function($col) use ($row) { return $row[$col]; }, $variantValueColumns),
-                    "itemCount" => $row["itemcount"]
+            
+            // prepopulate with default values for all variant combinations
+            $allCombinations = $this->generateAllVariantCombinations($product);
+            foreach($allCombinations as $combinationKey => $combinationLabels) {
+               $variantData[$combinationKey] = [
+                    "variantLabels" => $combinationLabels,
+                    "itemCount" => 0
                 ];
+            }
+            
+            // fill with real itemcount values for present entries
+            foreach($qb->getQuery()->getResult() as $row) {
+                // ':'-separated list of ids as the key
+                $combinationKey = ':' . implode(':', array_map(function($col) use ($row) { return $row[$col]; }, $variantValueIdColumns));
+                $variantData[$combinationKey]["itemCount"] = $row["itemcount"];
             }
             
             $itemsByVariantByProduct[] = [
@@ -282,6 +292,28 @@ class StatisticController extends AbstractActionController {
            'stats_productVariant' => $itemsByVariantByProduct,
            'stats_country' => $countryStats,
         ));
+    }
+    
+    private function generateAllVariantCombinations(\ErsBase\Entity\Product $product) {
+        $results = [ '' => [] ];
+        
+        // produce an array of all possible combinations of variant values
+        foreach ($product->getProductVariants() as $variant) {
+            $newResults = [];
+            // combine each entry so far with each value of the new variant
+            foreach($results as $key => $tuple) {
+                foreach($variant->getProductVariantValues() as $variantValue) {
+                    $newKey = $key . ':' . $variantValue->getId();
+                    $newTuple = $tuple;
+                    $newTuple[] = $variantValue->getValue();
+                    $newResults[$newKey] = $newTuple;
+                }
+            }
+            
+            $results = $newResults;
+        }
+        
+        return $results;
     }
     
     public function bankaccountsAction() {
