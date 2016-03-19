@@ -144,6 +144,7 @@ class ProductController extends AbstractActionController {
                 ->findOneBy(array('id' => $product_id));
         $status = $em->getRepository('ErsBase\Entity\Status')
                 ->findOneBy(array('value' => 'order pending'));
+        # TODO: check if order pending status was found.
         
         $form = $this->getServiceLocator()->get('PreReg\Form\ProductView');
         #$url = $this->url()->fromRoute('cart', array('action' => 'add'));
