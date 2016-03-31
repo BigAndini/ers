@@ -16,3 +16,4 @@ test/secret.py
 tmp/*
 vendor/bin
 vendor/*
+bin/*
