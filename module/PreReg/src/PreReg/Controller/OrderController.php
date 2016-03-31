@@ -397,6 +397,7 @@ class OrderController extends AbstractActionController {
                 }
                 
                 $participant = $package->getParticipant();
+                $participant->setActive(true);
                 
                 if($participant->getFirstname() == '' || $participant->getSurname() == '') {
                     $participant = $buyer;

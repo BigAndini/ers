@@ -972,4 +972,21 @@ class CronController extends AbstractActionController {
         }
         $em->flush();
     }
+    
+    public function correctActiveUserAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $users = $em->getRepository('ErsBase\Entity\User')
+                ->findAll();
+        foreach($users as $user) {
+            foreach($user->getPackages() as $package) {
+                $order = $package->getOrder();
+                if($order->getStatus()->getActive()) {
+                    $user->setActive(true);
+                    $em->persist($user);
+                }
+            }
+        }
+        $em->flush();
+    }
 }

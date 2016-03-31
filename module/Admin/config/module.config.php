@@ -418,6 +418,15 @@ return array(
                         )
                     )
                 ),
+                'correct-active-user' => array(
+                    'options' => array(
+                        'route'    => 'correct-active-user',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-active-user'
+                        )
+                    )
+                ),
             ),
         ),
     ),
