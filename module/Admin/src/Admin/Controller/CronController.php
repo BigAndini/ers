@@ -146,8 +146,16 @@ class CronController extends AbstractActionController {
          */
         
         #TODO: find order which contain items in status != paid and != cancelled and != refund
-        $orders = $em->getRepository('ErsBase\Entity\Order')
-                ->findBy(array('payment_status' => 'unpaid'));
+        /*$orders = $em->getRepository('ErsBase\Entity\Order')
+                ->findBy(array('payment_status' => 'unpaid'));*/
+        
+        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb->join('o.status', 's');
+        $qb->where('s.value = :status');
+        $qb->setParameter('status', 'ordered');
+        
+        $orders = $qb->getQuery()->getResult();
+        
         foreach($orders as $order) {
             $statement_amount = $order->getStatementAmount();
             $order_amount = $order->getSum();
@@ -164,18 +172,26 @@ class CronController extends AbstractActionController {
                 echo "-";
             }
             if($paid) {
+                $paid_status = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'paid'));
+                
                 $order->setPaymentStatus('paid');
+                $order->setStatus($paid_status);
 
                 foreach($order->getItems() as $item) {
-                    $item->setStatus('paid');
+                    #$item->setStatus('paid');
+                    $item->setStatus($paid_status);
                     $em->persist($item);
                 }
 
                 $em->persist($order);
                 #$em->persist($orderStatus);
             } else {
+                $ordered_status = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'ordered'));
                 foreach($order->getItems() as $item) {
-                    $item->setStatus('ordered');
+                    #$item->setStatus('ordered');
+                    $item->setStatus($ordered_status);
                     $em->persist($item);
                 }
             }
