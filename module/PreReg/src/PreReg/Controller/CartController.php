@@ -241,6 +241,26 @@ class CartController extends AbstractActionController {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
+                $em = $this->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                $orderContainer = new Container('order');
+                
+                $order = $em->getRepository('ErsBase\Entity\Order')
+                        ->findOneBy(array('id' => $orderContainer->order_id));
+                
+                # TODO: move delete order to OrderService
+                foreach($order->getPackages() as $package) {
+                    $participant = $package->getUser();
+                    if(!$participant->isActive()) {
+                        $em->remove($participant);
+                    }
+                    foreach($package->getItems() as $item) {
+                        $em->remove($item);
+                    }
+                    $em->remove($package);
+                }
+                $em->remove($order);
+                
                 $cartContainer = new Container('cart');
                 $cartContainer->init = 0;
                 $emptycart = true;
