@@ -191,4 +191,16 @@ class Item extends Base\Item
     public function getOrder() {
         return $this->getPackage()->getOrder();
     }
+    
+    /**
+     * extension to getItem
+     */
+    public function getTransferredItem() {
+        return $this->getItem();
+    }
+    public function setTransferredItem($item) {
+        $this->setItem($item);
+        
+        return $this;
+    }
 }

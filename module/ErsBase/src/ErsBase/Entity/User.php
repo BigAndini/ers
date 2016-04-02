@@ -130,4 +130,8 @@ class User extends Base\User implements UserInterface, ProviderInterface
             return new \DateInterval('P0Y');
         }
     }
+    
+    public function getFullName() {
+        return $this->getFirstname() . ' ' . $this->getSurname();
+    }
 }

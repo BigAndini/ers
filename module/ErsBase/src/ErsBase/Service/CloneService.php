@@ -84,8 +84,12 @@ class CloneService
         $em->persist($newItem);
         
         if($this->getTransfer()) {
+            #$item->setTransferredItemId($newItem->getId());
             $item->setTransferredItem($newItem);
-            $item->setStatus('transferred');
+            $status = $em->getRepository("ErsBase\Entity\Status")
+                ->findOneBy(array('value' => 'transferred'));
+            #$item->setStatus('transferred');
+            $item->setStatus($status);
             $em->persist($item);
         }
         

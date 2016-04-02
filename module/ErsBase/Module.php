@@ -141,7 +141,7 @@ class Module
                     $service->setServiceLocator($sm);
                     $em = $sm->get('Doctrine\ORM\EntityManager');
                     $products = $em->getRepository('ErsBase\Entity\Product')
-                                ->findBy(array('visible' => '1'), array('ordering' => 'ASC'));
+                                ->findBy(array('visible' => '1'), array('position' => 'ASC'));
                     $service->setProducts($products);
                     return $service;
                 },

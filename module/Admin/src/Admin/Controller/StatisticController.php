@@ -10,8 +10,6 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\DBAL\DriverManager;
 
 class StatisticController extends AbstractActionController {
     public function indexAction() {
@@ -60,20 +58,20 @@ class StatisticController extends AbstractActionController {
         
         $paymentStatusStats = $em->createQueryBuilder()
                 #->select(array_merge(array('o.payment_status AS label'), $orderSelectFields))
-                ->select(array_merge(array('s.value AS label'), $orderSelectFields))
-                ->from('ErsBase\Entity\Order', 'o')
-                ->join('o.status', 's')
+                ->select(array_merge(array('s status, s.value label'), $orderSelectFields))
+                ->from('ErsBase\Entity\Status', 's')
+                ->leftJoin('s.orders', 'o')
                 #->groupBy('o.payment_status')
                 ->groupBy('s.value')
+                ->orderBy('s.position')
                 ->getQuery()->getResult();
         
         
+        
         $byStatusGroups = array('active' => array(), 'inactive' => array());
-        foreach($paymentStatusStats AS $status) {
-            if($status["label"] === "cancelled" || $status["label"] === "refund")
-                $byStatusGroups['inactive'][] = $status;
-            else
-                $byStatusGroups['active'][] = $status;
+        foreach($paymentStatusStats AS $statusData) {
+            $group = ($statusData['status']->getActive() ? 'active' : 'inactive');
+            $byStatusGroups[$group][] = $statusData;
         }
         
         $paymentTypeStats = $em->createQueryBuilder()
@@ -81,7 +79,7 @@ class StatisticController extends AbstractActionController {
                 ->from('ErsBase\Entity\PaymentType', 'pt')
                 #->join('pt.orders', 'o', 'WITH', "o.payment_status != 'cancelled' AND o.payment_status != 'refund'")
                 ->join('pt.orders', 'o')
-                ->join('o.status', 's', 'WITH', "s.value != 'cancelled' AND s.value != 'refund'")
+                ->join('o.status', 's', 'WITH', "s.active = 1")
                 ->groupBy('pt.id')
                 ->getQuery()->getResult();
         
@@ -117,7 +115,7 @@ class StatisticController extends AbstractActionController {
                 ->join('u.packages', 'p')
                 #->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
                 ->join('p.items', 'i')
-                ->join('i.status', 's', 'WITH', "s.value != 'cancelled' AND s.value != 'refund'")
+                ->join('i.status', 's', 'WITH', "s.active = 1")
                 ->groupBy('u.id')
                 ->getQuery()->getResult();
         
@@ -164,7 +162,7 @@ class StatisticController extends AbstractActionController {
             }
             if($user['shipped'] == 1) {
                 $aggregateTicket['onsite']++;
-            }
+            } 
             
             $countryId = $user['country_id'] ?: 0;
             $countryName = $user['country_name'] ?: "unknown";
@@ -174,59 +172,148 @@ class StatisticController extends AbstractActionController {
             $countryStats[$countryId]['count']++;
         }
         
-        
-        /*
-         * === by product type ===
-         */
-        $productStats = $em->createQueryBuilder()
-                ->select('prod.display_name', 'COUNT(DISTINCT u.id) AS usercount', 'COUNT(i.id) itemcount')
-                ->from('ErsBase\Entity\Package', 'p')
-                ->join('p.user', 'u')
-                ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
-                ->join('i.product', 'prod')
-                ->groupBy('prod.id')
-                ->getQuery()->getResult();
-        
-        
-        /*
-         * === by product variant ===
-         */
-        $variants = $em->getRepository('ErsBase\Entity\ProductVariant')
-                ->findBy(array('type' => 'select'));
-        
-        $variantStats = array();
-        /* @var $variant \ErsBase\Entity\ProductVariant */
-        foreach($variants as $variant) {
-            $variantStats[$variant->getName()] = array();
-            foreach($variant->getProductVariantValues() as $value) {
-                $qb = $em->createQueryBuilder()
-                        ->select('count(DISTINCT i.id)')
-                        ->from('ErsBase\Entity\ItemVariant', 'ivar')
-                        ->join('ivar.item', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
-                        ->where('ivar.product_variant_value_id = :value_id')
-                        ->setParameter('value_id', $value->getId());
-                
-                $count = $qb->getQuery()->getSingleScalarResult();
-                $variantStats[$variant->getName()][$value->getValue()] = $count;
-            }
-        }
-        
-        
-        // postprocess countries: sort descending by count and move "unknown" to the front
-        uasort($countryStats, function($a, $b){ return $b['count'] - $a['count']; });
+        // postprocess countries: sort descending by count (then by name)
+        uasort($countryStats, function($a, $b){ return ($b['count'] - $a['count']) ?: strcmp($a['name'], $b['name']); });
+        // move 'unknown' (ID 0) to front
         if(isset($countryStats[0])) {
             $unknownData = $countryStats[0];
             unset($countryStats[0]);
             array_unshift($countryStats, $unknownData);
         }
         
+        
+        
+        /*
+         * === by product type ===
+         */
+        
+        // make sure the column we are indexing by with array_column does not have numeric keys,
+        // otherwise array_merge does not do what we want (overwrite default values if present)
+        $pseudoIdColumn = "CONCAT('x', prod.id) pseudoId";
+        
+        $productStats = array_merge(
+                // get all products with all counts at 0 first (default values)
+                array_column($em->createQueryBuilder()
+                        ->select($pseudoIdColumn, 'prod.name label', '0 usercount', '0 itemcount')
+                        ->from('ErsBase\Entity\Product', 'prod')
+                        ->orderBy('prod.position')
+                        ->getQuery()->getResult(),
+                    NULL, 'pseudoId'),
+                
+                // calculate actual counts by product
+                array_column($em->createQueryBuilder()
+                        ->select($pseudoIdColumn, 'prod.name label', 'COUNT(DISTINCT u.id) AS usercount', 'COUNT(i.id) itemcount')
+                        ->from('ErsBase\Entity\Product', 'prod')
+                        ->join('prod.items', 'i')
+                        ->join('i.status', 's', 'WITH', 's.active = 1')
+                        ->join('i.package', 'p')
+                        ->join('p.user', 'u')
+                        ->groupBy('prod.id')
+                        ->orderBy('prod.position')
+                        ->getQuery()->getResult(),
+                    NULL, 'pseudoId')
+            );
+        
+        
+        /*
+         * === by product variant ===
+         */
+        $itemsByVariantByProduct = [];
+        $allProducts = $em->getRepository('ErsBase\Entity\Product')->findBy([], ['position' => 'ASC']);
+        /* @var $product \ErsBase\Entity\Product */
+        foreach($allProducts as $product) {
+            $qb = $em->createQueryBuilder()
+                    ->select('COUNT(i.id) itemcount')
+                    ->from('ErsBase\Entity\Item', 'i')
+                    ->join('i.status', 's', 'WITH', 's.active = 1')
+                    ->where('i.Product_id = :prod_id')
+                    ->setParameter('prod_id', $product->getId());
+            
+            $variantNames = [];
+            $variantValueIdColumns = []; // list of query variables that hold the ProductVariantValue.id results
+            $variantValueLabelColumns = []; // list of query variables that hold the ProductVariantValue.value results
+            $i = 0;
+            foreach($product->getProductVariants() as $variant) {
+                $variantNames[] = $variant->getName();
+                
+                $ivarName = 'ivar' . $i; // internal name of the "ItemVariant" entities
+                $idParamName = 'variantId' . $i; // parameter to bind the variant id to
+                $varValName = 'varvalue' . $i; // internal name of the "ProductVariantValue" entities
+                $varValIdCol = 'valueId' . $i; // column name of the id of the ProductVariantValue
+                $varValLabelCol = 'label' . $i; // column name of the string value of the ProductVariantValue
+                
+                $qb = $qb->join('i.itemVariants', $ivarName, 'WITH', "$ivarName.product_variant_id = :$idParamName")
+                         ->join("$ivarName.productVariantValue", $varValName)
+                         ->addSelect("$varValName.id $varValIdCol", "$varValName.value $varValLabelCol")
+                         ->addGroupBy("$varValName.id")
+                         ->addOrderBy("$varValName.position")
+                         ->setParameter($idParamName, $variant->getId());
+                
+                $variantValueIdColumns[] = $varValIdCol;
+                $variantValueLabelColumns[] = $varValLabelCol;
+                
+                $i++;
+            }
+            
+            // skip products that don't have any variants
+            if(empty($variantNames)) continue;
+            
+            $variantData = [];
+            
+            // prepopulate with default values for all variant combinations
+            $allCombinations = $this->generateAllVariantCombinations($product);
+            foreach($allCombinations as $combinationKey => $combinationLabels) {
+               $variantData[$combinationKey] = [
+                    "variantLabels" => $combinationLabels,
+                    "itemCount" => 0
+                ];
+            }
+            
+            // fill with real itemcount values for present entries
+            foreach($qb->getQuery()->getResult() as $row) {
+                // ':'-separated list of ids as the key
+                $combinationKey = ':' . implode(':', array_map(function($col) use ($row) { return $row[$col]; }, $variantValueIdColumns));
+                $variantData[$combinationKey]["itemCount"] = $row["itemcount"];
+            }
+            
+            $itemsByVariantByProduct[] = [
+                "productName" => $product->getName(),
+                "variantNames" => $variantNames,
+                "variantData" => $variantData
+            ];
+        }
+        
+        
+        
         return new ViewModel(array(
            'stats_agegroupPrice' => $agegroupStatsPrice,
            'stats_agegroupTicket' => $agegroupStatsTicket,
            'stats_productType' => $productStats,
-           'stats_variant' => $variantStats,
+           'stats_productVariant' => $itemsByVariantByProduct,
            'stats_country' => $countryStats,
         ));
+    }
+    
+    private function generateAllVariantCombinations(\ErsBase\Entity\Product $product) {
+        $results = [ '' => [] ];
+        
+        // produce an array of all possible combinations of variant values
+        foreach ($product->getProductVariants() as $variant) {
+            $newResults = [];
+            // combine each entry so far with each value of the new variant
+            foreach($results as $key => $tuple) {
+                foreach($variant->getProductVariantValues() as $variantValue) {
+                    $newKey = $key . ':' . $variantValue->getId();
+                    $newTuple = $tuple;
+                    $newTuple[] = $variantValue->getValue();
+                    $newResults[$newKey] = $newTuple;
+                }
+            }
+            
+            $results = $newResults;
+        }
+        
+        return $results;
     }
     
     public function bankaccountsAction() {

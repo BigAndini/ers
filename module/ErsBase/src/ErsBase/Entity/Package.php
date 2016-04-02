@@ -300,4 +300,8 @@ class Package extends Base\Package
             return 'undefined';
         }
     }
+    
+    public function getAllItems() {
+        return $this->getItems();
+    }
 }

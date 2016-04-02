@@ -46,7 +46,7 @@
                 /*
                  * gala show ticket
                  */
-                case '5': ?>
+                case '98': ?>
                     <?php if(!isset($items[$product->getId()]) || count($items[$product->getId()]) == 0): ?>
                         <p class="order-value">none</p>
                     <?php else: ?>
@@ -66,11 +66,11 @@
                 /*
                  * day ticket
                  */
-                case '4': ?>
+                case '99': ?>
                         <p class="order-value">
                             <table class="day-table">
                                 <tr>
-                                    <?php foreach($product->getProductVariantByName('day')->getProductVariantValues() as $value):
+                                    <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
                                         $timestamp = strtotime($value->getValue());
                                         $date = new DateTime();
                                         $date->setTimestamp($timestamp); ?>
@@ -78,7 +78,7 @@
                                     <?php endforeach; ?>
                                 </tr>
                                 <tr>
-                                    <?php foreach($product->getProductVariantByName('day')->getProductVariantValues() as $value):
+                                    <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
                                         $timestamp = strtotime($value->getValue());
                                         $date = new DateTime();
                                         $date->setTimestamp($timestamp); ?>
@@ -86,14 +86,14 @@
                                     <?php endforeach; ?>
                                 </tr>
                                 <tr>
-                                    <?php foreach($product->getProductVariantByName('day')->getProductVariantValues() as $value):
+                                    <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
                                         $timestamp = strtotime($value->getValue());
                                         $date = new DateTime();
                                         $date->setTimestamp($timestamp);
                                         $found = false;
                                         if(isset($items[$product->getId()]) && is_array($items[$product->getId()])):
                                             foreach($items[$product->getId()] as $item):
-                                                $itemValue = $item->getItemVariantByName('day')->getValue();
+                                                $itemValue = $item->getItemVariantByName('Day')->getValue();
                                                 if($timestamp == strtotime($itemValue)) {
                                                     $found = true;
                                                 }

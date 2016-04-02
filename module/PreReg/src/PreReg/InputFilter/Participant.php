@@ -217,7 +217,6 @@ class Participant implements InputFilterAwareInterface
                                 }
                                 return true;
                             },
-                            
                         ),
                     ),
                 ), 

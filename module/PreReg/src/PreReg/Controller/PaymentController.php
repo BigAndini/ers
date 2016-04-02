@@ -190,6 +190,7 @@ class PaymentController extends AbstractActionController {
                         array('force_canonical' => true)
                 ),
             'trx_securityhash' => $trx_securityhash,
+            'shoppier_id' => $order->getCode()->getValue(),
         );
         
         $ipayment_url = $action.'?'.http_build_query($param);
@@ -382,11 +383,17 @@ class PaymentController extends AbstractActionController {
                 ->findOneBy(array('value' => 'paid'));
         
         $order->setPaymentStatus('paid');
-        foreach($order->getItems() as $item) {
+        foreach($order->getPackage() as $package) {
+            $package->setStatus($status);
+            foreach($package->getItems() as $item) {
+                $item->setStatus($status);
+            }
+        }
+        /*foreach($order->getItems() as $item) {
             #$item->setStatus('paid');
             $item->setStatus($status);
             $em->persist($item);
-        }
+        }*/
         
         $order->setStatus($status);
         
