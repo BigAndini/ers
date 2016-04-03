@@ -197,7 +197,7 @@ class ProductView extends Form
                             'disabled' => $disabled,
                         );
                     }
-                    if($package_info[$variant->getId()]) {
+                    /*if($package_info[$variant->getId()]) {
                         $options[] = array(
                             'value' => 0,
                             'label' => 'no '.$variant->getName(),
@@ -206,7 +206,7 @@ class ProductView extends Form
                     array_unshift($options, array(
                         'value' => '',
                         'label' => '',
-                    ));
+                    ));*/
             
                     $productVariant['attributes'] = array();
                     $productVariant['attributes']['options'] = $options;
