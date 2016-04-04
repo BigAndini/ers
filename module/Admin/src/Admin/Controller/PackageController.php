@@ -289,7 +289,10 @@ class PackageController extends AbstractActionController {
                             $order->setPaymentStatus('unpaid');
                         }
 
-                        $itemBefore->setStatus('cancelled');
+                        $status_cancelled = $em->getRepository('ErsBase\Entity\Status')
+                                ->findOneBy(array('value' => 'cancelled'));
+                        #$itemBefore->setStatus('cancelled');
+                        $itemBefore->setStatus($status_cancelled);
                         $em->persist($itemBefore);
 
                         $em->flush();
