@@ -26,6 +26,8 @@ We tested on PHP 5.5, maybe 5.4 is working aswell, 5.3 doesn't
 PHP modules needed:
 - gd
 - fileinfo
+- iconv
+- intl
 
 ### 3. Create a mysql database and user
 
@@ -66,17 +68,44 @@ return array(
 );
 ```
 
-
-### 6. Generate database scheme and load basic data
+### 6. Setup ERS variables
+Put this into config/autoload/ers.local.php. You can find an example in
+config/autoload/ers.dist.php
 
 ```
-$ php vendor/bin/doctrine-module orm:validate-schema
-$ php vendor/bin/doctrine-module orm:schema-tool:create
-$ php vendor/bin/doctrine-module orm:schema-tool:update --force
-$ php vendor/bin/doctrine-module dbal:import data/initial.sql
+return array(
+    'ERS' => array(
+        'sender_email'      => 'prereg@eja.net',
+        'name_short'        => "EJC2016",
+        'name_with_year'    => "EJC 2016",
+        'name_with_number'  => "39th European Juggling Convention",
+        'info_mail'         => "info@ejc2016.org",
+        'website'           => "http://www.ejc2016.org",
+        'year'              => 2016,
+        'start'             => new DateTime('2016-07-30'),
+        'end'               => new DateTime('2016-08-07'),
+        'registration_info' => 'http://prereg.eja.net',
+    ),
+    'environment' => 'develop',
+    #'environment' => 'testing',
+    #'environment' => 'production',
+);
 ```
 
-### 7. Add admin user
+### 7. Generate database scheme and load basic data
+
+You should run this commands with the users who is running your webserver. 
+Either login with that user or prepend to commands with i.e. "sudo -u http" or 
+"sudo -u apache".
+
+```
+$ php bin/doctrine-module orm:validate-schema
+$ php bin/doctrine-module orm:schema-tool:create
+$ php bin/doctrine-module orm:schema-tool:update --force
+$ php bin/doctrine-module dbal:import data/initial.sql
+```
+
+### 8. Add admin user
 
 ```
 INSERT INTO `user` (`email`, `active`) VALUES ('your.mail@example.org', '1');
@@ -89,13 +118,13 @@ INSERT INTO `user_has_role` (`user_id`, `role_id`) VALUES ('1', '4');
 INSERT INTO `user_has_role` (`user_id`, `role_id`) VALUES ('1', '5');
 ```
 
-### 8. Set admin users password
+### 9. Set admin users password
 
 Goto http://yourdomain.org/profile/request-password, fill in your e-mail 
 address and request the mail in which you can find further instructions how to
 setup the password for your user.
 
-### 9. Login and go on with the basic setup
+### 10. Login and go on with the basic setup
 
 Go to Shop menu item and create basic information from top to bottom. After that
 add your first products through the Product menu item.
