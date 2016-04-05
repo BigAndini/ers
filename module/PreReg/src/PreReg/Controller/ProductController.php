@@ -78,6 +78,8 @@ class ProductController extends AbstractActionController {
     }*/
     
     public function addAction() {
+        $this->getServiceLocator()->get('ErsBase\Service\TicketCounterService')
+                ->checkLimits();
         /*
          * Get and check parameters
          */
@@ -441,6 +443,9 @@ class ProductController extends AbstractActionController {
     
     
     public function editAction() {
+        $this->getServiceLocator()->get('ErsBase\Service\TicketCounterService')
+                ->checkLimits();
+        
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('product')) {
             $forrest->set('product', 'product', array('action' => 'edit'));
