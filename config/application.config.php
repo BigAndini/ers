@@ -18,7 +18,7 @@ $config = array(
         'Admin',
         'PreReg',
         'OnsiteReg',
-        'OrgHeiglPiwik',
+        #'OrgHeiglPiwik',
         'GoalioRememberMe',
         'GoalioRememberMeDoctrineORM',
     ),
