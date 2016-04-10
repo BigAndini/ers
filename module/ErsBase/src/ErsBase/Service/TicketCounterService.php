@@ -39,7 +39,7 @@ class TicketCounterService {
             $qb->select('COUNT(DISTINCT i.id)');
             $qb->from('ErsBase\Entity\Item', 'i');
             $qb->join('i.status', 's');
-            $qb->where("s.value != 'cancelled' AND s.value != 'refund' AND s.value != 'order pending'");
+            $qb->where("s.active = 1");
 
             $i = 0;
             foreach ($counter->getProductVariantValues() as $variantValue) {
