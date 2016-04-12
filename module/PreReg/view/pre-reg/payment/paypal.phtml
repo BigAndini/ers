@@ -1,13 +1,18 @@
 <?php
+$this->headTitle("Pay with PayPal");
 
-$title = 'Payment Type: '.$paymenttype->getName();
-$this->headTitle($title);
+if(isset($error)):
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
-<div>
-    <?php echo $paymenttype->getLongDescription(); ?>
+
+<div class="jumbotron">
+    <p class="text-danger"><i class="fa fa-warning"></i> <?php echo $this->escapeHtml($error); ?></p>
 </div>
-<div>
-    <?php $breadcrumb = $forrest->trace->paymenttype; ?>
-    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">back to Checkout</a>
+
+<?php else:
+    //$this->headMeta()->appendHttpEquiv('Refresh', '5;URL='.$paypal_url);
+?>
+<div class="jumbotron">
+    <p>You will be redirected to PayPal within 5 seconds.</p>
+    <p>If the redirect is not working, please follow this <a href="<?php echo $paypal_url; ?>">link</a>.</p>
 </div>
+<?php endif; ?>

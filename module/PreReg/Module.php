@@ -311,6 +311,11 @@ class Module
                     $loginService->setServiceLocator($sm);
                     return $loginService;
                 },
+                'PreReg\Service\PayPalService' => function($sm) {
+                    $payPalService = new Service\PayPalService();
+                    $payPalService->setServiceLocator($sm);
+                    return $payPalService;
+                },
                 'PreReg\InputFilter\Register' => function($sm) {
                     $inputFilter = new InputFilter\Register();
                     $inputFilter->setServiceLocator($sm);

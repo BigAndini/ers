@@ -49,6 +49,10 @@ $this->headTitle($title);
                     <a class="btn btn-primary" href="<?php echo $this->url('payment', array('action' => 'ipayment', 'hashkey' => $order->getHashKey())); ?>">
                         Start payment with Credit Card
                     </a>
+                <?php elseif($paymenttype->getType() == 'PayPal'): ?>
+                    <a class="btn btn-primary" href="<?php echo $this->url('payment', array('action' => 'paypal', 'hashkey' => $order->getHashKey())); ?>">
+                        Start payment with PayPal
+                    </a>
                 <?php else: ?>
                     No payment type was recognized (<?php echo $paymenttype->getType(); ?>)
                 <?php endif; ?>

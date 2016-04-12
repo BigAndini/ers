@@ -62,54 +62,99 @@ class PaymentController extends AbstractActionController {
     }
     
     /**
-     * Formular for paying the order via cheque
+     * Formular for paying the order via PayPal
      */
-    /*public function paypalAction() {
+    public function paypalAction() {
         $hashkey = $this->params()->fromRoute('hashkey', '');
-        
-        if($hashkey == '') {
+        if(!$hashkey)
             return $this->notFoundAction();
-        }
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
-        //setup config object
-        $config = array(
-            'username'      => 'your_username',
-            'password'      => 'your_password',
-            'signature'     => 'your_signature',
-            'endpoint'      => 'https://api-3t.sandbox.paypal.com/nvp' //this is sandbox endpoint
-        );
-        $paypalConfig = new \SpeckPaypal\Element\Config($config);
-
-        //set up http client
-        $client = new \Zend\Http\Client;
-        $client->setMethod('POST');
-        $client->setAdapter(new \Zend\Http\Client\Adapter\Curl);
-        $paypalRequest = new \SpeckPaypal\Service\Request;
-        $paypalRequest->setClient($client);
-        $paypalRequest->setConfig($paypalConfig);
+        if(!$order || $order->getPaymentType()->getType() !== 'PayPal') {
+            $vm = new ViewModel();
+            $vm->setTemplate('pre-reg/payment/notfound.phtml');
+            return $vm;
+        }
         
-        $paymentDetails = new \SpeckPaypal\Element\PaymentDetails(array(
-            'amt' => '20.00'
-        ));
-        $express = new \SpeckPaypal\Request\SetExpressCheckout(array('paymentDetails' => $paymentDetails));
-        $express->setReturnUrl('http://www.someurl.com/return');
-        $express->setCancelUrl('http://www.someurl.com/cancel');
-
-        $response = $paypalRequest->send($express);
-
-        echo $response->isSuccess();
-
-        $token = $response->getToken();
+        if($order->getStatus()->getValue() !== 'ordered') {
+            if($order->getStatus()->getValue() === 'paid')
+                return new ViewModel(['error' => 'This order was already paid.']);
+            else
+                return new ViewModel(['error' => 'This order cannot be paid in its current state.']);
+        }
         
-        return new ViewModel(array(
-            'order' => $order,
-        ));
-    }*/
+        $paypalService = $this->getServiceLocator()->get('PreReg\Service\PayPalService');
+        
+        $queryPaymentId = $this->params()->fromQuery('paymentId');
+        $queryToken = $this->params()->fromQuery('token');
+        $queryPayerId = $this->params()->fromQuery('PayerID');
+        
+        if($queryPaymentId && $queryToken) {
+            // the user is coming back from PayPal
+            
+            $sessionData = new Container('paypal_payment');
+            if($hashkey !== $sessionData->hashkey) {
+                return new ViewModel(['error' => 'The order you are trying to pay is different from the one the PayPal transaction was started with.']);
+            }
+            if($queryPaymentId !== $sessionData->paymentId) {
+                return new ViewModel(['error' => 'The payment id is not valid.']);
+            }
+            
+            $paidStatus = $em->getRepository('ErsBase\Entity\Status')->findOneBy(['value' => 'paid']);
+            
+            try {
+                if($paypalService->executePayment($sessionData->paymentId, $queryPayerId)) {
+                    // set order to paid
+                    $order->setPaymentStatus('paid');
+                    foreach($order->getPackages() as $package) {
+                        $package->setStatus($paidStatus);
+                        foreach($package->getItems() as $item) {
+                            $item->setStatus($paidStatus);
+                        }
+                    }
+                    $order->setStatus($paidStatus);
+                    
+                    $em->persist($order);
+                    $em->flush();
+                    
+                    return $this->redirect()->toRoute('order', ['action' => 'view', 'hashkey' => $hashkey]);
+                }
+            }
+            catch(\PreReg\Service\PayPalServiceException $ex) {
+                $logger = $this->getServiceLocator()->get('Logger');
+                $logger->error($ex);
+                return new ViewModel(['error' => 'There was an error while executing the PayPal payment. Please try again. No money has been charged yet.']);
+            }
+        }
+        
+        else {
+            // initiate a payment with paypal
+            
+            $returnUrl = $this->url()->fromRoute('payment', ['action' => 'paypal', 'hashkey' => $hashkey], ['force_canonical' => true]);
+            $cancelUrl = $this->url()->fromRoute('order', ['action' => 'view', 'hashkey' => $hashkey], ['force_canonical' => true]);
+
+            try {
+                list($paymentId, $paypalUrl) = $paypalService->createPayment($order, $returnUrl, $cancelUrl);
+            }
+            catch(\PreReg\Service\PayPalServiceException $ex) {
+                $logger = $this->getServiceLocator()->get('Logger');
+                $logger->error($ex);
+                return new ViewModel(['error' => 'There was an error while creating the PayPal payment.']);
+            }
+
+            $sessionData = new Container('paypal_payment');
+            $sessionData->hashkey = $hashkey;
+            $sessionData->paymentId = $paymentId;
+            
+            return new ViewModel(array(
+                'paypal_url' => $paypalUrl,
+            ));
+        }
+    }
     
     /**
      * Formular for paying the order via credit card
