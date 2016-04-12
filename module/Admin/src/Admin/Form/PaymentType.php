@@ -9,14 +9,13 @@
 namespace Admin\Form;
 
 use Zend\Form\Form;
-use Zend\Form\Element;
 
 
-class PaymentTypePayPal extends Form
+class PaymentType extends Form
 {
     public function __construct($name = null)
     {
-        parent::__construct('PaymentTypePayPal');
+        parent::__construct('PaymentType');
         $this->setAttribute('method', 'post');
         
         $this->add(array(
@@ -30,7 +29,7 @@ class PaymentTypePayPal extends Form
             'name' => 'position', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Position...',
+                'placeholder' => 'Position ...',
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
@@ -59,7 +58,7 @@ class PaymentTypePayPal extends Form
             'name' => 'name', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Payment Type Name...', 
+                'placeholder' => 'Payment Type Name ...', 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
@@ -71,11 +70,34 @@ class PaymentTypePayPal extends Form
             ), 
         )); 
         
+        $this->add(array(
+            'name' => 'type',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required',
+                'class' => 'form-control form-element'
+            ),
+            'options' => array(
+                'label' => 'Type',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                'empty_option' => 'Select type ...',
+                'value_options' => [
+                    ['value' => 'BankTransfer', 'label' => 'Bank transfer'],
+                    ['value' => 'Cheque', 'label' => 'Cheque'],
+                    ['value' => 'PayPal', 'label' => 'PayPal'],
+                    ['value' => 'CreditCard', 'label' => 'Credit card'],
+                    ['value' => 'IPayment', 'label' => 'Credit card (iPayment)'],
+                ]
+            ),
+        ));
+        
         $this->add(array( 
             'name' => 'short_description', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Short Description...', 
+                'placeholder' => 'Short Description ...', 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
@@ -92,7 +114,7 @@ class PaymentTypePayPal extends Form
             #'type' => 'Zend\Form\Element\Textarea', 
             'type' => 'CKEditorModule\Form\Element\CKEditor',
             'attributes' => array( 
-                'placeholder' => 'Long Description...',
+                'placeholder' => 'Long Description ...',
                 /*'class' => 'form-control form-element',*/
             ), 
             'options' => array( 
@@ -133,7 +155,7 @@ class PaymentTypePayPal extends Form
             'name' => 'fix_fee', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Fix Fee...',
+                'placeholder' => 'Fix Fee ...',
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
@@ -148,7 +170,7 @@ class PaymentTypePayPal extends Form
             'name' => 'percentage_fee', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Percentage Fee...',
+                'placeholder' => 'Percentage Fee ...',
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
@@ -192,7 +214,7 @@ class PaymentTypePayPal extends Form
             'name' => 'days2pay', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Days until Payment...', 
+                'placeholder' => 'Days until Payment ...', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
