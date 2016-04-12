@@ -64,9 +64,11 @@ class PaymentType implements InputFilterAwareInterface
                                     ->findOneBy(array('id' => $value));
                                 
                                 $now = new \DateTime();
+                                $activeFrom = $paymenttype->getActiveFrom();
+                                $activeUntil = $paymenttype->getActiveUntil();
                                 if(
-                                    $now->getTimestamp() < $paymenttype->getActiveUntil()->getDeadline()->getTimestamp() &&
-                                    $now->getTimestamp() > $paymenttype->getActiveFrom()->getDeadline()->getTimestamp()
+                                    ($activeFrom == null || $activeFrom->getDeadline()->getTimestamp() <= $now->getTimestamp()) && 
+                                    ($activeUntil == null || $activeUntil->getDeadline()->getTimestamp() >= $now->getTimestamp())
                                     ) {
                                     return true;
                                 }
