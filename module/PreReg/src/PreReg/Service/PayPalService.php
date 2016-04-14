@@ -95,7 +95,7 @@ class PayPalService
             }
         }
         
-        $pamyentFees = $order->getPaymentFees();
+        $paymentFees = $order->getPaymentFees();
         if($paymentFees > 0) {
             $paypalItems[] = (new Item())
                 ->setName('Payment fees')

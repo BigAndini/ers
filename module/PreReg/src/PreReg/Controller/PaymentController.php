@@ -126,7 +126,7 @@ class PaymentController extends AbstractActionController {
             }
             catch(\PreReg\Service\PayPalServiceException $ex) {
                 $logger = $this->getServiceLocator()->get('Logger');
-                $logger->error($ex);
+                $logger->err($ex);
                 return new ViewModel(['error' => 'There was an error while executing the PayPal payment. Please try again. No money has been charged yet.']);
             }
         }
@@ -142,7 +142,7 @@ class PaymentController extends AbstractActionController {
             }
             catch(\PreReg\Service\PayPalServiceException $ex) {
                 $logger = $this->getServiceLocator()->get('Logger');
-                $logger->error($ex);
+                $logger->err($ex);
                 return new ViewModel(['error' => 'There was an error while creating the PayPal payment.']);
             }
 
