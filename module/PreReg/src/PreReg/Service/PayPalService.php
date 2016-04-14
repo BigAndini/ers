@@ -82,6 +82,7 @@ class PayPalService
         $this->initPaypal();
 
         $str_total = $this->formatPrice($order->getTotalSum());
+        $invoiceNumber = $order->getCode()->getValue(); // use order code as invoice number
         
         $paypalItems = [];
         foreach($order->getPackages() as $package) {
@@ -118,6 +119,8 @@ class PayPalService
         $transaction->setItemList((new ItemList())
                         ->setItems($paypalItems)
         );
+        
+        $transaction->setInvoiceNumber($invoiceNumber);
 
         $redirectUrls = new RedirectUrls();
         $redirectUrls->setReturnUrl($returnUrl);
