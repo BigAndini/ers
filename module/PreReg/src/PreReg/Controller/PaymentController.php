@@ -61,100 +61,108 @@ class PaymentController extends AbstractActionController {
         ));
     }
     
+    
     /**
-     * Formular for paying the order via PayPal
+     * Action that creates a payment with PayPal and redirects the user to authorize it.
      */
     public function paypalAction() {
         $hashkey = $this->params()->fromRoute('hashkey', '');
-        if(!$hashkey)
+        if (!$hashkey)
             return $this->notFoundAction();
-        
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('hashkey' => $hashkey));
-        
-        if(!$order || $order->getPaymentType()->getType() !== 'PayPal') {
-            $vm = new ViewModel();
-            $vm->setTemplate('pre-reg/payment/notfound.phtml');
-            return $vm;
+
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository('ErsBase\Entity\Order')->findOneBy(array('hashkey' => $hashkey));
+
+        if (!$order || $order->getPaymentType()->getType() !== 'PayPal') {
+            return new ViewModel(['notfound' => true]);
         }
-        
-        if($order->getStatus()->getValue() !== 'ordered') {
-            if($order->getStatus()->getValue() === 'paid')
-                return new ViewModel(['error' => 'This order was already paid.']);
+
+        if ($order->getStatus()->getValue() !== 'ordered') {
+            if ($order->getStatus()->getValue() === 'paid')
+                return new ViewModel(['error' => 'This order has already been paid.']);
             else
                 return new ViewModel(['error' => 'This order cannot be paid in its current state.']);
         }
-        
+
         $paypalService = $this->getServiceLocator()->get('PreReg\Service\PayPalService');
-        
-        $queryPaymentId = $this->params()->fromQuery('paymentId');
-        $queryToken = $this->params()->fromQuery('token');
-        $queryPayerId = $this->params()->fromQuery('PayerID');
-        
-        if($queryPaymentId && $queryToken) {
-            // the user is coming back from PayPal
-            
-            $sessionData = new Container('paypal_payment');
-            if($hashkey !== $sessionData->hashkey) {
-                return new ViewModel(['error' => 'The order you are trying to pay is different from the one the PayPal transaction was started with.']);
-            }
-            if($queryPaymentId !== $sessionData->paymentId) {
-                return new ViewModel(['error' => 'The payment id is not valid.']);
-            }
-            
-            $paidStatus = $em->getRepository('ErsBase\Entity\Status')->findOneBy(['value' => 'paid']);
-            
-            try {
-                if($paypalService->executePayment($sessionData->paymentId, $queryPayerId)) {
-                    // set order to paid
-                    $order->setPaymentStatus('paid');
-                    foreach($order->getPackages() as $package) {
-                        $package->setStatus($paidStatus);
-                        foreach($package->getItems() as $item) {
-                            $item->setStatus($paidStatus);
-                        }
-                    }
-                    $order->setStatus($paidStatus);
-                    
-                    $em->persist($order);
-                    $em->flush();
-                    
-                    return $this->redirect()->toRoute('order', ['action' => 'view', 'hashkey' => $hashkey]);
-                }
-            }
-            catch(\PreReg\Service\PayPalServiceException $ex) {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->err($ex);
-                return new ViewModel(['error' => 'There was an error while executing the PayPal payment. Please try again. No money has been charged yet.']);
-            }
+
+        // initiate the payment with paypal
+        $returnUrl = $this->url()->fromRoute('payment', ['action' => 'paypal-confirm'], ['force_canonical' => true]);
+        $cancelUrl = $this->url()->fromRoute('order', ['action' => 'view', 'hashkey' => $hashkey], ['force_canonical' => true]);
+
+        try {
+            list($paymentId, $paypalUrl) = $paypalService->createPayment($order, $returnUrl, $cancelUrl);
+        } catch (\PreReg\Service\PayPalServiceException $ex) {
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->err($ex);
+            return new ViewModel(['error' => 'There was an error while creating the PayPal payment.']);
         }
-        
-        else {
-            // initiate a payment with paypal
-            
-            $returnUrl = $this->url()->fromRoute('payment', ['action' => 'paypal', 'hashkey' => $hashkey], ['force_canonical' => true]);
-            $cancelUrl = $this->url()->fromRoute('order', ['action' => 'view', 'hashkey' => $hashkey], ['force_canonical' => true]);
 
-            try {
-                list($paymentId, $paypalUrl) = $paypalService->createPayment($order, $returnUrl, $cancelUrl);
-            }
-            catch(\PreReg\Service\PayPalServiceException $ex) {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->err($ex);
-                return new ViewModel(['error' => 'There was an error while creating the PayPal payment.']);
-            }
+        $sessionData = new Container('paypal_payment');
+        $sessionData->hashkey = $hashkey;
+        $sessionData->paymentId = $paymentId;
 
-            $sessionData = new Container('paypal_payment');
-            $sessionData->hashkey = $hashkey;
-            $sessionData->paymentId = $paymentId;
-            
-            return new ViewModel(array(
-                'paypal_url' => $paypalUrl,
-            ));
+        // redirect the user to paypal so they can authorize the payment
+        return $this->redirect()->toUrl($paypalUrl);
+    }
+
+    /**
+     * Action that executes a PayPal payment and sets the order status to paid after it was authorized.
+     */
+    public function paypalConfirmAction() {
+        $queryPaymentId = $this->params()->fromQuery('paymentId');
+        //$queryToken = $this->params()->fromQuery('token');
+        $queryPayerId = $this->params()->fromQuery('PayerID');
+
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+        $vm = new ViewModel();
+        $vm->setTemplate('pre-reg/payment/paypal.phtml');
+
+        $sessionData = new Container('paypal_payment');
+        if (!$sessionData->hashkey || !$sessionData->paymentId) {
+            return $vm->setVariables(['error' => 'No active PayPal payment was found. The session probably expired. Please try again.']);
+        }
+        if ($queryPaymentId !== $sessionData->paymentId) {
+            return $vm->setVariables(['error' => 'The payment id is not valid.']);
+        }
+
+        $paypalService = $this->getServiceLocator()->get('PreReg\Service\PayPalService');
+        $paidStatus = $em->getRepository('ErsBase\Entity\Status')->findOneBy(['value' => 'paid']);
+        $order = $em->getRepository('ErsBase\Entity\Order')->findOneBy(['hashkey' => $sessionData->hashkey]);
+
+        if (!$order) {
+            // somehow a valid payment was started with an order hash that is now non-existant
+            return $vm->setVariables(['error' => 'The order you are trying to pay no longer exists.']);
+        }
+
+        try {
+            if ($paypalService->executePayment($sessionData->paymentId, $queryPayerId)) {
+                // payment was successful, set order to paid
+                $order->setPaymentStatus('paid');
+                foreach ($order->getPackages() as $package) {
+                    $package->setStatus($paidStatus);
+                    foreach ($package->getItems() as $item) {
+                        $item->setStatus($paidStatus);
+                    }
+                }
+                $order->setStatus($paidStatus);
+
+                $em->persist($order);
+                $em->flush();
+
+                // delete the session
+                $sessionData->exchangeArray([]);
+
+                return $this->redirect()->toRoute('order', ['action' => 'thankyou', 'hashkey' => $order->getHashkey()]);
+            }
+        } catch (\PreReg\Service\PayPalServiceException $ex) {
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->err($ex);
+            return $vm->setVariables(['error' => 'There was an error while executing the PayPal payment. Please try again. No money has been charged yet.']);
         }
     }
+    
     
     /**
      * Formular for paying the order via credit card

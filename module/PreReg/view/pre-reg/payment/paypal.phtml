@@ -1,18 +1,23 @@
 <?php
-$this->headTitle("Pay with PayPal");
-
-if(isset($error)):
+if(isset($notfound)):
+    $title = 'Unable to find payment information';
+    $this->headTitle($title);
 ?>
 
-<div class="jumbotron">
-    <p class="text-danger"><i class="fa fa-warning"></i> <?php echo $this->escapeHtml($error); ?></p>
-</div>
+    <div class="jumbotron">
+        <h1><?php echo $this->escapeHtml($title); ?></h1>
+        <p>The system was not able to find the according order for this payment info 
+            page. With your purchase you got an email with all needed data. Please 
+            use the link in there.</p>
+    </div>
 
-<?php else:
-    //$this->headMeta()->appendHttpEquiv('Refresh', '5;URL='.$paypal_url);
+<?php elseif(isset($error)):
+    $this->headTitle('PayPal Error');
 ?>
-<div class="jumbotron">
-    <p>You will be redirected to PayPal within 5 seconds.</p>
-    <p>If the redirect is not working, please follow this <a href="<?php echo $paypal_url; ?>">link</a>.</p>
-</div>
+
+    <div class="jumbotron">
+        <p class="text-danger"><i class="fa fa-warning"></i>
+        <?php echo $this->escapeHtml($error); ?></p>
+    </div>
+
 <?php endif; ?>
