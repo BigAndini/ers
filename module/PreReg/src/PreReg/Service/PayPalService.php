@@ -8,13 +8,11 @@
 
 namespace PreReg\Service;
 
-use ErsBase\Entity;
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Api\Payer;
 use PayPal\Api\Transaction;
 use PayPal\Api\Amount;
-use PayPal\Api\Details;
 use PayPal\Api\ItemList;
 use PayPal\Api\Item;
 use PayPal\Api\Payment;
@@ -27,10 +25,6 @@ use PayPal\Exception\PayPalConnectionException;
  */
 class PayPalService
 {
-    const sandbox_enabled = true;
-    const client_id = '...';
-    const client_secret = '...';
-    
     private $paypalContext = NULL;
     
     public function __construct() {
@@ -57,12 +51,15 @@ class PayPalService
 		
     private function initPaypal() {
         if (!$this->paypalContext) {
-            $this->paypalContext = new ApiContext(new OAuthTokenCredential(self::client_id, self::client_secret));
+            $configArr = $this->getServiceLocator()->get('Config');
+            $config = $configArr['ERS\PayPal'];
+            
+            $this->paypalContext = new ApiContext(new OAuthTokenCredential($config['client_id'], $config['client_secret']));
             $this->paypalContext->setConfig([
-                'mode' => (self::sandbox_enabled ? 'sandbox' : 'live'),
-                'log.LogEnabled' => true,
-                'log.FileName' => getcwd() . '/logs/paypal.log',
-                'log.LogLevel' => (self::sandbox_enabled ? 'DEBUG' : 'INFO'),
+                'mode' => ($config['sandbox_mode'] ? 'sandbox' : 'live'),
+                'log.LogEnabled' => (bool)$config['log_file'],
+                'log.FileName' => $config['log_file'],
+                'log.LogLevel' => ($config['sandbox_mode'] ? 'DEBUG' : 'INFO'),
                 'http.CURLOPT_CONNECTTIMEOUT' => 40
             ]);
         }
