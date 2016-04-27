@@ -21,9 +21,27 @@ class TicketCounterService {
         return $this->sl;
     }
 
+    public function getCurrentItemCount(\ErsBase\Entity\Counter $counter) {
+        $em = $this->sl->get('Doctrine\ORM\EntityManager');
+        
+        $qb = $em->createQueryBuilder()
+                ->select('COUNT(DISTINCT i.id)')
+                ->from('ErsBase\Entity\Item', 'i')
+                ->join('i.status', 's', 'WITH', 's.active = 1');
+
+        $i = 0;
+        foreach ($counter->getProductVariantValues() as $variantValue) {
+            $qb->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.product_variant_value_id = :pvvid' . $i);
+            $qb->setParameter(':pvvid' . $i, $variantValue->getId());
+            $i++;
+        }
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+    
     public function checkLimits() {
         $em = $this->sl->get('Doctrine\ORM\EntityManager');
-
+        
         $counters = $em->getRepository('ErsBase\Entity\Counter')
                 ->findAll();
 
@@ -35,19 +53,7 @@ class TicketCounterService {
                 continue;
             }
 
-            $qb = $em->createQueryBuilder();
-            $qb->select('COUNT(DISTINCT i.id)');
-            $qb->from('ErsBase\Entity\Item', 'i');
-            $qb->where("i.status != 'cancelled' AND i.status != 'refund'");
-
-            $i = 0;
-            foreach ($counter->getProductVariantValues() as $variantValue) {
-                $qb->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.product_variant_value_id = :pvvid' . $i);
-                $qb->setParameter(':pvvid' . $i, $variantValue->getId());
-                $i++;
-            }
-
-            $count = $qb->getQuery()->getSingleScalarResult();
+            $count = $this->getCurrentItemCount($counter);
 
             if ($count >= $counter->getValue()) {
                 $logger = $this->sl->get('Logger');

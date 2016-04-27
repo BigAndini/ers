@@ -486,7 +486,7 @@ class Order extends Base\Order
         $statement_amount = 0;
         foreach($this->getMatches() as $match) {
             $statement = $match->getBankStatement();
-            $statement_amount += $statement->getAmount()->getValue();
+            $statement_amount += $statement->getAmountValue();
         }
         return $statement_amount;
     }

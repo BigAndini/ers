@@ -14,7 +14,7 @@ use Zend\View\Model\ViewModel;
 use DOMPDFModule\View\Model\PdfModel;
 
 /**
- * e-Ticket Serivce
+ * E-Ticket Serivce
  */
 class ETicketService
 {
@@ -91,7 +91,7 @@ class ETicketService
      * set Package
      * even if a participant can have multiple packages this service will only 
      * process one of them. So for multiple packages the participant will get 
-     * multiple e-Tickets.
+     * multiple E-Tickets.
      * 
      * @param \ErsBase\Entity\Package $package
      */
@@ -350,7 +350,7 @@ class ETicketService
         $pdfEngine->render();
         $pdfContent = $pdfEngine->output();
         
-        $filename = $config['ERS']['name_short']."_e-Ticket_".$this->getPackage()->getCode()->getValue().'_'.$this->getLanguage();
+        $filename = $config['ERS']['name_short']."_E-Ticket_".$this->getPackage()->getCode()->getValue().'_'.$this->getLanguage();
         
         # TODO: make ticket_path configurable
         $ticket_path = getcwd().'/data/etickets';

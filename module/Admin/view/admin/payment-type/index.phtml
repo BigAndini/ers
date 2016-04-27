@@ -5,11 +5,7 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <p>
-    <a href="<?php echo $this->url('admin/payment-type', array('action'=>'addBankTransfer'));?>">Add Payment Type (Bank Transfer)</a><br />
-    <a href="<?php echo $this->url('admin/payment-type', array('action'=>'addCreditCard'));?>">Add Payment Type (Credit Card)</a><br />
-    <a href="<?php echo $this->url('admin/payment-type', array('action'=>'addIPayment'));?>">Add Payment Type (Credit Card iPayment)</a><br />
-    <a href="<?php echo $this->url('admin/payment-type', array('action'=>'addPayPal'));?>">Add Payment Type (PayPal)</a><br />
-    <a href="<?php echo $this->url('admin/payment-type', array('action'=>'addCheque'));?>">Add Payment Type (Cheque)</a><br />
+    <a href="<?php echo $this->url('admin/payment-type', array('action'=>'add'));?>">Add Payment Type</a><br />
 </p>
 
 <table class="table">
@@ -32,8 +28,8 @@ $this->headTitle($title);
                 <i class="fa fa-eye-slash"></i>
             <?php endif; ?>
         </td>
-        <td><?php echo $paymenttype->getName(); ?></td>
-        <td><?php echo $paymenttype->getType(); ?></td>
+        <td><?php echo $this->escapeHtml($paymenttype->getName()); ?></td>
+        <td><?php echo $this->escapeHtml($paymenttype->getType()); ?></td>
         <td>
             
             <?php if($paymenttype->getLogo() != ''): ?>
@@ -68,8 +64,7 @@ $this->headTitle($title);
             <?php endif; ?>
         </td>
         <td>
-            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'edit'.$paymenttype->getType(), 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'copy'.$paymenttype->getType(), 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
+            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'edit', 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
             <a href="<?php echo $this->url('admin/payment-type', array('action'=>'delete', 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
         </td>
     </tr>

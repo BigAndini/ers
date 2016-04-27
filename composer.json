@@ -20,7 +20,7 @@
     "require": {
         "php": ">=5.4.0",
         "zendframework/zendframework": "2.4.*",
-        "doctrine/doctrine-orm-module": "0.*",
+        "doctrine/doctrine-orm-module": "0.9.*",
         "zendframework/zend-developer-tools": "dev-master",
         "ckeditor/ckeditor": "dev-stable",
         "html2text/html2text": "2.0.1",
