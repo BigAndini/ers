@@ -224,10 +224,10 @@ class BankaccountController extends AbstractActionController {
                 
                 $hashes = array();
                 foreach($bankaccount->getBankStatements() as $statement) {
-                    $amountCol = $statement->getAmount();
+                    /*$amountCol = $statement->getAmount();
                     $amountCol->setValue((float) $amountCol->getValue());
                     
-                    $em->persist($amountCol);
+                    $em->persist($amountCol);*/
                     $statement->generateHash();
                     
                     $bankstatement = $em->getRepository('ErsBase\Entity\BankStatement')
@@ -344,11 +344,13 @@ class BankaccountController extends AbstractActionController {
                     throw new \Exception('Unable to open csv');
                 }
                 
+                # only needed to disable negative statements.
+                # DO NOT ADJUST FIELDS ACCORDING TO THE STATEMENT FORMAT HERE!
                 $statement_format = json_decode($bankaccount->getStatementFormat());
-                $fix_amount = false;
+                /*$fix_amount = false;
                 if(is_array($statement_format)) {
                     $fix_amount = true;
-                }
+                }*/
                 
                 /*
                  * read every line in the file and generate bank statement entities
@@ -371,9 +373,9 @@ class BankaccountController extends AbstractActionController {
                         $bsc->setBankStatement($bs);
                         $bs->addBankStatementCol($bsc);
                     }
-                    if($fix_amount) {
+                    /*if($fix_amount) {
                         $bs->getAmount()->setValue((float) $bs->getAmount()->getValue());
-                    }
+                    }*/
                     $bs->generateHash();
                     
                     $bankstatement = $em->getRepository('ErsBase\Entity\BankStatement')

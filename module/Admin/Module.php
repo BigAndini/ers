@@ -69,6 +69,16 @@ class Module
 
                     $form->get('tax_id')->setValueOptions($options);
                     
+                    $ticketTemplates = array(
+                        'default' => 'Default',
+                        'weekticket' => 'Week Ticket',
+                        'dayticket' => 'Day Ticket',
+                        'galashow' => 'Gala-Show Ticket',
+                        'clothes' => 'T-Shirt and Hoodie',
+                    );
+                    
+                    $form->get('ticket_template')->setValueOptions($ticketTemplates);
+                    
                     return $form;
                 },
                 'Admin\Form\Role' => function($sm){

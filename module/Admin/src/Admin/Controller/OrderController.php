@@ -164,6 +164,7 @@ class OrderController extends AbstractActionController {
         return new ViewModel(array(
             'form' => $form,
             'result' => $result,
+            'searchText' => $searchText,
         ));
     }
     
@@ -375,7 +376,7 @@ class OrderController extends AbstractActionController {
                     $emailService->addBcc($bcc);
 
                     $subject = "Your registration for EJC 2016 (order ".$order->getCode()->getValue().")";
-                    $subject = "[EJC 2016] e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+                    $subject = "[EJC 2016] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
                     $emailService->setSubject($subject);
 
                     $viewModel = new ViewModel(array(

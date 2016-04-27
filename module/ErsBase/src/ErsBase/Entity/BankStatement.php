@@ -69,6 +69,13 @@ class BankStatement extends Base\BankStatement
     }
     
     /**
+     * get the value of the amount of this statement according to the format
+     */
+    public function getAmountValue() {
+        return (float) $this->getAmount()->getValue();
+    }
+    
+    /**
      * Get the name of this statement according to the format
      */
     public function getName() {

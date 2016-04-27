@@ -492,7 +492,7 @@ class CronController extends AbstractActionController {
                 $bcc->setEmail('prereg@eja.net');
                 $emailService->addBcc($bcc);
 
-                $subject = "[EJC 2016] Updated e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+                $subject = "[EJC 2016] Updated E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
                 $emailService->setSubject($subject);
 
                 $viewModel = new ViewModel(array(
@@ -632,7 +632,7 @@ class CronController extends AbstractActionController {
             $bcc->setEmail('prereg@eja.net');
             $emailService->addBcc($bcc);
 
-            $subject = "[EJC 2016] e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+            $subject = "[EJC 2016] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
             $emailService->setSubject($subject);
 
             $viewModel = new ViewModel(array(

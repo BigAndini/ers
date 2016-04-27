@@ -17,10 +17,12 @@
     </p>
     <?php foreach($products as $product): ?>
         <p class="order-description"><?php echo $product->getName(); ?>:</p>
-        <?php switch($product->getId()):
+        <?php switch($product->getTicketTemplate()):
+            #switch($product->getId()):
                 /*
                  * week ticket
                  */
+                case 'weekticket':
                 case '1': ?>
                     <?php if(!isset($items[$product->getId()]) || count($items[$product->getId()]) == 0): ?>
                         <p class="order-value"><span class="fa">&#xf096;</span></p>
@@ -46,6 +48,7 @@
                 /*
                  * gala show ticket
                  */
+                case 'galashow':
                 case '98': ?>
                     <?php if(!isset($items[$product->getId()]) || count($items[$product->getId()]) == 0): ?>
                         <p class="order-value">none</p>
@@ -66,6 +69,7 @@
                 /*
                  * day ticket
                  */
+                case 'dayticket':
                 case '99': ?>
                         <p class="order-value">
                             <table class="day-table">
@@ -110,8 +114,13 @@
                             </table>
                         </p>
                     <?php break;
+                case 'default':
                 default: ?>
-                    <p class="order-description"><?php echo $product->getName(); ?>:</p>
+                    <?php if(isset($items[$product->getId()]) && count($items[$product->getId()]) > 0): ?>
+                        <p class="order-value"><span class="fa">&#xf046;</span></p>
+                    <?php else: ?>
+                        <p class="order-value"><span class="fa">&#xf096;</span></p>
+                    <?php endif; ?>
                     <?php break;
             endswitch; ?>
     <?php endforeach; ?>

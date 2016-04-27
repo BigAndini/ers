@@ -88,7 +88,7 @@
                 width: 200px;
                 position: absolute;
                 right: 0px;
-                top: 300px;
+                top: 240px;
                 font-size: 100%;
                 border: 1px solid #eee;
                 padding: 10px;
@@ -133,12 +133,12 @@
     </head>
     <body>
         <div class="codes">
-            <img src="<?php echo $qrcode; ?>" alt="QR-Code is missing, please regenerate your e-Ticket" /><br />
-            <img src="<?php echo $barcode; ?>" alt="Barcode is missing, please regenerate your e-Ticket" />
+            <img src="<?php echo $qrcode; ?>" alt="QR-Code is missing, please regenerate this E-Ticket" /><br />
+            <?php /* <img src="<?php echo $barcode; ?>" alt="Barcode is missing, please regenerate this E-Ticket" /> */ ?>
         </div>
         <h1>
-            <img src="<?php echo getcwd(); ?>/pdf/img/logofinal_black_green2015_300.png" alt="EJC 2015 Bruneck" width="120" />
-            <span class="ticket-heading">e-Ticket</span>
+            <img src="<?php echo getcwd(); ?>/pdf/img/logofinal_black_green2015_300.png" alt="EJC logo" width="120" />
+            <span class="ticket-heading">E-Ticket</span>
         </h1>
         <?php if($agegroup): ?>
         <div class="agegroup">
@@ -302,7 +302,7 @@
                                         EJC Almere from July 30th to
                                         August 7th 2016. I will not attend the EJC
                                         myself. I will attach a copy of my ID 
-                                        card to this e-Ticket. Without both 
+                                        card to this E-Ticket. Without both 
                                         documents the participation of my child 
                                         at the EJC is impossible. I accept the 
                                         disclaimer.</p>

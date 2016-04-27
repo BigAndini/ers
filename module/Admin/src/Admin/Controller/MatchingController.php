@@ -245,7 +245,7 @@ class MatchingController extends AbstractActionController {
                 
                 $statement_sum = 0;
                 foreach($statements as $statement) {
-                    $statement_sum += (float) $statement->getAmount()->getValue();
+                    $statement_sum += $statement->getAmountValue();
                 }
                 
                 /*

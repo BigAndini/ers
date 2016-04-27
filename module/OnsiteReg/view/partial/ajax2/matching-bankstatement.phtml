@@ -16,7 +16,7 @@
                             <input type="checkbox" name="statement<?php echo $statement->getId(); ?>" />
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#statement-accordion" href="#statement<?php echo $statement->getId(); ?>">
                                 <?php 
-                                    echo $statement->getAmount()->getValue().' '.$statement->getName()->getValue();
+                                    echo $statement->getAmountValue().' '.$statement->getName()->getValue();
                                 ?>
                             </a>
                         </h4>
