@@ -124,10 +124,7 @@ class BuyerController extends AbstractActionController {
         ));
     }*/
     
-    public function deleteAction() {
-        # maybe we do not need to delete a participant here, because the 
-        # participants user object is only held in the session and will be 
-        # deleted after session is not valid anymore.
+    /*public function deleteAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('participant');
@@ -169,5 +166,5 @@ class BuyerController extends AbstractActionController {
             'package' => $package,
             'breadcrumb' => $breadcrumb,
         ));
-    }
+    }*/
 }
