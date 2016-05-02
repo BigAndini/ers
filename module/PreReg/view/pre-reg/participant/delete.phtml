@@ -5,6 +5,7 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
+<?php $participant = $form->getObject(); ?>
 <p>Are you sure that you want to delete participant
     <strong><?php echo $this->escapeHtml($participant->getFirstname().' '.$participant->getSurname()); ?></strong>?
 </p>
@@ -24,16 +25,15 @@ $this->headTitle($title);
     <?php endforeach; ?>
     </table>
 <?php endif; ?>
-<?php
-$url = $this->url('participant', array(
-    'action' => 'delete',
-    'id'     => $this->id,
-));
-?>
-<form action="<?php echo $url; ?>" method="post">
-<div>
-    <input type="hidden" name="id" value="<?php echo (int) $participant->getId(); ?>" />
-    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
-    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
-</div>
-</form>
+    
+<?php $form->setAttribute('action', $this->url('participant', array('action' => 'delete', 'id' => $participant->getId())))
+      ->prepare();
+
+echo $this->form()->openTag($form);
+
+echo $this->formHidden($form->get('csrf'));
+echo $this->formElement($form->get('submit')); ?>
+
+<a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+
+<?php echo $this->form()->closeTag();

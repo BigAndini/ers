@@ -227,31 +227,33 @@ class CartController extends AbstractActionController {
     }
     
     public function resetAction() {
-        $forrest = new Service\BreadcrumbService();
-        if(!$forrest->exists('cart')) {
-            $forrest->set('cart', 'order');
-        }
-        
-        $breadcrumb = $forrest->get('cart');
+        $logger = $this->getServiceLocator()->get('Logger');
+
+        $breadcrumbService = new Service\BreadcrumbService();
         
         $emptycart = false;
-        
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $del = $request->getPost('del', 'No');
 
-            if ($del == 'Yes') {
-                $em = $this->getServiceLocator()
-                    ->get('Doctrine\ORM\EntityManager');
-                $orderContainer = new Container('order');
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+
+        $form = new Form\SimpleForm($em);
+        $form->get('submit')->setAttributes(array(
+            'value' => 'Clear Shopping Cart',
+            'class' => 'btn btn-danger',
+        ));
+
+        if ($this->request->isPost()) {
+            $form->setData($this->request->getPost());
+
+            if ($form->isValid()) {
                 
-                $order = $em->getRepository('ErsBase\Entity\Order')
-                        ->findOneBy(array('id' => $orderContainer->order_id));
+                $orderService = $this->getServiceLocator()->get('ErsBase\Service\OrderService');
+                $order = $orderService->getOrder();        
                 
                 # TODO: move delete order to OrderService
                 foreach($order->getPackages() as $package) {
                     $participant = $package->getUser();
-                    if(!$participant->isActive()) {
+                    if(!$participant->getActive()) {
                         $em->remove($participant);
                     }
                     foreach($package->getItems() as $item) {
@@ -264,11 +266,14 @@ class CartController extends AbstractActionController {
                 $cartContainer = new Container('cart');
                 $cartContainer->init = 0;
                 $emptycart = true;
+            } else {
+                $logger->warn($form->getMessages());
             }
         }
-        
+
         return new ViewModel(array(
-            'breadcrumb' => $breadcrumb,
+            'form' => $form,
+            'breadcrumb' => $breadcrumbService->get('cart'),
             'emptycart' => $emptycart,
         ));
     }

@@ -21,9 +21,9 @@ class ProductController extends AbstractActionController {
         $this->getServiceLocator()->get('ErsBase\Service\TicketCounterService')
                 ->checkLimits();
         
-        $forrest = new Service\BreadcrumbService();
-        $forrest->reset();
-        $forrest->set('participant', 'product');
+        $breadcrumbService = new Service\BreadcrumbService();
+        $breadcrumbService->reset();
+        $breadcrumbService->set('participant', 'product');
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -103,9 +103,9 @@ class ProductController extends AbstractActionController {
         /*
          * Build and set breadcrumbs
          */
-        $forrest = new Service\BreadcrumbService();
-        if(!$forrest->exists('product')) {
-            $forrest->set('product', 'product');
+        $breadcrumbService = new Service\BreadcrumbService();
+        if(!$breadcrumbService->exists('product')) {
+            $breadcrumbService->set('product', 'product');
         }
         
         $params = array();
@@ -132,10 +132,10 @@ class ProductController extends AbstractActionController {
             $params2 = $params;
             $params2['item_id'] = $item_id;
         }
-        $forrest->set('participant', 'product', $params2, $options);
-        $forrest->set('cart', 'product', $params2, $options);
-        $forrest->set('product', 'product', $params2, $options);
-        $forrest->set('bc_stay', 'product', $params2, $options);
+        $breadcrumbService->set('participant', 'product', $params2, $options);
+        $breadcrumbService->set('cart', 'product', $params2, $options);
+        $breadcrumbService->set('product', 'product', $params2, $options);
+        $breadcrumbService->set('bc_stay', 'product', $params2, $options);
         
         /*
          * Get data for this product
@@ -373,11 +373,11 @@ class ProductController extends AbstractActionController {
                 /*
                  * go the route of the breadcrumbs and find the way back. :)
                  */
-                $forrest = new Service\BreadcrumbService();
-                if(!$forrest->exists('product')) {
-                    $forrest->set('product', 'product');
+                $breadcrumbService = new Service\BreadcrumbService();
+                if(!$breadcrumbService->exists('product')) {
+                    $breadcrumbService->set('product', 'product');
                 }
-                $breadcrumb = $forrest->get('product');
+                $breadcrumb = $breadcrumbService->get('product');
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
@@ -415,7 +415,7 @@ class ProductController extends AbstractActionController {
         /*
          * get all variables for ViewModel
          */
-        $breadcrumb = $forrest->get('product');
+        $breadcrumb = $breadcrumbService->get('product');
         
         $chooser = $cartContainer->chooser;
         $cartContainer->chooser = false;
@@ -434,7 +434,7 @@ class ProductController extends AbstractActionController {
             'form' => $form,
             'participantForm' => $participantForm,
             'breadcrumb' => $breadcrumb,
-            'bc_stay' => $forrest->get('bc_stay'),
+            'bc_stay' => $breadcrumbService->get('bc_stay'),
             'chooser' => $chooser,
             'agegroups' => $agegroups,
             'deadline' => $deadline,
@@ -446,21 +446,21 @@ class ProductController extends AbstractActionController {
         $this->getServiceLocator()->get('ErsBase\Service\TicketCounterService')
                 ->checkLimits();
         
-        $forrest = new Service\BreadcrumbService();
-        if(!$forrest->exists('product')) {
-            $forrest->set('product', 'product', array('action' => 'edit'));
+        $breadcrumbService = new Service\BreadcrumbService();
+        if(!$breadcrumbService->exists('product')) {
+            $breadcrumbService->set('product', 'product', array('action' => 'edit'));
         }
-        #$forrest->set('participant', 'product', array('action' => 'edit'));
+        #$breadcrumbService->set('participant', 'product', array('action' => 'edit'));
         
         $viewModel = $this->addAction();
         if($viewModel instanceof ViewModel) {
             $viewModel->setTemplate('pre-reg/product/edit');
         } else {
-            $forrest = new Service\BreadcrumbService();
-            if(!$forrest->exists('product')) {
-                $forrest->set('product', 'product');
+            $breadcrumbService = new Service\BreadcrumbService();
+            if(!$breadcrumbService->exists('product')) {
+                $breadcrumbService->set('product', 'product');
             }
-            $breadcrumb = $forrest->get('product');
+            $breadcrumb = $breadcrumbService->get('product');
 
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
@@ -469,16 +469,80 @@ class ProductController extends AbstractActionController {
     }
     
     public function deleteAction() {
-        $forrest = new Service\BreadcrumbService();
+        $logger = $this->getServiceLocator()->get('Logger');
+
+        $breadcrumbService = new Service\BreadcrumbService();
+
+        $breadcrumbService = new Service\BreadcrumbService();
         
-        if(!$forrest->exists('product')) {
-            $forrest->set('product', 'order');
+        if(!$breadcrumbService->exists('product')) {
+            $breadcrumbService->set('product', 'order');
+        }
+        
+        $product_id = (int) $this->params()->fromRoute('product_id', 0);
+        $id = (int) $this->params()->fromRoute('item_id', 0);
+        if (!is_numeric($id)) {
+        #if (!is_numeric($product_id) || !is_numeric($item_id)) {
+            $breadcrumb = $breadcrumbService->get('product');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+        }
+        
+        $orderService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
+        
+        $participant = $order->getParticipantByItemId($id);
+        $item = $order->getItem($id);
+        $product = $item->getProduct();
+        
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+
+        $form = new Form\SimpleForm($em);
+        $form->get('submit')->setAttributes(array(
+            'value' => 'Delete',
+            'class' => 'btn btn-danger',
+        ));
+        
+        $form->bind($item);
+
+        if ($this->request->isPost()) {
+            $form->setData($this->request->getPost());
+
+            if ($form->isValid()) {
+                $orderService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\OrderService');
+                $orderService->removeItemById($item->getId());
+                
+                $breadcrumb = $breadcrumbService->get('product');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+
+        return new ViewModel(array(
+            'form' => $form,
+            'participant' => $participant,
+            'item' => $item,
+            'product' => $product,
+            'breadcrumb' => $breadcrumbService->get('product'),
+        ));
+
+        
+        
+        
+        
+        /*$breadcrumbService = new Service\BreadcrumbService();
+        
+        if(!$breadcrumbService->exists('product')) {
+            $breadcrumbService->set('product', 'order');
         }
         
         $product_id = (int) $this->params()->fromRoute('product_id', 0);
         $item_id = (int) $this->params()->fromRoute('item_id', 0);
         if (!is_numeric($product_id) || !is_numeric($item_id)) {
-            $breadcrumb = $forrest->get('product');
+            $breadcrumb = $breadcrumbService->get('product');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
@@ -505,7 +569,7 @@ class ProductController extends AbstractActionController {
                 #$order->removeItemById($item_id);
             }
 
-            $breadcrumb = $forrest->get('product');
+            $breadcrumb = $breadcrumbService->get('product');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
@@ -514,7 +578,7 @@ class ProductController extends AbstractActionController {
             'participant' => $participant,
             'item' => $item,
             'product' => $product,
-            'breadcrumb' => $forrest->get('product'),
-        ));
+            'breadcrumb' => $breadcrumbService->get('product'),
+        ));*/
     }
 }
