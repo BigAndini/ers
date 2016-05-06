@@ -69,8 +69,10 @@ class RefundController extends AbstractActionController {
                 $em->persist($order);
                 
                 if($order->getRefundSum() == $order->getPrice('refund')) {
+                    $statusCancelled = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'cancelled'));
                     foreach($order->getItemsByStatus('refund') as $item) {
-                        $item->setStatus('cancelled');
+                        $item->setStatus($statusCancelled);
                         $em->persist($item);
                     }
                 }

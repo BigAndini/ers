@@ -76,7 +76,9 @@ class ItemController extends AbstractActionController {
                 $item = $em->getRepository('ErsBase\Entity\Item')
                     ->findOneBy(array('id' => $id));
                 
-                $item->setStatus('ordered');
+                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+                $item->setStatus($statusOrdered);
                 $em->persist($item);
                 
                 $em->flush();
@@ -117,9 +119,12 @@ class ItemController extends AbstractActionController {
                 $item = $em->getRepository('ErsBase\Entity\Item')
                     ->findOneBy(array('id' => $id));
                 
-                $item->setStatus('cancelled');
+                $statusCancelled = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'cancelled'));
+                
+                $item->setStatus($statusCancelled);
                 foreach($item->getSubItems() as $subItem) {
-                    $subItem->setStatus('cancelled');
+                    $subItem->setStatus($statusCancelled);
                     $em->persist($subItem);
                 }
                 $em->persist($item);
@@ -162,7 +167,10 @@ class ItemController extends AbstractActionController {
                 $item = $em->getRepository('ErsBase\Entity\Item')
                     ->findOneBy(array('id' => $id));
                 
-                $item->setStatus('ordered');
+                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+                
+                $item->setStatus($statusOrdered);
                 $em->persist($item);
                 
                 $em->flush();
@@ -203,7 +211,10 @@ class ItemController extends AbstractActionController {
                 $item = $em->getRepository('ErsBase\Entity\Item')
                     ->findOneBy(array('id' => $id));
                 
-                $item->setStatus('refund');
+                $statusRefund = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'refund'));
+                
+                $item->setStatus($statusRefund);
                 $em->persist($item);
                 
                 $order = $item->getPackage()->getOrder();
@@ -248,7 +259,10 @@ class ItemController extends AbstractActionController {
                 $item = $em->getRepository('ErsBase\Entity\Item')
                     ->findOneBy(array('id' => $id));
                 
-                $item->setStatus('ordered');
+                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+                
+                $item->setStatus($statusOrdered);
                 $em->persist($item);
                 
                 $order = $item->getPackage()->getOrder();
@@ -292,7 +306,10 @@ class ItemController extends AbstractActionController {
                 $item = $em->getRepository('ErsBase\Entity\Item')
                     ->findOneBy(array('id' => $id));
                 
-                $item->setStatus('zero_ok');
+                $statusZeroOk = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'zero_ok'));
+                
+                $item->setStatus($statusZeroOk);
                 $em->persist($item);
                 
                 $em->flush();
@@ -333,7 +350,10 @@ class ItemController extends AbstractActionController {
                 $item = $em->getRepository('ErsBase\Entity\Item')
                     ->findOneBy(array('id' => $id));
                 
-                $item->setStatus('ordered');
+                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+                
+                $item->setStatus($statusOrdered);
                 $em->persist($item);
                 
                 $em->flush();
@@ -374,7 +394,10 @@ class ItemController extends AbstractActionController {
                 $item = $em->getRepository('ErsBase\Entity\Item')
                     ->findOneBy(array('id' => $id));
                 
-                $item->setStatus('paid');
+                $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'paid'));
+                
+                $item->setStatus($statusPaid);
                 $em->persist($item);
                 
                 $em->flush();
@@ -542,9 +565,12 @@ class ItemController extends AbstractActionController {
                 $cloneService->setTransfer(true);
                 $newItem = $cloneService->cloneItem($item);
                 
+                $statusTransferred = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'transferred'));
+                
                 #$newItem = clone $item;
                 $newPackage->addItem($newItem);
-                $item->setStatus('transferred');
+                $item->setStatus($statusTransferred);
                 #$item->setTransferredItem($newItem);
 
                 
