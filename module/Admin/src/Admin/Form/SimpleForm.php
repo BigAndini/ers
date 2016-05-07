@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace PreReg\Form;
+namespace Admin\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use ErsBase\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;

@@ -76,8 +76,11 @@ class PackageController extends AbstractActionController {
                 $package = $em->getRepository('ErsBase\Entity\Package')
                     ->findOneBy(array('id' => $id));
                 
+                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+                
                 foreach($package->getItems() as $item) {
-                    $item->setStatus('ordered');
+                    $item->setStatus($statusOrdered);
                     $em->persist($item);
                 }
                 
@@ -119,8 +122,11 @@ class PackageController extends AbstractActionController {
                 $package = $em->getRepository('ErsBase\Entity\Package')
                     ->findOneBy(array('id' => $id));
                 
+                $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'paid'));
+                
                 foreach($package->getItems() as $item) {
-                    $item->setStatus('paid');
+                    $item->setStatus($statusPaid);
                     $em->persist($item);
                 }
                 
@@ -162,8 +168,11 @@ class PackageController extends AbstractActionController {
                 $package = $em->getRepository('ErsBase\Entity\Package')
                     ->findOneBy(array('id' => $id));
                 
+                $statusRefund = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'refund'));
+                
                 foreach($package->getItems() as $item) {
-                    $item->setStatus('refund');
+                    $item->setStatus($statusRefund);
                     $em->persist($item);
                 }
                 
@@ -205,8 +214,11 @@ class PackageController extends AbstractActionController {
                 $package = $em->getRepository('ErsBase\Entity\Package')
                     ->findOneBy(array('id' => $id));
                 
+                $statusCancelled = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'cancelled'));
+                
                 foreach($package->getItems() as $item) {
-                    $item->setStatus('cancelled');
+                    $item->setStatus($statusCancelled);
                     $em->persist($item);
                 }
                 
@@ -291,10 +303,9 @@ class PackageController extends AbstractActionController {
                             $order->setPaymentStatus('unpaid');
                         }
 
-                        $status_cancelled = $em->getRepository('ErsBase\Entity\Status')
+                        $statusCancelled = $em->getRepository('ErsBase\Entity\Status')
                                 ->findOneBy(array('value' => 'cancelled'));
-                        #$itemBefore->setStatus('cancelled');
-                        $itemBefore->setStatus($status_cancelled);
+                        $itemBefore->setStatus($statusCancelled);
                         $em->persist($itemBefore);
 
                         $em->flush();
@@ -344,8 +355,11 @@ class PackageController extends AbstractActionController {
                 $newItem->setProduct($item->getProduct());
                 $newItem->setPackage($item->getPackage());
 
-                if($newItem->getStatus() == 'paid') {
-                    $newItem->setStatus('ordered');
+                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+                
+                if($newItem->getStatus()->getValue() == 'paid') {
+                    $newItem->setStatus($statusOrdered);
                 }
                 
                 $code = new Entity\Code();
@@ -913,7 +927,11 @@ class PackageController extends AbstractActionController {
                     }
                     $newItem = clone $item;
                     $newPackage->addItem($newItem);
-                    $item->setStatus('transferred');
+                    
+                    $statusTransferred = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'transferred'));
+                    
+                    $item->setStatus($statusTransferred);
                     $item->setTransferredItem($newItem);
                     
                     $code = new Entity\Code();

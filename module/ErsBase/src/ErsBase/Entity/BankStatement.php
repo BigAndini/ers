@@ -72,7 +72,16 @@ class BankStatement extends Base\BankStatement
      * get the value of the amount of this statement according to the format
      */
     public function getAmountValue() {
-        return (float) $this->getAmount()->getValue();
+        $pattern = array(
+            '/,/',
+            '/\./'
+        );
+        $replace = array(
+            '',
+            ''
+        );
+        $value = preg_replace($pattern, $replace, $this->getAmount()->getValue());
+        return (float) $value/100;
     }
     
     /**
