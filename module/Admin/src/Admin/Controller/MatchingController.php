@@ -262,7 +262,8 @@ class MatchingController extends AbstractActionController {
                         $match->setBankStatement($statement);
                         $user = $this->zfcUserAuthentication()->getIdentity();
                         #$match->setAdminId($this->zfcUserAuthentication()->getIdentity()->getId());
-                        $match->setAdmin($user);
+                        #$match->setAdmin($user);
+                        $match->setUser($user);
                         $match->setComment($data['comment']);
                         
                         $em->persist($match);
