@@ -158,11 +158,11 @@ return array(
                 'route' => 'admin/order',
                 #'resource'  => 'controller/Admin\Controller\Order',
                 'pages' => array(
-                    'overview' => array(
+                    /*'overview' => array(
                         'label' => 'Overview',
                         'route' => 'admin/order',
                         'resource'  => 'controller/Admin\Controller\Order',
-                    ),
+                    ),*/
                     'search' => array(
                         'label' => 'Search',
                         'route' => 'admin/order',
