@@ -16,7 +16,6 @@ endif;
 $this->headTitle($title);
 ?>
 <div class="clear-both">
-    <a href="<?php echo $this->url('admin/order'); ?>">back to Overview</a><br />
     <a href="<?php echo $this->url('admin/order', array('action' => 'search')); ?>">back to Search</a>
 </div>
 <h1><?php echo $this->escapeHtml($title); ?></h1>

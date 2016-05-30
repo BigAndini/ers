@@ -46,6 +46,22 @@ class UploadCsv extends Form
             ), 
         ));
         
+        $this->add(array(
+            'name' => 'separator',
+            'attributes' => array(
+                'type'  => 'text',
+                'placeholder' => 'Separator...',
+                'class' => 'form-control form-element',
+                'value' => ',',
+            ),
+            'options' => array(
+                'label' => 'Position',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
         $this->add(array( 
             'name' => 'csrf', 
             'type' => 'Zend\Form\Element\Csrf', 
