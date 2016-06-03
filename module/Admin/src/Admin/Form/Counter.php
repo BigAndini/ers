@@ -55,7 +55,7 @@ class Counter extends Form
                 ),
                 'object_manager' => $em,
                 'target_class' => 'ErsBase\Entity\ProductVariantValue',
-                'label_generator' => function($entity){ return $entity->getProductVariant()->getName() . ' - ' . $entity->getValue(); },
+                'label_generator' => function($entity){ return $entity->getProductVariant()->getProduct()->getName() . ' - ' . $entity->getProductVariant()->getName() . ' - ' . $entity->getValue(); },
                 'display_empty_item' => true,
                 'empty_item_label' => 'Select variant ...',
             ),
@@ -65,13 +65,13 @@ class Counter extends Form
             'name' => 'value',
             'attributes' => array(
                 'type'  => 'text',
-                'placeholder' => 'Value ...',
+                'placeholder' => 'Limit ...',
                 'required' => 'required',
                 'pattern' => '\d+',
                 'class' => 'form-control form-element',
             ),
             'options' => array(
-                'label' => 'Counter value',
+                'label' => 'Counter limit',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),

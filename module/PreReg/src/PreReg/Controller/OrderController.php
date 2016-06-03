@@ -384,6 +384,9 @@ class OrderController extends AbstractActionController {
             $buyer = $order->getBuyer();
             $buyer_role = $em->getRepository('ErsBase\Entity\Role')
                         ->findOneBy(array('roleId' => 'buyer'));
+            if(!$buyer_role) {
+                throw new \Exception('The role "buyer" is missing in the database, please add a role named buyer.');
+            }
             if(!$buyer->hasRole($buyer_role)) {
                 $buyer->addRole($buyer_role);
                 $em->persist($buyer);
@@ -397,6 +400,7 @@ class OrderController extends AbstractActionController {
                 }
                 
                 $participant = $package->getParticipant();
+                $participant->setActive(true);
                 
                 if($participant->getFirstname() == '' || $participant->getSurname() == '') {
                     $participant = $buyer;

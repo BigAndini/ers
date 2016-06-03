@@ -158,11 +158,11 @@ return array(
                 'route' => 'admin/order',
                 #'resource'  => 'controller/Admin\Controller\Order',
                 'pages' => array(
-                    'overview' => array(
+                    /*'overview' => array(
                         'label' => 'Overview',
                         'route' => 'admin/order',
                         'resource'  => 'controller/Admin\Controller\Order',
-                    ),
+                    ),*/
                     'search' => array(
                         'label' => 'Search',
                         'route' => 'admin/order',
@@ -415,6 +415,15 @@ return array(
                         'defaults' => array(
                             'controller' => 'Admin\Controller\Cron',
                             'action' => 'correct-status'
+                        )
+                    )
+                ),
+                'correct-active-user' => array(
+                    'options' => array(
+                        'route'    => 'correct-active-user',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-active-user'
                         )
                     )
                 ),

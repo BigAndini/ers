@@ -158,6 +158,20 @@ class Product extends Form
         ));
         
         $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
+            'name' => 'ticket_template',
+            'attributes' => array(
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Template for E-Ticket',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
+        $this->add(array(
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',

@@ -21,6 +21,7 @@
         'year'              => 2016,
         'start'             => new DateTime('2016-07-30'),
         'end'               => new DateTime('2016-08-07'),
+        'registration_info' => 'http://prereg.eja.net',
     ),
     'environment' => 'develop',
     #'environment' => 'testing',

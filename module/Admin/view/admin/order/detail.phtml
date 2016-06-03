@@ -16,7 +16,6 @@ endif;
 $this->headTitle($title);
 ?>
 <div class="clear-both">
-    <a href="<?php echo $this->url('admin/order'); ?>">back to Overview</a><br />
     <a href="<?php echo $this->url('admin/order', array('action' => 'search')); ?>">back to Search</a>
 </div>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -37,11 +36,11 @@ $this->headTitle($title);
                     <a href="<?php echo $this->url('admin/order', array('action' => 'resend-confirmation', 'id' => $order->getId())); ?>">Resend Confirmation</a>
                 </li>
                 <?php if($order->getPaymentStatus() != 'paid'): ?>
-                <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="e-Tickets cannot be send for unpaid orders.">
+                <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid orders.">
                 <?php else: ?>
                 <li>
                 <?php endif; ?>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">Send e-Tickets</a>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">Send E-Tickets</a>
                 </li>
                 <li>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'send-payment-reminder', 'id' => $order->getId())); ?>">Send Payment Reminder</a>
@@ -140,7 +139,7 @@ $this->headTitle($title);
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Change Package Detail</a>
                                         </li>
                                         <?php if($package->getStatus() != 'paid'): ?>
-                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="e-Tickets cannot be send for unpaid packages.">
+                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid packages.">
                                         <?php else: ?>
                                         <li>
                                         <?php endif; ?>
@@ -154,7 +153,7 @@ $this->headTitle($title);
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">Download e-Ticket</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">Download E-Ticket</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -300,10 +299,10 @@ $this->headTitle($title);
                                     <a class="btn btn-danger" href="<?php echo $this->url('admin/matching', array('action' => 'unlink', 'id' => $match->getId())); ?>">unlink</a>
                                 </div>
                                 <div class="col-md-4 text-right">
-                                    <?php if(is_numeric($statement->getAmount()->getValue())):
-                                        echo $this->currencyFormat((float) $statement->getAmount()->getValue(), 'EUR', null, 'de_DE');
+                                    <?php if(is_numeric($statement->getAmountValue())):
+                                        echo $this->currencyFormat($statement->getAmountValue(), 'EUR', null, 'de_DE');
                                     else :
-                                        echo $statement->getAmount()->getValue();
+                                        echo $statement->getAmountValue();
                                     endif; ?>
                                 </div>
                             </div>
@@ -315,7 +314,7 @@ $this->headTitle($title);
                             </tr>
                             <tr>
                                 <th>who</th>
-                                <td><?php echo $match->getAdmin()->getFirstname().' '.$match->getAdmin()->getSurname(); ?></td>
+                                <td><?php echo $match->getUser()->getFirstname().' '.$match->getUser()->getSurname(); ?></td>
                             </tr>
                             <tr>
                                 <th>when</th>
@@ -363,7 +362,7 @@ $this->headTitle($title);
                             </tr>
                             <tr>
                                 <th>amount</th>
-                                <td><?php echo $statement->getAmount()->getValue(); ?></td>
+                                <td><?php echo $statement->getAmountValue(); ?></td>
                             </tr>
                             <tr>
                                 <th>code</th>

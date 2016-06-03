@@ -383,7 +383,7 @@ class PaymentController extends AbstractActionController {
                 ->findOneBy(array('value' => 'paid'));
         
         $order->setPaymentStatus('paid');
-        foreach($order->getPackage() as $package) {
+        foreach($order->getPackages() as $package) {
             $package->setStatus($status);
             foreach($package->getItems() as $item) {
                 $item->setStatus($status);

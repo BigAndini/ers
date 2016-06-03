@@ -123,10 +123,10 @@ $this->headTitle($title);
                             <a class="btn btn-danger" href="<?php echo $this->url('admin/matching', array('action' => 'unlink', 'id' => $matching->getId())); ?>">unlink</a>
                         </div>
                         <div class="col-md-4 text-right">
-                            <?php if(is_numeric($statement->getAmount()->getValue())):
-                                echo $this->currencyFormat((float) $statement->getAmount()->getValue(), 'EUR', null, 'de_DE');
+                            <?php if(is_numeric($statement->getAmountValue())):
+                                echo $this->currencyFormat($statement->getAmountValue(), 'EUR', null, 'de_DE');
                             else :
-                                echo $statement->getAmount()->getValue();
+                                echo $statement->getAmountValue();
                             endif; ?>
                         </div>
                     </div>
@@ -138,7 +138,7 @@ $this->headTitle($title);
                     </tr>
                     <tr>
                         <th>who</th>
-                        <td><?php echo $matching->getAdmin()->getFirstname().' '.$matching->getAdmin()->getSurname(); ?></td>
+                        <td><?php echo $matching->getUser()->getFirstname().' '.$matching->getUser()->getSurname(); ?></td>
                     </tr>
                     <tr>
                         <th>when</th>
@@ -184,7 +184,7 @@ $this->headTitle($title);
                             </tr>
                             <tr>
                                 <th>amount</th>
-                                <td><?php echo $statement->getAmount()->getValue(); ?></td>
+                                <td><?php echo $statement->getAmountValue(); ?></td>
                             </tr>
                             <tr>
                                 <th>code</th>

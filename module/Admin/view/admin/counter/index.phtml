@@ -12,13 +12,15 @@ $this->headTitle($title);
 <table class="table">
     <tr>
         <th>Name</th>
-        <th>Value</th>
+        <th>Limit</th>
+        <th>Current value</th>
         <th>&nbsp;</th>
     </tr>
 <?php foreach ($counters as $counter) : ?>
     <tr>
         <td><?php echo $this->escapeHtml($counter->getName()); ?></td>
         <td><?php echo $counter->getValue(); ?></td>
+        <td><i><?php echo $counterCurrentValues[$counter->getId()]; ?></i></td>
         <td>
             <a href="<?php echo $this->url('admin/counter', array('action'=>'edit', 'id' => $counter->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
             <a href="<?php echo $this->url('admin/counter', array('action'=>'delete', 'id' => $counter->getId()));?>"><?php echo $this->translate('Delete'); ?></a>

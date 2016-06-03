@@ -222,7 +222,7 @@ class BankaccountController extends AbstractActionController {
                 );
                 $bankaccount->setStatementFormat(json_encode($format));
                 
-                $hashes = array();
+                /*$hashes = array();
                 foreach($bankaccount->getBankStatements() as $statement) {
                     $amountCol = $statement->getAmount();
                     $amountCol->setValue((float) $amountCol->getValue());
@@ -250,7 +250,7 @@ class BankaccountController extends AbstractActionController {
 
                     $hashes[] = $statement->getHash();
                     $em->persist($statement);
-                }
+                }*/
                 
                 $em->persist($bankaccount);
                 $em->flush();
@@ -344,18 +344,23 @@ class BankaccountController extends AbstractActionController {
                     throw new \Exception('Unable to open csv');
                 }
                 
+                # only needed to disable negative statements.
+                # DO NOT ADJUST FIELDS ACCORDING TO THE STATEMENT FORMAT HERE!
                 $statement_format = json_decode($bankaccount->getStatementFormat());
-                $fix_amount = false;
+                /*$fix_amount = false;
                 if(is_array($statement_format)) {
                     $fix_amount = true;
-                }
+                }*/
                 
                 /*
                  * read every line in the file and generate bank statement entities
                  */
                 $row = 1;
                 $hashes = array();
-                while (($row_data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                $separator = substr($data['separator'], 0, 1);
+                error_log('found separator: '.$separator);
+                while (($row_data = fgetcsv($handle, 1000, $separator)) !== FALSE) {
+                #while (($row_data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                     #$hash = md5(implode($row_data));
                     
                     $bs = new Entity\BankStatement();
@@ -371,9 +376,9 @@ class BankaccountController extends AbstractActionController {
                         $bsc->setBankStatement($bs);
                         $bs->addBankStatementCol($bsc);
                     }
-                    if($fix_amount) {
+                    /*if($fix_amount) {
                         $bs->getAmount()->setValue((float) $bs->getAmount()->getValue());
-                    }
+                    }*/
                     $bs->generateHash();
                     
                     $bankstatement = $em->getRepository('ErsBase\Entity\BankStatement')

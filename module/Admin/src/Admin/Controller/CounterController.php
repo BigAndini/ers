@@ -17,11 +17,18 @@ class CounterController extends AbstractActionController {
     
     public function indexAction()
     {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $counterService = $this->getServiceLocator()->get('ErsBase\Service\TicketCounterService');
+        
+        $counters = $em->getRepository('ErsBase\Entity\Counter')->findAll();
+        $counterCurrentValues = [];
+        foreach($counters as $counter) {
+            $counterCurrentValues[$counter->getId()] = $counterService->getCurrentItemCount($counter);
+        }
         
         return new ViewModel(array(
-            'counters' => $em->getRepository('ErsBase\Entity\Counter')->findAll(),
+            'counters' => $counters,
+            'counterCurrentValues' => $counterCurrentValues,
          ));
     }
 

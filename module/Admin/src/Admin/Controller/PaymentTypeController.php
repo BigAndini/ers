@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -15,491 +15,67 @@ use Admin\Form;
 use Admin\InputFilter;
 
 class PaymentTypeController extends AbstractActionController {
-    
-    public function indexAction()
-    {
+
+    public function indexAction() {
         $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
+                ->get('Doctrine\ORM\EntityManager');
+
         return new ViewModel(array(
             'paymenttypes' => $em->getRepository('ErsBase\Entity\PaymentType')
-                ->findBy(array(), array('position' => 'ASC')),
+                    ->findBy(array(), array('position' => 'ASC')),
         ));
     }
 
     public function addLogoAction() {
-        
     }
+
     public function editLogoAction() {
-        
     }
+
     public function deleteLogoAction() {
-        
     }
-    
-    public function addBankTransferAction() {
-        $form = new Form\PaymentTypeBankTransfer();
-        $form->get('submit')->setValue('Add');
 
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $options = array();
-        foreach($deadlines as $deadline) {
-            $options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => false,
-            );
-        }
-        $options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => true,
-        );
-        $form->get('active_from_id')->setAttribute('options', $options);
-        $form->get('active_until_id')->setAttribute('options', $options);
-        
-        $paymenttype = new Entity\PaymentType();
-        
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $inputFilter = new InputFilter\PaymentTypeBankTransfer();
-            $inputFilter->setEntityManager($em);
-            
-            #$form->setInputFilter($inputFilter->getInputFilter());
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $paymenttype->populate($form->getData());
-                $paymenttype->setType('BankTransfer');
-                
-                if($paymenttype->getActiveFromId() == 0) {
-                    $paymenttype->setActiveFromId(null);
-                } else {
-                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')
-                        ->findOneBy(array('id' => $paymenttype->getActiveFromId()));
-                    $paymenttype->setActiveFrom($active_from);
-                }
-                if($paymenttype->getActiveUntilId() == 0) {
-                    $paymenttype->setActiveUntilId(null);
-                } else {
-                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')
-                        ->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
-                    $paymenttype->setActiveUntil($active_until);
-                }
-                
-                $em->persist($paymenttype);
-                $em->flush();
-                
-                return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
-        }
 
-        return new ViewModel(array(
-            'form' => $form
-        ));
-    }
-    
-    public function addChequeAction() {
-        $form = new Form\PaymentTypeCheque();
-        $form->get('submit')->setValue('Add');
-
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $options = array();
-        foreach($deadlines as $deadline) {
-            $options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => false,
-            );
-        }
-        $options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => true,
-        );
-        $form->get('active_from_id')->setAttribute('options', $options);
-        $form->get('active_until_id')->setAttribute('options', $options);
-        
-        $paymenttype = new Entity\PaymentType();
-        
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $inputFilter = new InputFilter\PaymentTypeCheque();
-            $inputFilter->setEntityManager($em);
-            
-            #$form->setInputFilter($inputFilter->getInputFilter());
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $paymenttype->populate($form->getData());
-                $paymenttype->setType('Cheque');
-                
-                if($paymenttype->getActiveFromId() == 0) {
-                    $paymenttype->setActiveFromId(null);
-                } else {
-                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')
-                        ->findOneBy(array('id' => $paymenttype->getActiveFromId()));
-                    $paymenttype->setActiveFrom($active_from);
-                }
-                if($paymenttype->getActiveUntilId() == 0) {
-                    $paymenttype->setActiveUntilId(null);
-                } else {
-                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')
-                        ->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
-                    $paymenttype->setActiveUntil($active_until);
-                }
-                
-                $em->persist($paymenttype);
-                $em->flush();
-                
-                return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
-        }
-
-        return new ViewModel(array(
-            'form' => $form
-        ));
-    }
-    
-    public function addPayPalAction() {
-        $form = new Form\PaymentTypePayPal();
-        $form->get('submit')->setValue('Add');
-
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $options = array();
-        foreach($deadlines as $deadline) {
-            $options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => false,
-            );
-        }
-        $options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => true,
-        );
-        $form->get('active_from_id')->setAttribute('options', $options);
-        $form->get('active_until_id')->setAttribute('options', $options);
-        
-        $paymenttype = new Entity\PaymentType();
-        
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $inputFilter = new InputFilter\PaymentTypePayPal();
-            $inputFilter->setEntityManager($em);
-            
-            #$form->setInputFilter($inputFilter->getInputFilter());
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $paymenttype->populate($form->getData());
-                $paymenttype->setType('PayPal');
-                
-                if($paymenttype->getActiveFromId() == 0) {
-                    $paymenttype->setActiveFromId(null);
-                } else {
-                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')
-                        ->findOneBy(array('id' => $paymenttype->getActiveFromId()));
-                    $paymenttype->setActiveFrom($active_from);
-                }
-                if($paymenttype->getActiveUntilId() == 0) {
-                    $paymenttype->setActiveUntilId(null);
-                } else {
-                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')
-                        ->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
-                    $paymenttype->setActiveUntil($active_until);
-                }
-                
-                $em->persist($paymenttype);
-                $em->flush();
-                
-                return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
-        }
-
-        return new ViewModel(array(
-            'form' => $form
-        ));
-    }
-    
-    public function addCreditCardAction() {
-        $form = new Form\PaymentTypeBankTransfer();
-        $form->get('submit')->setValue('Add');
-
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $options = array();
-        foreach($deadlines as $deadline) {
-            $options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => false,
-            );
-        }
-        $options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => true,
-        );
-        $form->get('active_from_id')->setAttribute('options', $options);
-        $form->get('active_until_id')->setAttribute('options', $options);
-        
-        $paymenttype = new Entity\PaymentType();
-        
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $inputFilter = new InputFilter\PaymentTypeBankTransfer();
-            $inputFilter->setEntityManager($em);
-            
-            #$form->setInputFilter($inputFilter->getInputFilter());
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $paymenttype->populate($form->getData());
-                $paymenttype->setType('CreditCard');
-                
-                if($paymenttype->getActiveFromId() == 0) {
-                    $paymenttype->setActiveFromId(null);
-                } else {
-                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')
-                        ->findOneBy(array('id' => $paymenttype->getActiveFromId()));
-                    $paymenttype->setActiveFrom($active_from);
-                }
-                if($paymenttype->getActiveUntilId() == 0) {
-                    $paymenttype->setActiveUntilId(null);
-                } else {
-                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')
-                        ->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
-                    $paymenttype->setActiveUntil($active_until);
-                }
-                
-                $em->persist($paymenttype);
-                $em->flush();
-                
-                return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
-        }
-
-        return new ViewModel(array(
-            'form' => $form
-        ));
-    }
-    
-    public function addIPaymentAction() {
-        $form = new Form\PaymentTypeBankTransfer();
-        $form->get('submit')->setValue('Add');
-
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $options = array();
-        foreach($deadlines as $deadline) {
-            $options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => false,
-            );
-        }
-        $options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => true,
-        );
-        $form->get('active_from_id')->setAttribute('options', $options);
-        $form->get('active_until_id')->setAttribute('options', $options);
-        
-        $paymenttype = new Entity\PaymentType();
-        
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $inputFilter = new InputFilter\PaymentTypeBankTransfer();
-            $inputFilter->setEntityManager($em);
-            
-            #$form->setInputFilter($inputFilter->getInputFilter());
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $paymenttype->populate($form->getData());
-                $paymenttype->setType('IPayment');
-                
-                if($paymenttype->getActiveFromId() == 0) {
-                    $paymenttype->setActiveFromId(null);
-                } else {
-                    $active_from = $em->getRepository("ErsBase\Entity\Deadline")
-                        ->findOneBy(array('id' => $paymenttype->getActiveFromId()));
-                    $paymenttype->setActiveFrom($active_from);
-                }
-                if($paymenttype->getActiveUntilId() == 0) {
-                    $paymenttype->setActiveUntilId(null);
-                } else {
-                    $active_until = $em->getRepository("ErsBase\Entity\Deadline")
-                        ->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
-                    $paymenttype->setActiveUntil($active_until);
-                }
-                
-                $em->persist($paymenttype);
-                $em->flush();
-                
-                return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
-        }
-
-        return new ViewModel(array(
-            'form' => $form
-        ));
-    }
-    
-    public function addAction()
-    {
+    public function addAction() {
         $form = new Form\PaymentType();
         $form->get('submit')->setValue('Add');
-        
+
+        $deadlineOptions = $this->buildDeadlineOptions();
+        $form->get('active_from_id')->setAttribute('options', $deadlineOptions);
+        $form->get('active_until_id')->setAttribute('options', $deadlineOptions);
+        $form->get('active_from_id')->setValue(0);
+        $form->get('active_until_id')->setValue(0);
+
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $paymenttype = new Entity\PaymentType();
-            
-            #$form->setInputFilter($paymenttype->getInputFilter());
-            $form->setData($request->getPost());
+            $inputFilter = new InputFilter\PaymentType();
+            $inputFilter->setEntityManager($em);
 
+            $form->setInputFilter($inputFilter->getInputFilter());
+            $form->setData($request->getPost());
             if ($form->isValid()) {
+                $paymenttype = new Entity\PaymentType();
                 $paymenttype->populate($form->getData());
-                
-                $em = $this->getServiceLocator()
-                    ->get('Doctrine\ORM\EntityManager');
-                
-                $em->persist($paymenttype);
-                $em->flush();
 
-                return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
-        }
-        
-        return new ViewModel(array(
-            'form' => $form,                
-        ));
-    }
-
-    public function editBankTransferAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/payment-type', array(
-                'action' => 'addBankTransfer'
-            ));
-        }
-        
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')->findOneBy(array('id' => $id));
-            
-        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $from_options = array();
-        $until_options = array();
-        foreach($deadlines as $deadline) {
-            $from_selected = false;
-            if($deadline->getId() == $paymenttype->getActiveFromId()) {
-                $from_selected = true;
-            }
-            $until_selected = false;
-            if($deadline->getId() == $paymenttype->getActiveUntilId()) {
-                $until_selected = true;
-            }
-            $from_options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => $from_selected,
-            );
-            $until_options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => $until_selected,
-            );
-        }
-        $from_selected = false;
-        if($paymenttype->getActiveFromId() == 0) {
-            $from_selected = true;
-        }
-        $from_options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => $from_selected,
-        );
-        $until_selected = false;
-        if($paymenttype->getActiveUntilId() == 0) {
-            $until_selected = true;
-        }
-        $until_options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => $until_selected,
-        );
-        
-        $form = new Form\PaymentTypeBankTransfer();
-        
-        $form->get('active_from_id')->setAttribute('options', $from_options);
-        $form->get('active_until_id')->setAttribute('options', $until_options);
-
-        $inputFilter = new InputFilter\PaymentTypeBankTransfer();
-        $inputFilter->setEntityManager($em);
-
-        #$paymenttype->setInputFilter($inputFilter->getInputFilter());
-        $form->bind($paymenttype);
-        $form->get('submit')->setValue('Edit');
-    
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $paymenttype = $form->getData();
-                
-                if($paymenttype->getActiveFromId() == 0) {
+                if ($paymenttype->getActiveFromId() == 0) {
                     $paymenttype->setActiveFromId(null);
                 } else {
-                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')->findOneBy(array('id' => $paymenttype->getActiveFromId()));
+                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveFromId());
                     $paymenttype->setActiveFrom($active_from);
                 }
-                if($paymenttype->getActiveUntilId() == 0) {
+                if ($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
+                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveUntilId());
                     $paymenttype->setActiveUntil($active_until);
                 }
-                
+
                 $em->persist($paymenttype);
                 $em->flush();
-                
+
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
                 $logger = $this->getServiceLocator()->get('Logger');
@@ -508,470 +84,90 @@ class PaymentTypeController extends AbstractActionController {
         }
 
         return new ViewModel(array(
-            'form'  => $form,
-            'id'    => $id,
+            'form' => $form
         ));
     }
-    
-    public function editChequeAction() {
+
+
+    public function editAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('admin/payment-type', array(
-                'action' => 'addCheque'
-            ));
+            return $this->redirect()->toRoute('admin/payment-type', ['action' => 'add']);
         }
-        
+
         $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')->findOneBy(array('id' => $id));
-            
-        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $from_options = array();
-        $until_options = array();
-        foreach($deadlines as $deadline) {
-            $from_selected = false;
-            if($deadline->getId() == $paymenttype->getActiveFromId()) {
-                $from_selected = true;
-            }
-            $until_selected = false;
-            if($deadline->getId() == $paymenttype->getActiveUntilId()) {
-                $until_selected = true;
-            }
-            $from_options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => $from_selected,
-            );
-            $until_options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => $until_selected,
-            );
-        }
-        $from_selected = false;
-        if($paymenttype->getActiveFromId() == 0) {
-            $from_selected = true;
-        }
-        $from_options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => $from_selected,
-        );
-        $until_selected = false;
-        if($paymenttype->getActiveUntilId() == 0) {
-            $until_selected = true;
-        }
-        $until_options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => $until_selected,
-        );
-        
-        $form = new Form\PaymentTypeCheque();
-        
-        $form->get('active_from_id')->setAttribute('options', $from_options);
-        $form->get('active_until_id')->setAttribute('options', $until_options);
+                ->get('Doctrine\ORM\EntityManager');
 
-        $inputFilter = new InputFilter\PaymentTypeCheque();
-        $inputFilter->setEntityManager($em);
-
-        $paymenttype->setInputFilter($inputFilter->getInputFilter());
-        $form->bind($paymenttype);
-        $form->get('submit')->setValue('Edit');
-    
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $paymenttype = $form->getData();
-                
-                if($paymenttype->getActiveFromId() == 0) {
-                    $paymenttype->setActiveFromId(null);
-                } else {
-                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')->findOneBy(array('id' => $paymenttype->getActiveFromId()));
-                    $paymenttype->setActiveFrom($active_from);
-                }
-                if($paymenttype->getActiveUntilId() == 0) {
-                    $paymenttype->setActiveUntilId(null);
-                } else {
-                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
-                    $paymenttype->setActiveUntil($active_until);
-                }
-                
-                $em->persist($paymenttype);
-                $em->flush();
-                
-                return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
-        }
-
-        return new ViewModel(array(
-            'form'  => $form,
-            'id'    => $id,
-        ));
-    }
-    
-    public function editPayPalAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/payment-type', array(
-                'action' => 'addPayPal'
-            ));
-        }
-        
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')->findOneBy(array('id' => $id));
-            
-        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $from_options = array();
-        $until_options = array();
-        foreach($deadlines as $deadline) {
-            $from_selected = false;
-            if($deadline->getId() == $paymenttype->getActiveFromId()) {
-                $from_selected = true;
-            }
-            $until_selected = false;
-            if($deadline->getId() == $paymenttype->getActiveUntilId()) {
-                $until_selected = true;
-            }
-            $from_options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => $from_selected,
-            );
-            $until_options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => $until_selected,
-            );
-        }
-        $from_selected = false;
-        if($paymenttype->getActiveFromId() == 0) {
-            $from_selected = true;
-        }
-        $from_options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => $from_selected,
-        );
-        $until_selected = false;
-        if($paymenttype->getActiveUntilId() == 0) {
-            $until_selected = true;
-        }
-        $until_options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => $until_selected,
-        );
-        
-        $form = new Form\PaymentTypePayPal();
-        
-        $form->get('active_from_id')->setAttribute('options', $from_options);
-        $form->get('active_until_id')->setAttribute('options', $until_options);
-
-        $inputFilter = new InputFilter\PaymentTypePayPal();
-        $inputFilter->setEntityManager($em);
-
-        $paymenttype->setInputFilter($inputFilter->getInputFilter());
-        $form->bind($paymenttype);
-        $form->get('submit')->setValue('Edit');
-    
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $paymenttype = $form->getData();
-                
-                if($paymenttype->getActiveFromId() == 0) {
-                    $paymenttype->setActiveFromId(null);
-                } else {
-                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')->findOneBy(array('id' => $paymenttype->getActiveFromId()));
-                    $paymenttype->setActiveFrom($active_from);
-                }
-                if($paymenttype->getActiveUntilId() == 0) {
-                    $paymenttype->setActiveUntilId(null);
-                } else {
-                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
-                    $paymenttype->setActiveUntil($active_until);
-                }
-                
-                $em->persist($paymenttype);
-                $em->flush();
-                
-                return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
-        }
-
-        return new ViewModel(array(
-            'form'  => $form,
-            'id'    => $id,
-        ));
-    }
-    
-    public function editCreditCardAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/payment-type', array(
-                'action' => 'addCreditCard'
-            ));
-        }
-        
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')->findOneBy(array('id' => $id));
-            
-        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $from_options = array();
-        $until_options = array();
-        foreach($deadlines as $deadline) {
-            $from_selected = false;
-            if($deadline->getId() == $paymenttype->getActiveFromId()) {
-                $from_selected = true;
-            }
-            $until_selected = false;
-            if($deadline->getId() == $paymenttype->getActiveUntilId()) {
-                $until_selected = true;
-            }
-            $from_options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => $from_selected,
-            );
-            $until_options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => $until_selected,
-            );
-        }
-        $from_selected = false;
-        if($paymenttype->getActiveFromId() == 0) {
-            $from_selected = true;
-        }
-        $from_options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => $from_selected,
-        );
-        $until_selected = false;
-        if($paymenttype->getActiveUntilId() == 0) {
-            $until_selected = true;
-        }
-        $until_options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => $until_selected,
-        );
-        
-        $form = new Form\PaymentTypeBankTransfer();
-        
-        $form->get('active_from_id')->setAttribute('options', $from_options);
-        $form->get('active_until_id')->setAttribute('options', $until_options);
-
-        $inputFilter = new InputFilter\PaymentTypeBankTransfer();
-        $inputFilter->setEntityManager($em);
-
-        #$paymenttype->setInputFilter($inputFilter->getInputFilter());
-        $form->bind($paymenttype);
-        $form->get('submit')->setValue('Edit');
-    
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $paymenttype = $form->getData();
-                
-                if($paymenttype->getActiveFromId() == 0) {
-                    $paymenttype->setActiveFromId(null);
-                } else {
-                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')->findOneBy(array('id' => $paymenttype->getActiveFromId()));
-                    $paymenttype->setActiveFrom($active_from);
-                }
-                if($paymenttype->getActiveUntilId() == 0) {
-                    $paymenttype->setActiveUntilId(null);
-                } else {
-                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
-                    $paymenttype->setActiveUntil($active_until);
-                }
-                
-                $em->persist($paymenttype);
-                $em->flush();
-                
-                return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
-        }
-
-        return new ViewModel(array(
-            'form'  => $form,
-            'id'    => $id,
-        ));
-    }
-    
-    public function editIPaymentAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/payment-type', array(
-                'action' => 'addIPayment'
-            ));
-        }
-        
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $paymenttype = $em->getRepository("ErsBase\Entity\PaymentType")->findOneBy(array('id' => $id));
-            
-        $deadlines = $em->getRepository("ErsBase\Entity\Deadline")
-                ->findBy(array(), array('deadline' => 'ASC'));
-        $from_options = array();
-        $until_options = array();
-        foreach($deadlines as $deadline) {
-            $from_selected = false;
-            if($deadline->getId() == $paymenttype->getActiveFromId()) {
-                $from_selected = true;
-            }
-            $until_selected = false;
-            if($deadline->getId() == $paymenttype->getActiveUntilId()) {
-                $until_selected = true;
-            }
-            $from_options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => $from_selected,
-            );
-            $until_options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: '.$deadline->getDeadline()->format('Y-m-d H:i:s'),
-                'selected' => $until_selected,
-            );
-        }
-        $from_selected = false;
-        if($paymenttype->getActiveFromId() == 0) {
-            $from_selected = true;
-        }
-        $from_options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => $from_selected,
-        );
-        $until_selected = false;
-        if($paymenttype->getActiveUntilId() == 0) {
-            $until_selected = true;
-        }
-        $until_options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline',
-            'selected' => $until_selected,
-        );
-        
-        $form = new Form\PaymentTypeBankTransfer();
-        
-        $form->get('active_from_id')->setAttribute('options', $from_options);
-        $form->get('active_until_id')->setAttribute('options', $until_options);
-
-        $inputFilter = new InputFilter\PaymentTypeBankTransfer();
-        $inputFilter->setEntityManager($em);
-
-        #$paymenttype->setInputFilter($inputFilter->getInputFilter());
-        $form->bind($paymenttype);
-        $form->get('submit')->setValue('Edit');
-    
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $paymenttype = $form->getData();
-                
-                if($paymenttype->getActiveFromId() == 0) {
-                    $paymenttype->setActiveFromId(null);
-                } else {
-                    $active_from = $em->getRepository("ErsBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveFromId()));
-                    $paymenttype->setActiveFrom($active_from);
-                }
-                if($paymenttype->getActiveUntilId() == 0) {
-                    $paymenttype->setActiveUntilId(null);
-                } else {
-                    $active_until = $em->getRepository("ErsBase\Entity\Deadline")->findOneBy(array('id' => $paymenttype->getActiveUntilId()));
-                    $paymenttype->setActiveUntil($active_until);
-                }
-                
-                $em->persist($paymenttype);
-                $em->flush();
-                
-                return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
-        }
-
-        return new ViewModel(array(
-            'form'  => $form,
-            'id'    => $id,
-        ));
-    }
-    
-    public function editAction()
-    {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/payment-type', array(
-                'action' => 'add'
-            ));
-        }
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')->findOneBy(array('id' => $id));
+        $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')->find($id);
+        if (!$paymenttype)
+            return $this->notFoundAction();
 
         $form = new Form\PaymentType();
+        $form->get('submit')->setValue('Edit');
+
+        $deadlineOptions = $this->buildDeadlineOptions();
+        $form->get('active_from_id')->setAttribute('options', $deadlineOptions);
+        $form->get('active_until_id')->setAttribute('options', $deadlineOptions);
+
         $form->bind($paymenttype);
-        $form->get('submit')->setAttribute('value', 'Edit');
+        // fix binding for "no Deadline" selection
+        if (!$paymenttype->getActiveFromId())
+            $form->get('active_from_id')->setValue(0);
+        if (!$paymenttype->getActiveUntilId())
+            $form->get('active_until_id')->setValue(0);
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            #$form->setInputFilter($paymenttype->getInputFilter());
+            $inputFilter = new InputFilter\PaymentType();
+            $inputFilter->setEntityManager($em);
+
+            $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $em->persist($form->getData());
+                if ($paymenttype->getActiveFromId() == 0) {
+                    $paymenttype->setActiveFromId(null);
+                } else {
+                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveFromId());
+                    $paymenttype->setActiveFrom($active_from);
+                }
+                if ($paymenttype->getActiveUntilId() == 0) {
+                    $paymenttype->setActiveUntilId(null);
+                } else {
+                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveUntilId());
+                    $paymenttype->setActiveUntil($active_until);
+                }
+
+                $em->persist($paymenttype);
                 $em->flush();
 
                 return $this->redirect()->toRoute('admin/payment-type');
+            } else {
+                $logger = $this->getServiceLocator()->get('Logger');
+                $logger->warn($form->getMessages());
             }
         }
 
         return new ViewModel(array(
-            'id' => $id,
             'form' => $form,
+            'id' => $id,
         ));
     }
+    
 
-    public function deleteAction()
-    {
+    public function deleteAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        if (!$id)
             return $this->redirect()->toRoute('admin/payment-type');
-        }
+
         $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
-                ->findOneBy(array('id' => $id));
-        $orders = $em->getRepository("ErsBase\Entity\Order")
-                ->findOneBy(array('payment_type_id' => $id));
+                ->get('Doctrine\ORM\EntityManager');
+        $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')->find($id);
+
+        if (!$paymenttype)
+            return $this->notFoundAction();
+
+        $orders = $paymenttype->getOrders();
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -979,8 +175,7 @@ class PaymentTypeController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
-                    ->findOneBy(array('id' => $id));
+                $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')->find($id);
                 $em->remove($paymenttype);
                 $em->flush();
             }
@@ -989,9 +184,31 @@ class PaymentTypeController extends AbstractActionController {
         }
 
         return new ViewModel(array(
-            'id'    => $id,
+            'id' => $id,
             'orders' => $orders,
             'paymenttype' => $paymenttype,
         ));
     }
+
+    private function buildDeadlineOptions() {
+        $deadlines = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager')
+                ->getRepository('ErsBase\Entity\Deadline')
+                ->findBy(array(), array('deadline' => 'ASC'));
+
+        $options = array();
+        foreach ($deadlines as $deadline) {
+            $options[] = array(
+                'value' => $deadline->getId(),
+                'label' => 'Deadline: ' . $deadline->getDeadline()->format('Y-m-d H:i:s')
+            );
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'no Deadline'
+        );
+
+        return $options;
+    }
+
 }

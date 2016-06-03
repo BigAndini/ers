@@ -88,7 +88,6 @@ class CloneService
             $item->setTransferredItem($newItem);
             $status = $em->getRepository("ErsBase\Entity\Status")
                 ->findOneBy(array('value' => 'transferred'));
-            #$item->setStatus('transferred');
             $item->setStatus($status);
             $em->persist($item);
         }
@@ -125,7 +124,9 @@ class CloneService
             }
             $newItem = clone $item;
             $item->setTransferredItem($newItem);
-            $item->setStatus('transferred');
+            $statusTransferred = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'transferred'));
+            $item->setStatus($statusTransferred);
             $item->setPackage($package);
             $em->persist($item);
             $newPackage->addItem($newItem);

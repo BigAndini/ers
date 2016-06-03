@@ -8,7 +8,7 @@ $this->headTitle($title);
     <p>Payment types with which orders have been made can't be deleted.</p>
     <a href="<?php echo $this->url('admin/payment-type');?>">Back</a>
 <?php else: ?>
-    <p>Are you sure that you want to delete price limit
+    <p>Are you sure that you want to delete payment type
         <strong><?php echo $paymenttype->getName().' ('.$paymenttype->getType().')'; ?></strong>?
     </p>
     <?php

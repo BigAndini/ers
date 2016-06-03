@@ -81,6 +81,7 @@ class CronController extends AbstractActionController {
         $statements = $em->getRepository('ErsBase\Entity\BankStatement')
                 ->findAll();
         
+        echo "Phase 1: check ".count($statements)." statements".PHP_EOL.PHP_EOL;
         $longest_match = 0;
         foreach($statements as $statement) {
             $time_start = microtime(true);
@@ -100,7 +101,7 @@ class CronController extends AbstractActionController {
             }
             
             if(empty($statement_format->matchKey)) {
-                echo 'matchKey not set for bank account '.$bankaccount->getName().PHP_EOL;
+                echo 'WARNING: matchKey not set for bank account '.$bankaccount->getName().PHP_EOL;
                 continue;
             }
             $ret = $this->findCodes($statement->getBankStatementColByNumber($statement_format->matchKey)->getValue());
@@ -129,7 +130,7 @@ class CronController extends AbstractActionController {
                     }
                 }
                 if(!$found) {
-                    echo PHP_EOL."ERROR: Unable to find any code in system.".PHP_EOL;
+                    echo "WARNING: Unable to find any code in system.".PHP_EOL;
                     echo $statement->getBankStatementColByNumber($statement_format->matchKey)->getValue().PHP_EOL;
                 }
                 $time_end = microtime(true);
@@ -139,49 +140,61 @@ class CronController extends AbstractActionController {
                 }
             }
         }
-        echo 'The longest match took '.$longest_match.' seconds.'.PHP_EOL;
+        echo 'INFO: The longest match took '.$longest_match.' seconds.'.PHP_EOL;
         
         /*
          * check status of unpaid orders
+         * set orders to paid if statements have the correct value
          */
+        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb->join('o.status', 's');
+        $qb->where('s.value = :status');
+        $qb->setParameter('status', 'ordered');
         
-        #TODO: find order which contain items in status != paid and != cancelled and != refund
-        $orders = $em->getRepository('ErsBase\Entity\Order')
-                ->findBy(array('payment_status' => 'unpaid'));
+        $orders = $qb->getQuery()->getResult();
+        
+        echo PHP_EOL."Phase 2: check ".count($orders)." orders and set payment status.".PHP_EOL;
+        
         foreach($orders as $order) {
             $statement_amount = $order->getStatementAmount();
             $order_amount = $order->getSum();
             if($order_amount == $statement_amount) {
                 $paid = true;
-                #echo "perfect match!".PHP_EOL;
                 echo ".";
+                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (exact)".PHP_EOL;
             } elseif($order_amount < $statement_amount) {
                 $paid = true;
-                #echo "overpaid, ok!".PHP_EOL;
                 echo "!";
+                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (overpaid)".PHP_EOL;
             } else {
                 $paid = false;
                 echo "-";
+                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (partial)".PHP_EOL;
             }
             if($paid) {
+                $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'paid'));
+                
                 $order->setPaymentStatus('paid');
+                $order->setStatus($statusPaid);
 
                 foreach($order->getItems() as $item) {
-                    $item->setStatus('paid');
+                    $item->setStatus($statusPaid);
                     $em->persist($item);
                 }
 
                 $em->persist($order);
-                #$em->persist($orderStatus);
             } else {
+                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'ordered'));
                 foreach($order->getItems() as $item) {
-                    $item->setStatus('ordered');
+                    $item->setStatus($statusOrdered);
                     $em->persist($item);
                 }
             }
         }
         $em->flush();
-        echo PHP_EOL."checked ".count($orders)." orders and set status.".PHP_EOL;
+        echo PHP_EOL.PHP_EOL."done.".PHP_EOL;
     }
     
     private function createMatch(Entity\BankStatement $statement, Entity\Code $code) {
@@ -222,14 +235,17 @@ class CronController extends AbstractActionController {
         if($order_amount == $statement_amount) {
             $paid = true;
             #echo "perfect match!".PHP_EOL;
-            echo ".";
+            #echo ".";
+            echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (exact)".PHP_EOL;
         } elseif($order_amount < $statement_amount) {
             $paid = true;
             #echo "overpaid, ok!".PHP_EOL;
-            echo "!";
+            #echo "!";
+            echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (overpaid)".PHP_EOL;
         } else {
             $paid = false;
-            echo "-";
+            #echo "-";
+            echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (partial)".PHP_EOL;
         }
         if($paid) {
             #$orderStatus = new Entity\OrderStatus();
@@ -237,15 +253,14 @@ class CronController extends AbstractActionController {
             #$orderStatus->setValue('paid');
             #$order->addOrderStatus($orderStatus);
             
-            $paid_status = $em->getRepository('ErsBase\Entity\Status')
+            $statusPaid = $em->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'paid'));
             
             $order->setPaymentStatus('paid');
-            $order->setStatus($paid_status);
+            $order->setStatus($statusPaid);
             
             foreach($order->getItems() as $item) {
-                #$item->setStatus('paid');
-                $item->setStatus($paid_status);
+                $item->setStatus($statusPaid);
                 $em->persist($item);
             }
 
@@ -253,11 +268,10 @@ class CronController extends AbstractActionController {
             #$em->persist($orderStatus);
         } else {
             foreach($order->getItems() as $item) {
-                $ordered_status = $em->getRepository('ErsBase\Entity\Status')
+                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
                 
-                #$item->setStatus('ordered');
-                $item->setStatus($ordered_status);
+                $item->setStatus($statusOrdered);
                 $em->persist($item);
             }
         }
@@ -416,13 +430,17 @@ class CronController extends AbstractActionController {
         $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findAll();
         $count = 0;
+        
+        $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'paid'));
+        
         foreach($orders as $order) {
             $order->setTotalSum($order->getSum());
             $order->setOrderSum($order->getPrice());
             if($order->getPaymentStatus() == 'paid') {
                 $items = $order->getItems();
                 foreach($items as $item) {
-                    $item->setStatus('paid');
+                    $item->setStatus($statusPaid);
                     $em->persist($item);
                 }
             }
@@ -476,7 +494,7 @@ class CronController extends AbstractActionController {
                 $bcc->setEmail('prereg@eja.net');
                 $emailService->addBcc($bcc);
 
-                $subject = "[EJC 2016] Updated e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+                $subject = "[EJC 2016] Updated E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
                 $emailService->setSubject($subject);
 
                 $viewModel = new ViewModel(array(
@@ -616,7 +634,7 @@ class CronController extends AbstractActionController {
             $bcc->setEmail('prereg@eja.net');
             $emailService->addBcc($bcc);
 
-            $subject = "[EJC 2016] e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+            $subject = "[EJC 2016] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
             $emailService->setSubject($subject);
 
             $viewModel = new ViewModel(array(
@@ -793,6 +811,9 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
+        $statusTransferred = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'transferred'));
+        
         $qb = $em->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
         $qb->where("i.status = 'transferred'");
         #$qb->orWhere("p.ticket_status = 'not_send'");
@@ -808,7 +829,7 @@ class CronController extends AbstractActionController {
                 continue;
             }
             foreach($item->getChildItems() as $cItem) {
-                $cItem->setStatus('transferred');
+                $cItem->setStatus($statusTransferred);
                 $em->persist($item);
             }
             foreach($tItem->getChildItems() as $cItem) {
@@ -969,6 +990,23 @@ class CronController extends AbstractActionController {
             $order->setTotalSum($order->getSum());
             $order->setOrderSum($order->getPrice());
             $em->persist($order);
+        }
+        $em->flush();
+    }
+    
+    public function correctActiveUserAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $users = $em->getRepository('ErsBase\Entity\User')
+                ->findAll();
+        foreach($users as $user) {
+            foreach($user->getPackages() as $package) {
+                $order = $package->getOrder();
+                if($order->getStatus()->getActive()) {
+                    $user->setActive(true);
+                    $em->persist($user);
+                }
+            }
         }
         $em->flush();
     }
