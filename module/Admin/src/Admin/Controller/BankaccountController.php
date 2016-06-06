@@ -357,7 +357,10 @@ class BankaccountController extends AbstractActionController {
                  */
                 $row = 1;
                 $hashes = array();
-                while (($row_data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                $separator = substr($data['separator'], 0, 1);
+                error_log('found separator: '.$separator);
+                while (($row_data = fgetcsv($handle, 1000, $separator)) !== FALSE) {
+                #while (($row_data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                     #$hash = md5(implode($row_data));
                     
                     $bs = new Entity\BankStatement();

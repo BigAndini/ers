@@ -280,7 +280,7 @@ class Package extends Base\Package
     public function getStatusWithShipped() {
         $status = array();
         foreach($this->getItems() as $item) {
-            $item_status = $item->getStatus();
+            $item_status = $item->getStatus()->getValue();
             if($item->getShipped()) {
                 $item_status = 'shipped';
             }
