@@ -16,7 +16,7 @@ $itemStatusIcons = [
 ];
 
 
-$status = ($item->getShipped() ? 'shipped' : ($item->getStatus() ?: 'unknown'));
+$status = ($item->getShipped() ? 'shipped' : ($item->getStatus()->getValue() ?: 'unknown'));
 $itemOK = ($status === 'paid');
 ?>
 <li><label class="block package">
