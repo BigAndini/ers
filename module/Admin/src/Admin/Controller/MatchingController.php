@@ -243,6 +243,14 @@ class MatchingController extends AbstractActionController {
                 $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
                 foreach($orders as $order) {
+                    if($status == 'paid') {
+                        $order->setStatus($statusPaid);
+                        $em->persist($order);
+                    } elseif($status == 'unpaid') {
+                        $order->setStatus($statusOrdered);
+                        $em->persist($order);
+                    }
+                    
                     foreach($order->getItems() as $item) {
                         if($status == 'paid') {
                             $item->setStatus($statusPaid);
