@@ -101,7 +101,7 @@ class PackageController extends AbstractActionController {
                     return $toDetailRedirect;
                 }
                 
-                if($item->getStatus() !== 'paid') {
+                if($item->getStatus()->getValue() !== 'paid') {
                     $this->flashMessenger()->addErrorMessage('The item ' . $item->getName() . ' cannot be set to shipped because it is not paid.');
                     return $toDetailRedirect;
                 }
