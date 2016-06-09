@@ -35,6 +35,7 @@ class Item extends Base\Item
         $code = new Code();
         $code->genCode();
         $this->setCode($code);
+        $this->setShipped(false);
     }
 
     /**
