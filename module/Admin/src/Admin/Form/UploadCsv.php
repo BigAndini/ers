@@ -55,7 +55,7 @@ class UploadCsv extends Form
                 'value' => ',',
             ),
             'options' => array(
-                'label' => 'Position',
+                'label' => 'Separator',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
