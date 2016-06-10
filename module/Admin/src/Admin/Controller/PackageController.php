@@ -288,13 +288,16 @@ class PackageController extends AbstractActionController {
                 $package = $em->getRepository('ErsBase\Entity\Package')
                     ->findOneBy(array('id' => $id));
                 
+                $statusCancelled = $em->getRepository('ErsBase\Entity\Status')
+                                ->findOneBy(array('value' => 'cancelled'));
+                
                 $itemArray = $this->recalcPackage($package, $agegroup, $deadline);
                 foreach($itemArray as $items) {
                     if(isset($items['after'])) {
                         $itemAfter = $items['after'];
                         $itemBefore = $items['before'];
                         
-                        $itemAfter->setStatus($itemBefore->getStatus());
+                        #$itemAfter->setStatus($itemBefore->getStatus());
                         
                         $em->persist($itemAfter);
                         
@@ -302,9 +305,7 @@ class PackageController extends AbstractActionController {
                         if($order->getPaymentStatus() == 'paid') {
                             $order->setPaymentStatus('unpaid');
                         }
-
-                        $statusCancelled = $em->getRepository('ErsBase\Entity\Status')
-                                ->findOneBy(array('value' => 'cancelled'));
+        
                         $itemBefore->setStatus($statusCancelled);
                         $em->persist($itemBefore);
 
@@ -328,6 +329,12 @@ class PackageController extends AbstractActionController {
         $itemArray = array();
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
+        
+        $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+        $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'paid'));
+        
         foreach($package->getItems() as $item) {
             if($item->getStatus() == 'refund') {
                 continue;
@@ -345,6 +352,7 @@ class PackageController extends AbstractActionController {
                 #$newItem = clone $item;
                 $newItem = new Entity\Item();
                 $newItem->populate($item->getArrayCopy());
+                #$newItem->setStatus($item->getStatus());
                 foreach($item->getItemVariants() as $itemVariant) {
                     $newItemVariant = clone $itemVariant;
                     $newItem->addItemVariant($newItemVariant);
@@ -354,11 +362,12 @@ class PackageController extends AbstractActionController {
 
                 $newItem->setProduct($item->getProduct());
                 $newItem->setPackage($item->getPackage());
-
-                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
-                    ->findOneBy(array('value' => 'ordered'));
                 
-                if($newItem->getStatus()->getValue() == 'paid') {
+                if($newItem->getPrice() == 0) {
+                    # set item to paid if it's 0 € worth
+                    $newItem->setStatus($statusPaid);
+                } elseif($item->getStatus()->getValue() == 'paid') {
+                    # if it's not 0 € worth set the item to ordered when it was paid.
                     $newItem->setStatus($statusOrdered);
                 }
                 
