@@ -232,20 +232,21 @@ class CronController extends AbstractActionController {
         #$statement_amount = (float) $statement->getBankStatementColByNumber($statement_format->amount)->getValue();
         $statement_amount = $order->getStatementAmount();
         $order_amount = $order->getSum();
+        $matchInfo = "INFO: found match for order ".$order->getCode()->getValue()." ".number_format($order_amount, 2, ',')." <=> ".number_format($statement_amount, 2, ',');
         if($order_amount == $statement_amount) {
             $paid = true;
             #echo "perfect match!".PHP_EOL;
             #echo ".";
-            echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (exact)".PHP_EOL;
+            echo $matchInfo." (exact)".PHP_EOL;
         } elseif($order_amount < $statement_amount) {
             $paid = true;
             #echo "overpaid, ok!".PHP_EOL;
             #echo "!";
-            echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (overpaid)".PHP_EOL;
+            echo $matchInfo." (overpaid)".PHP_EOL;
         } else {
             $paid = false;
             #echo "-";
-            echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (partial)".PHP_EOL;
+            echo $matchInfo." (partial)".PHP_EOL;
         }
         if($paid) {
             #$orderStatus = new Entity\OrderStatus();

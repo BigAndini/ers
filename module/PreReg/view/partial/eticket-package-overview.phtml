@@ -16,24 +16,23 @@
         ?>
     </p>
     <?php foreach($products as $product): ?>
-        <p class="order-description"><?php echo $product->getName(); ?>:</p>
         <?php switch($product->getTicketTemplate()):
             #switch($product->getId()):
                 /*
                  * week ticket
                  */
-                case 'weekticket':
-                case '1': ?>
+                case 'weekticket': ?>
+                    <p class="order-description"><?php echo $product->getName(); ?>:
                     <?php if(!isset($items[$product->getId()]) || count($items[$product->getId()]) == 0): ?>
-                        <p class="order-value"><span class="fa">&#xf096;</span></p>
+                        <span class="order-value fa">&#xf096;</span></p>
                     <?php else:
                         foreach($items[$product->getId()] as $item):
                             if($item->hasParentItems()) :
                                 continue;
                             endif; ?>
-                            <p class="order-value"><span class="fa">&#xf046;</span></p>
+                            <span class="order-value fa">&#xf046;</span></p>
                             <?php foreach($item->getChildItems() as $cItem): ?>
-                                <p class="order-description">
+                                <p class="additional-order-description">
                                     included <?php echo $cItem->getProduct()->getName(); ?>: 
                                 </p>
                                 <p class="order-value">
@@ -48,79 +47,108 @@
                 /*
                  * gala show ticket
                  */
-                case 'galashow':
-                case '98': ?>
-                    <?php if(!isset($items[$product->getId()]) || count($items[$product->getId()]) == 0): ?>
-                        <p class="order-value">none</p>
-                    <?php else: ?>
+                case 'galashow': ?>
+                    <p class="order-description">separate <?php echo $product->getName(); ?>:
+                    <?php $itemcount = 0; ?>
+                    <?php if(!empty($items[$product->getId()]) && count($items[$product->getId()]) >= 0): ?>
                         <?php foreach($items[$product->getId()] as $item):
                             if($item->hasParentItems()) :
                                 continue;
+                            else:
+                                $itemcount++;
                             endif; ?>
-                            <p class="order-description"><?php echo $item->getProduct()->getName(); ?>:</p>
+                            <span class="order-value fa">&#xf046;</span></p>
                             <p class="order-value">
                                 <?php foreach($item->getItemVariants() as $variant): ?>
-                                <span><?php echo $variant->getValue(); ?></span>
+                                    <span><?php echo $variant->getValue(); ?></span>
                                 <?php endforeach; ?>
                             </p>
                         <?php endforeach; ?>
+                    <?php endif;
+                    if($itemcount == 0): ?>
+                        <span class="order-value fa">&#xf096;</span></p>
                     <?php endif; ?>
                     <?php break;
                 /*
                  * day ticket
                  */
-                case 'dayticket':
-                case '99': ?>
-                        <p class="order-value">
-                            <table class="day-table">
-                                <tr>
-                                    <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
-                                        $timestamp = strtotime($value->getValue());
-                                        $date = new DateTime();
-                                        $date->setTimestamp($timestamp); ?>
-                                        <td><?php echo $date->format('D'); ?></td>
-                                    <?php endforeach; ?>
-                                </tr>
-                                <tr>
-                                    <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
-                                        $timestamp = strtotime($value->getValue());
-                                        $date = new DateTime();
-                                        $date->setTimestamp($timestamp); ?>
-                                        <td style='font-size: 6px;'><?php echo $date->format('d.m.'); ?></td>
-                                    <?php endforeach; ?>
-                                </tr>
-                                <tr>
-                                    <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
-                                        $timestamp = strtotime($value->getValue());
-                                        $date = new DateTime();
-                                        $date->setTimestamp($timestamp);
-                                        $found = false;
-                                        if(isset($items[$product->getId()]) && is_array($items[$product->getId()])):
-                                            foreach($items[$product->getId()] as $item):
-                                                $itemValue = $item->getItemVariantByName('Day')->getValue();
-                                                if($timestamp == strtotime($itemValue)) {
-                                                    $found = true;
-                                                }
-                                            endforeach;
-                                        endif;
-                                        ?>
-                                        <?php if($found): ?>
-                                            <td><span class="fa">&#xf046;</span></td>
-                                        <?php else: ?>
-                                            <td><span class="fa">&#xf096;</span></td>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                </tr>
-                            </table>
-                        </p>
+                case 'dayticket': ?>
+                    <p class="order-description"><?php echo $product->getName(); ?>:</p>
+                    <p class="order-value">
+                        <table class="day-table">
+                            <tr>
+                                <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
+                                    $timestamp = strtotime($value->getValue());
+                                    $date = new DateTime();
+                                    $date->setTimestamp($timestamp); ?>
+                                    <td><?php echo $date->format('D'); ?></td>
+                                <?php endforeach; ?>
+                            </tr>
+                            <tr>
+                                <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
+                                    $timestamp = strtotime($value->getValue());
+                                    $date = new DateTime();
+                                    $date->setTimestamp($timestamp); ?>
+                                    <td style='font-size: 6px;'><?php echo $date->format('d.m.'); ?></td>
+                                <?php endforeach; ?>
+                            </tr>
+                            <tr>
+                                <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
+                                    $timestamp = strtotime($value->getValue());
+                                    $date = new DateTime();
+                                    $date->setTimestamp($timestamp);
+                                    $found = false;
+                                    if(isset($items[$product->getId()]) && is_array($items[$product->getId()])):
+                                        foreach($items[$product->getId()] as $item):
+                                            $itemValue = $item->getItemVariantByName('Day')->getValue();
+                                            if($timestamp == strtotime($itemValue)) {
+                                                $found = true;
+                                            }
+                                        endforeach;
+                                    endif;
+                                    ?>
+                                    <?php if($found): ?>
+                                        <td><span class="fa">&#xf046;</span></td>
+                                    <?php else: ?>
+                                        <td><span class="fa">&#xf096;</span></td>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </tr>
+                        </table>
+                    </p>
+                    <?php break;
+                case 'clothes': ?>
+                    <p class="order-description"><?php echo $product->getName(); ?>:
+                        <?php if(isset($items[$product->getId()]) && count($items[$product->getId()]) > 0): ?>
+                            <span class="order-value fa">&#xf046;</span>
+                        <?php else: ?>
+                            <span class="order-value fa">&#xf096;</span>
+                        <?php endif; ?>
+                    </p>
+                    <?php if(!isset($items[$product->getId()]) || count($items[$product->getId()]) == 0): ?>
+                        <span class="fa">&#xf096;</span>
+                    <?php else: ?>
+                        <?php foreach($items[$product->getId()] as $item):
+                            if($item->hasParentItems()) :
+                                continue;
+                            endif; ?>
+                            <p class="order-value">
+                                <?php foreach($item->getItemVariants() as $variant): ?>
+                                <?php echo $variant->getName().': '.$variant->getValue(); ?><br />
+                                <?php endforeach; ?>
+                            </p>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                     <?php break;
                 case 'default':
                 default: ?>
-                    <?php if(isset($items[$product->getId()]) && count($items[$product->getId()]) > 0): ?>
-                        <p class="order-value"><span class="fa">&#xf046;</span></p>
-                    <?php else: ?>
-                        <p class="order-value"><span class="fa">&#xf096;</span></p>
-                    <?php endif; ?>
+                    <p class="order-description"><?php echo $product->getName(); ?>:
+                        <?php if(isset($items[$product->getId()]) && count($items[$product->getId()]) > 0): ?>
+                            <span class="order-value fa">&#xf046;</span>
+                        <?php else: ?>
+                            <span class="order-value fa">&#xf096;</span>
+                        <?php endif; ?>
+                    </p>
                     <?php break;
             endswitch; ?>
     <?php endforeach; ?>
