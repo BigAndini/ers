@@ -22,15 +22,14 @@
                  * week ticket
                  */
                 case 'weekticket': ?>
-                    <p class="order-description"><?php echo $product->getName(); ?>:
                     <?php if(!isset($items[$product->getId()]) || count($items[$product->getId()]) == 0): ?>
-                        <span class="order-value fa">&#xf096;</span></p>
+                        <p class="order-description"><span class="order-value fa">&#xf096;</span> <?php echo $product->getName(); ?></p>
                     <?php else:
                         foreach($items[$product->getId()] as $item):
                             if($item->hasParentItems()) :
                                 continue;
                             endif; ?>
-                            <span class="order-value fa">&#xf046;</span></p>
+                            <p class="order-description"><span class="order-value fa">&#xf046;</span> <?php echo $product->getName(); ?></p>
                             <?php foreach($item->getChildItems() as $cItem): ?>
                                 <p class="additional-order-description">
                                     included <?php echo $cItem->getProduct()->getName(); ?>: 
@@ -48,7 +47,6 @@
                  * gala show ticket
                  */
                 case 'galashow': ?>
-                    <p class="order-description">separate <?php echo $product->getName(); ?>:
                     <?php $itemcount = 0; ?>
                     <?php if(!empty($items[$product->getId()]) && count($items[$product->getId()]) >= 0): ?>
                         <?php foreach($items[$product->getId()] as $item):
@@ -57,7 +55,7 @@
                             else:
                                 $itemcount++;
                             endif; ?>
-                            <span class="order-value fa">&#xf046;</span></p>
+                            <p class="order-description"><span class="order-value fa">&#xf046;</span> Separate <?php echo $product->getName(); ?></p>
                             <p class="order-value">
                                 <?php foreach($item->getItemVariants() as $variant): ?>
                                     <span><?php echo $variant->getValue(); ?></span>
@@ -66,14 +64,14 @@
                         <?php endforeach; ?>
                     <?php endif;
                     if($itemcount == 0): ?>
-                        <span class="order-value fa">&#xf096;</span></p>
+                        <p class="order-description"><span class="order-value fa">&#xf096;</span> separate <?php echo $product->getName(); ?></p>
                     <?php endif; ?>
                     <?php break;
                 /*
                  * day ticket
                  */
                 case 'dayticket': ?>
-                    <p class="order-description"><?php echo $product->getName(); ?>:</p>
+                    <p class="order-description"><?php echo $product->getName(); ?></p>
                     <p class="order-value">
                         <table class="day-table">
                             <tr>
@@ -118,37 +116,39 @@
                     </p>
                     <?php break;
                 case 'clothes': ?>
-                    <p class="order-description"><?php echo $product->getName(); ?>:
-                        <?php if(isset($items[$product->getId()]) && count($items[$product->getId()]) > 0): ?>
-                            <span class="order-value fa">&#xf046;</span>
-                        <?php else: ?>
-                            <span class="order-value fa">&#xf096;</span>
-                        <?php endif; ?>
-                    </p>
-                    <?php if(!isset($items[$product->getId()]) || count($items[$product->getId()]) == 0): ?>
-                        <span class="fa">&#xf096;</span>
+                    <?php if(isset($items[$product->getId()]) && count($items[$product->getId()]) > 0): ?>
+                        <p class="order-description"><span class="order-value fa">&#xf046;</span> <?php echo $product->getName(); ?></p>
                     <?php else: ?>
+                        <p class="order-description"><span class="order-value fa">&#xf096;</span> <?php echo $product->getName(); ?></p>
+                    <?php endif; ?>
+                    <?php if(!empty($items[$product->getId()]) && count($items[$product->getId()]) > 0): ?>
                         <?php foreach($items[$product->getId()] as $item):
                             if($item->hasParentItems()) :
                                 continue;
                             endif; ?>
                             <p class="order-value">
-                                <?php foreach($item->getItemVariants() as $variant): ?>
-                                <?php echo $variant->getName().': '.$variant->getValue(); ?><br />
-                                <?php endforeach; ?>
+                                <?php $variants = $item->getItemVariants()->toArray();
+                                usort($variants, array('ErsBase\Entity\Item', 'variantCmp'));
+                                $i = 0;
+                                foreach($variants as $variant): 
+                                    #echo $variant->getName().': '.$variant->getValue()."<br />";
+                                    if(++$i == count($variants)) {
+                                        echo $variant->getValue();
+                                    } else {
+                                        echo $variant->getValue().', ';
+                                    }
+                                endforeach; ?>
                             </p>
                         <?php endforeach; ?>
                     <?php endif; ?>
                     <?php break;
                 case 'default':
                 default: ?>
-                    <p class="order-description"><?php echo $product->getName(); ?>:
-                        <?php if(isset($items[$product->getId()]) && count($items[$product->getId()]) > 0): ?>
-                            <span class="order-value fa">&#xf046;</span>
-                        <?php else: ?>
-                            <span class="order-value fa">&#xf096;</span>
-                        <?php endif; ?>
-                    </p>
+                    <?php if(isset($items[$product->getId()]) && count($items[$product->getId()]) > 0): ?>
+                        <p class="order-description"><span class="order-value fa">&#xf046;</span> <?php echo $product->getName(); ?></p>
+                    <?php else: ?>
+                        <p class="order-description"><span class="order-value fa">&#xf096;</span> <?php echo $product->getName(); ?></p>
+                    <?php endif; ?>
                     <?php break;
             endswitch; ?>
     <?php endforeach; ?>

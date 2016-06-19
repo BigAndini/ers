@@ -204,4 +204,11 @@ class Item extends Base\Item
         
         return $this;
     }
+    
+    static public function variantCmp($a, $b) {
+        if ($a->getProductVariant()->getPosition() == $b->getProductVariant()->getPosition()) {
+            return 0;
+        }
+        return ($a->getProductVariant()->getPosition() < $b->getProductVariant()->getPosition()) ? -1 : 1;
+    }
 }
