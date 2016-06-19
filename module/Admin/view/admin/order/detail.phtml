@@ -268,7 +268,6 @@ $this->headTitle($title);
                 (<a href="mailto:<?php echo $buyer->getEmail(); ?>"><?php echo $buyer->getEmail(); ?></a>)
             </h4>
         <?php else: ?>
-            <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
             <a href="<?php echo $this->url('admin/order', array('action' => 'register')); ?>">choose Buyer</a>
         <?php endif; ?>
 
@@ -276,7 +275,6 @@ $this->headTitle($title);
         <?php if($paymenttype) : ?>
             <h4>Payment Type: <?php echo $paymenttype->getName(); ?></h4>
         <?php else: ?>
-            <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
             <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
         <?php endif; ?>  
         <?php foreach($order->getMatches() as $match): 

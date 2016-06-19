@@ -42,7 +42,7 @@ class OrderController extends AbstractActionController {
          * - use space as and operator
          * - use (a,b,c) as or operator
          */
-        $searchText = $this->params()->fromQuery('q');
+        $searchText = \trim($this->params()->fromQuery('q'));
         if(!empty($searchText)) {
 
             $form->get('q')->setValue($searchText);
