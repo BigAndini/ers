@@ -205,16 +205,10 @@ class Item extends Base\Item
         return $this;
     }
     
-    static function variantCmp($a, $b) {
-        error_log('i was here');
-        /*if($a->getProductVariantValue()->getPosition() < $b->getProductVariantValue()->getPosition()) {
-            return true;
-        } else {
-            return false;
-        }*/
-        if ($a->getProductVariantValue()->getPosition() == $b->getProductVariantValue()->getPosition()) {
+    static public function variantCmp($a, $b) {
+        if ($a->getProductVariant()->getPosition() == $b->getProductVariant()->getPosition()) {
             return 0;
         }
-        return ($a->getProductVariantValue()->getPosition() < $b->getProductVariantValue()->getPosition()) ? -1 : 1;
+        return ($a->getProductVariant()->getPosition() < $b->getProductVariant()->getPosition()) ? -1 : 1;
     }
 }

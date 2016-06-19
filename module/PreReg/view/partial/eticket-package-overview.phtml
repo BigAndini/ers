@@ -121,43 +121,23 @@
                     <?php else: ?>
                         <p class="order-description"><span class="order-value fa">&#xf096;</span> <?php echo $product->getName(); ?></p>
                     <?php endif; ?>
-                    <?php if(!isset($items[$product->getId()]) || count($items[$product->getId()]) == 0): ?>
-                        <span class="fa">&#xf096;</span>
-                    <?php else: ?>
+                    <?php if(!empty($items[$product->getId()]) && count($items[$product->getId()]) > 0): ?>
                         <?php foreach($items[$product->getId()] as $item):
                             if($item->hasParentItems()) :
                                 continue;
                             endif; ?>
                             <p class="order-value">
-                                <?php $variants = $item->getItemVariants();
-                                if(usort($variants, function($a, $b)
-                                {
-                                    error_log('i was here!');
-                                    if ($a->getProductVariantValue()->getPosition() == $b->getProductVariantValue()->getPosition())
-                                    {
-                                        return 0;
+                                <?php $variants = $item->getItemVariants()->toArray();
+                                usort($variants, array('ErsBase\Entity\Item', 'variantCmp'));
+                                $i = 0;
+                                foreach($variants as $variant): 
+                                    #echo $variant->getName().': '.$variant->getValue()."<br />";
+                                    if(++$i == count($variants)) {
+                                        echo $variant->getValue();
+                                    } else {
+                                        echo $variant->getValue().', ';
                                     }
-                                    else if ($a->getProductVariantValue()->getPosition() > $b->getProductVariantValue()->getPosition())
-                                    {
-                                        return -1;
-                                    }
-                                    else {
-                                        return 1;
-                                    }
-                                })) {
-                                    error_log('sort ok');
-                                } else {
-                                    error_log('failed to sort');
-                                }
-                                /*if(usort($variants, array('ErsBase\Entity\Item', 'variantCmp'))) {
-                                    error_log('sort ok');
-                                } else {
-                                    error_log('failed to sort');
-                                }*/
-                                foreach($variants as $variant): ?>
-                                <!--<?php echo $variant->getName().': '.$variant->getValue(); ?><br />-->
-                                <?php echo $variant->getValue().'('.$variant->getProductVariant()->getPosition().')'.', '; ?>
-                                <?php endforeach; ?>
+                                endforeach; ?>
                             </p>
                         <?php endforeach; ?>
                     <?php endif; ?>
