@@ -205,6 +205,15 @@ class Item extends Base\Item
         return $this;
     }
     
+    public function getItemVariantByName($name) {
+        foreach($this->getItemVariants() as $variant) {
+            if($variant->getName() == $name) {
+                return $variant;
+            }
+        }
+        return false;
+    }
+    
     static public function variantCmp($a, $b) {
         if ($a->getProductVariant()->getPosition() == $b->getProductVariant()->getPosition()) {
             return 0;
