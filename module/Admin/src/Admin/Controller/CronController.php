@@ -908,7 +908,7 @@ class CronController extends AbstractActionController {
         $em->flush();
     }
     
-    public function correctPaidOrders() {
+    public function correctPaidOrdersAction() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
