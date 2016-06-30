@@ -458,6 +458,10 @@ class CronController extends AbstractActionController {
         $noStatusPackages = $qb->getQuery()->getResult();
         echo count($noStatusPackages)." packages need to be corrected.".PHP_EOL;
         foreach($noStatusPackages as $package) {
+            $order = $package->getOrder();
+            if($order->getStatus()->getValue() == 'order pending') {
+                continue;
+            }
             $productId = array(
                 '1' => 0,
             );
