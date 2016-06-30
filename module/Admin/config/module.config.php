@@ -427,6 +427,15 @@ return array(
                         )
                     )
                 ),
+                'correct-paid-orders' => array(
+                    'options' => array(
+                        'route'    => 'correct-paid-orders',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-paid-orders'
+                        )
+                    )
+                ),
             ),
         ),
     ),
