@@ -16,17 +16,20 @@ $this->headTitle($title);
         <th>&nbsp;</th>
     </tr>
 <?php foreach ($orders as $order) : ?>
+    <?php if($order->getStatus()->getValue() == 'order pending'):
+        continue;
+    endif; ?>
     <?php $status = 'undefined';
-    if($order->findOrderStatus('paid')->getValue() != ''):
+    if($order->getStatus()->getValue() == 'paid'):
         $status = 'paid';
-    elseif($order->findOrderStatus('unpaid')->getValue() != ''):
-        $status = 'unpaid';
+    elseif($order->getStatus()->getValue() != 'ordered'):
+        $status = 'ordered';
     endif; ?>
     <tr>
         <td><?php echo $order->getCode()->getValue(); ?></td>
         <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
         <td>
-            <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>
+            <?php echo $order->getUser()->getFirstname().' '.$order->getUser()->getSurname(); ?>
             <br />
             <a href="mailto:<?php echo $order->getBuyer()->getEmail(); ?>"><?php echo $order->getBuyer()->getEmail(); ?></a>
         </td>

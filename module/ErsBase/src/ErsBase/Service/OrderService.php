@@ -41,6 +41,10 @@ class OrderService
         return $this->_sl;
     }
     
+    public function setOrder(Entity\Order $order) {
+        $this->order = $order;
+    }
+    
     public function getOrder() {
         if($this->order instanceof Entity\Order) {
             return $this->order;
