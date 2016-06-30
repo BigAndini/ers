@@ -704,7 +704,7 @@ class CronController extends AbstractActionController {
         echo "found ".$count." items with no owner".PHP_EOL;
     }
     
-    public function correctItemStatusAction() {
+    /*public function correctItemStatusAction() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
@@ -738,7 +738,7 @@ class CronController extends AbstractActionController {
             }
         }
         $em->flush();
-    }
+    }*/
     
     public function cleanPendingOrdersAction() {
         echo "in clean pending orders".PHP_EOL;
