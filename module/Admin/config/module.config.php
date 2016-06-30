@@ -463,6 +463,15 @@ return array(
                         )
                     )
                 ),
+                'correct-item-status' => array(
+                    'options' => array(
+                        'route'    => 'correct-item-status',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-item-status'
+                        )
+                    )
+                ),
             ),
         ),
     ),

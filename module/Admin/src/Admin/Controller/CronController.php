@@ -1013,4 +1013,28 @@ class CronController extends AbstractActionController {
         
         $em->flush();
     }
+    
+    public function correctItemStatusAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        /*$qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb->join('p.status', 's');
+        $qb->where($qb->expr()->eq('s.value', ':status'));
+        $qb->setParameter('status', 'ordered');
+        
+        $packages = $qb->getQuery()->getResult();*/
+        $items = $em->getRepository('ErsBase\Entity\Item')->findAll();
+        
+        foreach($items as $item) {
+            $package = $item->getPackage();
+            if($item->getStatus()->getValue() == 'ordered' || $item->getStatus()->getValue() == 'paid' || $item->getStatus()->getValue() == 'order pending') {
+                $status = $item->getStatus();
+                $item->setStatus($package->getStatus());
+                echo $item->getCode()->getValue().": item status was: ".$status."; item status is: ".$item->getStatus().PHP_EOL;
+                $em->persist($item);
+            }
+        }
+        
+        $em->flush();
+    }
 }
