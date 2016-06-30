@@ -944,7 +944,7 @@ class CronController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
         $qb->join('o.status', 's');
-        $qb->where($qb->expr()->neq('s.value', ':status'));
+        $qb->where($qb->expr()->eq('s.value', ':status'));
         $qb->setParameter('status', 'ordered');
         
         $orders = $qb->getQuery()->getResult();
@@ -973,7 +973,7 @@ class CronController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
         $qb->join('p.status', 's');
-        $qb->where($qb->expr()->neq('s.value', ':status'));
+        $qb->where($qb->expr()->eq('s.value', ':status'));
         $qb->setParameter('status', 'paid');
         
         $packages = $qb->getQuery()->getResult();
@@ -996,7 +996,7 @@ class CronController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
         $qb->join('p.status', 's');
-        $qb->where($qb->expr()->neq('s.value', ':status'));
+        $qb->where($qb->expr()->eq('s.value', ':status'));
         $qb->setParameter('status', 'ordered');
         
         $packages = $qb->getQuery()->getResult();
