@@ -953,9 +953,9 @@ class CronController extends AbstractActionController {
                     ->findOneBy(array('value' => 'ordered'));
         
         foreach($orders as $order) {
-            echo "order code: ".$order->getCode()->getValue();
+            echo "order code: ".$order->getCode()->getValue().PHP_EOL;
             foreach($order->getPackages() as $package) {
-                echo "package code: ".$package->getCode()->getValue()." (status was: ".$package->getStatus().")";
+                echo "package code: ".$package->getCode()->getValue()." (status was: ".$package->getStatus().")".PHP_EOL;
                 $package->setStatus($statusOrdered);
                 $em->persist($package);
                 foreach($package->getItems() as $item) {
