@@ -445,6 +445,15 @@ return array(
                         )
                     )
                 ),
+                'correct-paid-packages' => array(
+                    'options' => array(
+                        'route'    => 'correct-paid-packages',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-paid-packages'
+                        )
+                    )
+                ),
             ),
         ),
     ),

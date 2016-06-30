@@ -967,4 +967,30 @@ class CronController extends AbstractActionController {
         
         $em->flush();
     }
+    
+    public function correctPaidPackagesAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb->join('p.status', 's');
+        $qb->where($qb->expr()->neq('s.value', ':status'));
+        $qb->setParameter('status', 'paid');
+        
+        $packages = $qb->getQuery()->getResult();
+        
+        #$statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+        #            ->findOneBy(array('value' => 'ordered'));
+        
+        foreach($packages as $package) {
+            $order = $package->getOrder();
+            if($order->getStatus()->getValue() != 'paid') {
+                $status = $package->getStatus()->getValue();
+                $package->setStatus($order->getStatus());
+                echo $package->getCode()->getValue().": package status was: ".$status."; package status is: ".$package->getStatus().PHP_EOL;
+                $em->persist($package);
+            }
+        }
+        
+        $em->flush();
+    }
 }
