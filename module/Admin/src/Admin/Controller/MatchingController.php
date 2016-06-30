@@ -250,14 +250,23 @@ class MatchingController extends AbstractActionController {
                         $order->setStatus($statusOrdered);
                         $em->persist($order);
                     }
-                    
-                    foreach($order->getItems() as $item) {
+        
+                    foreach($order->getPackages() as $package) {
                         if($status == 'paid') {
-                            $item->setStatus($statusPaid);
-                            $em->persist($item);
+                            $package->setStatus($statusPaid);
+                            $em->persist($package);
                         } elseif($status == 'unpaid') {
-                            $item->setStatus($statusOrdered);
-                            $em->persist($item);
+                            $package->setStatus($statusOrdered);
+                            $em->persist($package);
+                        }
+                        foreach($package->getItems() as $item) {
+                            if($status == 'paid') {
+                                $item->setStatus($statusPaid);
+                                $em->persist($item);
+                            } elseif($status == 'unpaid') {
+                                $item->setStatus($statusOrdered);
+                                $em->persist($item);
+                            }
                         }
                     }
                     $order->setPaymentStatus($status);

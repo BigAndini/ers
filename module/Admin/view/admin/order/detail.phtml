@@ -35,7 +35,7 @@ $this->headTitle($title);
                 <li>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'resend-confirmation', 'id' => $order->getId())); ?>">Resend Confirmation</a>
                 </li>
-                <?php if($order->getPaymentStatus() != 'paid'): ?>
+                <?php if($order->getStatus()->getValue() != 'paid'): ?>
                 <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid orders.">
                 <?php else: ?>
                 <li>
@@ -138,10 +138,10 @@ $this->headTitle($title);
                                         <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Change Package Detail</a>
                                         </li>
-                                        <?php if($package->getStatus() != 'paid'): ?>
-                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid packages.">
-                                        <?php else: ?>
+                                        <?php if($package->getStatus()->getValue() == 'paid'): ?>
                                         <li>
+                                        <?php else: ?>                                        
+                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid packages.">
                                         <?php endif; ?>
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'send-eticket', 'id' => $package->getId())); ?>">
                                                 <?php if($package->getTicketStatus() == 'send_out'): ?>
