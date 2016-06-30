@@ -19,7 +19,7 @@
             }
             .header {
             	margin-top: 0px;
-            	background-color: #f48029;
+            	background-color: #85b32a;
             	color: #fff;
             }
             .clear-both {
@@ -45,11 +45,11 @@
         <p>Dear <?php echo $participant->getFirstname().' '.$participant->getSurname(); ?>,</p>
         <p>thank you again for registering for EJC 2016.</p>
         <p>
-            <strong>First of all, please make sure that your name and date of birth on the e-ticket are identical to your name and date of birth on your passport or identity card.</strong>
-            If they are not identical, please send an email with your order number and the updated data to <a href="mailto:prereg@eja.net">prereg@eja.net</a>. We will then change the data and send you an up-to-date e-ticket. Please note that you cannot register onsite if your name and date of birth don’t match your ID card.
+            <strong>First of all, please check whether your name and your date of birth on the e-ticket fit in with your passport or identity card.</strong>
+            If not, please send an email with your order number and the updated data to <a href="mailto:prereg@eja.net">prereg@eja.net</a>. We’ll change the data and you will receive the up-to-date e-ticket. Please note that you cannot register onsite if your name and date of birth don’t match your ID card.
         </p>
         <p>
-            We received the payment for your order with ID <?php echo $order->getCode()->getValue(); ?> from <?php echo $order->getCreated()->format('d.m.Y'); ?>. The payment to your order is now confirmed. Attached to this email, you can find your e-ticket.
+            We received the payment for your order with ID <?php echo $order->getCode()->getValue(); ?> from <?php echo $order->getCreated()->format('d.m.Y'); ?>. The payment to your order is now confirmed. Attached to this email, you can find your e-ticket. It’s in English.
         </p>
         <p><strong>Print and sign this e-ticket.</strong> Bring it to the EJC together with your <strong>valid ID card</strong> and present both documents at the registration desk.</p>
         <p>To be able to read the documents, you need to install Adobe Acrobat Reader, which you can download here: <a href="http://get.adobe.com/reader/">http://get.adobe.com/reader/</a>.</p>
