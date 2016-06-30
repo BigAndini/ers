@@ -938,4 +938,33 @@ class CronController extends AbstractActionController {
         
         $em->flush();
     }
+    
+    public function correctOrderedOrdersAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb->join('o.status', 's');
+        $qb->where($qb->expr()->neq('s.value', ':status'));
+        $qb->setParameter('status', 'ordered');
+        
+        $orders = $qb->getQuery()->getResult();
+        
+        $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+        
+        foreach($orders as $order) {
+            echo "order code: ".$order->getCode()->getValue();
+            foreach($order->getPackages() as $package) {
+                echo "package code: ".$package->getCode()->getValue()." (status was: ".$package->getStatus().")";
+                $package->setStatus($statusOrdered);
+                $em->persist($package);
+                foreach($package->getItems() as $item) {
+                    $item->setStatus($statusOrdered);
+                    $em->persist($item);
+                }
+            }
+        }
+        
+        $em->flush();
+    }
 }

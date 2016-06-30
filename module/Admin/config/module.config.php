@@ -436,6 +436,15 @@ return array(
                         )
                     )
                 ),
+                'correct-ordered-orders' => array(
+                    'options' => array(
+                        'route'    => 'correct-ordered-orders',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-ordered-orders'
+                        )
+                    )
+                ),
             ),
         ),
     ),
