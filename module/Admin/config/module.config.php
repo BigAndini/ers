@@ -454,6 +454,15 @@ return array(
                         )
                     )
                 ),
+                'correct-ordered-packages' => array(
+                    'options' => array(
+                        'route'    => 'correct-ordered-packages',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-ordered-packages'
+                        )
+                    )
+                ),
             ),
         ),
     ),
