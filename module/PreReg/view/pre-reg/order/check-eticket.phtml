@@ -32,15 +32,15 @@ if($package): ?>
                 <?php else: ?>
                     <h3><i class="fa fa-times"></i> We're sorry, your e-ticket is not valid. You will not be able to attend EJC with this e-ticket.</h3>
                     <ol>
-                        <li>If you did not pay for your ticket, yet, please do so. We will then activate your ticket.</li>
-                        <li>If you have already paid for the ticket with the ticket code <strong><?php echo $package->getCode()->getValue() ?></strong>, please contact <a href="mailto:prereg@eja.net">prereg@eja.net</a>. We will have a try to solve that issue.</li>
+                        <li>If you haven't paid for your ticket, yet, please do so. We will then activate your ticket.</li>
+                        <li>If you have already paid for the ticket with the ticket code <strong><?php echo $package->getCode()->getValue() ?></strong>, please contact <a href="mailto:prereg@eja.net">prereg@eja.net</a>. We will solve the issue.</li>
                     </ol>
                     
                 <?php endif; ?>
             </div>
         </div>
     </div>
-<?php else:
+<?php endif;
     $form = $this->form;
     $form->setAttribute('action', $this->url('order', array('action' => 'check-eticket')));
     $form->prepare();
@@ -50,4 +50,4 @@ if($package): ?>
     echo $this->formSubmit($form->get('submit'));
     echo $this->formHidden($form->get('csrf'));
     echo $this->form()->closeTag();
-endif;
+
