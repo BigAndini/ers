@@ -1,0 +1,53 @@
+<?php
+
+$title = 'Check your E-Ticket';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+echo $this->flashMessenger()
+        ->setMessageOpenFormat('<p>&nbsp;</p><div%s><p>')
+        ->setMessageSeparatorString('</p><p>')
+        ->setMessageCloseString('</p></div>')
+        ->render('error', ['alert', 'alert-danger']);
+
+echo $this->flashMessenger()
+        ->setMessageOpenFormat('<p>&nbsp;</p><div%s><p>')
+        ->setMessageSeparatorString('</p><p>')
+        ->setMessageCloseString('</p></div>')
+        ->render('success', ['alert', 'alert-success']);
+
+if($package): ?>
+    <div class="panel panel-default">
+        <div class="panel-heading"><?php echo $package->getCode()->getValue(); ?></div>
+        <div class="panel-body">
+            <?php if($package->getStatus()->getValue() == 'paid'):
+                $status = 'success';
+            else:
+                $status = 'danger';
+            endif; ?>
+            <div class="alert <?php echo 'alert-'.$status; ?>">
+                <?php if($status == 'success'): ?>
+                    <h3><i class="fa fa-check"></i> Your ticket is valid and active.</h3>
+                <?php else: ?>
+                    <h3><i class="fa fa-times"></i> We're sorry, your e-ticket is not valid. You will not be able to attend EJC with this e-ticket.</h3>
+                    <ol>
+                        <li>If you haven't paid for your ticket, yet, please do so. We will then activate your ticket.</li>
+                        <li>If you have already paid for the ticket with the ticket code <strong><?php echo $package->getCode()->getValue() ?></strong>, please contact <a href="mailto:prereg@eja.net">prereg@eja.net</a>. We will solve the issue.</li>
+                    </ol>
+                    
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+<?php endif;
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('order', array('action' => 'check-eticket')));
+    $form->prepare();
+
+    echo $this->form()->openTag($form);
+    echo $this->formRow($form->get('code'));
+    echo $this->formSubmit($form->get('submit'));
+    echo $this->formHidden($form->get('csrf'));
+    echo $this->form()->closeTag();
+

@@ -678,4 +678,45 @@ class OrderController extends AbstractActionController {
             'order' => $order,
         ));
     }
+    
+    public function checkEticketAction() {
+        
+        $form = new Form\CheckEticket();
+        $form->get('submit')->setValue('Check');
+
+        $package = null;
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            #$tax = new Entity\Tax();
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $code = $data['code'];
+
+                $em = $this->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                
+                
+                $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+                $qb->join('p.code', 'c');
+                $qb->where($qb->expr()->eq('c.value', ':code'));
+                $qb->setParameter('code', $code);
+                
+                $packages = $qb->getQuery()->getResult();
+                if(count($packages) == 1) {
+                    $package = $packages[0];
+                } else {
+                    $this->flashMessenger()->addErrorMessage('No package was found with id ' . $code);
+                }
+            }
+        }
+        return new ViewModel(array(
+            'form' => $form,
+            #'breadcrumb' => $breadcrumb,
+            'package' => $package,
+        ));
+    }
 }

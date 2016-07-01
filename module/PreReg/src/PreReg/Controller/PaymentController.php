@@ -190,7 +190,7 @@ class PaymentController extends AbstractActionController {
                         array('force_canonical' => true)
                 ),
             'trx_securityhash' => $trx_securityhash,
-            'shoppier_id' => $order->getCode()->getValue(),
+            'shopper_id' => $order->getCode()->getValue(),
         );
         
         $ipayment_url = $action.'?'.http_build_query($param);
