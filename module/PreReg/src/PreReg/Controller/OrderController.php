@@ -694,7 +694,7 @@ class OrderController extends AbstractActionController {
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                $code = $data['code'];
+                $code = strtoupper($data['code']);
 
                 $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
