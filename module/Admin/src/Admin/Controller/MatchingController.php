@@ -344,6 +344,8 @@ class MatchingController extends AbstractActionController {
                 
                 $order = $match->getOrder();
                 $order->setPaymentStatus('unpaid');
+                $statusService = $this->getServiceLocator()->get('ErsBase\Service\StatusService');
+                $statusService->setOrderStatus($order, 'ordered', false);
                 $em->persist($order);
                 
                 $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
