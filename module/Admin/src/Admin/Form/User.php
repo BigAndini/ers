@@ -164,16 +164,22 @@ class User extends Form implements InputFilterProviderInterface
                                     return true;
                                 }
                                 
-                                $em = $this->getServiceLocator()
-                                    ->get('Doctrine\ORM\EntityManager');
+                                $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
                                 $user = $em->getRepository('ErsBase\Entity\User')
                                         ->findOneBy(array('email' => $value));
-                                
-                                if($user) {
-                                    return false;
+
+                                # The email address is new -> ok
+                                if (!$user) {
+                                    return true;
+                                }
+
+                                # The email address belongs to the current user -> ok
+                                if($user->getId() == $context['id']) {
+                                    return true;
                                 }
                                 
-                                return true;
+                                # The email address belongs to another user -> not ok
+                                return false;
                             },
                         ),
                     ),
