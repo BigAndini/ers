@@ -369,6 +369,9 @@ class PackageController extends AbstractActionController {
                 } elseif($item->getStatus()->getValue() == 'paid') {
                     # if it's not 0 € worth set the item to ordered when it was paid.
                     $newItem->setStatus($statusOrdered);
+                } else {
+                    # let the item in the old state otherwise
+                    $newItem->setStatus($item->getStatus());
                 }
                 
                 $code = new Entity\Code();
