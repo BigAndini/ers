@@ -19,7 +19,7 @@
             }
             .header {
             	margin-top: 0px;
-            	background-color: #85b32a;
+            	background-color: #f48029;
             	color: #fff;
             }
             .clear-both {
@@ -40,14 +40,25 @@
         <?php $participant = $package->getParticipant(); ?>
         
         <p>Dear <?php echo $participant->getFirstname().' '.$participant->getSurname(); ?>,</p>
-        <p>thank you again for registering for EJC 2016.</p>
-        <p>First of all, please check your date of birth and your name on the e-ticket if they fit with your passport or identity card. If not please send an email with your order number and the updated data to prereg@eja.net. After we changed the data you will receive the up to date e-ticket.</p>
+        
+        <p>on Thursday, you received an email with your E-Ticket for EJC 2016 in Almere.</p>
 
-        <p>Attached to this email, you can find your e-ticket.</p>
-        <p>Print this ticket and never give it to a third person. Sign the disclaimer. Bring this ticket together with your valid ID card to the EJC and present them at the registration desk. To be able to read the documents, you need to install Adobe Acrobat Reader, which you can download here: <a href="http://get.adobe.com/en/reader">http://get.adobe.com/en/reader</a>.</p>
-        <p>For the latest information about EJC 2016, stay tuned to www.ejc2016.org. If you have any further questions concerning your EJC 2016 ticket, please contact the prereg-coordinator via <a href="mailto:prereg@eja.net">prereg@eja.net</a>.</p>
-        <p>We wish you a pleasant journey and we are looking forward to a great convention.</p>
+        <p>Unfortunately, an error happened on sending out the E-Tickets: For some orders, E-Tickets were sent out even if no payment has been received yet. It seems that you received such an incorrect E-Ticket. We apologize for the inconvenience!</p>
+
+        <p>At the moment, your ticket with ID <strong><?php echo $package->getCode()->getValue(); ?></strong> is not valid because we have not received the payment for your order yet (until <?php date('d.m.Y')?>).</p>
+        <p>What does this mean?</p>
+        <ul>
+            <li>If you have already paid for this ticket, please send the details of your credit card payment (e.g. screenshot of the transaction) to <a href="mailto:prereg@eja.net">prereg@eja.net</a></li>
+            <li>If you did not pay your ticket because you do not need it (or because you ordered again and paid by bank transfer), please let us now at <a href="mailto:prereg@eja.net">prereg@eja.net</a> and we will cancel the ticket.</li>
+        </ul>
+
+        <p>To make it easy for you to check the status of your E-Ticket, we added an online check that allows you to see if your E-Ticket is valid: <a href="<?php echo $config['ERS']['url'].$this->url('order', array('action' => 'check-eticket')); ?>"><?php echo $config['ERS']['url'].$this->url('order', array('action' => 'check-eticket')); ?></a>.</p>
+
+        <p>We again apologize for the error and hope to see you soon at an amazing EJC in Almere!</p>
+
         <p>Best regards,<br />
-        Your European Juggling Association and the EJC 2016 organisers</p>
+        your European Juggling Associaton</p>
+
+        <p>P.S.: Please also note that E-Tickets are only valid if they are marked as "paid" in the registration system. It is not possible to check in at EJC with one of the incorrectly issued E-Tickets.</p>
     </body>
 </html>

@@ -481,12 +481,12 @@ return array(
                         )
                     )
                 ),
-                'sorry-eticket-credit-card' => array(
+                'sorry-eticket-cc' => array(
                     'options' => array(
-                        'route'    => 'sorry-eticket-credit-card',
+                        'route'    => 'sorry-eticket-cc',
                         'defaults' => array(
                             'controller' => 'Admin\Controller\Cron',
-                            'action' => 'sorry-eticket-credit-card'
+                            'action' => 'sorry-eticket-cc'
                         )
                     )
                 ),
@@ -865,7 +865,8 @@ return array(
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',
-            'Logger'     => 'EddieJaoude\Zf2Logger',
+            #'Logger'     => 'EddieJaoude\Zf2Logger',
+            'Logger'     => 'Zend\Log\Logger',
         ),
     ),
     'translator' => array(

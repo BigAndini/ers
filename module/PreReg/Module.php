@@ -48,7 +48,7 @@ class Module
         $sharedManager->attach('Zend\Mvc\Application', 'dispatch.error',
                 function($e) use ($sm) {
                     if ($e->getParam('exception')){
-                        $sm->get('Logger')->crit($e->getParam('exception'));
+                        #$sm->get('Logger')->crit($e->getParam('exception'));
                         
                         $emailService = $sm->get('ErsBase\Service\EmailService');
                         $emailService->sendExceptionEmail($e->getParam('exception'));
