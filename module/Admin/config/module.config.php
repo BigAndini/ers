@@ -472,6 +472,24 @@ return array(
                         )
                     )
                 ),
+                'sorry-eticket-sepa' => array(
+                    'options' => array(
+                        'route'    => 'sorry-eticket-sepa',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'sorry-eticket-sepa'
+                        )
+                    )
+                ),
+                'sorry-eticket-credit-card' => array(
+                    'options' => array(
+                        'route'    => 'sorry-eticket-credit-card',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'sorry-eticket-credit-card'
+                        )
+                    )
+                ),
             ),
         ),
     ),
@@ -833,6 +851,13 @@ return array(
         'factories' => array(
             'admin_main_nav' => 'Admin\Service\AdminNavigationFactory',
             'admin_top_nav' => 'Admin\Service\TopNavigationFactory',
+            'Zend\Log\Logger' => function($sm){
+                $logger = new \Zend\Log\Logger;
+                $writer = new \Zend\Log\Writer\Stream('./data/log/'.date('Y-m-d').'-zend-error.log');
+                $logger->addWriter($writer);
+
+                return $logger;
+            },
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
