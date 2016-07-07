@@ -52,6 +52,13 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(
+                'Logger' => function($sm){
+                    $logger = new \Zend\Log\Logger;
+                    $writer = new \Zend\Log\Writer\Stream('./data/log/'.date('Y-m-d').'-zend-error.log');
+                    $logger->addWriter($writer);
+
+                    return $logger;
+                },
                 'doctrine.entitymanager'  => new \DoctrineORMModule\Service\EntityManagerFactory('orm_default'),
                 /* 
                  * Form Factories

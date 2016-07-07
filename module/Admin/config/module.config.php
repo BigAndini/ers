@@ -472,6 +472,24 @@ return array(
                         )
                     )
                 ),
+                'sorry-eticket-sepa' => array(
+                    'options' => array(
+                        'route'    => 'sorry-eticket-sepa',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'sorry-eticket-sepa'
+                        )
+                    )
+                ),
+                'sorry-eticket-cc' => array(
+                    'options' => array(
+                        'route'    => 'sorry-eticket-cc',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'sorry-eticket-cc'
+                        )
+                    )
+                ),
             ),
         ),
     ),
@@ -840,7 +858,8 @@ return array(
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',
-            'Logger'     => 'EddieJaoude\Zf2Logger',
+            #'Logger'     => 'EddieJaoude\Zf2Logger',
+            #'Logger'     => 'Zend\Log\Logger',
         ),
     ),
     'translator' => array(

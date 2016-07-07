@@ -11,7 +11,7 @@ return array(
     'service_manager' => array(
         'aliases' => array(
             'translator' => 'MvcTranslator',
-            'Logger'     => 'EddieJaoude\Zf2Logger',
+            #'Logger'     => 'EddieJaoude\Zf2Logger',
         ),
         'shared' => array(
             'DOMPDF' => false,

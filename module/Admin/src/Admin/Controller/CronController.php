@@ -1041,4 +1041,154 @@ class CronController extends AbstractActionController {
         
         $em->flush();
     }
+    
+    public function sorryEticketSepaAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb->join('p.status', 's');
+        $qb->join('p.order', 'o');
+        $qb->join('o.paymentType', 'pt');
+        $qb->where($qb->expr()->eq('p.ticket_status', ':ticket_status'));
+        $qb->andWhere($qb->expr()->eq('s.value', ':status'));
+        $qb->andWhere($qb->expr()->eq('pt.id', ':payment_type'));
+        
+        $qb->setParameter('ticket_status', 'send_out');
+        $qb->setParameter('status', 'ordered');
+        $qb->setParameter('payment_type', '1');
+        
+        $packages = $qb->getQuery()->getResult();
+        echo "found ".count($packages)." packages.".PHP_EOL;
+        
+        foreach($packages as $package) {
+            # prepare email (participant, buyer)
+            $emailService = new Service\EmailService();
+            $emailService->setFrom('prereg@eja.net');
+
+            $order = $package->getOrder();
+            $participant = $package->getParticipant();
+
+            $buyer = $order->getBuyer();
+            #$emailService->addTo($buyer);
+            /*if($participant->getEmail() == '') {
+                $emailService->addTo($buyer);
+            } elseif($participant->getEmail() == $buyer->getEmail()) {
+                $emailService->addTo($buyer);
+            } else {
+                $emailService->addTo($participant);
+                $emailService->addCc($buyer);
+            }*/
+            $user = new Entity\User();
+            $user->setEmail('andi@inbaz.org');
+            $emailService->addTo($user);
+            
+            /*$bcc = new Entity\User();
+            $bcc->setEmail('prereg@eja.net');
+            $emailService->addBcc($bcc);*/
+
+            $subject = "[EJC 2016] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+            $emailService->setSubject($subject);
+
+            $viewModel = new ViewModel(array(
+                'package' => $package,
+                'config' => $this->getServiceLocator()->get('config'),
+            ));
+            $viewModel->setTemplate('email/eticket-not-valid-sepa.phtml');
+            $viewRenderer = $this->getServiceLocator()->get('ViewRenderer');
+            $html = $viewRenderer->render($viewModel);
+
+            $emailService->setHtmlMessage($html);
+
+            #$emailService->addAttachment($eticketFile);
+            
+            # send out email
+            $emailService->send();
+            echo "email sent.".PHP_EOL;
+            
+            $package->setTicketStatus('not_send');
+            $em->persist($package);
+            $em->flush();
+            exit();
+        }
+    }
+    public function sorryEticketCcAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb->join('p.status', 's');
+        $qb->join('p.order', 'o');
+        $qb->join('o.paymentType', 'pt');
+        $qb->where($qb->expr()->eq('p.ticket_status', ':ticket_status'));
+        $qb->andWhere($qb->expr()->eq('s.value', ':status'));
+        $qb->andWhere($qb->expr()->eq('pt.id', ':payment_type'));
+        
+        $qb->setParameter('ticket_status', 'send_out');
+        $qb->setParameter('status', 'ordered');
+        $qb->setParameter('payment_type', '2');
+        
+        $packages = $qb->getQuery()->getResult();
+        echo "found ".count($packages)." packages.".PHP_EOL;
+        
+        foreach($packages as $package) {
+            # prepare email (participant, buyer)
+            $emailService = new Service\EmailService();
+            $emailService->setFrom('prereg@eja.net');
+
+            $order = $package->getOrder();
+            $participant = $package->getParticipant();
+
+            $buyer = $order->getBuyer();
+            #$emailService->addTo($buyer);
+            /*if($participant->getEmail() == '') {
+                $emailService->addTo($buyer);
+            } elseif($participant->getEmail() == $buyer->getEmail()) {
+                $emailService->addTo($buyer);
+            } else {
+                $emailService->addTo($participant);
+                $emailService->addCc($buyer);
+            }*/
+            $user = new Entity\User();
+            $user->setEmail('andi@inbaz.org');
+            $emailService->addTo($user);
+            
+            /*$bcc = new Entity\User();
+            $bcc->setEmail('prereg@eja.net');
+            $emailService->addBcc($bcc);*/
+
+            $subject = "[EJC 2016] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+            $emailService->setSubject($subject);
+
+            $viewModel = new ViewModel(array(
+                'package' => $package,
+                'config' => $this->getServiceLocator()->get('config'),
+            ));
+            $viewModel->setTemplate('email/eticket-not-valid-cc.phtml');
+            $viewRenderer = $this->getServiceLocator()->get('ViewRenderer');
+            $html = $viewRenderer->render($viewModel);
+
+            $emailService->setHtmlMessage($html);
+
+            # generate e-ticket pdf
+            /*$eticketService = $this->getServiceLocator()
+                ->get('ErsBase\Service\ETicketService');
+
+            $eticketService->setLanguage('en');
+            $eticketService->setPackage($package);
+            $eticketFile = $eticketService->generatePdf();*/
+
+            #echo ob_get_clean();
+            #echo "generated e-ticket ".$eticketFile.".".PHP_EOL;
+
+            #$emailService->addAttachment($eticketFile);
+            
+            # send out email
+            $emailService->send();
+            echo "email sent.".PHP_EOL;
+            
+            $package->setTicketStatus('not_send');
+            $em->persist($package);
+            $em->flush();
+            exit();
+        }
+    }
 }

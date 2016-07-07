@@ -2,7 +2,7 @@
 $config = array(
     // This should be an array of module namespaces used in the application.
     'modules' => array(
-        'EddieJaoude\Zf2Logger',
+        #'EddieJaoude\Zf2Logger',
         'ZfcBase',
         'ZfcUser',
         'ZfcUserDoctrineORM',
