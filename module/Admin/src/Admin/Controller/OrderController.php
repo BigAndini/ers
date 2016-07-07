@@ -51,8 +51,6 @@ class OrderController extends AbstractActionController {
             preg_match('/"[^"]+"/', $searchText, $matches);
             $searchElements = preg_replace('/"/', '', $matches);
 
-            #$logger->info('found matches:');
-            #$logger->info($matches);
             $searchArray = split(' ', $searchText);
             $exclude = false;
 
@@ -72,12 +70,6 @@ class OrderController extends AbstractActionController {
                     $exclude = false;
                 }
             }
-
-            #$logger->info('search elements:');
-            #$logger->info($searchElements);
-
-            #$logger->info('exclude elements:');
-            #$logger->info($excludeElements);
 
             $searchString = array(
 
@@ -253,8 +245,6 @@ class OrderController extends AbstractActionController {
                 $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
                         ->findOneBy(array('id' => $data['paymenttype_id']));
                 
-                $logger->info($paymenttype->getName());
-                
                 $order->setPaymentType($paymenttype);
                 
                 $em->persist($order);
@@ -279,7 +269,6 @@ class OrderController extends AbstractActionController {
         
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            $logger->info('there is no id');
             return $this->redirect()->toRoute('admin/order', array());
         }
         
@@ -324,7 +313,6 @@ class OrderController extends AbstractActionController {
         
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            $logger->info('there is no id');
             return $this->redirect()->toRoute('admin/order', array());
         }
         $em = $this->getServiceLocator()
@@ -427,7 +415,6 @@ class OrderController extends AbstractActionController {
         
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            $logger->info('there is no id');
             return $this->redirect()->toRoute('admin/order', array());
         }
         $em = $this->getServiceLocator()

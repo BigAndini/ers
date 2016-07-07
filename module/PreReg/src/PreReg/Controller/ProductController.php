@@ -205,8 +205,7 @@ class ProductController extends AbstractActionController {
             if($form->isValid())
             { 
                 $data = $request->getPost();
-                #$logger->info(var_export($data, true));
-
+                
                 /*
                  * get needed variables
                  */
@@ -294,7 +293,6 @@ class ProductController extends AbstractActionController {
                         $itemVariant->setProductVariantValue($value);
                         $item->addItemVariant($itemVariant);
                         $itemVariant->setItem($item);
-                        #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
                     } else {
                         $logger->warn('Unable to find value for variant: '.$variant->getName().' (id: '.$variant->getId().')');
                     }

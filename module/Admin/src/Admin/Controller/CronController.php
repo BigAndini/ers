@@ -15,57 +15,6 @@ use ErsBase\Service;
 use Zend\Console\Request as ConsoleRequest;
 
 class CronController extends AbstractActionController {
-    public function cronAction() {
-        $request = $this->getRequest();
- 
-        // Make sure that we are running in a console and the user has not tricked our
-        // application into running this action from a public web server.
-        if (!$request instanceof ConsoleRequest){
-            throw new \RuntimeException('You can only use this action from a console! Got this request from '.get_class($request));
-        }
- 
-        // Get system service name  from console and check if the user used --verbose or -v flag
-        #$doname   = $request->getParam('doname', false);
-        #$verbose     = $request->getParam('verbose');
-        
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $orderStatus = $em->getRepository('ErsBase\Entity\OrderStatus')
-                ->findBy(array('value' => 'cron'));
-        foreach($orderStatus as $status) {
-            $em->remove($status);
-        }
-        $em->flush();
-        
-        $orders = $em->getRepository('ErsBase\Entity\Order')
-                ->findBy(array(), array('created' => 'DESC'));
-        
-        $logger = $this->getServiceLocator()->get('Logger');
-        $logger->info('We are in runCron of TestCron');
-        
-        $output = '';
-        foreach($orders as $order) {
-            if($order->hasOrderStatus('cron')) {
-                continue;
-            }
-            $output .= $order->getCode()->getValue().PHP_EOL;
-            $orderStatus = new Entity\OrderStatus();
-            $orderStatus->setValue('cron');
-            $orderStatus->setOrder($order);
-            $em->persist($orderStatus);
-            
-            $em->flush();
-        }
-        
-        $output .= 'ready!';
-        /*
-         * ensure a newline at the end of output.
-         */
-        $output .= PHP_EOL;
-        return $output;
-    }
-    
     public function autoMatchingAction() {
         /*
          * Status of BankStatements
@@ -210,6 +159,9 @@ class CronController extends AbstractActionController {
         echo PHP_EOL.PHP_EOL."done.".PHP_EOL;
     }
     
+    /*
+     * TODO: Move to MatchService
+     */
     private function createMatch(Entity\BankStatement $statement, Entity\Code $code) {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -292,6 +244,9 @@ class CronController extends AbstractActionController {
         $em->flush();
     }
     
+    /*
+     * TODO: Move to MatchService
+     */
     private function findCodes($string) {
         $length = 8;
         $matches = array();
@@ -314,6 +269,9 @@ class CronController extends AbstractActionController {
         return $this->array_unique_callback($ret, function($code) { return $code->getValue(); });
     }
     
+    /*
+     * TODO: Move to MatchService
+     */
     private function findAllCodes($string) {
         $length = 8;
         $regex='/[A-Z0-9]{'.$length.'}/';
@@ -429,8 +387,6 @@ class CronController extends AbstractActionController {
                 $eticketService->generatePdf();
                 $count++;
                 $em->detach($package);
-                #$em->flush();
-                #$em->clear();
             }
             $em->detach($order);
         }
@@ -443,10 +399,6 @@ class CronController extends AbstractActionController {
         $long_real = (bool) $request->getParam('real',false);
         $short_real = (bool) $request->getParam('r',false);
         $isReal = ($long_real | $short_real);
-        
-        #$long_count = (int) $request->getParam('count',false);
-        #$short_count = (int) $request->getParam('c',false);
-        #$ticket_count = $long_count + $short_count;
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -499,9 +451,13 @@ class CronController extends AbstractActionController {
         }
         $em->flush();
         
+        $ticket_count = 100;
+        $can_send_packages = $em->getRepository('ErsBase\Entity\Package')
+            ->findBy(array('ticket_status' => 'can_send'));
+        echo "Can send out e-tickets for ".count($can_send_packages)." packages, will process ".$ticket_count." now.".PHP_EOL;
+        
         $packages = $em->getRepository('ErsBase\Entity\Package')
-            ->findBy(array('ticket_status' => 'can_send'), array(), 100);
-        echo "Can send out e-tickets for ".count($packages)." packages.".PHP_EOL;
+            ->findBy(array('ticket_status' => 'can_send'), array(), $ticket_count);
         
         if(!$isReal) {
             echo "Use -r parameter to really send out all etickets.".PHP_EOL;
@@ -708,66 +664,6 @@ class CronController extends AbstractActionController {
         echo "found ".$count." items with no owner".PHP_EOL;
     }
     
-    /*public function correctItemStatusAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $statusTransferred = $em->getRepository('ErsBase\Entity\Status')
-                    ->findOneBy(array('value' => 'transferred'));
-        
-        $qb = $em->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
-        $qb->where("i.status = 'transferred'");
-        #$qb->orWhere("p.ticket_status = 'not_send'");
-        $transferred_items = $qb->getQuery()->getResult();
-        echo "found ".count($transferred_items)." transferred items.".PHP_EOL;
-
-        foreach($transferred_items as $item) {
-            $tItem = $item->getTransferredItem();
-            if(!$tItem) {
-                continue;
-            }
-            if(!$tItem->hasChildItems()) {
-                continue;
-            }
-            foreach($item->getChildItems() as $cItem) {
-                $cItem->setStatus($statusTransferred);
-                $em->persist($item);
-            }
-            foreach($tItem->getChildItems() as $cItem) {
-                if($tItem->getPackageId() != $cItem->getPackageId()) {
-                    echo "Package Ids do not match: ".$tItem->getPackageId()." != ".$cItem->getPackageId().PHP_EOL;
-                    $cItem->setPackage($tItem->getPackage());   
-                    $em->persist($cItem);
-                }
-            }
-        }
-        $em->flush();
-    }*/
-    
-    public function cleanPendingOrdersAction() {
-        echo "in clean pending orders".PHP_EOL;
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's');
-        $qb->where('s.value', ':status');
-        $qb->setParameter('status', 'order pending');
-        
-        $orders = $qb->getQuery()->getResult();
-        echo 'found '.count($orders).' orders'.PHP_EOL;
-        foreach($orders as $order) {
-            $now = new \DateTime();
-            $now->modify('-1 day');
-            if($order->getUpdated() < $now) {
-                echo 'after: '.$order->getUpdated()->format('d.m.Y').PHP_EOL;
-            } else {
-                echo 'before: '.$order->getUpdated()->format('d.m.Y').PHP_EOL;
-            }
-        }
-        
-    }
-    
     public function calcSumsAction() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -850,44 +746,17 @@ class CronController extends AbstractActionController {
         $em->flush();
     }
     
-    public function correctBuyerRoleAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $orders = $em->getRepository('ErsBase\Entity\Order')
-                ->findAll();
-        
-        foreach($orders as $order) {
-            $buyer = $order->getBuyer();
-            if(!$buyer) {
-                continue;
-            }
-            $buyer_role = $em->getRepository('ErsBase\Entity\Role')
-                        ->findOneBy(array('roleId' => 'buyer'));
-            if(!$buyer->hasRole($buyer_role)) {
-                $buyer->addRole($buyer_role);
-                $em->persist($buyer);
-            }
-        }
-        $em->flush();
-    }
-    
     public function correctStatusAction() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findAll();
-        
+        $statusService = $this->getServiceLocator()
+                ->get('ErsBase\Service\StatusService');
         
         foreach($orders as $order) {
-            $status = $order->getStatus();
-            foreach($order->getPackages() as $package) {
-                foreach($package->getItems() as $item) {
-                    $item->setStatus($status);
-                    $em->persist($item);
-                }
-                $package->setStatus($status);
-                $em->persist($package);
-            }
+            $statusService->setOrderStatus($order, $order->getStatus(), false);
+            
             $order->setTotalSum($order->getSum());
             $order->setOrderSum($order->getPrice());
             $em->persist($order);
@@ -909,66 +778,6 @@ class CronController extends AbstractActionController {
                 }
             }
         }
-        $em->flush();
-    }
-    
-    public function correctPaidOrdersAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's');
-        $qb->where($qb->expr()->neq('s.value', ':status'));
-        $qb->setParameter('status', 'paid');
-        
-        $orders = $qb->getQuery()->getResult();
-        
-        $statusPaid = $em->getRepository('ErsBase\Entity\Status')
-                    ->findOneBy(array('value' => 'paid'));
-        
-        foreach($orders as $order) {
-            foreach($order->getPackages() as $package) {
-                if($package->getStatus()->getValue() == 'ordered') {
-                    $package->setStatus($statusPaid);
-                    $em->persist($package);
-                    foreach($package->getItems() as $item) {
-                        if($item->getStatus()->getValue() == 'ordered') {
-                            $item->setStatus($statusPaid);
-                            $em->persist($item);
-                        }
-                    }
-                }
-            }
-        }
-        
-        $em->flush();
-    }
-    
-    public function correctOrderedOrdersAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        $qb->setParameter('status', 'ordered');
-        
-        $orders = $qb->getQuery()->getResult();
-        
-        $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
-                    ->findOneBy(array('value' => 'ordered'));
-        
-        foreach($orders as $order) {
-            echo "order code: ".$order->getCode()->getValue().PHP_EOL;
-            foreach($order->getPackages() as $package) {
-                echo "package code: ".$package->getCode()->getValue()." (status was: ".$package->getStatus().")".PHP_EOL;
-                $package->setStatus($statusOrdered);
-                $em->persist($package);
-                foreach($package->getItems() as $item) {
-                    $item->setStatus($statusOrdered);
-                    $em->persist($item);
-                }
-            }
-        }
-        
         $em->flush();
     }
     
@@ -1021,12 +830,6 @@ class CronController extends AbstractActionController {
     public function correctItemStatusAction() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        /*$qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->join('p.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        $qb->setParameter('status', 'ordered');
-        
-        $packages = $qb->getQuery()->getResult();*/
         $items = $em->getRepository('ErsBase\Entity\Item')->findAll();
         
         foreach($items as $item) {
@@ -1069,7 +872,7 @@ class CronController extends AbstractActionController {
             $participant = $package->getParticipant();
 
             $buyer = $order->getBuyer();
-            #$emailService->addTo($buyer);
+            $emailService->addTo($buyer);
             /*if($participant->getEmail() == '') {
                 $emailService->addTo($buyer);
             } elseif($participant->getEmail() == $buyer->getEmail()) {
@@ -1078,9 +881,9 @@ class CronController extends AbstractActionController {
                 $emailService->addTo($participant);
                 $emailService->addCc($buyer);
             }*/
-            $user = new Entity\User();
+            /*$user = new Entity\User();
             $user->setEmail('andi@inbaz.org');
-            $emailService->addTo($user);
+            $emailService->addTo($user);*/
             
             /*$bcc = new Entity\User();
             $bcc->setEmail('prereg@eja.net');
@@ -1098,8 +901,6 @@ class CronController extends AbstractActionController {
             $html = $viewRenderer->render($viewModel);
 
             $emailService->setHtmlMessage($html);
-
-            #$emailService->addAttachment($eticketFile);
             
             # send out email
             $emailService->send();
@@ -1138,7 +939,7 @@ class CronController extends AbstractActionController {
             $participant = $package->getParticipant();
 
             $buyer = $order->getBuyer();
-            #$emailService->addTo($buyer);
+            $emailService->addTo($buyer);
             /*if($participant->getEmail() == '') {
                 $emailService->addTo($buyer);
             } elseif($participant->getEmail() == $buyer->getEmail()) {
@@ -1147,9 +948,9 @@ class CronController extends AbstractActionController {
                 $emailService->addTo($participant);
                 $emailService->addCc($buyer);
             }*/
-            $user = new Entity\User();
+            /*$user = new Entity\User();
             $user->setEmail('andi@inbaz.org');
-            $emailService->addTo($user);
+            $emailService->addTo($user);*/
             
             /*$bcc = new Entity\User();
             $bcc->setEmail('prereg@eja.net');
@@ -1167,19 +968,6 @@ class CronController extends AbstractActionController {
             $html = $viewRenderer->render($viewModel);
 
             $emailService->setHtmlMessage($html);
-
-            # generate e-ticket pdf
-            /*$eticketService = $this->getServiceLocator()
-                ->get('ErsBase\Service\ETicketService');
-
-            $eticketService->setLanguage('en');
-            $eticketService->setPackage($package);
-            $eticketFile = $eticketService->generatePdf();*/
-
-            #echo ob_get_clean();
-            #echo "generated e-ticket ".$eticketFile.".".PHP_EOL;
-
-            #$emailService->addAttachment($eticketFile);
             
             # send out email
             $emailService->send();

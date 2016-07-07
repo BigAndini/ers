@@ -44,9 +44,6 @@ class MatchingController extends AbstractActionController {
     public function manualAction() {        
         $logger = $this->getServiceLocator()->get('Logger');
         
-        #$logger->info($param_orders);
-        #$logger->info($param_statements);
-        
         $forrest = new Service\BreadcrumbService();
         $forrest->set('matching', 'admin/matching', array('action' => 'manual'));
         
@@ -107,8 +104,6 @@ class MatchingController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $data = $form->getData();
-                
-                $logger->info(var_export($data, true));
                 
                 /*
                  * get orders
@@ -196,8 +191,6 @@ class MatchingController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $data = $form->getData();
-                
-                $logger->info(var_export($data, true));
                 
                 $status = 'unpaid';
                 if($data['half-match'] == null) {

@@ -60,7 +60,6 @@ class CartController extends AbstractActionController {
             if($form->isValid())
             { 
                 $data = $request->getPost();
-                $logger->info(var_export($data, true));
 
                 /*
                  * get needed variables
@@ -147,7 +146,6 @@ class CartController extends AbstractActionController {
                         $itemVariant = new Entity\ItemVariant();
                         $itemVariant->populateFromEntity($variant, $value);
                         $item->addItemVariant($itemVariant);
-                        #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
                     } else {
                         $logger->warn('Unable to find value for variant: '.$variant->getName().' (id: '.$variant->getId().')');
                     }
@@ -175,7 +173,6 @@ class CartController extends AbstractActionController {
                             $itemVariant = new Entity\ItemVariant();
                             $itemVariant->populateFromEntity($variant, $value);
                             $subItem->addItemVariant($itemVariant);
-                            #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
                         } else {
                             $logger->warn('Unable to find value for variant of subItem: '.$variant->getName().' (id: '.$variant->getId().')');
                         }
@@ -216,7 +213,6 @@ class CartController extends AbstractActionController {
                     $forrest->set('cart', 'product');
                 }
                 $breadcrumb = $forrest->get('cart');
-                $logger->info(var_export($breadcrumb, true));
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {

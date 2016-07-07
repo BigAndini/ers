@@ -123,7 +123,6 @@ class ProfileController extends AbstractActionController {
             if($form->isValid())
             {
                 $data = $form->getData();
-                #$logger->info($data);
                 
                 $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
@@ -169,7 +168,7 @@ class ProfileController extends AbstractActionController {
         
         $hashkey = $this->params()->fromRoute('hashkey', '');
         if($hashkey == '') {
-            $logger->info('unable to find hashkey in route');
+            $logger->warn('unable to find hashkey in route');
             return $this->redirect()->toRoute('zfcuser/login');
         }
         $form = new Form\ResetPassword();
@@ -179,13 +178,13 @@ class ProfileController extends AbstractActionController {
         $user = $em->getRepository('ErsBase\Entity\User')
                 ->findOneBy(array('hashkey' => $hashkey));
         if(!$user) {
-            $logger->info('unable to find user with hash key: '.$hashkey);
+            $logger->warn('unable to find user with hash key: '.$hashkey);
             return $this->redirect()->toRoute('zfcuser/login');
         }
         
         $now = new \DateTime();
         if(($user->getUpdated()->getTimestamp()+7200) <= $now->getTimestamp()) {
-            $logger->info('Too late, link is not enabled anymore: '.($user->getUpdated()->getTimestamp()+7200).' >= '.$now->getTimestamp());
+            $logger->warn('Too late, link is not enabled for user '.$user->getEmail().' anymore: '.($user->getUpdated()->getTimestamp()+7200).' >= '.$now->getTimestamp());
             return $this->redirect()->toRoute('zfcuser/login');
         }
         

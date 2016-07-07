@@ -28,8 +28,6 @@ class AjaxController extends AbstractActionController
         $breadcrumbService = new Service\BreadcrumbService();
         $breadcrumbService->activate($id);
         
-        #$logger->info('activated id: '.$id);
-        
         return $this->getResponse()->setContent($id);
     }
     
