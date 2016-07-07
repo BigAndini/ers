@@ -690,7 +690,6 @@ class OrderController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            #$tax = new Entity\Tax();
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -707,13 +706,22 @@ class OrderController extends AbstractActionController {
                 if(count($packages) == 1) {
                     $package = $packages[0];
                 } else {
-                    $this->flashMessenger()->addErrorMessage('No package was found with id ' . $code);
+                    $qb1 = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+                    $qb1->join('o.code', 'c');
+                    $qb1->where($qb1->expr()->eq('c.value', ':code'));
+                    $qb1->setParameter('code', $code);
+                    
+                    $orders = $qb1->getQuery()->getResult();
+                    if(count($orders) == 1) {
+                        $this->flashMessenger()->addErrorMessage($code . ' is your order code, please provide the code from your e-ticket to check it.');
+                    } else {
+                        $this->flashMessenger()->addErrorMessage('No e-ticket was found for code ' . $code . '. Please double check that you did not provide your order code.');
+                    }
                 }
             }
         }
         return new ViewModel(array(
             'form' => $form,
-            #'breadcrumb' => $breadcrumb,
             'package' => $package,
         ));
     }
