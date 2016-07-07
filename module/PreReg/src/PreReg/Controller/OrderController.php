@@ -41,7 +41,7 @@ class OrderController extends AbstractActionController {
         #$this->checkItemPrices();
         
         $logger = $this->getServiceLocator()->get('Logger');
-        $logger->info('=== shopping cart start ===');
+        /*$logger->info('=== shopping cart start ===');
         foreach($order->getPackages() as $package) {
             $participant = $package->getParticipant();
             $logger->info('participant: '.$participant->getFirstname().' '.$participant->getSurname());
@@ -60,7 +60,7 @@ class OrderController extends AbstractActionController {
                 }
             }
         }
-        $logger->info('=== shopping cart end ===');
+        $logger->info('=== shopping cart end ===');*/
         
         $agegroupService = $this->getServiceLocator()
                 ->get('ErsBase\Service\AgegroupService');
@@ -134,7 +134,7 @@ class OrderController extends AbstractActionController {
         
         if($order == null) {
             $logger = $this->getServiceLocator()->get('Logger');
-            $logger->info('order for hash key '.$hashkey.' not found');
+            $logger->warn('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
         
@@ -588,7 +588,7 @@ class OrderController extends AbstractActionController {
         
         if($order == null) {
             $logger = $this->getServiceLocator()->get('Logger');
-            $logger->info('order for hash key '.$hashkey.' not found');
+            $logger->warn('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
         
@@ -637,7 +637,7 @@ class OrderController extends AbstractActionController {
         
         if($order == null) {
             $logger = $this->getServiceLocator()->get('Logger');
-            $logger->info('order for hash key '.$hashkey.' not found');
+            $logger->warn('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
         
@@ -670,7 +670,7 @@ class OrderController extends AbstractActionController {
         
         if($order == null) {
             $logger = $this->getServiceLocator()->get('Logger');
-            $logger->info('order for hash key '.$hashkey.' not found');
+            $logger->warn('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
         

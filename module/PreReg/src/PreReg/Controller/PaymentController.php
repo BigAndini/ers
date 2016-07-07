@@ -155,17 +155,7 @@ class PaymentController extends AbstractActionController {
         
         #https://ipayment.de/merchant/99999/processor.php?trxuser_id=99999&trxpassword=0&trx_amount=12300&trx_paymenttyp=cc&trx_currency=EUR&redirect_url=http://ejc2016.ers.inbaz.org/thankyou&hidden_trigger_url=https://ejc2016.ers.inbaz.org/payment/cc-check
         
-        $logger->info('trxuser_id: '.$trxuser_id);
-        $logger->info('trx_amount: '.$trx_amount);
-        $logger->info('trx_currency: '.$trx_currency);
-        $logger->info('trxpassword: '.$trxpassword);
-        $logger->info('sec_key: '.$sec_key);
-        
-        $logger->info('sec_string: '.$trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
-        
         $trx_securityhash = \md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
-        
-        $logger->info('trx_securityhash: '.$trx_securityhash);
         
         $param = array(
             'trxuser_id' => $trxuser_id,
@@ -272,14 +262,7 @@ class PaymentController extends AbstractActionController {
         $form->get('trxuser_id')->setValue($trxuser_id);
         $form->get('trxpassword')->setValue($trxpassword);
         
-        /*$logger->info('trxuser_id: '.$trxuser_id);
-        $logger->info('trx_amount: '.$trx_amount);
-        $logger->info('trx_currency: '.$trx_currency);
-        $logger->info('trxpassword: '.$trxpassword);
-        $logger->info('sec_key: '.$sec_key);*/
-        
         $trx_securityhash = \md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
-        #$logger->info('trx_securityhash: '.$trx_securityhash);
         
         $form->get('trx_securityhash')->setValue($trx_securityhash);
         $form->get('trx_amount')->setValue($trx_amount);
@@ -328,13 +311,11 @@ class PaymentController extends AbstractActionController {
         if(in_array($request->getServer('REMOTE_ADDR'), $allowed_ips)) {
             $ipmatch = true;
         } else {
-            $logger->info('unauthorized hidden trigger from: '.$request->getServer('REMOTE_ADDR'));
+            $logger->warn('unauthorized hidden trigger from: '.$request->getServer('REMOTE_ADDR'));
             return $response;
         }
         
         $post_param = $this->params()->fromPost();
-        $logger->info('$_POST:');
-        $logger->info($post_param);
         
         $return_checksum = array();
         if (isset($post_param["trxuser_id"])) {
@@ -354,9 +335,7 @@ class PaymentController extends AbstractActionController {
             $return_checksum[] = $post_param["ret_trx_number"];
         }
         $return_checksum[] = $sec_key;
-        $logger->info($return_checksum);
-        $logger->info('ret_param: '.$post_param["ret_param_checksum"]);
-        $logger->info('hash     : '.md5(implode($return_checksum)));
+        
         if ($post_param["ret_param_checksum"] != md5(implode($return_checksum))) {
             // Error because hash do not match!
             $logger->emerg('Unable to finish payment, checksums do not match.');
