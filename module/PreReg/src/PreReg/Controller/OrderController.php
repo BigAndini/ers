@@ -680,8 +680,10 @@ class OrderController extends AbstractActionController {
     }
     
     public function checkEticketAction() {
+        $em = $this->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
         
-        $form = new Form\CheckEticket();
+        $form = new Form\CheckEticket($em);
         $form->get('submit')->setValue('Check');
 
         $package = null;
@@ -696,10 +698,6 @@ class OrderController extends AbstractActionController {
                 
                 $code = strtoupper($data['code']);
 
-                $em = $this->getServiceLocator()
-                    ->get('Doctrine\ORM\EntityManager');
-                
-                
                 $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
                 $qb->join('p.code', 'c');
                 $qb->where($qb->expr()->eq('c.value', ':code'));
