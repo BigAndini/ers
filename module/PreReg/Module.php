@@ -237,7 +237,14 @@ class Module
     
     public function getServiceConfig() {
         return array(
-            'factories' => array(        
+            'factories' => array(
+                'Logger' => function($sm){
+                    $logger = new \Zend\Log\Logger;
+                    $writer = new \Zend\Log\Writer\Stream('./data/log/'.date('Y-m-d').'-zend-error.log');
+                    $logger->addWriter($writer);
+
+                    return $logger;
+                },
                 'Zend\Session\SessionManager' => function ($sm) {
                     $config = $sm->get('config');
                     if (isset($config['session'])) {

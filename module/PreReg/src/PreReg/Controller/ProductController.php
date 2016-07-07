@@ -190,7 +190,7 @@ class ProductController extends AbstractActionController {
          * Here starts the cart add Action
          */
         $logger = $this->getServiceLocator()->get('Logger');
-        
+ 
         #$this->initializeCart();
         $cartContainer = new Container('cart');
         

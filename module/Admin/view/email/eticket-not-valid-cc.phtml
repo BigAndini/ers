@@ -41,23 +41,25 @@
         
         <p>Dear <?php echo $participant->getFirstname().' '.$participant->getSurname(); ?>,</p>
         
-        <p>on Thursday, you received an email with your E-Ticket for EJC 2016 in Almere.</p>
+        <p>on last Thursday, you received an email with your E-Ticket for EJC 2016 in Almere.</p>
 
         <p>Unfortunately, an error happened on sending out the E-Tickets: For some orders, E-Tickets were sent out even if no payment has been received yet. It seems that you received such an incorrect E-Ticket. We apologize for the inconvenience!</p>
 
-        <p>At the moment, your ticket with ID <strong><?php echo $package->getCode()->getValue(); ?></strong> is not valid because we have not received the payment for your order yet (until <?php date('d.m.Y')?>).</p>
+        <p>At the moment, your E-Ticket with ID <strong><?php echo $package->getCode()->getValue(); ?></strong> is not valid because we have not received the payment for your order yet (<?php date('d.m.Y')?>).</p>
         <p>What does this mean?</p>
         <ul>
             <li>If you have already paid for this ticket, please send the details of your credit card payment (e.g. screenshot of the transaction) to <a href="mailto:prereg@eja.net">prereg@eja.net</a></li>
             <li>If you did not pay your ticket because you do not need it (or because you ordered again and paid by bank transfer), please let us now at <a href="mailto:prereg@eja.net">prereg@eja.net</a> and we will cancel the ticket.</li>
         </ul>
 
-        <p>To make it easy for you to check the status of your E-Ticket, we added an online check that allows you to see if your E-Ticket is valid: <a href="<?php echo $config['ERS']['url'].$this->url('order', array('action' => 'check-eticket')); ?>"><?php echo $config['ERS']['url'].$this->url('order', array('action' => 'check-eticket')); ?></a>.</p>
+        <p>Please note that this mail is being sent out to all jugglers who have received an E-Ticket in error. If you have already been in contact with the prereg coordinator since last Thursday, you can probably ignore this mail.</p>
+        
+        <p>Your E-Ticket will become valid when the payment is received and processed. To make it easy for you to check the status of your E-Ticket, we added an online check that allows you to see if your E-Ticket is valid: <a href="<?php echo $config['ERS']['url'].$this->url('order', array('action' => 'check-eticket')); ?>"><?php echo $config['ERS']['url'].$this->url('order', array('action' => 'check-eticket')); ?></a>.</p>
 
         <p>We again apologize for the error and hope to see you soon at an amazing EJC in Almere!</p>
 
         <p>Best regards,<br />
-        your European Juggling Associaton</p>
+        your European Juggling Association</p>
 
         <p>P.S.: Please also note that E-Tickets are only valid if they are marked as "paid" in the registration system. It is not possible to check in at EJC with one of the incorrectly issued E-Tickets.</p>
     </body>
