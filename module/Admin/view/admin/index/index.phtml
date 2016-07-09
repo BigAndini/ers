@@ -1,16 +1,46 @@
 <?php
- // module/RegistrationSystem/view/registration-system/admin/index.phtml:
+$title = 'Admin';
+$this->headTitle($title);
+?>
 
- $title = 'Admin';
- $this->headTitle($title);
- ?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<div class="row">
+    <div class="col-md-6">
+        <h2>Setup</h2>
+        <ol>
+            <li>
+                <a href="<?php echo $this->url('admin/tax'); ?>">configure taxes</a> 
+            </li>
+            <li>
+                <a href="<?php echo $this->url('admin/deadline'); ?>">configure deadlines</a>
+            </li>
+            <li>
+                <a href="<?php echo $this->url('admin/product'); ?>">add your products</a>
+            </li>
+            <li>
+                <a href="<?php echo $this->url('admin/product'); ?>">add prices to your products</a>
+            </li>
+            <li>
+                <a href="<?php echo $this->url('admin/product'); ?>">add variants to your products</a> 
+            </li>
+        </ol>
+    </div>
+    <div class="col-md-6">
+        <h2>Order search</h2>
+        <?php
+        $form = $this->order_search_form;
+        $form->setAttribute('action', $this->url('admin/order', 
+                array('action' => 'search')
+                ));
+        $form->prepare();
 
- <h1><?php echo $this->escapeHtml($title); ?></h1>
- <!--<p>
-     <a href="<?php #echo $this->url('user', array('action'=>'add'));?>">Add user</a>
- </p>-->
- <h3>1. <a href="<?php echo $this->url('admin/tax'); ?>">configure taxes</a></h3>
- <h3>2. <a href="<?php echo $this->url('admin/deadline'); ?>">configure deadlines</a></h3>
- <h3>3. <a href="<?php echo $this->url('admin/product'); ?>">add your products</a></h3>
- <h3>4. <a href="<?php echo $this->url('admin/product'); ?>">add prices to your products</a></h3>
- <h3>5. <a href="<?php echo $this->url('admin/product'); ?>">add variants to your products</a></h3>
+        echo $this->form()->openTag($form); ?>
+        <div class="input-group input-group-lg">
+            <?php echo $this->formRow($form->get('q')); ?>
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+            </span>
+        </div><!-- /input-group -->
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>
