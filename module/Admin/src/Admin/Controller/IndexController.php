@@ -10,9 +10,14 @@ namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Admin\Form;
 
 class IndexController extends AbstractActionController {
+    
     public function indexAction() {
-        return new ViewModel();
+        $order_search_form = new Form\SearchOrder();
+        return new ViewModel(array(
+            'order_search_form' => $order_search_form,
+        ));
     }
 }

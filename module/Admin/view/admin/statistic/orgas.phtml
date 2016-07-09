@@ -20,7 +20,7 @@ $this->headTitle($title);
                 <?php for($i=1;$i<=5;$i++): ?>
                 <tr>
                     <td><?php echo $i*10 ?> %</td>
-                    <td><?php echo $participants['participants']*$i*10/100; ?></td>
+                    <td><?php echo floor($participants['participants']*$i*10/1000)*10; ?></td>
                 </tr>    
                 <?php endfor;?>
             </table>
