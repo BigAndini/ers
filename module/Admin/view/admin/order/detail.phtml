@@ -77,7 +77,10 @@ $this->headTitle($title);
         <?php 
         $sum = 0;
         foreach ($order->getPackages() as $package) : 
-            if(count($package->getItems()) == 0) {
+            error_log('process package '.$package->getCode()->getValue());
+            error_log('all items count: '.count($package->getAllItems()));
+            if(count($package->getAllItems()) == 0) {
+                error_log('no items next...');
                 continue;
             }
             $user = $package->getParticipant();
@@ -178,7 +181,7 @@ $this->headTitle($title);
                     </div>
                 </div>
 
-                <?php if(count($package->getItems()) != 0): ?>
+                <?php if(count($package->getAllItems()) != 0): ?>
                 <table class="table">
                     <tr>
                         <th>Product</th>
@@ -188,7 +191,7 @@ $this->headTitle($title);
                     </tr>
                     <?php
                     $subtotal = 0;
-                    foreach ($package->getItems() as $item):
+                    foreach ($package->getAllItems() as $item):
                         if($item->hasParentItems()) {
                             continue;
                         }

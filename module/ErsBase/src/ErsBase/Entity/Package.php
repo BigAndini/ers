@@ -175,22 +175,6 @@ class Package extends Base\Package
     }
     
     /**
-     * DEPREACTED session id is not used anymore
-     * Get Item entity by session id
-     * 
-     * @return \Entity\Item
-     * @return false
-     */
-    /*public function getItemBySessionId($id) {
-        foreach($this->getItems() as $item) {
-            if($item->getSessionId() == $id) {
-                return $item;
-            }
-        }
-        return false;
-    }*/
-    
-    /**
      * Check if item exists
      * 
      * @param \ErsBase\Entity\Item $item
@@ -218,35 +202,6 @@ class Package extends Base\Package
         }
         return false;
     }
-    
-    /**
-     * check if all items in this package have the same status and return the 
-     * status.
-     * 
-     * @return string
-     */
-    /*public function getStatus() {
-        $status = array();
-        foreach($this->getItems() as $item) {
-            $item_status = $item->getStatus();
-            if($item_status == 'zero_ok') {
-                $item_status = 'paid';
-            }
-            if($item_status == 'transferred') {
-                continue;
-            }
-            if(isset($status[$item_status])) {
-                $status[$item_status]++;
-            } else {
-                $status[$item_status] = 1;
-            }
-        }
-        if(count($status) == 1) {
-            return key($status);
-        } else {
-            return 'undefined';
-        }
-    }*/
     
     /**
      * Set the value of transferred_package.
@@ -302,6 +257,6 @@ class Package extends Base\Package
     }
     
     public function getAllItems() {
-        return $this->getItems();
+        return $this->items;
     }
 }
