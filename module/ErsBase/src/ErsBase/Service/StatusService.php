@@ -81,7 +81,7 @@ class StatusService
         # ignore if item is actually in one of the following states
         $ignore = array('cancelled', 'transferred', 'shipped');
         
-        foreach($package->getItem() as $item) {
+        foreach($package->getItems() as $item) {
             if(!in_array($item->getStatus()->getValue(), $ignore)) {
                 $this->setItemSttus($item, $status, false);
             }

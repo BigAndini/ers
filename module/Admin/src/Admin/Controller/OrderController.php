@@ -701,16 +701,20 @@ class OrderController extends AbstractActionController {
                 $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $id));
                 
-                $status = $em->getRepository('ErsBase\Entity\Status')
-                        ->findOneBy(array('value' => 'cancelled'));
+                /*$status = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'cancelled'));*/
                 $order->setPaymentStatus('cancelled');
-                $order->setStatus($status);
+                #$order->setStatus($status);
                 $em->persist($order);
                 
-                foreach($order->getItems() as $item) {
+                $statusService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\StatusService');
+                $statusService->setOrderStatus($order, 'cancelled', false);
+                
+                /*foreach($order->getItems() as $item) {
                     $item->setStatus($status);
                     $em->persist($item);
-                }
+                }*/
                 
                 $em->flush();
                 
