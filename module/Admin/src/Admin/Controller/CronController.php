@@ -676,10 +676,23 @@ class CronController extends AbstractActionController {
         echo 'found '.count($orders).' orders'.PHP_EOL;
         
         foreach($orders as $order) {
-            echo $order->getCode()->getValue().PHP_EOL;
-            $order->getTotalSum();
-            $order->getOrderSum();
-            $em->persist($order);
+            #echo $order->getCode()->getValue().PHP_EOL;
+            $orig_total_sum = $order->getTotalSum();
+            $orig_order_sum = $order->getOrderSum();
+            
+            $persist = false;
+            if($orig_order_sum != $order->getPrice()) {
+                $order->setOrderSum($order->getPrice());
+                echo "update order sum for ".$order->getCode()->getValue().": ".$orig_order_sum." != ".$order->getPrice().PHP_EOL;
+            }
+            if($orig_total_sum != $order->getSum()) {
+                $order->setTotalSum($order->getSum());
+                echo "update total sum for ".$order->getCode()->getValue().": ".$orig_total_sum." != ".$order->getSum().PHP_EOL;
+            }
+            
+            if($persist) {
+                $em->persist($order);
+            }
         }
         $em->flush();
     }
@@ -885,9 +898,9 @@ class CronController extends AbstractActionController {
             $user->setEmail('andi@inbaz.org');
             $emailService->addTo($user);*/
             
-            /*$bcc = new Entity\User();
+            $bcc = new Entity\User();
             $bcc->setEmail('prereg@eja.net');
-            $emailService->addBcc($bcc);*/
+            $emailService->addBcc($bcc);
 
             $subject = "[EJC 2016] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
             $emailService->setSubject($subject);
@@ -904,12 +917,11 @@ class CronController extends AbstractActionController {
             
             # send out email
             $emailService->send();
-            echo "email sent.".PHP_EOL;
+            echo "email sent to ".$buyer->getEmail().".".PHP_EOL;
             
             $package->setTicketStatus('not_send');
             $em->persist($package);
             $em->flush();
-            exit();
         }
     }
     public function sorryEticketCcAction() {
@@ -952,9 +964,9 @@ class CronController extends AbstractActionController {
             $user->setEmail('andi@inbaz.org');
             $emailService->addTo($user);*/
             
-            /*$bcc = new Entity\User();
+            $bcc = new Entity\User();
             $bcc->setEmail('prereg@eja.net');
-            $emailService->addBcc($bcc);*/
+            $emailService->addBcc($bcc);
 
             $subject = "[EJC 2016] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
             $emailService->setSubject($subject);
@@ -971,12 +983,11 @@ class CronController extends AbstractActionController {
             
             # send out email
             $emailService->send();
-            echo "email sent.".PHP_EOL;
+            echo "email sent to ".$buyer->getEmail().".".PHP_EOL;
             
             $package->setTicketStatus('not_send');
             $em->persist($package);
             $em->flush();
-            exit();
         }
     }
 }

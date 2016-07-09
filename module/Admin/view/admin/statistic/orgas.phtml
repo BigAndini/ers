@@ -1,0 +1,30 @@
+<?php
+$title = 'Statistics: for Orgas';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-6">
+            <p class="text-center">amount</p>
+            <h1 class="text-center"><?php echo $this->currencyFormat($ordersums['ordersum'], 'EUR', null, 'de_DE'); ?></h1>
+        </div>
+        <div class="col-md-3">
+            <p class="text-center">participants registered</p>
+            <h1 class="text-center"><?php echo $participants['participants']; ?></h1>
+        </div>
+        <div class="col-md-3">
+            <p class="text-center">spontanious participants:</p>
+            <table class="table table-condensed">
+                <?php for($i=1;$i<=5;$i++): ?>
+                <tr>
+                    <td><?php echo $i*10 ?> %</td>
+                    <td><?php echo $participants['participants']*$i*10/100; ?></td>
+                </tr>    
+                <?php endfor;?>
+            </table>
+        </div>
+    </div>
+    
+</div>

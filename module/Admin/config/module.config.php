@@ -49,6 +49,12 @@ return array(
                 'label' => 'Stats',
                 'route' => 'admin/statistic',
                 'pages' => array(
+                    'orgas' => array(
+                        'label' => 'for Orgas',
+                        'route' => 'admin/statistic',
+                        'action' => 'orgas',
+                        'resource'  => 'controller/Admin\Controller\Statistic',
+                    ),
                     'order' => array(
                         'label' => 'Orders',
                         'route' => 'admin/statistic',
