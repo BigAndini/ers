@@ -16,9 +16,61 @@ class StatisticController extends AbstractActionController {
         return new ViewModel();
     }
     
+    public function orgasAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        /*$orderSelectFields = array('COUNT(o.id) AS ordercount', 'SUM(o.order_sum) AS ordersum, SUM(o.total_sum) AS totalsum');
+        
+        $qb = $em->createQueryBuilder();
+        $qb->select(array_merge(array('s status, s.value label'), $orderSelectFields))
+                ->from('ErsBase\Entity\Status', 's')
+                ->leftJoin('s.orders', 'o')
+                ->where('s.value', ':status');
+                #->groupBy('s.value')
+                #->orderBy('s.position');
+        $qb->setParameter('status', 'paid');
+        
+        $paymentStatusStats = $qb->getQuery()->getResult();*/
+        
+        /*$byStatusGroups = array('active' => array(), 'inactive' => array());
+        foreach($paymentStatusStats AS $statusData) {
+            $group = ($statusData['status']->getActive() ? 'active' : 'inactive');
+            $byStatusGroups[$group][] = $statusData;
+        }*/
+        
+        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb->select(array('SUM(o.order_sum) as ordersum'));
+        $qb->join('o.status', 's');
+        $qb->join('o.paymentType', 'pt');
+        $qb->where($qb->expr()->eq('s.value', ':status'));
+        #$qb->groupBy('pt.name');
+        
+        $qb->setParameter('status', 'paid');
+        
+        $ordersums = $qb->getQuery()->getSingleResult();
+        
+        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb->select(array('COUNT(p.id) as participants'));
+        $qb->join('p.status', 's');
+        $qb->where($qb->expr()->eq('s.value', ':status1'));
+        $qb->orWhere($qb->expr()->eq('s.value', ':status2'));
+        
+        $qb->setParameter('status1', 'paid');
+        $qb->setParameter('status2', 'ordered');
+        
+        $participants = $qb->getQuery()->getSingleResult();
+        
+        #error_log(var_export($ordersums, true));
+        
+        return new ViewModel(array(
+            'ordersums' => $ordersums,
+            'participants' => $participants,
+        ));
+    }
+    
     public function ordersAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
 
         // old, more complex queries that do not make use of the cached fields and are no longer needed
