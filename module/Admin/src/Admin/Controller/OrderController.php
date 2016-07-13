@@ -387,11 +387,6 @@ class OrderController extends AbstractActionController {
                     # send out email
                     $emailService->addAttachment($eticketFile);
 
-                    #$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v5.pdf';
-                    #$terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v4.pdf';
-                    #$emailService->addAttachment($terms1);
-                    #$emailService->addAttachment($terms2);
-
                     $emailService->send();
                     $package->setTicketStatus('send_out');
                     $em->persist($package);
