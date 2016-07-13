@@ -39,32 +39,53 @@ class StatisticController extends AbstractActionController {
             $byStatusGroups[$group][] = $statusData;
         }*/
         
-        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->select(array('SUM(o.order_sum) as ordersum'));
-        $qb->join('o.status', 's');
-        $qb->join('o.paymentType', 'pt');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        #$qb->groupBy('pt.name');
+        $qb1 = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb1->select(array('SUM(o.order_sum) as ordersum'));
+        $qb1->join('o.status', 's');
+        $qb1->join('o.paymentType', 'pt');
+        $qb1->where($qb1->expr()->eq('s.value', ':status'));
+        #$qb1->groupBy('pt.name');
         
-        $qb->setParameter('status', 'paid');
+        $qb1->setParameter('status', 'paid');
         
-        $ordersums = $qb->getQuery()->getSingleResult();
+        $ordersums = $qb1->getQuery()->getSingleResult();
         
-        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->select(array('COUNT(p.id) as participants'));
-        $qb->join('p.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status1'));
-        $qb->orWhere($qb->expr()->eq('s.value', ':status2'));
         
-        $qb->setParameter('status1', 'paid');
-        $qb->setParameter('status2', 'ordered');
+        /* SELECT SUM( order_sum ) , SUM( total_sum )
+            FROM `order`
+            JOIN `match` ON `order`.id = `match`.order_id
+            JOIN bank_statement ON bank_statement.id = `match`.bank_statement_id
+            JOIN bank_account ON bank_account.id = bank_statement.bank_account_id
+            WHERE bank_account.id =2
+         */
+        $qb2 = $em->getRepository('ErsBase\Entity\Match')->createQueryBuilder('m');
+        $qb2->select(array('SUM(o.order_sum) as ordersum'));
+        $qb2->join('m.order', 'o');
+        $qb2->join('m.bankStatement', 'bs');
+        $qb2->join('bs.bankAccount', 'ba');
+        $qb2->where($qb2->expr()->eq('ba.id', ':bank_account_id'));
+        #$qb2->groupBy('pt.name');
         
-        $participants = $qb->getQuery()->getSingleResult();
+        $qb2->setParameter('bank_account_id', '2');
+        
+        $volunteers = $qb2->getQuery()->getSingleResult();
+        
+        $qb3 = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb3->select(array('COUNT(p.id) as participants'));
+        $qb3->join('p.status', 's');
+        $qb3->where($qb3->expr()->eq('s.value', ':status1'));
+        $qb3->orWhere($qb3->expr()->eq('s.value', ':status2'));
+        
+        $qb3->setParameter('status1', 'paid');
+        $qb3->setParameter('status2', 'ordered');
+        
+        $participants = $qb3->getQuery()->getSingleResult();
         
         #error_log(var_export($ordersums, true));
         
         return new ViewModel(array(
             'ordersums' => $ordersums,
+            'volunteers' => $volunteers,
             'participants' => $participants,
         ));
     }
