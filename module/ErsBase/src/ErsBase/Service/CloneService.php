@@ -51,12 +51,14 @@ class CloneService
         $newPackage = clone $package;
         
         $newPackage->setOrder($package->getOrder());
+        $newPackage->setStatus($package->getStatus());
         
         foreach($package->getItems() as $item) {
             if($item->hasParentItems()) {
                 continue;
             }
             $newItem = $this->cloneItem($item);
+            $newItem->setStatus($item->getStatus());
             $newPackage->addItem($newItem);
         }
         $em->persist($newPackage);
@@ -74,6 +76,7 @@ class CloneService
                 ->get('Doctrine\ORM\EntityManager');
         
         $newItem = clone $item;
+        $newItem->setStatus($item->getStatus());
         
         foreach($item->getItemPackageRelatedBySurItemIds() as $itemPackage) {
             $newItemPackage = $this->cloneItemPackage($itemPackage);
