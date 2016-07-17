@@ -559,6 +559,7 @@ class ItemController extends AbstractActionController {
                 
                 # set order for package
                 $newPackage->setOrder($package->getOrder());
+                $newPackage->setStatus($package->getStatus());
                 
                 $cloneService = $this->getServiceLocator()
                     ->get('ErsBase\Service\CloneService');
@@ -568,11 +569,11 @@ class ItemController extends AbstractActionController {
                 $statusTransferred = $em->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'transferred'));
                 
-                #$newItem = clone $item;
                 $newPackage->addItem($newItem);
                 $item->setStatus($statusTransferred);
-                #$item->setTransferredItem($newItem);
+                $item->setStatusId($statusTransferred->getId());
 
+                $em->persist($item);
                 
                 $code = new Entity\Code();
                 $code->genCode();
@@ -584,14 +585,11 @@ class ItemController extends AbstractActionController {
                 }
                 $newItem->setCode($code);
 
-                $em->persist($item);
                 $em->persist($newItem);
                 
-                #$newPackage->setTransferredPackage($package);
                 $newPackage->setParticipant($user);
                 
                 $em->persist($newPackage);
-                #$em->persist($package);
                 $em->flush();
                 
                 $order = $package->getOrder();
