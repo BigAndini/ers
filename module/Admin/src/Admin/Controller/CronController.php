@@ -172,6 +172,25 @@ class CronController extends AbstractActionController {
         $order = $em->getRepository('ErsBase\Entity\Order')
             ->findOneBy(array('code_id' => $code->getId()));
         
+        if(!$order) {
+            # try to find order via package
+            $package = $em->getRepository('ErsBase\Entity\Package')
+                ->findOneBy(array('code_id' => $code->getId()));
+            if(!$package) {
+                # try to find item via package
+                $item = $em->getRepository('ErsBase\Entity\Item')
+                    ->findOneBy(array('code_id' => $code->getId()));
+                if(!$item) {
+                    echo "Unable to find neither item nor package nor order with code: ".$code->getValue().PHP_EOL;
+                    exit();
+                } else {
+                    $order = $item->getPackage()->getOrder();
+                }
+            } else {
+                $order = $package->getOrder();
+            }
+        }
+        
         $statement->setStatus('matched');
 
         $em->persist($statement);
