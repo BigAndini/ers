@@ -389,11 +389,14 @@ class Order extends Base\Order
      */
     public function getParticipants() {
         $participants = array();
-        foreach($this->getPackages() as $package) {
-            if($package->getParticipant()->getFirstname() != '' && $package->getParticipant()->getSurname() != '') {
-                $participants[] = $package->getParticipant();
+        if(is_array($this->getPackages())) {
+            foreach($this->getPackages() as $package) {
+                if($package->getParticipant()->getFirstname() != '' && $package->getParticipant()->getSurname() != '') {
+                    $participants[] = $package->getParticipant();
+                }
             }
         }
+        
         
         return $participants;
     }
