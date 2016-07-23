@@ -201,7 +201,7 @@ class OrderController extends AbstractActionController {
         $now = new \DateTime();
         
         $pts = array();
-        foreach($paymenttypes as $paymenttype) {
+        /*foreach($paymenttypes as $paymenttype) {
             if(!$paymenttype->getVisible()) {
                 continue;
             }
@@ -214,7 +214,8 @@ class OrderController extends AbstractActionController {
                 $pts[] = $paymenttype;
                 
             }
-        }
+        }*/
+        $pts = $paymenttypes;
         
         foreach($pts as $paymenttype) {
             $types[] = array(

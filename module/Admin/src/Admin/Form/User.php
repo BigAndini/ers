@@ -164,7 +164,8 @@ class User extends Form implements InputFilterProviderInterface
                                     return true;
                                 }
                                 
-                                $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+                                $em = $this->getServiceLocator()
+                                        ->get('Doctrine\ORM\EntityManager');
                                 $user = $em->getRepository('ErsBase\Entity\User')
                                         ->findOneBy(array('email' => $value));
 
