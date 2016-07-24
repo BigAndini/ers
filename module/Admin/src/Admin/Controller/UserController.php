@@ -85,7 +85,8 @@ class UserController extends AbstractActionController {
         }
         $breadcrumb = $forrest->get('user');
         
-        $form = new Form\User();
+        #$form = new Form\User();
+        $form = $this->getServiceLocator()->get('Admin\Form\User');
         $form->get('submit')->setValue('Add');
         $form->get('Country_id')->setValueOptions($this->getCountryOptions());
         
@@ -118,6 +119,10 @@ class UserController extends AbstractActionController {
                 
                 $em->persist($user);
                 $em->flush();
+                
+                if(array_key_exists('q', $breadcrumb->options['query'])) {
+                    $breadcrumb->options['query']['q'] = $user->getEmail();
+                }
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
