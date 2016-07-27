@@ -418,6 +418,9 @@ class ItemController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/order', array('action' => 'search'));
         }
+        
+        
+        
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $em->getRepository('ErsBase\Entity\Item')
@@ -504,6 +507,8 @@ class ItemController extends AbstractActionController {
                     #'fragment' => $fragment,
                 )
             );
+        $breadcrumb = $forrest->get('item');
+        $forrest->set('user', $breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         
         return new ViewModel(array(
             'form' => $form,

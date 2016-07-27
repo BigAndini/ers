@@ -116,6 +116,11 @@ class Module
                     
                     return $form;
                 },
+                'Admin\Form\User' => function($sm){
+                    $form   = new Form\User();
+                    $form->setServiceLocator($sm);
+                    return $form;
+                },
                 'Admin\InputFilter\User' => function($sm){
                     $inputFilter   = new InputFilter\User();
                     $inputFilter->setServiceLocator($sm);
