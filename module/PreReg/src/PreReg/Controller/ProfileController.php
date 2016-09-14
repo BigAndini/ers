@@ -183,8 +183,10 @@ class ProfileController extends AbstractActionController {
         }
         
         $now = new \DateTime();
-        if(($user->getUpdated()->getTimestamp()+7200) <= $now->getTimestamp()) {
-            $logger->warn('Too late, link is not enabled for user '.$user->getEmail().' anymore: '.($user->getUpdated()->getTimestamp()+7200).' >= '.$now->getTimestamp());
+        # set time to reset password (ttrp) to 24 hours
+        $ttrp=86400;
+        if(($user->getUpdated()->getTimestamp()+$ttrp) <= $now->getTimestamp()) {
+            $logger->warn('Too late, link is not enabled for user '.$user->getEmail().' anymore: '.($user->getUpdated()->getTimestamp()+ttrp).' >= '.$now->getTimestamp());
             return $this->redirect()->toRoute('zfcuser/login');
         }
         
