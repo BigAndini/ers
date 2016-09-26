@@ -526,57 +526,5 @@ class ProductController extends AbstractActionController {
             'product' => $product,
             'breadcrumb' => $breadcrumbService->get('product'),
         ));
-
-        
-        
-        
-        
-        /*$breadcrumbService = new Service\BreadcrumbService();
-        
-        if(!$breadcrumbService->exists('product')) {
-            $breadcrumbService->set('product', 'order');
-        }
-        
-        $product_id = (int) $this->params()->fromRoute('product_id', 0);
-        $item_id = (int) $this->params()->fromRoute('item_id', 0);
-        if (!is_numeric($product_id) || !is_numeric($item_id)) {
-            $breadcrumb = $breadcrumbService->get('product');
-            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
-        }
-        
-        
-        $orderService = $this->getServiceLocator()
-                ->get('ErsBase\Service\OrderService');
-        $order = $orderService->getOrder();
-        
-        $participant = $order->getParticipantByItemId($item_id);
-        $item = $order->getItem($item_id);
-        $product = $item->getProduct();
-        
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $del = $request->getPost('del', 'No');
-
-            if ($del == 'Yes') {
-                $item_id = (int) $request->getPost('item_id');
-                
-                $orderService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\OrderService');
-                $orderService->removeItemById($item_id);
-                
-                #$order->removeItemById($item_id);
-            }
-
-            $breadcrumb = $breadcrumbService->get('product');
-            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
-        }
-        
-        return new ViewModel(array(
-            'id'    => $product_id,
-            'participant' => $participant,
-            'item' => $item,
-            'product' => $product,
-            'breadcrumb' => $breadcrumbService->get('product'),
-        ));*/
     }
 }
