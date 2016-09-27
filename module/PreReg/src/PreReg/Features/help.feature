@@ -5,4 +5,4 @@ Feature: ERS Help Page
 
     Scenario: Accessing the help page
         Given I am on "/info/help"
-        Then I should see "Help page for the EJC Registration System (ERS)"
+        Then I should see "Help page for the Event Registration System (ERS)"

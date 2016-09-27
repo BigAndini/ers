@@ -63,7 +63,7 @@ class ProductView extends Form
                 'class' => 'form-control form-element',
             ),
             'options' => array(
-                'label' => 'This ticket belongs to:',
+                'label' => _('This ticket belongs to:'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                     'id' => 'participant',
@@ -79,7 +79,7 @@ class ProductView extends Form
                 'class' => 'checkbox-inline',
             ),
             'options' => array(
-                'label' => 'Agegroup',
+                'label' => _('Agegroup'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -255,7 +255,7 @@ class ProductView extends Form
                     'name' => 'Callback',
                     'options' => array(
                         'messages' => array(
-                            \Zend\Validator\Callback::INVALID_VALUE => 'Please select a person.',
+                            \Zend\Validator\Callback::INVALID_VALUE => _('Please select a person.'),
                         ),
                         'callback' => function($value, $context=array()) {
                             if(is_numeric($value)) {
@@ -275,7 +275,7 @@ class ProductView extends Form
                     'name' => 'Callback',
                     'options' => array(
                         'messages' => array(
-                            \Zend\Validator\Callback::INVALID_VALUE => 'Unable to add personalized product to person without birthdate. Please add date of birth in My Person list.',
+                            \Zend\Validator\Callback::INVALID_VALUE => _('Unable to add personalized product to person without birthdate. Please add date of birth in My Person list.'),
                         ),
                         'callback' => function($value, $context=array()) {
                             $cartContainer = new Container('cart');
@@ -308,7 +308,7 @@ class ProductView extends Form
                     'name' => 'Callback',
                     'options' => array(
                         'messages' => array(
-                            \Zend\Validator\Callback::INVALID_VALUE => 'Please select a agegroup.',
+                            \Zend\Validator\Callback::INVALID_VALUE => _('Please select a agegroup.'),
                         ),
                         'callback' => function($value, $context=array()) {
                             if(is_numeric($value)) {
@@ -348,7 +348,7 @@ class ProductView extends Form
                     'name' => 'Callback',
                     'options' => array(
                         'messages' => array(
-                            \Zend\Validator\Callback::INVALID_VALUE => 'Please select a product variant.',
+                            \Zend\Validator\Callback::INVALID_VALUE => _('Please select a product variant.'),
                         ),
                         'callback' => function($values, $context=array()) {
                             foreach($values as $key => $value) {

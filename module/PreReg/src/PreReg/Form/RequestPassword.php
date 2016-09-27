@@ -24,12 +24,12 @@ class RequestPassword extends Form
             'name' => 'email', 
             'type' => 'Zend\Form\Element\Email', 
             'attributes' => array( 
-                'placeholder' => 'Email Address...', 
+                'placeholder' => _('Email Address...'), 
                 #'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Email', 
+                'label' => _('Email'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -45,7 +45,7 @@ class RequestPassword extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Send',
+                'value' => _('Send'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),

@@ -381,12 +381,11 @@ return array(
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',
-            #'Logger'     => 'EddieJaoude\Zf2Logger',
-            #'Logger'     => 'Zend\Log\Logger',
         ),
     ),
     'translator' => array(
-        'locale' => 'en_US',
+        #'locale' => 'en_US',
+        'locale' => 'de_DE',
         'translation_file_patterns' => array(
             array(
                 'type'     => 'gettext',

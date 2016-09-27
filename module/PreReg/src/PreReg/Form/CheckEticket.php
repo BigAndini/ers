@@ -29,12 +29,12 @@ class CheckEticket extends Form
             'name' => 'code', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'E-Ticket code...', 
+                'placeholder' => _('E-Ticket code...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'E-Ticket code',
+                'label' => _('E-Ticket code'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -45,7 +45,7 @@ class CheckEticket extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type' => 'submit',
-                'value' => 'Send',
+                'value' => _('Send'),
                 'class' => 'btn btn-default',
             ),
         ));

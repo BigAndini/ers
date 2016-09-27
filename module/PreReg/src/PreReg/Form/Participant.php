@@ -52,12 +52,12 @@ class Participant extends Form implements InputFilterProviderInterface
             'name' => 'firstname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'First name...', 
+                'placeholder' => _('First name...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'First name',
+                'label' => _('First name'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -68,12 +68,12 @@ class Participant extends Form implements InputFilterProviderInterface
             'name' => 'surname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Surname...', 
+                'placeholder' => _('Surname...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Surname',
+                'label' => _('Surname'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -86,7 +86,7 @@ class Participant extends Form implements InputFilterProviderInterface
             #'type' => 'Zend\Form\Element\Text',
             'type' => 'PreReg\Form\Element\DateText',
             'attributes' => array( 
-                'placeholder' => 'Birthday...', 
+                'placeholder' => _('Birthday...'), 
                 'required' => 'required',
                 'class' => 'form-control form-element datepicker',
                 #'min' => '1900-01-01', 
@@ -94,7 +94,7 @@ class Participant extends Form implements InputFilterProviderInterface
                 #'step' => '1', 
             ), 
             'options' => array( 
-                'label' => 'Date of birth',
+                'label' => _('Date of birth'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -107,12 +107,12 @@ class Participant extends Form implements InputFilterProviderInterface
             'name' => 'email', 
             'type' => 'Zend\Form\Element\Email', 
             'attributes' => array( 
-                'placeholder' => 'Email Address...', 
+                'placeholder' => _('Email Address...'), 
                 #'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Email (optional)', 
+                'label' => _('Email (optional)'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -127,7 +127,7 @@ class Participant extends Form implements InputFilterProviderInterface
                 'class' => 'form-control form-element',
             ),
             'options' => array(
-                'label' => 'Where are you from?',
+                'label' => _('Where are you from?'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -143,7 +143,7 @@ class Participant extends Form implements InputFilterProviderInterface
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Save',
+                'value' => _('Save'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),
@@ -183,7 +183,7 @@ class Participant extends Form implements InputFilterProviderInterface
                         'name' => 'Callback', 
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'The provided name contains invalid character. These charaters are not allowed: !"§$%()=<>|^;{}[]',
+                                \Zend\Validator\Callback::INVALID_VALUE => _('The provided name contains invalid character. These charaters are not allowed:').' !"§$%()=<>|^;{}[]',
                             ),
                             'callback' => function($value, $context=array()) {
                                 $alphabet = '!"§$%()=<>|^;{}[]';
@@ -219,7 +219,7 @@ class Participant extends Form implements InputFilterProviderInterface
                         'name' => 'Callback', 
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'The provided name contains invalid character. These charaters are not allowed: !"§$%()=<>|^;{}[]',
+                                \Zend\Validator\Callback::INVALID_VALUE => _('The provided name contains invalid character. These charaters are not allowed:').' !"§$%()=<>|^;{}[]',
                             ),
                             'callback' => function($value, $context=array()) {
                                 $alphabet = '!"§$%()=<>|^;{}[]';
@@ -253,7 +253,7 @@ class Participant extends Form implements InputFilterProviderInterface
                         'name' => 'Callback', 
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'Please choose a valid birthday',
+                                \Zend\Validator\Callback::INVALID_VALUE => _('Please choose a valid birthday'),
                             ),
                             'callback' => function($value, $context=array()) {
                                 $min = \DateTime::createFromFormat('d.m.Y', '01.01.1900');
@@ -285,7 +285,7 @@ class Participant extends Form implements InputFilterProviderInterface
                         'name' => 'EmailAddress', 
                         'options' => array( 
                             'messages' => array( 
-                                'emailAddressInvalidFormat' => 'Email address format is not invalid', 
+                                'emailAddressInvalidFormat' => _('Email address format is not invalid'), 
                             ) 
                         ), 
                     ),
@@ -294,7 +294,7 @@ class Participant extends Form implements InputFilterProviderInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => 'A person with this email address already exists. To make changes to your existing order contact prereg@eja.net or choose another e-mail',
+                                \Zend\Validator\Callback::INVALID_VALUE => _('A person with this email address already exists. To make changes to your existing order contact prereg@eja.net or choose another e-mail'),
                             ),
                             'callback' => function($value, $context=array()) {
                                 $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');

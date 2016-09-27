@@ -1,0 +1,424 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ZendSkeletonApplication\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-27 09:14+0200\n"
+"PO-Revision-Date: 2016-09-27 09:25+0200\n"
+"Last-Translator: Evan Coury <me@evancoury.com>\n"
+"Language-Team: ZF Contributors <zf-devteam@zend.com>\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: translate\n"
+"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 1.8.9\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../src/PreReg/Form/Buyer.php:28 ../src/PreReg/Form/Participant.php:55
+msgid "First name..."
+msgstr "Vorname..."
+
+#: ../src/PreReg/Form/Buyer.php:33 ../src/PreReg/Form/Participant.php:60
+msgid "First name"
+msgstr "Vorname"
+
+#: ../src/PreReg/Form/Buyer.php:44 ../src/PreReg/Form/Participant.php:71
+#: ../src/PreReg/Form/User.php:53
+msgid "Surname..."
+msgstr "Nachname..."
+
+#: ../src/PreReg/Form/Buyer.php:49 ../src/PreReg/Form/Participant.php:76
+#: ../src/PreReg/Form/User.php:58
+msgid "Surname"
+msgstr "Nachname"
+
+#: ../src/PreReg/Form/Buyer.php:60 ../src/PreReg/Form/Participant.php:110
+#: ../src/PreReg/Form/RequestPassword.php:27 ../src/PreReg/Form/User.php:94
+msgid "Email Address..."
+msgstr "E-Mail Adresse..."
+
+#: ../src/PreReg/Form/Buyer.php:65 ../src/PreReg/Form/RequestPassword.php:32
+#: ../src/PreReg/Form/User.php:99
+msgid "Email"
+msgstr "E-Mail"
+
+#: ../src/PreReg/Form/Buyer.php:81 ../src/PreReg/Form/PaymentType.php:49
+#: ../src/PreReg/Form/Register.php:47
+msgid "Save & Continue"
+msgstr "Speichern & Weiter"
+
+#: ../src/PreReg/Form/ChangePassword.php:37
+msgid "old password..."
+msgstr "altes Passwort..."
+
+#: ../src/PreReg/Form/ChangePassword.php:42
+msgid "Old Password"
+msgstr "Altes Passwort"
+
+#: ../src/PreReg/Form/ChangePassword.php:53
+msgid "new password..."
+msgstr "neues Passwort..."
+
+#: ../src/PreReg/Form/ChangePassword.php:58
+msgid "New Password"
+msgstr "Neues Passwort"
+
+#: ../src/PreReg/Form/ChangePassword.php:69
+#: ../src/PreReg/Form/ResetPassword.php:43
+msgid "confirm password..."
+msgstr "Passwort bestätigen..."
+
+#: ../src/PreReg/Form/ChangePassword.php:74
+msgid "Confirm Password"
+msgstr "Passwort bestätigen"
+
+#: ../src/PreReg/Form/ChangePassword.php:90
+#: ../src/PreReg/Form/Participant.php:146
+#: ../src/PreReg/Form/ResetPassword.php:64
+msgid "Save"
+msgstr "Speichern"
+
+#: ../src/PreReg/Form/CheckEticket.php:32
+msgid "E-Ticket code..."
+msgstr "E-Ticket Code..."
+
+#: ../src/PreReg/Form/CheckEticket.php:37
+msgid "E-Ticket code"
+msgstr "E-Ticket Code"
+
+#: ../src/PreReg/Form/CheckEticket.php:48
+#: ../src/PreReg/Form/RequestPassword.php:48
+#: ../src/PreReg/Form/SimpleForm.php:32
+msgid "Send"
+msgstr "abschicken"
+
+#: ../src/PreReg/Form/Checkout.php:35
+msgid "I agree to all terms and conditions"
+msgstr "Hiermit bestätige ich Bedingungen und Konditionen"
+
+#: ../src/PreReg/Form/Checkout.php:51
+msgid "Buy Now"
+msgstr "Jetzt kaufen"
+
+#: ../src/PreReg/Form/CreditCard.php:150
+msgid "Cardholder name..."
+msgstr "Name des Karteninhabers..."
+
+#: ../src/PreReg/Form/CreditCard.php:156
+msgid "Cardholder name"
+msgstr "Name des Karteninhabers"
+
+#: ../src/PreReg/Form/CreditCard.php:172
+msgid "Credit Card Type"
+msgstr "Typ der Kreditkarte"
+
+#: ../src/PreReg/Form/CreditCard.php:191
+msgid "Credit Card Number..."
+msgstr "Kreditkartennummer..."
+
+#: ../src/PreReg/Form/CreditCard.php:197
+msgid "Credit Card Number"
+msgstr "Kreditkartennummer"
+
+#: ../src/PreReg/Form/CreditCard.php:208
+msgid "Card Check Code..."
+msgstr "Kartenrprüfziffer..."
+
+#: ../src/PreReg/Form/CreditCard.php:215
+msgid "Card Check Code"
+msgstr "Kartenrprüfziffer"
+
+#: ../src/PreReg/Form/CreditCard.php:232
+msgid "Expire Date"
+msgstr "Ablaufdatum"
+
+#: ../src/PreReg/Form/CreditCard.php:286
+msgid "pay now"
+msgstr "Jetzt bezahlen"
+
+#: ../src/PreReg/Form/ETicketSelect.php:34
+msgid "Language"
+msgstr "Sprache"
+
+#: ../src/PreReg/Form/ETicketSelect.php:49
+#: ../src/PreReg/Form/ProductView.php:82
+msgid "Agegroup"
+msgstr "Altersgruppe"
+
+#: ../src/PreReg/Form/ETicketSelect.php:65
+msgid "Go"
+msgstr "Los"
+
+#: ../src/PreReg/Form/Participant.php:89 ../src/PreReg/Form/User.php:71
+msgid "Birthday..."
+msgstr "Geburtsdatum..."
+
+#: ../src/PreReg/Form/Participant.php:97
+msgid "Date of birth"
+msgstr "Geburtsdatum"
+
+#: ../src/PreReg/Form/Participant.php:115
+msgid "Email (optional)"
+msgstr "E-Mail (optional)"
+
+#: ../src/PreReg/Form/Participant.php:130
+msgid "Where are you from?"
+msgstr "Wo kommst du her?"
+
+#: ../src/PreReg/Form/Participant.php:186
+#: ../src/PreReg/Form/Participant.php:222
+msgid ""
+"The provided name contains invalid character. These charaters are not "
+"allowed:"
+msgstr ""
+"Der angegebene Name beinhaltet ungültige Zeichen. Diese Zeichen sind erlaubt:"
+
+#: ../src/PreReg/Form/Participant.php:256
+msgid "Please choose a valid birthday"
+msgstr "Bitte ein gültiges Geburtsdatum angeben"
+
+#: ../src/PreReg/Form/Participant.php:288 ../src/PreReg/Form/User.php:179
+msgid "Email address format is not invalid"
+msgstr "Das Format der E-Mail Adresse ist ungültig"
+
+#: ../src/PreReg/Form/Participant.php:297
+msgid ""
+"A person with this email address already exists. To make changes to your "
+"existing order contact prereg@eja.net or choose another e-mail"
+msgstr ""
+"Eine andere Person mit dieser E-Mail Adresse ist bereits im System. Um die "
+"bestehende Bestellung zu ändern kontaktiere bitte info@muenchen-con.de oder "
+"wähle eine andere E-Mail Adresse."
+
+#: ../src/PreReg/Form/PaymentType.php:36
+msgid "Choose Payment type"
+msgstr "Bezahlmethode auswählen"
+
+#: ../src/PreReg/Form/ProductView.php:66
+msgid "This ticket belongs to:"
+msgstr "Dieses Ticket gehört:"
+
+#: ../src/PreReg/Form/ProductView.php:258
+msgid "Please select a person."
+msgstr "Wähle einen Jongleur auswählen."
+
+#: ../src/PreReg/Form/ProductView.php:278
+msgid ""
+"Unable to add personalized product to person without birthdate. Please add "
+"date of birth in My Person list."
+msgstr ""
+"Das personalisierte Produkt konnte der Person nicht zugeordnet werden, weil "
+"kein Geburtsdatum angegeben wurde. Bitte passe das Geburtsdatum unter Meine "
+"Personen an."
+
+#: ../src/PreReg/Form/ProductView.php:311
+msgid "Please select a agegroup."
+msgstr "Bitte eine Altersgruppe wählen"
+
+#: ../src/PreReg/Form/ProductView.php:351
+msgid "Please select a product variant."
+msgstr "Bitte eine Produktvariante wählen"
+
+#: ../src/PreReg/Form/Register.php:34
+msgid "Choose Buyer"
+msgstr "Käufer bestimmen"
+
+#: ../src/PreReg/Form/ResetPassword.php:27
+msgid "your password..."
+msgstr "Dein Passwort..."
+
+#: ../src/PreReg/Form/ResetPassword.php:32
+msgid "new password"
+msgstr "Neues Passwort"
+
+#: ../src/PreReg/Form/ResetPassword.php:48
+msgid "confirm password"
+msgstr "Passwort bestätigen"
+
+#: ../src/PreReg/Form/User.php:37
+msgid "Firstname..."
+msgstr "Vorname..."
+
+#: ../src/PreReg/Form/User.php:42
+msgid "Firstname"
+msgstr "Vorname"
+
+#: ../src/PreReg/Form/User.php:79
+msgid "Birthday"
+msgstr "Geburtsdatum"
+
+#: ../src/PreReg/Form/User.php:115
+msgid "Ok"
+msgstr "Ok"
+
+#: ../view/email/exception.phtml:14 ../view/error/index.phtml:1
+msgid "An error occurred"
+msgstr "Ein Fehler ist aufgetreten"
+
+#: ../view/email/exception.phtml:22 ../view/error/404.phtml:65
+#: ../view/error/index.phtml:19
+msgid "Additional information"
+msgstr "Zusätzliche Information"
+
+#: ../view/email/exception.phtml:25 ../view/email/exception.phtml:49
+#: ../view/error/404.phtml:68 ../view/error/404.phtml:92
+#: ../view/error/index.phtml:22 ../view/error/index.phtml:46
+msgid "File"
+msgstr "Datei"
+
+#: ../view/email/exception.phtml:29 ../view/email/exception.phtml:53
+#: ../view/error/404.phtml:72 ../view/error/404.phtml:96
+#: ../view/error/index.phtml:26 ../view/error/index.phtml:50
+msgid "Message"
+msgstr "Meldung"
+
+#: ../view/email/exception.phtml:33 ../view/email/exception.phtml:57
+#: ../view/error/404.phtml:76 ../view/error/404.phtml:100
+#: ../view/error/index.phtml:30 ../view/error/index.phtml:54
+msgid "Stack trace"
+msgstr "Stapelüberwachung"
+
+#: ../view/email/exception.phtml:43 ../view/error/404.phtml:86
+#: ../view/error/index.phtml:40
+msgid "Previous exceptions"
+msgstr "Vorherige Ausnahme"
+
+#: ../view/email/exception.phtml:70 ../view/error/404.phtml:115
+#: ../view/error/index.phtml:69
+msgid "No Exception available"
+msgstr "Es ist keine Ausnahme verfügbar"
+
+#: ../view/error/404.phtml:13
+msgid "A 404 error occurred"
+msgstr "Es trat ein 404 Fehler auf"
+
+#: ../view/error/404.phtml:22
+msgid "The requested controller was unable to dispatch the request."
+msgstr ""
+"Der angeforderte Controller war nicht in der Lage die Anfrage zu verarbeiten."
+
+#: ../view/error/404.phtml:25
+msgid ""
+"The requested controller could not be mapped to an existing controller class."
+msgstr ""
+"Der angeforderte Controller konnte keiner Controller Klasse zugeordnet "
+"werden."
+
+#: ../view/error/404.phtml:28
+msgid "The requested controller was not dispatchable."
+msgstr "Der angeforderte Controller ist nicht aufrufbar."
+
+#: ../view/error/404.phtml:31
+msgid "The requested URL could not be matched by routing."
+msgstr "Für die angeforderte URL konnte keine Übereinstimmung gefunden werden."
+
+#: ../view/error/404.phtml:34
+msgid "We cannot determine at this time why a 404 was generated."
+msgstr ""
+"Zu diesem Zeitpunkt ist es uns nicht möglich zu bestimmen, warum ein 404 "
+"Fehler aufgetreten ist."
+
+#: ../view/error/404.phtml:46
+msgid "Controller"
+msgstr "Controller"
+
+#: ../view/error/404.phtml:53
+#, php-format
+msgid "resolves to %s"
+msgstr "wird aufgelöst in %s"
+
+#: ../view/pre-reg/info/index.phtml:8
+msgid "Welcome to the"
+msgstr "Willkommen zum"
+
+#: ../view/pre-reg/product/add.phtml:2 ../view/pre-reg/product/edit.phtml:2
+msgid "back to Overview"
+msgstr "zurück zur Übersicht"
+
+#: ../view/pre-reg/product/edit.phtml:107
+msgid "Cancel"
+msgstr "abbrechen"
+
+#~ msgid "Home"
+#~ msgstr "Startseite"
+
+#~ msgid "All rights reserved."
+#~ msgstr "Alle Rechte vorbehalten."
+
+#~ msgid "Welcome to %sZend Framework 2%s"
+#~ msgstr "Willkommen zu dem %sZend Framework 2%s"
+
+#~ msgid ""
+#~ "Congratulations! You have successfully installed the %sZF2 Skeleton "
+#~ "Application%s. You are currently running Zend Framework version %s. This "
+#~ "skeleton can serve as a simple starting point for you to begin building "
+#~ "your application on ZF2."
+#~ msgstr ""
+#~ "Herzlichen Glückwunsch! Sie haben die %sZF2 Skeleton Application%s "
+#~ "erfolgreich installiert und benutzen gerade die Version %s des Zend "
+#~ "Frameworks. Dieses Gerüst kann Ihnen als Einstiegspunkt, für Ihre weitere "
+#~ "Entwicklung, basierend auf dem Zend Framework 2, dienen."
+
+#~ msgid "Fork Zend Framework 2 on GitHub"
+#~ msgstr "Fork Zend Framework 2 auf GitHub"
+
+#~ msgid "Follow Development"
+#~ msgstr "Folge der Entwicklung"
+
+#~ msgid ""
+#~ "Zend Framework 2 is under active development. If you are interested in "
+#~ "following the development of ZF2, there is a special ZF2 portal on the "
+#~ "official Zend Framework website which provides links to the ZF2 %swiki%s, "
+#~ "%sdev blog%s, %sissue tracker%s, and much more. This is a great resource "
+#~ "for staying up to date with the latest developments!"
+#~ msgstr ""
+#~ "Das Zend Framework 2 wird z.Z. aktiv weiterentwickelt.  Sollten Sie daran "
+#~ "interessiert sein, die Entwicklung von ZF2 zu verfolgen, so bietet Ihnen "
+#~ "die offizielle Webseite einen eigens für das Zend Framework 2 "
+#~ "eingerichteten Bereich, auf der Sie Verlinkungen zum ZF2 %sWiki%s, "
+#~ "%sEntwickler Blog%s, einem %sFehlerverfolgungssystem%s und noch vielem "
+#~ "mehr finden. Dieser Bereich ist eine hervorragende Quelle um stets "
+#~ "aktuell zu bleiben."
+
+#~ msgid "ZF2 Development Portal"
+#~ msgstr "ZF2 Entwickler Portal"
+
+#~ msgid "Discover Modules"
+#~ msgstr "Entdecken Sie Module"
+
+#~ msgid ""
+#~ "The community is working on developing a community site to serve as a "
+#~ "repository and gallery for ZF2 modules. The project is available %son "
+#~ "GitHub%s. The site is currently live and currently contains a list of "
+#~ "some of the modules already available for ZF2."
+#~ msgstr ""
+#~ "Die Community arbeitet momentan an einer Community Seite, welche als "
+#~ "Galerie für ZF2 Module dient. Dieses Projekt ist %sauf GitHub%s "
+#~ "verfügbar. Die Webseite ist bereits Online und enthält eine Liste mit "
+#~ "schon veröffentlichten Modulen für das Zend Framework 2."
+
+#~ msgid "Explore ZF2 Modules"
+#~ msgstr "Erkunden Sie ZF2 Module"
+
+#~ msgid "Help &amp; Support"
+#~ msgstr "Hilfe &amp; Support"
+
+#~ msgid ""
+#~ "If you need any help or support while developing with ZF2, you may reach "
+#~ "us via IRC: %s#zftalk on Freenode%s. We'd love to hear any questions or "
+#~ "feedback you may have regarding the beta releases. Alternatively, you may "
+#~ "subscribe and post questions to the %smailing lists%s."
+#~ msgstr ""
+#~ "Sollten Sie Hilfe jeglicher Art bei der Entwicklung mit dem Zend "
+#~ "Framework 2 benötigen, kontaktieren Sie uns doch einfach über das IRC: "
+#~ "%s#zftalk on Freenode%s. Wir freuen uns darauf, Ihnen bei Ihren Fragen zu "
+#~ "helfen oder aber auch Ihre Meinung bezüglich der Beta Versionen zu hören. "
+#~ "Alternativ können Sie auch die %smailing lists%s abonnieren und Ihre "
+#~ "Fragen dort stellen."
+
+#~ msgid "Ping us on IRC"
+#~ msgstr "Schreiben Sie uns im IRC an"
+
+#~ msgid "Exception"
+#~ msgstr "Ausnahme"
