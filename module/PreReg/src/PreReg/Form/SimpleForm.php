@@ -29,7 +29,7 @@ class SimpleForm extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type' => 'submit',
-                'value' => 'Send',
+                'value' => _('Send'),
                 'class' => 'btn btn-default',
             ),
         ));

@@ -25,12 +25,12 @@ class Buyer extends Form
             'name' => 'firstname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'First name...', 
+                'placeholder' => _('First name...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'First name', 
+                'label' => _('First name'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -41,12 +41,12 @@ class Buyer extends Form
             'name' => 'surname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Surname...', 
+                'placeholder' => _('Surname...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Surname', 
+                'label' => _('Surname'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -57,12 +57,12 @@ class Buyer extends Form
             'name' => 'email',
             'type' => 'Zend\Form\Element\Email', 
             'attributes' => array( 
-                'placeholder' => 'Email Address...', 
+                'placeholder' => _('Email Address...'), 
                 #'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Email', 
+                'label' => _('Email'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -78,7 +78,7 @@ class Buyer extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Save & Continue',
+                'value' => _('Save & Continue'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),

@@ -138,7 +138,7 @@ class ProfileController extends AbstractActionController {
                     #$emailService->setFrom('prereg@eja.net');
         
                     $emailService->addTo($user);
-                    $emailService->setSubject('EJC Registration System: Password Request Link');
+                    $emailService->setSubject('Event Registration System: Password Request Link');
 
                     $viewModel = new ViewModel(array(
                         'user' => $user,

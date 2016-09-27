@@ -5,5 +5,5 @@ Feature: ERS Default Page
 
     Scenario: Accessing the landing page
         Given I am on "/"
-        Then I should see "EJC Registration System"
+        Then I should see "Event Registration System"
         And I should see "by European Juggling Association All rights reserved"

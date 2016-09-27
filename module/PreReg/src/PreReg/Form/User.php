@@ -34,12 +34,12 @@ class User extends Form
             'name' => 'firstname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Firstname...', 
+                'placeholder' => _('Firstname...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Firstname', 
+                'label' => _('Firstname'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -50,12 +50,12 @@ class User extends Form
             'name' => 'surname', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Surname...', 
+                'placeholder' => _('Surname...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Surname', 
+                'label' => _('Surname'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -68,7 +68,7 @@ class User extends Form
             #'type' => 'Zend\Form\Element\Date',
             'type' => 'PreReg\Form\Element\DateText',
             'attributes' => array( 
-                'placeholder' => 'Birthday...', 
+                'placeholder' => _('Birthday...'), 
                 #'required' => 'required',
                 'class' => 'form-control form-element datepicker',
                 /*'min' => '1900-01-01', 
@@ -76,7 +76,7 @@ class User extends Form
                 'step' => '1', */
             ), 
             'options' => array( 
-                'label' => 'Birthday', 
+                'label' => _('Birthday'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -91,12 +91,12 @@ class User extends Form
             'name' => 'email', 
             'type' => 'Zend\Form\Element\Email', 
             'attributes' => array( 
-                'placeholder' => 'Email Address...', 
+                'placeholder' => _('Email Address...'), 
                 #'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Email', 
+                'label' => _('Email'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -112,7 +112,7 @@ class User extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Ok',
+                'value' => _('Ok'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),
@@ -176,7 +176,7 @@ class User extends Form
                         'name' => 'EmailAddress', 
                         'options' => array( 
                             'messages' => array( 
-                                'emailAddressInvalidFormat' => 'Email address format is not invalid', 
+                                'emailAddressInvalidFormat' => _('Email address format is not invalid'), 
                             ) 
                         ), 
                     ),

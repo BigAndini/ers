@@ -33,7 +33,7 @@ class PaymentType extends Form
                 'class' => 'checkbox-inline',
             ), 
             'options' => array( 
-                'label' => 'Choose Payment type', 
+                'label' => _('Choose Payment type'), 
             ), 
         ));
         
@@ -46,7 +46,7 @@ class PaymentType extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Save & Continue',
+                'value' => _('Save & Continue'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary btn-lg',
             ),

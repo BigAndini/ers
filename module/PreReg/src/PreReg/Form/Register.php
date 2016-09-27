@@ -31,7 +31,7 @@ class Register extends Form
                 'required' => 'required',
             ), 
             'options' => array( 
-                'label' => 'Choose Buyer', 
+                'label' => _('Choose Buyer'), 
             ), 
         ));
         
@@ -44,7 +44,7 @@ class Register extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Save & Continue',
+                'value' => _('Save & Continue'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary btn-lg',
             ),
