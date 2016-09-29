@@ -1,6 +1,6 @@
 <?php
 
-$title = _('My Shopping Cart');
+$title = $this->translate('My Shopping Cart');
 $this->headTitle($title);
 ?>
 
@@ -35,12 +35,12 @@ echo $this->navigation()
     <?php echo $this->formSubmit($form->get('submit')); ?>
 </div>
 <div>
-    <h1><?php echo _('Select Buyer'); ?></h1>
+    <h1><?php echo $this->translate('Select Buyer'); ?></h1>
     <?php if(count($order->getPackages()) > 0): ?>
-    <p><strong><?php echo _('All E-Tickets will be emailed to the buyer.'); ?></strong> 
-        <?php echo _('If you order items for multiple persons and provided their email addresses, 
+    <p><strong><?php echo $this->translate('All E-Tickets will be emailed to the buyer.'); ?></strong> 
+        <?php echo $this->translate('If you order items for multiple persons and provided their email addresses, 
         they will automatically receive a copy of their E-Ticket.'); ?></p>
-    <h3><?php echo _('Choose Buyer');?> </h3>
+    <h3><?php echo $this->translate('Choose Buyer');?> </h3>
     <?php echo $this->formElementErrors($form->get('buyer_id')); ?>
     <?php 
     foreach($participants as $participant): ?>
@@ -85,7 +85,7 @@ echo $this->navigation()
     endif;
     ?>
     <div>
-        <a class="btn btn-primary<?php echo $login_email == '' ? '' : ' disabled'; ?>" href="<?php echo $this->url('participant', array('action' => 'add')); ?>"><?php echo _('add Buyer'); ?></a>
+        <a class="btn btn-primary<?php echo $login_email == '' ? '' : ' disabled'; ?>" href="<?php echo $this->url('participant', array('action' => 'add')); ?>"><?php echo $this->translate('add Buyer'); ?></a>
     </div>
 </div>
 

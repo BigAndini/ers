@@ -1,17 +1,17 @@
 <?php
 
-#$title = _('Tickets for').' '.$ers_config['name_with_year'].' '._('and other products');
-$title = sprintf(_('Tickets for %s and other products', $ers_config['name_with_year']));
+#$title = $this->translate('Tickets for').' '.$ers_config['name_with_year'].' '.$this->translate('and other products');
+$title = sprintf($this->translate('Tickets for %s and other products'), $ers_config['name_with_year']);
 $this->headTitle($title);
 ?>
 <?php if($deadline): ?>
     <h1><?php echo $this->escapeHtml($title); ?></h1>
     <div class="row">
         <div class="col-md-6">
-            <p><?php echo _('Click on any item to add further information and place it in your shopping cart.'); ?></p>
+            <p><?php echo $this->translate('Click on any item to add further information and place it in your shopping cart.'); ?></p>
         </div>
         <div class="col-md-6">
-            <p class="text-right"><?php echo _('The prices will increase after'); ?><br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
+            <p class="text-right"><?php echo $this->translate('The prices will increase after'); ?><br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
         </div>
     </div>
 
@@ -33,11 +33,11 @@ $this->headTitle($title);
 else: ?>
     <div class="jumbotron">
         <h1>
-            <?php echo $this->escapeHtml(_('PreReg is closed')); ?>
+            <?php echo $this->escapeHtml($this->translate('PreReg is closed')); ?>
         </h1>
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
-                <p><?php echo _('The PreReg is already closed. For more information, please visit our homepage on'); ?> <a href="<?php echo $ers_config['registration_info'] ?>"><?php echo $ers_config['registration_info'] ?></a></p>
+                <p><?php echo $this->translate('The PreReg is already closed. For more information, please visit our homepage on'); ?> <a href="<?php echo $ers_config['registration_info'] ?>"><?php echo $ers_config['registration_info'] ?></a></p>
             </div>
         </div>
     </div>

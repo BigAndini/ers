@@ -6,14 +6,14 @@ $this->headTitle($title);
 ?>
 <div class="jumbotron">
     <h1><?php echo $this->escapeHtml($title); ?></h1>
-    <p><?php echo _('The system was not able to find the according order for this payment info 
+    <p><?php echo $this->translate('The system was not able to find the according order for this payment info 
         page. With your purchase you got an email with all needed data. Please 
         use the link in there.'); ?></p>
 </div>
 <?php 
 else:
 
-$title = _('Pay via Bank Transfer');
+$title = $this->translate('Pay via Bank Transfer');
 $this->headTitle($title);
 ?>
 <div class="jumbotron">
@@ -21,14 +21,14 @@ $this->headTitle($title);
 
     <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
 
-    <p><?php echo _('We\'ve sent this information to your email address:'); ?> <strong><?php echo $order->getBuyer()->getEmail(); ?></strong></p>
+    <p><?php echo $this->translate('We\'ve sent this information to your email address:'); ?> <strong><?php echo $order->getBuyer()->getEmail(); ?></strong></p>
 
     <p>
-        <?php echo _('You can request this information again, by simply bookmarking'); ?>
-        <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>"> <?php echo _('this link'); ?></a>,
-        <?php echo _('or have a look at the email we\'ve sent you.'); ?>
+        <?php echo $this->translate('You can request this information again, by simply bookmarking'); ?>
+        <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>"> <?php echo $this->translate('this link'); ?></a>,
+        <?php echo $this->translate('or have a look at the email we\'ve sent you.'); ?>
     </p>
 
-    <p class="orange"><strong><?php echo _('Thanks for registering, see you in Almere!'); ?></strong></p>
+    <p class="orange"><strong><?php echo $this->translate('Thanks for registering, see you in Almere!'); ?></strong></p>
 </div>
 <?php endif;

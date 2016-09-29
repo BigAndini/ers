@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-28 19:11+0200\n"
-"PO-Revision-Date: 2016-09-29 18:13+0200\n"
+"POT-Creation-Date: 2016-09-29 20:47+0200\n"
+"PO-Revision-Date: 2016-09-29 20:48+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ZF Contributors <zf-devteam@zend.com>\n"
 "Language: de_DE\n"
@@ -89,9 +89,22 @@ msgstr "Tickets ansehen"
 msgid "My Persons"
 msgstr "Meine Personen"
 
+#: ../src/PreReg/Controller/CartController.php:237
+msgid "Clear Shopping Cart"
+msgstr ""
+
 #: ../src/PreReg/Controller/InfoController.php:29
 msgid "Register now!"
 msgstr "Jetzt anmelden! "
+
+#: ../src/PreReg/Controller/ParticipantController.php:225
+#: ../src/PreReg/Controller/ProductController.php:502
+msgid "Delete"
+msgstr "löschen"
+
+#: ../src/PreReg/Controller/ProductController.php:392
+msgid "Add to Cart"
+msgstr "in den Warenkorb"
 
 #: ../src/PreReg/Form/Buyer.php:28 ../src/PreReg/Form/Participant.php:55
 msgid "First name..."
@@ -282,7 +295,7 @@ msgstr "Dieses Ticket gehört:"
 
 #: ../src/PreReg/Form/ProductView.php:203
 msgid "no"
-msgstr ""
+msgstr "nein"
 
 #: ../src/PreReg/Form/ProductView.php:258
 msgid "Please select a person."
@@ -585,7 +598,7 @@ msgstr "Bestellung ändern"
 msgid "Resend your emails in another language"
 msgstr "Sende diese E-Mail in einer anderen Sprache"
 
-#: ../view/pre-reg/order/index.phtml:22
+#: ../view/pre-reg/order/index.phtml:22 ../view/pre-reg/order/index.phtml:181
 msgid "Continue"
 msgstr "Weiter"
 
@@ -881,6 +894,10 @@ msgstr ""
 "Du kannst die Daten dieser Person jederzeit ändern, indem du auf \"Meine "
 "Personen\" in der Menüleiste klickst. "
 
+#: ../view/pre-reg/participant/index.phtml:7
+msgid "List of people I'm booking EJC tickets for."
+msgstr ""
+
 #: ../view/pre-reg/participant/index.phtml:12
 msgid "Name"
 msgstr "Name"
@@ -892,6 +909,10 @@ msgstr "Land "
 #: ../view/pre-reg/participant/index.phtml:32
 msgid "no Country"
 msgstr "kein Land"
+
+#: ../view/pre-reg/participant/index.phtml:42
+msgid "Add person"
+msgstr ""
 
 #: ../view/pre-reg/payment/banktransfer.phtml:9
 #: ../view/pre-reg/payment/cheque.phtml:9
@@ -1050,17 +1071,17 @@ msgstr "hinzugefügt"
 msgid "to your shopping cart."
 msgstr "zu deinem Einkaufswagen"
 
-#: ../view/pre-reg/product/add.phtml:11 ../view/pre-reg/product/add.phtml:198
+#: ../view/pre-reg/product/add.phtml:11 ../view/pre-reg/product/add.phtml:197
 #: ../view/pre-reg/product/edit.phtml:177
 msgid "add more products"
 msgstr "Füge mehr Produkte hinzu"
 
-#: ../view/pre-reg/product/add.phtml:16 ../view/pre-reg/product/add.phtml:203
+#: ../view/pre-reg/product/add.phtml:16 ../view/pre-reg/product/add.phtml:202
 #: ../view/pre-reg/product/edit.phtml:182
 msgid "add this product again"
 msgstr "Füge dieses Produkt nochmals hinzu"
 
-#: ../view/pre-reg/product/add.phtml:19 ../view/pre-reg/product/add.phtml:206
+#: ../view/pre-reg/product/add.phtml:19 ../view/pre-reg/product/add.phtml:205
 #: ../view/pre-reg/product/edit.phtml:185
 msgid "shopping cart"
 msgstr "Einkaufswagen "
@@ -1075,10 +1096,10 @@ msgstr ""
 "Bitte komplettiere deine Angaben. Erst dann kann das Produkt in den "
 "Einkaufswagen gelegt werden. "
 
-#: ../view/pre-reg/product/add.phtml:59 ../view/pre-reg/product/edit.phtml:39
-#: ../view/pre-reg/product/index.phtml:14
-msgid "The prices will increase after"
-msgstr "Die Preise werden am X erhöht. "
+#: ../view/pre-reg/product/add.phtml:59
+#, php-format
+msgid "The prices will increase after <br /> %s"
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:89 ../view/pre-reg/product/edit.phtml:69
 msgid "Please choose a person"
@@ -1100,28 +1121,28 @@ msgstr "die das Ticket für die Veranstaltung verwenden wird. "
 
 #: ../view/pre-reg/product/add.phtml:105 ../view/pre-reg/product/edit.phtml:83
 msgid "Tip"
-msgstr "Tipp: "
+msgstr "Tipp"
 
 #: ../view/pre-reg/product/add.phtml:105 ../view/pre-reg/product/edit.phtml:83
 msgid "You can"
 msgstr "Du kannst"
 
-#: ../view/pre-reg/product/add.phtml:107 ../view/pre-reg/product/edit.phtml:85
+#: ../view/pre-reg/product/add.phtml:106 ../view/pre-reg/product/edit.phtml:85
 msgid "add a new person"
 msgstr "eine neue Person hinzufügen"
 
-#: ../view/pre-reg/product/add.phtml:108 ../view/pre-reg/product/edit.phtml:86
+#: ../view/pre-reg/product/add.phtml:107 ../view/pre-reg/product/edit.phtml:86
 msgid ""
 "or edit the details of any person with \"My Persons\" from the main menu."
 msgstr ""
 "oder die Details jeder Person aus der \"Meine Personen\" Liste im Hauptmenü "
 "ändern. "
 
-#: ../view/pre-reg/product/add.phtml:132
+#: ../view/pre-reg/product/add.phtml:131
 msgid "Included Items:"
 msgstr "Enthaltene Artikel: "
 
-#: ../view/pre-reg/product/add.phtml:154 ../view/pre-reg/product/edit.phtml:132
+#: ../view/pre-reg/product/add.phtml:153 ../view/pre-reg/product/edit.phtml:132
 msgid "Add new participant"
 msgstr "Füge einen neuen Teilnehmer hinzu"
 
@@ -1132,6 +1153,10 @@ msgstr "Lösche einen Artikel aus dem Einkaufwagen"
 #: ../view/pre-reg/product/delete.phtml:8
 msgid "Are you sure that you want to delete"
 msgstr "Bist du sicher, dass du dies löschen willst?"
+
+#: ../view/pre-reg/product/edit.phtml:39 ../view/pre-reg/product/index.phtml:14
+msgid "The prices will increase after"
+msgstr "Die Preise werden am X erhöht. "
 
 #: ../view/pre-reg/product/edit.phtml:52
 msgid "Person"

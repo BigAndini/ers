@@ -1,6 +1,6 @@
 <?php
 
-$title = _('My Packages');
+$title = $this->translate('My Packages');
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -8,19 +8,19 @@ $this->headTitle($title);
 <div>
     <table>
         <tr>
-            <td><?php echo _('Firstname:'); ?></td>
+            <td><?php echo $this->translate('Firstname:'); ?></td>
             <td><?php echo $user->getFirstname(); ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Surname:'); ?></td>
+            <td><?php echo $this->translate('Surname:'); ?></td>
             <td><?php echo $user->getSurname(); ?></td>
         </tr>
         <tr>
-            <td><?php echo _('E-Mail:'); ?></td>
+            <td><?php echo $this->translate('E-Mail:'); ?></td>
             <td><?php echo $user->getEmail(); ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Birthdate:'); ?></td>
+            <td><?php echo $this->translate('Birthdate:'); ?></td>
             <td><?php echo $user->getBirthday(); ?></td>
         </tr>
     </table>
