@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-28 19:11+0200\n"
-"PO-Revision-Date: 2016-09-29 18:13+0200\n"
+"POT-Creation-Date: 2016-09-29 09:42+0200\n"
+"PO-Revision-Date: 2016-09-29 09:43+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ZF Contributors <zf-devteam@zend.com>\n"
 "Language: de_DE\n"
@@ -89,9 +89,22 @@ msgstr "Tickets ansehen"
 msgid "My Persons"
 msgstr "Meine Personen"
 
+#: ../src/PreReg/Controller/CartController.php:237
+msgid "Clear Shopping Cart"
+msgstr ""
+
 #: ../src/PreReg/Controller/InfoController.php:29
 msgid "Register now!"
 msgstr "Jetzt anmelden! "
+
+#: ../src/PreReg/Controller/ParticipantController.php:225
+#: ../src/PreReg/Controller/ProductController.php:501
+msgid "Delete"
+msgstr ""
+
+#: ../src/PreReg/Controller/ProductController.php:391
+msgid "Add to Cart"
+msgstr ""
 
 #: ../src/PreReg/Form/Buyer.php:28 ../src/PreReg/Form/Participant.php:55
 msgid "First name..."
@@ -1013,30 +1026,28 @@ msgstr "Bezahlen per Kreditkarte"
 msgid ""
 "You can find your Card Check Code at \n"
 "                    the backsite of your credit card."
-msgstr "Du findest deine Prüfziffer auf der Rückseite deiner Kreditkarte"
+msgstr ""
 
 #: ../view/pre-reg/payment/failed.phtml:3
 msgid "Your Credit Card Payment failed"
-msgstr "Deine Zahlung per Kreditkarte hat nicht funktioniert"
+msgstr ""
 
 #: ../view/pre-reg/payment/ipayment.phtml:6
 msgid ""
 "You will be redirected to the credit card payment page within 5 seconds."
 msgstr ""
-"Du wirst innerhalb von 5 Sekunden auf die Kreditkarten- Bezahlseite "
-"weitergeleitet"
 
 #: ../view/pre-reg/payment/ipayment.phtml:7
 msgid "If the redirect is not working, please follow this"
-msgstr "Falls die Umleitung nicht funktioniert, klicke bitte auf diesen "
+msgstr ""
 
 #: ../view/pre-reg/payment/ipayment.phtml:7
 msgid "link"
-msgstr "link "
+msgstr ""
 
 #: ../view/pre-reg/payment/paypal.phtml:3
 msgid "Payment Type: "
-msgstr "Bezahlart"
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:2 ../view/pre-reg/product/edit.phtml:2
 msgid "back to Overview"
@@ -1044,51 +1055,47 @@ msgstr "zurück zur Übersicht"
 
 #: ../view/pre-reg/product/add.phtml:7 ../view/pre-reg/product/edit.phtml:171
 msgid "Added"
-msgstr "hinzugefügt"
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:7 ../view/pre-reg/product/edit.phtml:171
 msgid "to your shopping cart."
-msgstr "zu deinem Einkaufswagen"
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:11 ../view/pre-reg/product/add.phtml:198
 #: ../view/pre-reg/product/edit.phtml:177
 msgid "add more products"
-msgstr "Füge mehr Produkte hinzu"
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:16 ../view/pre-reg/product/add.phtml:203
 #: ../view/pre-reg/product/edit.phtml:182
 msgid "add this product again"
-msgstr "Füge dieses Produkt nochmals hinzu"
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:19 ../view/pre-reg/product/add.phtml:206
 #: ../view/pre-reg/product/edit.phtml:185
 msgid "shopping cart"
-msgstr "Einkaufswagen "
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:27 ../view/pre-reg/product/edit.phtml:5
 msgid "This product is unavailable"
-msgstr "Dieses Produkt ist nicht vorhanden"
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:48 ../view/pre-reg/product/edit.phtml:28
 msgid "Please complete the whole form to put this product into the cart."
 msgstr ""
-"Bitte komplettiere deine Angaben. Erst dann kann das Produkt in den "
-"Einkaufswagen gelegt werden. "
 
 #: ../view/pre-reg/product/add.phtml:59 ../view/pre-reg/product/edit.phtml:39
 #: ../view/pre-reg/product/index.phtml:14
 msgid "The prices will increase after"
-msgstr "Die Preise werden am X erhöht. "
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:89 ../view/pre-reg/product/edit.phtml:69
 msgid "Please choose a person"
-msgstr "Bitte wähle eine Person"
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:90 ../view/pre-reg/product/edit.phtml:70
 msgid "This is a personalized ticket. To continue, please first"
 msgstr ""
-"Dies ist ein personalisiertes Ticket. Bitte füge im nächsten Schritt zuerst "
-"die Person hinzu, "
 
 #: ../view/pre-reg/product/add.phtml:91 ../view/pre-reg/product/edit.phtml:71
 msgid "add the person"
@@ -1096,46 +1103,44 @@ msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:91 ../view/pre-reg/product/edit.phtml:71
 msgid "who will use the ticket for the event."
-msgstr "die das Ticket für die Veranstaltung verwenden wird. "
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:105 ../view/pre-reg/product/edit.phtml:83
 msgid "Tip"
-msgstr "Tipp: "
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:105 ../view/pre-reg/product/edit.phtml:83
 msgid "You can"
-msgstr "Du kannst"
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:107 ../view/pre-reg/product/edit.phtml:85
 msgid "add a new person"
-msgstr "eine neue Person hinzufügen"
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:108 ../view/pre-reg/product/edit.phtml:86
 msgid ""
 "or edit the details of any person with \"My Persons\" from the main menu."
 msgstr ""
-"oder die Details jeder Person aus der \"Meine Personen\" Liste im Hauptmenü "
-"ändern. "
 
 #: ../view/pre-reg/product/add.phtml:132
 msgid "Included Items:"
-msgstr "Enthaltene Artikel: "
+msgstr ""
 
 #: ../view/pre-reg/product/add.phtml:154 ../view/pre-reg/product/edit.phtml:132
 msgid "Add new participant"
-msgstr "Füge einen neuen Teilnehmer hinzu"
+msgstr ""
 
 #: ../view/pre-reg/product/delete.phtml:3
 msgid "Delete Item from shopping cart"
-msgstr "Lösche einen Artikel aus dem Einkaufwagen"
+msgstr ""
 
 #: ../view/pre-reg/product/delete.phtml:8
 msgid "Are you sure that you want to delete"
-msgstr "Bist du sicher, dass du dies löschen willst?"
+msgstr ""
 
 #: ../view/pre-reg/product/edit.phtml:52
 msgid "Person"
-msgstr "Person"
+msgstr ""
 
 #: ../view/pre-reg/product/edit.phtml:105 ../view/pre-reg/profile/edit.phtml:27
 #: ../view/pre-reg/profile/password.phtml:56
@@ -1149,78 +1154,71 @@ msgstr ""
 
 #: ../view/pre-reg/product/edit.phtml:160
 msgid "Close"
-msgstr "Schließen"
+msgstr ""
 
 #: ../view/pre-reg/product/index.phtml:4
 #, php-format
 msgid "Tickets for %s and other products"
-msgstr "Tickets für %s und andere Produkte"
+msgstr ""
 
 #: ../view/pre-reg/product/index.phtml:11
 msgid ""
 "Click on any item to add further information and place it in your shopping "
 "cart."
 msgstr ""
-"Klicke auf einen Artikel, um weitere Informationen hinzuzufügen und lege ihn "
-"anschließend in deinen Einkaufswagen"
 
 #: ../view/pre-reg/product/index.phtml:36
 msgid "PreReg is closed"
-msgstr "Die Voranmeldung ist abgeschlossen"
+msgstr ""
 
 #: ../view/pre-reg/product/index.phtml:40
 msgid ""
 "The PreReg is already closed. For more information, please visit our "
 "homepage on"
 msgstr ""
-"Die Voranmeldung ist bereits abgeschlossen. Mehr Information findest du auf "
-"unserer Homepage unter"
 
 #: ../view/pre-reg/profile/change.phtml:2
 msgid "Change My Profile"
-msgstr "Ändere mein Profil"
+msgstr ""
 
 #: ../view/pre-reg/profile/edit.phtml:3
 #: ../view/pre-reg/profile/password.phtml:3
 msgid "Edit Profile"
-msgstr "Ändere das Profil "
+msgstr ""
 
 #: ../view/pre-reg/profile/index.phtml:35
 msgid "Country:"
-msgstr "Land "
+msgstr ""
 
 #: ../view/pre-reg/profile/password-reset.phtml:3
 msgid "Set your password"
-msgstr "Lege dein Passwort fest "
+msgstr ""
 
 #: ../view/pre-reg/profile/password-reset.phtml:24
 msgid "confirm your password..."
-msgstr "Bestätige dein Passwort"
+msgstr ""
 
 #: ../view/pre-reg/profile/password.phtml:42
 msgid "verify password..."
-msgstr "Bestätige dein Passwort"
+msgstr ""
 
 #: ../view/pre-reg/profile/request-password.phtml:3
 msgid "Request password change"
-msgstr "Ändere dein Passwort "
+msgstr ""
 
 #: ../view/pre-reg/profile/request-password.phtml:10
 msgid ""
 "If we were able to find your email address in our system an email was \n"
 "        sent to you with a link to change your password."
 msgstr ""
-"Wenn wir deine Mailadresse im System gefunden haben, bekommst du eine E-Mail "
-"mit einem link. Dieser leitet dich auf eine Seite, auf der du dein Passwort "
-"ändern kannst. "
 
 #: ../view/pre-reg/profile/request-password.phtml:12
 msgid "If you did not receive an email check your spam folder."
-msgstr "Falls du keine E-Mail erhalten hast, überprüfe bitte deinen Spamordner"
+msgstr ""
 
 #: ../view/pre-reg/profile/request-password.phtml:24
 msgid "Your email address..."
-msgstr "Deine Mailadresse... "
+msgstr ""
 
 #~ msgid "All rights reserved."
 #~ msgstr "Alle Rechte vorbehalten."
