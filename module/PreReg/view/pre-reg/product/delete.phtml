@@ -1,11 +1,11 @@
 <?php
 
-$title = _('Delete Item from shopping cart');
+$title = $this->translate('Delete Item from shopping cart');
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-<p><?php echo _('Are you sure that you want to delete'); ?> 
+<p><?php echo $this->translate('Are you sure that you want to delete'); ?> 
     <strong><?php echo $this->escapeHtml($item->getName()); ?></strong>
     <?php if($participant != null): ?>
     for <strong><?php echo $this->escapeHtml($participant->getFirstname().' '.$participant->getSurname()); ?></strong>

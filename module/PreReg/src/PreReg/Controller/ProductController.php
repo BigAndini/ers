@@ -388,7 +388,8 @@ class ProductController extends AbstractActionController {
         /*
          * Set form values
          */
-        $form->get('submit')->setAttribute('value', _('Add to Cart'));
+        $translator = $this->getServiceLocator()->get('translator');
+        $form->get('submit')->setAttribute('value', $translator->translate('Add to Cart'));
         
         /*
          * build participant select options

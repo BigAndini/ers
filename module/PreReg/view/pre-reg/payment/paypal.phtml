@@ -1,6 +1,6 @@
 <?php
 
-$title = _('Payment Type: ').$paymenttype->getName();
+$title = $this->translate('Payment Type: ').$paymenttype->getName();
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>

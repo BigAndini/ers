@@ -3,6 +3,6 @@ $this->headMeta()->appendHttpEquiv('Refresh', '5;URL='.$ipayment_url);
 
 ?>
 <div class="jumbotron">
-    <p><?php echo _('You will be redirected to the credit card payment page within 5 seconds.'); ?></p>
-    <p><?php echo _('If the redirect is not working, please follow this'); ?> <a href="<?php echo $ipayment_url; ?>"><?php echo _('link'); ?></a>.</p>
+    <p><?php echo $this->translate('You will be redirected to the credit card payment page within 5 seconds.'); ?></p>
+    <p><?php echo $this->translate('If the redirect is not working, please follow this'); ?> <a href="<?php echo $ipayment_url; ?>"><?php echo $this->translate('link'); ?></a>.</p>
 </div>

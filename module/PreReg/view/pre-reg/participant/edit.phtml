@@ -1,6 +1,6 @@
 <?php
 
-$title = _('Edit Person');
+$title = $this->translate('Edit Person');
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -34,14 +34,14 @@ echo $this->formHidden($form->get('id'));
         echo $this->formRow($form->get('Country_id')); ?>
     </div>
     <div class="col-md-5">
-        <p><strong><?php echo _('Note for personal data:'); ?></strong> <?php echo _('Please enter your  first name, surname and 
+        <p><strong><?php echo $this->translate('Note for personal data:'); ?></strong> <?php echo $this->translate('Please enter your  first name, surname and 
             date of birth like they appear on your passport ID card (they will 
             be checked at EJC onsite registration to validate that this E-Ticket 
             belongs to you).'); ?></p>
-        <p><strong><?php echo _('Note for email address:'); ?></strong> <?php echo _('If you enter the email 
+        <p><strong><?php echo $this->translate('Note for email address:'); ?></strong> <?php echo $this->translate('If you enter the email 
             address of this person, they will receive a copy of their 
             E-Ticket.'); ?></p>
-        <p><strong><?php echo _('Note for the buyer:'); ?></strong> <?php echo _('The person who performs the 
+        <p><strong><?php echo $this->translate('Note for the buyer:'); ?></strong> <?php echo $this->translate('The person who performs the 
             purchase will automatically receive all ordered E-Tickets. For this 
             reason, they have to enter their email address.</p>
         <p><strong>Note for edit details:</strong> You can edit this person\'s 

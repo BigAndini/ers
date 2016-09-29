@@ -1,6 +1,6 @@
 <?php
 
-$title = _('My Profile');
+$title = $this->translate('My Profile');
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -12,19 +12,19 @@ $this->headTitle($title);
 <div>
     <table class='table'>
         <tr>
-            <td><?php echo _('Firstname:'); ?></td>
+            <td><?php echo $this->translate('Firstname:'); ?></td>
             <td><?php echo $user->getFirstname(); ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Surname:'); ?></td>
+            <td><?php echo $this->translate('Surname:'); ?></td>
             <td><?php echo $user->getSurname(); ?></td>
         </tr>
         <tr>
-            <td><?php echo _('E-Mail:'); ?></td>
+            <td><?php echo $this->translate('E-Mail:'); ?></td>
             <td><?php echo $user->getEmail(); ?></td>
         </tr>
         <tr>
-            <td><?php echo _('Birthdate:'); ?></td>
+            <td><?php echo $this->translate('Birthdate:'); ?></td>
             <td>
                 <?php if($user->getBirthday() instanceof \DateTime): ?>
                     <?php echo $user->getBirthday()->format('d.m.Y'); ?>
@@ -32,7 +32,7 @@ $this->headTitle($title);
             </td>
         </tr>
         <tr>
-            <td><?php echo _('Country:'); ?></td>
+            <td><?php echo $this->translate('Country:'); ?></td>
             <td>
                 <?php if($user->getCountry() instanceof \ErsBase\Entity\Country): ?>
                     <?php echo $user->getCountry()->getName(); ?>

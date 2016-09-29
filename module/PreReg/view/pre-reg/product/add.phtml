@@ -4,19 +4,19 @@
 <div class="p_overlay">
     <div class="p_overlay_inner">
         <h3>
-            <?php echo _('Added'); ?> <span class="green"><?php echo $product->getName(); ?></span> <?php echo _('to your shopping cart.'); ?>
+            <?php echo $this->translate('Added'); ?> <span class="green"><?php echo $product->getName(); ?></span> <?php echo $this->translate('to your shopping cart.'); ?>
         </h3>
         <div class="row">
             <div class="col-sm-6">
-                <p><a class="btn btn-primary" href="<?php echo $this->url('product'); ?>"><i class="fa fa-caret-left"></i> <?php echo _('add more products'); ?></a></p>
+                <p><a class="btn btn-primary" href="<?php echo $this->url('product'); ?>"><i class="fa fa-caret-left"></i> <?php echo $this->translate('add more products'); ?></a></p>
                 <p><a class="btn btn-primary" href="<?php echo $this->url(
                     $bc_stay->route, 
                     $bc_stay->params, 
                     $bc_stay->options
-                    ); ?>"><i class="fa fa-caret-left"></i> <?php echo _('add this product again'); ?></a></p>
+                    ); ?>"><i class="fa fa-caret-left"></i> <?php echo $this->translate('add this product again'); ?></a></p>
             </div>
             <div class="col-sm-6">
-                <a class="btn btn-primary pull-right" href="<?php echo $this->url('order'); ?>"><?php echo _('shopping cart'); ?> <i class="fa fa-caret-right"></i></a>
+                <a class="btn btn-primary pull-right" href="<?php echo $this->url('order'); ?>"><?php echo $this->translate('shopping cart'); ?> <i class="fa fa-caret-right"></i></a>
             </div>
         </div>
     </div>
@@ -24,7 +24,7 @@
 <?php endif; ?>
 
 <?php if(count($product->getProductPrices()) == 0): ?>
-    <p class="desc-short"><?php echo _('This product is unavailable'); ?></p>
+    <p class="desc-short"><?php echo $this->translate('This product is unavailable'); ?></p>
 <?php else: ?>
 <div class="product-view">
     <?php
@@ -45,7 +45,7 @@
             <?php if($formfail): ?>
             <div class="row">
                 <div class="alert alert-danger">
-                    <p><?php echo _('Please complete the whole form to put this product into the cart.'); ?></p>
+                    <p><?php echo $this->translate('Please complete the whole form to put this product into the cart.'); ?></p>
                 </div>
             </div>
             <?php endif; ?>
@@ -56,7 +56,7 @@
                 </div>
                 <div class="col-md-6">
                     <?php if($product->getPriceCount() != 1): ?>
-                        <p class="small text-right"><?php echo _('The prices will increase after'); ?><br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
+                        <p class="small text-right"><?php echo sprintf($this->translate('The prices will increase after <br /> %s'), $deadline->getDeadline()->format('d.m.Y H:i:s T')); ?></p>
                     <?php endif; ?>
                     <?php echo $this->partial('partial/product-price.phtml', array('agegroups' => $agegroups, 'deadline' => $deadline, 'product' => $product)); ?>
                 </div>
@@ -86,9 +86,9 @@
                         <div id="person">
                             <?php if($form->get('submit')->getAttribute('disabled') == 'disabled'): ?>
                                 <div class="alert alert-warning">
-                                    <h4><?php echo _('Please choose a person'); ?></h4>
-                                    <p><?php echo _('This is a personalized ticket. To continue, please first'); ?> 
-                                        <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>"><?php echo _('add the person'); ?></a> <?php echo _('who will use the ticket for the event.'); ?></p>
+                                    <h4><?php echo $this->translate('Please choose a person'); ?></h4>
+                                    <p><?php echo $this->translate('This is a personalized ticket. To continue, please first'); ?> 
+                                        <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>"><?php echo $this->translate('add the person'); ?></a> <?php echo $this->translate('who will use the ticket for the event.'); ?></p>
                                     <div class="clear-both"></div>
                                 </div>
                             <?php 
@@ -102,10 +102,9 @@
                              */
                             echo $this->formHidden($form->get('agegroup_id'));
                             ?>
-                            <p><strong><?php echo _('Tip'); ?>:</strong><br /><?php echo _('You can'); ?> 
-                                <!--<a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add a new person</a>-->
-                                <a href="#" data-toggle="modal" data-target="#addParticipant"><?php echo _('add a new person'); ?></a>
-                                <?php echo _('or edit the details of any person with "My Persons" from the main menu.'); ?></p>
+                            <p><strong><?php echo $this->translate('Tip'); ?>:</strong><br /><?php echo $this->translate('You can'); ?> 
+                                <a href="#" data-toggle="modal" data-target="#addParticipant"><?php echo $this->translate('add a new person'); ?></a>
+                                <?php echo $this->translate('or edit the details of any person with "My Persons" from the main menu.'); ?></p>
                         </div>
                     </div>
 
@@ -129,7 +128,7 @@
                 </div>
                 <div class="col-md-6">
                     <?php if(count($product->getChildProducts()) > 0): ?>
-                    <h3><?php echo _('Included Items:'); ?></h3>
+                    <h3><?php echo $this->translate('Included Items:'); ?></h3>
                     <?php foreach($product->getChildProducts() as $package): 
                         $child = $package->getSubProduct(); ?>
                         <h4><?php echo $child->getName(); ?></h4>
@@ -151,7 +150,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title"><?php echo _('Add new participant'); ?></h4>
+                <h4 class="modal-title"><?php echo $this->translate('Add new participant'); ?></h4>
             </div>
             <?php
             $participantForm = $this->participantForm;
@@ -195,15 +194,15 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-6">
-                        <p><a class="btn btn-primary" href="<?php echo $this->url('product'); ?>"><i class="fa fa-caret-left"></i> <?php echo _('add more products'); ?></a></p>
+                        <p><a class="btn btn-primary" href="<?php echo $this->url('product'); ?>"><i class="fa fa-caret-left"></i> <?php echo $this->translate('add more products'); ?></a></p>
                         <p><a class="btn btn-primary" href="<?php echo $this->url(
                             $bc_stay->route, 
                             $bc_stay->params, 
                             $bc_stay->options
-                            ); ?>"><i class="fa fa-caret-left"></i> <?php echo _('add this product again'); ?></a></p>
+                            ); ?>"><i class="fa fa-caret-left"></i> <?php echo $this->translate('add this product again'); ?></a></p>
                     </div>
                     <div class="col-sm-6">
-                        <a class="btn btn-primary pull-right" href="<?php echo $this->url('order'); ?>"><?php echo _('shopping cart'); ?> <i class="fa fa-caret-right"></i></a>
+                        <a class="btn btn-primary pull-right" href="<?php echo $this->url('order'); ?>"><?php echo $this->translate('shopping cart'); ?> <i class="fa fa-caret-right"></i></a>
                     </div>
                 </div>
             </div>

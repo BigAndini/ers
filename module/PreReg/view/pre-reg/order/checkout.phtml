@@ -1,6 +1,6 @@
 <?php
 
-$title = _('My Shopping Cart');
+$title = $this->translate('My Shopping Cart');
 $this->headTitle($title);
 ?>
 
@@ -29,11 +29,11 @@ echo $this->navigation()
             <?php $buyer = $order->getBuyer(); ?>
             <?php if($buyer) : ?>
                 <h2><?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?></h2>
-                <p><?php echo _('The buyer will receive all E-Tickets for all registered participants. If you have provided an email address per participant, this participant will be informed once the ticket is paid and will be able to download the E-Ticket on his own as well.'); ?></p>
-                <h3><?php echo _('We will send all information to:').' '.$buyer->getEmail(); ?></h3>
+                <p><?php echo $this->translate('The buyer will receive all E-Tickets for all registered participants. If you have provided an email address per participant, this participant will be informed once the ticket is paid and will be able to download the E-Ticket on his own as well.'); ?></p>
+                <h3><?php echo $this->translate('We will send all information to:').' '.$buyer->getEmail(); ?></h3>
             <?php else: ?>
                 <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-                <a href="<?php echo $this->url('order', array('action' => 'buyer')); ?>"><?php echo _('choose Buyer'); ?></a>
+                <a href="<?php echo $this->url('order', array('action' => 'buyer')); ?>"><?php echo $this->translate('choose Buyer'); ?></a>
             <?php endif; ?>
         </div>
     </div>
@@ -46,7 +46,7 @@ echo $this->navigation()
                 <p><?php echo $paymenttype->getExplanation(); ?></p>
             <?php else: ?>
                 <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
-                <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>"><?php echo _('choose paymenttype'); ?></a>
+                <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>"><?php echo $this->translate('choose paymenttype'); ?></a>
             <?php endif; ?>
             <!--<h3>Bank Transfer</h3>
             <p>After successfull purchase you will see the bank account data to transfer the money to. When we matched your payment to your order you will be informed and can download your E-Tickets.</p>
@@ -58,7 +58,7 @@ echo $this->navigation()
     </div>
 </div>
 <div>
-    <h1><?php echo _('Shopping Cart'); ?></h1>
+    <h1><?php echo $this->translate('Shopping Cart'); ?></h1>
         <div>
         <?php 
             $sum = 0;
@@ -69,9 +69,9 @@ echo $this->navigation()
                 $user = $package->getParticipant();
             
                 if($user->getFirstname() == '' && $user->getSurname() == '') :
-                    $participant = _('further items');
+                    $participant = $this->translate('further items');
                 else:
-                    $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getAge()->format('%Y '._('years')).')';
+                    $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getAge()->format('%Y '.$this->translate('years')).')';
                 endif;
         ?>
             <div class="package">
@@ -80,9 +80,9 @@ echo $this->navigation()
                 <?php if(count($package->getItems()) != 0): ?>
                 <table class="table">
                     <tr>
-                        <th><?php echo _('Product'); ?></th>
-                        <th class="cart-amount"><?php echo _('Amount'); ?></th>
-                        <th class="cart-price"><?php echo _('Price'); ?></th>
+                        <th><?php echo $this->translate('Product'); ?></th>
+                        <th class="cart-amount"><?php echo $this->translate('Amount'); ?></th>
+                        <th class="cart-price"><?php echo $this->translate('Price'); ?></th>
                     </tr>
                     <?php
                     $subtotal = 0;
@@ -179,15 +179,15 @@ echo $this->navigation()
         if($form->get('submit')->getAttribute('disabled') == 'disabled'):
     ?>
     <div class="alert alert-danger">
-        <h4><?php echo _('Please add missing information for checkout'); ?></h4>
+        <h4><?php echo $this->translate('Please add missing information for checkout'); ?></h4>
         <?php if(count($order->getItems()) == 0) : ?>
-            <p><a href="<?php echo $this->url('product'); ?>"><?php echo _('Add products'); ?></a> <?php echo _('to your shopping cart first.'); ?></p>
+            <p><a href="<?php echo $this->url('product'); ?>"><?php echo $this->translate('Add products'); ?></a> <?php echo $this->translate('to your shopping cart first.'); ?></p>
         <?php endif; ?>
         <?php if(!$order->getBuyer()) : ?>
-            <p><?php echo _('To purchase this order'); ?> <a href="<?php echo $this->url('order', array('action' => 'buyer')); ?>"><?php echo _('choose/add a buyer'); ?></a> <?php echo _('with a valid email address.'); ?></p>
+            <p><?php echo $this->translate('To purchase this order'); ?> <a href="<?php echo $this->url('order', array('action' => 'buyer')); ?>"><?php echo $this->translate('choose/add a buyer'); ?></a> <?php echo $this->translate('with a valid email address.'); ?></p>
         <?php endif; ?>
         <?php if(!$order->getPaymentType()) : ?>
-            <p><?php echo _('To purchase this order'); ?> <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>"><?php echo _('choose a payment type'); ?></a>.</p>
+            <p><?php echo $this->translate('To purchase this order'); ?> <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>"><?php echo $this->translate('choose a payment type'); ?></a>.</p>
         <?php endif; ?>
         
     </div>
@@ -199,13 +199,13 @@ echo $this->navigation()
                 #echo $this->formLabel($form->get('terms'));
                 echo $this->formElement($form->get('terms'));
             ?>
-                <?php echo _('I accept the'); ?> <a href="<?php echo $this->url('info', array('action' => 'terms')) ?>" class="TnC-show" target="_blank"><?php echo _('terms and conditions'); ?></a>
+                <?php echo $this->translate('I accept the'); ?> <a href="<?php echo $this->url('info', array('action' => 'terms')) ?>" class="TnC-show" target="_blank"><?php echo $this->translate('terms and conditions'); ?></a>
             </p>
             <div id="TnC-container"></div>
         <?php 
             echo $this->formElementErrors($form->get('terms')); 
         endif; ?>
-            <a class="btn btn-lg btn-warning" href="<?php echo $this->url('order'); ?>"><i class="fa fa-chevron-left"></i> <?php echo _('change order'); ?></a>
+            <a class="btn btn-lg btn-warning" href="<?php echo $this->url('order'); ?>"><i class="fa fa-chevron-left"></i> <?php echo $this->translate('change order'); ?></a>
         <?php
         echo $this->formSubmit($form->get('submit'));
         echo $this->formHidden($form->get('csrf'));
