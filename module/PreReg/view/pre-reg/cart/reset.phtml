@@ -1,7 +1,7 @@
 <?php
 
 if($emptycart) :
-    $title = 'Your Shopping Cart is empty now';
+    $title = _('Your Shopping Cart is empty now');
     $this->headTitle($title);
     $this->headMeta()->appendHttpEquiv('Refresh', '3;URL='.$this->url('product'));?>
     <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -9,7 +9,7 @@ if($emptycart) :
     <p>You are being redirected, please click <a href="<?php echo $this->url('product') ?>">here</a> if your browser does not redirect you.</p>
 <?php 
 else:
-    $title = 'Empty your Shopping Cart and My Person list';
+    $title = _('Empty your Shopping Cart and My Person list');
     $this->headTitle($title);
     ?>
 

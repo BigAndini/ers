@@ -9,6 +9,8 @@ $this->headTitle($title);
         <div class="col-md-6">
             <p class="text-center">amount</p>
             <h1 class="text-center"><?php echo $this->currencyFormat($ordersums['ordersum']-$volunteers['ordersum'], 'EUR', null, 'de_DE'); ?></h1>
+            <p class="text-center">volunteers</p>
+            <h1 class="text-center"><?php echo $this->currencyFormat($volunteers1['ordersum'], 'EUR', null, 'de_DE'); ?></h1>
         </div>
         <div class="col-md-3">
             <p class="text-center">participants registered</p>
@@ -26,5 +28,48 @@ $this->headTitle($title);
             </table>
         </div>
     </div>
-    
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>deadline</th>
+                        <th>agegroup</th>
+                        <th>status</th>
+                        <th>package count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php 
+                foreach($participant_stats as $d_id => $stat1):
+                    if(count($stat1) <= 0):
+                        continue;
+                    endif;
+                    $participants_before = array();
+                    foreach($stat1 as $a_name => $stat2):
+                        foreach($stat2 as $value): 
+                        if(count($stat2) <= 0):
+                            continue;
+                        endif; ?>
+                    <tr>
+                        <td><?php echo $deadlines[$d_id]->getDeadline()->format('d.m.Y'); ?></td>
+                        <td><?php echo $agegroups[$a_name]->getName(); ?></td>
+                        <?php if(empty($participants_before[$value['value']])):
+                            $participants_before[$value['value']] = 0;
+                        endif; ?>
+                        <td><?php echo $value['value']; ?></td>
+                        <td class="text-right">
+                            <?php 
+                            echo ($value['participants']-$participants_before[$value['value']]);
+                            $participants_before[$value['value']] = $value['participants'];
+                            ?>
+                        </td>
+                    </tr>
+                        <?php endforeach;
+                    endforeach;
+                endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

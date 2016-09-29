@@ -68,7 +68,7 @@ class StatisticController extends AbstractActionController {
         
         $qb2->setParameter('bank_account_id', '2');
         
-        $volunteers = $qb2->getQuery()->getSingleResult();
+        $volunteers1 = $qb2->getQuery()->getSingleResult();
         
         $qb3 = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
         $qb3->select(array('COUNT(p.id) as participants'));
@@ -81,12 +81,55 @@ class StatisticController extends AbstractActionController {
         
         $participants = $qb3->getQuery()->getSingleResult();
         
-        #error_log(var_export($ordersums, true));
+        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+                ->findBy(array(), array('deadline' => 'DESC'));
+        $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+                ->findBy(array('price_change' => 1), array('agegroup' => 'DESC'));
+        $last_agegroup = new \ErsBase\Entity\Agegroup();
+        $last_agegroup->setAgegroup(new \DateTime('01.01.1000'));
+        $last_agegroup->setName('adult');
+        $agegroups[] = $last_agegroup;
+        $participant_stats = array();
+        
+        foreach($deadlines as $deadline) {
+            foreach($agegroups as $agegroup) {
+                $qb4 = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+                $qb4->select(array('COUNT(p.id) as participants', 's.value'));
+                $qb4->join('p.status', 's');
+                $qb4->join('p.order', 'o');
+                $qb4->join('p.user', 'u');
+                $qb4->where($qb4->expr()->eq('s.value', ':status1'));
+                $qb4->orWhere($qb4->expr()->eq('s.value', ':status2'));
+                $qb4->andWhere($qb4->expr()->between('o.created', ':date_from', ':date_to'));
+                $qb4->andWhere($qb4->expr()->gt('u.birthday', ':agegroup1'));
+                $qb4->groupBy('s.value');
+
+                $qb4->setParameter('status1', 'paid');
+                $qb4->setParameter('status2', 'ordered');
+                $qb4->setParameter('date_from', $deadline->getDeadline());
+                $qb4->setParameter('date_to', new \DateTime());
+                $qb4->setParameter('agegroup1', $agegroup->getAgegroup());
+
+                $participant_stats[$deadline->getId()][$agegroup->getName()] = $qb4->getQuery()->getResult();
+            }
+        }
+        
+        $stat_deadline = array();
+        foreach($deadlines as $deadline) {
+            $stat_deadline[$deadline->getId()] = $deadline;
+        }
+        $stat_agegroup = array();
+        foreach($agegroups as $agegroup) {
+            $stat_agegroup[$agegroup->getName()] = $agegroup;
+        }
         
         return new ViewModel(array(
             'ordersums' => $ordersums,
-            'volunteers' => $volunteers,
+            'volunteers1' => $volunteers1,
             'participants' => $participants,
+            'participant_stats' => $participant_stats,
+            'deadlines' => $stat_deadline,
+            'agegroups' => $stat_agegroup,
         ));
     }
     

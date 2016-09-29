@@ -97,7 +97,7 @@ class OptionService
         }
         $options[] = array(
             'value' => 0,
-            'label' => 'select a person',
+            'label' => _('select a person'),
             'selected' => $selected,
             'disabled' => true,
         );

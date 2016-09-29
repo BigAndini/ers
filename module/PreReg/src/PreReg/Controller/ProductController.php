@@ -388,7 +388,7 @@ class ProductController extends AbstractActionController {
         /*
          * Set form values
          */
-        $form->get('submit')->setAttribute('value', 'Add to Cart');
+        $form->get('submit')->setAttribute('value', _('Add to Cart'));
         
         /*
          * build participant select options
@@ -498,7 +498,7 @@ class ProductController extends AbstractActionController {
 
         $form = new Form\SimpleForm($em);
         $form->get('submit')->setAttributes(array(
-            'value' => 'Delete',
+            'value' => _('Delete'),
             'class' => 'btn btn-danger',
         ));
         

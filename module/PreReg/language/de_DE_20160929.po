@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-29 09:42+0200\n"
-"PO-Revision-Date: 2016-09-29 09:43+0200\n"
+"POT-Creation-Date: 2016-09-28 19:11+0200\n"
+"PO-Revision-Date: 2016-09-28 19:36+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ZF Contributors <zf-devteam@zend.com>\n"
 "Language: de_DE\n"
@@ -21,53 +21,53 @@ msgstr "Startseite"
 
 #: ../config/module.config.php:33
 msgid "Products"
-msgstr "Produkte "
+msgstr ""
 
 #: ../config/module.config.php:38 ../view/pre-reg/participant/index.phtml:3
 msgid "Personal Details"
-msgstr "Details zur Person"
+msgstr ""
 
 #: ../config/module.config.php:43 ../view/pre-reg/order/buyer.phtml:3
 #: ../view/pre-reg/order/checkout.phtml:3 ../view/pre-reg/order/index.phtml:3
 #: ../view/pre-reg/order/payment.phtml:3
 msgid "My Shopping Cart"
-msgstr "Mein Einkaufswagen"
+msgstr ""
 
 #: ../config/module.config.php:61
 msgid "Login"
-msgstr "Login"
+msgstr ""
 
 #: ../config/module.config.php:73 ../view/pre-reg/profile/index.phtml:3
 msgid "My Profile"
-msgstr "Mein Profil"
+msgstr ""
 
 #: ../config/module.config.php:79
 msgid "Logout"
-msgstr "Logout"
+msgstr ""
 
 #: ../config/module.config.php:85
 msgid "AdminPanel"
-msgstr "Admin Zugang"
+msgstr ""
 
 #: ../config/module.config.php:90
 msgid "Onsite"
-msgstr "Onsite"
+msgstr ""
 
 #: ../config/module.config.php:99
 msgid "Help"
-msgstr "Hilfe"
+msgstr ""
 
 #: ../config/module.config.php:107 ../view/pre-reg/order/checkout.phtml:61
 msgid "Shopping Cart"
-msgstr "Einkaufswagen"
+msgstr ""
 
 #: ../config/module.config.php:113 ../view/pre-reg/order/view.phtml:12
 msgid "Buyer"
-msgstr "Käufer"
+msgstr ""
 
 #: ../config/module.config.php:119
 msgid "Payment type"
-msgstr "Bezahlart "
+msgstr ""
 
 #: ../config/module.config.php:125
 msgid "Checkout"
@@ -75,35 +75,22 @@ msgstr ""
 
 #: ../config/module.config.php:133
 msgid "Change my user data"
-msgstr "Meine Benutzerdaten ändern"
+msgstr ""
 
 #: ../config/module.config.php:139
 msgid "Change my password"
-msgstr "Mein Passwort ändern"
+msgstr ""
 
 #: ../config/module.config.php:145
 msgid "View tickets"
-msgstr "Tickets ansehen"
+msgstr ""
 
 #: ../config/module.config.php:151
 msgid "My Persons"
-msgstr "Meine Personen"
-
-#: ../src/PreReg/Controller/CartController.php:237
-msgid "Clear Shopping Cart"
 msgstr ""
 
 #: ../src/PreReg/Controller/InfoController.php:29
 msgid "Register now!"
-msgstr "Jetzt anmelden! "
-
-#: ../src/PreReg/Controller/ParticipantController.php:225
-#: ../src/PreReg/Controller/ProductController.php:501
-msgid "Delete"
-msgstr ""
-
-#: ../src/PreReg/Controller/ProductController.php:391
-msgid "Add to Cart"
 msgstr ""
 
 #: ../src/PreReg/Form/Buyer.php:28 ../src/PreReg/Form/Participant.php:55
@@ -370,7 +357,7 @@ msgstr "Datei"
 #: ../view/error/404.phtml:72 ../view/error/404.phtml:96
 #: ../view/error/index.phtml:26 ../view/error/index.phtml:50
 msgid "Message"
-msgstr "Nachricht "
+msgstr "Meldung"
 
 #: ../view/email/exception.phtml:33 ../view/email/exception.phtml:57
 #: ../view/error/404.phtml:76 ../view/error/404.phtml:100
@@ -429,23 +416,23 @@ msgstr "wird aufgelöst in %s"
 
 #: ../view/pre-reg/cart/reset.phtml:4
 msgid "Your Shopping Cart is empty now"
-msgstr "Dein Einkaufswagen ist jetzt leer. "
+msgstr ""
 
 #: ../view/pre-reg/cart/reset.phtml:12
 msgid "Empty your Shopping Cart and My Person list"
-msgstr "Leere deinen Einkaufswagen und lösche die Liste \"Meine Personen\" "
+msgstr ""
 
 #: ../view/pre-reg/info/cookie.phtml:2
 msgid "This system uses cookies"
-msgstr "Dieses System verwendet Cookies. "
+msgstr ""
 
 #: ../view/pre-reg/info/e-ticket.phtml:2
 msgid "e-ticket Translations"
-msgstr "E-Ticket Übersetzungen "
+msgstr ""
 
 #: ../view/pre-reg/info/impressum.phtml:3 ../view/pre-reg/info/terms.phtml:3
 msgid "Terms & Conditions"
-msgstr "Geschäftsbedingungen "
+msgstr ""
 
 #: ../view/pre-reg/info/index.phtml:8 ../view/pre-reg/maintenance/index.phtml:8
 msgid "Welcome to the"
@@ -453,15 +440,15 @@ msgstr "Willkommen zum"
 
 #: ../view/pre-reg/info/payment.phtml:3
 msgid "Payment Type:"
-msgstr "Bezahlart"
+msgstr ""
 
 #: ../view/pre-reg/order/buyer.phtml:38
 msgid "Select Buyer"
-msgstr "Wähle einen Käufer"
+msgstr ""
 
 #: ../view/pre-reg/order/buyer.phtml:40
 msgid "All E-Tickets will be emailed to the buyer."
-msgstr "Alle E-Tickets werden an den Käufer geschickt. "
+msgstr ""
 
 #: ../view/pre-reg/order/buyer.phtml:41
 msgid ""
@@ -469,36 +456,30 @@ msgid ""
 "addresses, \n"
 "        they will automatically receive a copy of their E-Ticket."
 msgstr ""
-"Wenn du Artikel für mehrere Personen bestellst und ihre E-Mail Adressen "
-"angibst, erhalten sie automatisch eine Kopie ihres E-Tickets."
 
 #: ../view/pre-reg/order/buyer.phtml:88
 msgid "add Buyer"
-msgstr "Käufer hinzufügen "
+msgstr ""
 
 #: ../view/pre-reg/order/check-eticket.phtml:3
 msgid "Check your E-Ticket"
-msgstr "Überprüfe dein E-Ticket"
+msgstr ""
 
 #: ../view/pre-reg/order/check-eticket.phtml:33
 msgid "Your ticket is valid and active."
-msgstr "Dein Ticket ist gültig. "
+msgstr ""
 
 #: ../view/pre-reg/order/check-eticket.phtml:35
 msgid ""
 "We're sorry, your e-ticket is not valid. You will not be able to attend EJC "
 "with this e-ticket."
 msgstr ""
-"Tut uns leid, dein Ticket ist ungültig. Du kannst damit nicht an der EJC "
-"teilnehmen. "
 
 #: ../view/pre-reg/order/check-eticket.phtml:37
 msgid ""
 "If you haven't paid for your ticket, yet, please do so. We will then "
 "activate your ticket."
 msgstr ""
-"Wenn du dein Ticket noch nicht bezahlt hast, hole dies bitte nach. Im "
-"Anschluss werden wir dein Ticket aktivieren. "
 
 #: ../view/pre-reg/order/check-eticket.phtml:38
 msgid ""
@@ -506,8 +487,6 @@ msgid ""
 "echo $package->getCode()->getValue() ?></strong>, please contact <a href="
 "\"mailto:prereg@eja.net\">prereg@eja.net</a>. We will solve the issue."
 msgstr ""
-"Wenn du dein Ticket mit dem Ticket Code X schon bezahlt hast, kontaktiere "
-"bitte X. Wir helfen dir. "
 
 #: ../view/pre-reg/order/checkout.phtml:32
 msgid ""
@@ -516,50 +495,48 @@ msgid ""
 "informed once the ticket is paid and will be able to download the E-Ticket "
 "on his own as well."
 msgstr ""
-"Der Käufer erhält die E-Tickets aller registrierten Teilnehmer. Diejenigen "
-"Teilnehmer, deren E-Mail Adresse angegeben wurde, werden darüber informiert. "
 
 #: ../view/pre-reg/order/checkout.phtml:33 ../view/pre-reg/order/view.phtml:16
 msgid "We will send all information to:"
-msgstr "Wir senden alle Informationen an: "
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:36
 msgid "choose Buyer"
-msgstr "Wähle einen Käufer"
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:49
 msgid "choose paymenttype"
-msgstr "Wähle eine Bezahlart"
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:72 ../view/pre-reg/order/index.phtml:37
 msgid "further items"
-msgstr "Weitere Artikel "
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:74 ../view/pre-reg/order/index.phtml:40
 msgid "years"
-msgstr "Jahre"
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:83
 msgid "Product"
-msgstr "Produkt"
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:84 ../view/pre-reg/order/index.phtml:59
 #: ../view/pre-reg/order/view.phtml:86
 msgid "Amount"
-msgstr "Menge"
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:85 ../view/pre-reg/order/index.phtml:60
 #: ../view/pre-reg/order/view.phtml:87
 msgid "Price"
-msgstr "Preis"
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:182
 msgid "Please add missing information for checkout"
-msgstr "Bitte ergänze die fehlenden Informationen. "
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:184
 msgid "Add products"
-msgstr "Produkte hinzufügen"
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:184
 msgid "to your shopping cart first."
@@ -568,97 +545,93 @@ msgstr ""
 #: ../view/pre-reg/order/checkout.phtml:187
 #: ../view/pre-reg/order/checkout.phtml:190
 msgid "To purchase this order"
-msgstr "Um diese Bestellung zu bezahlen "
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:187
 msgid "choose/add a buyer"
-msgstr "wähle einen Käufer oder füge einen Käufer hinzu"
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:187
 msgid "with a valid email address."
-msgstr "mit einer gültigen E-Mail Adresse"
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:190
 msgid "choose a payment type"
-msgstr "Wähle eine Bezahlart "
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:202
 msgid "I accept the"
-msgstr "Ich akzeptiere die "
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:202
 msgid "terms and conditions"
-msgstr "Geschäftsbedingungen"
+msgstr ""
 
 #: ../view/pre-reg/order/checkout.phtml:208
 msgid "change order"
-msgstr "Bestellung ändern"
+msgstr ""
 
 #: ../view/pre-reg/order/email.phtml:3
 msgid "Resend your emails in another language"
-msgstr "Sende diese E-Mail in einer anderen Sprache"
+msgstr ""
 
 #: ../view/pre-reg/order/index.phtml:22
 msgid "Continue"
-msgstr "Weiter"
+msgstr ""
 
 #: ../view/pre-reg/order/index.phtml:25
 msgid "Reset My Shopping Cart and My Persons"
-msgstr "Setze meinen Einkaufswagen und die Liste \"Meine Personen\" zurück "
+msgstr ""
 
 #: ../view/pre-reg/order/index.phtml:161
 msgid "Subtotal"
-msgstr "Zwischensumme"
+msgstr ""
 
 #: ../view/pre-reg/order/index.phtml:172
 msgid "Order amount"
-msgstr "Höhe der Bestellung "
+msgstr ""
 
 #: ../view/pre-reg/order/payment.phtml:32
 msgid "There are currently no payment types available"
-msgstr "Momentan sind keine Bezahlarten verfügbar"
+msgstr ""
 
 #: ../view/pre-reg/order/payment.phtml:33
 msgid ""
 "There are currently no payment options available. Please check back at a "
 "later date. Sorry!"
 msgstr ""
-"Momentan sind keine Bezahlarten verfügbar. Bitte versuche es später noch "
-"einmal. Entschuldigung! "
 
 #: ../view/pre-reg/order/payment.phtml:63
 msgid "This payment type is not available, yet. It will be available from"
 msgstr ""
-"Diese Bezahlart ist noch nicht verfügbar. Sie wird ab dem X benutzbar sein. "
 
 #: ../view/pre-reg/order/payment.phtml:63
 msgid "until"
-msgstr "bis"
+msgstr ""
 
 #: ../view/pre-reg/order/payment.phtml:63
 #: ../view/pre-reg/order/payment.phtml:72
 msgid "Please choose another payment type."
-msgstr "Bitte wähle eine andere Bezahlart"
+msgstr ""
 
 #: ../view/pre-reg/order/payment.phtml:72
 msgid "This payment type was available until"
-msgstr "Diese Bezahlart war nur bis zum X verfügbar"
+msgstr ""
 
 #: ../view/pre-reg/order/thankyou.phtml:3
 msgid "Thank you"
-msgstr "Danke"
+msgstr ""
 
 #: ../view/pre-reg/order/thankyou.phtml:10
 msgid ""
 "...for your purchase and with that for your support to make the EJC 2016 "
 "possible."
 msgstr ""
-"für deinen Kauf. Durch deine Unterstützung wird die EJC 2016 erst möglich. "
 
 #: ../view/pre-reg/order/thankyou.phtml:12 ../view/pre-reg/order/view.phtml:36
 #: ../view/pre-reg/payment/creditcard.phtml:31
 msgid "Note:"
-msgstr "Bitte beachte: "
+msgstr ""
 
 #: ../view/pre-reg/order/thankyou.phtml:12
 msgid ""
@@ -667,8 +640,6 @@ msgid ""
 "your \n"
 "        address book."
 msgstr ""
-"Um die E-Mail mit deine E-Tickets zu erhalten, ist es wichtig, dass du die E-"
-"Mail Adresse prereg@eja.net zu deinem Adressbuch hinzufügst. "
 
 #: ../view/pre-reg/order/thankyou.phtml:16
 msgid ""
@@ -678,17 +649,14 @@ msgid ""
 "        there contact us at <a href='mailto: prereg@eja.net'>prereg@eja.net</"
 "a>."
 msgstr ""
-"Wir haben eine Bestätigungs- E-Mail an deine Mailadresse geschickt. Falls du "
-"sie nicht erhalten hast, bitte schaue in deinem Spamfilter nach. Falls sie "
-"dort nicht ist, bitte kontaktiere "
 
 #: ../view/pre-reg/order/thankyou.phtml:20
 msgid "In this email you will find further information of your purchase."
-msgstr "In dieser E-Mail findest du weitere Informationen zu deinem Kauf. "
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:3
 msgid "My Order"
-msgstr "Meine Bestellung "
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:15
 msgid ""
@@ -697,34 +665,30 @@ msgid ""
 "informed once the ticket is paid and will be able to download the E-Ticket "
 "on his own aswell."
 msgstr ""
-"Der Käufer erhält die E-Tickets aller registrierten Teilnehmer. Diejenigen "
-"Teilnehmer, deren E-Mail Adresse angegeben wurde, werden darüber informiert, "
-"dass ihr Ticket bezahlt wurde und können dann ihr E-Ticket selbst "
-"herunterladen. "
 
 #: ../view/pre-reg/order/view.phtml:21
 msgid "Payment"
-msgstr "Bezahlung"
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:23
 msgid "order is paid"
-msgstr "Die Bestellung ist bezahlt. "
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:25
 msgid "order is unpaid"
-msgstr "Die Bestellung ist nicht bezahlt. "
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:27
 msgid "order is cancelled"
-msgstr "Die Bestellung wurde storniert. "
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:34
 msgid "This order is already paid"
-msgstr "Die Bestellung ist bereits bezahlt. "
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:35
 msgid "Your E-Tickets will be sent out in june."
-msgstr "Deine E-Tickets werden im Juni versendet. "
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:36
 msgid ""
@@ -733,26 +697,22 @@ msgid ""
 "email \n"
 "                    with your E-Tickets will not arrive in your spamfolder."
 msgstr ""
-"Bitte füge die Mailadresse prereg@eja.net zu deinem Adressbuch hinzu, um "
-"sicher zu gehen, dass die Mail mit deinen E-Tickets nicht im Spamordner "
-"landet. "
 
 #: ../view/pre-reg/order/view.phtml:42
 msgid "Bank Transfer Details"
-msgstr "Angaben zur Überweisung"
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:53
 msgid "No payment type was recognized"
-msgstr "Es wurde kein Bezahltyp erkannt"
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:56
 msgid "undefined status"
-msgstr "Status unbekannt"
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:57
 msgid "Please contact the EJC team to solve this problem:"
 msgstr ""
-"Bitte kontaktiere das EJC Team. Wir helfen dir bei der Lösung des Problems. "
 
 #: ../view/pre-reg/order/view.phtml:74
 msgid "unassigned items"
@@ -760,43 +720,43 @@ msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:125
 msgid "Subtotal:"
-msgstr "Zwischensumme"
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:135
 msgid "Order amount:"
-msgstr "Höhe der Bestellung"
+msgstr ""
 
 #: ../view/pre-reg/order/view.phtml:143
 msgid "Total amount:"
-msgstr "Gesamtsumme"
+msgstr ""
 
 #: ../view/pre-reg/package/index.phtml:3
 msgid "My Packages"
-msgstr "Meine Packages"
+msgstr ""
 
 #: ../view/pre-reg/package/index.phtml:11
 #: ../view/pre-reg/profile/index.phtml:15
 msgid "Firstname:"
-msgstr "Vorname"
+msgstr ""
 
 #: ../view/pre-reg/package/index.phtml:15
 #: ../view/pre-reg/profile/index.phtml:19
 msgid "Surname:"
-msgstr "Nachname"
+msgstr ""
 
 #: ../view/pre-reg/package/index.phtml:19
 #: ../view/pre-reg/profile/index.phtml:23
 msgid "E-Mail:"
-msgstr "E-Mail "
+msgstr ""
 
 #: ../view/pre-reg/package/index.phtml:23
 #: ../view/pre-reg/profile/index.phtml:27
 msgid "Birthdate:"
-msgstr "Geburtsdatum"
+msgstr ""
 
 #: ../view/pre-reg/participant/add.phtml:3
 msgid "Add Person"
-msgstr "Person hinzufügen"
+msgstr ""
 
 #: ../view/pre-reg/participant/add.phtml:29
 #: ../view/pre-reg/participant/edit.phtml:37
@@ -815,9 +775,6 @@ msgid ""
 "Ticket \n"
 "            belongs to you)."
 msgstr ""
-"Bitte gib deinen Vornamen, Nachnamen und dein Geburtsdatum genau so an wie "
-"auf deinem Ausweis. Diese Daten werden bei der Anmeldung überprüft und "
-"müssen mit dem E-Ticket übereinstimmen. "
 
 #: ../view/pre-reg/participant/add.phtml:33
 #: ../view/pre-reg/participant/edit.phtml:41
@@ -833,8 +790,6 @@ msgid ""
 "            address of this person, they will receive a copy of their \n"
 "            E-Ticket."
 msgstr ""
-"Wenn du die E-Mail Adresse dieser Person eingibst, erhält sie automatisch "
-"eine Kopie ihres E-Tickets. "
 
 #: ../view/pre-reg/participant/add.phtml:36
 #: ../view/pre-reg/participant/edit.phtml:44
@@ -850,8 +805,6 @@ msgid ""
 "this \n"
 "            reason, they have to enter their email address."
 msgstr ""
-"Die Person, die den Kauf ausführt, erhält automatisch alle bestellten E-"
-"Tickets. Deswegen muss eine E-Mail Adresse angegeben werden. "
 
 #: ../view/pre-reg/participant/add.phtml:39
 #: ../view/pre-reg/profile/change.phtml:36
@@ -864,20 +817,18 @@ msgid ""
 "You can edit this person's \n"
 "            details at any time by clicking My Persons in the menu"
 msgstr ""
-"Du kannst die Daten dieser Person jederzeit ändern, indem du auf \"Meine "
-"Personen\" in der Menüleiste klickst. "
 
 #: ../view/pre-reg/participant/delete.phtml:3
 msgid "Delete Person"
-msgstr "Person löschen "
+msgstr ""
 
 #: ../view/pre-reg/participant/delete.phtml:13
 msgid "These items will be deleted with this participant:"
-msgstr "Diese Artikel werden mit diesem Teilnehmer gelöscht: "
+msgstr ""
 
 #: ../view/pre-reg/participant/edit.phtml:3
 msgid "Edit Person"
-msgstr "Person ändern"
+msgstr ""
 
 #: ../view/pre-reg/participant/edit.phtml:44
 msgid ""
@@ -889,22 +840,18 @@ msgid ""
 "person's \n"
 "            details at any time by clicking My Persons in the menu"
 msgstr ""
-"Die Person, die den Kauf ausführt, erhält automatisch alle bestellten E-"
-"Tickets. Deswegen muss eine E-Mail Adresse angegeben werden. \n"
-"Du kannst die Daten dieser Person jederzeit ändern, indem du auf \"Meine "
-"Personen\" in der Menüleiste klickst. "
 
 #: ../view/pre-reg/participant/index.phtml:12
 msgid "Name"
-msgstr "Name"
+msgstr ""
 
 #: ../view/pre-reg/participant/index.phtml:15
 msgid "Country"
-msgstr "Land "
+msgstr ""
 
 #: ../view/pre-reg/participant/index.phtml:32
 msgid "no Country"
-msgstr "kein Land"
+msgstr ""
 
 #: ../view/pre-reg/payment/banktransfer.phtml:9
 #: ../view/pre-reg/payment/cheque.phtml:9
@@ -914,83 +861,79 @@ msgid ""
 "Please \n"
 "        use the link in there."
 msgstr ""
-"Im System konnte keine Bestellung zu dieser Bezahlinformation gefunden "
-"werden. Bei deinem Kauf hast du eine E-Mail mit allen wichtigen "
-"Informationen erhalten. Bitte benutze den link aus der Mail. "
 
 #: ../view/pre-reg/payment/banktransfer.phtml:16
 msgid "Pay via Bank Transfer"
-msgstr "Bezahlung per Überweisung"
+msgstr ""
 
 #: ../view/pre-reg/payment/banktransfer.phtml:24
 msgid "We've sent this information to your email address:"
-msgstr "Wir haben diese Informationen an deine Mailadresse gesandt. "
+msgstr ""
 
 #: ../view/pre-reg/payment/banktransfer.phtml:27
 msgid "You can request this information again, by simply bookmarking"
 msgstr ""
-"Du kannst diese Information wieder abrufen. Setze einfach ein Lesezeichen. "
 
 #: ../view/pre-reg/payment/banktransfer.phtml:28
 #: ../view/pre-reg/payment/cheque.phtml:47
 msgid "this link"
-msgstr "dieser link"
+msgstr ""
 
 #: ../view/pre-reg/payment/banktransfer.phtml:29
 msgid "or have a look at the email we've sent you."
-msgstr "oder du schaust in der E-Mail nach, die wir dir geschickt haben. "
+msgstr ""
 
 #: ../view/pre-reg/payment/banktransfer.phtml:32
 msgid "Thanks for registering, see you in Almere!"
-msgstr "Danke für deine Anmeldung! Wir sehen uns in Almere! "
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:4
 msgid "Unable to find payment information"
-msgstr "Wir konnten deine Bezahlinformationen nicht finden. "
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:16
 msgid "Pay via Cheque"
-msgstr "Bezahlen per Scheck "
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:23
 msgid "Please make cheques payable to:"
-msgstr "Bitte adressiere den Scheck an"
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:23
 msgid "European Juggling Association"
-msgstr "European Juggling Association"
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:24
 msgid "Your order amount in GBP is:"
-msgstr "Die Höhe der Bezahlung in GBP ist: "
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:30
 msgid "Please send:"
-msgstr "Bitte schicke"
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:32
 msgid "Cheques (amount in GBP, price calculated from Euro-price * 0,8 )"
-msgstr "Schecks (Höhe in GBP, Preise berechnet vom Europreis * 0,8)"
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:33
 msgid "your name"
-msgstr "Dein Name"
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:34
 msgid "order ID"
-msgstr "Bestellnummer"
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:35
 msgid "to the address of the UK country-rep:"
-msgstr "zur Adresse des Länderrepräsentanten UK: "
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:45
 msgid "We sent this information to your email address:"
-msgstr "Wir haben diese Information an deine Mailadresse geschickt: "
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:46
 msgid "You can request"
-msgstr "Du kannst diese Information nochmals anfordern"
+msgstr ""
 
 #: ../view/pre-reg/payment/cheque.phtml:46
 msgid "this information"
@@ -1011,16 +954,14 @@ msgstr ""
 #: ../view/pre-reg/payment/creditcard.phtml:12
 msgid "Your order could not be found. Please recheck the link you've used."
 msgstr ""
-"Deine Bestellung konnte nicht gefunden werden. Bitte überprüfe den link, den "
-"du benutzt hast. "
 
 #: ../view/pre-reg/payment/creditcard.phtml:13
 msgid "If there are any problems conntact us at"
-msgstr "Kontaktiere uns bei Problemen unter "
+msgstr ""
 
 #: ../view/pre-reg/payment/creditcard.phtml:16
 msgid "Pay by Credit Card"
-msgstr "Bezahlen per Kreditkarte"
+msgstr ""
 
 #: ../view/pre-reg/payment/creditcard.phtml:31
 msgid ""

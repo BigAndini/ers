@@ -4,19 +4,19 @@
 <div class="p_overlay">
     <div class="p_overlay_inner">
         <h3>
-            Added <span class="green"><?php echo $product->getName(); ?></span> to your shopping cart.
+            <?php echo _('Added'); ?> <span class="green"><?php echo $product->getName(); ?></span> <?php echo _('to your shopping cart.'); ?>
         </h3>
         <div class="row">
             <div class="col-sm-6">
-                <p><a class="btn btn-primary" href="<?php echo $this->url('product'); ?>"><i class="fa fa-caret-left"></i> add more products</a></p>
+                <p><a class="btn btn-primary" href="<?php echo $this->url('product'); ?>"><i class="fa fa-caret-left"></i> <?php echo _('add more products'); ?></a></p>
                 <p><a class="btn btn-primary" href="<?php echo $this->url(
                     $bc_stay->route, 
                     $bc_stay->params, 
                     $bc_stay->options
-                    ); ?>"><i class="fa fa-caret-left"></i> add this product again</a></p>
+                    ); ?>"><i class="fa fa-caret-left"></i> <?php echo _('add this product again'); ?></a></p>
             </div>
             <div class="col-sm-6">
-                <a class="btn btn-primary pull-right" href="<?php echo $this->url('order'); ?>">shopping cart <i class="fa fa-caret-right"></i></a>
+                <a class="btn btn-primary pull-right" href="<?php echo $this->url('order'); ?>"><?php echo _('shopping cart'); ?> <i class="fa fa-caret-right"></i></a>
             </div>
         </div>
     </div>
@@ -24,7 +24,7 @@
 <?php endif; ?>
 
 <?php if(count($product->getProductPrices()) == 0): ?>
-    <p class="desc-short">This product is unavailable</p>
+    <p class="desc-short"><?php echo _('This product is unavailable'); ?></p>
 <?php else: ?>
 <div class="product-view">
     <?php
@@ -34,9 +34,7 @@
     echo $this->form()->openTag($form); ?>
     <div class="row">
         <div class="col-md-5" style="text-align: center; margin: 20px 0;">
-            <!--<i class="fa fa-file-text-o product-icon-lg"></i>-->
             <i class="fa fa-ticket product-icon-lg"></i>
-            <!--<img src="/img/no-available-image.png" alt="No available image" width="200">-->
         </div>
         <div class="col-md-7">
             <div class="row">
@@ -47,7 +45,7 @@
             <?php if($formfail): ?>
             <div class="row">
                 <div class="alert alert-danger">
-                    <p>Please complete the whole form to put this product into the cart.</p>
+                    <p><?php echo _('Please complete the whole form to put this product into the cart.'); ?></p>
                 </div>
             </div>
             <?php endif; ?>
@@ -58,7 +56,7 @@
                 </div>
                 <div class="col-md-6">
                     <?php if($product->getPriceCount() != 1): ?>
-                        <p class="small text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
+                        <p class="small text-right"><?php echo _('The prices will increase after'); ?><br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
                     <?php endif; ?>
                     <?php echo $this->partial('partial/product-price.phtml', array('agegroups' => $agegroups, 'deadline' => $deadline, 'product' => $product)); ?>
                 </div>
@@ -88,9 +86,9 @@
                         <div id="person">
                             <?php if($form->get('submit')->getAttribute('disabled') == 'disabled'): ?>
                                 <div class="alert alert-warning">
-                                    <h4>Please choose a person</h4>
-                                    <p>This is a personalized ticket. To continue, please first 
-                                        <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add the person</a> who will use the ticket for the event.</p>
+                                    <h4><?php echo _('Please choose a person'); ?></h4>
+                                    <p><?php echo _('This is a personalized ticket. To continue, please first'); ?> 
+                                        <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>"><?php echo _('add the person'); ?></a> <?php echo _('who will use the ticket for the event.'); ?></p>
                                     <div class="clear-both"></div>
                                 </div>
                             <?php 
@@ -104,10 +102,10 @@
                              */
                             echo $this->formHidden($form->get('agegroup_id'));
                             ?>
-                            <p><strong>Tip:</strong><br />You can 
+                            <p><strong><?php echo _('Tip'); ?>:</strong><br /><?php echo _('You can'); ?> 
                                 <!--<a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add a new person</a>-->
-                                <a href="#" data-toggle="modal" data-target="#addParticipant">add a new person</a>
-                                or edit the details of any person with "My Persons" from the main menu.</p>
+                                <a href="#" data-toggle="modal" data-target="#addParticipant"><?php echo _('add a new person'); ?></a>
+                                <?php echo _('or edit the details of any person with "My Persons" from the main menu.'); ?></p>
                         </div>
                     </div>
 
@@ -131,7 +129,7 @@
                 </div>
                 <div class="col-md-6">
                     <?php if(count($product->getChildProducts()) > 0): ?>
-                    <h3>Included Items:</h3>
+                    <h3><?php echo _('Included Items:'); ?></h3>
                     <?php foreach($product->getChildProducts() as $package): 
                         $child = $package->getSubProduct(); ?>
                         <h4><?php echo $child->getName(); ?></h4>
@@ -153,7 +151,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Add new participant</h4>
+                <h4 class="modal-title"><?php echo _('Add new participant'); ?></h4>
             </div>
             <?php
             $participantForm = $this->participantForm;
@@ -197,15 +195,15 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-6">
-                        <p><a class="btn btn-primary" href="<?php echo $this->url('product'); ?>"><i class="fa fa-caret-left"></i> add more products</a></p>
+                        <p><a class="btn btn-primary" href="<?php echo $this->url('product'); ?>"><i class="fa fa-caret-left"></i> <?php echo _('add more products'); ?></a></p>
                         <p><a class="btn btn-primary" href="<?php echo $this->url(
                             $bc_stay->route, 
                             $bc_stay->params, 
                             $bc_stay->options
-                            ); ?>"><i class="fa fa-caret-left"></i> add this product again</a></p>
+                            ); ?>"><i class="fa fa-caret-left"></i> <?php echo _('add this product again'); ?></a></p>
                     </div>
                     <div class="col-sm-6">
-                        <a class="btn btn-primary pull-right" href="<?php echo $this->url('order'); ?>">shopping cart <i class="fa fa-caret-right"></i></a>
+                        <a class="btn btn-primary pull-right" href="<?php echo $this->url('order'); ?>"><?php echo _('shopping cart'); ?> <i class="fa fa-caret-right"></i></a>
                     </div>
                 </div>
             </div>

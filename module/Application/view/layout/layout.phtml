@@ -125,9 +125,9 @@
             <hr>
             <footer>
                 <p style="float:right;">
-                    <a href="<?php echo $this->url('info', array('action' => 'terms')); ?>" target="_blank">terms and conditions</a><br />
-                    <a href="<?php echo $this->url('info', array('action' => 'impressum')); ?>">impressum</a><br />
-                    <a href="https://github.com/inbaz/ers/issues" target="_blank">report a bug</a><br />
+                    <a href="<?php echo $this->url('info', array('action' => 'terms')); ?>" target="_blank"><?php echo _('terms and conditions'); ?></a><br />
+                    <a href="<?php echo $this->url('info', array('action' => 'impressum')); ?>"><?php echo _('impressum'); ?></a><br />
+                    <a href="https://github.com/inbaz/ers/issues" target="_blank"><?php echo _('report a bug'); ?></a><br />
                     <span>Version: <?php echo exec('git symbolic-ref -q HEAD || git describe --tags --exact-match'); ?></span>
                 </p>
                 <p>&copy; 2014 - <?php echo date('Y') ?> by European Juggling Association <?php echo $this->translate('All rights reserved.') ?></p>

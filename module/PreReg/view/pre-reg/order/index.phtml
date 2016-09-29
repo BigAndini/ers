@@ -1,16 +1,10 @@
 <?php
 
-$title = 'My Shopping Cart';
+$title = _('My Shopping Cart');
 $this->headTitle($title);
 ?>
 
 <h1><?php echo $this->escapeHtml($title); ?></h1>
- 
-<?php 
-/*echo $this->navigation()
-    ->menu('checkout_nav')
-    ->setUlClass('nav navbar-nav navbar-checkout');*/
-?>
 
 <?php 
 $partial = array('partial/checkout-nav.phtml', 'checkout_nav');
@@ -25,10 +19,10 @@ echo $this->navigation()
 <div class="clear-both"></div>
 
 <div class="checkout">
-    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'buyer')) ?>">Continue</a>
+    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'buyer')) ?>"><?php echo _('Continue'); ?></a>
 </div>
 <div class="reset-cart">
-    <a href="<?php echo $this->url('cart', array('action' => 'reset')) ?>">Reset My Shopping Cart and My Persons</a>
+    <a href="<?php echo $this->url('cart', array('action' => 'reset')) ?>"><?php echo _('Reset My Shopping Cart and My Persons'); ?></a>
 </div>
     <div>
         <?php 
@@ -40,10 +34,10 @@ echo $this->navigation()
                 $user = $package->getParticipant();
             
                 if($user->getFirstname() == '' && $user->getSurname() == '') :
-                    $participant = 'further items';
+                    $participant = _('further items');
                     $edit_participant = false;
                 else:
-                    $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getAge()->format('%Y years').')';
+                    $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getAge()->format('%Y '._('years')).')';
                     $edit_participant = true;
                 endif;
         ?>
@@ -62,8 +56,8 @@ echo $this->navigation()
                 <table class="table">
                     <tr>
                         <th>Product</th>
-                        <th class="cart-amount">Amount</th>
-                        <th class="cart-price">Price</th>
+                        <th class="cart-amount"><?php echo _('Amount'); ?></th>
+                        <th class="cart-price"><?php echo _('Price'); ?></th>
                         <th class="cart-tool"></th>
                     </tr>
                     <?php
@@ -164,7 +158,7 @@ echo $this->navigation()
                     <?php endforeach; ?>
                     <tr>
                         <td></td>
-                        <td>Subtotal:</td>
+                        <td><?php echo _('Subtotal'); ?>:</td>
                         <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
                         <td></td>
                     </tr>
@@ -175,7 +169,7 @@ echo $this->navigation()
         <div>
             <table class="table sum-table">
                 <tr>
-                    <th><span style="font-size: 18px;">Order amount:</span></th>
+                    <th><span style="font-size: 18px;"><?php echo _('Order amount'); ?>:</span></th>
                     <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></span></th>
                 </tr>
             </table>

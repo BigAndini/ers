@@ -93,7 +93,7 @@ class ProductView extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Go',
+                'value' => _('Go'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),
@@ -200,7 +200,7 @@ class ProductView extends Form
                     if($package_info[$variant->getId()]) {
                         $options[] = array(
                             'value' => 0,
-                            'label' => 'no '.$variant->getName(),
+                            'label' => _('no').' '.$variant->getName(),
                         );
                     }
                     array_unshift($options, array(

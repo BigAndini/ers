@@ -25,22 +25,22 @@ return array(
     'navigation' => array(
         'main_nav' => array(
             'home' => array(
-                'label' => 'Home',
+                'label' => _('Home'),
                 'route' => 'home',
                 'resource'  => 'controller/PreReg\Controller\Product',
             ),
             'product' => array(
-                'label' => 'Products',
+                'label' => _('Products'),
                 'route' => 'product',
                 'resource'  => 'controller/PreReg\Controller\Product',
             ),
             'participant' => array(
-                'label' => 'Personal Details',
+                'label' => _('Personal Details'),
                 'route' => 'participant',
                 'resource'  => 'controller/PreReg\Controller\Participant',
             ),
             'order' => array(
-                'label' => 'My Shopping Cart',
+                'label' => _('My Shopping Cart'),
                 'route' => 'order',
                 'resource'  => 'controller/PreReg\Controller\Order',
             ),
@@ -58,7 +58,7 @@ return array(
                 'resource'  => 'controller/PreReg\Controller\Order',
             ),*/
             'login' => array(
-                'label' => 'Login',
+                'label' => _('Login'),
                 'route' => 'zfcuser/login',
                 #'action' => 'login',
                 'resource'  => 'controller/zfcuser:login',
@@ -70,24 +70,24 @@ return array(
                 'resource'  => 'controller/zfcuser:register',
             ),*/
             'profile' => array(
-                'label' => 'My Profile',
+                'label' => _('My Profile'),
                 'route' => 'profile',
                 'action' => '',
                 'resource'  => 'controller/PreReg\Controller\Profile',
             ),
             'logout' => array(
-                'label' => 'Logout',
+                'label' => _('Logout'),
                 'route' => 'zfcuser/logout',
                 #'action' => 'logout',
                 'resource'  => 'controller/zfcuser:logout',
             ),
             'admin' => array(
-                'label' => 'AdminPanel',
+                'label' => _('AdminPanel'),
                 'route' => 'admin',
                 'resource'  => 'controller/Admin\Controller\Index',
             ),
             'onsite' => array(
-                'label' => 'Onsite',
+                'label' => _('Onsite'),
                 'route' => 'onsite',
                 'resource'  => 'controller/OnsiteReg\Controller\Index',
             ),
@@ -96,7 +96,7 @@ return array(
                         <i class="fa fa-circle fa-stack-2x green"></i>
                         <i class="fa fa-question fa-stack-1x fa-inverse"></i>
                     </span>',*/
-                'label' => 'Help',
+                'label' => _('Help'),
                 'route' => 'info',
                 'action' => 'help',
                 'resource'  => 'controller/PreReg\Controller\Info',
@@ -104,25 +104,25 @@ return array(
         ),
         'checkout_nav' => array(
             'mycart' => array(
-                'label' => 'Shopping Cart',
+                'label' => _('Shopping Cart'),
                 'route' => 'order',
                 'action' => 'overview',
                 'resource' => 'controller/PreReg\Controller\Order',
             ),
             'buyer' => array(
-                'label' => 'Buyer',
+                'label' => _('Buyer'),
                 'route' => 'order',
                 'action' => 'buyer',
                 'resource' => 'controller/PreReg\Controller\Order',
             ),
             'payment' => array(
-                'label' => 'Payment type    ',
+                'label' => _('Payment type'),
                 'route' => 'order',
                 'action' => 'payment',
                 'resource' => 'controller/PreReg\Controller\Order',
             ),
             'checkout' => array(
-                'label' => 'Checkout',
+                'label' => _('Checkout'),
                 'route' => 'order',
                 'action' => 'checkout',
                 'resource' => 'controller/PreReg\Controller\Order',
@@ -130,25 +130,25 @@ return array(
         ),
         'profile_nav' => array(
             'change-data' => array(
-                'label' => 'Change my user data',
+                'label' => _('Change my user data'),
                 'route' => 'profile',
                 'action' => 'change',
                 'resource' => 'controller/PreReg\Controller\Profile',
             ),
             'change-password' => array(
-                'label' => 'Change my password',
+                'label' => _('Change my password'),
                 'route' => 'zfcuser/changepassword',
                 #'action' => '',
                 'resource' => 'controller/PreReg\Controller\Profile',
             ),
             'package' => array(
-                'label' => 'View tickets',
+                'label' => _('View tickets'),
                 'route' => 'package',
                 #'action' => '',
                 'resource' => 'controller/PreReg\Controller\Package',
             ),
             'person' => array(
-                'label' => 'My Persons',
+                'label' => _('My Persons'),
                 'route' => 'profile',
                 'action' => 'participant',
                 'resource' => 'controller/PreReg\Controller\Profile:participant',
