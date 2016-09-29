@@ -26,7 +26,7 @@ class InfoController extends AbstractActionController {
         $form->get('Country_id')->setValueOptions($optionService->getCountryOptions());
         
         $form->get('submit')->setAttribute('class', 'btn btn-lg btn-primary');
-        $form->get('submit')->setValue('Register now!');
+        $form->get('submit')->setValue(_('Register now!'));
         
         return new ViewModel(array(
             'ers_config' => $this->getServiceLocator()->get('Config')['ERS'],

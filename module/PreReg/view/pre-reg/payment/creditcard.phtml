@@ -9,11 +9,11 @@ if($order == null || $trx_amount == 0):
     ?>
     <div class='jumbotron'>
         <h1><?php echo $this->escapeHtml($title); ?></h1>
-        <p>Your order could not be found. Please recheck the link you've used.</p>
-        <p>If there are any problems conntact us at <a href='mailto:prereg@eja.net'>prereg@eja.net</a></p>
+        <p><?php echo _('Your order could not be found. Please recheck the link you\'ve used.'); ?></p>
+        <p><?php echo _('If there are any problems conntact us at'); ?> <a href='mailto:prereg@eja.net'>prereg@eja.net</a></p>
     </div>
 <?php else:
-    $title = 'Pay by Credit Card';
+    $title = _('Pay by Credit Card');
     $this->headTitle($title);
     ?>
     <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -28,8 +28,8 @@ if($order == null || $trx_amount == 0):
                 ?>
             </div>
             <div class="col-md-3">
-                <p><strong>Note:</strong> You can find your Card Check Code at 
-                    the backsite of your credit card.</p>
+                <p><strong><?php echo _('Note:'); ?></strong> <?php echo _('You can find your Card Check Code at 
+                    the backsite of your credit card.'); ?></p>
                 <img src="/img/scr_kartenpruefziffer_01.jpg" alt=""><br />
                 <img src="/img/scr_kartenpruefziffer_02.jpg" alt="">
             </div>

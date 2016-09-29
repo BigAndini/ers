@@ -234,7 +234,7 @@ class CartController extends AbstractActionController {
 
         $form = new Form\SimpleForm($em);
         $form->get('submit')->setAttributes(array(
-            'value' => 'Clear Shopping Cart',
+            'value' => _('Clear Shopping Cart'),
             'class' => 'btn btn-danger',
         ));
 

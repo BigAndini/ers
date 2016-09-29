@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Delete Person';
+$title = _('Delete Person');
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -10,7 +10,7 @@ $this->headTitle($title);
     <strong><?php echo $this->escapeHtml($participant->getFirstname().' '.$participant->getSurname()); ?></strong>?
 </p>
 <?php if(count($package->getItems()) > 0): ?>
-    <h2>These items will be deleted with this participant:</h2>
+    <h2><?php echo _('These items will be deleted with this participant:'); ?></h2>
     <table class="table">
         <tr>
             <th>Name</th>

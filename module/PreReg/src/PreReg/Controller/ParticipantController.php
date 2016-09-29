@@ -222,7 +222,7 @@ class ParticipantController extends AbstractActionController {
 
         $form = new Form\SimpleForm($em);
         $form->get('submit')->setAttributes(array(
-            'value' => 'Delete',
+            'value' => _('Delete'),
             'class' => 'btn btn-danger',
         ));
         

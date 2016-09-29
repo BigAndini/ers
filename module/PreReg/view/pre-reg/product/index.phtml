@@ -1,16 +1,17 @@
 <?php
 
-$title = 'Tickets for '.$ers_config['name_with_year'].' and other products';
+#$title = _('Tickets for').' '.$ers_config['name_with_year'].' '._('and other products');
+$title = printf(_('Tickets for %s and other products', $ers_config['name_with_year']));
 $this->headTitle($title);
 ?>
 <?php if($deadline): ?>
     <h1><?php echo $this->escapeHtml($title); ?></h1>
     <div class="row">
         <div class="col-md-6">
-            <p>Click on any item to add further information and place it in your shopping cart.</p>
+            <p><?php echo _('Click on any item to add further information and place it in your shopping cart.'); ?></p>
         </div>
         <div class="col-md-6">
-            <p class="text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
+            <p class="text-right"><?php echo _('The prices will increase after'); ?><br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
         </div>
     </div>
 
@@ -32,11 +33,11 @@ $this->headTitle($title);
 else: ?>
     <div class="jumbotron">
         <h1>
-            <?php echo $this->escapeHtml('PreReg is closed'); ?>
+            <?php echo $this->escapeHtml(_('PreReg is closed')); ?>
         </h1>
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
-                <p>The PreReg is already closed. For more information, please visit our homepage on <a href="<?php echo $ers_config['registration_info'] ?>"><?php echo $ers_config['registration_info'] ?></a></p>
+                <p><?php echo _('The PreReg is already closed. For more information, please visit our homepage on'); ?> <a href="<?php echo $ers_config['registration_info'] ?>"><?php echo $ers_config['registration_info'] ?></a></p>
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Personal Details';
+$title = _('Personal Details');
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -9,10 +9,10 @@ $this->headTitle($title);
 
 <table class="table">
     <tr>
-        <th class="person-name">Name</th>
-        <th class="person-birthday">Birthday</th>
-        <th class="person-email">Email</th>
-        <th class="person-country">Country</th>
+        <th class="person-name"><?php echo _('Name'); ?></th>
+        <th class="person-birthday"><?php echo _('Birthday'); ?></th>
+        <th class="person-email"><?php echo _('Email'); ?></th>
+        <th class="person-country"><?php echo _('Country'); ?></th>
         <th class="person-tools"></th>
     </tr>
     <?php foreach ($participants as $participant) : ?>
@@ -29,7 +29,7 @@ $this->headTitle($title);
                     $country = $participant->getCountry();
                     echo $country->getName();
                 else:
-                    echo 'no Country';
+                    echo _('no Country');
                 endif; ?>
             </td>
             <td>

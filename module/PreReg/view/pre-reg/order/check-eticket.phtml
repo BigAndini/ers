@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Check your E-Ticket';
+$title = _('Check your E-Ticket');
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -30,12 +30,12 @@ echo $this->flashMessenger()
                 endif; ?>
                 <div class="alert <?php echo 'alert-'.$status; ?>">
                     <?php if($status == 'success'): ?>
-                        <h3><i class="fa fa-check"></i> Your ticket is valid and active.</h3>
+                        <h3><i class="fa fa-check"></i> <?php echo _('Your ticket is valid and active.'); ?></h3>
                     <?php else: ?>
-                        <h3><i class="fa fa-times"></i> We're sorry, your e-ticket is not valid. You will not be able to attend EJC with this e-ticket.</h3>
+                        <h3><i class="fa fa-times"></i> <?php echo _('We\'re sorry, your e-ticket is not valid. You will not be able to attend EJC with this e-ticket.'); ?></h3>
                         <ol>
-                            <li>If you haven't paid for your ticket, yet, please do so. We will then activate your ticket.</li>
-                            <li>If you have already paid for the ticket with the ticket code <strong><?php echo $package->getCode()->getValue() ?></strong>, please contact <a href="mailto:prereg@eja.net">prereg@eja.net</a>. We will solve the issue.</li>
+                            <li><?php echo _('If you haven\'t paid for your ticket, yet, please do so. We will then activate your ticket.'); ?></li>
+                            <li><?php echo _('If you have already paid for the ticket with the ticket code <strong><?php echo $package->getCode()->getValue() ?></strong>, please contact <a href="mailto:prereg@eja.net">prereg@eja.net</a>. We will solve the issue.'); ?></li>
                         </ol>
 
                     <?php endif; ?>
