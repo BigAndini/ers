@@ -290,6 +290,8 @@ class EmailService
                     ->findOneBy(array('id' => $order_id));
         $buyer = $order->getBuyer();
         
+        $config = $this->getServiceLocator()->get('config');
+        
         $this->setFrom('prereg@eja.net');
         
         $this->addTo($buyer);
@@ -298,11 +300,12 @@ class EmailService
         $bcc->setEmail($this->getFrom());
         $this->addBcc($bcc);
         
-        $subject = "Your registration for EJC 2016 (order ".$order->getCode()->getValue().")";
+        $subject = sprintf(_('Your registration for %s (order %s)'), $config['ERS']['name_short'], $order->getCode()->getValue());
         $this->setSubject($subject);
         
         $viewModel = new ViewModel(array(
             'order' => $order,
+            'config' => $config,
         ));
         $viewModel->setTemplate('email/order-confirmation.phtml');
         $viewRender = $this->getServiceLocator()->get('ViewRenderer');
@@ -310,10 +313,10 @@ class EmailService
         
         $this->setHtmlMessage($html);
         
-        $terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v5.pdf';
+        /*$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v5.pdf';
         $terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v4.pdf';
         $this->addAttachment($terms1);
-        $this->addAttachment($terms2);
+        $this->addAttachment($terms2);*/
         
         $this->send();
         

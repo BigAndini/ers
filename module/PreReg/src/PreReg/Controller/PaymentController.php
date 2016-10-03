@@ -36,8 +36,11 @@ class PaymentController extends AbstractActionController {
         $order = $em->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
+        $config = $this->getServiceLocator()->get('config');
+        
         return new ViewModel(array(
             'order' => $order,
+            'config' => $config,
         ));
     }
     

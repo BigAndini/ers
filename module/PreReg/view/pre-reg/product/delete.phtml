@@ -5,10 +5,13 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-<p><?php echo $this->translate('Are you sure that you want to delete'); ?> 
-    <strong><?php echo $this->escapeHtml($item->getName()); ?></strong>
-    <?php if($participant != null): ?>
-    for <strong><?php echo $this->escapeHtml($participant->getFirstname().' '.$participant->getSurname()); ?></strong>
+<p>
+    <?php 
+    $productName = '<strong>'.$this->escapeHtml($item->getName()).'</strong>';
+    if($participant == null): ?>
+        <?php printf($this->translate('Are you sure that you want to delete %s?'), $productName); ?>
+    <?php else: ?>
+        <?php printf($this->translate('Are you sure that you want to delete %s for %s %s?'), $productName, $participant->getFirstname(), $participant->getSurname()); ?>
     <?php endif; ?>
     ?
 </p>
@@ -22,6 +25,6 @@ echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('csrf'));
 echo $this->formElement($form->get('submit')); ?>
 
-<a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+<a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>"><?php echo $this->translate('Cancel'); ?></a>
 
 <?php echo $this->form()->closeTag();

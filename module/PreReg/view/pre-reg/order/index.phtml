@@ -55,7 +55,7 @@ echo $this->navigation()
                 <?php if(count($package->getItems()) != 0): ?>
                 <table class="table">
                     <tr>
-                        <th>Product</th>
+                        <th><?php echo $this->translate('Product'); ?></th>
                         <th class="cart-amount"><?php echo $this->translate('Amount'); ?></th>
                         <th class="cart-price"><?php echo $this->translate('Price'); ?></th>
                         <th class="cart-tool"></th>

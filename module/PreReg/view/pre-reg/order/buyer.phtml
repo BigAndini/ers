@@ -38,8 +38,7 @@ echo $this->navigation()
     <h1><?php echo $this->translate('Select Buyer'); ?></h1>
     <?php if(count($order->getPackages()) > 0): ?>
     <p><strong><?php echo $this->translate('All E-Tickets will be emailed to the buyer.'); ?></strong> 
-        <?php echo $this->translate('If you order items for multiple persons and provided their email addresses, 
-        they will automatically receive a copy of their E-Ticket.'); ?></p>
+        <?php echo $this->translate('If you order items for multiple persons and provided their email addresses, they will automatically receive a copy of their E-Ticket.'); ?></p>
     <h3><?php echo $this->translate('Choose Buyer');?> </h3>
     <?php echo $this->formElementErrors($form->get('buyer_id')); ?>
     <?php 
@@ -61,19 +60,19 @@ echo $this->navigation()
                     echo $this->formHidden($form->get('buyer_id'));
                 endif; ?>
                 <input type="radio" <?php echo $checked ? 'checked="checked"' : '' ?> <?php echo $disabled ? 'disabled="disabled"' : ''; ?> name="buyer_id" value="<?php echo $participant->getId() ?>" />
-                <?php echo $participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getAge()->format('%Y years').')'; ?>
+                <?php echo $participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getAge()->format('%Y '.$this->translate('years')).')'; ?>
                 <span style="font-size: 14px;">
                     <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getId())); ?>">edit</a>
                 </span>
             </label>
             <?php if($participant->getEmail() != ''): ?>
-                <p>Email: <?php echo $participant->getEmail(); ?></p>
+                <p><?php echo $this->translate('Email:'); ?> <?php echo $participant->getEmail(); ?></p>
             <?php else: ?>
                 <p><a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getId())); ?>">Add email address</a> to choose this participant as buyer.</p>
             <?php endif; ?>
 
             <?php if($participant->getBirthday() != null): ?>
-            <p>Birthday: <?php echo $participant->getBirthday()->format('d.m.Y'); ?></p>
+            <p><?php echo $this->translate('Birthday:'); ?> <?php echo $participant->getBirthday()->format('d.m.Y'); ?></p>
             <?php endif; ?>
 
         </div>

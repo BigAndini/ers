@@ -331,6 +331,9 @@ class ProductView extends Form
             'filters' => array( 
                 array("name" => "Callback", "options" => array(
                     "callback" => function($values) {
+                        if(!is_array($values)) {
+                            return array();
+                        }
                         #$int = new \Zend\Filter\Int();
                         $strip = new \Zend\Filter\StripTags();
                         $trim = new \Zend\Filter\StringTrim();

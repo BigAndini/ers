@@ -40,7 +40,6 @@
         "behat/mink": "@stable",
         "behat/mink-extension": "@stable",
         "behat/mink-goutte-driver": "@stable",
-        "behat/mink-sahi-driver": "@stable",
         "inbaz/zf2behat-extension" : "dev-master"
     },
     "require-dev": {

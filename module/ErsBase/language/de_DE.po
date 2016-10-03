@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-29 18:40+0200\n"
-"PO-Revision-Date: 2016-09-29 18:40+0200\n"
+"POT-Creation-Date: 2016-10-01 18:20+0200\n"
+"PO-Revision-Date: 2016-10-01 18:21+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ZF Contributors <zf-devteam@zend.com>\n"
 "Language: de_DE\n"
@@ -14,6 +14,11 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: ..\n"
+
+#: ../src/ErsBase/Service/EmailService.php:303
+#, php-format
+msgid "Your registration for %s (order %s)"
+msgstr "Deine Registrierung für %s (Bestellung %s)"
 
 #: ../src/ErsBase/Service/OptionService.php:100
 msgid "select a person"

@@ -32,6 +32,9 @@ class Module
         $moduleRouteListener->attach($eventManager);
         $this->bootstrapSession($e);
         
+        $translator = $e->getApplication()->getServiceManager()->get('translator');
+        $translator->setLocale('de_DE');
+        
         $application   = $e->getApplication();
         $sm = $application->getServiceManager();
         #$sm   = $e->getApplication()->getServiceManager();
