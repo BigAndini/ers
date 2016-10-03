@@ -24,9 +24,9 @@ $this->headTitle($title);
     <p>
         <?php 
         $orderLink = '<a href="'.$this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())).'">'.$this->translate('this link').'</a>';
-        echo $this->translate('You can request this information again, by simply bookmarking %s, or have a look at the email we\'ve sent you.', $orderLink); ?>
+        printf($this->translate('You can request this information again, by simply bookmarking %s, or have a look at the email we\'ve sent you.'), $orderLink); ?>
     </p>
 
-    <p class="orange"><strong><?php echo sprintf($this->translate('Thanks for registering, see you in %s!'), $config['ERS']['city']); ?></strong></p>
+    <p class="orange"><strong><?php printf($this->translate('Thanks for registering, see you in %s!'), $config['ERS']['city']); ?></strong></p>
 </div>
 <?php endif;
