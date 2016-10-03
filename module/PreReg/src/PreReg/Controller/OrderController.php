@@ -65,8 +65,12 @@ class OrderController extends AbstractActionController {
         $agegroupService = $this->getServiceLocator()
                 ->get('ErsBase\Service\AgegroupService');
         
+        $config = $this->getServiceLocator()
+                ->get('config');
+        
         $order->logInfo();
         return new ViewModel(array(
+            'config' => $config,
             'order' => $order,
             'agegroupService' => $agegroupService,
         ));

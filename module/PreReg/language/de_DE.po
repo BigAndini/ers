@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Event Registration System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-03 18:42+0200\n"
-"PO-Revision-Date: 2016-10-03 18:42+0200\n"
+"POT-Creation-Date: 2016-10-03 18:53+0200\n"
+"PO-Revision-Date: 2016-10-03 19:00+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ERS Team <info@inbaz.org>\n"
 "Language: de_DE\n"
@@ -62,7 +62,8 @@ msgstr "Hilfe"
 msgid "Shopping Cart"
 msgstr "Einkaufswagen"
 
-#: ../config/module.config.php:113 ../view/pre-reg/order/view.phtml:12
+#: ../config/module.config.php:113 ../view/pre-reg/order/checkout.phtml:28
+#: ../view/pre-reg/order/view.phtml:12
 msgid "Buyer"
 msgstr "Käufer"
 
@@ -466,7 +467,7 @@ msgid ""
 "        as soon as we start distributing the E-Tickets and your payment has "
 "been confirmed."
 msgstr ""
-"Deine E-Tickets und weitere Informationen bezüglich der %s erhältst duin "
+"Deine E-Tickets und weitere Informationen bezüglich der %s erhältst du in "
 "einer weiteren E-Mail, sobald der Versand der E-Tickets begonnen hat und "
 "deine Bezahlung bestätigt ist. "
 
@@ -477,7 +478,7 @@ msgstr "Viele Grüße, "
 #: ../view/email/order-confirmation.phtml:133
 #, php-format
 msgid "Your European Juggling Association and the local %s organizers."
-msgstr "Deine EJA und das örtliche %s Orgateam "
+msgstr "Euer %s Orgateam "
 
 #: ../view/email/order-confirmation.phtml:137
 #, php-format
@@ -492,7 +493,7 @@ msgid ""
 "        behalf of %s."
 msgstr ""
 "Diese E-Mail wurde dir  im Namen von %s vom Event Registration System (ERS) "
-"geschickt, das von der European Juggling Association (EJA) betrieben wird. "
+"verschickt, das von der European Juggling Association (EJA) betrieben wird. "
 
 #: ../view/email/order-confirmation.phtml:150
 #, php-format
@@ -501,8 +502,7 @@ msgid ""
 "        please contact the EJA pre-registration coordinator\n"
 "        at %s."
 msgstr ""
-"Wenn du Fragen zu unserer Voranmeldung hast, kontaktiere bitte den EJA "
-"Prereg Koordinator unter %s"
+"Wenn du Fragen zu unserer Voranmeldung hast, kontaktiere uns bitte unter %s"
 
 #: ../view/email/order-confirmation.phtml:154
 #, php-format
@@ -510,7 +510,7 @@ msgid ""
 "For more information about %s,\n"
 "        please visit %s\n"
 "        or contact %s."
-msgstr "Für mehr Informationen zu %s, besuche %s oder kontaktiere %s. "
+msgstr "Für mehr Informationen zur %s, besuche %s oder kontaktiere %s. "
 
 #: ../view/error/404.phtml:13
 msgid "A 404 error occurred"
@@ -806,6 +806,10 @@ msgstr "Wir senden alle Informationen an: "
 msgid "choose Buyer"
 msgstr "Wähle einen Käufer"
 
+#: ../view/pre-reg/order/checkout.phtml:42 ../view/pre-reg/order/view.phtml:21
+msgid "Payment"
+msgstr "Bezahlung"
+
 #: ../view/pre-reg/order/checkout.phtml:49
 msgid "choose paymenttype"
 msgstr "Wähle eine Bezahlart"
@@ -987,10 +991,6 @@ msgstr ""
 "Teilnehmer, deren E-Mail Adresse angegeben wurde, werden darüber informiert, "
 "dass ihr Ticket bezahlt wurde und können dann ihr E-Ticket selbst "
 "herunterladen. "
-
-#: ../view/pre-reg/order/view.phtml:21
-msgid "Payment"
-msgstr "Bezahlung"
 
 #: ../view/pre-reg/order/view.phtml:23
 msgid "order is paid"
