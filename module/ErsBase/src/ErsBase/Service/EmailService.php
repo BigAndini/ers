@@ -22,7 +22,7 @@ class EmailService
     protected $textMessage;
     protected $htmlMessage;
     protected $attachments;
-    protected $from = 'prereg@eja.net';
+    protected $from;
     protected $to;
     protected $cc;
     protected $bcc;
@@ -240,7 +240,9 @@ class EmailService
     }
     
     public function sendExceptionEmail(\Exception $e) {
-        $this->setFrom('prereg@eja.net');
+        $config = $em = $this->getServiceLocator()->get('config');
+        
+        $this->setFrom($config['ERS']['info_mail']);
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $role = $em->getRepository('ErsBase\Entity\Role')
@@ -292,7 +294,7 @@ class EmailService
         
         $config = $this->getServiceLocator()->get('config');
         
-        $this->setFrom('prereg@eja.net');
+        $this->setFrom($config['ERS']['info_mail']);
         
         $this->addTo($buyer);
         

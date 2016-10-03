@@ -40,7 +40,7 @@ $this->headTitle($title);
             <?php #if($order->getStatus() == 'unpaid'): ?>
                 <?php if($paymenttype->getType() == 'BankTransfer'): ?>
                     <h3><?php echo $this->translate('Bank Transfer Details'); ?></h3>
-                    <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
+                    <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order, 'config' => $config)); ?>
                 <?php elseif($paymenttype->getType() == 'CreditCard'): ?>
                     <a class="btn btn-primary" href="<?php echo $this->url('payment', array('action' => 'creditcard', 'hashkey' => $order->getHashKey())); ?>">
                         Start payment with Credit Card

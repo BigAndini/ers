@@ -25,7 +25,7 @@ echo $this->navigation()
 <div class="row">
     <div class="col-md-6">
         <div class="order-info">
-            <h1>Buyer</h1>
+            <h1><?php echo $this->translate('Buyer'); ?></h1>
             <?php $buyer = $order->getBuyer(); ?>
             <?php if($buyer) : ?>
                 <h2><?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?></h2>
@@ -39,7 +39,7 @@ echo $this->navigation()
     </div>
     <div class="col-md-6">
         <div class="order-info">
-            <h1>Payment</h1>
+            <h1><?php echo $this->translate('Payment'); ?></h1>
             <?php $paymenttype = $order->getPaymentType(); ?>
             <?php if($paymenttype) : ?>
                 <h3><?php echo $paymenttype->getName(); ?></h3>
