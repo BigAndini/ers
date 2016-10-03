@@ -142,8 +142,10 @@ class OrderController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
+        $config = $this->getServiceLocator()->get('config');
         return new ViewModel(array(
             'order' => $order,
+            'config' => $config,
         ));
     }
     

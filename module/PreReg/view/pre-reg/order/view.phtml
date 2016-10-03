@@ -37,7 +37,6 @@ $this->headTitle($title);
                     prereg@eja.net to your address book. To be sure the email 
                     with your E-Tickets will not arrive in your spamfolder.'); ?></p>
             <?php elseif($order->getStatus()->getValue() == 'ordered'): ?>
-            <?php #if($order->getStatus() == 'unpaid'): ?>
                 <?php if($paymenttype->getType() == 'BankTransfer'): ?>
                     <h3><?php echo $this->translate('Bank Transfer Details'); ?></h3>
                     <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order, 'config' => $config)); ?>
