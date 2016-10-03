@@ -11,7 +11,7 @@ $this->headTitle($title);
             <p><?php echo $this->translate('Click on any item to add further information and place it in your shopping cart.'); ?></p>
         </div>
         <div class="col-md-6">
-            <p class="text-right"><?php echo $this->translate('The prices will increase after'); ?><br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
+            <p class="small text-right"><?php echo sprintf($this->translate('The prices will increase after <br /> %s'), $deadline->getDeadline()->format('d.m.Y H:i:s T')); ?></p>
         </div>
     </div>
 

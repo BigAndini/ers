@@ -43,8 +43,17 @@ DH1 5QX</pre>
     </div>
     <div>
         <p><?php echo $this->translate('We sent this information to your email address:'); ?> <strong><?php echo $order->getBuyer()->getEmail(); ?></strong></p>
-        <h3><?php echo $this->translate('You can request'); ?> <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>"><?php echo $this->translate('this information'); ?></a> <?php echo $this->translate('again'); ?></h3>
-        <p><?php echo $this->translate('Simply bookmark'); ?> <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>"><?php echo $this->translate('this link'); ?></a> <?php echo $this->translate('or have a look at the mail we sent you.'); ?></p>
+        <h3>
+            <?php 
+            $orderLink = '<a href="'.$this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())).'">'.$this->translate('this information').'</a>';
+            printf($this->translate('You can request %s again.'), $orderLink); ?>
+        </h3>
+        <p>
+            <?php 
+            $orderLink2 = '<a href="'.$this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())).'">'.$this->translate('this link').'</a>';
+            prinf($this->translate('Simply bookmark %s or have a look at the mail we sent you.'), $orderLink2); 
+            ?>
+        </p>
     </div>
 </div>
 <?php endif;

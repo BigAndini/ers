@@ -4,51 +4,56 @@
     <p>Go to <a href="<?php echo $this->url('product'); ?>">products</a> and 
         choose the items you want.</p>
     <?php else: ?>
-    <p>Please transfer the amount by SEPA bank transfer to the following account:</p>
+    <p><?php echo $this->translate('Please transfer the amount by SEPA bank transfer to the following account:'); ?></p>
     <table class="table">
         <tr>
-            <td>Owner</td>
-            <td>STICHTING EUROPEAN JUGGLING ASSOCIATION</td>
+            <td><?php echo $this->translate('Owner'); ?></td>
+            <td><?php echo $config['ERS\SEPA']['owner']; ?></td>
         </tr>
         <tr>
-            <td>IBAN</td>
-            <td>NL84 INGB 0007 8721 92</td>
+            <td><?php echo $this->translate('IBAN'); ?></td>
+            <td><?php echo $config['ERS\SEPA']['iban']; ?></td>
         </tr>
         <tr>
-            <td>BIC</td>
-            <td>INGBNL2A</td>
+            <td><?php echo $this->translate('BIC'); ?></td>
+            <td><?php echo $config['ERS\SEPA']['bic']; ?></td>
         </tr>
         <tr>
-            <td>Bank</td>
-            <td>ING BANK N.V.</td>
+            <td><?php echo $this->translate('Bank'); ?></td>
+            <td><?php echo $config['ERS\SEPA']['bank']; ?></td>
         </tr>
         <tr>
-            <td>Country</td>
-            <td>Netherlands</td>
+            <td><?php echo $this->translate('Country'); ?></td>
+            <td><?php echo $config['ERS\SEPA']['country']; ?></td>
         </tr>
         <tr>
-            <td>Amount</td>
+            <td><?php echo $this->translate('Amount'); ?></td>
             <td><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></td>
         </tr>
         <tr>
-            <td>Reason for payment</td>
+            <td><?php echo $this->translate('Reason for payment'); ?></td>
             <td><?php echo $order->getCode()->getValue(); ?></td>
         </tr>
     </table>
     
-    <h4>EJA address</h4>
-    <p>Stichting European Juggling Association (EJA)<br />
-        Jodenbreestraat 24-1<br />
-        1011 NK Amsterdam<br />
-        Netherlands</p>
+    <h4><?php echo $this->translate('Owner address'); ?></h4>
+    <p><?php 
+        if($config['ERS\SEPA']['owner_address_line1']): echo $config['ERS\SEPA']['owner_address_line1'].'<br />'; endif;
+        if($config['ERS\SEPA']['owner_address_line2']): echo $config['ERS\SEPA']['owner_address_line2'].'<br />'; endif;
+        if($config['ERS\SEPA']['owner_address_line3']): echo $config['ERS\SEPA']['owner_address_line3'].'<br />'; endif;
+        if($config['ERS\SEPA']['owner_address_line4']): echo $config['ERS\SEPA']['owner_address_line4'].'<br />'; endif;
+        ?></p>
     
-    <h4>Bank address</h4>
-    <p>Financial Plaza 1102 Bw Amsterdam</p>
+    <h4><?php echo $this->translate('Bank address'); ?></h4>
+    <p><?php 
+        if($config['ERS\SEPA']['bank_address_line1']): echo $config['ERS\SEPA']['bank_address_line1'].'<br />'; endif;
+        if($config['ERS\SEPA']['bank_address_line2']): echo $config['ERS\SEPA']['bank_address_line2'].'<br />'; endif;
+        if($config['ERS\SEPA']['bank_address_line3']): echo $config['ERS\SEPA']['bank_address_line3'].'<br />'; endif;
+        if($config['ERS\SEPA']['bank_address_line4']): echo $config['ERS\SEPA']['bank_address_line4'].'<br />'; endif;
+        ?></p>
 
     <p>
-        Make sure to fill in this reason for payment <strong><?php echo $order->getCode()->getValue(); ?></strong>
-        as the reference for the transfer.
-        Otherwise we won't be able to match your payment and your order can't be processed.
+        <?php printf($this->translate('Make sure to fill in this reason for payment <strong>%s</strong> as the reference for the transfer. Otherwise we won\'t be able to match your payment and your order can\'t be processed.'), $order->getCode()->getValue()); ?>
     </p>
 
     <?php endif; ?>

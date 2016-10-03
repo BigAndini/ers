@@ -141,7 +141,7 @@ echo $this->navigation()
                     <?php endforeach; ?>
                     <tr>
                         <td></td>
-                        <td>Subtotal:</td>
+                        <td><?php echo $this->translate('Subtotal:'); ?></td>
                         <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
                     </tr>
                 </table>
@@ -151,15 +151,15 @@ echo $this->navigation()
         <?php if($paymenttype) : ?>
             <table class="table sum-table">
                 <tr>
-                    <td>Order amount:</td>
+                    <td><?php echo $this->translate('Order amount:'); ?></td>
                     <td><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
-                    <td>Payment Charge:</td>
+                    <td><?php echo $this->translate('Payment Charge:'); ?></td>
                     <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), 'EUR', null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
-                    <th><span style="font-size: 18px;">Total amount:</span></th>
+                    <th><span style="font-size: 18px;"><?php echo $this->translate('Total amount:'); ?></span></th>
                     <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
                 </tr>
             </table>
@@ -180,8 +180,9 @@ echo $this->navigation()
     ?>
     <div class="alert alert-danger">
         <h4><?php echo $this->translate('Please add missing information for checkout'); ?></h4>
-        <?php if(count($order->getItems()) == 0) : ?>
-            <p><a href="<?php echo $this->url('product'); ?>"><?php echo $this->translate('Add products'); ?></a> <?php echo $this->translate('to your shopping cart first.'); ?></p>
+        <?php if(count($order->getItems()) == 0) : 
+            $addProductLink = '<a href="'.$this->url('product').'">'.$this->translate('Add products').'</a>'; ?>
+            <p><?php printf($this->translate('%s to your shopping cart first.'), $addProductLink); ?></p>
         <?php endif; ?>
         <?php if(!$order->getBuyer()) : ?>
             <p><?php echo $this->translate('To purchase this order'); ?> <a href="<?php echo $this->url('order', array('action' => 'buyer')); ?>"><?php echo $this->translate('choose/add a buyer'); ?></a> <?php echo $this->translate('with a valid email address.'); ?></p>
