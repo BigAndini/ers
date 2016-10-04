@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Event Registration System\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-10-03 18:53+0200\n"
-"PO-Revision-Date: 2016-10-03 19:00+0200\n"
+"PO-Revision-Date: 2016-10-04 09:24+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ERS Team <info@inbaz.org>\n"
 "Language: de_DE\n"
@@ -106,7 +106,7 @@ msgstr "löschen"
 
 #: ../src/PreReg/Controller/ProductController.php:392
 msgid "Add to Cart"
-msgstr "in den Warenkorb"
+msgstr "in den Einkaufswagen"
 
 #: ../src/PreReg/Form/Buyer.php:28 ../src/PreReg/Form/Participant.php:55
 msgid "First name..."
@@ -852,12 +852,12 @@ msgstr "Bitte ergänze die fehlenden Informationen. "
 
 #: ../view/pre-reg/order/checkout.phtml:184
 msgid "Add products"
-msgstr "Produkte hinzufügen"
+msgstr "Produkte"
 
 #: ../view/pre-reg/order/checkout.phtml:185
 #, php-format
 msgid "%s to your shopping cart first."
-msgstr "Füge %s zu deinem Warenkorb hinzu."
+msgstr "Lege zuerst %s in deinen Einkaufswagen."
 
 #: ../view/pre-reg/order/checkout.phtml:188
 #: ../view/pre-reg/order/checkout.phtml:191
