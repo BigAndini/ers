@@ -10,7 +10,6 @@
         <meta property="og:url" content="<?php echo $this->serverUrl(); ?>" />
         <meta property="og:site_name" content="Event Registration System - ERS" />
         <meta property="og:image" content="<?php echo $this->serverUrl('/img/og_image.jpg'); ?>" />
-        <?php #echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
         <?php echo $this->headTitle($this->translate('Event Registration System'))->setSeparator(' - ')->setAutoEscape(false)  // change Skeleton Application to Sticky Notes ?> 
 
         <?php echo $this->headMeta()
@@ -125,7 +124,7 @@
                     <a href="https://github.com/inbaz/ers/issues" target="_blank"><?php echo _('report a bug'); ?></a><br />
                     <span>Version: <?php echo exec('git symbolic-ref -q HEAD || git describe --tags --exact-match'); ?></span>
                 </p>
-                <p>&copy; 2014 - <?php echo date('Y') ?> by European Juggling Association <?php echo $this->translate('All rights reserved.') ?></p>
+                <p>&copy; 2014 - <?php echo date('Y') ?> <?php echo $this->config()['ERS']['operator'] ?> <?php echo $this->translate('All rights reserved.') ?></p>
             </footer>
         </div> <!-- /footer -->
         <?php echo $this->inlineScript() ?>

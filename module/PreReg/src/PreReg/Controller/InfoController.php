@@ -29,7 +29,6 @@ class InfoController extends AbstractActionController {
         $form->get('submit')->setValue(_('Register now!'));
         
         return new ViewModel(array(
-            'ers_config' => $this->getServiceLocator()->get('Config')['ERS'],
             'form' => $form,
         ));
     }

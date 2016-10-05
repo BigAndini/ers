@@ -8,23 +8,23 @@
     <table class="table">
         <tr>
             <td><?php echo $this->translate('Owner'); ?></td>
-            <td><?php echo $config['ERS\SEPA']['owner']; ?></td>
+            <td><?php echo $this->config()['ERS\SEPA']['owner']; ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('IBAN'); ?></td>
-            <td><?php echo $config['ERS\SEPA']['iban']; ?></td>
+            <td><?php echo $this->config()['ERS\SEPA']['iban']; ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('BIC'); ?></td>
-            <td><?php echo $config['ERS\SEPA']['bic']; ?></td>
+            <td><?php echo $this->config()['ERS\SEPA']['bic']; ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('Bank'); ?></td>
-            <td><?php echo $config['ERS\SEPA']['bank']; ?></td>
+            <td><?php echo $this->config()['ERS\SEPA']['bank']; ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('Country'); ?></td>
-            <td><?php echo $config['ERS\SEPA']['country']; ?></td>
+            <td><?php echo $this->config()['ERS\SEPA']['country']; ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('Amount'); ?></td>
@@ -38,18 +38,18 @@
     
     <h4><?php echo $this->translate('Owner address'); ?></h4>
     <p><?php 
-        if($config['ERS\SEPA']['owner_address_line1']): echo $config['ERS\SEPA']['owner_address_line1'].'<br />'; endif;
-        if($config['ERS\SEPA']['owner_address_line2']): echo $config['ERS\SEPA']['owner_address_line2'].'<br />'; endif;
-        if($config['ERS\SEPA']['owner_address_line3']): echo $config['ERS\SEPA']['owner_address_line3'].'<br />'; endif;
-        if($config['ERS\SEPA']['owner_address_line4']): echo $config['ERS\SEPA']['owner_address_line4'].'<br />'; endif;
+        if($this->config()['ERS\SEPA']['owner_address_line1']): echo $this->config()['ERS\SEPA']['owner_address_line1'].'<br />'; endif;
+        if($this->config()['ERS\SEPA']['owner_address_line2']): echo $this->config()['ERS\SEPA']['owner_address_line2'].'<br />'; endif;
+        if($this->config()['ERS\SEPA']['owner_address_line3']): echo $this->config()['ERS\SEPA']['owner_address_line3'].'<br />'; endif;
+        if($this->config()['ERS\SEPA']['owner_address_line4']): echo $this->config()['ERS\SEPA']['owner_address_line4'].'<br />'; endif;
         ?></p>
     
     <h4><?php echo $this->translate('Bank address'); ?></h4>
     <p><?php 
-        if($config['ERS\SEPA']['bank_address_line1']): echo $config['ERS\SEPA']['bank_address_line1'].'<br />'; endif;
-        if($config['ERS\SEPA']['bank_address_line2']): echo $config['ERS\SEPA']['bank_address_line2'].'<br />'; endif;
-        if($config['ERS\SEPA']['bank_address_line3']): echo $config['ERS\SEPA']['bank_address_line3'].'<br />'; endif;
-        if($config['ERS\SEPA']['bank_address_line4']): echo $config['ERS\SEPA']['bank_address_line4'].'<br />'; endif;
+        if($this->config()['ERS\SEPA']['bank_address_line1']): echo $this->config()['ERS\SEPA']['bank_address_line1'].'<br />'; endif;
+        if($this->config()['ERS\SEPA']['bank_address_line2']): echo $this->config()['ERS\SEPA']['bank_address_line2'].'<br />'; endif;
+        if($this->config()['ERS\SEPA']['bank_address_line3']): echo $this->config()['ERS\SEPA']['bank_address_line3'].'<br />'; endif;
+        if($this->config()['ERS\SEPA']['bank_address_line4']): echo $this->config()['ERS\SEPA']['bank_address_line4'].'<br />'; endif;
         ?></p>
 
     <p>

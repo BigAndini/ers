@@ -51,7 +51,7 @@ echo $this->navigation()
                         <label class="payment-type">
                             <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
                             <?php echo $paymenttype->getName() ?>
-                            <span class="h5">(payment fee: <?php echo $this->currencyFormat($order->getPaymentFees($paymenttype), 'EUR', null, 'de_DE'); ?>)</span>
+                            <span class="h5">(<?php echo $this->translate('payment fee:'); ?> <?php echo $this->currencyFormat($order->getPaymentFees($paymenttype), 'EUR', null, 'de_DE'); ?>)</span>
                         </label>
                     <?php elseif($now->getTimestamp() < $paymenttype->getActiveFrom()->getDeadline()->getTimestamp()): ?>
                         <label class="payment-type">

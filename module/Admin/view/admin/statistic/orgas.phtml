@@ -12,20 +12,9 @@ $this->headTitle($title);
             <p class="text-center">volunteers</p>
             <h1 class="text-center"><?php echo $this->currencyFormat($volunteers1['ordersum'], 'EUR', null, 'de_DE'); ?></h1>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-6">
             <p class="text-center">participants registered</p>
             <h1 class="text-center"><?php echo $participants['participants']; ?></h1>
-        </div>
-        <div class="col-md-3">
-            <p class="text-center">spontanious participants:</p>
-            <table class="table table-condensed">
-                <?php for($i=1;$i<=5;$i++): ?>
-                <tr>
-                    <td><?php echo $i*10 ?> %</td>
-                    <td><?php echo floor($participants['participants']*$i*10/1000)*10; ?></td>
-                </tr>    
-                <?php endfor;?>
-            </table>
         </div>
     </div>
     <div class="row">

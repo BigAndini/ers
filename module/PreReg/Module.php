@@ -37,7 +37,6 @@ class Module
         
         $application   = $e->getApplication();
         $sm = $application->getServiceManager();
-        #$sm   = $e->getApplication()->getServiceManager();
         $auth = $sm->get('BjyAuthorize\Service\Authorize');
 
         if(!\Zend\Console\Console::isConsole()) {

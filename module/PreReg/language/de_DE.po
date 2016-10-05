@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Event Registration System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-03 18:53+0200\n"
-"PO-Revision-Date: 2016-10-04 09:24+0200\n"
+"POT-Creation-Date: 2016-10-05 08:18+0200\n"
+"PO-Revision-Date: 2016-10-05 08:18+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ERS Team <info@inbaz.org>\n"
 "Language: de_DE\n"
@@ -100,11 +100,11 @@ msgid "Register now!"
 msgstr "Jetzt anmelden! "
 
 #: ../src/PreReg/Controller/ParticipantController.php:225
-#: ../src/PreReg/Controller/ProductController.php:502
+#: ../src/PreReg/Controller/ProductController.php:500
 msgid "Delete"
 msgstr "löschen"
 
-#: ../src/PreReg/Controller/ProductController.php:392
+#: ../src/PreReg/Controller/ProductController.php:390
 msgid "Add to Cart"
 msgstr "in den Einkaufswagen"
 
@@ -581,7 +581,7 @@ msgstr "Land "
 
 #: ../view/partial/banktransfer-info.phtml:30
 #: ../view/pre-reg/order/checkout.phtml:84 ../view/pre-reg/order/index.phtml:59
-#: ../view/pre-reg/order/view.phtml:86
+#: ../view/pre-reg/order/view.phtml:85
 msgid "Amount"
 msgstr "Menge"
 
@@ -823,17 +823,17 @@ msgid "Product"
 msgstr "Produkt"
 
 #: ../view/pre-reg/order/checkout.phtml:85 ../view/pre-reg/order/index.phtml:60
-#: ../view/pre-reg/order/view.phtml:87
+#: ../view/pre-reg/order/view.phtml:86
 msgid "Price"
 msgstr "Preis"
 
 #: ../view/pre-reg/order/checkout.phtml:144
-#: ../view/pre-reg/order/view.phtml:125
+#: ../view/pre-reg/order/view.phtml:124
 msgid "Subtotal:"
 msgstr "Zwischensumme"
 
 #: ../view/pre-reg/order/checkout.phtml:154
-#: ../view/pre-reg/order/view.phtml:135
+#: ../view/pre-reg/order/view.phtml:134
 msgid "Order amount:"
 msgstr "Höhe der Bestellung"
 
@@ -842,7 +842,7 @@ msgid "Payment Charge:"
 msgstr "Gebühr"
 
 #: ../view/pre-reg/order/checkout.phtml:162
-#: ../view/pre-reg/order/view.phtml:143
+#: ../view/pre-reg/order/view.phtml:142
 msgid "Total amount:"
 msgstr "Gesamtsumme"
 
@@ -915,6 +915,10 @@ msgid ""
 msgstr ""
 "Momentan sind keine Bezahlarten verfügbar. Bitte versuche es später noch "
 "einmal. Entschuldigung! "
+
+#: ../view/pre-reg/order/payment.phtml:54
+msgid "payment fee:"
+msgstr "Gebühr für Bezahlart:"
 
 #: ../view/pre-reg/order/payment.phtml:63
 msgid "This payment type is not available, yet. It will be available from"
@@ -1023,24 +1027,24 @@ msgstr ""
 "sicher zu gehen, dass die Mail mit deinen E-Tickets nicht im Spamordner "
 "landet. "
 
-#: ../view/pre-reg/order/view.phtml:42
+#: ../view/pre-reg/order/view.phtml:41
 msgid "Bank Transfer Details"
 msgstr "Angaben zur Überweisung"
 
-#: ../view/pre-reg/order/view.phtml:53
+#: ../view/pre-reg/order/view.phtml:52
 msgid "No payment type was recognized"
 msgstr "Es wurde kein Bezahltyp erkannt"
 
-#: ../view/pre-reg/order/view.phtml:56
+#: ../view/pre-reg/order/view.phtml:55
 msgid "undefined status"
 msgstr "Status unbekannt"
 
-#: ../view/pre-reg/order/view.phtml:57
+#: ../view/pre-reg/order/view.phtml:56
 msgid "Please contact the EJC team to solve this problem:"
 msgstr ""
 "Bitte kontaktiere das EJC Team. Wir helfen dir bei der Lösung des Problems. "
 
-#: ../view/pre-reg/order/view.phtml:74
+#: ../view/pre-reg/order/view.phtml:73
 msgid "unassigned items"
 msgstr "nicht zugeordnete Posten"
 
@@ -1374,7 +1378,7 @@ msgstr ""
 "Bitte komplettiere deine Angaben. Erst dann kann das Produkt in den "
 "Einkaufswagen gelegt werden. "
 
-#: ../view/pre-reg/product/add.phtml:59 ../view/pre-reg/product/index.phtml:14
+#: ../view/pre-reg/product/add.phtml:59 ../view/pre-reg/product/index.phtml:13
 #, php-format
 msgid "The prices will increase after <br /> %s"
 msgstr "Diese Preise werden ab dem <br /> %s höher sein. "
@@ -1464,12 +1468,12 @@ msgstr ""
 msgid "who will use the ticket for the event."
 msgstr "die das Ticket für die Veranstaltung verwenden wird. "
 
-#: ../view/pre-reg/product/index.phtml:4
+#: ../view/pre-reg/product/index.phtml:3
 #, php-format
 msgid "Tickets for %s and other products"
 msgstr "Tickets für die %s und andere Produkte"
 
-#: ../view/pre-reg/product/index.phtml:11
+#: ../view/pre-reg/product/index.phtml:10
 msgid ""
 "Click on any item to add further information and place it in your shopping "
 "cart."
@@ -1477,11 +1481,11 @@ msgstr ""
 "Klicke auf einen Artikel, um weitere Informationen hinzuzufügen und lege ihn "
 "anschließend in deinen Einkaufswagen"
 
-#: ../view/pre-reg/product/index.phtml:36
+#: ../view/pre-reg/product/index.phtml:35
 msgid "PreReg is closed"
 msgstr "Die Voranmeldung ist abgeschlossen"
 
-#: ../view/pre-reg/product/index.phtml:40
+#: ../view/pre-reg/product/index.phtml:39
 msgid ""
 "The PreReg is already closed. For more information, please visit our "
 "homepage on"

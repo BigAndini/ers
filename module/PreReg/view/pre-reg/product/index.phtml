@@ -1,7 +1,6 @@
 <?php
 
-#$title = $this->translate('Tickets for').' '.$ers_config['name_with_year'].' '.$this->translate('and other products');
-$title = sprintf($this->translate('Tickets for %s and other products'), $ers_config['name_with_year']);
+$title = sprintf($this->translate('Tickets for %s and other products'), $this->config()['ERS']['name_with_year']);
 $this->headTitle($title);
 ?>
 <?php if($deadline): ?>
@@ -37,7 +36,7 @@ else: ?>
         </h1>
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
-                <p><?php echo $this->translate('The PreReg is already closed. For more information, please visit our homepage on'); ?> <a href="<?php echo $ers_config['registration_info'] ?>"><?php echo $ers_config['registration_info'] ?></a></p>
+                <p><?php echo $this->translate('The PreReg is already closed. For more information, please visit our homepage on'); ?> <a href="<?php echo $this->config()['ERS']['registration_info'] ?>"><?php echo $this->config()['registration_info'] ?></a></p>
             </div>
         </div>
     </div>

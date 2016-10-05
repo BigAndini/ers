@@ -12,19 +12,19 @@ $this->headTitle('Event Registration System');
         <div class="col-md-7">
             <p class="justify">
                 <?php 
-                $startDate = '<strong>'.$ers_config['start']->format('d.m.Y').'</strong>';
-                $endDate = '<strong>'.$ers_config['end']->format('d.m.Y').'</strong>';
-                $website = '<a class="primary-color" href="'.$ers_config['website'].'" target="_blank">'.$ers_config['website'].'</a>';
+                $startDate = '<strong>'.$this->config()['ERS']['start']->format('d.m.Y').'</strong>';
+                $endDate = '<strong>'.$this->config()['ERS']['end']->format('d.m.Y').'</strong>';
+                $website = '<a class="primary-color" href="'.$this->config()['ERS']['website'].'" target="_blank">'.$this->config()['ERS']['website'].'</a>';
                 printf($this->translate('The %s will take place from %s - %s in %s (%s). You can find all up-to-date information on %s.'), 
-                        $ers_config['name_with_number'],
+                        $this->config()['ERS']['name_with_number'],
                         $startDate,
                         $endDate,
-                        $ers_config['city'],
-                        $ers_config['country'],
+                        $this->config()['ERS']['city'],
+                        $this->config()['ERS']['country'],
                         $website); ?>
             </p>
 
-            <p class="justify"><?php printf($this->translate('On this website you can purchase tickets for %s as well as other items such as galashow tickets.'), $ers_config['name_with_year']); ?></p>
+            <p class="justify"><?php printf($this->translate('On this website you can purchase tickets for %s as well as other items such as galashow tickets.'), $this->config()['name_with_year']); ?></p>
         </div>
         <div class="col-md-5">
         <?php
