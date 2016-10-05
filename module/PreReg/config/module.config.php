@@ -44,19 +44,8 @@ return array(
                 'route' => 'order',
                 'resource'  => 'controller/PreReg\Controller\Order',
             ),
-            /*'cart-reset' => array(
-                'label' => 'Reset Shopping Cart',
-                'route' => 'cart',
-                'action' => 'reset',
-                'resource'  => 'controller/PreReg\Controller\Cart:reset',
-            ),*/
         ),
         'top_nav' => array(
-            /*'order' => array(
-                'label' => 'My Shopping Cart',
-                'route' => 'order',
-                'resource'  => 'controller/PreReg\Controller\Order',
-            ),*/
             'login' => array(
                 'label' => _('Login'),
                 'route' => 'zfcuser/login',
@@ -91,16 +80,12 @@ return array(
                 'route' => 'onsite',
                 'resource'  => 'controller/OnsiteReg\Controller\Index',
             ),
-            'help' => array(
-                /*'label' => '<span class="fa-stack fa-lg">
-                        <i class="fa fa-circle fa-stack-2x green"></i>
-                        <i class="fa fa-question fa-stack-1x fa-inverse"></i>
-                    </span>',*/
+            /*'help' => array(
                 'label' => _('Help'),
                 'route' => 'info',
                 'action' => 'help',
                 'resource'  => 'controller/PreReg\Controller\Info',
-            ),
+            ),*/
         ),
         'checkout_nav' => array(
             'mycart' => array(
