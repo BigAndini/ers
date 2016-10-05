@@ -60,9 +60,7 @@ class ProductController extends AbstractActionController {
             'products' => $products,
             'agegroups' => $agegroups,
             'deadline' => $deadline,
-            #'order' => $cartContainer->order,
             'order' => $orderService->getOrder(),
-            'ers_config' => $this->getServiceLocator()->get('Config')['ERS'],
         ));
     }
     

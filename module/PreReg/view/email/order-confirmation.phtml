@@ -17,8 +17,8 @@
             ).'">' . $this->translate('terms and conditions') . '</a>';
     $orderDate = $order->getCreated()->format('d.m.Y');
     $orderId = '<b>'.$order->getCode()->getValue().'</b>';
-    $infoMail = '<a href=\'mailto:'.$config['ERS']['info_mail'].'\'>'.$config['ERS']['info_mail'].'</a>';
-    $website = '<a href=\''.$config['ERS']['website'].'\'>'.$config['ERS']['website'].'</a>';
+    $infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this->config()['ERS']['info_mail'].'</a>';
+    $website = '<a href=\''.$this->config()['ERS']['website'].'\'>'.$this->config()['ERS']['website'].'</a>';
 ?>
 
 <html>
@@ -46,7 +46,7 @@
         ), array('force_canonical' => true)); ?>">resend email link</a>.
     </p>-->
 
-    <p><?php printf($this->translate('Thank you for registering for the %s!'), $config['ERS']['name_with_number']); ?></p>
+    <p><?php printf($this->translate('Thank you for registering for the %s!'), $this->config()['ERS']['name_with_number']); ?></p>
 
     <p><?php printf($this->translate('You\'ve chosen %s as payment method.'), $order->getPaymentType()->getName()); ?></p>
 
@@ -56,7 +56,7 @@
 
         <p><?php echo $this->translate('To complete your order, we need to receive your bank transfer within 14 days.'); ?></p>
 
-        <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order, 'config' => $config)); ?>
+        <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
 
         <p><?php printf($this->translate('To see if we have already received your payment, you can visit the following link: %s', $orderLink)); ?></p>
 
@@ -125,12 +125,12 @@
 
     <p>
         <?php printf($this->translate('Your E-Tickets and further information concerning the %s will be delivered in another email
-        as soon as we start distributing the E-Tickets and your payment has been confirmed.'), $config['ERS']['name_with_number']); ?>
+        as soon as we start distributing the E-Tickets and your payment has been confirmed.'), $this->config()['ERS']['name_with_number']); ?>
     </p>
 
     <p><?php $this->translate('Regards,'); ?></p>
 
-    <p><?php printf($this->translate('Your European Juggling Association and the local %s organizers.'), $config['ERS']['name_with_number']); ?></p>
+    <p><?php printf($this->translate('Your European Juggling Association and the local %s organizers.'), $this->config()['ERS']['name_with_number']); ?></p>
 
     <hr>
     <p>
@@ -145,7 +145,7 @@
             background-color: #eeeeee;">
         <?php printf($this->translate('This mail was sent to you by the Event Registration System (ERS),
         operated by the European Juggling Association (EJA) on
-        behalf of %s.'), $config['ERS']['name_with_year']); ?>
+        behalf of %s.'), $this->config()['ERS']['name_with_year']); ?>
         <br>
         <?php printf($this->translate('If you have any questions about your pre-registration,
         please contact the EJA pre-registration coordinator
@@ -154,7 +154,7 @@
         <?php printf($this->translate('For more information about %s,
         please visit %s
         or contact %s.'), 
-        $config['ERS']['name_with_year'],
+        $this->config()['ERS']['name_with_year'],
         $website,
         $infoMail); ?>
     </div>

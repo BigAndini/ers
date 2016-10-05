@@ -31,7 +31,7 @@ class Config extends AbstractHelper {
     }
 
     public function __invoke() {
-        $config = $this->serviceManager->getServiceLocator()->get('Config');
+        $config = $this->serviceManager->getServiceLocator()->get('config');
         return $config;
     }
 
