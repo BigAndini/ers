@@ -232,6 +232,9 @@ class EmailService
             $message->addBcc($user->getEmail());
         }
         
+        $config = $em = $this->getServiceLocator()->get('config');
+        $this->setFrom($config['ERS']['info_mail']);
+        
         $message->addFrom($this->getFrom());
         $message->setSubject($this->getSubject());
         
