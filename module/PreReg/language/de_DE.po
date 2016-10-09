@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Event Registration System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-05 08:18+0200\n"
-"PO-Revision-Date: 2016-10-05 08:18+0200\n"
+"POT-Creation-Date: 2016-10-09 12:14+0200\n"
+"PO-Revision-Date: 2016-10-09 12:16+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ERS Team <info@inbaz.org>\n"
 "Language: de_DE\n"
@@ -34,60 +34,56 @@ msgstr "Meine Personen"
 msgid "My Shopping Cart"
 msgstr "Mein Einkaufswagen"
 
-#: ../config/module.config.php:61
+#: ../config/module.config.php:50
 msgid "Login"
 msgstr "Login"
 
-#: ../config/module.config.php:73 ../view/pre-reg/profile/index.phtml:3
+#: ../config/module.config.php:62 ../view/pre-reg/profile/index.phtml:3
 msgid "My Profile"
 msgstr "Mein Profil"
 
-#: ../config/module.config.php:79
+#: ../config/module.config.php:68
 msgid "Logout"
 msgstr "Logout"
 
-#: ../config/module.config.php:85
+#: ../config/module.config.php:74
 msgid "AdminPanel"
 msgstr "Admin Zugang"
 
-#: ../config/module.config.php:90
+#: ../config/module.config.php:79
 msgid "Onsite"
 msgstr "Onsite"
 
-#: ../config/module.config.php:99
-msgid "Help"
-msgstr "Hilfe"
-
-#: ../config/module.config.php:107 ../view/pre-reg/order/checkout.phtml:61
+#: ../config/module.config.php:92 ../view/pre-reg/order/checkout.phtml:61
 msgid "Shopping Cart"
 msgstr "Einkaufswagen"
 
-#: ../config/module.config.php:113 ../view/pre-reg/order/checkout.phtml:28
+#: ../config/module.config.php:98 ../view/pre-reg/order/checkout.phtml:28
 #: ../view/pre-reg/order/view.phtml:12
 msgid "Buyer"
 msgstr "Käufer"
 
-#: ../config/module.config.php:119
+#: ../config/module.config.php:104
 msgid "Payment type"
 msgstr "Bezahlart "
 
-#: ../config/module.config.php:125
+#: ../config/module.config.php:110
 msgid "Checkout"
 msgstr "Bestellung"
 
-#: ../config/module.config.php:133
+#: ../config/module.config.php:118
 msgid "Change my user data"
 msgstr "Meine Benutzerdaten ändern"
 
-#: ../config/module.config.php:139
+#: ../config/module.config.php:124
 msgid "Change my password"
 msgstr "Mein Passwort ändern"
 
-#: ../config/module.config.php:145
+#: ../config/module.config.php:130
 msgid "View tickets"
 msgstr "Tickets ansehen"
 
-#: ../config/module.config.php:151
+#: ../config/module.config.php:136
 msgid "My Persons"
 msgstr "Meine Personen"
 
@@ -107,6 +103,10 @@ msgstr "löschen"
 #: ../src/PreReg/Controller/ProductController.php:390
 msgid "Add to Cart"
 msgstr "in den Einkaufswagen"
+
+#: ../src/PreReg/Controller/ProfileController.php:143
+msgid "Event Registration System: Password Request Link"
+msgstr "Event Registration System: Passwort ändern Link"
 
 #: ../src/PreReg/Form/Buyer.php:28 ../src/PreReg/Form/Participant.php:55
 msgid "First name..."
@@ -512,6 +512,30 @@ msgid ""
 "        or contact %s."
 msgstr "Für mehr Informationen zur %s, besuche %s oder kontaktiere %s. "
 
+#: ../view/email/request-password.phtml:14
+msgid "Dear"
+msgstr "Hallo"
+
+#: ../view/email/request-password.phtml:16
+msgid "You can set the password for your user account via this link:"
+msgstr "Du kannst dein Passwort über diesen Link ändern:"
+
+#: ../view/email/request-password.phtml:23
+msgid ""
+"If you cannot click on this link copy the link into the address bar of your "
+"browser."
+msgstr ""
+"Wenn du den Link nicht anklicken kannst, markiere ihn und kopiere ihn in die "
+"Adresszeile deines Browsers."
+
+#: ../view/email/request-password.phtml:24
+msgid "This link will be available for the next 24 hours."
+msgstr "Dieser Link ist 24 Stunden gültig."
+
+#: ../view/email/request-password.phtml:25
+msgid "Best regards,"
+msgstr "Viele Grüße"
+
 #: ../view/error/404.phtml:13
 msgid "A 404 error occurred"
 msgstr "Es trat ein 404 Fehler auf"
@@ -627,7 +651,7 @@ msgstr ""
 #: ../view/pre-reg/cart/reset.phtml:30 ../view/pre-reg/product/delete.phtml:28
 #: ../view/pre-reg/product/edit.phtml:105 ../view/pre-reg/profile/edit.phtml:27
 #: ../view/pre-reg/profile/password.phtml:56
-#: ../view/pre-reg/profile/request-password.phtml:36
+#: ../view/pre-reg/profile/request-password.phtml:35
 msgid "Cancel"
 msgstr "abbrechen"
 
@@ -1524,20 +1548,30 @@ msgstr "Ändere dein Passwort "
 
 #: ../view/pre-reg/profile/request-password.phtml:10
 msgid ""
-"If we were able to find your email address in our system an email was \n"
-"        sent to you with a link to change your password."
+"If we were able to find your email address in our system an email was sent "
+"to you with a link to change your password."
 msgstr ""
-"Wenn wir deine Mailadresse im System gefunden haben, bekommst du eine E-Mail "
-"mit einem link. Dieser leitet dich auf eine Seite, auf der du dein Passwort "
-"ändern kannst. "
+"Wenn wir deine E-Mail Adresse in unserer Datenbank finden konnten, haben wir "
+"dir eine E-Mail geschickt, um dein Passwort zu ändern."
 
-#: ../view/pre-reg/profile/request-password.phtml:12
+#: ../view/pre-reg/profile/request-password.phtml:11
 msgid "If you did not receive an email check your spam folder."
 msgstr "Falls du keine E-Mail erhalten hast, überprüfe bitte deinen Spamordner"
 
-#: ../view/pre-reg/profile/request-password.phtml:24
+#: ../view/pre-reg/profile/request-password.phtml:23
 msgid "Your email address..."
 msgstr "Deine Mailadresse... "
+
+#~ msgid ""
+#~ "If we were able to find your email address in our system an email was \n"
+#~ "        sent to you with a link to change your password."
+#~ msgstr ""
+#~ "Wenn wir deine Mailadresse im System gefunden haben, bekommst du eine E-"
+#~ "Mail mit einem link. Dieser leitet dich auf eine Seite, auf der du dein "
+#~ "Passwort ändern kannst. "
+
+#~ msgid "Help"
+#~ msgstr "Hilfe"
 
 #~ msgid "You can request"
 #~ msgstr "Du kannst diese Information nochmals anfordern"

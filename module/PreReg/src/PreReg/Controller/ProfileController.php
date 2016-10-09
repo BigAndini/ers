@@ -134,11 +134,13 @@ class ProfileController extends AbstractActionController {
                     $em->persist($user);
                     $em->flush();
                     
-                    $emailService = new Service\EmailService();
+                    #$emailService = new Service\EmailService();
+                    $emailService = $this->getServiceLocator()
+                            ->get('ErsBase\Service\EmailService');
                     #$emailService->setFrom('prereg@eja.net');
         
                     $emailService->addTo($user);
-                    $emailService->setSubject('Event Registration System: Password Request Link');
+                    $emailService->setSubject(_('Event Registration System: Password Request Link'));
 
                     $viewModel = new ViewModel(array(
                         'user' => $user,

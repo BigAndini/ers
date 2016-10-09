@@ -232,7 +232,7 @@ class EmailService
             $message->addBcc($user->getEmail());
         }
         
-        $config = $em = $this->getServiceLocator()->get('config');
+        $config = $this->getServiceLocator()->get('config');
         $this->setFrom($config['ERS']['info_mail']);
         
         $message->addFrom($this->getFrom());
@@ -243,7 +243,7 @@ class EmailService
     }
     
     public function sendExceptionEmail(\Exception $e) {
-        $config = $em = $this->getServiceLocator()->get('config');
+        $config = $this->getServiceLocator()->get('config');
         
         $this->setFrom($config['ERS']['info_mail']);
         $em = $this->getServiceLocator()
