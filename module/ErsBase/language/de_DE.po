@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-01 18:20+0200\n"
-"PO-Revision-Date: 2016-10-01 18:21+0200\n"
+"POT-Creation-Date: 2016-10-09 12:16+0200\n"
+"PO-Revision-Date: 2016-10-09 12:17+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ZF Contributors <zf-devteam@zend.com>\n"
 "Language: de_DE\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../src/ErsBase/Service/EmailService.php:303
+#: ../src/ErsBase/Service/EmailService.php:308
 #, php-format
 msgid "Your registration for %s (order %s)"
 msgstr "Deine Registrierung für %s (Bestellung %s)"
@@ -38,19 +38,19 @@ msgstr "Datei"
 
 #: ../view/email/exception.phtml:27 ../view/email/exception.phtml:51
 msgid "Message"
-msgstr "Nachricht "
+msgstr "Meldung"
 
 #: ../view/email/exception.phtml:31 ../view/email/exception.phtml:55
 msgid "Stack trace"
-msgstr "Stapelüberwachung"
+msgstr "Stacktrace"
 
 #: ../view/email/exception.phtml:41
 msgid "Previous exceptions"
-msgstr "Vorherige Ausnahme"
+msgstr "Vorherige Exceptions"
 
 #: ../view/email/exception.phtml:68
 msgid "No Exception available"
-msgstr "Es ist keine Ausnahme verfügbar"
+msgstr "Es ist keine Exception verfügbar"
 
 #~ msgid "Home"
 #~ msgstr "Startseite"
