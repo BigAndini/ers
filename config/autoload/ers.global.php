@@ -27,6 +27,26 @@
     'environment' => 'develop',
     #'environment' => 'testing',
     #'environment' => 'production',
+    'ERS\SEPA' => array(
+        'iban'      => 'NL84 INGB 0007 8721 92',
+        'bic'       => 'INGBNL2A',
+        'owner'     => 'STICHTING EUROPEAN JUGGLING ASSOCIATION',
+        'bank'      => 'ING BANK N.V.',
+        'country'   => 'Netherlands',
+    )
+    'ERS\iPayment' => array(
+        'trxuser_id'    => '99999',
+        'trx_currency'  => 'EUR',
+        'trxpassword'   => '0',
+        'sec_key'       => '1234567890',
+        'action'        => 'https://ipayment.de/merchant/%account_id%/processor/2.0/',
+    )
+    'orgHeiglPiwik' => array(
+
+        // Always omit a trailing slash!
+        'server' => 'prereg.eja.net/analytics',
+        'site_id' => 1,
+    ), 
 );
 */
 return array();

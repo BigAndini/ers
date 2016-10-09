@@ -351,14 +351,18 @@ class Module
                 'checkoutactive' => 'PreReg\View\Helper\CheckoutActive',
             ),
             'factories' => array(
-                'config' => function($serviceManager) {
-                    $helper = new \PreReg\View\Helper\Config($serviceManager);
+                'config' => function($sm) {
+                    $helper = new \PreReg\View\Helper\Config($sm);
                     return $helper;
                 },
                 'checkoutactive' => function($sm) {
                     $helper = new \PreReg\View\Helper\CheckoutActive();
                     return $helper;
-                }
+                },
+                'niceiban' => function($sm) {
+                    $helper = new \PreReg\View\Helper\NiceIban($sm);
+                    return $helper;
+                },
             ),
         );
     }
