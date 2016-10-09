@@ -190,7 +190,7 @@ return [
                 ['controller' => 'Admin\Controller\PaymentType',         'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Counter',             'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\User',                'roles' => ['preregcoordinator', 'admin', 'supradm']],
-                ['controller' => 'Admin\Controller\Role',                'roles' => ['admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Role',                'roles' => ['supradm']],
                 ['controller' => 'Admin\Controller\Country',             'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Bankaccount',         'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Matching',            'roles' => ['admin', 'supradm']],

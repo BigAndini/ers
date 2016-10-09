@@ -57,3 +57,6 @@ div.container a.brand {
 .ui-datepicker-title select {
     color: #333;
 }
+.iban-part {
+    margin-right: .3em;
+}
