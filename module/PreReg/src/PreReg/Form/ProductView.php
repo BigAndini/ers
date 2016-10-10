@@ -123,10 +123,6 @@ class ProductView extends Form
         $this->addVariants($defaults, $package_info);
     }
     
-    /*public function getVariantCounter() {
-        return $this->variantCounter;
-    }*/
-    
     private function addVariants($defaults = array(), $package_info = array()) {
         #$this->variantCounter = 0;
         foreach($this->variants as $variant) {
@@ -327,14 +323,13 @@ class ProductView extends Form
         ])); 
         $this->inputFilter->add($factory->createInput([ 
             'name' => 'pv', 
-            'required' => true, 
+            'required' => false, 
             'filters' => array( 
                 array("name" => "Callback", "options" => array(
                     "callback" => function($values) {
                         if(!is_array($values)) {
                             return array();
                         }
-                        #$int = new \Zend\Filter\Int();
                         $strip = new \Zend\Filter\StripTags();
                         $trim = new \Zend\Filter\StringTrim();
                         foreach($values as $key => $value) {

@@ -305,6 +305,9 @@ class PackageController extends AbstractActionController {
                         if($order->getPaymentStatus() == 'paid') {
                             $order->setPaymentStatus('unpaid');
                         }
+                        $order->setOrderSum($order->getPrice());
+                        $order->setTotalSum($order->getSum());
+                        $em->persist($order);
         
                         $itemBefore->setStatus($statusCancelled);
                         $em->persist($itemBefore);

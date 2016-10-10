@@ -98,8 +98,9 @@ class ParticipantController extends AbstractActionController {
                         $existing_user->loadData($user);
                         $em->persist($existing_user);
                         $orderService->addParticipant($existing_user);
-                    } elseif ($existing_user && $existing_user->getActive()) {
-                        throw new \Exception("This email address belongs to a registered user. Please log in.");
+                    } elseif ($existing_user && $existing_user->getActive() && !empty($this->zfcUserAuthentication()->getIdentity())) {
+                        #throw new \Exception("This email address belongs to a registered user. Please log in.");
+                        $orderService->addParticipant($existing_user);
                     } else {
                         // This email address is new. Make a regular participant out of it.
                         $orderService->addParticipant($user);
