@@ -220,7 +220,8 @@ class CronController extends AbstractActionController {
             $paid = true;
             echo $matchInfo." (exact)".PHP_EOL;
         } elseif($order_amount < $statement_amount) {
-            $paid = true;
+            #$paid = true;
+            $paid = false;
             echo $matchInfo." (overpaid)".PHP_EOL;
         } else {
             $paid = false;
@@ -490,10 +491,15 @@ class CronController extends AbstractActionController {
         }
         echo PHP_EOL;
         
+        $config = $emailService = $this->getServiceLocator()
+                        ->get('config');
+        
         foreach($packages as $package) {
             # prepare email (participant, buyer)
-            $emailService = new Service\EmailService();
-            $emailService->setFrom('prereg@eja.net');
+            #$emailService = new Service\EmailService();
+            $emailService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\EmailService');
+            $emailService->setFrom($config['ERS']['info_mail']);
 
             $order = $package->getOrder();
             $participant = $package->getParticipant();
@@ -512,10 +518,10 @@ class CronController extends AbstractActionController {
             $emailService->addTo($user);*/
             
             $bcc = new Entity\User();
-            $bcc->setEmail('prereg@eja.net');
+            $bcc->setEmail($config['ERS']['info_mail']);
             $emailService->addBcc($bcc);
 
-            $subject = "[EJC 2016] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+            $subject = "[".$config['ERS']['name_short']."] "._('E-Ticket for')." ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
             $emailService->setSubject($subject);
 
             $viewModel = new ViewModel(array(
@@ -895,10 +901,15 @@ class CronController extends AbstractActionController {
         $packages = $qb->getQuery()->getResult();
         echo "found ".count($packages)." packages.".PHP_EOL;
         
+        $config = $emailService = $this->getServiceLocator()
+                        ->get('config');
+        
         foreach($packages as $package) {
             # prepare email (participant, buyer)
-            $emailService = new Service\EmailService();
-            $emailService->setFrom('prereg@eja.net');
+            #$emailService = new Service\EmailService();
+            $emailService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\EmailService');
+            $emailService->setFrom($config['ERS']['info_mail']);
 
             $order = $package->getOrder();
             $participant = $package->getParticipant();
@@ -918,10 +929,10 @@ class CronController extends AbstractActionController {
             $emailService->addTo($user);*/
             
             $bcc = new Entity\User();
-            $bcc->setEmail('prereg@eja.net');
+            $bcc->setEmail($config['ERS']['info_mail']);
             $emailService->addBcc($bcc);
 
-            $subject = "[EJC 2016] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+            $subject = "[".$config['ERS']['name_short']."] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
             $emailService->setSubject($subject);
 
             $viewModel = new ViewModel(array(
@@ -961,10 +972,15 @@ class CronController extends AbstractActionController {
         $packages = $qb->getQuery()->getResult();
         echo "found ".count($packages)." packages.".PHP_EOL;
         
+        $config = $emailService = $this->getServiceLocator()
+                        ->get('config');
+        
         foreach($packages as $package) {
             # prepare email (participant, buyer)
-            $emailService = new Service\EmailService();
-            $emailService->setFrom('prereg@eja.net');
+            #$emailService = new Service\EmailService();
+            $emailService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\EmailService');
+            $emailService->setFrom($config['ERS']['info_mail']);
 
             $order = $package->getOrder();
             $participant = $package->getParticipant();
@@ -984,10 +1000,10 @@ class CronController extends AbstractActionController {
             $emailService->addTo($user);*/
             
             $bcc = new Entity\User();
-            $bcc->setEmail('prereg@eja.net');
+            $bcc->setEmail($config['ERS']['info_mail']);
             $emailService->addBcc($bcc);
 
-            $subject = "[EJC 2016] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+            $subject = "[".$config['ERS']['name_short']."] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
             $emailService->setSubject($subject);
 
             $viewModel = new ViewModel(array(

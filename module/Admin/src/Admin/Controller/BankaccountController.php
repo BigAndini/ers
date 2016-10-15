@@ -359,14 +359,9 @@ class BankaccountController extends AbstractActionController {
                 $hashes = array();
                 $separator = substr($data['separator'], 0, 1);
                 while (($row_data = fgetcsv($handle, 1000, $separator)) !== FALSE) {
-                #while (($row_data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                    #$hash = md5(implode($row_data));
-                    
                     $bs = new Entity\BankStatement();
-                    #$bs->setBankStatementCols($row_data);
                     $bs->setBankAccount($bankaccount);
                     $bs->setBankAccountCsv($bankAccountCsv);
-                    #$bs->setHash($hash);
                     $bs->setStatus('new');
                     foreach($row_data as $column => $value) {
                         $bsc = new Entity\BankStatementCol();
@@ -375,9 +370,6 @@ class BankaccountController extends AbstractActionController {
                         $bsc->setBankStatement($bs);
                         $bs->addBankStatementCol($bsc);
                     }
-                    /*if($fix_amount) {
-                        $bs->getAmount()->setValue((float) $bs->getAmount()->getValue());
-                    }*/
                     $bs->generateHash();
                     
                     $bankstatement = $em->getRepository('ErsBase\Entity\BankStatement')

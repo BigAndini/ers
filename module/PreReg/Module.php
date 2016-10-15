@@ -34,6 +34,7 @@ class Module
         
         $translator = $e->getApplication()->getServiceManager()->get('translator');
         $translator->setLocale('de_DE');
+        setlocale(LC_TIME, 'de_DE');
         
         $application   = $e->getApplication();
         $sm = $application->getServiceManager();
