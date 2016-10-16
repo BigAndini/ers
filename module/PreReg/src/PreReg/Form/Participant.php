@@ -311,6 +311,13 @@ class Participant extends Form implements InputFilterProviderInterface
                                     return true;
                                 }
                                 
+                                $auth = $this->getServiceLocator()
+                                        ->get('zfcuser_auth_service');
+                                $identity = $auth->getIdentity();
+                                if(!empty($identity) && $identity->getEmail() == $user->getEmail()) {
+                                    return true;
+                                }
+                                
                                 if(count($user->getRoles()) == 0) {
                                     $now = new \DateTime();
                                     $diff = $now->getTimestamp()-$user->getUpdated()->getTimestamp();

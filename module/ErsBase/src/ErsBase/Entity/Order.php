@@ -209,21 +209,6 @@ class Order extends Base\Order
     }
     
     /**
-     * DEPRECATED session id is not used anymore
-     * Get Package by participant session id.
-     * 
-     * @return Entity\Package
-     */
-    /*public function getPackageByParticipantSessionId($id) {
-        foreach($this->getPackages() as $package) {
-            if($package->getParticipant()->getSessionId() == $id) {
-                return $package;
-            }
-        }
-        return false;
-    }*/
-    
-    /**
      * Get Package by participant id.
      * 
      * @return Entity\Package

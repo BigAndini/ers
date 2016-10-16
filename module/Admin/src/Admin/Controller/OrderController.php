@@ -347,8 +347,12 @@ class OrderController extends AbstractActionController {
                     }
 
                     # prepare email (participant, buyer)
-                    $emailService = new Service\EmailService();
-                    $emailService->setFrom('prereg@eja.net');
+                    #$emailService = new Service\EmailService();
+                    $emailService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\EmailService');
+                    $config = $this->getServiceLocator()
+                        ->get('config');
+                    $emailService->setFrom($config['ERS']['info_mail']);
 
                     $order = $package->getOrder();
                     $participant = $package->getParticipant();
@@ -361,7 +365,7 @@ class OrderController extends AbstractActionController {
                     }
 
                     $bcc = new Entity\User();
-                    $bcc->setEmail('prereg@eja.net');
+                    $bcc->setEmail($config['ERS']['info_mail']);
                     $emailService->addBcc($bcc);
 
                     $subject = "Your registration for EJC 2016 (order ".$order->getCode()->getValue().")";
@@ -434,14 +438,18 @@ class OrderController extends AbstractActionController {
                     ->findOneBy(array('id' => $id));
                 
                 # prepare email (participant, buyer)
-                $emailService = new Service\EmailService();
-                $emailService->setFrom('prereg@eja.net');
+                #$emailService = new Service\EmailService();
+                $emailService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\EmailService');
+                $config = $this->getServiceLocator()
+                        ->get('config');
+                $emailService->setFrom($config['ERS']['info_mail']);
 
                 $buyer = $order->getBuyer();
                 $emailService->addTo($buyer);
 
                 $bcc = new Entity\User();
-                $bcc->setEmail('prereg@eja.net');
+                $bcc->setEmail($config['ERS']['info_mail']);
                 $emailService->addBcc($bcc);
 
                 $subject = "[EJC 2016] Payment reminder for your order: ".$order->getCode()->getValue();

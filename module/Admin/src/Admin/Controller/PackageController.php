@@ -305,6 +305,9 @@ class PackageController extends AbstractActionController {
                         if($order->getPaymentStatus() == 'paid') {
                             $order->setPaymentStatus('unpaid');
                         }
+                        $order->setOrderSum($order->getPrice());
+                        $order->setTotalSum($order->getSum());
+                        $em->persist($order);
         
                         $itemBefore->setStatus($statusCancelled);
                         $em->persist($itemBefore);
@@ -523,8 +526,12 @@ class PackageController extends AbstractActionController {
                 }
                 
                 # prepare email (participant, buyer)
-                $emailService = new ersService\EmailService();
-                $emailService->setFrom('prereg@eja.net');
+                #$emailService = new ersService\EmailService();
+                $emailService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\EmailService');
+                $config = $this->getServiceLocator()
+                        ->get('config');
+                $emailService->setFrom($config['ERS']['info_mail']);
 
                 $order = $package->getOrder();
                 $participant = $package->getParticipant();
@@ -541,10 +548,10 @@ class PackageController extends AbstractActionController {
                 }
 
                 $bcc = new Entity\User();
-                $bcc->setEmail('prereg@eja.net');
+                $bcc->setEmail($config['ERS']['info_mail']);
                 $emailService->addBcc($bcc);
 
-                $subject = "[EJC 2016] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+                $subject = "[".$config['ERS']['name_short']."] "._('E-Ticket for')." ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
                 $emailService->setSubject($subject);
 
                 $viewModel = new ViewModel(array(

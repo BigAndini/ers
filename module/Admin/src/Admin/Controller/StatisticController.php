@@ -20,25 +20,6 @@ class StatisticController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        /*$orderSelectFields = array('COUNT(o.id) AS ordercount', 'SUM(o.order_sum) AS ordersum, SUM(o.total_sum) AS totalsum');
-        
-        $qb = $em->createQueryBuilder();
-        $qb->select(array_merge(array('s status, s.value label'), $orderSelectFields))
-                ->from('ErsBase\Entity\Status', 's')
-                ->leftJoin('s.orders', 'o')
-                ->where('s.value', ':status');
-                #->groupBy('s.value')
-                #->orderBy('s.position');
-        $qb->setParameter('status', 'paid');
-        
-        $paymentStatusStats = $qb->getQuery()->getResult();*/
-        
-        /*$byStatusGroups = array('active' => array(), 'inactive' => array());
-        foreach($paymentStatusStats AS $statusData) {
-            $group = ($statusData['status']->getActive() ? 'active' : 'inactive');
-            $byStatusGroups[$group][] = $statusData;
-        }*/
-        
         $qb1 = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
         $qb1->select(array('SUM(o.order_sum) as ordersum'));
         $qb1->join('o.status', 's');
@@ -307,18 +288,12 @@ class StatisticController extends AbstractActionController {
         // otherwise array_merge does not do what we want (overwrite default values if present)
         $pseudoIdColumn = "CONCAT('x', prod.id) pseudoId";
         
-        $productStats = array_merge(
-                // get all products with all counts at 0 first (default values)
-                array_column($em->createQueryBuilder()
-                        ->select($pseudoIdColumn, 'prod.name label', '0 usercount', '0 itemcount')
-                        ->from('ErsBase\Entity\Product', 'prod')
-                        ->orderBy('prod.position')
-                        ->getQuery()->getResult(),
-                    NULL, 'pseudoId'),
-                
-                // calculate actual counts by product
-                array_column($em->createQueryBuilder()
-                        ->select($pseudoIdColumn, 'prod.name label', 'COUNT(DISTINCT u.id) AS usercount', 'COUNT(i.id) itemcount')
+        $productStatsBase = array_column($em->createQueryBuilder()
+                        ->select(
+                                $pseudoIdColumn,
+                                'prod.name label', 
+                                'COUNT(DISTINCT u.id) AS usercount', 
+                                'COUNT(i.id) itemcount')
                         ->from('ErsBase\Entity\Product', 'prod')
                         ->join('prod.items', 'i')
                         ->join('i.status', 's', 'WITH', 's.active = 1')
@@ -326,9 +301,64 @@ class StatisticController extends AbstractActionController {
                         ->join('p.user', 'u')
                         ->groupBy('prod.id')
                         ->orderBy('prod.position')
-                        ->getQuery()->getResult(),
-                    NULL, 'pseudoId')
-            );
+                        ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $productStatsPaid = array_column($em->createQueryBuilder()
+                        ->select(
+                                $pseudoIdColumn,
+                                #'prod.name label', 
+                                #'COUNT(DISTINCT u.id) AS usercount', 
+                                'COUNT(i.id) paid')
+                        ->from('ErsBase\Entity\Product', 'prod')
+                        ->join('prod.items', 'i')
+                        ->join('i.status', 's', 'WITH', 's.active = 1')
+                        ->join('i.package', 'p')
+                        ->join('p.user', 'u')
+                        ->where($qb->expr()->eq('s.value', ':status'))
+                        ->groupBy('prod.id')
+                        ->orderBy('prod.position')
+                        ->setParameter('status', 'paid')
+                        ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $productStatsOrdered = array_column($em->createQueryBuilder()
+                        ->select(
+                                $pseudoIdColumn,
+                                #'prod.name label', 
+                                #'COUNT(DISTINCT u.id) AS usercount', 
+                                'COUNT(i.id) ordered')
+                        ->from('ErsBase\Entity\Product', 'prod')
+                        ->join('prod.items', 'i')
+                        ->join('i.status', 's', 'WITH', 's.active = 1')
+                        ->join('i.package', 'p')
+                        ->join('p.user', 'u')
+                        ->where($qb->expr()->eq('s.value', ':status'))
+                        ->groupBy('prod.id')
+                        ->orderBy('prod.position')
+                        ->setParameter('status', 'ordered')
+                        ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $productStatsCancelled = array_column($em->createQueryBuilder()
+                        ->select(
+                                $pseudoIdColumn,
+                                #'prod.name label', 
+                                #'COUNT(DISTINCT u.id) AS usercount', 
+                                'COUNT(i.id) cancelled')
+                        ->from('ErsBase\Entity\Product', 'prod')
+                        ->join('prod.items', 'i')
+                        ->join('i.status', 's', 'WITH', 's.active = 0')
+                        ->join('i.package', 'p')
+                        ->join('p.user', 'u')
+                        ->where($qb->expr()->eq('s.value', ':status'))
+                        ->groupBy('prod.id')
+                        ->orderBy('prod.position')
+                        ->setParameter('status', 'cancelled')
+                        ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $productStats = array_merge_recursive(
+                $productStatsBase, 
+                $productStatsPaid, 
+                $productStatsOrdered,
+                $productStatsCancelled);
         
         
         /*

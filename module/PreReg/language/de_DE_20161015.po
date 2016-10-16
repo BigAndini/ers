@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Event Registration System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-15 23:58+0200\n"
-"PO-Revision-Date: 2016-10-15 23:59+0200\n"
+"POT-Creation-Date: 2016-10-15 14:40+0200\n"
+"PO-Revision-Date: 2016-10-15 14:41+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ERS Team <info@inbaz.org>\n"
 "Language: de_DE\n"
@@ -368,7 +368,7 @@ msgstr "Hallo %s %s,"
 #: ../view/email/eticket-participant.phtml:57
 #, php-format
 msgid "thank you again for registering for %s."
-msgstr "Danke für deine Anmeldung für die %s."
+msgstr ""
 
 #: ../view/email/eticket-participant.phtml:59
 #, php-format
@@ -376,8 +376,6 @@ msgid ""
 "We received the payment for your oder with ID %s from %s. The payment to "
 "your order is now confirmed. You find your e-ticket attached to this email."
 msgstr ""
-"Wir haben die Bezahlung für deine Bestellung mit der Nummer %s vom %s "
-"erhalten. Du findest dein E-Ticket im Anhang dieser E-Mail. "
 
 #: ../view/email/eticket-participant.phtml:65
 #, php-format
@@ -389,13 +387,6 @@ msgid ""
 "to-date e-ticket. Please note that you cannot register onsite if your name "
 "and date of birth don’t match your ID card."
 msgstr ""
-"Stelle zunächst bitte sicher, dass <strong>dein Name und Geburtsdatum auf "
-"dem E-Ticket und auf deinem Ausweis identisch sind</strong>. Falls du eine "
-"Abweichung entdeckt hast, schicke bitte eine E-Mail mit deiner Bestellnummer "
-"und den aktualisierten Daten an %s. Wir werden deine Daten anpassen und dir "
-"ein aktualisiertes E-Ticket zusenden. Bitte beachte, dass du dich vor Ort "
-"nicht anmelden kannst, wenn Name und Geburtsdatum auf dem E-Ticket nicht mit "
-"den Daten auf deinem Ausweis übereinstimmen."
 
 #: ../view/email/eticket-participant.phtml:69
 msgid ""
@@ -403,9 +394,6 @@ msgid ""
 "documents at the registration desk. You can either print the e-ticket or "
 "present it on an electronic device."
 msgstr ""
-"Bitte bringe dein E-Ticket und einen gültigen Ausweis zur Veranstaltung mit "
-"und lege beides an der Anmeldung vor. Du kannst das E-Ticket ausdrucken oder "
-"auch mit Hilfe eines elektronischen Geräts vorzeigen."
 
 #: ../view/email/eticket-participant.phtml:73
 #, php-format
@@ -413,8 +401,6 @@ msgid ""
 "To be able to read the documents, you need to install Adobe Acrobat Reader, "
 "which you can download here: %s."
 msgstr ""
-"Um die Dokumente öffnen zu können, musst du den Adobe Acrobat Reader "
-"installieren, den du hier herunterladen kannst: %s."
 
 #: ../view/email/eticket-participant.phtml:76
 #, php-format
@@ -422,9 +408,6 @@ msgid ""
 "By registering for this event, you agree to the terms and conditions of "
 "attendance and participation as stated on our website at %s."
 msgstr ""
-"Durch die Anmeldung zu unserer Veranstaltung stimmst du den "
-"Geschäftsbedingungen, wie sie auf unserer Webseite unter %s aufgeführt sind, "
-"zu."
 
 #: ../view/email/eticket-participant.phtml:78
 #, php-format
@@ -432,17 +415,15 @@ msgid ""
 "For the latest information about %s stay tuned to %s. If you have any "
 "further questions concerning your e-ticket, please contact us via %s."
 msgstr ""
-"Besuche %s, um die neuesten Informationen zur %s zu erhalten. Falls du noch "
-"Fragen zu deinem E-Ticket hast, kannst du uns unter %s kontaktieren. "
 
 #: ../view/email/eticket-participant.phtml:84
 msgid ""
 "We wish you a pleasant journey and we’re looking forward to welcoming you "
 "soon!"
-msgstr "Wir wünschen dir eine gute Anfahrt und freuen uns auf dich!"
+msgstr ""
 
 #: ../view/email/eticket-participant.phtml:86
-#: ../view/email/request-password.phtml:25 ../view/pdf/eticket.phtml:191
+#: ../view/email/request-password.phtml:25
 msgid "Best regards,"
 msgstr "Viele Grüße"
 
@@ -710,45 +691,6 @@ msgstr ""
 "Überprüfe, ob du diesen Verwendungszweck <strong>%s</strong> als Referenz "
 "für die Überweisung angegeben hast. Andernfalls können wir deine Bezahlung "
 "nicht deiner Bestellung zuordnen. "
-
-#: ../view/partial/eticket-package-overview.phtml:58
-msgid "Separate"
-msgstr "Separates"
-
-#: ../view/partial/eticket-package-overview.phtml:67
-msgid "separate"
-msgstr "separates"
-
-#: ../view/pdf/eticket.phtml:164
-msgid "Brief instruction"
-msgstr "Kurzanleitung"
-
-#: ../view/pdf/eticket.phtml:165
-#, php-format
-msgid ""
-"Dies ist dein <strong>E-Ticket</strong> für die %s. Bitte bringe es zur "
-"Veranstaltung mit! Es ist nicht unbedingt nötig, das E-Ticket auszudrucken. "
-"Du kannst es auch auf einem elektronischen Gerät dabei haben und vorzeigen."
-msgstr ""
-
-#: ../view/pdf/eticket.phtml:167
-msgid ""
-"Stelle bitte unbedingt sicher, dass deine Daten (Name, Vorname, "
-"Geburtsdatum) auf diesem E-Ticket mit den Daten auf deinem <strong>Ausweis</"
-"strong> übereinstimmen. Andernfalls können wir dich vor Ort leider nicht "
-"anmelden! "
-msgstr ""
-
-#: ../view/pdf/eticket.phtml:178
-#, php-format
-msgid ""
-"<strong>Auf keinen Fall vergessen: Bringe einen ausgedruckten, ausgefüllten "
-"und von einem Erziehungsberechtigten unterschrieben U16/U18 Zettel mit.</"
-"strong> Auf diesem erlaubt dir ein Erziehungsberechtigter, allein (U18) oder "
-"mit einer verantwortungsbewussten Person über 18 (U16) an der Veranstaltung "
-"teilzunehmen. Ohne die nötige Unterschrift können wir dich nicht auf das "
-"Gelände lassen! Du findest den passenden Zettel unter %s."
-msgstr ""
 
 #: ../view/pre-reg/cart/reset.phtml:4
 msgid "Your Shopping Cart is empty now"

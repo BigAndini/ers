@@ -55,7 +55,7 @@
                             else:
                                 $itemcount++;
                             endif; ?>
-                            <p class="order-description"><span class="order-value fa">&#xf046;</span> Separate <?php echo $product->getName(); ?></p>
+                            <p class="order-description"><span class="order-value fa">&#xf046;</span> <?php echo $this->translate('Separate'); ?> <?php echo $product->getName(); ?></p>
                             <p class="order-value">
                                 <?php foreach($item->getItemVariants() as $variant): ?>
                                     <span><?php echo $variant->getValue(); ?></span>
@@ -64,41 +64,56 @@
                         <?php endforeach; ?>
                     <?php endif;
                     if($itemcount == 0): ?>
-                        <p class="order-description"><span class="order-value fa">&#xf096;</span> separate <?php echo $product->getName(); ?></p>
+                        <p class="order-description"><span class="order-value fa">&#xf096;</span> <?php echo $this->translate('separate'); ?> <?php echo $product->getName(); ?></p>
                     <?php endif; ?>
                     <?php break;
                 /*
                  * day ticket
                  */
-                case 'dayticket': ?>
+                case 'dayticket': 
+                    #$productVariantName = 'Day';
+                    $productVariantName = 'Tag';
+                    $translate = array(
+                        'Freitag' => '28.10.2016',
+                        'Samstag' => '29.10.2016',
+                        'Sonntag' => '30.10.2016',
+                    );
+                    ?>
                     <p class="order-description"><?php echo $product->getName(); ?></p>
                     <p class="order-value">
                         <table class="day-table">
                             <tr>
-                                <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
-                                    $timestamp = strtotime($value->getValue());
+                                <?php foreach($product->getProductVariantByName($productVariantName)->getProductVariantValues() as $value):
+                                    #$timestamp = strtotime($value->getValue());
+                                    $timestamp = strtotime($translate[$value->getValue()]);
                                     $date = new DateTime();
-                                    $date->setTimestamp($timestamp); ?>
-                                    <td><?php echo $date->format('D'); ?></td>
+                                    $date->setTimestamp($timestamp); 
+                                    ?>
+                                    <td><?php 
+                                    #echo $date->format('D'); 
+                                    echo strftime('%a', $date->getTimestamp());
+                                    ?></td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr>
-                                <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
-                                    $timestamp = strtotime($value->getValue());
+                                <?php foreach($product->getProductVariantByName($productVariantName)->getProductVariantValues() as $value):
+                                    #$timestamp = strtotime($value->getValue());
+                                    $timestamp = strtotime($translate[$value->getValue()]);
                                     $date = new DateTime();
                                     $date->setTimestamp($timestamp); ?>
                                     <td style='font-size: 6px;'><?php echo $date->format('d.m.'); ?></td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr>
-                                <?php foreach($product->getProductVariantByName('Day')->getProductVariantValues() as $value):
-                                    $timestamp = strtotime($value->getValue());
+                                <?php foreach($product->getProductVariantByName($productVariantName)->getProductVariantValues() as $value):
+                                    #$timestamp = strtotime($value->getValue());
+                                    $timestamp = strtotime($translate[$value->getValue()]);
                                     $date = new DateTime();
                                     $date->setTimestamp($timestamp);
                                     $found = false;
                                     if(isset($items[$product->getId()]) && is_array($items[$product->getId()])):
                                         foreach($items[$product->getId()] as $item):
-                                            $itemValue = $item->getItemVariantByName('Day')->getValue();
+                                            $itemValue = $item->getItemVariantByName($productVariantName)->getValue();
                                             if($timestamp == strtotime($itemValue)) {
                                                 $found = true;
                                             }

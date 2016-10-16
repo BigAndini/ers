@@ -265,7 +265,9 @@ class ETicketService
         $qr->setData($onsitereg.'/'.\urlencode($code));
         
         $qr->setCorrectionLevel('H', 0);
-        $qr->setDimensions(200, 200);
+        $qrWidth = 200;
+        $qrHeight = 200;
+        $qr->setDimensions($qrWidth, $qrHeight);
         $qr_config = array(
             'adapter'      => 'Zend\Http\Client\Adapter\Socket',
             'ssltransport' => 'tls',
@@ -280,7 +282,58 @@ class ETicketService
         $response = $client->send();
         
         $qr_content = $response->getContent();
-        $base64_qrcode = "data:image/png;base64,".  \base64_encode($qr_content);
+        
+        # image overlay
+        $qrImage = imagecreatefromstring($qr_content);
+        
+        if($this->getAgegroup()) {
+            $text = $this->getAgegroup()->getName();
+        } else {
+            $text = 'adult';
+        }
+        
+        $font_size = 20; // Font size is in pixels.
+        $font_file = 'pdf/fonts/berlin_sans_fb_demi_bold.ttf'; // This is the path to your font file.
+
+        // Retrieve bounding box:
+        $type_space = imagettfbbox($font_size, 0, $font_file, $text);
+
+        // Determine image width and height, 10 pixels are added for 5 pixels padding:
+        $image_width = abs($type_space[4] - $type_space[0]) + 10;
+        $image_height = abs($type_space[5] - $type_space[1]) + 10;
+
+        // Create image:
+        $textImage = imagecreatetruecolor($image_width, $image_height+1);
+
+        // Allocate text and background colors (RGB format):
+        $text_color = imagecolorallocate($textImage,244,128,41);
+        $bg_color = imagecolorallocate($textImage, 255, 255, 255);
+
+        // Fill image:
+        imagefill($textImage, 0, 0, $bg_color);
+
+        // Fix starting x and y coordinates for the text:
+        $x = 5; // Padding of 5 pixels.
+        $y = $image_height - 5; // So that the text is vertically centered.
+
+        // Add TrueType text to image:
+        imagettftext($textImage, $font_size, 0, $x, $y, $text_color, $font_file, $text);
+
+        /*
+         * (200-30)/2 = 85
+         * (200-70)/2 = 65
+         */
+        
+        $dst_x = ($qrWidth-$image_width)/2;
+        $dst_y = ($qrHeight-$image_height)/2;
+        imagecopy($qrImage, $textImage, $dst_x, $dst_y, 0, 0, $image_width, $image_height);
+        
+        ob_start();
+        imagepng($qrImage);
+        $qrPng = ob_get_clean();
+        
+        #$base64_qrcode = "data:image/png;base64,".  \base64_encode($qr_content);
+        $base64_qrcode = "data:image/png;base64,".  \base64_encode($qrPng);
         
         #file_put_contents(getcwd().'/public/img/qrcode.png', $qr_content);
         
@@ -317,22 +370,28 @@ class ETicketService
          * prepare items
          */
         $items = array();
+        $personalized = false;
         foreach($this->getPackage()->getItems() as $item) {
             if($item->getStatus() == 'transferred') {
                 continue;
             }
             $items[$item->getProductId()][] = $item;
+            if($item->getPersonalized()) {
+                $personalized = true;
+            }
         }
-        
+
         /* 
          * generate PDF
          */
         $pdfView = new ViewModel();
-        $pdfView->setTemplate('pdf/eticket_'.$this->getLanguage());
+        #$pdfView->setTemplate('pdf/eticket_'.$this->getLanguage());
+        $pdfView->setTemplate('pdf/eticket');
         $pdfView->setVariables(array(
             'name' => $name,
             'package' => $this->getPackage(),
             'items' => $items,
+            'personalized' => $personalized,
             'products' => $this->getProducts(),
             'agegroup' => $this->getAgegroup(),
             'code' => $code,
@@ -350,7 +409,8 @@ class ETicketService
         $pdfEngine->render();
         $pdfContent = $pdfEngine->output();
         
-        $filename = $config['ERS']['name_short']."_E-Ticket_".$this->getPackage()->getCode()->getValue().'_'.$this->getLanguage();
+        #$filename = $config['ERS']['name_short']."_E-Ticket_".$this->getPackage()->getCode()->getValue().'_'.$this->getLanguage();
+        $filename = $config['ERS']['name_short']."_E-Ticket_".$this->getPackage()->getCode()->getValue();
         
         # TODO: make ticket_path configurable
         $ticket_path = getcwd().'/data/etickets';
