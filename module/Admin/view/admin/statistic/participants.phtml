@@ -76,16 +76,19 @@ $this->headTitle($title);
 
 <div class="row">
     
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">Participants by product type</div>
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Product</th>
-                        <th>Participant count</th>
-                        <th>Item count</th>
-                        <th>Average items<br>per participant</th>
+                        <th>product</th>
+                        <th>participants</th>
+                        <th>active<br>items</th>
+                        <th>paid</th>
+                        <th>ordered</th>
+                        <th>cancelled</th>
+                        <th>average items<br>per participant</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -94,13 +97,19 @@ $this->headTitle($title);
                             <td><?php echo $this->escapeHtml($value['label']); ?></td>
                             <td><?php echo $value['usercount']; ?></td>
                             <td><?php echo $value['itemcount']; ?></td>
+                            <td><?php echo $value['paid']; ?></td>
+                            <td><?php echo $value['ordered']; ?></td>
+                            <td><?php echo $value['cancelled']; ?></td>
                             <td><?php echo number_format($value['itemcount'] / $value['usercount'], 3); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
-        
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">Items by product variant</div>
             <div class="panel-body">
