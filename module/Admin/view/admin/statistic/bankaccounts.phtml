@@ -12,10 +12,10 @@ $this->headTitle($title);
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th class="text-right">Amount</th>
-                        <th>Count</th>
-                        <th>Latest statement</th>
+                        <th>name</th>
+                        <th class="text-right">amount</th>
+                        <th class="text-right">count</th>
+                        <th>latest statement</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -23,7 +23,7 @@ $this->headTitle($title);
                         <tr>
                             <td><?php echo $this->escapeHtml($key); ?></td>
                             <td class="text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></td>
-                            <td><?php echo $value['stmtcount']; ?></td>
+                            <td class="text-right"><?php echo $value['stmtcount']; ?></td>
                             <td><?php echo ($value['latestentry'] ? (new DateTime($value['latestentry']))->format('d.m.Y H:i:s') : '-'); ?></td>
                         </tr>
                     <?php endforeach; ?>
@@ -32,7 +32,7 @@ $this->headTitle($title);
                     <tr>
                         <th>total sum</th>
                         <th class="text-right"><?php echo $this->currencyFormat(array_sum(array_column($activeStats, 'amount')), 'EUR', null, 'de_DE'); ?></th>
-                        <th><?php echo array_sum(array_column($activeStats, 'stmtcount')); ?></th>
+                        <th class="text-right"><?php echo array_sum(array_column($activeStats, 'stmtcount')); ?></th>
                         <th></th>
                     </tr>
                 </tfoot>
@@ -47,10 +47,10 @@ $this->headTitle($title);
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th class="text-right">Amount</th>
-                        <th>Count</th>
-                        <th>Latest statement</th>
+                        <th>name</th>
+                        <th class="text-right">amount</th>
+                        <th class="text-right">count</th>
+                        <th>latest statement</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,7 +58,7 @@ $this->headTitle($title);
                         <tr>
                             <td><?php echo $this->escapeHtml($key); ?></td>
                             <td class="text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></td>
-                            <td><?php echo $value['stmtcount']; ?></td>
+                            <td class="text-right"><?php echo $value['stmtcount']; ?></td>
                             <td><?php echo ($value['latestentry'] ? (new DateTime($value['latestentry']))->format('d.m.Y H:i:s') : '-'); ?></td>
                         </tr>
                     <?php endforeach; ?>
@@ -67,7 +67,7 @@ $this->headTitle($title);
                     <tr>
                         <th>total sum</th>
                         <th class="text-right"><?php echo $this->currencyFormat(array_sum(array_column($matchingStats, 'amount')), 'EUR', null, 'de_DE'); ?></th>
-                        <th><?php echo array_sum(array_column($matchingStats, 'stmtcount')); ?></th>
+                        <th class="text-right"><?php echo array_sum(array_column($matchingStats, 'stmtcount')); ?></th>
                         <th></th>
                     </tr>
                 </tfoot>

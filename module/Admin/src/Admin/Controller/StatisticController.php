@@ -253,11 +253,14 @@ class StatisticController extends AbstractActionController {
             $aggregatePrice['count']++;
             $aggregatePrice['amount'] += $user['ordersum'];
             $aggregateTicket['count']++;
+            $aggregateTicket['amount'] += $user['ordersum'];
             
             if($user['status'] == 'paid') {
+                $aggregatePrice['paid']++;
                 $aggregateTicket['paid']++;
             }
             if($user['shipped'] == 1) {
+                $aggregatePrice['onsite']++;
                 $aggregateTicket['onsite']++;
             } 
             
@@ -337,29 +340,137 @@ class StatisticController extends AbstractActionController {
                         ->setParameter('status', 'ordered')
                         ->getQuery()->getResult(), NULL, 'pseudoId');
         
-        $productStatsCancelled = array_column($em->createQueryBuilder()
-                        ->select(
-                                $pseudoIdColumn,
-                                #'prod.name label', 
-                                #'COUNT(DISTINCT u.id) AS usercount', 
-                                'COUNT(i.id) cancelled')
-                        ->from('ErsBase\Entity\Product', 'prod')
-                        ->join('prod.items', 'i')
-                        ->join('i.status', 's', 'WITH', 's.active = 0')
-                        ->join('i.package', 'p')
-                        ->join('p.user', 'u')
-                        ->where($qb->expr()->eq('s.value', ':status'))
-                        ->groupBy('prod.id')
-                        ->orderBy('prod.position')
-                        ->setParameter('status', 'cancelled')
-                        ->getQuery()->getResult(), NULL, 'pseudoId');
-        
         $productStats = array_merge_recursive(
                 $productStatsBase, 
                 $productStatsPaid, 
-                $productStatsOrdered,
-                $productStatsCancelled);
+                $productStatsOrdered);
         
+        
+        /*
+         * === by payment type ===
+         */
+        
+        $pseudoIdColumn = "CONCAT('x', pt.id) pseudoId";
+        
+        $paymentTypeStatsBase = array_column($em->createQueryBuilder()
+                ->select(
+                        $pseudoIdColumn,
+                        'pt.name label', 
+                        'COUNT(DISTINCT u.id) AS usercount', 
+                        'COUNT(i.id) itemcount',
+                        'SUM(i.price*i.amount) as amount')
+                ->from('ErsBase\Entity\PaymentType', 'pt')
+                ->join('pt.orders', 'o')
+                ->join('o.packages', 'p')
+                ->join('p.user', 'u')
+                ->join('p.items', 'i')
+                ->join('i.status', 's', 'WITH', 's.active = 1')
+                ->groupBy('pt.id')
+                ->orderBy('pt.position')
+                ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $paymentTypeStatsPaid = array_column($em->createQueryBuilder()
+                ->select(
+                        $pseudoIdColumn,
+                        'COUNT(i.id) paid')
+                ->from('ErsBase\Entity\PaymentType', 'pt')
+                ->join('pt.orders', 'o')
+                ->join('o.packages', 'p')
+                ->join('p.user', 'u')
+                ->join('p.items', 'i')
+                ->join('i.status', 's', 'WITH', 's.active = 1')
+                ->where($qb->expr()->eq('s.value', ':status'))
+                ->groupBy('pt.id')
+                ->orderBy('pt.position')
+                ->setParameter('status', 'paid')
+                ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $paymentTypeStatsOrdered = array_column($em->createQueryBuilder()
+                ->select(
+                        $pseudoIdColumn,
+                        'COUNT(i.id) ordered')
+                ->from('ErsBase\Entity\PaymentType', 'pt')
+                ->join('pt.orders', 'o')
+                ->join('o.packages', 'p')
+                ->join('p.user', 'u')
+                ->join('p.items', 'i')
+                ->join('i.status', 's', 'WITH', 's.active = 1')
+                ->where($qb->expr()->eq('s.value', ':status'))
+                ->groupBy('pt.id')
+                ->orderBy('pt.position')
+                ->setParameter('status', 'ordered')
+                ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $paymentTypeStats = array_merge_recursive(
+                $paymentTypeStatsBase,
+                $paymentTypeStatsPaid,
+                $paymentTypeStatsOrdered);
+        
+        /*
+         * === by bankaccount ===
+         */
+        
+        $pseudoIdColumn = "CONCAT('x', ba.id) pseudoId";
+        
+        $bankAccountStatsBase = array_column($em->createQueryBuilder()
+                ->select(
+                        $pseudoIdColumn,
+                        'ba.name label', 
+                        'COUNT(DISTINCT u.id) AS usercount', 
+                        'COUNT(i.id) itemcount',
+                        'SUM(i.price*i.amount) as amount')
+                ->from('ErsBase\Entity\BankAccount', 'ba')
+                ->join('ba.bankStatements', 'bs')
+                ->join('bs.matches', 'm')
+                ->join('m.order', 'o')
+                ->join('o.packages', 'p')
+                ->join('p.user', 'u')
+                ->join('p.items', 'i')
+                ->join('i.status', 's', 'WITH', 's.active = 1')
+                ->groupBy('ba.id')
+                #->orderBy('ba.position')
+                ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $bankAccountStatsPaid = array_column($em->createQueryBuilder()
+                ->select(
+                        $pseudoIdColumn,
+                        'COUNT(i.id) paid')
+                ->from('ErsBase\Entity\BankAccount', 'ba')
+                ->join('ba.bankStatements', 'bs')
+                ->join('bs.matches', 'm')
+                ->join('m.order', 'o')
+                ->join('o.packages', 'p')
+                ->join('p.user', 'u')
+                ->join('p.items', 'i')
+                ->join('i.status', 's', 'WITH', 's.active = 1')
+                ->where($qb->expr()->eq('s.value', ':status'))
+                ->groupBy('ba.id')
+                #->orderBy('ba.position')
+                ->setParameter('status', 'paid')
+                ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $bankAccountStatsOrdered = array_column($em->createQueryBuilder()
+                ->select(
+                        $pseudoIdColumn,
+                        'COUNT(i.id) ordered')
+                ->from('ErsBase\Entity\BankAccount', 'ba')
+                ->join('ba.bankStatements', 'bs')
+                ->join('bs.matches', 'm')
+                ->join('m.order', 'o')
+                ->join('o.packages', 'p')
+                ->join('p.user', 'u')
+                ->join('p.items', 'i')
+                ->join('i.status', 's', 'WITH', 's.active = 1')
+                ->where($qb->expr()->eq('s.value', ':status'))
+                ->groupBy('ba.id')
+                #->orderBy('ba.position')
+                ->setParameter('status', 'ordered')
+                ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $bankAccountStats = array_merge_recursive(
+                $bankAccountStatsBase,
+                $bankAccountStatsPaid,
+                $bankAccountStatsOrdered);
         
         /*
          * === by product variant ===
@@ -432,11 +543,13 @@ class StatisticController extends AbstractActionController {
         
         
         return new ViewModel(array(
-           'stats_agegroupPrice' => $agegroupStatsPrice,
-           'stats_agegroupTicket' => $agegroupStatsTicket,
-           'stats_productType' => $productStats,
-           'stats_productVariant' => $itemsByVariantByProduct,
-           'stats_country' => $countryStats,
+            'stats_agegroupPrice' => $agegroupStatsPrice,
+            'stats_agegroupTicket' => $agegroupStatsTicket,
+            'stats_productType' => $productStats,
+            'stats_paymentType' => $paymentTypeStats,
+            'stats_bankaccount' => $bankAccountStats,
+            'stats_productVariant' => $itemsByVariantByProduct,
+            'stats_country' => $countryStats,
         ));
     }
     
