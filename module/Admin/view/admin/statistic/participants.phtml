@@ -13,16 +13,22 @@ $this->headTitle($title);
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Agegroup</th>
-                        <th>Participant count</th>
-                        <th class="text-right">Order amount</th>
+                        <th>agegroup</th>
+                        <th class="text-right">participant<br>count</th>
+                        <th class="text-right">paid</th>
+                        <th class="text-right">onsite</th>
+                        <th class="text-right">
+                            <span data-toggle="tooltip" title="amount of already paid and placed orders">order<br>amount</span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($stats_agegroupPrice as $agegroup => $value): ?>
                         <tr>
                             <td><?php echo $this->escapeHtml($agegroup); ?></td>
-                            <td><?php echo $value['count']; ?></td>
+                            <td class="text-right"><?php echo $value['count']; ?></td>
+                            <td class="text-right"><?php echo $value['paid']; ?></td>
+                            <td class="text-right"><?php echo $value['onsite']; ?></td>
                             <td class="text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></td>
                         </tr>
                     <?php endforeach; ?>
@@ -31,7 +37,10 @@ $this->headTitle($title);
                 <tfoot>
                     <tr>
                         <th>total sum</th>
-                        <th><?php echo array_sum(array_column($stats_agegroupPrice, 'count')); ?></th>
+                        <th class="text-right"><?php echo array_sum(array_column($stats_agegroupPrice, 'count')); ?></th>
+                        <th class="text-right"><?php echo array_sum(array_column($stats_agegroupPrice, 'paid')); ?></th>
+                        <th class="text-right"><?php echo array_sum(array_column($stats_agegroupPrice, 'onsite')); ?></th>
+                        
                         <th class="text-right"><?php echo $this->currencyFormat(array_sum(array_column($stats_agegroupPrice, 'amount')), 'EUR', null, 'de_DE'); ?></th>
                     </tr>
                 </tfoot>
@@ -45,28 +54,31 @@ $this->headTitle($title);
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Agegroup</th>
-                        <th>Participant count</th>
-                        <th>paid</th>
-                        <th>onsite</th>
+                        <th>agegroup</th>
+                        <th class="text-right">participant<br>count</th>
+                        <th class="text-right">paid</th>
+                        <th class="text-right">onsite</th>
+                        <th class="text-right">order<br>amount</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($stats_agegroupTicket as $agegroup => $value): ?>
                     <tr>
                         <td><?php echo $this->escapeHtml($agegroup); ?></td>
-                        <td><?php echo $value['count']; ?></td>
-                        <td><?php echo $value['paid']; ?></td>
-                        <td><?php echo $value['onsite']; ?></td>
+                        <td class="text-right"><?php echo $value['count']; ?></td>
+                        <td class="text-right"><?php echo $value['paid']; ?></td>
+                        <td class="text-right"><?php echo $value['onsite']; ?></td>
+                        <td class="text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
                 <tfoot>
                     <tr>
                         <th>total sum</th>
-                        <th><?php echo array_sum(array_column($stats_agegroupTicket, 'count')); ?></th>
-                        <th><?php echo array_sum(array_column($stats_agegroupTicket, 'paid')); ?></th>
-                        <th><?php echo array_sum(array_column($stats_agegroupTicket, 'onsite')); ?></th>
+                        <th class="text-right"><?php echo array_sum(array_column($stats_agegroupTicket, 'count')); ?></th>
+                        <th class="text-right"><?php echo array_sum(array_column($stats_agegroupTicket, 'paid')); ?></th>
+                        <th class="text-right"><?php echo array_sum(array_column($stats_agegroupTicket, 'onsite')); ?></th>
+                        <th class="text-right"><?php echo $this->currencyFormat(array_sum(array_column($stats_agegroupTicket, 'amount')), 'EUR', null, 'de_DE'); ?></th>
                     </tr>
                 </tfoot>
             </table>
@@ -75,7 +87,6 @@ $this->headTitle($title);
 </div>
 
 <div class="row">
-    
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">Participants by product type</div>
@@ -83,24 +94,84 @@ $this->headTitle($title);
                 <thead>
                     <tr>
                         <th>product</th>
-                        <th>participants</th>
-                        <th>active<br>items</th>
-                        <th>paid</th>
-                        <th>ordered</th>
-                        <th>cancelled</th>
-                        <th>average items<br>per participant</th>
+                        <th class="text-right">participants</th>
+                        <th class="text-right"><span  data-toggle="tooltip" title="Active items are items that are already paid or we are waiting for payment">active<br>items</span></th>
+                        <th class="text-right">paid</th>
+                        <th class="text-right">ordered</th>
+                        <th class="text-right">average items<br>per participant</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($stats_productType as $value): ?>
                         <tr>
-                            <td><?php echo $this->escapeHtml($value['label']); ?></td>
-                            <td><?php echo $value['usercount']; ?></td>
-                            <td><?php echo $value['itemcount']; ?></td>
-                            <td><?php echo $value['paid']; ?></td>
-                            <td><?php echo $value['ordered']; ?></td>
-                            <td><?php echo $value['cancelled']; ?></td>
-                            <td><?php echo number_format($value['itemcount'] / $value['usercount'], 3); ?></td>
+                            <td class="col-md-6"><?php echo $this->escapeHtml($value['label']); ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['usercount']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['itemcount']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['paid']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['ordered']; ?></td>
+                            <td class="col-md-2 text-right"><?php echo number_format($value['itemcount'] / $value['usercount'], 3); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">Participants ordered by payment type</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>product</th>
+                        <th class="text-right">participants</th>
+                        <th class="text-right"><span  data-toggle="tooltip" title="Active items are items that are already paid or we are waiting for payment">active<br>items</span></th>
+                        <th class="text-right">paid</th>
+                        <th class="text-right">ordered</th>
+                        <th class="text-right">amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($stats_paymentType as $value): ?>
+                        <tr>
+                            <td class="col-md-6"><?php echo $this->escapeHtml($value['label']); ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['usercount']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['itemcount']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['paid']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['ordered']; ?></td>
+                            <th class="col-md-2 text-right"><?php echo $this->currencyFormat(array_sum(array_column($stats_paymentType, 'amount')), 'EUR', null, 'de_DE'); ?></th>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">Participants already matched by bankaccount</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>product</th>
+                        <th class="text-right">participants</th>
+                        <th class="text-right"><span  data-toggle="tooltip" title="Active items are items that are already paid or we are waiting for payment">active<br>items</span></th>
+                        <th class="text-right">paid</th>
+                        <th class="text-right">ordered</th>
+                        <th class="text-right">amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($stats_bankaccount as $value): ?>
+                        <tr>
+                            <td class="col-md-6"><?php echo $this->escapeHtml($value['label']); ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['usercount']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['itemcount']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['paid']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo $value['ordered']; ?></td>
+                            <th class="col-md-2 text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></th>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -119,9 +190,9 @@ $this->headTitle($title);
                         <thead>
                             <tr>
                                 <?php foreach($productData["variantNames"] as $variantName) {
-                                    echo '<th>' . $this->escapeHtml($variantName) . '</th>';
+                                    echo '<th class="col-md-10">' . $this->escapeHtml($variantName) . '</th>';
                                 } ?>
-                                <th>Item count</th>
+                                <th class="col-md-4 text-right">item<br>count</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -130,7 +201,7 @@ $this->headTitle($title);
                                     <?php foreach($variantData["variantLabels"] as $variantLabel) {
                                         echo '<td>' . $this->escapeHtml($variantLabel) . '</td>';
                                     } ?>
-                                    <td><?php echo $variantData['itemCount']; ?></td>
+                                    <td class="text-right"><?php echo $variantData['itemCount']; ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -148,22 +219,22 @@ $this->headTitle($title);
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Country</th>
-                        <th>Participant count</th>
+                        <th class="col-md-10">country</th>
+                        <th class="col-md-2 text-right">participant<br>count</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($stats_country as $value): ?>
                         <tr>
                             <td><?php echo $this->escapeHtml($value['name']); ?></td>
-                            <td><?php echo $value['count']; ?></td>
+                            <td class="text-right"><?php echo $value['count']; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
                 <tfoot>
                     <tr>
                         <th>total sum</th>
-                        <th><?php echo array_sum(array_column($stats_country, 'count')); ?></td>
+                        <th class="text-right"><?php echo array_sum(array_column($stats_country, 'count')); ?></td>
                     </tr>
                 </tfoot>
             </table>
