@@ -458,6 +458,9 @@ class CronController extends AbstractActionController {
 
             $buyer = $order->getBuyer();
             $emailService->addTo($buyer);
+            /*$user = new Entity\User();
+            $user->setEmail('andi@inbaz.org');
+            $emailService->addTo($user);*/
 
             $bcc = new Entity\User();
             $bcc->setEmail($config['ERS']['info_mail']);
@@ -476,6 +479,7 @@ class CronController extends AbstractActionController {
             $emailService->setHtmlMessage($html);
 
             $emailService->send();
+            exit();
         }
     }
     
