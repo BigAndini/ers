@@ -429,7 +429,7 @@ class CronController extends AbstractActionController {
         $qb->setParameter('status', 'ordered');
         
         $notPaidOrders = $qb->getQuery()->getResult();
-        echo count($notPaidOrders)." order found.".PHP_EOL;
+        echo count($notPaidOrders)." not paid orders found.".PHP_EOL;
         
         if(!$isReal) {
             echo "Use -r parameter to really send out all payment reminder.".PHP_EOL;

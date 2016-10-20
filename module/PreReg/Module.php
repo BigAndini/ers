@@ -105,6 +105,7 @@ class Module
     public function bootstrapSession($e)
     {
         if(\Zend\Console\Console::isConsole()) {
+            echo "not starting session -> console".PHP_EOL;
             return;
         }
         
@@ -172,31 +173,6 @@ class Module
             $container->lifetime = time()+$expiration_time;
         }
         
-        #$cartContainer->getManager()->getStorage()->clear('cart');
-        #$cartContainer->init = 0;
-        /*if(!isset($cartContainer->init) || $cartContainer->init != 1) {
-            #error_log('reset cart');
-            $cartContainer->getManager()->getStorage()->clear('cart');
-            
-            $app = $e->getApplication();
-            $serviceManager = $app->getServiceManager();
-            $em = $serviceManager->get('Doctrine\ORM\EntityManager');
-            
-            $code = new Entity\Code();
-            $code->genCode();
-            $order = new Entity\Order();
-            $order->setCode($code);
-            $em->persist($order);
-            $em->flush();
-            
-            $cartContainer->order_id = $order->getId();
-            #$cartContainer->order = new Entity\Order();
-            $cartContainer->init = 1;
-        }*/
-        /*$cartContainer->chooserCount--;
-        if($cartContainer->chooserCount <= 0) {
-            $cartContainer->chooser = false;
-        }*/
         /*
          * shopping cart debugging
          */
