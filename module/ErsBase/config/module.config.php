@@ -17,6 +17,7 @@ return array(
             'DOMPDF' => false,
             'ViewPdfRenderer' => false,
             'ErsBase\Service\ETicketService' => false,
+            'ErsBase\Service\EmailService' => false,
             'ErsBase\Service\AgegroupService:ticket' => false,
         ),
     ),
