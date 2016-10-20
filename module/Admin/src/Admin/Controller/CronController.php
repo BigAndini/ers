@@ -426,10 +426,15 @@ class CronController extends AbstractActionController {
         $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
         $qb->join('o.status', 's');
         $qb->where($qb->expr()->eq('s.value', ':status'));
+        $qb->andWhere($qb->expr()->lt('o.created', ':paymentTarget'));
         $qb->setParameter('status', 'ordered');
+        $paymentTarget = new \DateTime;
+        #$paymentTarget->modify( '-'.(date('d')-5).' day' );
+        $paymentTarget->modify( '-5 days' );
+        $qb->setParameter('paymentTarget', $paymentTarget);
         
         $notPaidOrders = $qb->getQuery()->getResult();
-        echo count($notPaidOrders)." not paid orders found.".PHP_EOL;
+        echo count($notPaidOrders)." not paid orders found from before ".$paymentTarget->format('d.m.Y').".".PHP_EOL;
         
         if(!$isReal) {
             echo "Use -r parameter to really send out all payment reminder.".PHP_EOL;
