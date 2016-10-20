@@ -413,6 +413,72 @@ class CronController extends AbstractActionController {
         echo "generated ".$count." etickets in ".(microtime()-$time_start).' $unit'.PHP_EOL;
     }
     
+    public function sendPaymentReminderAction() {
+        $request = $this->getRequest();
+        
+        $long_real = (bool) $request->getParam('real',false);
+        $short_real = (bool) $request->getParam('r',false);
+        $isReal = ($long_real | $short_real);
+        
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb->join('o.status', 's');
+        $qb->where($qb->expr()->eq('s.value', ':status'));
+        $qb->setParameter('status', 'ordered');
+        
+        $notPaidOrders = $qb->getQuery()->getResult();
+        echo count($notPaidOrders)." order found.".PHP_EOL;
+        
+        if(!$isReal) {
+            echo "Use -r parameter to really send out all payment reminder.".PHP_EOL;
+            exit();
+        }
+        
+        # countdown
+        echo PHP_EOL;
+        for($i=10; $i > 0; $i--) {
+            echo "Really sending out payment reminder in... ".$i." seconds (ctrl+c to abort)   \r";
+            sleep(1);
+        }
+        echo PHP_EOL;
+        
+        $config = $this->getServiceLocator()
+                        ->get('config');
+        
+        foreach($notPaidOrders as $order) {
+            # prepare email (participant, buyer)
+            #$emailService = new Service\EmailService();
+            $emailService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\EmailService');
+            $config = $this->getServiceLocator()
+                    ->get('config');
+            $emailService->setFrom($config['ERS']['info_mail']);
+
+            $buyer = $order->getBuyer();
+            $emailService->addTo($buyer);
+
+            $bcc = new Entity\User();
+            $bcc->setEmail($config['ERS']['info_mail']);
+            $emailService->addBcc($bcc);
+
+            $subject = "[".$config['ERS']['name_short']."] "._('Payment reminder for your order:')." ".$order->getCode()->getValue();
+            $emailService->setSubject($subject);
+
+            $viewModel = new ViewModel(array(
+                'order' => $order,
+            ));
+            $viewModel->setTemplate('email/payment-reminder.phtml');
+            $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+            $html = $viewRender->render($viewModel);
+
+            $emailService->setHtmlMessage($html);
+
+            $emailService->send();
+        }
+    }
+    
     public function sendEticketsAction() {
         $request = $this->getRequest();
         
@@ -491,7 +557,7 @@ class CronController extends AbstractActionController {
         }
         echo PHP_EOL;
         
-        $config = $emailService = $this->getServiceLocator()
+        $config = $this->getServiceLocator()
                         ->get('config');
         
         foreach($packages as $package) {

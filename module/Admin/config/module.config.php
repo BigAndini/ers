@@ -325,6 +325,15 @@ return array(
                         )
                     )
                 ),
+                'send-payment-reminder' => array(
+                    'options' => array(
+                        'route'    => 'send-payment-reminder [--real|-r]',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'send-payment-reminder'
+                        )
+                    )
+                ),
                 'send-etickets' => array(
                     'options' => array(
                         'route'    => 'send-etickets [--real|-r]',
