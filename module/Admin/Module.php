@@ -13,7 +13,13 @@ namespace Admin;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\ModuleRouteListener;
 
-class Module
+use Zend\View\Helper\ServerUrl;
+use Zend\View\Helper\Url as UrlHelper;
+use Zend\Uri\Http as HttpUri;
+use Zend\Console\Console;
+use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
+
+class Module implements ViewHelperProviderInterface
 {
     public function onBootstrap(MvcEvent $e) {
         $eventManager        = $e->getApplication()->getEventManager();
@@ -47,6 +53,56 @@ class Module
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
+    }
+    
+    public function getViewHelperConfig() {
+        return array(
+            'factories' => array(
+                'url' => function ($helperPluginManager) {
+                    $serviceLocator = $helperPluginManager->getServiceLocator();
+                    $config = $serviceLocator->get('Config');
+
+                    $viewHelper =  new UrlHelper();
+
+                    $routerName = Console::isConsole() ? 'HttpRouter' : 'Router';
+
+                    /** @var \Zend\Mvc\Router\Http\TreeRouteStack $router */
+                    $router = $serviceLocator->get($routerName);
+
+                    if (Console::isConsole()) {
+                        $requestUri = new HttpUri();
+                        $requestUri->setHost($config['website']['host'])
+                            ->setScheme($config['website']['scheme']);
+                        $router->setRequestUri($requestUri);
+                        $router->setBaseUrl($config['website']['path']);
+                    }
+
+                    $viewHelper->setRouter($router);
+
+                    $match = $serviceLocator->get('application')
+                        ->getMvcEvent()
+                        ->getRouteMatch();
+
+                    if ($match instanceof RouteMatch) {
+                        $viewHelper->setRouteMatch($match);
+                    }
+
+                    return $viewHelper;
+                },
+                'serverUrl' => function ($helperPluginManager) {
+                    $serviceLocator = $helperPluginManager->getServiceLocator();
+                    $config = $serviceLocator->get('Config');
+
+                    $serverUrlHelper = new ServerUrl();
+                    if (Console::isConsole()) {
+                        $serverUrlHelper->setHost($config['website']['host'])
+                            ->setScheme($config['website']['scheme']);
+                    }
+
+                    return $serverUrlHelper;
+                },
+            )
+        );
     }
     
     public function getServiceConfig() {
