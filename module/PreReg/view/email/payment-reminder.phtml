@@ -1,3 +1,18 @@
+<?php
+    # new
+    $config = $this->config();
+    $website = '<a href="'.$config['ERS']['website'].'">'.$config['ERS']['website'].'</a>';
+    $infoMail = '<a href="mailto:'.$config['ERS']['info_mail'].'">'.$config['ERS']['info_mail'].'</a>';
+    $adobeReaderLink = '<a href="http://get.adobe.com/reader/">http://get.adobe.com/reader/</a>';
+    $termsUrl = $this->url('info', array('action' => 'terms'), array('force_canonical' => true));
+    $termsLink = '<a href="'.$termsUrl.'">'.$this->translate('terms and conditions').'</a>';
+    $orderUrl = $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey()), array('force_canonical' => true));;
+    $orderLink = '<a href="'.$orderUrl.'">'.$orderUrl.'</a>';
+    
+    #$participant = $package->getParticipant(); 
+    #$order = $package->getOrder();
+    $buyer = $order->getBuyer();
+?>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
@@ -12,7 +27,7 @@
             }
             .header {
             	margin-top: 0px;
-            	background-color: #85b32a;
+            	background-color: #f48029;
             	color: #fff;
             }
             .clear-both {
@@ -29,34 +44,27 @@
         </style>
     </head>
     <body>
-        <div class='header'>EJC 2016 - 30.07.2016 - 07.08.2016 in Almere, The Netherlands - <a href='http://www.ejc2016.org'>www.ejc2016.org</a></div>
+        <div class='header'>
+            <?php echo $config['ERS']['name_with_year'].' - '.$config['ERS']['start']->format('d.m.Y').' - '.$config['ERS']['end']->format('d.m.Y').' - '.$website; ?>
+        </div>
 
-        <p>Dear <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>,</p>
+        <p><?php printf($this->translate('Dear %s %s,'),
+                $buyer->getFirstname(),
+                $buyer->getSurname()); ?></p>
 
-        <p>you registered for the EJC at <?php echo $order->getCreated()->format('d.m.Y') ?> and we hope you're looking forward to it.
-        We haven't sent you an e-ticket yet, because we haven't received payment for your order.</p>
+        <p><?php printf($this->translate('you registered for the %s at %s and we hope you\'re looking forward to it. We haven\'t sent you an e-ticket yet, because we haven\'t received payment for your order.'), 
+                $config['ERS']['name_with_year'],
+                $order->getCreated()->format('d.m.Y')) ?></p>
 
-        <p>Please do one of the following until 17.07.2016 at the latest.</p>
+        <?php $paymentTarget = new \DateTime('2016-10-26'); ?>
+        <p><?php printf($this->translate('Please do one of the following until %s at the latest.'), $paymentTarget->format('d.m.Y')); ?></p>
         <ul>
-            <li>Please pay your order at 
-                <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey()), array('force_canonical' => true)); ?>">
-                    <?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey()), array('force_canonical' => true)); ?>
-                </a>
-            </li>
-            <li>Let us know if you'd like to transfer your ticket to somebody else (necessary data: first name, last name, date of birth and email address of the new participant)</li>
-            <li>If none of the above options are possible for you, let us know if you'd like us to cancel your ticket.</li>
+            <li><?php printf($this->translate('Please pay your order. All needed information can be found at %s'),$orderLink); ?></li>
+            <li><?php printf($this->translate('Let us know if you\'d like to transfer your ticket to somebody else (necessary data: first name, last name, date of birth and email address of the new participant)')); ?></li>
+            <li><?php printf($this->translate('If none of the above options are possible for you, let us know if you\'d like us to cancel your ticket.')); ?></li>
         </ul>
 
-        <p>Best regards,<br />
-        Your European Juggling Association and the local EJC 2016 organizers</p>
-        
-        <div class='footer'>This mail was sent to you by the Event Registration 
-            System (ERS), operated by the European Juggling Association (EJA) on 
-            behalf of EJC 2016.<br />If you have any questions about your
-            pre-registration, please contact the EJA pre-registration 
-            coordinator at <a href='mailto:prereg@eja.net'>prereg@eja.net</a>.<br />
-            For more information about EJC 2016, please visit
-            <a href='http://www.ejc2016.org'>http://www.ejc2016.org</a> or
-            contact <a href='mailto:info@ejc2016.org'>info@ejc2016.org</a>.</div>
+        <p><?php echo $this->translate('Best regards,'); ?><br />
+            <?php echo $config['ERS']['salutation']; ?></p>
     </body>
 </html>

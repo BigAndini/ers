@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Event Registration System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-15 23:58+0200\n"
-"PO-Revision-Date: 2016-10-15 23:59+0200\n"
+"POT-Creation-Date: 2016-10-20 22:24+0200\n"
+"PO-Revision-Date: 2016-10-20 22:25+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ERS Team <info@inbaz.org>\n"
 "Language: de_DE\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
@@ -355,12 +355,14 @@ msgstr "Ok"
 
 #: ../view/email/eticket-participant.phtml:13
 #: ../view/email/order-confirmation.phtml:17
+#: ../view/email/payment-reminder.phtml:8
 #: ../view/pre-reg/order/checkout.phtml:203
 msgid "terms and conditions"
 msgstr "Geschäftsbedingungen"
 
 #: ../view/email/eticket-participant.phtml:54
 #: ../view/email/order-confirmation.phtml:30
+#: ../view/email/payment-reminder.phtml:51
 #, php-format
 msgid "Dear %s %s,"
 msgstr "Hallo %s %s,"
@@ -379,7 +381,7 @@ msgstr ""
 "Wir haben die Bezahlung für deine Bestellung mit der Nummer %s vom %s "
 "erhalten. Du findest dein E-Ticket im Anhang dieser E-Mail. "
 
-#: ../view/email/eticket-participant.phtml:65
+#: ../view/email/eticket-participant.phtml:66
 #, php-format
 msgid ""
 "First of all, <strong>please make sure that your name and date of birth on "
@@ -397,7 +399,7 @@ msgstr ""
 "nicht anmelden kannst, wenn Name und Geburtsdatum auf dem E-Ticket nicht mit "
 "den Daten auf deinem Ausweis übereinstimmen."
 
-#: ../view/email/eticket-participant.phtml:69
+#: ../view/email/eticket-participant.phtml:70
 msgid ""
 "Please bring the e-ticket and a valid ID card to the event and present both "
 "documents at the registration desk. You can either print the e-ticket or "
@@ -408,40 +410,48 @@ msgstr ""
 "auch mit Hilfe eines elektronischen Geräts vorzeigen."
 
 #: ../view/email/eticket-participant.phtml:73
+msgid ""
+"Please bring the e-ticket to the event and present the document at the "
+"registration desk. You can either print the e-ticket or present it on an "
+"electronic device."
+msgstr ""
+"Bitte bringe dein E-Ticket zur Veranstaltung mit und zeige es an der "
+"Anmeldung vor. Du kannst das E-Ticket ausdrucken oder auch mit Hilfe eines "
+"elektronischen Geräts vorzeigen."
+
+#: ../view/email/eticket-participant.phtml:76
 #, php-format
 msgid ""
 "To be able to read the documents, you need to install Adobe Acrobat Reader, "
 "which you can download here: %s."
 msgstr ""
-"Um die Dokumente öffnen zu können, musst du den Adobe Acrobat Reader "
-"installieren, den du hier herunterladen kannst: %s."
+"Um die Dokumente öffnen zu können, brauchst du den Adobe Acrobat Reader, den "
+"du hier herunterladen kannst: %s."
 
-#: ../view/email/eticket-participant.phtml:76
+#: ../view/email/eticket-participant.phtml:79
 #, php-format
 msgid ""
 "By registering for this event, you agree to the terms and conditions of "
 "attendance and participation as stated on our website at %s."
-msgstr ""
-"Durch die Anmeldung zu unserer Veranstaltung stimmst du den "
-"Geschäftsbedingungen, wie sie auf unserer Webseite unter %s aufgeführt sind, "
-"zu."
+msgstr "Durch die Anmeldung zu unserer Veranstaltung stimmst du den %s zu."
 
-#: ../view/email/eticket-participant.phtml:78
+#: ../view/email/eticket-participant.phtml:81
 #, php-format
 msgid ""
 "For the latest information about %s stay tuned to %s. If you have any "
 "further questions concerning your e-ticket, please contact us via %s."
 msgstr ""
-"Besuche %s, um die neuesten Informationen zur %s zu erhalten. Falls du noch "
+"Um die neuesten Informationen zur %s zu erhalten, besuche %s. Falls du noch "
 "Fragen zu deinem E-Ticket hast, kannst du uns unter %s kontaktieren. "
 
-#: ../view/email/eticket-participant.phtml:84
+#: ../view/email/eticket-participant.phtml:87
 msgid ""
 "We wish you a pleasant journey and we’re looking forward to welcoming you "
 "soon!"
 msgstr "Wir wünschen dir eine gute Anfahrt und freuen uns auf dich!"
 
-#: ../view/email/eticket-participant.phtml:86
+#: ../view/email/eticket-participant.phtml:89
+#: ../view/email/payment-reminder.phtml:67
 #: ../view/email/request-password.phtml:25 ../view/pdf/eticket.phtml:191
 msgid "Best regards,"
 msgstr "Viele Grüße"
@@ -594,6 +604,47 @@ msgid ""
 "        please visit %s\n"
 "        or contact %s."
 msgstr "Für mehr Informationen zur %s, besuche %s oder kontaktiere %s. "
+
+#: ../view/email/payment-reminder.phtml:55
+#, php-format
+msgid ""
+"you registered for the %s at %s and we hope you're looking forward to it. We "
+"haven't sent you an e-ticket yet, because we haven't received payment for "
+"your order."
+msgstr ""
+"du hast dich für die %s am %s angemeldet und wir hoffen, dass du vor hast zu "
+"kommen. Wir haben dir bisher noch kein E-Ticket geschickt, weil wir die "
+"Zahlung für deine Bestellung bisher noch nicht erhalten haben."
+
+#: ../view/email/payment-reminder.phtml:60
+#, php-format
+msgid "Please do one of the following until %s at the latest."
+msgstr ""
+"Bitte entscheide dich für eine der folgenden Optionen bis spätestens %s."
+
+#: ../view/email/payment-reminder.phtml:62
+#, php-format
+msgid "Please pay your order. All needed information can be found at %s"
+msgstr ""
+"Bezahle deine Bestellung. Alle nötigen Informationen findest du unter: %s"
+
+#: ../view/email/payment-reminder.phtml:63
+msgid ""
+"Let us know if you'd like to transfer your ticket to somebody else "
+"(necessary data: first name, last name, date of birth and email address of "
+"the new participant)"
+msgstr ""
+"Lass uns wissen ob du dein Ticket an jemand anderen übertragen möchtest "
+"(nötige Informationen: Vorname, Nachname, Geburtsdatum und E-Mail Adresse "
+"des neuen Teilnehmers)"
+
+#: ../view/email/payment-reminder.phtml:64
+msgid ""
+"If none of the above options are possible for you, let us know if you'd like "
+"us to cancel your ticket."
+msgstr ""
+"Wenn keine der oben genannten Optionen für dich passt, lass uns bitte wissen "
+"ob du dein Ticket stornieren möchtest."
 
 #: ../view/email/request-password.phtml:14
 msgid "Dear"
