@@ -28,27 +28,36 @@ $this->headTitle('Event Registration System');
         </div>
         <div class="col-md-5">
         <?php
-        $form = $this->form;
-        $form->setAttribute('action', $this->url('participant', array('action' => 'add')));
-        $form->prepare();
+            if($deadline):
+                $form->setAttribute('action', $this->url('participant', array('action' => 'add')));
+                $form->prepare();
 
-        echo $this->form()->openTag($form); ?>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <?php echo $this->formRow($form->get('firstname')); ?>
-            </div>
-            <div class="col-md-6">
-                <?php echo $this->formRow($form->get('surname')); ?>
-            </div>
-        </div>
-        <?php echo $this->formRow($form->get('birthday'));
-        echo $this->formRow($form->get('email'));
-        echo $this->formRow($form->get('Country_id'));
-        
-        echo $this->formHidden($form->get('csrf')); ?>
-        <?php echo $this->formSubmit($form->get('submit')); ?>
-        <?php echo $this->form()->closeTag(); ?>
+                echo $this->form()->openTag($form); ?>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <?php echo $this->formRow($form->get('firstname')); ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?php echo $this->formRow($form->get('surname')); ?>
+                    </div>
+                </div>
+                <?php echo $this->formRow($form->get('birthday'));
+                echo $this->formRow($form->get('email'));
+                echo $this->formRow($form->get('Country_id'));
+
+                echo $this->formHidden($form->get('csrf')); ?>
+                <?php echo $this->formSubmit($form->get('submit')); ?>
+                <?php echo $this->form()->closeTag(); 
+            else: ?>
+                <div class="alert alert-info">
+                    <h3><?php echo $this->escapeHtml($this->translate('PreReg is closed')); ?></h3>
+                    <p><?php 
+                    $config = $this->config();
+                    $websiteLink = '<a href="'.$config['ERS']['website'].'">'.$config['ERS']['website'].'</a>';
+                    printf($this->translate('The PreReg is already closed. For more information, please visit our homepage on %s'), $websiteLink); ?> </p>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     
