@@ -547,6 +547,7 @@ class CronController extends AbstractActionController {
         $em->flush();
         
         $ticket_count = 100;
+        #$ticket_count = 3;
         $can_send_packages = $em->getRepository('ErsBase\Entity\Package')
             ->findBy(array('ticket_status' => 'can_send'));
         echo "Can send out e-tickets for ".count($can_send_packages)." packages, will process ".$ticket_count." now.".PHP_EOL;
@@ -579,6 +580,7 @@ class CronController extends AbstractActionController {
             $order = $package->getOrder();
             $participant = $package->getParticipant();
 
+            /*** remove last slash to comment ***/
             $buyer = $order->getBuyer();
             if($participant->getEmail() == '') {
                 $emailService->addTo($buyer);
@@ -588,9 +590,12 @@ class CronController extends AbstractActionController {
                 $emailService->addTo($participant);
                 $emailService->addCc($buyer);
             }
-            /*$user = new Entity\User();
-            $user->setEmail('andi@inbaz.org');
-            $emailService->addTo($user);*/
+            /*** remove leading slash to comment ***/
+            /*** remove last slash to comment ***
+            $user = new Entity\User();
+            $user->setEmail('andi'.$package->getCode()->getValue().'@inbaz.org');
+            $emailService->addTo($user);
+            /*** remove leading slash to comment ***/
             
             $bcc = new Entity\User();
             $bcc->setEmail($config['ERS']['info_mail']);
