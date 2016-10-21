@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Event Registration System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-20 22:24+0200\n"
-"PO-Revision-Date: 2016-10-20 22:25+0200\n"
+"POT-Creation-Date: 2016-10-21 17:10+0200\n"
+"PO-Revision-Date: 2016-10-21 17:10+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ERS Team <info@inbaz.org>\n"
 "Language: de_DE\n"
@@ -381,7 +381,7 @@ msgstr ""
 "Wir haben die Bezahlung für deine Bestellung mit der Nummer %s vom %s "
 "erhalten. Du findest dein E-Ticket im Anhang dieser E-Mail. "
 
-#: ../view/email/eticket-participant.phtml:66
+#: ../view/email/eticket-participant.phtml:65
 #, php-format
 msgid ""
 "First of all, <strong>please make sure that your name and date of birth on "
@@ -399,7 +399,7 @@ msgstr ""
 "nicht anmelden kannst, wenn Name und Geburtsdatum auf dem E-Ticket nicht mit "
 "den Daten auf deinem Ausweis übereinstimmen."
 
-#: ../view/email/eticket-participant.phtml:70
+#: ../view/email/eticket-participant.phtml:69
 msgid ""
 "Please bring the e-ticket and a valid ID card to the event and present both "
 "documents at the registration desk. You can either print the e-ticket or "
@@ -409,7 +409,7 @@ msgstr ""
 "und lege beides an der Anmeldung vor. Du kannst das E-Ticket ausdrucken oder "
 "auch mit Hilfe eines elektronischen Geräts vorzeigen."
 
-#: ../view/email/eticket-participant.phtml:73
+#: ../view/email/eticket-participant.phtml:72
 msgid ""
 "Please bring the e-ticket to the event and present the document at the "
 "registration desk. You can either print the e-ticket or present it on an "
@@ -419,7 +419,7 @@ msgstr ""
 "Anmeldung vor. Du kannst das E-Ticket ausdrucken oder auch mit Hilfe eines "
 "elektronischen Geräts vorzeigen."
 
-#: ../view/email/eticket-participant.phtml:76
+#: ../view/email/eticket-participant.phtml:75
 #, php-format
 msgid ""
 "To be able to read the documents, you need to install Adobe Acrobat Reader, "
@@ -428,14 +428,14 @@ msgstr ""
 "Um die Dokumente öffnen zu können, brauchst du den Adobe Acrobat Reader, den "
 "du hier herunterladen kannst: %s."
 
-#: ../view/email/eticket-participant.phtml:79
+#: ../view/email/eticket-participant.phtml:78
 #, php-format
 msgid ""
 "By registering for this event, you agree to the terms and conditions of "
 "attendance and participation as stated on our website at %s."
 msgstr "Durch die Anmeldung zu unserer Veranstaltung stimmst du den %s zu."
 
-#: ../view/email/eticket-participant.phtml:81
+#: ../view/email/eticket-participant.phtml:80
 #, php-format
 msgid ""
 "For the latest information about %s stay tuned to %s. If you have any "
@@ -444,13 +444,13 @@ msgstr ""
 "Um die neuesten Informationen zur %s zu erhalten, besuche %s. Falls du noch "
 "Fragen zu deinem E-Ticket hast, kannst du uns unter %s kontaktieren. "
 
-#: ../view/email/eticket-participant.phtml:87
+#: ../view/email/eticket-participant.phtml:86
 msgid ""
 "We wish you a pleasant journey and we’re looking forward to welcoming you "
 "soon!"
 msgstr "Wir wünschen dir eine gute Anfahrt und freuen uns auf dich!"
 
-#: ../view/email/eticket-participant.phtml:89
+#: ../view/email/eticket-participant.phtml:88
 #: ../view/email/payment-reminder.phtml:67
 #: ../view/email/request-password.phtml:25 ../view/pdf/eticket.phtml:191
 msgid "Best regards,"
@@ -1676,15 +1676,16 @@ msgstr ""
 
 #: ../view/pre-reg/product/index.phtml:35
 msgid "PreReg is closed"
-msgstr "Die Voranmeldung ist abgeschlossen"
+msgstr "Die Voranmeldung ist geschlossen"
 
-#: ../view/pre-reg/product/index.phtml:39
+#: ../view/pre-reg/product/index.phtml:41
+#, php-format
 msgid ""
 "The PreReg is already closed. For more information, please visit our "
-"homepage on"
+"homepage on %s"
 msgstr ""
-"Die Voranmeldung ist bereits abgeschlossen. Mehr Information findest du auf "
-"unserer Homepage unter"
+"Die Voranmeldung ist bereits geschlossen. Mehr Information findest du auf "
+"unserer Homepage unter %s"
 
 #: ../view/pre-reg/profile/change.phtml:2
 msgid "Change My Profile"
@@ -1730,6 +1731,13 @@ msgstr "Falls du keine E-Mail erhalten hast, überprüfe bitte deinen Spamordner
 #: ../view/pre-reg/profile/request-password.phtml:23
 msgid "Your email address..."
 msgstr "Deine Mailadresse... "
+
+#~ msgid ""
+#~ "The PreReg is already closed. For more information, please visit our "
+#~ "homepage on"
+#~ msgstr ""
+#~ "Die Voranmeldung ist bereits geschlossen. Mehr Information findest du auf "
+#~ "unserer Homepage unter"
 
 #~ msgid ""
 #~ "If we were able to find your email address in our system an email was \n"
