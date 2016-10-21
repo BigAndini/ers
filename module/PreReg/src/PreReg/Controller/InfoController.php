@@ -28,8 +28,13 @@ class InfoController extends AbstractActionController {
         $form->get('submit')->setAttribute('class', 'btn btn-lg btn-primary');
         $form->get('submit')->setValue(_('Register now!'));
         
+        $deadlineService = $this->getServiceLocator()
+                ->get('ErsBase\Service\DeadlineService:price');
+        $deadline = $deadlineService->getDeadline();
+        
         return new ViewModel(array(
             'form' => $form,
+            'deadline' => $deadline,
         ));
     }
     public function termsAction() {
