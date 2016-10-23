@@ -336,7 +336,7 @@ return array(
                 ),
                 'send-etickets' => array(
                     'options' => array(
-                        'route'    => 'send-etickets [--real|-r]',
+                        'route'    => 'send-etickets [--count=|-c=] [--real|-r]',
                         'defaults' => array(
                             'controller' => 'Admin\Controller\Cron',
                             'action' => 'send-etickets'

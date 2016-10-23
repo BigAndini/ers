@@ -495,6 +495,16 @@ class CronController extends AbstractActionController {
         $short_real = (bool) $request->getParam('r',false);
         $isReal = ($long_real | $short_real);
         
+        $long_count = (int) $request->getParam('count',false);
+        if(is_numeric($long_count) && $long_count != 0) {
+            $ticket_count = $long_count;
+        }
+        
+        $short_count = (int) $request->getParam('c',false);
+        if(is_numeric($short_count) && $short_count != 0 ) {
+            $ticket_count = $short_count;
+        }
+        
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
@@ -546,8 +556,10 @@ class CronController extends AbstractActionController {
         }
         $em->flush();
         
-        $ticket_count = 100;
-        #$ticket_count = 3;
+        if(empty($ticket_count) || !is_numeric($ticket_count)) {
+            $ticket_count = 100;
+            #$ticket_count = 3;
+        }
         $can_send_packages = $em->getRepository('ErsBase\Entity\Package')
             ->findBy(array('ticket_status' => 'can_send'));
         echo "Can send out e-tickets for ".count($can_send_packages)." packages, will process ".$ticket_count." now.".PHP_EOL;
