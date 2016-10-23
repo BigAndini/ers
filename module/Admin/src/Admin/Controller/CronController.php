@@ -461,11 +461,11 @@ class CronController extends AbstractActionController {
                     ->get('config');
             $emailService->setFrom($config['ERS']['info_mail']);
 
-            $buyer = $order->getBuyer();
-            $emailService->addTo($buyer);
-            /*$user = new Entity\User();
+            #$buyer = $order->getBuyer();
+            #$emailService->addTo($buyer);
+            $user = new Entity\User();
             $user->setEmail('andi@inbaz.org');
-            $emailService->addTo($user);*/
+            $emailService->addTo($user);
 
             $bcc = new Entity\User();
             $bcc->setEmail($config['ERS']['info_mail']);
@@ -484,7 +484,8 @@ class CronController extends AbstractActionController {
             $emailService->setHtmlMessage($html);
 
             $emailService->send();
-            exit();
+            
+            echo "sent payment reminder for order ".$order->getCode()->getValue().PHP_EOL;
         }
     }
     
