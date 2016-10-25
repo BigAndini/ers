@@ -423,15 +423,31 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
+        $qb1 = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb1->where($qb1->expr()->isNull('o.payment_reminder_status'));
+        
+        $correctOrders = $qb1->getQuery()->getResult();
+        
+        echo "found ".count($correctOrders)." orders to correct".PHP_EOL;
+        foreach($correctOrders as $o) {
+            $o->setPaymentReminderStatus(0);
+            $em->persist($o);
+        }
+        $em->flush();
+        
+        #$limit = 3;
         $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
         $qb->join('o.status', 's');
         $qb->where($qb->expr()->eq('s.value', ':status'));
         $qb->andWhere($qb->expr()->lt('o.created', ':paymentTarget'));
+        $qb->andWhere($qb->expr()->eq('o.payment_reminder_status', ':prstatus'));
         $qb->setParameter('status', 'ordered');
         $paymentTarget = new \DateTime;
-        #$paymentTarget->modify( '-'.(date('d')-5).' day' );
         $paymentTarget->modify( '-5 days' );
         $qb->setParameter('paymentTarget', $paymentTarget);
+        $qb->setParameter('prstatus', '0');
+        #$qb->setFirstResult( $offset )
+        #$qb->setMaxResults( $limit );
         
         $notPaidOrders = $qb->getQuery()->getResult();
         echo count($notPaidOrders)." not paid orders found from before ".$paymentTarget->format('d.m.Y').".".PHP_EOL;
@@ -454,18 +470,21 @@ class CronController extends AbstractActionController {
         
         foreach($notPaidOrders as $order) {
             # prepare email (participant, buyer)
-            #$emailService = new Service\EmailService();
             $emailService = $this->getServiceLocator()
                     ->get('ErsBase\Service\EmailService');
             $config = $this->getServiceLocator()
                     ->get('config');
             $emailService->setFrom($config['ERS']['info_mail']);
 
+            /*** real buyer ***/
             $buyer = $order->getBuyer();
             $emailService->addTo($buyer);
-            /*$user = new Entity\User();
-            $user->setEmail('andi@inbaz.org');
-            $emailService->addTo($user);*/
+            /***/
+            /*** test buyer **
+            $user = new Entity\User();
+            $user->setEmail('andi'.$order->getCode()->getValue().'@inbaz.org');
+            $emailService->addTo($user);
+            /***/
 
             $bcc = new Entity\User();
             $bcc->setEmail($config['ERS']['info_mail']);
@@ -484,6 +503,10 @@ class CronController extends AbstractActionController {
             $emailService->setHtmlMessage($html);
 
             $emailService->send();
+            
+            $order->setPaymentReminderStatus($order->getPaymentReminderStatus()+1);
+            $em->persist($order);
+            $em->flush();
             
             echo "sent payment reminder for order ".$order->getCode()->getValue().PHP_EOL;
         }
