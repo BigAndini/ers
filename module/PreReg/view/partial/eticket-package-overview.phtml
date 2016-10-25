@@ -84,20 +84,15 @@
                         <table class="day-table">
                             <tr>
                                 <?php foreach($product->getProductVariantByName($productVariantName)->getProductVariantValues() as $value):
-                                    #$timestamp = strtotime($value->getValue());
                                     $timestamp = strtotime($translate[$value->getValue()]);
                                     $date = new DateTime();
                                     $date->setTimestamp($timestamp); 
                                     ?>
-                                    <td><?php 
-                                    #echo $date->format('D'); 
-                                    echo strftime('%a', $date->getTimestamp());
-                                    ?></td>
+                                    <td><?php echo strftime('%a', $date->getTimestamp()); ?></td>
                                 <?php endforeach; ?>
                             </tr>
                             <tr>
                                 <?php foreach($product->getProductVariantByName($productVariantName)->getProductVariantValues() as $value):
-                                    #$timestamp = strtotime($value->getValue());
                                     $timestamp = strtotime($translate[$value->getValue()]);
                                     $date = new DateTime();
                                     $date->setTimestamp($timestamp); ?>
@@ -106,7 +101,6 @@
                             </tr>
                             <tr>
                                 <?php foreach($product->getProductVariantByName($productVariantName)->getProductVariantValues() as $value):
-                                    #$timestamp = strtotime($value->getValue());
                                     $timestamp = strtotime($translate[$value->getValue()]);
                                     $date = new DateTime();
                                     $date->setTimestamp($timestamp);
