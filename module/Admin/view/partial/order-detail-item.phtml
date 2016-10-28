@@ -84,13 +84,19 @@
                     <i data-toggle="tooltip" data-placement="bottom" class="fa fa-child color-primary" title="0 € child ticket"></i>
                     <?php break;
                 case 'transferred': 
-                    $transferredPackage = $item->getTransferredItem()->getPackage();
-                    $transferredParticipant = $transferredPackage->getParticipant();
-                    $transferredOrder = $transferredPackage->getOrder();
-                    ?>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $transferredOrder->getId())); ?>">
-                        <i data-toggle="tooltip" data-placement="bottom" class="fa fa-forward color-primary" title="transferred to <?php echo $transferredParticipant->getFirstname().' '.$transferredParticipant->getSurname(); ?>"></i>
-                    </a>
+                    $transferredItem = $item->getTransferredItem();
+                    if($transferredItem):
+                        $transferredPackage = $transferredItem->getPackage();
+                        $transferredParticipant = $transferredPackage->getParticipant();
+                        $transferredOrder = $transferredPackage->getOrder();
+                        ?>
+                        <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $transferredOrder->getId())); ?>">
+                            <i data-toggle="tooltip" data-placement="bottom" class="fa fa-forward color-primary" title="transferred to <?php echo $transferredParticipant->getFirstname().' '.$transferredParticipant->getSurname(); ?>"></i>
+                        </a>
+                    <?php else: ?>
+                    <i class="fa fa-question text-info"></i>
+                    <?php endif; ?>
+                    
                     <?php break;
                 default: ?>
                     <i data-toggle="tooltip" data-placement="bottom" class="fa fa-question color-primary" title="unknown"></i>

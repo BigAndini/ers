@@ -368,7 +368,7 @@ class OrderController extends AbstractActionController {
                     $bcc->setEmail($config['ERS']['info_mail']);
                     $emailService->addBcc($bcc);
 
-                    $subject = "Your registration for ".$config['ERS']['short_name']." (order ".$order->getCode()->getValue().")";
+                    #$subject = "Your registration for ".$config['ERS']['name_short']." (order ".$order->getCode()->getValue().")";
                     $subject = "[".$config['ERS']['name_short']."] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
                     $emailService->setSubject($subject);
 
