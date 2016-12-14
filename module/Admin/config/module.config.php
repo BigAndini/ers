@@ -35,6 +35,7 @@ return array(
             'Admin\Controller\Status'               => 'Admin\Controller\StatusController',
             'Admin\Controller\Test'                 => 'Admin\Controller\TestController',
             'Admin\Controller\Overview'             => 'Admin\Controller\OverviewController',
+            'Admin\Controller\Currency'             => 'Admin\Controller\CurrencyController',
         ),
     ),
     'navigation' => array(
@@ -99,6 +100,11 @@ return array(
                         'label' => 'Agegroup',
                         'route' => 'admin/agegroup',
                         'resource'  => 'controller/Admin\Controller\Agegroup',
+                    ),
+                    'currency' => array(
+                        'label' => 'Currency',
+                        'route' => 'admin/currency',
+                        'resource'  => 'controller/Admin\Controller\Currency',
                     ),
                     'paymenttype' => array(
                         'label' => 'Payment Type',
@@ -629,6 +635,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Agegroup',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'currency' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/currency[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Currency',
                                 'action' => 'index',
                             ),
                         ),

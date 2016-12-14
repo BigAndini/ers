@@ -1,0 +1,23 @@
+<?php
+
+$title = 'Delete Agegroup';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Are you sure that you want to delete the currency
+    <strong><?php echo $currency->getName(); ?></strong>?
+</p>
+<?php
+$url = $this->url('admin/currency', array(
+    'action' => 'delete',
+    'id'     => $this->id,
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $currency->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+    <a href="<?php echo $this->url('admin/currency');?>">Cancel</a>
+</div>
+</form>

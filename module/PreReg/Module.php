@@ -33,8 +33,8 @@ class Module
         $this->bootstrapSession($e);
         
         $translator = $e->getApplication()->getServiceManager()->get('translator');
-        $translator->setLocale('de_DE');
-        setlocale(LC_TIME, 'de_DE');
+        $translator->setLocale('en_US');
+        setlocale(LC_TIME, 'en_US');
         
         $application   = $e->getApplication();
         $sm = $application->getServiceManager();
@@ -172,6 +172,18 @@ class Module
         } else {
             $container->lifetime = time()+$expiration_time;
         }
+        
+        if(!isset($container->currency)) {
+            # TODO: put this into a CurrencyService
+            /*$em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+
+            $currency = $em->getRepository('ErsBase\Entity\Currency')
+                ->findOneBy(array('position' => '1'));*/
+            
+            $container->currency = 'EUR';
+        }
+        error_log('currency locale: '.$container->currency);
         
         /*
          * shopping cart debugging
@@ -330,6 +342,10 @@ class Module
             'factories' => array(
                 'config' => function($sm) {
                     $helper = new \PreReg\View\Helper\Config($sm);
+                    return $helper;
+                },
+                'session' => function($sm) {
+                    $helper = new \PreReg\View\Helper\Session();
                     return $helper;
                 },
                 'checkoutactive' => function($sm) {
