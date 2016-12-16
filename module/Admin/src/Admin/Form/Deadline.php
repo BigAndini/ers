@@ -32,6 +32,7 @@ class Deadline extends Form
                 'placeholder' => 'Deadline...', 
                 'required' => 'required',
                 'class' => 'form-control form-element datetimepicker',
+                'step' => 'any',
             ), 
             'options' => array( 
                 'label' => 'Deadline', 
@@ -81,7 +82,7 @@ class Deadline extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Go',
+                'value' => 'Save',
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),
