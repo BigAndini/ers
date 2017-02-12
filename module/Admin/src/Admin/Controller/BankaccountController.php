@@ -18,21 +18,44 @@ class BankaccountController extends AbstractActionController {
  
     public function indexAction()
     {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
+        /*$em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');*/
         
-        $accounts = $em->getRepository('ErsBase\Entity\BankAccount')
-                ->findBy(array());
+        /*$accounts = $em->getRepository('ErsBase\Entity\BankAccount')
+                ->findBy(array());*/
         
         return new ViewModel(array(
-            'accounts' => $accounts,
+            #'accounts' => $accounts,
         ));
     }
     
     public function addAction()
     {
         $form = new Form\BankAccount();
-        $form->get('submit')->setValue('Add');
+        #$form->get('submit')->setValue('Add');
+        
+        $typeOptions = [
+            'empty' => [
+                'label' => 'Please select type of bank account',
+                'value' => 0,
+                'disabled' => true,
+                'selected' => true,
+            ],
+            'sepa' => [
+                'label' => 'SEPA Bank Account',
+                'value' => 'sepa',
+            ],
+            'ipayment' => [
+                'label' => '1&1 iPayment Account',
+                'value' => 'ipayment',
+            ],
+            'paypal' => [
+                'label' => 'Paypal Account',
+                'value' => 'paypal',
+            ],
+        ];
+        
+        $form->get('type')->setValueOptions($typeOptions);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -409,7 +432,7 @@ class BankaccountController extends AbstractActionController {
         ));
     }
     
-    public function detailAction()
+    /*public function detailAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
@@ -423,7 +446,7 @@ class BankaccountController extends AbstractActionController {
         return new ViewModel(array(
             'order' => $order,
         ));
-    }
+    }*/
     
     public function uploadsAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
@@ -481,6 +504,79 @@ class BankaccountController extends AbstractActionController {
 
         return new ViewModel(array(
             'csv' => $csv,
+        ));
+    }
+    
+    public function detailAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/bankaccount', array());
+        }
+        
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+                ->findOneBy(array('id' => $id));
+        
+        switch($bankaccount->getType()) {
+            case 'sepa':
+                $form = new Form\AccountSepabankDetail($em);
+                break;
+            case 'ipayment':
+                $form = new Form\AccountIpaymentDetail($em);
+                if(empty($bankaccount->getTrxCurrency())) {
+                    $bankaccount->setTrxCurrency('EUR');
+                }
+                if(empty($bankaccount->getAction())) {
+                    $bankaccount->setAction('https://ipayment.de/merchant/%account_id%/processor/2.0/');
+                }
+                break;
+            case 'paypal':
+                $form = new Form\AccountPaypalDetail($em);
+                break;
+            default:
+                $options = [
+                    [
+                        'value' => '',
+                        'label' => 'unkown type',
+                        'disabled' => true,
+                        'selected' => true,
+                    ],
+                    [
+                        'value' => 'sepa',
+                        'label' => 'Sepa Bank Account',
+                    ],
+                    [
+                        'value' => 'ipayment',
+                        'label' => 'iPayment Account',
+                    ],
+                    [
+                        'value' => 'paypal',
+                        'label' => 'Paypal Account',
+                    ],
+                ];
+
+                $form = new Form\AccountUnknownDetail($em);
+                $form->get('type')->setAttribute('options', $options);
+                break;
+        }
+        
+        $form->bind($bankaccount);
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $em->persist($form->getData());
+                $em->flush();
+
+                return $this->redirect()->toRoute('admin/bankaccount');
+            }
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
         ));
     }
 }

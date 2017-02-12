@@ -5,5 +5,5 @@ $title = 'Change Package for '.$participant->getFirstname().' '.$participant->ge
 $this->headTitle($title);
 ?>
 <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $order->getId())); ?>">back to order detail</a>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 

@@ -134,7 +134,7 @@ $settings = array(
      *
      * Accepted values: boolean true or false
      */
-    //'use_redirect_parameter_if_present' => true,
+    'use_redirect_parameter_if_present' => true,
 
     /**
 	 * Sets the view template for the user login widget

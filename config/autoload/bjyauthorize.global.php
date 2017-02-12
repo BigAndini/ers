@@ -11,7 +11,9 @@
 
 return [
     'bjyauthorize' => [
-
+        // redirect to login page when user is not authorized
+        #'unauthorized_strategy' => 'BjyAuthorize\View\RedirectionStrategy',
+        
         // set the 'guest' role as default (must be defined in a role provider)
         'default_role' => 'guest',
         
@@ -142,16 +144,12 @@ return [
                 ['controller' => 'PreReg\Controller\Cart', 'action' => 'reset',     'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Order',                         'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Payment',                       'roles' => ['guest', 'user']],
-                #['controller' => 'PreReg\Controller\Order', 'action' => 'index',   'roles' => ['guest', 'user']],
-                #['controller' => 'PreReg\Controller\Package',                       'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Product',                       'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Participant',                   'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Buyer',                     'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Buyer',                         'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Test',                          'roles' => ['admin']],
-                #['controller' => 'PreReg\Controller\Profile', 'action' => 'index', 'roles' => ['user']],
                 
                 /* ZfcUser */
-                #['controller' => 'zfcuser', 'roles' => ['guest']],
                 ['controller' => 'zfcuser', 'action' => 'login',    'roles' => ['guest']],
                 ['controller' => 'zfcuser', 'action' => 'register', 'roles' => ['guest']],
                 ['controller' => 'zfcuser', 'action' => 'index',    'roles' => ['user']],
@@ -166,12 +164,11 @@ return [
                 
                 /* Onsite */
                 ['controller' => 'OnsiteReg\Controller\Index',                'roles' => ['onsitereg', 'admin', 'supradm']],
-                ['controller' => 'OnsiteReg\Controller\Search',                'roles' => ['onsitereg', 'admin', 'supradm']],
-                ['controller' => 'OnsiteReg\Controller\Package',                'roles' => ['onsitereg', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Search',               'roles' => ['onsitereg', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Package',              'roles' => ['onsitereg', 'admin', 'supradm']],
                 ['controller' => 'OnsiteReg\Controller\Redirect',             'roles' => ['guest', 'onsitereg', 'admin', 'supradm']],
                 
                 /* Admin */
-                #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Test',                'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Index',               'roles' => ['preregcoordinator', 'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Statistic',           'roles' => ['preregcoordinator', 'admin', 'supradm']],

@@ -65,8 +65,53 @@ class LoginService
     }
     
     public function onLogin() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
         $this->addParticipantsToOrder();
+        $em->flush();
+        
         $this->setLoginUserAsBuyer();
+        $em->flush();
+        
+        #
+        /*$user = $em->getRepository('ErsBase\Entity\User')
+                ->findOneBy(array('id' => $this->getUserId()));*/
+        $user = $this->getUser();
+        $user->setId($this->getUserId());
+        $user->increaseLoginCount();
+        error_log('this login count: '.$user->getLoginCount());
+        $em->merge($user);
+        $em->flush();
+        
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $roles = '';
+        foreach($user->getRoles() as $role) {
+            $roles .= $role->getRoleId().', ';
+        }
+        
+        $logger->info('login for user: '.$user->getEmail().' (login count: '.$user->getLoginCount().', roles: '.$roles.')');
+        
+        
+        /*$request = $this->getServiceLocator()->get('Request');
+        $router = $this->getServiceLocator()->get('Router');
+        $uri = $router->getRequestUri();
+        
+        
+        error_log('referer: '.$request->getHeader('Referer')->getUri());
+        $refererQueryString = parse_url(urldecode($request->getHeader('Referer')->getUri()), PHP_URL_QUERY);
+        
+        error_log('query string: '.$refererQueryString);
+        
+        $query = '';
+        parse_str($refererQueryString, $query);
+        error_log($query['redirect']);
+        
+        $response = $this->getServiceLocator()->get('Response');
+        $response->getHeaders()->addHeaderLine('Location', $query['redirect']);
+        $response->setStatusCode(302);
+        $response->sendHeaders();*/
     }
     
     public function onLogout() {
@@ -103,9 +148,10 @@ class LoginService
             /*
              * add logged in user
              */
-            $login_user = $this->getUser();
-            $newUser = new Entity\User();
-            $newUser->populate($login_user->getArrayCopy());
+            #$login_user = $this->getUser();
+            $newUser = $this->getUser();
+            #$newUser = new Entity\User();
+            #$newUser->populate($login_user->getArrayCopy());
             
             if($newUser->getCountryId()) {
                 if(isset($countries[$newUser->getCountryId()])) {
@@ -122,7 +168,7 @@ class LoginService
             }
 
             $package = $orderService->getOrder()
-                    ->getPackageByParticipantEmail($login_user->getEmail());
+                    ->getPackageByParticipantEmail($newUser->getEmail());
             if($package) {
                 $package->setParticipant($newUser);
             } else {
@@ -140,27 +186,31 @@ class LoginService
                 foreach($order->getParticipants() as $user) {
                     $package = $orderService->getOrder()
                             ->getPackageByParticipantEmail($user->getEmail());
-                    $newUser = new Entity\User();
-                    $newUser->populate($user->getArrayCopy());
-                    if($newUser->getCountryId()) {
-                        if(isset($countries[$newUser->getCountryId()])) {
-                            $country = $countries[$newUser->getCountryId()];
+                    /*if($user->getEmail() == $this->getUser()->getEmail()) {
+                        $newUser = $this->getUser();
+                    } else {
+                        $newUser = $user;
+                        #$newUser = new Entity\User();
+                        #$newUser->populate($user->getArrayCopy());
+                    }*/
+                    if($user->getCountryId()) {
+                        if(isset($countries[$user->getCountryId()])) {
+                            $country = $countries[$user->getCountryId()];
                         } else {
                             $country = $em->getRepository('ErsBase\Entity\Country')
-                                ->findOneBy(array('id' => $newUser->getCountryId()));
+                                ->findOneBy(array('id' => $user->getCountryId()));
                             $countries[$country->getId()] = $country;
                         }
-                        $newUser->setCountry($country);
+                        $user->setCountry($country);
                     } else {
-                        $newUser->setCountry(null);
-                        $newUser->setCountryId(null);
+                        $user->setCountry(null);
+                        $user->setCountryId(null);
                     }
                     
-                    
                     if($package) {
-                        $package->setParticipant($newUser);
+                        $package->setParticipant($user);
                     } else {
-                        $orderService->addParticipant($newUser);
+                        $orderService->addParticipant($user);
                     }
                     $count++;
                 }

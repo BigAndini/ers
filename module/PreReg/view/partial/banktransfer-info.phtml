@@ -3,28 +3,30 @@
     <h1>There is no order to show bank transfer details for</h1>
     <p>Go to <a href="<?php echo $this->url('product'); ?>">products</a> and 
         choose the items you want.</p>
-    <?php else: ?>
+    <?php else: 
+        $paymentType = $order->getPaymentType();
+        ?>
     <p><?php echo $this->translate('Please transfer the amount by SEPA bank transfer to the following account:'); ?></p>
     <table class="table">
         <tr>
             <td><?php echo $this->translate('Owner'); ?></td>
-            <td><?php echo $this->config()['ERS\SEPA']['owner']; ?></td>
+            <td><?php echo $paymentType->getOwner(); ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('IBAN'); ?></td>
-            <td><?php echo $this->niceiban($this->config()['ERS\SEPA']['iban']); ?></td>
+            <td><?php echo $this->niceiban($paymentType->getIban()); ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('BIC'); ?></td>
-            <td><?php echo $this->config()['ERS\SEPA']['bic']; ?></td>
+            <td><?php echo $paymentType->getBic(); ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('Bank'); ?></td>
-            <td><?php echo $this->config()['ERS\SEPA']['bank']; ?></td>
+            <td><?php echo $paymentType->getBankName(); ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('Country'); ?></td>
-            <td><?php echo $this->config()['ERS\SEPA']['country']; ?></td>
+            <td><?php echo $paymentType->getBankCountry(); ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('Amount'); ?></td>
@@ -38,18 +40,18 @@
     
     <h4><?php echo $this->translate('Owner address'); ?></h4>
     <p><?php 
-        if($this->config()['ERS\SEPA']['owner_address_line1']): echo $this->config()['ERS\SEPA']['owner_address_line1'].'<br />'; endif;
-        if($this->config()['ERS\SEPA']['owner_address_line2']): echo $this->config()['ERS\SEPA']['owner_address_line2'].'<br />'; endif;
-        if($this->config()['ERS\SEPA']['owner_address_line3']): echo $this->config()['ERS\SEPA']['owner_address_line3'].'<br />'; endif;
-        if($this->config()['ERS\SEPA']['owner_address_line4']): echo $this->config()['ERS\SEPA']['owner_address_line4'].'<br />'; endif;
+        if(!empty($paymentType->getOwnerAddress1())): echo $paymentType->getOwnerAddress1().'<br />'; endif;
+        if(!empty($paymentType->getOwnerAddress2())): echo $paymentType->getOwnerAddress2().'<br />'; endif;
+        if(!empty($paymentType->getOwnerAddress3())): echo $paymentType->getOwnerAddress3().'<br />'; endif;
+        if(!empty($paymentType->getOwnerAddress4())): echo $paymentType->getOwnerAddress4().'<br />'; endif;
         ?></p>
     
     <h4><?php echo $this->translate('Bank address'); ?></h4>
     <p><?php 
-        if($this->config()['ERS\SEPA']['bank_address_line1']): echo $this->config()['ERS\SEPA']['bank_address_line1'].'<br />'; endif;
-        if($this->config()['ERS\SEPA']['bank_address_line2']): echo $this->config()['ERS\SEPA']['bank_address_line2'].'<br />'; endif;
-        if($this->config()['ERS\SEPA']['bank_address_line3']): echo $this->config()['ERS\SEPA']['bank_address_line3'].'<br />'; endif;
-        if($this->config()['ERS\SEPA']['bank_address_line4']): echo $this->config()['ERS\SEPA']['bank_address_line4'].'<br />'; endif;
+        if(!empty($paymentType->getBankAddress1())): echo $paymentType->getBankAddress1().'<br />'; endif;
+        if(!empty($paymentType->getBankAddress2())): echo $paymentType->getBankAddress2().'<br />'; endif;
+        if(!empty($paymentType->getBankAddress3())): echo $paymentType->getBankAddress3().'<br />'; endif;
+        if(!empty($paymentType->getBankAddress4())): echo $paymentType->getBankAddress4().'<br />'; endif;
         ?></p>
 
     <p>

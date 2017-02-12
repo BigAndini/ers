@@ -3,7 +3,7 @@
 $title = 'Delete Payment Type';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <?php if($orders != null && count($orders) > 0): ?>
     <p>Payment types with which orders have been made can't be deleted.</p>
     <a href="<?php echo $this->url('admin/payment-type');?>">Back</a>

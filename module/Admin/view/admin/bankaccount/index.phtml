@@ -1,22 +1,22 @@
 <?php
 /* pizza would be really nice */
 
-$title = 'Bankaccount Overview';
+$title = 'Account Overview';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <p>
-    <a href="<?php echo $this->url('admin/bankaccount', array('action'=>'add'));?>">Add Bankaccount</a>
+    <a class="btn btn-success" href="<?php echo $this->url('admin/bankaccount', array('action'=>'add'));?>">
+        <i class="fa fa-plus"></i> Add Bank Account
+    </a>
 </p>
 
 <table class="table">
     <tr>
-        <th>Name</th>
+        <th>name</th>
         <th>virtual</th>
-        <th>Bank</th>
-        <th>IBAN</th>
-        <th>BIC</th>
-        <th>Statements</th>
+        <th>bank</th>
+        <th>statements</th>
         <th>&nbsp;</th>
     </tr>
 <?php foreach ($accounts as $account) : ?>
@@ -30,14 +30,13 @@ $this->headTitle($title);
             <?php endif; ?>
         </td>
         <td><?php echo $account->getBank(); ?></td>
-        <td><?php echo $account->getIban(); ?></td>
-        <td><?php echo $account->getBic(); ?></td>
         <td><?php echo count($account->getBankStatements()); ?></td>
-        <td>
-            <a href="<?php echo $this->url('admin/bankaccount', array('action'=>'edit', 'id' => $account->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-            <a href="<?php echo $this->url('admin/bankaccount', array('action'=>'format', 'id' => $account->getId()));?>"><?php echo $this->translate('Format'); ?></a>
-            <a href="<?php echo $this->url('admin/bankaccount', array('action'=>'uploads', 'id' => $account->getId()));?>"><?php echo $this->translate('Uploads'); ?></a>
-            <a href="<?php echo $this->url('admin/bankaccount', array('action'=>'delete', 'id' => $account->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+        <td class="text-right">
+            <a class="btn btn-default" href="<?php echo $this->url('admin/bankaccount', array('action'=>'edit', 'id' => $account->getId()));?>" title="edit account"><i class="fa fa-edit"></i></a>
+            <a class="btn btn-default" href="<?php echo $this->url('admin/bankaccount', array('action'=>'detail', 'id' => $account->getId()));?>" title="details for this account"><i class="fa fa-search"></i></a>
+            <a class="btn btn-default" href="<?php echo $this->url('admin/bankaccount', array('action'=>'format', 'id' => $account->getId()));?>" title="add statement format"><i class="fa fa-bars"></i></a>
+            <a class="btn btn-default" href="<?php echo $this->url('admin/bankaccount', array('action'=>'uploads', 'id' => $account->getId()));?>" title="upload csv"><i class="fa fa-upload"></i></a>
+            <a class="btn btn-danger" href="<?php echo $this->url('admin/bankaccount', array('action'=>'delete', 'id' => $account->getId()));?>" title="remove account"><i class="fa fa-trash"></i></a>
         </td>
     </tr>
 <?php endforeach; ?>

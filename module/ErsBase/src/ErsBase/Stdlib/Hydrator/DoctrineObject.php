@@ -82,6 +82,12 @@ class DoctrineObject extends OrigDoctrineObject
     protected function extractByValue($object)
     {
         $fieldNames = array_merge($this->metadata->getFieldNames(), $this->metadata->getAssociationNames());
+        /*
+         * extend hydrator for custom fields
+         */
+        if(method_exists($object, 'getCustomFieldNames')) {
+            $fieldNames = array_merge($fieldNames, $object->getCustomFieldNames());
+        }
         $methods    = get_class_methods($object);
         $filter     = $object instanceof FilterProviderInterface
             ? $object->getFilter()

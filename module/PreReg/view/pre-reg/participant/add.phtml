@@ -3,7 +3,7 @@
 $title = $this->translate('Add Person');
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <?php
 $form = $this->form;
 $form->setAttribute('action', $this->url('participant', array('action' => 'add')));
@@ -23,6 +23,7 @@ echo $this->form()->openTag($form);
         </div>
         <?php echo $this->formRow($form->get('birthday'));
         echo $this->formRow($form->get('email'));
+        echo $this->formRow($form->get('newsletter'));
         echo $this->formRow($form->get('Country_id')); ?>
     </div>
     <div class="col-md-5">

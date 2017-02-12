@@ -40,14 +40,15 @@ return array(
     ),
     'navigation' => array(
         'admin_main_nav' => array(
-            'home' => array(
+            /*'home' => array(
                 'label' => 'Frontend',
                 'route' => 'home',
                 'target' => '_blank',
                 'resource'  => 'controller/PreReg\Controller\Product',
-            ),
+            ),*/
             'statistic' => array(
                 'label' => 'Stats',
+                'icon' => 'fa fa-bar-chart',
                 'route' => 'admin/statistic',
                 'pages' => array(
                     'orgas' => array(
@@ -68,7 +69,7 @@ return array(
                         'action' => 'participants',
                         'resource'  => 'controller/Admin\Controller\Statistic',
                     ),
-                    'bankaccount' => array(
+                    'account' => array(
                         'label' => 'Bank accounts',
                         'route' => 'admin/statistic',
                         'action' => 'bankaccounts',
@@ -84,6 +85,7 @@ return array(
             ),
             'shop' => array(
                 'label' => 'Shop',
+                'icon' => 'fa fa-shopping-cart',
                 'route' => 'admin',
                 'pages' => array(
                     'tax' => array(
@@ -150,6 +152,7 @@ return array(
             ),
             'user' => array(
                 'label' => 'User',
+                'icon' => 'fa fa-users',
                 'route' => 'admin/user',
                 'resource'  => 'controller/Admin\Controller\User',
                 'pages' => array(
@@ -238,39 +241,47 @@ return array(
             ),
         ),
         'admin_top_nav' => array(
-            'login' => array(
-                'label' => 'Login',
-                'route' => 'zfcuser/login',
-                #'action' => 'login',
-                'resource'  => 'controller/zfcuser:login',
-            ),
-            'register' => array(
-                'label' => 'Register',
-                'route' => 'zfcuser/register',
-                #'action' => 'register',
-                'resource'  => 'controller/zfcuser:register',
-            ),
             'profile' => array(
-                'label' => 'My Profile',
-                'route' => 'profile',
-                'action' => '',
-                'resource'  => 'controller/PreReg\Controller\Profile',
-            ),
-            'logout' => array(
-                'label' => 'Logout',
-                'route' => 'zfcuser/logout',
-                #'action' => 'logout',
-                'resource'  => 'controller/zfcuser:logout',
-            ),
-            'admin' => array(
-                'label' => 'AdminPanel',
+                'label' => 'Profile',
+                'icon-only-label' => true,
+                'icon' => 'fa fa-user',
                 'route' => 'admin',
-                'resource'  => 'controller/Admin\Controller\Index',
-            ),
-            'onsite' => array(
-                'label' => 'Onsite',
-                'route' => 'onsite',
-                'resource'  => 'controller/OnsiteReg\Controller\Index',
+                'pages' => array(
+                    'login' => array(
+                        'label' => 'Login',
+                        'route' => 'zfcuser/login',
+                        #'action' => 'login',
+                        'resource'  => 'controller/zfcuser:login',
+                    ),
+                    'register' => array(
+                        'label' => 'Register',
+                        'route' => 'zfcuser/register',
+                        #'action' => 'register',
+                        'resource'  => 'controller/zfcuser:register',
+                    ),
+                    'profile' => array(
+                        'label' => 'My Profile',
+                        'route' => 'profile',
+                        'action' => '',
+                        'resource'  => 'controller/PreReg\Controller\Profile',
+                    ),
+                    'logout' => array(
+                        'label' => 'Logout',
+                        'route' => 'zfcuser/logout',
+                        #'action' => 'logout',
+                        'resource'  => 'controller/zfcuser:logout',
+                    ),
+                    'admin' => array(
+                        'label' => 'AdminPanel',
+                        'route' => 'admin',
+                        'resource'  => 'controller/Admin\Controller\Index',
+                    ),
+                    'onsite' => array(
+                        'label' => 'Onsite',
+                        'route' => 'onsite',
+                        'resource'  => 'controller/OnsiteReg\Controller\Index',
+                    ),
+                ),
             ),
         ),
     ),

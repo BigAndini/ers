@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+                <title>Statistics: Orders - Event Registration System</title> 
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- Le styles -->
+        <link href="/js/datetimepicker/jquery-ui-timepicker-addon.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/js/jquery-ui/jquery-ui.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/js/jquery-ui/jquery-ui.structure.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/js/jquery-ui/jquery-ui.theme.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/css/bootstrap-theme.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/css/style.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/img/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
+<link href="/css/custom.css" media="screen" rel="stylesheet" type="text/css">
+        <!-- Scripts -->
+        <!--[if lt IE 9]><script type="text/javascript" src="/js/html5shiv.js"></script><![endif]-->
+<!--[if lt IE 9]><script type="text/javascript" src="/js/respond.min.js"></script><![endif]-->
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/js/datetimepicker/jquery-ui-timepicker-addon.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    //<!--
+    //<![CDATA[
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//prereg.eja.net/analytics/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 2]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+//]]>
+    //-->
+</script>
+<script type="text/javascript" src="/js/custom_backend.js"></script>
+    </head>
+    <body>
+                <div class="alert alert-danger text-center">
+            <p>Keep in mind this environment is for: <strong>testing</strong></p>
+        </div>
+                <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/admin">ERS AdminPanel</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                                                        <li >
+            <a class="nav-header" href="/">
+                Frontend            </a>
+        </li>
+                                                                    <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <span>Stats<span class="caret"></span></span>
+            </a>
+
+            <ul class="dropdown-menu" id="page_1">
+                                                            <li>
+                    <a href="/admin/statistic/orgas">
+                        for Orgas                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/statistic/orders">
+                        Orders                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/statistic/participants">
+                        Participants                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/statistic/bankaccounts">
+                        Bank accounts                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/statistic/onsite">
+                        Onsite                    </a>
+                </li>
+                        </ul>
+         </li>   
+                                                                    <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <span>Shop<span class="caret"></span></span>
+            </a>
+
+            <ul class="dropdown-menu" id="page_2">
+                                                            <li>
+                    <a href="/admin/tax">
+                        Tax                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/deadline">
+                        Deadline                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/agegroup">
+                        Agegroup                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/currency">
+                        Currency                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/payment-type">
+                        Payment Type                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/country">
+                        Country                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/counter">
+                        Counter                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/status">
+                        Status                    </a>
+                </li>
+                        </ul>
+         </li>   
+                                                                    <li >
+            <a class="nav-header" href="/admin/product">
+                Product            </a>
+        </li>
+                                                                    <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <span>Overview<span class="caret"></span></span>
+            </a>
+
+            <ul class="dropdown-menu" id="page_4">
+                                                            <li>
+                    <a href="/admin/overview/config">
+                        Config                    </a>
+                </li>
+                        </ul>
+         </li>   
+                                                                    <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <span>User<span class="caret"></span></span>
+            </a>
+
+            <ul class="dropdown-menu" id="page_5">
+                                                            <li>
+                    <a href="/admin/user">
+                        User                    </a>
+                </li>
+                                                        </ul>
+         </li>   
+                                                                    <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <span>Order<span class="caret"></span></span>
+            </a>
+
+            <ul class="dropdown-menu" id="page_6">
+                                                            <li>
+                    <a href="/admin/order/search">
+                        Search                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/order/zero-euro-tickets">
+                        0€-Week-Tickets                    </a>
+                </li>
+                        </ul>
+         </li>   
+                                                                    <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <span>Matching<span class="caret"></span></span>
+            </a>
+
+            <ul class="dropdown-menu" id="page_7">
+                                                            <li>
+                    <a href="/admin/matching">
+                        Overview                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/bankaccount">
+                        Bank accounts                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/bankaccount/upload-csv">
+                        Upload CSV                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/matching/manual">
+                        Manual Matching                    </a>
+                </li>
+                                                            <li>
+                    <a href="/admin/matching/disabled">
+                        Disabled Statements                    </a>
+                </li>
+                        </ul>
+         </li>   
+                                                                    <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <span>Refund<span class="caret"></span></span>
+            </a>
+
+            <ul class="dropdown-menu" id="page_8">
+                                                            <li>
+                    <a href="/admin/refund">
+                        Refund pending                    </a>
+                </li>
+                        </ul>
+         </li>   
+                    </ul>
+                    <ul class="nav&#x20;navbar-nav&#x20;navbar-right">
+    <li>
+        <a href="&#x2F;profile&#x2F;">My Profile</a>
+    </li>
+    <li>
+        <a href="&#x2F;user&#x2F;logout">Logout</a>
+    </li>
+    <li>
+        <a href="&#x2F;admin">AdminPanel</a>
+    </li>
+    <li>
+        <a href="&#x2F;onsite">Onsite</a>
+    </li>
+</ul>                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+        <!--<div class="container">-->
+            <div class="container-fluid">
+            <h1>Statistics: Overview</h1>
+
+<div class="panel panel-default">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th colspan="4" class="text-center">1st Phase</th>
+                <th colspan="4" class="text-center">2nd Phase</th>
+                <th colspan="4" class="text-center">Total (all phases)</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th colspan="2" class="text-center">Registrations</th>
+                <th colspan="2" class="text-center">Income</th>
+                <th colspan="2" class="text-center">Registrations</th>
+                <th colspan="2" class="text-center">Income</th>
+                <th colspan="2" class="text-center">Registrations</th>
+                <th colspan="2" class="text-center">Income</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>paid</th>
+                <th>unpaid</th>
+                <th>realized</th>
+                <th>possible</th>
+                <th>paid</th>
+                <th>unpaid</th>
+                <th>realized</th>
+                <th>possible</th>
+                <th>paid</th>
+                <th>unpaid</th>
+                <th>realized</th>
+                <th>possible</th>
+            </tr>
+            <tr>
+                <td>Adult (week)</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+            </tr>
+            <tr>
+                <td>Youth (week)</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+            </tr>
+            <tr>
+                <td>Child (week)</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+            </tr>
+            <tr>
+                <td>Free Tickets</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+                <td class="text-right">1,00 €</td>
+            </tr>
+            <tr>
+                <td>Total</td>
+                <td class="text-right">123.000,00 €</td>
+                <td class="text-right">123.000,00 €</td>
+                <td class="text-right">123.000,00 €</td>
+                <td class="text-right">123.000,00 €</td>
+                <td class="text-right">123.000,00 €</td>
+                <td class="text-right">123.000,00 €</td>
+                <td class="text-right">123.000,00 €</td>
+                <td class="text-right">123.000,00 €</td>
+                <td class="text-right">123.000,00 €</td>
+                <td class="text-right">123.000,00 €</td>
+                <td class="text-right">123.000,00 €</td>
+                <td class="text-right">123.000,00 €</td>
+            </tr>
+        </thead>
+        <tbody>
+    </table>
+</div>
+            <hr>
+            <footer>
+                <p style="float:right;">
+                    <a href="https://github.com/inbaz/ers/issues" target="_blank">report a bug</a><br />
+                    <span>Version: </span>
+                </p>
+                <p>&copy; <!--2014 - -->2016 by European Juggling Association All rights reserved.</p>
+            </footer>
+        </div> <!-- /container -->
+            </body>
+</html>

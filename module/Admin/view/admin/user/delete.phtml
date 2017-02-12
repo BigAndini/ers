@@ -3,7 +3,7 @@
 $title = 'Delete User';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <p>Are you sure that you want to delete price limit
     <strong><?php echo $user->getEmail().' '.$user->getFirstname().' '.$user->getSurname(); ?></strong>?

@@ -82,14 +82,14 @@ class PaymentType extends Form
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
-                'empty_option' => 'Select type ...',
-                'value_options' => [
+                #'empty_option' => 'Select type ...',
+                /*'value_options' => [
                     ['value' => 'BankTransfer', 'label' => 'Bank transfer'],
                     ['value' => 'Cheque', 'label' => 'Cheque'],
                     ['value' => 'PayPal', 'label' => 'PayPal'],
                     ['value' => 'CreditCard', 'label' => 'Credit card'],
                     ['value' => 'IPayment', 'label' => 'Credit card (iPayment)'],
-                ]
+                ]*/
             ),
         ));
         

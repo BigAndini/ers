@@ -74,13 +74,13 @@
                                 endif; ?>
                         </td>
                         <td class="cart-amount"><?php echo $item->getAmount(); ?></td>
-                        <td class="cart-price"><?php echo $this->currencyFormat($item->getPrice(), $this->session()->currency, null, 'de_DE'); ?></td>
+                        <td class="cart-price"><?php echo $this->currencyFormat($item->getPrice(), $order->getCurrency(), null, 'de_DE'); ?></td>
                     </tr>
                 <?php endforeach; ?>
                 <tr>
                     <td></td>
                     <td class="cart-amount">Subtotal:</td>
-                    <td class="cart-price"><?php echo $this->currencyFormat($subtotal, $this->session()->currency, null, 'de_DE'); ?></td>
+                    <td class="cart-price"><?php echo $this->currencyFormat($subtotal, $order->getCurrency(), null, 'de_DE'); ?></td>
                 </tr>
             </table>
             <?php endif; ?>
@@ -90,15 +90,15 @@
     <table class="table sum-table">
         <tr>
             <td>Order amount:</td>
-            <td><?php echo $this->currencyFormat($order->getPrice(), $this->session()->currency, null, 'de_DE'); ?></td>
+            <td><?php echo $this->currencyFormat($order->getPrice(), $order->getCurrency(), null, 'de_DE'); ?></td>
         </tr>
         <tr>
             <td>Payment Charge:</td>
-            <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), $this->session()->currency, null, 'de_DE'); ?></td>
+            <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), $order->getCurrency(), null, 'de_DE'); ?></td>
         </tr>
         <tr>
             <th><span class="total-amount">Total amount:</span></th>
-            <th><span class="total-amount"><?php echo $this->currencyFormat($order->getSum(), $this->session()->currency, null, 'de_DE'); ?></span></th>
+            <th><span class="total-amount"><?php echo $this->currencyFormat($order->getSum(), $order->getCurrency(), null, 'de_DE'); ?></span></th>
         </tr>
     </table>
     <div class="clear-both"></div>

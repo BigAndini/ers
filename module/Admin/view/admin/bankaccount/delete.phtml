@@ -3,7 +3,7 @@
 $title = 'Delete bank account';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php if(count($bankaccount->getBankStatements()) != 0): ?>
     <p>This bank account cannot be deleted since there are bank statements connected.</p>

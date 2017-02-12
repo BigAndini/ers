@@ -3,7 +3,7 @@
 $title = 'Send Payment Reminder for Order '.$order->getCode()->getValue();
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <?php if($order->getPaymentStatus() == 'paid'): ?>
 <p>Unable to send payment reminder for this order since it is already in status paid.</p>
 <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Back</a>

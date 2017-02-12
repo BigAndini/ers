@@ -4,9 +4,9 @@
 $title = 'Counter Overview';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <p>
-    <a href="<?php echo $this->url('admin/counter', array('action'=>'add'));?>">Add Counter</a>
+    
 </p>
 
 <table class="table">
@@ -14,16 +14,18 @@ $this->headTitle($title);
         <th>Name</th>
         <th>Limit</th>
         <th>Current value</th>
-        <th>&nbsp;</th>
+        <th class="text-right">
+            <a class="btn btn-success" href="<?php echo $this->url('admin/counter', array('action'=>'add'));?>"><i class="fa fa-plus"></i> Counter</a>
+        </th>
     </tr>
 <?php foreach ($counters as $counter) : ?>
     <tr>
         <td><?php echo $this->escapeHtml($counter->getName()); ?></td>
         <td><?php echo $counter->getValue(); ?></td>
         <td><i><?php echo $counterCurrentValues[$counter->getId()]; ?></i></td>
-        <td>
-            <a href="<?php echo $this->url('admin/counter', array('action'=>'edit', 'id' => $counter->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-            <a href="<?php echo $this->url('admin/counter', array('action'=>'delete', 'id' => $counter->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+        <td class="text-right">
+            <a class="btn btn-default" href="<?php echo $this->url('admin/counter', array('action'=>'edit', 'id' => $counter->getId()));?>"><i class="fa fa-edit"></i></a>
+            <a class="btn btn-danger" href="<?php echo $this->url('admin/counter', array('action'=>'delete', 'id' => $counter->getId()));?>"><i class="fa fa-trash"></i></a>
         </td>
     </tr>
 <?php endforeach; ?>

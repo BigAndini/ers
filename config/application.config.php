@@ -5,6 +5,8 @@ $config = array(
         'ZfcBase',
         'ZfcUser',
         'ZfcUserDoctrineORM',
+        'GoalioRememberMe',
+        'GoalioRememberMeDoctrineORM',
         'BjyAuthorize',
         #'ZendDeveloperTools',
         'DoctrineModule',
@@ -18,8 +20,6 @@ $config = array(
         'PreReg',
         'OnsiteReg',
         'OrgHeiglPiwik',
-        'GoalioRememberMe',
-        'GoalioRememberMeDoctrineORM',
     ),
 
     // These are various options for the listeners attached to the ModuleManager

@@ -159,7 +159,7 @@ class StatisticController extends AbstractActionController {
                 ->from('ErsBase\Entity\Status', 's')
                 ->leftJoin('s.orders', 'o')
                 #->groupBy('o.payment_status')
-                ->groupBy('s.value')
+                ->groupBy('s.value', 's.id')
                 ->orderBy('s.position')
                 ->getQuery()->getResult();
         
@@ -213,7 +213,7 @@ class StatisticController extends AbstractActionController {
                 #->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
                 ->join('p.items', 'i')
                 ->join('i.status', 's', 'WITH', "s.active = 1")
-                ->groupBy('u.id')
+                ->groupBy('u.id', 'shipped', 's.value')
                 ->getQuery()->getResult();
         
         $agegroupServicePrice = $this->getServiceLocator()

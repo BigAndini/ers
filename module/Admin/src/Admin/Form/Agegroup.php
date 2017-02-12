@@ -32,6 +32,7 @@ class Agegroup extends Form
                 'placeholder' => 'Agegroup...', 
                 'required' => 'required',
                 'class' => 'form-control form-element datepicker',
+                'id' => 'agegroup',
             ), 
             'options' => array( 
                 'label' => 'Agegroup', 
@@ -95,7 +96,7 @@ class Agegroup extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Go',
+                'value' => 'Save',
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),

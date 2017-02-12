@@ -46,46 +46,48 @@ return array(
             ),
         ),
         'top_nav' => array(
-            'login' => array(
-                'label' => _('Login'),
-                'route' => 'zfcuser/login',
-                #'action' => 'login',
-                'resource'  => 'controller/zfcuser:login',
-            ),
-            /*'register' => array(
-                'label' => 'Register',
-                'route' => 'zfcuser/register',
-                #'action' => 'register',
-                'resource'  => 'controller/zfcuser:register',
-            ),*/
             'profile' => array(
-                'label' => _('My Profile'),
-                'route' => 'profile',
-                'action' => '',
-                'resource'  => 'controller/PreReg\Controller\Profile',
-            ),
-            'logout' => array(
-                'label' => _('Logout'),
-                'route' => 'zfcuser/logout',
-                #'action' => 'logout',
-                'resource'  => 'controller/zfcuser:logout',
-            ),
-            'admin' => array(
-                'label' => _('AdminPanel'),
+                'label' => 'Profile',
+                'icon-only-label' => true,
+                'icon' => 'fa fa-user',
                 'route' => 'admin',
-                'resource'  => 'controller/Admin\Controller\Index',
+                'pages' => array(
+                    'login' => array(
+                        'label' => 'Login',
+                        'route' => 'zfcuser/login',
+                        #'action' => 'login',
+                        'resource'  => 'controller/zfcuser:login',
+                    ),
+                    'register' => array(
+                        'label' => 'Register',
+                        'route' => 'zfcuser/register',
+                        #'action' => 'register',
+                        'resource'  => 'controller/zfcuser:register',
+                    ),
+                    'profile' => array(
+                        'label' => 'My Profile',
+                        'route' => 'profile',
+                        'action' => '',
+                        'resource'  => 'controller/PreReg\Controller\Profile',
+                    ),
+                    'logout' => array(
+                        'label' => 'Logout',
+                        'route' => 'zfcuser/logout',
+                        #'action' => 'logout',
+                        'resource'  => 'controller/zfcuser:logout',
+                    ),
+                    'admin' => array(
+                        'label' => 'AdminPanel',
+                        'route' => 'admin',
+                        'resource'  => 'controller/Admin\Controller\Index',
+                    ),
+                    'onsite' => array(
+                        'label' => 'Onsite',
+                        'route' => 'onsite',
+                        'resource'  => 'controller/OnsiteReg\Controller\Index',
+                    ),
+                ),
             ),
-            'onsite' => array(
-                'label' => _('Onsite'),
-                'route' => 'onsite',
-                'resource'  => 'controller/OnsiteReg\Controller\Index',
-            ),
-            /*'help' => array(
-                'label' => _('Help'),
-                'route' => 'info',
-                'action' => 'help',
-                'resource'  => 'controller/PreReg\Controller\Info',
-            ),*/
         ),
         'checkout_nav' => array(
             'mycart' => array(
@@ -369,8 +371,8 @@ return array(
         ),
     ),
     'translator' => array(
-        #'locale' => 'en_US',
-        'locale' => 'de_DE',
+        'locale' => 'en_US',
+        #'locale' => 'de_DE',
         'translation_file_patterns' => array(
             array(
                 'type'     => 'gettext',
@@ -380,8 +382,13 @@ return array(
         ),
     ),
     'view_manager' => array(
+        /*'template_map' => array(
+            #'zfc-user/user/login' => __DIR__ . '/../view/zfc-user/user/login.phtml',
+            'zfc-user/user/login' => __DIR__ . '/../view/layout/login.phtml',
+        ),*/
         'template_path_stack' => array(
             'prereg' => __DIR__ . '/../view',
+            #'zfc-user' => __DIR__ . '/../view',
         ),
     ),
 );

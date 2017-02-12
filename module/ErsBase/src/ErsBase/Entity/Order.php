@@ -183,7 +183,7 @@ class Order extends Base\Order
      * @param \Entity\Package $package
      * @return \Entity\Order
      */
-    public function addPackage(Package $package)
+    public function addPackage(\ErsBase\Entity\Base\Package $package)
     {
         #$this->addPackage($package);
         $this->packages[] = $package;

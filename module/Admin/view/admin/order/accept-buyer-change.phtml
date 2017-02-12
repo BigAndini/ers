@@ -3,7 +3,7 @@
 $title = 'Accept Buyer Change for Order '.$order->getCode()->getValue();
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php if($user == null || $order == null) : ?>
 <h3>It was not possible to collect all data to change buyer.</h3>

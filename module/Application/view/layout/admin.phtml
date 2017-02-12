@@ -63,11 +63,14 @@
                     echo $this->navigation()->menu('admin_main_nav')->render(); 
                     ?>
 
+                    <div class="nav navbar-nav navbar-right">
                     <?php 
+                    $partial_right = array('partial/admin-main-nav.phtml', 'admin_top_nav');
                     echo $this->navigation()
                         ->menu('admin_top_nav')
-                        ->setPartial(null)
-                        ->setUlClass('nav navbar-nav navbar-right'); ?>
+                        ->setPartial($partial_right)
+                        ->setUlClass(''); ?>
+                    </div>
                 </div><!--/.nav-collapse -->
             </div>
         </nav>

@@ -3,11 +3,10 @@
 $title = 'Status Overview';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <div class="row">
     <div class="col-md-6 col-xs-8">
-        <h3>Status</h3>
         <table class="table">
             <tr>
                 <th>Pos.</th>
@@ -15,7 +14,7 @@ $this->headTitle($title);
                 <th>active</th>
                 <th>description</th>
                 <th>
-                    <a class="btn btn-success btn-sm" href="<?php echo $this->url('admin/status', array('action' => 'add')); ?>"><i class="fa fa-plus"></i></a>
+                    <a class="btn btn-success btn-sm" href="<?php echo $this->url('admin/status', array('action' => 'add')); ?>"><i class="fa fa-plus"></i> status</a>
                 </th>
             </tr>
         <?php foreach ($status as $status) : ?>

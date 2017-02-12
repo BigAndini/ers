@@ -18,7 +18,7 @@ if($order == null || $trx_amount == 0):
     ?>
     <h1><?php echo $this->escapeHtml($title); ?></h1>
     <div>
-        <h4>Amount: <?php echo $this->currencyFormat($order->getSum(), $this->session()->currency, null, 'de_DE'); ?></h4>
+        <h4>Amount: <?php echo $this->currencyFormat($order->getSum(), $order->getCurrency(), null, 'de_DE'); ?></h4>
         <div class="row">
             <div class="col-md-3">
                 <?php

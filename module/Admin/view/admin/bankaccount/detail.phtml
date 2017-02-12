@@ -1,0 +1,41 @@
+<?php
+$form = $this->form;
+$obj = $form->getObject();
+switch($obj->getType()) {
+    case 'sepa':
+        $title = 'Details for Sepa Bank Account: '.$obj->getName();
+        break;
+    case 'ipayment':
+        $title = 'Details for iPayment Account: '.$obj->getName();
+        break;
+    case 'paypal':
+        $title = 'Details for Paypal Account: '.$obj->getName();
+        break;
+    default:
+        $title = 'Details for Account (type unknown): '.$obj->getName();
+        break;
+}
+
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+
+$form->setAttribute('action', $this->url('admin/bankaccount', array('action' => 'detail', 'id' => $obj->getId())));
+$form->prepare();
+
+echo $this->form($form);
+
+/*echo $this->form()->openTag($form);
+echo $this->formHidden($form->get('id'));
+echo $this->formRow($form->get('name'));
+echo $this->formRow($form->get('virtual'));
+echo $this->formRow($form->get('bank'));
+echo $this->formRow($form->get('iban'));
+echo $this->formRow($form->get('bic'));
+echo $this->formHidden($form->get('csrf'));
+echo $this->formSubmit($form->get('submit'));
+?>
+<a href="<?php echo $this->url('admin/bankaccount');?>">Cancel</a>
+<?php
+echo $this->form()->closeTag();*/

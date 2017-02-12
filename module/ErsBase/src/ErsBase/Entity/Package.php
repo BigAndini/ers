@@ -101,7 +101,7 @@ class Package extends Base\Package
      * @param \Entity\Item $item
      * @return \Entity\Package
      */
-    public function addItem(Item $item)
+    public function addItem(\ErsBase\Entity\Base\Item $item)
     {
         $item->setPackage($this);
         foreach($item->getChildItems() as $cItem) {
@@ -133,7 +133,7 @@ class Package extends Base\Package
      * @param \ErsBase\Entity\Base\Item $item
      * @return \ErsBase\Entity\Base\Package
      */
-    public function removeItem(Item $item)
+    public function removeItem(\ErsBase\Entity\Base\Item $item)
     {
         foreach($item->getChildItems() as $cItem) {
             $this->items->removeElement($cItem);
