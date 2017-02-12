@@ -3,7 +3,7 @@
 $title = 'Delete Role';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php if(count($childs) != 0): ?>
     <p>The role <strong><?php echo $role->getRoleId(); ?></strong> cannot be deleted. There are roles which use this role as parent. Delete them first:</p>

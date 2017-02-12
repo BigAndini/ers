@@ -108,7 +108,7 @@ class Item extends Base\Item
      * @param string $status
      * @return \Entity\Item
      */
-    public function setStatus($status)
+    public function setStatus(\ErsBase\Entity\Base\Status $status = null)
     {
         $this->status = $status;
         foreach($this->getChildItems() as $cItem) {
@@ -170,7 +170,7 @@ class Item extends Base\Item
      * @param \Entity\Package $package
      * @return \Entity\Item
      */
-    public function setPackage(Package $package = null)
+    public function setPackage(\ErsBase\Entity\Base\Package $package = null)
     {
         $this->package = $package;
         foreach($this->getChildItems() as $cItem) {

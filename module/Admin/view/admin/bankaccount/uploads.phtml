@@ -4,7 +4,7 @@
 $title = 'Bankaccount Uploads for '.$bankaccount->getName();
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <p>
     <a href="<?php echo $this->url('admin/bankaccount', array('action'=>'upload-csv'));?>">New Upload</a>
 </p>

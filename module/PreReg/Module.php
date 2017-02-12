@@ -13,12 +13,21 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Session\SessionManager;
 use Zend\Session\Container;
 use Zend\Mvc\MvcEvent;
+use BjyAuthorize\View\RedirectionStrategy;
 
 class Module
 {
     public function onBootstrap($e)
     {
         $eventManager        = $e->getApplication()->getEventManager();
+
+        #$strategy = new RedirectionStrategy();
+
+        // eventually set the URI to be used for redirects
+        #$baseUrl = $e->getRequest()->getUriString();
+        #$strategy->setRedirectUri('/user/login?redirect='.\rawurlencode($baseUrl));
+        #$eventManager->attach($strategy);
+        
         $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($e) {
             $controller      = $e->getTarget();
             $controllerClass = get_class($controller);
@@ -33,8 +42,8 @@ class Module
         $this->bootstrapSession($e);
         
         $translator = $e->getApplication()->getServiceManager()->get('translator');
-        $translator->setLocale('de_DE');
-        setlocale(LC_TIME, 'de_DE');
+        $translator->setLocale('en_US');
+        setlocale(LC_TIME, 'en_US');
         
         $application   = $e->getApplication();
         $sm = $application->getServiceManager();
@@ -51,33 +60,8 @@ class Module
         $sharedManager->attach('Zend\Mvc\Application', 'dispatch.error',
                 function($e) use ($sm) {
                     if ($e->getParam('exception')){
-                        #$sm->get('Logger')->crit($e->getParam('exception'));
-                        
                         $emailService = $sm->get('ErsBase\Service\EmailService');
                         $emailService->sendExceptionEmail($e->getParam('exception'));
-                        
-                        /*$auth = $sm->get('zfcuser_auth_service');
-                        if (!$auth->hasIdentity()) {
-                            $url = $e->getRouter()->assemble(array(), array('name' => 'zfcuser/login'));
-                            $response=$e->getResponse();
-                            $response->getHeaders()->addHeaderLine('Location', $url);
-                            $response->setStatusCode(302);
-                            $response->sendHeaders(); 
-                            
-                            // When an MvcEvent Listener returns a Response object,
-                            // It automatically short-circuit the Application running 
-                            // -> true only for Route Event propagation see Zend\Mvc\Application::run
-
-                            // To avoid additional processing
-                            // we can attach a listener for Event Route with a high priority
-                            $stopCallBack = function($event) use ($response){
-                                $event->stopPropagation();
-                                return $response;
-                            };
-                            //Attach the "break" as a listener with a high priority
-                            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack,-10000);
-                            return $response;
-                        }*/
                     }
                 }
             );
@@ -89,14 +73,11 @@ class Module
             $user_id = $authEvent->getIdentity();
             $loginService->setUserId($user_id);
             $loginService->onLogin();
-            error_log('this is on the login');
             return true;
         });
         
         $zfcAuthEvents->attach( 'logout', function( $authEvent ) use( $sm ){
             $loginService =  $sm->get( 'PreReg\Service\LoginService' );
-            #$user_id = $authEvent->getIdentity();
-            #$loginService->setUserId($user_id);
             $loginService->onLogout();
             return true;
         });
@@ -109,24 +90,25 @@ class Module
             return;
         }
         
-        $session = $e->getApplication()
+        $sessionManager = $e->getApplication()
                     ->getServiceManager()
                     ->get('Zend\Session\SessionManager');
-        $session->start();
+        $sessionManager->start();
         
         #error_log(var_export($_SESSION, true));
         
         $container = new Container('initialized');
+        error_log('session: '.$container->init);
         if (!isset($container->init)) {
-            error_log('initializing session');
+            error_log('initializing session ('.$container->init.')');
             $serviceManager = $e->getApplication()->getServiceManager();
             $request        = $serviceManager->get('Request');
 
-            $session->regenerateId(true);
+            $sessionManager->regenerateId(true);
             $container->init          = 1;
             $container->remoteAddr    = $request->getServer()->get('REMOTE_ADDR');
             $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
-
+            
             $config = $serviceManager->get('Config');
             if (!isset($config['session'])) {
                 return;
@@ -134,7 +116,7 @@ class Module
 
             $sessionConfig = $config['session'];
             if (isset($sessionConfig['validators'])) {
-                $chain   = $session->getValidatorChain();
+                $chain   = $sessionManager->getValidatorChain();
 
                 foreach ($sessionConfig['validators'] as $validator) {
                     switch ($validator) {
@@ -155,13 +137,13 @@ class Module
         
         $expiration_time = 3600;
         $container->setExpirationSeconds( $expiration_time, 'initialized' );
-        if(!$session->isValid()) {
+        if(!$sessionManager->isValid()) {
             error_log('Session is not valid');
             $container->init = 0;
         }
         #$container->getManager()->getStorage()->clear('initialized');
         if (!isset($container->init) || $container->lifetime < time()) {
-            error_log('reset session due to expiration');
+            #error_log('reset session due to expiration');
             $container->getManager()->getStorage()->clear('initialized');
             $container = new Container('initialized');
             $container->init = 1;
@@ -172,6 +154,18 @@ class Module
         } else {
             $container->lifetime = time()+$expiration_time;
         }
+        
+        if(!isset($container->currency)) {
+            # TODO: put this into a CurrencyService
+            /*$em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+
+            $currency = $em->getRepository('ErsBase\Entity\Currency')
+                ->findOneBy(array('position' => '1'));*/
+            
+            $container->currency = 'EUR';
+        }
+        #error_log('currency locale: '.$container->currency);
         
         /*
          * shopping cart debugging
@@ -330,6 +324,10 @@ class Module
             'factories' => array(
                 'config' => function($sm) {
                     $helper = new \PreReg\View\Helper\Config($sm);
+                    return $helper;
+                },
+                'session' => function($sm) {
+                    $helper = new \PreReg\View\Helper\Session();
                     return $helper;
                 },
                 'checkoutactive' => function($sm) {

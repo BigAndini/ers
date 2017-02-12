@@ -111,6 +111,7 @@ class ProfileController extends AbstractActionController {
     }
     
     public function requestPasswordAction() {
+        error_log('in request-password');
         $form = new Form\RequestPassword();
         
         $logger = $this->getServiceLocator()->get('Logger');

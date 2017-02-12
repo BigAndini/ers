@@ -120,6 +120,24 @@ class Participant extends Form implements InputFilterProviderInterface
         )); 
         
         $this->add(array(
+            'name' => 'newsletter',
+            'type' => 'Zend\Form\Element\Checkbox',
+            'attributes' => array(
+                'value' => '0',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => _('I\'d like to receive information about the next EJC.'),
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                'use_hidden_element' => true,
+                'checked_value' => 1,
+                'unchecked_value' => 0,
+            ),
+        ));
+        
+        $this->add(array(
             'name' => 'Country_id',
             'type'  => 'Zend\Form\Element\Select',
             'attributes' => array(

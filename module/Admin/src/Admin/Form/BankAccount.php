@@ -56,6 +56,20 @@ class BankAccount extends Form
         ));
         
         $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
+            'name' => 'type',
+            'attributes' => array(
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Type',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
+        /*$this->add(array(
             'name' => 'bank',
             'attributes' => array(
                 'required' => 'required',
@@ -98,7 +112,7 @@ class BankAccount extends Form
                     'class'  => 'media-object',
                 ),
             ),
-        ));
+        ));*/
         
         $this->add(array( 
             'name' => 'csrf', 
@@ -109,9 +123,9 @@ class BankAccount extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Go',
+                'value' => 'Save',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-success',
             ),
         ));
     }

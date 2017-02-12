@@ -4,7 +4,7 @@ $title = $this->translate('My Shopping Cart');
 $this->headTitle($title);
 ?>
 
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php 
 $partial = array('partial/checkout-nav.phtml', 'checkout_nav');
@@ -51,13 +51,13 @@ echo $this->navigation()
                         <label class="payment-type">
                             <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
                             <?php echo $paymenttype->getName() ?>
-                            <span class="h5">(<?php echo $this->translate('payment fee:'); ?> <?php echo $this->currencyFormat($order->getPaymentFees($paymenttype), 'EUR', null, 'de_DE'); ?>)</span>
+                            <span class="h5">(<?php echo $this->translate('payment fee:'); ?> <?php echo $this->currencyFormat($order->getPaymentFees($paymenttype), $order->getCurrency(), null, 'de_DE'); ?>)</span>
                         </label>
                     <?php elseif($now->getTimestamp() < $paymenttype->getActiveFrom()->getDeadline()->getTimestamp()): ?>
                         <label class="payment-type">
                             <input style="display: inline;" disabled="disabled" type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
                             <?php echo $paymenttype->getName() ?>
-                            <span class="h5">(payment fee: <?php echo $this->currencyFormat($order->getPaymentFees($paymenttype), 'EUR', null, 'de_DE'); ?>)</span>
+                            <span class="h5">(payment fee: <?php echo $this->currencyFormat($order->getPaymentFees($paymenttype), $order->getCurrency(), null, 'de_DE'); ?>)</span>
                         </label>
                         <p class="alert alert-warning">
                             <i class="fa fa-warning"></i> <?php echo $this->translate('This payment type is not available, yet. It will be available from').' '.$paymenttype->getActiveFrom()->getDeadline()->format('d.m.Y').' '.$this->translate('until').' '.$paymenttype->getActiveUntil()->getDeadline()->format('d.m.Y'); ?>. <?php echo $this->translate('Please choose another payment type.'); ?>
@@ -66,7 +66,7 @@ echo $this->navigation()
                         <label class="payment-type">
                             <input style="display: inline;" disabled="disabled" type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
                             <?php echo $paymenttype->getName() ?>
-                            <span class="h5">(payment fee: <?php echo $this->currencyFormat($order->getPaymentFees($paymenttype), 'EUR', null, 'de_DE'); ?>)</span>
+                            <span class="h5">(payment fee: <?php echo $this->currencyFormat($order->getPaymentFees($paymenttype), $order->getCurrency(), null, 'de_DE'); ?>)</span>
                         </label>
                         <p class="alert alert-warning">
                             <i class="fa fa-warning"></i> <?php echo $this->translate('This payment type was available until').' '.$paymenttype->getActiveUntil()->getDeadline()->format('d.m.Y'); ?>. <?php echo $this->translate('Please choose another payment type.'); ?>

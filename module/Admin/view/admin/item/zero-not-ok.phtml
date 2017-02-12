@@ -3,7 +3,7 @@
 $title = 'undo zero ok item '.$item->getName();
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <p>Do you really want to <strong>unset 0 € OK</strong> for this item: <?php echo $item->getName(); ?>?</p>
 <p>The item will be set to unpaid and will be rematched with the next auto-match run.</p>

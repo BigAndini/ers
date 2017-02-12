@@ -3,7 +3,7 @@
 $title = 'Product Overview';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <p>
     
 </p>
@@ -13,10 +13,10 @@ $this->headTitle($title);
         <th>Pos.</th>
         <th>Visible</th>
         <th>Name</th>
-        <th>Template for E-Ticket</th>
+        <th>Template for E-Ticket <i class="fa fa-question-circle text-info" data-toggle="tooltip" title="Some product types can be displayed on the e-ticket via a template. If no template fits for your product request a template through an issue on github. You can find a link to the issue tracker on the bottom right of this page."></i></th>
         <!--<th>Variant</th>-->
         <th>
-            <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/product', array('action'=>'add'));?>"><i class="fa fa-plus"></i></a>
+            <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/product', array('action'=>'add'));?>"><i class="fa fa-plus"></i> <?php echo _('product'); ?></a>
         </th>
     </tr>
 <?php foreach ($products as $product) : ?>
@@ -32,10 +32,10 @@ $this->headTitle($title);
         <td><?php 
             if($product->getPersonalized()) : ?> 
                 <!--<img src="/img/icons/32px/user.png" alt="(personalized)" title="This product needs to be linked to a user" />-->
-                <i class="fa fa-lg fa-user"></i>
+                <i class="fa fa-lg fa-user" data-toggle="tooltip" title="This is a personalized product."></i>
             <?php endif;?>
             <?php if(count($product->getChildProducts()) > 0): ?>
-                <i class="fa fa-lg fa-archive"></i>
+                <i class="fa fa-lg fa-archive" data-toggle="tooltip" title="This product has a child product."></i>
             <?php endif; ?>
             <?php echo $this->escapeHtml($product->getName()); ?>
         </td>

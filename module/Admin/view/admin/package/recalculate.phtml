@@ -3,7 +3,7 @@ $participant = $package->getParticipant();
 $title = 'Recalculate prices for package of '.$participant->getFirstname().' '.$participant->getSurname();
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <div class="alert alert-warning">
     Only items which are not in state <strong>cancelled</strong> will be recalculated.
 </div>

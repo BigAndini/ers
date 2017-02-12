@@ -3,7 +3,7 @@
 $title = $this->translate('Delete Person');
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php $participant = $form->getObject(); ?>
 <p>Are you sure that you want to delete participant
@@ -20,7 +20,7 @@ $this->headTitle($title);
     <?php foreach($package->getItems() as $item): ?>
         <tr>
             <td><?php echo $item->getName(); ?></td>
-            <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+            <td><?php echo $this->currencyFormat($item->getPrice(), $item->getCurrency(), null, 'de_DE'); ?></td>
         </tr>
     <?php endforeach; ?>
     </table>

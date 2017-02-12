@@ -76,7 +76,7 @@ class Module
                 }
             );
 
-        $zfcAuthEvents = $sm->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
+        /*$zfcAuthEvents = $sm->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
 
         $zfcAuthEvents->attach( 'authenticate.success', function( $authEvent ) use( $sm ){
             $loginService =  $sm->get( 'PreReg\Service\LoginService' );
@@ -92,7 +92,7 @@ class Module
             #$loginService->setUserId($user_id);
             $loginService->onLogout();
             return true;
-        });
+        });*/
     }
     
     public function bootstrapSession($e)

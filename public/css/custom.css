@@ -18,6 +18,10 @@ body {
     padding-top: 0;
 }
 
+.tooltip > p {
+  text-align:left;
+}
+
 /* CSS colors */
 
 /*a {

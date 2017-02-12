@@ -3,7 +3,7 @@
 $title = 'Set status to paid for item '.$item->getCode()->getValue();
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <p>Do you really want to set the status to <strong>paid</strong> for the item <?php echo $item->getCode()->getValue(); ?>?</p>
 <?php

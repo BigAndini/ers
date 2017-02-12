@@ -4,7 +4,7 @@ $title = $this->translate('My Shopping Cart');
 $this->headTitle($title);
 ?>
 
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php 
 $partial = array('partial/checkout-nav.phtml', 'checkout_nav');
@@ -25,7 +25,7 @@ echo $this->navigation()
 <div class="row">
     <div class="col-md-6">
         <div class="order-info">
-            <h1><?php echo $this->translate('Buyer'); ?></h1>
+            <h2><?php echo $this->translate('Buyer'); ?></h2>
             <?php $buyer = $order->getBuyer(); ?>
             <?php if($buyer) : ?>
                 <h2><?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?></h2>
@@ -39,7 +39,7 @@ echo $this->navigation()
     </div>
     <div class="col-md-6">
         <div class="order-info">
-            <h1><?php echo $this->translate('Payment'); ?></h1>
+            <h2><?php echo $this->translate('Payment'); ?></h2>
             <?php $paymenttype = $order->getPaymentType(); ?>
             <?php if($paymenttype) : ?>
                 <h3><?php echo $paymenttype->getName(); ?></h3>
@@ -58,7 +58,7 @@ echo $this->navigation()
     </div>
 </div>
 <div>
-    <h1><?php echo $this->translate('Shopping Cart'); ?></h1>
+    <h2><?php echo $this->translate('Shopping Cart'); ?></h2>
         <div>
         <?php 
             $sum = 0;
@@ -136,13 +136,13 @@ echo $this->navigation()
                                 endif; ?>
                             </td>
                             <td><?php echo $item->getAmount(); ?></td>
-                            <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+                            <td><?php echo $this->currencyFormat($item->getPrice(), $order->getCurrency(), null, 'de_DE'); ?></td>
                         </tr>
                     <?php endforeach; ?>
                     <tr>
                         <td></td>
                         <td><?php echo $this->translate('Subtotal:'); ?></td>
-                        <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
+                        <td><?php echo $this->currencyFormat($subtotal, $order->getCurrency(), null, 'de_DE'); ?></td>
                     </tr>
                 </table>
                 <?php endif; ?>
@@ -152,15 +152,15 @@ echo $this->navigation()
             <table class="table sum-table">
                 <tr>
                     <td><?php echo $this->translate('Order amount:'); ?></td>
-                    <td><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+                    <td><?php echo $this->currencyFormat($order->getPrice(), $order->getCurrency(), null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
                     <td><?php echo $this->translate('Payment Charge:'); ?></td>
-                    <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), 'EUR', null, 'de_DE'); ?></td>
+                    <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), $order->getCurrency(), null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
                     <th><span style="font-size: 18px;"><?php echo $this->translate('Total amount:'); ?></span></th>
-                    <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
+                    <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), $order->getCurrency(), null, 'de_DE'); ?></span></th>
                 </tr>
             </table>
         <?php endif; ?>

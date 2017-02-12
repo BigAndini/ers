@@ -8,13 +8,24 @@
         <?php if( ! $hasChildren): ?>
         <li <?php if($page->isActive()) { echo 'class="active"'; } ?>>
             <a class="nav-header" href="<?php echo $page->getHref() ?>">
-                <?php echo $this->translate($page->getLabel()) ?>
+                <?php if($page->get('icon-only-label')):
+                    echo '<i class="'.$page->get('icon').'"></i>';
+                else:
+                    echo '<i class="'.$page->get('icon').'"></i>'.$this->translate($page->getLabel());
+                endif; ?>
             </a>
         </li>
         <?php else: ?>
         <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <span><?php echo $this->translate($page->getLabel()) ?><span class="caret"></span></span>
+                <span>
+                    <?php if($page->get('icon-only-label')):
+                        echo '<i class="'.$page->get('icon').'"></i> ';
+                    else:
+                        echo '<i class="'.$page->get('icon').'"></i> '.$this->translate($page->getLabel());
+                    endif; ?>
+                    <span class="caret"></span>
+                </span>
             </a>
 
             <ul class="dropdown-menu" id="page_<?php echo $count ?>">

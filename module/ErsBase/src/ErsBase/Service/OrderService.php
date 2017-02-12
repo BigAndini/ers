@@ -216,4 +216,13 @@ class OrderService
         $em->remove($item);
         $em->flush();
     }
+    
+    public function setCurrency($value) {
+        $this->getOrder()->setCurrency($value);
+        return $this;
+    }
+    
+    public function getCurrency() {
+        return $this->getOrder()->getCurrency();
+    }
 }

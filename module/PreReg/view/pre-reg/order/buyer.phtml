@@ -4,7 +4,7 @@ $title = $this->translate('My Shopping Cart');
 $this->headTitle($title);
 ?>
 
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php 
 /*echo $this->navigation()
@@ -35,7 +35,7 @@ echo $this->navigation()
     <?php echo $this->formSubmit($form->get('submit')); ?>
 </div>
 <div>
-    <h1><?php echo $this->translate('Select Buyer'); ?></h1>
+    <h2><?php echo $this->translate('Select Buyer'); ?></h2>
     <?php if(count($order->getPackages()) > 0): ?>
     <p><strong><?php echo $this->translate('All E-Tickets will be emailed to the buyer.'); ?></strong> 
         <?php echo $this->translate('If you order items for multiple persons and provided their email addresses, they will automatically receive a copy of their E-Ticket.'); ?></p>

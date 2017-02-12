@@ -8,4 +8,4 @@ $this->headTitle($title);
 <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $order->getId())); ?>">back to Order</a>
 <a href="<?php echo $this->url('admin/package', array('action' => 'detail', 'id' => $package->getId())); ?>">back to Package</a>
 
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
