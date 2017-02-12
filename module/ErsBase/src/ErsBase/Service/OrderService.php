@@ -53,40 +53,37 @@ class OrderService
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         if(isset($cartContainer->order_id) && is_numeric($cartContainer->order_id)) {
-            $order = $em->getRepository('ErsBase\Entity\Order')
+            $checkOrder = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $cartContainer->order_id));
-            if(!$order) {
-                # Cannot find order with given id: Creating new order...
-                $order = new Entity\Order();
-                $status = $em->getRepository('ErsBase\Entity\Status')
-                    ->findOneBy(array('value' => 'order pending'));
-                $order->setStatus($status);
-            
-                $em->persist($order);
-                $em->flush();
-
-                $cartContainer->order_id = $order->getId();
+            if($checkOrder) {
+                $this->order = $checkOrder;
+                $this->addLoggedInUser();
+                return $checkOrder;
             }
-            
-            $this->order = $order;
-            $this->addLoggedInUser();
-            return $order;
-        } else {
-            $order = new Entity\Order();
-            $status = $em->getRepository('ErsBase\Entity\Status')
-                ->findOneBy(array('value' => 'order pending'));
-            $order->setStatus($status);
-            
-            $em->persist($order);
-            $em->flush();
-            
-            $cartContainer->order_id = $order->getId();
-            
-            $this->order = $order;
-            $this->addLoggedInUser();
-            
-            return $order;
         }
+        
+        $newOrder = $this->createNewOrder();
+
+        $cartContainer->order_id = $newOrder->getId();
+
+        $this->order = $newOrder;
+        $this->addLoggedInUser();
+
+        return $newOrder;
+    }
+    
+    private function createNewOrder() {
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        $newOrder = new Entity\Order();
+        $status = $em->getRepository('ErsBase\Entity\Status')
+            ->findOneBy(array('value' => 'order pending'));
+        $newOrder->setStatus($status);
+
+        $em->persist($newOrder);
+        $em->flush();
+        
+        return $newOrder;
     }
     
     public function addLoggedInUser() {
