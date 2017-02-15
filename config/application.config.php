@@ -8,7 +8,7 @@ $config = array(
         'GoalioRememberMe',
         'GoalioRememberMeDoctrineORM',
         'BjyAuthorize',
-        #'ZendDeveloperTools',
+        'ZendDeveloperTools',
         'DoctrineModule',
         'DoctrineORMModule',
         'DOMPDFModule',

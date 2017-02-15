@@ -102,7 +102,7 @@ class Module
                      ->get('Zend\Session\SessionManager');
         $session->start();
         
-        $container = new Container('initialized');
+        /*$container = new Container('initialized');
         
         $expiration_time = 3600;
         $container->setExpirationSeconds( $expiration_time, 'initialized' );
@@ -125,13 +125,13 @@ class Module
         #$cartContainer->getManager()->getStorage()->clear('cart');
         if(!isset($cartContainer->init) || $cartContainer->init != 1) {
             $cartContainer->getManager()->getStorage()->clear('cart');
-            $cartContainer->order = new Entity\Order();
+            #$cartContainer->order = new Entity\Order();
             $cartContainer->init = 1;
         }
         $cartContainer->chooserCount--;
         if($cartContainer->chooserCount <= 0) {
             $cartContainer->chooser = false;
-        }
+        }*/
     }
     
     public function getAutoloaderConfig()

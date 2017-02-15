@@ -10,6 +10,7 @@ namespace ErsBase;
 
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\ModuleRouteListener;
+use Zend\Session\Container;
 
 class Module
 {
@@ -75,6 +76,16 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(
+                'ErsBase\Entity\Order' => function ($sm) {
+                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                    $container = new Container('initialized');
+                    $currency = $em->getRepository('ErsBase\Entity\Currency')
+                                ->findOneBy(array('short' => $container->currency));
+                    $order = new Entity\Order();
+                    $order->setCurrency($currency);
+                    
+                    return $order;
+                },
                 'ErsBase\Service\CodeService' => 'ErsBase\Service\Factory\CodeFactory',
                 'ErsBase\Service\EmailService' => function ($sm) {
                     $emailService = new Service\EmailService();

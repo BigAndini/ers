@@ -172,8 +172,11 @@ class Item extends Base\Item
      */
     public function setPackage(\ErsBase\Entity\Base\Package $package = null)
     {
-        $this->package = $package;
+        parent::setPackage($package);
+        $this->setCurrency($package->getCurrency());
+        #$this->package = $package;
         foreach($this->getChildItems() as $cItem) {
+            $cItem->setCurrency($package->getCurrency());
             $cItem->setPackage($package);
             if($package) {
                 $cItem->setPackageId($package->getId());

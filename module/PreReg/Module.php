@@ -98,7 +98,7 @@ class Module
         #error_log(var_export($_SESSION, true));
         
         $container = new Container('initialized');
-        error_log('session: '.$container->init);
+        #error_log('session: '.$container->init);
         if (!isset($container->init)) {
             error_log('initializing session ('.$container->init.')');
             $serviceManager = $e->getApplication()->getServiceManager();
@@ -213,7 +213,9 @@ class Module
             'factories' => array(
                 'Logger' => function($sm){
                     $logger = new \Zend\Log\Logger;
-                    mkdir(getcwd().'/data/log');
+                    if(!is_dir(getcwd().'/data/log')) {
+                        mkdir(getcwd().'/data/log');
+                    }
                     $writer = new \Zend\Log\Writer\Stream('./data/log/'.date('Y-m-d').'-zend-error.log');
                     $logger->addWriter($writer);
 

@@ -17,8 +17,9 @@ use ErsBase\Entity;
 class OrderService
 {
     protected $_sl;
+    protected $currency;
     protected $order;
-
+    
     public function __construct() {
         
     }
@@ -39,6 +40,20 @@ class OrderService
      */
     protected function getServiceLocator() {
         return $this->_sl;
+    }
+    
+    public function setCurrency(Entity\Currency $currency) {
+        $this->currency = $currency;
+    }
+    public function getCurrency() {
+        if(!$this->currency) {
+            $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+            $container = new Container('initialized');
+            $this->currency = $em->getRepository('ErsBase\Entity\Currency')
+                    ->findOneBy(array('short' => $container->currency));
+        }
+        return $this->currency;
     }
     
     public function setOrder(Entity\Order $order) {
@@ -76,15 +91,42 @@ class OrderService
     private function createNewOrder() {
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
-        $newOrder = new Entity\Order();
+        #$newOrder = new Entity\Order();
+        $newOrder = $this->getServiceLocator()
+                ->get('ErsBase\Entity\Order');
         $status = $em->getRepository('ErsBase\Entity\Status')
             ->findOneBy(array('value' => 'order pending'));
         $newOrder->setStatus($status);
+        /*$container = new Container('initialized');
+        $currency = $em->getRepository('ErsBase\Entity\Currency')
+            ->findOneBy(array('short' => $container->currency));
+        $newOrder->setCurrency($currency);*/
 
         $em->persist($newOrder);
         $em->flush();
         
         return $newOrder;
+    }
+    
+    public function changeCurrency(Entity\Currency $currency) {
+        $order = $this->getOrder();
+        if($order->getCurrency()->getShort() != $currency->getShort()) {
+            foreach($order->getItems() as $item) {
+                $item->setCurrency($currency);
+                $product = $item->getProduct();
+                $participant = $item->getPackage()->getParticipant();
+                
+                $agegroup = $participant->getAgegroup();
+                
+                $deadlineService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\DeadlineService');
+                $deadline = $deadlineService->getDeadline($order->getCreated());
+                
+                $item->setPrice($product->getProductPrice($agegroup, $deadline, $currency));
+            }
+        }
+        
+        return $this;
     }
     
     public function addLoggedInUser() {
@@ -132,6 +174,7 @@ class OrderService
         if(!$status) {
             throw new \Exception('Please setup status "order pending"');
         }
+        
         $package->setStatus($status);
         $status->addPackage($package);
         
@@ -213,14 +256,5 @@ class OrderService
         error_log('remove item '.$item->getName());
         $em->remove($item);
         $em->flush();
-    }
-    
-    public function setCurrency($value) {
-        $this->getOrder()->setCurrency($value);
-        return $this;
-    }
-    
-    public function getCurrency() {
-        return $this->getOrder()->getCurrency();
     }
 }

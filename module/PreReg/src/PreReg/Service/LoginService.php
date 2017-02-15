@@ -65,6 +65,9 @@ class LoginService
     }
     
     public function onLogin() {
+        $logger = $this->getServiceLocator()
+                ->get('Logger');
+        
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
@@ -83,8 +86,6 @@ class LoginService
         error_log('this login count: '.$user->getLoginCount());
         $em->merge($user);
         $em->flush();
-        
-        $logger = $this->getServiceLocator()->get('Logger');
         
         $roles = '';
         foreach($user->getRoles() as $role) {
@@ -181,7 +182,16 @@ class LoginService
             $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findBy(array('buyer_id' => $this->getUser()->getId()));
         
+            $container = new Container('initialized');
+            $currency = $em->getRepository('ErsBase\Entity\Currency')
+                ->findOneBy(array('short' => $container->currency));
+            if(!$currency) {
+                throw new \Exception('Unable to find currency: '.$container->currency);
+            }
             foreach($orders as $order) {
+                if(!$order->getCurrency() instanceof Entity\Currency) {
+                    $order->setCurrency($currency);
+                }
                 $count = 1;
                 foreach($order->getParticipants() as $user) {
                     $package = $orderService->getOrder()
