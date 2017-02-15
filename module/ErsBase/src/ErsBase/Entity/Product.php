@@ -56,7 +56,7 @@ class Product extends Base\Product
      * @return type
      */
     public function getProductPrice(Agegroup $agegroup = null, Deadline $deadline = null, $currency = null, $search = true) {
-        $debug = true;
+        $debug = false;
         if($debug) {
             error_log('=== START DEBUGGING: getProductPrice ===');
             if($agegroup) {
