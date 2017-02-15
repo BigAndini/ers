@@ -259,4 +259,18 @@ class Package extends Base\Package
     public function getAllItems() {
         return $this->items;
     }
+    
+    /**
+     * Set Order entity (many to one).
+     *
+     * @param \ErsBase\Entity\Base\Order $order
+     * @return \ErsBase\Entity\Base\Package
+     */
+    public function setOrder(\ErsBase\Entity\Base\Order $order = null)
+    {
+        $this->setCurrency($order->getCurrency());
+        parent::setOrder($order);
+
+        return $this;
+    }
 }

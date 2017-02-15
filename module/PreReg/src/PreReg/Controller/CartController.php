@@ -19,13 +19,13 @@ class CartController extends AbstractActionController {
     /*
      * initialize shopping cart
      */
-    private function initialize() {
+    /*private function initialize() {
         $cartContainer = new Container('cart');
         if(!isset($cartContainer->init) && $cartContainer->init == 1) {
             $cartContainer->order = new Entity\Order();
             $cartContainer->init = 1;
         }
-    }
+    }*/
     
     /*
      * overview of the shopping cart
