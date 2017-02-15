@@ -213,6 +213,7 @@ class Module
             'factories' => array(
                 'Logger' => function($sm){
                     $logger = new \Zend\Log\Logger;
+                    mkdir(getcwd().'/data/log');
                     $writer = new \Zend\Log\Writer\Stream('./data/log/'.date('Y-m-d').'-zend-error.log');
                     $logger->addWriter($writer);
 

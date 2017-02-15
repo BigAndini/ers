@@ -346,7 +346,8 @@ class PackageController extends AbstractActionController {
                 continue;
             }
             $product = $item->getProduct();
-            $price = $product->getProductPrice($agegroup, $deadline);
+            #$price = $product->getProductPrice($agegroup, $deadline);
+            $price = $product->getProductPrice($agegroup, $deadline, $package->getCurrency());
             
             if($item->getPrice() != $price->getCharge()) {
                 /*

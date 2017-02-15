@@ -1,5 +1,4 @@
 <?php
-// module/RegistrationSystem/view/registration-system/admin/index.phtml:
 
 $title = 'Product Price for '.$product->getName();
 $this->headTitle($title);
@@ -19,5 +18,6 @@ $this->headTitle($title);
             'agegroups' => $agegroups,
             'deadlines' => $deadlines,
             'product' => $product,
+            'currencies' => $currencies,
         )
     ); ?>

@@ -52,6 +52,7 @@ class OrderService
         $cartContainer = new Container('cart');
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
+        $em->flush();
         if(isset($cartContainer->order_id) && is_numeric($cartContainer->order_id)) {
             $checkOrder = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $cartContainer->order_id));

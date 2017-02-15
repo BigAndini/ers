@@ -9,34 +9,44 @@
 <?php foreach ($deadlines as $deadline) : ?>
 <tr>
     <th>
-        <?php echo $deadline->getDeadline()->format('d.m.Y H:i:s'); ?>
+        <?php echo $deadline->getName().' ('.$deadline->getDeadline()->format('d.m.Y H:i:s').')'; ?>
     </th>
     <?php foreach($agegroups as $agegroup) : ?>
         <td>
+            <?php foreach($currencies as $currency): ?>
+                <p><?php echo $currency->getName().':'; ?></p>
+            <?php endforeach; ?>
+            <?php foreach($product->getProductPrices() as $price):
+                if(
+                    $price->getAgegroup() != null && 
+                    $price->getAgegroup()->getId() == $agegroup->getId() && 
+                    $price->getDeadline() != null && 
+                    $price->getDeadline()->getId() == $deadline->getId()): ?>
+                    <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
+                    <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
+                    <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+                <?php else: ?>
+                    no price
+                <?php endif;
+            endforeach; ?>
+        </td>
+    <?php endforeach; ?>
+    <td>
+        <?php foreach($currencies as $currency): ?>
+            <p><?php echo $currency->getName().':'; ?></p>
+        <?php endforeach; ?>
         <?php foreach($product->getProductPrices() as $price):
             if(
-                $price->getAgegroup() != null && 
-                $price->getAgegroup()->getId() == $agegroup->getId() && 
+                $price->getAgegroup() == null &&
                 $price->getDeadline() != null && 
                 $price->getDeadline()->getId() == $deadline->getId()): ?>
                 <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
                 <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
                 <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
-            <?php endif;
-        endforeach; ?>
-        </td>
-    <?php endforeach; ?>
-    <td>
-    <?php foreach($product->getProductPrices() as $price):
-        if(
-            $price->getAgegroup() == null &&
-            $price->getDeadline() != null && 
-            $price->getDeadline()->getId() == $deadline->getId()): ?>
-            <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
-            <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
-            <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
-        <?php endif; 
-    endforeach;?>
+            <?php else: ?>
+                no price
+            <?php endif; 
+        endforeach;?>
     </td>
 </tr>
 <?php endforeach; ?>
@@ -44,6 +54,9 @@
     <th>no Deadline</th>
     <?php foreach($agegroups as $agegroup) : ?>
         <td>
+        <?php foreach($currencies as $currency): ?>
+            <p><?php echo $currency->getName().':'; ?></p>
+        <?php endforeach; ?>
         <?php foreach($product->getProductPrices() as $price):
             if(
                 $price->getAgegroup() != null && 
@@ -52,21 +65,26 @@
                 <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
                 <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
                 <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+            <?php else: ?>
+                no price
             <?php endif;
         endforeach; ?>
         </td>
     <?php endforeach; ?>
     <td>
-    <?php foreach($product->getProductPrices() as $price):
-        if(
-            $price != null &&
-            $price->getAgegroup() == null && 
-            $price->getDeadline() == null): ?>
-            <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
-            <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
-            <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
-        <?php endif; ?>
-    <?php endforeach; ?>
+        <?php foreach($currencies as $currency): ?>
+            <p><?php echo $currency->getName().':'; ?></p>
+        <?php endforeach; ?>
+        <?php foreach($product->getProductPrices() as $price):
+            if(
+                $price != null &&
+                $price->getAgegroup() == null && 
+                $price->getDeadline() == null): ?>
+                <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
+                <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
+                <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+            <?php endif; ?>
+        <?php endforeach; ?>
     </td>
 </tr>
 </table>

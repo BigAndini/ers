@@ -55,7 +55,7 @@ class Product extends Base\Product
      * @param \ErsBase\Entity\Agegroup $agegroup
      * @return type
      */
-    public function getProductPrice(Agegroup $agegroup = null, Deadline $deadline = null, $search = true) {
+    public function getProductPrice(Agegroup $agegroup = null, Deadline $deadline = null, $currency = null, $search = true) {
         $ret = new ProductPrice();
         foreach($this->getProductPrices() as $price) {
             /* 
@@ -94,6 +94,21 @@ class Product extends Base\Product
             if($price->getDeadline() != null && $deadline != null && $price->getDeadline()->getId() != $deadline->getId()) {
                 continue;
             }
+            /*
+             * if currency does not match
+             */
+            if($currency != null) {
+                if(is_object($currency)) {
+                    if($price->getCurrency() != null && $price->getCurrency()->getId() != $currency->getId()) {
+                        continue;
+                    }
+                } else {
+                    if($price->getCurrency() != null && $price->getCurrency()->getShort() != $currency) {
+                        continue;
+                    }
+                }
+            }
+            
             
             /*
              * at this point we should only have the prices we want, take the highest one.
@@ -107,9 +122,9 @@ class Product extends Base\Product
             /*
              * start search only by agegroup
              */
-            $ret = $this->getProductPrice($agegroup, null, false);
+            $ret = $this->getProductPrice($agegroup, null, $currency, false);
             if($ret->getCharge() == null) {
-                $ret = $this->getProductPrice(null, null, false);
+                $ret = $this->getProductPrice(null, null, $currency, false);
             }
         }
         

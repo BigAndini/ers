@@ -6,7 +6,7 @@
             <span class="product-price-list product-price-active"><?php echo $ag->getName(); ?></span>
         </td>
         <td>
-            <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline)->getCharge(), $this->session()->currency, null, 'de_DE'); ?></span>
+            <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline, $this->session()->currency)->getCharge(), $this->session()->currency, null, 'de_DE'); ?></span>
         </td>
     </tr>
     <?php endforeach; ?>
@@ -16,7 +16,7 @@
             <span class="product-price-list product-price-active">normal</span>
         </td>
         <td>
-            <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), $this->session()->currency, null, 'de_DE'); ?></span>
+            <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline, $this->session()->currency)->getCharge(), $this->session()->currency, null, 'de_DE'); ?></span>
         </td>
     </tr>
 </table>
@@ -24,7 +24,7 @@
 <table class='table table-notbordered price-table'>
     <tr>
         <td>
-            <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline)->getCharge(), $this->session()->currency, null, 'de_DE'); ?></span>
+            <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline, $this->session()->currency)->getCharge(), $this->session()->currency, null, 'de_DE'); ?></span>
         </td>
     </tr>
 </table>

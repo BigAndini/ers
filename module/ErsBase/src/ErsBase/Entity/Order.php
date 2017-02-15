@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * ErsBase\Entity\Order
  *
  * @ORM\Entity()
- * @ORM\Table(name="`order`", indexes={@ORM\Index(name="fk_Order_User1_idx", columns={"buyer_id"}), @ORM\Index(name="fk_order_payment_type1_idx", columns={"payment_type_id"}), @ORM\Index(name="fk_order_code1_idx", columns={"code_id"}), @ORM\Index(name="fk_order_status1_idx", columns={"status_id"})})
+ * @ORM\Table(name="`order`", indexes={@ORM\Index(name="fk_Order_User1_idx", columns={"`buyer_id`"}), @ORM\Index(name="fk_order_payment_type1_idx", columns={"`payment_type_id`"}), @ORM\Index(name="fk_order_status1_idx", columns={"`status_id`"}), @ORM\Index(name="fk_order_code1_idx", columns={"`code_id`"}), @ORM\Index(name="fk_order_currency1_idx", columns={"`currency_id`"})})
  * @ORM\HasLifecycleCallbacks
  */
 class Order extends Base\Order
