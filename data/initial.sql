@@ -6,7 +6,7 @@ INSERT INTO `role` (`id`, `parent_id`, `roleId`, `active`, `updated`, `created`)
 (NULL, NULL, 'user',              1, '2017-02-11 13:37:00', '2017-02-11 13:37:00'),
 (NULL, NULL, 'admin',             1, '2017-02-11 13:37:00', '2017-02-11 13:37:00'),
 (NULL, NULL, 'guest',             1, '2017-02-11 13:37:00', '2017-02-11 13:37:00'),
-(NULL, NULL, 'participant',       1, '2017-02-11 13:37:00', '2017-02-11 13:37:00'); 
+(NULL, NULL, 'participant',       1, '2017-02-11 13:37:00', '2017-02-11 13:37:00'),
 (NULL, NULL, 'buyer',             1, '2017-02-11 13:37:00', '2017-02-11 13:37:00'); 
 
 # add admin user: admin@ers.inbaz.org

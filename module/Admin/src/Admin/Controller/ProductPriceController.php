@@ -39,11 +39,14 @@ class ProductPriceController extends AbstractActionController {
                 ->findBy(array('price_change' => '1'), array('deadline' => 'ASC'));
         $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
                 ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
+        $currencies = $em->getRepository('ErsBase\Entity\Currency')
+                ->findBy(array('active' => 1), array('position' => 'ASC'));
         
         return new ViewModel(array(
             'product'   => $product,
             'deadlines' => $deadlines,
             'agegroups' => $agegroups,
+            'currencies' => $currencies,
         ));
     }
 

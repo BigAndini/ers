@@ -38,9 +38,13 @@ class ProductController extends AbstractActionController {
                         'position' => 'ASC'
                     )
                 );
+        
+        $container = new Container('initialized');
+        $currency = $em->getRepository('ErsBase\Entity\Currency')
+                    ->findOneBy(array('short' => $container->currency));
         $products = array();
         foreach($tmp as $product) {
-            if($product->getProductPrice()->getCharge() != null) {
+            if($product->getProductPrice(null, null, $currency)->getCharge() != null) {
                 $products[] = $product;
             }
         }
@@ -257,7 +261,11 @@ class ProductController extends AbstractActionController {
                  */
                 $item = new Entity\Item();
                 
-                $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
+                $container = new Container('initialized');
+                $currency = $em->getRepository('ErsBase\Entity\Currency')
+                            ->findOneBy(array('short' => $container->currency));
+                
+                $item->setPrice($product->getProductPrice($agegroup, $deadline, $currency)->getCharge());
                 $item->setStatus($status);
                 $item->setProduct($product);
                 $item->setAmount(1);
