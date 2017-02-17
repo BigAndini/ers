@@ -15,9 +15,47 @@ use Admin\Form;
 class IndexController extends AbstractActionController {
     
     public function indexAction() {
-        $order_search_form = new Form\SearchOrder();
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        /*
+         * check if tax exist
+         */
+        $taxError = false;
+        $taxes = $em->getRepository('ErsBase\Entity\Tax')
+                ->findAll();
+        
+        if(count($taxes) <= 0) {
+            $taxError = true;
+        }
+        
+        /*
+         * check if deadline exists
+         */
+        $deadlineError = false;
+        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+                ->findAll();
+        
+        if(count($deadlines) <= 0) {
+            $deadlineError = true;
+        }
+        
+        /*
+         * check if agegroup exists
+         */
+        $agegroupError = false;
+        $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+                ->findAll();
+        
+        if(count($agegroups) <= 0) {
+            $agegroupError = true;
+        }
+        
         return new ViewModel(array(
-            'order_search_form' => $order_search_form,
+            'order_search_form' => new Form\SearchOrder(),
+            'showTaxError' => $taxError,
+            'showDeadlineError' => $deadlineError,
+            'showAgegroupError' => $agegroupError,
         ));
     }
 }

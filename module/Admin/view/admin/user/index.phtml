@@ -33,7 +33,9 @@ $this->headTitle($title);
         </td>
         <td>
             <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/user', array('action'=>'edit', 'id' => $user->getId()));?>"><i class="fa fa-edit"></i></a>
-            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/user', array('action'=>'role', 'id' => $user->getId()));?>"><i class="fa fa-group"></i></a>
+            <?php if(in_array('supradm', $roles)): ?>
+                <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/user', array('action'=>'role', 'id' => $user->getId()));?>"><i class="fa fa-group"></i></a>
+            <?php endif; ?>
         </td>
     </tr>
 <?php endforeach; ?>

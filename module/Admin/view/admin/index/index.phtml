@@ -6,26 +6,6 @@ $this->headTitle($title);
 <h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <div class="row">
     <div class="col-md-6">
-        <h2>Setup</h2>
-        <ol>
-            <li>
-                <a href="<?php echo $this->url('admin/tax'); ?>">configure taxes</a> 
-            </li>
-            <li>
-                <a href="<?php echo $this->url('admin/deadline'); ?>">configure deadlines</a>
-            </li>
-            <li>
-                <a href="<?php echo $this->url('admin/product'); ?>">add your products</a>
-            </li>
-            <li>
-                <a href="<?php echo $this->url('admin/product'); ?>">add prices to your products</a>
-            </li>
-            <li>
-                <a href="<?php echo $this->url('admin/product'); ?>">add variants to your products</a> 
-            </li>
-        </ol>
-    </div>
-    <div class="col-md-6">
         <h2>Order search</h2>
         <?php
         $form = $this->order_search_form;

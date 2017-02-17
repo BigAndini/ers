@@ -159,7 +159,7 @@ class PaymentType extends Form
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Fix Fee (default: 0)', 
+                'label' => 'Fix Fee (default: 0,00 €, example: 0,50 for 0,50 €)', 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -174,7 +174,7 @@ class PaymentType extends Form
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Percentage Fee (default: 0)', 
+                'label' => 'Percentage Fee (default: 0 for 0 %, example: 2,7 for 2,7%)', 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),

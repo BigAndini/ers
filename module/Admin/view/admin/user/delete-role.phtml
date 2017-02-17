@@ -1,0 +1,22 @@
+<?php
+
+$title = 'Delete Role "'.$role->getRoleId().'" from user '.$user->getEmail();
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Are you sure that you want to delete Role "<?php echo $role->getRoleId() ?>" from user <?php echo $user->getEmail(); ?>?</p>
+<?php
+$url = $this->url('admin/agegroup', array(
+    'action' => 'delete',
+    'id'     => $this->id,
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="user_id" value="<?php echo (int) $user->getId(); ?>" />
+    <input type="hidden" name="role_id" value="<?php echo (int) $role->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+    <a href="<?php echo $this->url('admin/agegroup');?>">Cancel</a>
+</div>
+</form>

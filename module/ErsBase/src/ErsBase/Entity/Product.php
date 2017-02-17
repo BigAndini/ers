@@ -56,7 +56,7 @@ class Product extends Base\Product
      * @return type
      */
     public function getProductPrice(Agegroup $agegroup = null, Deadline $deadline = null, $currency = null, $search = true) {
-        $debug = true;
+        $debug = false;
         if($debug) {
             error_log('=== START DEBUGGING: getProductPrice ===');
             if($agegroup) {
@@ -170,7 +170,7 @@ class Product extends Base\Product
              * start search only by agegroup
              */
             $ret = $this->getProductPrice($agegroup, null, $currency, false);
-            if($ret->getCharge() == null) {
+            if($ret == null || $ret->getCharge() == null) {
                 $ret = $this->getProductPrice(null, null, $currency, false);
             }
         }
