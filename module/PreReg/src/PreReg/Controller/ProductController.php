@@ -44,7 +44,8 @@ class ProductController extends AbstractActionController {
                     ->findOneBy(array('short' => $container->currency));
         $products = array();
         foreach($tmp as $product) {
-            if($product->getProductPrice(null, null, $currency)->getCharge() != null) {
+            $price = $product->getProductPrice(null, null, $currency);
+            if($price != null && $price->getCharge() != null) {
                 $products[] = $product;
             }
         }
