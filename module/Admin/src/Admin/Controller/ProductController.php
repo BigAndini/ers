@@ -93,7 +93,11 @@ class ProductController extends AbstractActionController {
             $form->setData($request->getPost());
             
             if ($form->isValid()) {
-                $em->persist($form->getData());
+                #$em->persist($form->getData());
+                if($product->getDeleted() == '') {
+                    $product->setDeleted(0);
+                }
+                $em->persist($product);
                 $em->flush();
 
                 $forrest = new Service\BreadcrumbService();
@@ -135,12 +139,15 @@ class ProductController extends AbstractActionController {
         $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
                 ->findBy(array('price_change' => '1'), array('deadline' => 'ASC'));
         $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
-                ->findBy(array('price_change' => '1'), array('agegroup' => 'ASC'));
+                ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
+        $currencies = $em->getRepository('ErsBase\Entity\Currency')
+                ->findBy(array('active' => '1'), array('position' => 'ASC'));
         
         return new ViewModel(array(
             'product' => $product,
             'agegroups' => $agegroups,
             'deadlines' => $deadlines,
+            'currencies' => $currencies,
         ));
     }   
     

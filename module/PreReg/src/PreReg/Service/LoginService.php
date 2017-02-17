@@ -149,10 +149,7 @@ class LoginService
             /*
              * add logged in user
              */
-            #$login_user = $this->getUser();
             $newUser = $this->getUser();
-            #$newUser = new Entity\User();
-            #$newUser->populate($login_user->getArrayCopy());
             
             if($newUser->getCountryId()) {
                 if(isset($countries[$newUser->getCountryId()])) {

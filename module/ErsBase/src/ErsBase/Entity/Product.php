@@ -170,7 +170,7 @@ class Product extends Base\Product
              * start search only by agegroup
              */
             $ret = $this->getProductPrice($agegroup, null, $currency, false);
-            if($ret->getCharge() == null) {
+            if($ret == null || $ret->getCharge() == null) {
                 $ret = $this->getProductPrice(null, null, $currency, false);
             }
         }
