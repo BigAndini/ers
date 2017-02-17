@@ -274,8 +274,12 @@ class ProductView extends Form
                             \Zend\Validator\Callback::INVALID_VALUE => _('Unable to add personalized product to person without birthdate. Please add date of birth in My Person list.'),
                         ),
                         'callback' => function($value, $context=array()) {
-                            $cartContainer = new Container('cart');
-                            $participant = $cartContainer->order->getParticipantById($value);
+                            $orderService = $this->getServiceLocator()
+                                    ->get('ErsBase\Service\OrderService');
+                            $order = $orderService->getOrder();
+                            $participant = $order->getParticipantById($value);
+                            #$cartContainer = new Container('cart');
+                            #$participant = $cartContainer->order->getParticipantById($value);
                             if(is_object($participant)) {
                                 if(!$participant->getBirthday() instanceof \DateTime) {
                                     return false;

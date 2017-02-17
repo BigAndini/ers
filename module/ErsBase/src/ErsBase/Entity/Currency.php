@@ -26,4 +26,7 @@ class Currency extends Base\Currency
         parent::__construct();
     }
 
+    public function __toString() {
+        return $this->getShort();
+    }
 }

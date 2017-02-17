@@ -351,6 +351,14 @@ class Participant extends Form implements InputFilterProviderInterface
                     ),
                 ), 
             ),
+            'newsletter' => array(
+                'required' => false,
+                'filters' => array( 
+                    array('name' => 'Int'), 
+                ), 
+                'validators' => array(
+                ),
+            ),
             'Country_id' => array(
                 'required' => true,
                 'filters' => array( 
