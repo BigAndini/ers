@@ -203,7 +203,7 @@ class Participant implements InputFilterAwareInterface
                                 ) {
                                     return true;
                                 }*/
-                                $cartContainer = new Container('cart');
+                                $cartContainer = new Container('ers');
                                 $em = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 $order = $em->getRepository('ErsBase\Entity\Order')

@@ -23,8 +23,8 @@ class OrderController extends AbstractActionController {
      * overview of this order
      */
     public function indexAction() {
-        $orderContainer = new Container('order');
-        $orderContainer->getManager()->getStorage()->clear('order');
+        #$orderContainer = new Container('order');
+        #$orderContainer->getManager()->getStorage()->clear('order');
         
         $forrest = new Service\BreadcrumbService();
         $forrest->reset();
@@ -32,7 +32,7 @@ class OrderController extends AbstractActionController {
         $forrest->set('participant', 'order');
         $forrest->set('cart', 'order');
         
-        #$cartContainer = new Container('cart');
+        #$cartContainer = new Container('ers');
         
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
@@ -147,14 +147,14 @@ class OrderController extends AbstractActionController {
      * collect data for the buyer
      */
     public function buyerAction() {
-        $container = new Container('initialized');
+        $container = new Container('ers');
         if(!is_array($container->checkout)) {
             $container->checkout = array();
         }
         $container->checkout['/order/overview'] = 1;
         
-        $orderContainer = new Container('order');
-        $orderContainer->getManager()->getStorage()->clear('order');
+        #$orderContainer = new Container('order');
+        #$orderContainer->getManager()->getStorage()->clear('order');
         
         $form = new Form\Register();
         
@@ -254,8 +254,8 @@ class OrderController extends AbstractActionController {
         $forrest = new Service\BreadcrumbService();
         $forrest->set('paymenttype', 'order', array('action' => 'payment'));
         
-        $orderContainer = new Container('order');
-        $orderContainer->getManager()->getStorage()->clear('order');
+        #$orderContainer = new Container('order');
+        #$orderContainer->getManager()->getStorage()->clear('order');
         
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
@@ -297,7 +297,7 @@ class OrderController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $inputFilter = new InputFilter\PaymentType();
+            #$inputFilter = new InputFilter\PaymentType();
             $inputFilter = $this->getServiceLocator()
                     ->get('PreReg\InputFilter\PaymentType');
             $form->setInputFilter($inputFilter->getInputFilter());
@@ -314,7 +314,7 @@ class OrderController extends AbstractActionController {
                 $em->persist($order);
                 $em->flush();
                 
-                $container = new Container('initialized');
+                $container = new Container('ers');
                 if(!is_array($container->checkout)) {
                     $container->checkout = array();
                 }
@@ -338,14 +338,11 @@ class OrderController extends AbstractActionController {
      * last check and checkout
      */
     public function checkoutAction() {
-        $container = new Container('initialized');
+        $container = new Container('ers');
         if(!is_array($container->checkout)) {
             $container->checkout = array();
         }
         $container->checkout['/order/checkout'] = 1;
-                
-        $cartContainer = new Container('cart');
-        $orderContainer = new Container('order');
         
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
@@ -360,9 +357,9 @@ class OrderController extends AbstractActionController {
                         ->findOneBy(array('id' => $order->getPaymentTypeId()));
         $order->setPaymentType($paymenttype);
         
-        if(isset($orderContainer->order_id)) {
+        /*if(isset($container->order_id)) {
             $order = $em->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => $orderContainer->order_id));
+                    ->findOneBy(array('id' => $container->order_id));
             if($order) {
                 return $this->redirect()->toRoute(
                         'order', 
@@ -371,7 +368,7 @@ class OrderController extends AbstractActionController {
                             'hashkey' => $order->getHashkey(),
                             ));
             }
-        }
+        }*/
         
         $form = new Form\Checkout();
         
@@ -465,12 +462,10 @@ class OrderController extends AbstractActionController {
             
             $em->flush();
         
-            $orderContainer->order_id = $order->getId();
-            
-            $cartContainer->init = 0;
-            
-            $container = new Container('initialized');
+            #$container = new Container('ers');
             $container->checkout = array();
+            $container->order_id = $order->getId();
+            $container->init = 0;
             
             $emailService = $this->getServiceLocator()
                 ->get('ErsBase\Service\EmailService');
@@ -568,8 +563,8 @@ class OrderController extends AbstractActionController {
      * say thank you after buyer
      */
     public function thankyouAction() {
-        /*$cartContainer = new Container('cart');
-        #$cartContainer->getManager()->getStorage()->clear('cart');
+        /*$cartContainer = new Container('ers');
+        #$cartContainer->getManager()->getStorage()->clear('ers');
         $cartContainer->init = 0;
         return new ViewModel(array(
             'order' => $order,

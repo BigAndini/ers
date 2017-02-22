@@ -32,7 +32,7 @@ class Session extends AbstractHelper {
     }*/
 
     public function __invoke() {
-        $container = new Container('initialized');
+        $container = new Container('ers');
         return $container;
     }
 

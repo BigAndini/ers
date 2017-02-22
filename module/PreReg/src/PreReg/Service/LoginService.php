@@ -120,7 +120,7 @@ class LoginService
     }
     
     private function resetShoppingCart() {
-        $cartContainer = new Container('cart');
+        $cartContainer = new Container('ers');
         $cartContainer->init = 0;
     }
     
@@ -179,7 +179,7 @@ class LoginService
             $orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findBy(array('buyer_id' => $this->getUser()->getId()));
         
-            $container = new Container('initialized');
+            $container = new Container('ers');
             $currency = $em->getRepository('ErsBase\Entity\Currency')
                 ->findOneBy(array('short' => $container->currency));
             if(!$currency) {

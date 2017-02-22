@@ -78,7 +78,7 @@ class Module
             'factories' => array(
                 'ErsBase\Entity\Order' => function ($sm) {
                     $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $container = new Container('initialized');
+                    $container = new Container('ers');
                     $currency = $em->getRepository('ErsBase\Entity\Currency')
                                 ->findOneBy(array('short' => $container->currency));
                     $order = new Entity\Order();

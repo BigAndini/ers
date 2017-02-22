@@ -8,7 +8,7 @@ $this->headTitle($title);
     <div class="row">
         <div class="col-md-6">
             <p class="text-center">amount</p>
-            <h1 class="text-center"><?php echo $this->currencyFormat($ordersums['ordersum']-$volunteers['ordersum'], 'EUR', null, 'de_DE'); ?></h1>
+            <h1 class="text-center"><?php echo $this->currencyFormat($ordersums['ordersum']-$volunteers1['ordersum'], 'EUR', null, 'de_DE'); ?></h1>
             <p class="text-center">volunteers</p>
             <h1 class="text-center"><?php echo $this->currencyFormat($volunteers1['ordersum'], 'EUR', null, 'de_DE'); ?></h1>
         </div>

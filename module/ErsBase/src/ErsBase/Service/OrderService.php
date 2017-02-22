@@ -49,7 +49,7 @@ class OrderService
         if(!$this->currency) {
             $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
-            $container = new Container('initialized');
+            $container = new Container('ers');
             $this->currency = $em->getRepository('ErsBase\Entity\Currency')
                     ->findOneBy(array('short' => $container->currency));
         }
@@ -64,13 +64,13 @@ class OrderService
         if($this->order instanceof Entity\Order) {
             return $this->order;
         }
-        $cartContainer = new Container('cart');
+        $container = new Container('ers');
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         $em->flush();
-        if(isset($cartContainer->order_id) && is_numeric($cartContainer->order_id)) {
+        if(isset($container->order_id) && is_numeric($container->order_id)) {
             $checkOrder = $em->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => $cartContainer->order_id));
+                    ->findOneBy(array('id' => $container->order_id));
             if($checkOrder) {
                 $this->order = $checkOrder;
                 $this->addLoggedInUser();
@@ -80,7 +80,7 @@ class OrderService
         
         $newOrder = $this->createNewOrder();
 
-        $cartContainer->order_id = $newOrder->getId();
+        $container->order_id = $newOrder->getId();
 
         $this->order = $newOrder;
         $this->addLoggedInUser();
@@ -97,7 +97,7 @@ class OrderService
         $status = $em->getRepository('ErsBase\Entity\Status')
             ->findOneBy(array('value' => 'order pending'));
         $newOrder->setStatus($status);
-        /*$container = new Container('initialized');
+        /*$container = new Container('ers');
         $currency = $em->getRepository('ErsBase\Entity\Currency')
             ->findOneBy(array('short' => $container->currency));
         $newOrder->setCurrency($currency);*/
@@ -149,13 +149,13 @@ class OrderService
     }
     
     public function setCountryId($country_id) {
-        $cartContainer = new Container('cart');
-        $cartContainer->country_id = $country_id;
+        $container = new Container('ers');
+        $container->country_id = $country_id;
     }
     
     public function getCountryId() {
-        $cartContainer = new Container('cart');
-        return $cartContainer->country_id;
+        $container = new Container('ers');
+        return $container->country_id;
     }
     
     /**
@@ -212,7 +212,7 @@ class OrderService
         if($participant->getId() == $this->getOrder()->getBuyerId()) {
             $this->getOrder()->setBuyer(null);
             $this->getOrder()->setBuyerId(null);
-            $container = new Container('initialized');
+            $container = new Container('ers');
             if(!is_array($container->checkout)) {
                 $container->checkout = array();
             }

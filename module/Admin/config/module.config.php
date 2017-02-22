@@ -72,7 +72,7 @@ return array(
                     'account' => array(
                         'label' => 'Bank accounts',
                         'route' => 'admin/statistic',
-                        'action' => 'bankaccounts',
+                        'action' => 'paymenttypes',
                         'resource'  => 'controller/Admin\Controller\Statistic',
                     ),
                     'onsite' => array(

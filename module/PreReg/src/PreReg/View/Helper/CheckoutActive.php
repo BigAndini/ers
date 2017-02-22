@@ -41,7 +41,7 @@ class CheckoutActive extends AbstractHelper {
     }
 
     public function __invoke($name) {
-        $container = new Container('initialized');
+        $container = new Container('ers');
         /*foreach($container->checkout as $key => $item) {
             error_log($key.': '.$item);
         }*/
