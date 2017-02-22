@@ -59,7 +59,7 @@ return array(
                         'resource'  => 'controller/zfcuser:login',
                     ),
                     'register' => array(
-                        'label' => 'Register',
+                        'label' => 'Organizers Registration',
                         'route' => 'zfcuser/register',
                         #'action' => 'register',
                         'resource'  => 'controller/zfcuser:register',

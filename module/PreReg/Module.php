@@ -97,7 +97,7 @@ class Module
         
         #error_log(var_export($_SESSION, true));
         
-        $container = new Container('initialized');
+        $container = new Container('ers');
         #error_log('session: '.$container->init);
         if (!isset($container->init)) {
             error_log('initializing session ('.$container->init.')');
@@ -144,8 +144,8 @@ class Module
         #$container->getManager()->getStorage()->clear('initialized');
         if (!isset($container->init) || $container->lifetime < time()) {
             #error_log('reset session due to expiration');
-            $container->getManager()->getStorage()->clear('initialized');
-            $container = new Container('initialized');
+            $container->getManager()->getStorage()->clear('ers');
+            $container = new Container('ers');
             $container->init = 1;
             $container->lifetime = time()+$expiration_time;
             $container->checkout = array();

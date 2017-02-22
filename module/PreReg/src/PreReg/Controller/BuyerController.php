@@ -47,7 +47,7 @@ class BuyerController extends AbstractActionController {
             if($form->isValid())
             { 
                 $user->populate($form->getData()); 
-                $cartContainer = new Container('cart');
+                $cartContainer = new Container('ers');
                 $cartContainer->order->addParticipant($user);
                 $cartContainer->order->setBuyer($user);
                 
@@ -83,7 +83,7 @@ class BuyerController extends AbstractActionController {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        $cartContainer = new Container('cart');
+        $cartContainer = new Container('ers');
         $participant = $cartContainer->order->getParticipantBySessionId($id);
         
         $form = new Form\Buyer(); 
@@ -105,7 +105,7 @@ class BuyerController extends AbstractActionController {
             if($form->isValid())
             { 
                 $participant = $form->getData();
-                $cartContainer = new Container('cart');
+                $cartContainer = new Container('ers');
                 $cartContainer->order->setParticipantBySessionId($participant, $id);
                 
                 $breadcrumb = $forrest->get('participant');
@@ -137,7 +137,7 @@ class BuyerController extends AbstractActionController {
         
         $breadcrumb = $forrest->get('participant');
         
-        $cartContainer = new Container('cart');
+        $cartContainer = new Container('ers');
         $participant = $cartContainer->order->getParticipantBySessionId($id);
         
         $request = $this->getRequest();

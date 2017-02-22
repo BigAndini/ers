@@ -20,10 +20,10 @@ class CartController extends AbstractActionController {
      * initialize shopping cart
      */
     /*private function initialize() {
-        $cartContainer = new Container('cart');
-        if(!isset($cartContainer->init) && $cartContainer->init == 1) {
-            $cartContainer->order = new Entity\Order();
-            $cartContainer->init = 1;
+        $container = new Container('ers');
+        if(!isset($container->init) && $container->init == 1) {
+            $container->order = new Entity\Order();
+            $container->init = 1;
         }
     }*/
     
@@ -74,8 +74,10 @@ class CartController extends AbstractActionController {
                 }
                 $em->remove($order);
                 
-                $cartContainer = new Container('cart');
-                $cartContainer->init = 0;
+                $container = new Container('ers');
+                $container->init = 0;
+                unset($container->order_id);
+                unset($container->checkout);
                 $emptycart = true;
             } else {
                 $logger->warn($form->getMessages());

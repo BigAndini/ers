@@ -290,7 +290,6 @@ class EmailService
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        #$session_order = new Container('order');
         $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $order_id));
         $buyer = $order->getBuyer();

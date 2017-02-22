@@ -151,7 +151,7 @@ return [
                 
                 /* ZfcUser */
                 ['controller' => 'zfcuser', 'action' => 'login',    'roles' => ['guest']],
-                ['controller' => 'zfcuser', 'action' => 'register', 'roles' => ['guest']],
+                ['controller' => 'zfcuser', 'action' => 'register', 'roles' => ['supradm']],
                 ['controller' => 'zfcuser', 'action' => 'index',    'roles' => ['user']],
                 ['controller' => 'zfcuser', 'action' => 'logout',   'roles' => ['user']],
                 ['controller' => 'zfcuser',                         'roles' => ['user']],

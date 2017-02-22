@@ -96,7 +96,7 @@ class Register implements InputFilterAwareInterface
                                 \Zend\Validator\Callback::INVALID_VALUE => 'The email of this buyer already exists. Please login with this account to continue.',
                             ),
                             'callback' => function($value, $context=array()) {
-                                $cartContainer = new Container('cart');
+                                $cartContainer = new Container('ers');
                                 $orderService = $this->getServiceLocator()
                                         ->get('ErsBase\Service\OrderService');
                                 $order = $orderService->getOrder();

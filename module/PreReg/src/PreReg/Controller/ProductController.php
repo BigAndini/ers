@@ -39,7 +39,7 @@ class ProductController extends AbstractActionController {
                     )
                 );
         
-        $container = new Container('initialized');
+        $container = new Container('ers');
         $currency = $em->getRepository('ErsBase\Entity\Currency')
                     ->findOneBy(array('short' => $container->currency));
         $products = array();
@@ -57,7 +57,7 @@ class ProductController extends AbstractActionController {
                 ->get('ErsBase\Service\DeadlineService:price');
         $deadline = $deadlineService->getDeadline();
         
-        #$cartContainer = new Container('cart');
+        #$cartContainer = new Container('ers');
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
         
@@ -184,7 +184,7 @@ class ProductController extends AbstractActionController {
         $logger = $this->getServiceLocator()->get('Logger');
  
         #$this->initializeCart();
-        $cartContainer = new Container('cart');
+        $cartContainer = new Container('ers');
         
         $formfail = false;
         
@@ -262,7 +262,7 @@ class ProductController extends AbstractActionController {
                  */
                 $item = new Entity\Item();
                 
-                $container = new Container('initialized');
+                $container = new Container('ers');
                 $currency = $em->getRepository('ErsBase\Entity\Currency')
                             ->findOneBy(array('short' => $container->currency));
                 

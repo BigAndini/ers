@@ -55,8 +55,8 @@ class UserController extends AbstractActionController {
 
         $countries = array_merge($result1, $result2);
 
-        $cartContainer = new Container('cart');
-        $countryContainerId = $cartContainer->Country_id;
+        $container = new Container('ers');
+        $countryContainerId = $container->Country_id;
         
         $options = array();
         $selected = false;

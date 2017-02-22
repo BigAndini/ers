@@ -43,8 +43,8 @@ class StatisticController extends AbstractActionController {
         $qb2->select(array('SUM(o.order_sum) as ordersum'));
         $qb2->join('m.order', 'o');
         $qb2->join('m.bankStatement', 'bs');
-        $qb2->join('bs.bankAccount', 'ba');
-        $qb2->where($qb2->expr()->eq('ba.id', ':bank_account_id'));
+        $qb2->join('bs.paymentType', 'pt');
+        $qb2->where($qb2->expr()->eq('pt.id', ':bank_account_id'));
         #$qb2->groupBy('pt.name');
         
         $qb2->setParameter('bank_account_id', '2');
@@ -407,36 +407,36 @@ class StatisticController extends AbstractActionController {
                 $paymentTypeStatsOrdered);
         
         /*
-         * === by bankaccount ===
+         * === by paymenttype ===
          */
         
-        $pseudoIdColumn = "CONCAT('x', ba.id) pseudoId";
+        $pseudoIdColumn = "CONCAT('x', pt.id) pseudoId";
         
         $bankAccountStatsBase = array_column($em->createQueryBuilder()
                 ->select(
                         $pseudoIdColumn,
-                        'ba.name label', 
+                        'pt.name label', 
                         'COUNT(DISTINCT u.id) AS usercount', 
                         'COUNT(i.id) itemcount',
                         'SUM(i.price*i.amount) as amount')
-                ->from('ErsBase\Entity\BankAccount', 'ba')
-                ->join('ba.bankStatements', 'bs')
+                ->from('ErsBase\Entity\PaymentType', 'pt')
+                ->join('pt.bankStatements', 'bs')
                 ->join('bs.matches', 'm')
                 ->join('m.order', 'o')
                 ->join('o.packages', 'p')
                 ->join('p.user', 'u')
                 ->join('p.items', 'i')
                 ->join('i.status', 's', 'WITH', 's.active = 1')
-                ->groupBy('ba.id')
-                #->orderBy('ba.position')
+                ->groupBy('pt.id')
+                #->orderBy('pt.position')
                 ->getQuery()->getResult(), NULL, 'pseudoId');
         
         $bankAccountStatsPaid = array_column($em->createQueryBuilder()
                 ->select(
                         $pseudoIdColumn,
                         'COUNT(i.id) paid')
-                ->from('ErsBase\Entity\BankAccount', 'ba')
-                ->join('ba.bankStatements', 'bs')
+                ->from('ErsBase\Entity\PaymentType', 'pt')
+                ->join('pt.bankStatements', 'bs')
                 ->join('bs.matches', 'm')
                 ->join('m.order', 'o')
                 ->join('o.packages', 'p')
@@ -444,8 +444,8 @@ class StatisticController extends AbstractActionController {
                 ->join('p.items', 'i')
                 ->join('i.status', 's', 'WITH', 's.active = 1')
                 ->where($qb->expr()->eq('s.value', ':status'))
-                ->groupBy('ba.id')
-                #->orderBy('ba.position')
+                ->groupBy('pt.id')
+                #->orderBy('pt.position')
                 ->setParameter('status', 'paid')
                 ->getQuery()->getResult(), NULL, 'pseudoId');
         
@@ -453,8 +453,8 @@ class StatisticController extends AbstractActionController {
                 ->select(
                         $pseudoIdColumn,
                         'COUNT(i.id) ordered')
-                ->from('ErsBase\Entity\BankAccount', 'ba')
-                ->join('ba.bankStatements', 'bs')
+                ->from('ErsBase\Entity\PaymentType', 'pt')
+                ->join('pt.bankStatements', 'bs')
                 ->join('bs.matches', 'm')
                 ->join('m.order', 'o')
                 ->join('o.packages', 'p')
@@ -462,8 +462,8 @@ class StatisticController extends AbstractActionController {
                 ->join('p.items', 'i')
                 ->join('i.status', 's', 'WITH', 's.active = 1')
                 ->where($qb->expr()->eq('s.value', ':status'))
-                ->groupBy('ba.id')
-                #->orderBy('ba.position')
+                ->groupBy('pt.id')
+                #->orderBy('pt.position')
                 ->setParameter('status', 'ordered')
                 ->getQuery()->getResult(), NULL, 'pseudoId');
         
@@ -547,7 +547,7 @@ class StatisticController extends AbstractActionController {
             'stats_agegroupTicket' => $agegroupStatsTicket,
             'stats_productType' => $productStats,
             'stats_paymentType' => $paymentTypeStats,
-            'stats_bankaccount' => $bankAccountStats,
+            'stats_paymenttype' => $bankAccountStats,
             'stats_productVariant' => $itemsByVariantByProduct,
             'stats_country' => $countryStats,
         ));
@@ -575,19 +575,19 @@ class StatisticController extends AbstractActionController {
         return $results;
     }
     
-    public function bankaccountsAction() {
+    public function paymenttypesAction() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $activeStats = array();
         $matchingStats = array();
         
-        $bankaccounts = $em->getRepository('ErsBase\Entity\BankAccount')
+        $paymenttypes = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findAll();
         
-        /* @var $bankaccount \ErsBase\Entity\BankAccount */
-        foreach($bankaccounts as $bankaccount) {
-            $statementFormat = json_decode($bankaccount->getStatementFormat());
+        /* @var $paymenttype \ErsBase\Entity\PaymentType */
+        foreach($paymenttypes as $paymenttype) {
+            $statementFormat = json_decode($paymenttype->getStatementFormat());
             
             $qb = $em->createQueryBuilder()
                     ->select('COUNT(s.id) AS stmtcount', 'SUM(col.value) AS amount, MAX(s.created) AS latestentry')
@@ -596,14 +596,14 @@ class StatisticController extends AbstractActionController {
                     ->join('s.bankStatementCols', 'col', 'WITH', 'col.column = :colNum')
                     ->where('acc.id = :accountId')
                     
-                    ->setParameter('accountId', $bankaccount->getId())
+                    ->setParameter('accountId', $paymenttype->getId())
                     ->setParameter('colNum', $statementFormat->amount);
             
-            $activeStats[$bankaccount->getName()] = $qb
+            $activeStats[$paymenttype->getName()] = $qb
                     ->getQuery()->getSingleResult();
             
             // extend the query to only include matched statements
-            $matchingStats[$bankaccount->getName()] = $qb
+            $matchingStats[$paymenttype->getName()] = $qb
                     ->andWhere("s.status = 'matched'")
                     ->getQuery()->getSingleResult();
         }

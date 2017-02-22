@@ -88,7 +88,7 @@ class OptionService
     }
     
     public function getPersonOptions(\ErsBase\Entity\Product $product, $participant_id=null) {
-        $cartContainer = new Container('cart');
+        $cartContainer = new Container('ers');
         $options = array();
         if($participant_id == null) {
             $selected = true;

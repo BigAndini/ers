@@ -105,10 +105,10 @@ $this->headTitle($title);
                     <?php foreach($stats_productType as $value): ?>
                         <tr>
                             <td class="col-md-6"><?php echo $this->escapeHtml($value['label']); ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['usercount']; ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['itemcount']; ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['paid']; ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['ordered']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['usercount']) ? $value['usercount'] : 0; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['itemcount']) ? $value['itemcount'] : 0; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['paid']) ? $value['paid'] : 0; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['ordered']) ? $value['ordered'] : 0; ?></td>
                             <td class="col-md-2 text-right"><?php echo number_format($value['itemcount'] / $value['usercount'], 3); ?></td>
                         </tr>
                     <?php endforeach; ?>
@@ -136,10 +136,10 @@ $this->headTitle($title);
                     <?php foreach($stats_paymentType as $value): ?>
                         <tr>
                             <td class="col-md-6"><?php echo $this->escapeHtml($value['label']); ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['usercount']; ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['itemcount']; ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['paid']; ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['ordered']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['usercount']) ? $value['usercount'] : 0; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['itemcount']) ? $value['itemcount'] : 0; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['paid']) ? $value['paid'] : 0; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['ordered']) ? $value['ordered'] : 0; ?></td>
                             <th class="col-md-2 text-right"><?php echo $this->currencyFormat(array_sum(array_column($stats_paymentType, 'amount')), 'EUR', null, 'de_DE'); ?></th>
                         </tr>
                     <?php endforeach; ?>
@@ -164,13 +164,13 @@ $this->headTitle($title);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($stats_bankaccount as $value): ?>
+                    <?php foreach($stats_paymentType as $value): ?>
                         <tr>
                             <td class="col-md-6"><?php echo $this->escapeHtml($value['label']); ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['usercount']; ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['itemcount']; ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['paid']; ?></td>
-                            <td class="col-md-1 text-right"><?php echo $value['ordered']; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['usercount']) ? $value['usercount'] : 0;  ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['itemcount']) ? $value['itemcount'] : 0; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['paid']) ? $value['paid'] : 0; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['orered']) ? $value['ordered'] : 0; ?></td>
                             <th class="col-md-2 text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></th>
                         </tr>
                     <?php endforeach; ?>
