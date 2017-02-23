@@ -193,6 +193,7 @@ return [
                 ['controller' => 'Admin\Controller\Bankaccount',         'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Matching',            'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Ajax',                'roles' => ['admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Ajax', 'action' => 'session-storage', 'roles' => ['guest', 'user']],
                 ['controller' => 'Admin\Controller\Refund',              'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Status',              'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Overview',            'roles' => ['admin', 'supradm']],
