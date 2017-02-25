@@ -20,7 +20,7 @@ $this->headTitle($title);
     <?php foreach($package->getItems() as $item): ?>
         <tr>
             <td><?php echo $item->getName(); ?></td>
-            <td><?php echo $this->currencyFormat($item->getPrice(), $item->getCurrency(), null, 'de_DE'); ?></td>
+            <td><?php echo $this->currencyFormat($item->getPrice(), $item->getCurrency()->getShort(), null, 'de_DE'); ?></td>
         </tr>
     <?php endforeach; ?>
     </table>

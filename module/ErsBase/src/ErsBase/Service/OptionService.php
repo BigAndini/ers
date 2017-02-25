@@ -200,4 +200,47 @@ class OptionService
             );
         return $options;
     }
+    
+    public function getDeadlineOptions() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+                ->findBy(array(), array('deadline' => 'ASC'));
+
+        $options = array();
+        foreach ($deadlines as $deadline) {
+            $options[] = array(
+                'value' => $deadline->getId(),
+                'label' => 'Deadline: ' . $deadline->getDeadline()->format('Y-m-d H:i:s')
+            );
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'no Deadline'
+        );
+
+        return $options;
+    }
+    
+    /*public function getCurrencyOptions() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $currencies = $em->getRepository('ErsBase\Entity\Currency')
+                ->findBy(array(), array('position' => 'ASC'));
+        
+        $options = array();
+        foreach ($currencies as $currency) {
+            $options[] = array(
+                'value' => $currency->getId(),
+                'label' => $currency->getName().' ('.$currency->getSymbol().' / '.$currency->getShort().')',
+            );
+        }
+        $options[] = array(
+            'value' => 0,
+            'label' => 'Choose currency...',
+            'disabled' => true,
+        );
+
+        return $options;
+    }*/
 }

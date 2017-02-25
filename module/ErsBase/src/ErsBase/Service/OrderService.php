@@ -117,12 +117,19 @@ class OrderService
         } else {
             $currency = $paramCurrency;
         }
+        $debug = false;
         $order = $this->getOrder();
         if($order->getCurrency()->getShort() != $currency->getShort()) {
             foreach($order->getPackages() as $package) {
                 $package->setCurrency($currency);
+                if($debug) {
+                    error_log('set package to currency: '.$currency);
+                }
                 foreach($package->getItems() as $item) {
                     $item->setCurrency($currency);
+                    if($debug) {
+                        error_log('set item to currency: '.$currency);
+                    }
                     $product = $item->getProduct();
                     $participant = $item->getPackage()->getParticipant();
 
@@ -135,10 +142,21 @@ class OrderService
                             ->get('ErsBase\Service\DeadlineService:price');
                     $deadline = $deadlineService->getDeadline($order->getCreated());
 
-                    $item->setPrice($product->getProductPrice($agegroup, $deadline, $currency)->getCharge());
+                    $price = $product->getProductPrice($agegroup, $deadline, $currency);
+                    if($debug) {
+                        error_log('price: '.$price->getCharge());
+                    }
+                    $item->setPrice($price->getCharge());
+                    $em->flush($item);
                 }
             }
             $order->setCurrency($currency);
+            if($debug) {
+                error_log('set order to currency: '.$currency);
+            }
+        }
+        if($order->getPaymentType()) {
+            $order->setPaymentType(null);
         }
         $em->flush($order);
         
