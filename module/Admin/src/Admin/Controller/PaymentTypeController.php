@@ -98,6 +98,11 @@ class PaymentTypeController extends AbstractActionController {
                     $active_until = $em->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveUntilId());
                     $paymenttype->setActiveUntil($active_until);
                 }
+                
+                $currency = $em->getRepository('ErsBase\Entity\Currency')
+                        ->findOneBy(array('id' => $paymenttype->getCurrencyId()));
+                $paymenttype->setCurrency($currency);
+                $paymenttype->setCurrencyId($currency->getId());
 
                 $em->persist($paymenttype);
                 $em->flush();
@@ -179,15 +184,23 @@ class PaymentTypeController extends AbstractActionController {
                 if ($paymenttype->getActiveFromId() == 0) {
                     $paymenttype->setActiveFromId(null);
                 } else {
-                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveFromId());
+                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')
+                            ->find($paymenttype->getActiveFromId());
                     $paymenttype->setActiveFrom($active_from);
                 }
                 if ($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveUntilId());
+                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')
+                            ->find($paymenttype->getActiveUntilId());
                     $paymenttype->setActiveUntil($active_until);
                 }
+                
+                $currency = $em->getRepository('ErsBase\Entity\Currency')
+                        ->findOneBy(array('id' => $paymenttype->getCurrencyId()));
+                $paymenttype->setCurrency($currency);
+                $paymenttype->setCurrencyId($currency->getId());
+                
 
                 $em->persist($paymenttype);
                 $em->flush();
