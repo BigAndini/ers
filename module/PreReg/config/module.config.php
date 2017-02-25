@@ -391,4 +391,29 @@ return array(
             #'zfc-user' => __DIR__ . '/../view',
         ),
     ),
+    'view_helpers' => array(
+        'invokables' => array(
+            'formelementerrors' => 'PreReg\Form\View\Helper\FormElementErrors',
+            'checkoutactive' => 'PreReg\View\Helper\CheckoutActive',
+            'currencychooser' => 'PreReg\View\Helper\CurrencyChooser',
+        ),
+        'factories' => array(
+            'config' => function($sm) {
+                $helper = new \PreReg\View\Helper\Config($sm);
+                return $helper;
+            },
+            'session' => function($sm) {
+                $helper = new \PreReg\View\Helper\Session();
+                return $helper;
+            },
+            'checkoutactive' => function($sm) {
+                $helper = new \PreReg\View\Helper\CheckoutActive();
+                return $helper;
+            },
+            'niceiban' => function($sm) {
+                $helper = new \PreReg\View\Helper\NiceIban($sm);
+                return $helper;
+            },
+        ),
+    ),
 );

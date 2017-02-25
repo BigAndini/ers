@@ -108,24 +108,41 @@ class OrderService
         return $newOrder;
     }
     
-    public function changeCurrency(Entity\Currency $currency) {
+    public function changeCurrency($paramCurrency) {
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        if(! $paramCurrency instanceof Entity\Currency) {
+            $currency = $em->getRepository('ErsBase\Entity\Currency')
+                ->findOneBy(array('short' => $paramCurrency));
+        } else {
+            $currency = $paramCurrency;
+        }
         $order = $this->getOrder();
         if($order->getCurrency()->getShort() != $currency->getShort()) {
-            foreach($order->getItems() as $item) {
-                $item->setCurrency($currency);
-                $product = $item->getProduct();
-                $participant = $item->getPackage()->getParticipant();
-                
-                $agegroup = $participant->getAgegroup();
-                
-                $deadlineService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\DeadlineService');
-                $deadline = $deadlineService->getDeadline($order->getCreated());
-                
-                $item->setPrice($product->getProductPrice($agegroup, $deadline, $currency));
+            foreach($order->getPackages() as $package) {
+                $package->setCurrency($currency);
+                foreach($package->getItems() as $item) {
+                    $item->setCurrency($currency);
+                    $product = $item->getProduct();
+                    $participant = $item->getPackage()->getParticipant();
+
+                    $agegroupService = $this->getServiceLocator()
+                            ->get('ErsBase\Service\AgegroupService');
+                    $agegroup = $agegroupService->getAgegroupByUser($participant);
+                    #$agegroup = $participant->getAgegroup();
+
+                    $deadlineService = $this->getServiceLocator()
+                            ->get('ErsBase\Service\DeadlineService:price');
+                    $deadline = $deadlineService->getDeadline($order->getCreated());
+
+                    $item->setPrice($product->getProductPrice($agegroup, $deadline, $currency)->getCharge());
+                }
             }
+            $order->setCurrency($currency);
         }
+        $em->flush($order);
         
+        error_log('currency changed!');
         return $this;
     }
     

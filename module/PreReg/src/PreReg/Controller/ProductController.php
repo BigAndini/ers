@@ -16,6 +16,34 @@ use Zend\Session\Container;
 use ErsBase\Entity;
 
 class ProductController extends AbstractActionController {
+    
+    public function changeCurrencyAction() {
+        $form = new Form\CurrencyChooser();
+        $optionService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OptionService');
+        $form->get('currency')->setValueOptions($optionService->getCurrencyOptions());
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost()); 
+            if($form->isValid()) {
+                $data = $request->getPost();
+                
+                $em = $this->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                $currency = $em->getRepository('ErsBase\Entity\Currency')
+                    ->findOneBy(array('id' => $data['currency']));
+                if($currency) {
+                    $container = new Container('ers');
+                    $container->currency = $currency->getShort();
+                }
+            }
+            
+            $redirectUrl = $this->getRequest()->getHeader('Referer')->uri()->getPath();
+            $this->redirect()->toUrl($redirectUrl);
+        }
+    }
+    
     public function indexAction()
     {
         $this->getServiceLocator()->get('ErsBase\Service\TicketCounterService')
@@ -38,7 +66,6 @@ class ProductController extends AbstractActionController {
                         'position' => 'ASC'
                     )
                 );
-        
         $container = new Container('ers');
         $currency = $em->getRepository('ErsBase\Entity\Currency')
                     ->findOneBy(array('short' => $container->currency));
@@ -187,7 +214,7 @@ class ProductController extends AbstractActionController {
         $cartContainer = new Container('ers');
         
         $formfail = false;
-        
+
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = $form->getInputFilter();

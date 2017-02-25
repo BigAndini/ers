@@ -61,13 +61,13 @@ echo $this->navigation()
                         <th class="cart-tool"></th>
                     </tr>
                     <?php
-                    $subtotal = 0;
+                    $subtotal = (float) 0;
                     foreach ($package->getItems() as $item) : 
                         if($item->hasParentItems()) {
                             continue;
                         }
-                        $subtotal += $item->getPrice();
-                        $sum += $item->getPrice();
+                        $subtotal += (float) $item->getPrice();
+                        $sum += (float) $item->getPrice();
                         ?>
                         <tr>
                             <td>

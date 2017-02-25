@@ -165,7 +165,13 @@ class Module
             
             $container->currency = 'EUR';
         }
-        #error_log('currency locale: '.$container->currency);
+        $serviceManager = $e->getApplication()->getServiceManager();
+        $orderService = $serviceManager->get('ErsBase\Service\OrderService');
+        $order = $orderService->getOrder();
+        if($order->getCurrency()->getShort() != $container->currency) {
+            error_log('currencies are not the same!');
+            $orderService->changeCurrency($container->currency);
+        }
         
         /*
          * shopping cart debugging
@@ -261,6 +267,14 @@ class Module
                     Container::setDefaultManager($sessionManager);
                     return $sessionManager;
                 },
+                'PreReg\Form\CurrencyChooser' => function ($sm) {
+                    $form = new Form\CurrencyChooser();
+                    
+                    $optionService = $sm->get('ErsBase\Service\OptionService');
+                    $form->get('currency')->setValueOptions($optionService->getCurrencyOptions());
+                    
+                    return $form;
+                },
                 'PreReg\Form\ProductView' => function ($sm) {
                     $productView = new Form\ProductView();
                     $productView->setServiceLocator($sm);
@@ -313,33 +327,6 @@ class Module
                     $inputFilter = new InputFilter\PaymentType();
                     $inputFilter->setServiceLocator($sm);
                     return $inputFilter;
-                },
-            ),
-        );
-    }
-    public function getViewHelperConfig()
-    {
-        return array(
-            'invokables' => array(
-                'formelementerrors' => 'PreReg\Form\View\Helper\FormElementErrors',
-                'checkoutactive' => 'PreReg\View\Helper\CheckoutActive',
-            ),
-            'factories' => array(
-                'config' => function($sm) {
-                    $helper = new \PreReg\View\Helper\Config($sm);
-                    return $helper;
-                },
-                'session' => function($sm) {
-                    $helper = new \PreReg\View\Helper\Session();
-                    return $helper;
-                },
-                'checkoutactive' => function($sm) {
-                    $helper = new \PreReg\View\Helper\CheckoutActive();
-                    return $helper;
-                },
-                'niceiban' => function($sm) {
-                    $helper = new \PreReg\View\Helper\NiceIban($sm);
-                    return $helper;
                 },
             ),
         );

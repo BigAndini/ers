@@ -22,18 +22,32 @@ namespace PreReg\View\Helper;
 use Zend\View\Helper\AbstractHelper;
 #use Zend\View\HelperPluginManager as ServiceManager;
 use Zend\Session\Container;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class Session extends AbstractHelper {
+class CurrencyChooser extends AbstractHelper implements ServiceLocatorAwareInterface{
 
-    #protected $serviceManager;
+    protected $sm;
 
-    /*public function __construct(ServiceManager $serviceManager) {
-        $this->serviceManager = $serviceManager;
-    }*/
+    public function __construct() {
+        #$this->sm = $sm;
+    }
+    
+    public function setServiceLocator(ServiceLocatorInterface $sm) {
+        $this->sm = $sm;
+    }
+    public function getServiceLocator() {
+        return $this->sm;
+    }
 
     public function __invoke() {
-        $container = new Container('ers');
-        return $container;
+        if(!$this->getServiceLocator()) {
+            throw new \Exception('ServiceLocator is needed for Currency Chooser');
+        }
+        # two times getServiceLocator because the first one is just the PluginManager, 
+        # the second one is the ApplicationManager
+        return $this->getServiceLocator()->getServiceLocator()
+                ->get('PreReg\Form\CurrencyChooser');
     }
 
 }

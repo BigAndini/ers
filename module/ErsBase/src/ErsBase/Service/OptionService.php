@@ -87,6 +87,30 @@ class OptionService
         return $options;
     }
     
+    public function getCurrencyOptions() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $currencies = $em->getRepository('ErsBase\Entity\Currency')
+                ->findBy(array('active' => 1), array('position' => 'ASC'));
+        
+        $container = new Container('ers');
+        
+        $options = array();
+        foreach($currencies as $currency) {
+            $selected = false;
+            if($container->currency == $currency->getShort()) {
+                $selected = true;
+            }
+            $options[] = array(
+                'value' => $currency->getId(),
+                'label' => $currency->getName(),
+                'selected' => $selected,
+            );
+        }
+        return $options;
+    }
+    
     public function getPersonOptions(\ErsBase\Entity\Product $product, $participant_id=null) {
         $cartContainer = new Container('ers');
         $options = array();
