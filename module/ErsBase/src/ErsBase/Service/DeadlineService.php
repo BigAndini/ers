@@ -13,7 +13,7 @@ namespace ErsBase\Service;
 
 class DeadlineService
 {
-    protected $deadlines;
+    protected $deadlines = array();
     protected $compareDate;
     
     public function __construct() {

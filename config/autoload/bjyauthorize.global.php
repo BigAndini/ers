@@ -147,6 +147,7 @@ return [
                 ['controller' => 'PreReg\Controller\Product',                       'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Participant',                   'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Buyer',                         'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Ajax',                          'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Test',                          'roles' => ['admin']],
                 
                 /* ZfcUser */
@@ -193,7 +194,6 @@ return [
                 ['controller' => 'Admin\Controller\Bankaccount',         'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Matching',            'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Ajax',                'roles' => ['admin', 'supradm']],
-                ['controller' => 'Admin\Controller\Ajax', 'action' => 'session-storage', 'roles' => ['guest', 'user']],
                 ['controller' => 'Admin\Controller\Refund',              'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Status',              'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Overview',            'roles' => ['admin', 'supradm']],
