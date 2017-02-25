@@ -27,6 +27,6 @@ class Currency extends Base\Currency
     }
 
     public function __toString() {
-        return $this->getShort();
+        return $this->getName().' ('.$this->getShort().' / '.$this->getSymbol().')';
     }
 }

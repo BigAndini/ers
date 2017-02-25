@@ -122,6 +122,44 @@ class Module implements ViewHelperProviderInterface
                 /* 
                  * Form Factories
                  */
+                'Admin\Form\PaymentType' => function($sm) {
+                    $form = new Form\PaymentType();
+                    $form->get('submit')->setValue('Save');
+
+                    $optionService = $sm->get('ErsBase\Service\OptionService');
+                    #$deadlineOptions = $this->buildDeadlineOptions();
+                    $deadlineOptions = $optionService->getDeadlineOptions();
+                    $form->get('active_from_id')->setAttribute('options', $deadlineOptions);
+                    $form->get('active_until_id')->setAttribute('options', $deadlineOptions);
+                    #$form->get('active_from_id')->setValue(0);
+                    #$form->get('active_until_id')->setValue(0);
+                    $currencyOptions = $optionService->getCurrencyOptions();
+                    $form->get('currency_id')->setAttribute('options', $currencyOptions);
+
+                    $typeOptions = [
+                        [
+                            'value' => '',
+                            'label' => 'Select type ...',
+                            'disabled' => true,
+                            'selected' => true,
+                        ],
+                        [
+                            'value' => 'sepa',
+                            'label' => 'Sepa Bank Account',
+                        ],
+                        [
+                            'value' => 'ipayment',
+                            'label' => 'iPayment Account',
+                        ],
+                        [
+                            'value' => 'paypal',
+                            'label' => 'Paypal Account',
+                        ],
+                    ];
+                    $form->get('type')->setAttribute('options', $typeOptions);
+                    
+                    return $form;
+                },
                 'Admin\Form\Product' => function($sm){
                     $form   = new Form\Product();
                     

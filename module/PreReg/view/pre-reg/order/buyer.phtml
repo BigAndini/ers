@@ -31,9 +31,6 @@ echo $this->navigation()
 
     echo $this->form()->openTag($form);
 ?>
-<div class="checkout">
-    <?php echo $this->formSubmit($form->get('submit')); ?>
-</div>
 <div>
     <h2><?php echo $this->translate('Select Buyer'); ?></h2>
     <?php if(count($order->getPackages()) > 0): ?>

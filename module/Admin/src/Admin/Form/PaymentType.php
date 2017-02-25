@@ -9,9 +9,11 @@
 namespace Admin\Form;
 
 use Zend\Form\Form;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterProviderInterface;
 
-
-class PaymentType extends Form
+class PaymentType extends Form implements InputFilterProviderInterface
 {
     public function __construct($name = null)
     {
@@ -79,6 +81,29 @@ class PaymentType extends Form
             ),
             'options' => array(
                 'label' => 'Type',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                #'empty_option' => 'Select type ...',
+                /*'value_options' => [
+                    ['value' => 'BankTransfer', 'label' => 'Bank transfer'],
+                    ['value' => 'Cheque', 'label' => 'Cheque'],
+                    ['value' => 'PayPal', 'label' => 'PayPal'],
+                    ['value' => 'CreditCard', 'label' => 'Credit card'],
+                    ['value' => 'IPayment', 'label' => 'Credit card (iPayment)'],
+                ]*/
+            ),
+        ));
+        
+        $this->add(array(
+            'name' => 'currency_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required',
+                'class' => 'form-control form-element'
+            ),
+            'options' => array(
+                'label' => 'Currency',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -240,4 +265,104 @@ class PaymentType extends Form
             ),
         ));
     }
+    
+        /**
+     * Should return an array specification compatible with
+     * {@link Zend\InputFilter\Factory::createInputFilter()}.
+     *
+     * @return array
+     */
+    public function getInputFilterSpecification()
+    {
+        return array(
+            'id' => array(
+                'required' => false,
+                'validators' => array(
+                ),
+            ),
+            'position' => array(
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
+                'validators' => array(
+                ),
+            ),
+            'visible' => array(
+                'required' => false,
+                'validators' => array(
+                ),
+            ),
+            'name' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    
+                ),
+            ),
+            'type' => array(
+                'required' => true,
+                'validators' => array(
+                ),
+            ),
+            'currency_id' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
+                'validators' => array(
+                ),
+            ),
+            'short_description' => array(
+                'required' => false,
+                'validators' => array(
+                ),
+            ),
+            'long_description' => array(
+                'required' => false,
+                'validators' => array(
+                ),
+            ),
+            'explanation' => array(
+                'required' => false,
+                'validators' => array(
+                ),
+            ),
+            'fix_fee' => array(
+                'required' => false,
+                'validators' => array(
+                ),
+            ),
+            'percentage_fee' => array(
+                'required' => false,
+                'validators' => array(
+                ),
+            ),
+            'active_from_id' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
+                'validators' => array(
+                ),
+            ),
+            'active_until_id' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
+                'validators' => array(
+                ),
+            ),
+            'days2pay' => array(
+                'required' => false,
+                'validators' => array(
+                ),
+            ),
+        );
+    }
+
 }

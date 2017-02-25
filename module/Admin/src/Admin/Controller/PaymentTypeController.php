@@ -37,7 +37,11 @@ class PaymentTypeController extends AbstractActionController {
 
 
     public function addAction() {
-        $form = new Form\PaymentType();
+        $form = $this->getServiceLocator()
+                ->get('Admin\Form\PaymentType');
+        $form->get('active_from_id')->setValue(0);
+        $form->get('active_until_id')->setValue(0);
+        /*$form = new Form\PaymentType();
         $form->get('submit')->setValue('Save');
 
         $deadlineOptions = $this->buildDeadlineOptions();
@@ -66,7 +70,7 @@ class PaymentTypeController extends AbstractActionController {
                 'label' => 'Paypal Account',
             ],
         ];
-        $form->get('type')->setAttribute('options', $typeOptions);
+        $form->get('type')->setAttribute('options', $typeOptions);*/
         
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
@@ -124,7 +128,9 @@ class PaymentTypeController extends AbstractActionController {
         if (!$paymenttype)
             return $this->notFoundAction();
 
-        $form = new Form\PaymentType();
+        $form = $this->getServiceLocator()
+                ->get('Admin\Form\PaymentType');
+        /*$form = new Form\PaymentType();
         $form->get('submit')->setValue('Save');
 
         $deadlineOptions = $this->buildDeadlineOptions();
@@ -151,7 +157,7 @@ class PaymentTypeController extends AbstractActionController {
                 'label' => 'Paypal Account',
             ],
         ];
-        $form->get('type')->setAttribute('options', $typeOptions);
+        $form->get('type')->setAttribute('options', $typeOptions);*/
         
         
         $form->bind($paymenttype);
@@ -233,27 +239,6 @@ class PaymentTypeController extends AbstractActionController {
             'orders' => $orders,
             'paymenttype' => $paymenttype,
         ));
-    }
-
-    private function buildDeadlineOptions() {
-        $deadlines = $this->getServiceLocator()
-                ->get('Doctrine\ORM\EntityManager')
-                ->getRepository('ErsBase\Entity\Deadline')
-                ->findBy(array(), array('deadline' => 'ASC'));
-
-        $options = array();
-        foreach ($deadlines as $deadline) {
-            $options[] = array(
-                'value' => $deadline->getId(),
-                'label' => 'Deadline: ' . $deadline->getDeadline()->format('Y-m-d H:i:s')
-            );
-        }
-        $options[] = array(
-            'value' => 0,
-            'label' => 'no Deadline'
-        );
-
-        return $options;
     }
 
     public function uploadCsvAction() {

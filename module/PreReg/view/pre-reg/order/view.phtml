@@ -120,13 +120,13 @@ $this->headTitle($title);
                                 </span>
                             </td>
                             <td><?php echo $item->getAmount(); ?></td>
-                            <td><?php echo $this->currencyFormat($item->getPrice(), $order->getCurrency(), null, 'de_DE'); ?></td>
+                            <td><?php echo $this->currencyFormat($item->getPrice(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                         </tr>
                     <?php endforeach; ?>
                     <tr>
                         <td></td>
                         <td><?php echo $this->translate('Subtotal:'); ?></td>
-                        <td><?php echo $this->currencyFormat($subtotal, $order->getCurrency(), null, 'de_DE'); ?></td>
+                        <td><?php echo $this->currencyFormat($subtotal, $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                     </tr>
                 </table>
                 <?php endif; ?>
@@ -136,15 +136,15 @@ $this->headTitle($title);
             <table class="table sum-table">
                 <tr>
                     <td><?php echo $this->translate('Order amount:'); ?></td>
-                    <td><?php echo $this->currencyFormat($order->getPrice(), $order->getCurrency(), null, 'de_DE'); ?></td>
+                    <td><?php echo $this->currencyFormat($order->getPrice(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
                     <td>Payment Charge:</td>
-                    <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), $order->getCurrency(), null, 'de_DE'); ?></td>
+                    <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
                     <th><span style="font-size: 18px;"><?php echo $this->translate('Total amount:'); ?></span></th>
-                    <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), $order->getCurrency(), null, 'de_DE'); ?></span></th>
+                    <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></span></th>
                 </tr>
             </table>
         <?php endif; ?>
