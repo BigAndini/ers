@@ -57,7 +57,6 @@
                 <div class="col-md-6">
                     <?php if($product->getPriceCount() != 1): ?>
                         <p class="small text-right"><?php echo sprintf($this->translate('The prices will increase after <br /> %s'), $deadline->getDeadline()->format('d.m.Y H:i:s T')); ?></p>
-                        <p clas="text-right">
                         <p class="text-right">
                             <?php echo $this->partial('partial/currency-chooser.phtml', array('form' => $this->currencychooser())); ?>
                         </p>

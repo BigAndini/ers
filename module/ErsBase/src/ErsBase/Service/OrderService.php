@@ -149,18 +149,18 @@ class OrderService
                     $item->setPrice($price->getCharge());
                     $em->flush($item);
                 }
+                $em->flush($package);
             }
             $order->setCurrency($currency);
             if($debug) {
                 error_log('set order to currency: '.$currency);
             }
+            if($order->getPaymentType()) {
+                $order->setPaymentType(null);
+            }
+            $em->flush($order);
         }
-        if($order->getPaymentType()) {
-            $order->setPaymentType(null);
-        }
-        $em->flush($order);
         
-        error_log('currency changed!');
         return $this;
     }
     
