@@ -108,6 +108,53 @@ class OrderService
         return $newOrder;
     }
     
+    public function updateShoppingCart() {
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $debug = true;
+        $order = $this->getOrder();
+        $currency = $order->getCurrency();
+        foreach($order->getPackages() as $package) {
+            foreach($package->getItems() as $item) {
+                if($item->hasParentItems()) {
+                    continue;
+                }
+                $product = $item->getProduct();
+                $participant = $item->getPackage()->getParticipant();
+
+                $agegroupService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\AgegroupService');
+                $agegroupService->setMode('price');
+                $agegroup = $agegroupService->getAgegroupByUser($participant);
+                if($debug) {
+                    if($agegroup != null) {
+                        error_log('found agegroup: '.$agegroup->getName());
+                    }
+                }
+
+                $deadlineService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\DeadlineService');
+                $deadlineService->setMode('price');
+                $deadline = $deadlineService->getDeadline($order->getCreated());
+                if($debug) {
+                    if($deadline != null) {
+                        error_log('found deadline: '.$deadline->getName());
+                    }
+                }
+
+                $price = $product->getProductPrice($agegroup, $deadline, $currency);
+                if($debug) {
+                    error_log('price: '.$price->getCharge());
+                }
+                $item->setPrice($price->getCharge());
+                $em->persist($item);
+            }
+        }
+        $em->persist($order);
+        $em->flush();
+    }
+    
     public function changeCurrency($paramCurrency) {
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
@@ -138,11 +185,13 @@ class OrderService
 
                     $agegroupService = $this->getServiceLocator()
                             ->get('ErsBase\Service\AgegroupService');
+                    $agegroupService->setMode('price');
                     $agegroup = $agegroupService->getAgegroupByUser($participant);
                     #$agegroup = $participant->getAgegroup();
 
                     $deadlineService = $this->getServiceLocator()
-                            ->get('ErsBase\Service\DeadlineService:price');
+                            ->get('ErsBase\Service\DeadlineService');
+                    $deadlineService->setMode('price');
                     $deadline = $deadlineService->getDeadline($order->getCreated());
 
                     $price = $product->getProductPrice($agegroup, $deadline, $currency);
@@ -150,9 +199,9 @@ class OrderService
                         error_log('price: '.$price->getCharge());
                     }
                     $item->setPrice($price->getCharge());
-                    $em->flush($item);
+                    #$em->persist($item);
                 }
-                $em->flush($package);
+                #$em->persist($package);
             }
             $order->setCurrency($currency);
             if($debug) {
@@ -161,7 +210,8 @@ class OrderService
             if($order->getPaymentType()) {
                 $order->setPaymentType(null);
             }
-            $em->flush($order);
+            $em->persist($order);
+            $em->flush();
         }
         
         return $this;

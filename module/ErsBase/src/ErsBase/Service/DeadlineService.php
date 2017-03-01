@@ -14,10 +14,26 @@ namespace ErsBase\Service;
 class DeadlineService
 {
     protected $deadlines = array();
+    protected $mode;
+    protected $sm;
     protected $compareDate;
     
     public function __construct() {
         $this->compareDate = new \DateTime;
+    }
+    
+    public function setServiceLocator($sm) {
+        $this->sm = $sm;
+    }
+    public function getServiceLocator() {
+        return $this->sm;
+    }
+    
+    public function setMode($mode) {
+        $this->mode = $mode;
+    }
+    public function getMode() {
+        return $this->mode;
     }
     
     public function setCompareDate(\DateTime $compareDate) {
@@ -32,10 +48,32 @@ class DeadlineService
         $this->deadlines = $deadlines;
     }
     
+    public function getDeadlines() {
+        if(count($this->deadlines) <= 0) {
+            $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+            $criteria = array();
+            switch($this->getMode()) {
+                case 'price':
+                    $criteria['price_change'] = 1;
+                    break;
+                case 'ticket':
+                    $criteria['ticket_change'] = 1;
+                    break;
+                default:
+                    throw new \Exception('Please set a mode for Deadline Service: price or ticket');
+                    break;
+            }
+            $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+                        ->findBy($criteria);
+            $this->setDeadlines($deadlines);
+        }
+        return $this->deadlines;
+    }
+    
     public function getDeadline() {
         $ret = null;
         $now = $this->getCompareDate();
-        foreach($this->deadlines as $deadline) {
+        foreach($this->getDeadlines() as $deadline) {
             if($now->getTimestamp() > $deadline->getDeadline()->getTimestamp()) {
                 continue;
             }

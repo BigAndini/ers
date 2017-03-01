@@ -310,7 +310,7 @@ class OrderController extends AbstractActionController {
                         ->findOneBy(array('id' => $data['paymenttype_id']));
                 
                 if($paymenttype->getCurrency()->getShort() != $order->getCurrency()->getShort()) {
-                    throw new \Exception('Unable to set this payment type for this order. Please chooser another payment type.');
+                    throw new \Exception('Unable to set this payment type for this order. Please choose another payment type.');
                 }
                 
                 $order->setPaymentType($paymenttype);
@@ -466,9 +466,9 @@ class OrderController extends AbstractActionController {
             
             $em->flush();
         
-            #$container = new Container('ers');
+            $container = new Container('ers');
             $container->checkout = array();
-            $container->order_id = $order->getId();
+            unset($container->order_id);
             $container->init = 0;
             
             $emailService = $this->getServiceLocator()
