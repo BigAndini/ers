@@ -189,6 +189,10 @@ class ParticipantController extends AbstractActionController {
                 $em->persist($participant);
                 $em->flush();
                 
+                $orderService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\OrderService');
+                $orderService->updateShoppingCart();
+                
                 $breadcrumb = $breadcrumbService->get('participant');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {

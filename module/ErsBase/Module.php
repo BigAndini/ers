@@ -97,8 +97,15 @@ class Module
                     $service->setServiceLocator($sm);
                     return $service;
                 },
+                'ErsBase\Service\AgegroupService' => function($sm) {
+                    $agegroupService = new Service\AgegroupService();
+                    $agegroupService->setServiceLocator($sm);
+                    
+                    return $agegroupService;
+                },
                 'ErsBase\Service\AgegroupService:price' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
+                    $agegroupService->setServiceLocator($sm);
                     $em = $sm->get('Doctrine\ORM\EntityManager');
                     $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('price_change' => '1'));
@@ -114,6 +121,12 @@ class Module
                     $agegroupService->setAgegroups($agegroups);
                     
                     return $agegroupService;
+                },
+                'ErsBase\Service\DeadlineService' => function($sm) {
+                    $deadlineService = new Service\DeadlineService();
+                    $deadlineService->setServiceLocator($sm);
+                    
+                    return $deadlineService;
                 },
                 'ErsBase\Service\DeadlineService:price' => function($sm) {
                     $deadlineService = new Service\DeadlineService();

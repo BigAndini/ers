@@ -13,6 +13,7 @@ use ErsBase\Entity;
 class AgegroupService
 {
     protected $agegroups;
+    protected $mode = '';
     protected $sm;
     
     public function __construct() {
@@ -26,11 +27,36 @@ class AgegroupService
         return $this->sm;
     }
     
+    public function setMode($mode) {
+        $this->mode = $mode;
+    }
+    public function getMode() {
+        return $this->mode;
+    }
+    
     public function setAgegroups($agegroups) {
         $this->agegroups = $agegroups;
     }
     
     public function getAgegroups() {
+        if(count($this->agegroups) <= 0) {
+            $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+            $criteria = array();
+            switch($this->getMode()) {
+                case 'price':
+                    $criteria['price_change'] = 1;
+                    break;
+                case 'ticket':
+                    $criteria['ticket_change'] = 1;
+                    break;
+                default:
+                    throw new \Exception('Please set a mode for Agegroup Service: price or ticket');
+                    break;
+            }
+            $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+                        ->findBy($criteria);
+            $this->setAgegroups($agegroups);
+        }
         return $this->agegroups;
     }
     
@@ -51,7 +77,7 @@ class AgegroupService
         if($date == null) {
             return $ret;
         }
-        foreach($this->agegroups as $agegroup) {
+        foreach($this->getAgegroups() as $agegroup) {
             if($date->getTimestamp() < $agegroup->getAgegroup()->getTimestamp()) {
                 continue;
             }
