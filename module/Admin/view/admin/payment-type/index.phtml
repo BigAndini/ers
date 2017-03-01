@@ -10,6 +10,7 @@ $this->headTitle($title);
         <th>Order</th>
         <th>Visible</th>
         <th>Name</th>
+        <th>Currency</th>
         <th>Type</th>
         <th>Period</th>
         <th class="text-right">
@@ -27,6 +28,7 @@ $this->headTitle($title);
             <?php endif; ?>
         </td>
         <td><?php echo $this->escapeHtml($paymenttype->getName()); ?></td>
+        <td><?php echo $this->escapeHtml($paymenttype->getCurrency()); ?></td>
         <td><?php echo $this->escapeHtml($paymenttype->getType()); ?></td>
         <td>
             <?php if($paymenttype->getActiveFrom() == null) : ?>

@@ -309,6 +309,10 @@ class OrderController extends AbstractActionController {
                 $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
                         ->findOneBy(array('id' => $data['paymenttype_id']));
                 
+                if($paymenttype->getCurrency()->getShort() != $order->getCurrency()->getShort()) {
+                    throw new \Exception('Unable to set this payment type for this order. Please chooser another payment type.');
+                }
+                
                 $order->setPaymentType($paymenttype);
                 
                 $em->persist($order);
@@ -474,6 +478,13 @@ class OrderController extends AbstractActionController {
             $forrest = new Service\BreadcrumbService();
             $forrest->remove('terms');
             switch(strtolower($order->getPaymentType()->getType())) {
+                case 'sepa':
+                    return $this->redirect()->toRoute('payment', 
+                            array(
+                                'action' => 'banktransfer',
+                                'hashkey' => $order->getHashkey(),
+                                ));
+                    break;
                 case 'banktransfer':
                     return $this->redirect()->toRoute('payment', 
                             array(
@@ -509,6 +520,8 @@ class OrderController extends AbstractActionController {
                                 ));
                     break;
                 default:
+                    throw new \Exception('We were unable to handle your chose payment type: '.strtolower($order->getPaymentType()->getType()));
+                    break;
             }
             
         }

@@ -494,8 +494,6 @@ class ProductController extends AbstractActionController {
         $logger = $this->getServiceLocator()->get('Logger');
 
         $breadcrumbService = new Service\BreadcrumbService();
-
-        $breadcrumbService = new Service\BreadcrumbService();
         
         if(!$breadcrumbService->exists('product')) {
             $breadcrumbService->set('product', 'order');
