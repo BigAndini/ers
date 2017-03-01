@@ -130,6 +130,9 @@ class OrderService
                     if($debug) {
                         error_log('set item to currency: '.$currency);
                     }
+                    if($item->hasParentItems()) {
+                        continue;
+                    }
                     $product = $item->getProduct();
                     $participant = $item->getPackage()->getParticipant();
 

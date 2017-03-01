@@ -1,6 +1,4 @@
 <?php $this->headTitle($product->getName()); ?>
-<a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);?>"><?php echo $this->translate('back to Overview'); ?></a>
-
 <?php if(count($product->getProductPrices()) == 0): ?>
     <p class="desc-short"><?php echo $this->translate('This product is unavailable'); ?></p>
 <?php else: ?>
