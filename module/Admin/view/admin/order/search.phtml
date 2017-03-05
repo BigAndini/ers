@@ -63,7 +63,7 @@ $this->headTitle($title);
                             endif; ?>
                         </td>
                         <td>
-                            <?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?>
+                            <?php echo $this->currencyFormat($order->getPrice(), $order->getCurrency()->getShort(), null, 'de_DE'); ?>
                         </td>
                         <td>
                             <?php echo $order->getPaymentStatus().'('.$order->getStatus()->getValue().')'; ?>
