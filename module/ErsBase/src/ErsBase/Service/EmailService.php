@@ -233,7 +233,7 @@ class EmailService
         }
         
         $config = $this->getServiceLocator()->get('config');
-        $this->setFrom($config['ERS']['info_mail']);
+        $this->setFrom($config['ERS']['sender_email']);
         
         $message->addFrom($this->getFrom());
         $message->setSubject($this->getSubject());
@@ -245,7 +245,7 @@ class EmailService
     public function sendExceptionEmail(\Exception $e) {
         $config = $this->getServiceLocator()->get('config');
         
-        $this->setFrom($config['ERS']['info_mail']);
+        $this->setFrom($config['ERS']['sender_email']);
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $role = $em->getRepository('ErsBase\Entity\Role')
@@ -296,7 +296,7 @@ class EmailService
         
         $config = $this->getServiceLocator()->get('config');
         
-        $this->setFrom($config['ERS']['info_mail']);
+        $this->setFrom($config['ERS']['sender_email']);
         
         $this->addTo($buyer);
         

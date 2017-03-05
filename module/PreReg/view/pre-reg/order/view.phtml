@@ -2,6 +2,9 @@
 
 $title = $this->translate('My Order');
 $this->headTitle($title);
+
+$preregMail = '<a href=\'mailto:'.$this->config()['ERS']['prereg_mail'].'\'>'.$this->config()['ERS']['prereg_mail'].'</a>';
+$infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this->config()['ERS']['info_mail'].'</a>';
 ?>
 
 <h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
@@ -57,7 +60,7 @@ $this->headTitle($title);
                 <?php endif; ?>
             <?php else: ?>
                 <h3><?php echo $this->translate('undefined status'); ?></h3>
-                <p><?php echo $this->translate('Please contact the EJC team to solve this problem:'); ?> <a href="mailto:info@ejc2016.org">info@ejc2016.org</a></p>
+                <p><?php echo $this->translate('Please contact the prereg coordinator to solve this problem:'); echo $preregMail; ?></p>
             <?php endif; ?>
         </div>
     </div>
