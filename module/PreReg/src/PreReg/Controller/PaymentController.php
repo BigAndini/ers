@@ -166,8 +166,6 @@ class PaymentController extends AbstractActionController {
             return $this->redirect()->toRoute('order', array('action' => 'cc-error'));
         }
         
-        #https://ipayment.de/merchant/99999/processor.php?trxuser_id=99999&trxpassword=0&trx_amount=12300&trx_paymenttyp=cc&trx_currency=EUR&redirect_url=http://ejc2016.ers.inbaz.org/thankyou&hidden_trigger_url=https://ejc2016.ers.inbaz.org/payment/cc-check
-        
         $trx_securityhash = \md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
         
         $param = array(

@@ -56,7 +56,7 @@
                 $config['ERS']['name_with_year'],
                 $order->getCreated()->format('d.m.Y')) ?></p>
 
-        <?php $paymentTarget = new \DateTime('2016-10-26'); ?>
+        <?php $paymentTarget = new \DateTime('2017-05-15'); ?>
         <p><?php printf($this->translate('Please do one of the following until %s at the latest.'), $paymentTarget->format('d.m.Y')); ?></p>
         <ul>
             <li><?php printf($this->translate('Please pay your order. All needed information can be found at %s'),$orderLink); ?></li>

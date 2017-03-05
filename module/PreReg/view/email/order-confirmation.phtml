@@ -1,9 +1,4 @@
 <?php
-    $ejc_with_year = "EJC 2016";
-    $ejc_with_number = "39th European Juggling Convention";
-    $ejc_info_mail = "info@ejc2016.org";
-    $ejc_website = "http://www.ejc2016.org";
-    
     $orderLink = '<a href="' . 
             $this->url('order', array(
                 'action' => 'view',
@@ -17,6 +12,7 @@
             ).'">' . $this->translate('terms and conditions') . '</a>';
     $orderDate = $order->getCreated()->format('d.m.Y');
     $orderId = '<b>'.$order->getCode()->getValue().'</b>';
+    $preregMail = '<a href=\'mailto:'.$this->config()['ERS']['prereg_mail'].'\'>'.$this->config()['ERS']['prereg_mail'].'</a>';
     $infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this->config()['ERS']['info_mail'].'</a>';
     $website = '<a href=\''.$this->config()['ERS']['website'].'\'>'.$this->config()['ERS']['website'].'</a>';
 ?>
@@ -154,7 +150,7 @@
         <br>
         <?php printf($this->translate('If you have any questions about your pre-registration,
         please contact the EJA pre-registration coordinator
-        at %s.'), $infoMail); ?>
+        at %s.'), $preregMail); ?>
         <br>
         <?php printf($this->translate('For more information about %s,
         please visit %s
