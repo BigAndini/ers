@@ -90,6 +90,14 @@ class PaymentType extends Base\PaymentType
             'client_id',
             'client_secret',
             'log_file',
+            
+            
+            /*
+             * additional UK bank transfer fields
+             */
+            'account_no',
+            'sort_code',
+            /*'owner',*/
         ];
     }
     

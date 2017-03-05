@@ -198,6 +198,9 @@ class OrderService
                     if($debug) {
                         error_log('price: '.$price->getCharge());
                     }
+                    if(!$price) {
+                        throw new \Exception('Unable to find price for '.$product->getName().'.');
+                    }
                     $item->setPrice($price->getCharge());
                     #$em->persist($item);
                 }

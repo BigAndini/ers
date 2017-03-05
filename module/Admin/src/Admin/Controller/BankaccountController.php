@@ -18,14 +18,14 @@ class BankaccountController extends AbstractActionController {
  
     public function indexAction()
     {
-        /*$em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');*/
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
         
-        /*$accounts = $em->getRepository('ErsBase\Entity\BankAccount')
-                ->findBy(array());*/
+        $accounts = $em->getRepository('ErsBase\Entity\PaymentType')
+                ->findBy(array());
         
         return new ViewModel(array(
-            #'accounts' => $accounts,
+            'accounts' => $accounts,
         ));
     }
     
@@ -94,7 +94,7 @@ class BankaccountController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')->findOneBy(array('id' => $id));
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')->findOneBy(array('id' => $id));
 
         $form = new Form\BankAccount();
         $form->bind($bankaccount);
@@ -127,7 +127,7 @@ class BankaccountController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         $request = $this->getRequest();
@@ -136,7 +136,7 @@ class BankaccountController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+                $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                     ->findOneBy(array('id' => $id));
                 $em->remove($bankaccount);
                 $em->flush();
@@ -159,14 +159,14 @@ class BankaccountController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         $form = new Form\BankAccountFormat();
         
         $statements = $em->getRepository('ErsBase\Entity\BankStatement')
                 ->findBy(
-                        array('bank_account_id' => $bankaccount->getId()),
+                        array('payment_type_id' => $bankaccount->getId()),
                         array(),
                         5
                         );
@@ -209,6 +209,9 @@ class BankaccountController extends AbstractActionController {
                 $this->getColumnOptions($colCount, $statement_format->date));
         
         if(!isset($statement_format->sign->col)) {
+            $statement_format->sign = new \stdClass();
+        }
+        if(!isset($statement_format->sign->col)) {
             $statement_format->sign->col = 0;
         }
         $form->get('sign')->setAttribute('options', 
@@ -230,7 +233,7 @@ class BankaccountController extends AbstractActionController {
                 $data = $form->getData();
                 
                 $id = (int) $request->getPost('id');
-                $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+                $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                     ->findOneBy(array('id' => $id));
                 
                 $format = array(
@@ -317,7 +320,7 @@ class BankaccountController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $accounts = $em->getRepository('ErsBase\Entity\BankAccount')
+        $accounts = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findBy(array());
         
         $options = array();
@@ -348,14 +351,14 @@ class BankaccountController extends AbstractActionController {
                 $data = $form->getData();
                 
                 $id = $data['bankaccount_id'];
-                $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+                $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                     ->findOneBy(array('id' => $id));
                 
                 $file = $data['csv-upload'];
                 
                 $bankAccountCsv = new Entity\BankAccountCsv();
                 $bankAccountCsv->setCsvFile($file['name']);
-                $bankAccountCsv->setBankAccount($bankaccount);
+                $bankAccountCsv->setPaymentType($bankaccount);
                 
                 $em->persist($bankAccountCsv);
                 
@@ -383,7 +386,7 @@ class BankaccountController extends AbstractActionController {
                 $separator = substr($data['separator'], 0, 1);
                 while (($row_data = fgetcsv($handle, 1000, $separator)) !== FALSE) {
                     $bs = new Entity\BankStatement();
-                    $bs->setBankAccount($bankaccount);
+                    $bs->setPaymentType($bankaccount);
                     $bs->setBankAccountCsv($bankAccountCsv);
                     $bs->setStatus('new');
                     foreach($row_data as $column => $value) {
@@ -456,7 +459,7 @@ class BankaccountController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         return new ViewModel(array(
@@ -472,7 +475,7 @@ class BankaccountController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $csv = $em->getRepository('ErsBase\Entity\BankAccountCsv')
+        $csv = $em->getRepository('ErsBase\Entity\PaymentTypeCsv')
                 ->findOneBy(array('id' => $id));
         
         $request = $this->getRequest();
@@ -481,7 +484,7 @@ class BankaccountController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $csv = $em->getRepository('ErsBase\Entity\BankAccountCsv')
+                $csv = $em->getRepository('ErsBase\Entity\PaymentTypeCsv')
                     ->findOneBy(array('id' => $id));
                 if($csv->hasMatch()) {
                     return $this->redirect()->toRoute('admin/bankaccount');
@@ -515,7 +518,7 @@ class BankaccountController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         switch($bankaccount->getType()) {

@@ -41,36 +41,6 @@ class PaymentTypeController extends AbstractActionController {
                 ->get('Admin\Form\PaymentType');
         $form->get('active_from_id')->setValue(0);
         $form->get('active_until_id')->setValue(0);
-        /*$form = new Form\PaymentType();
-        $form->get('submit')->setValue('Save');
-
-        $deadlineOptions = $this->buildDeadlineOptions();
-        $form->get('active_from_id')->setAttribute('options', $deadlineOptions);
-        $form->get('active_until_id')->setAttribute('options', $deadlineOptions);
-        $form->get('active_from_id')->setValue(0);
-        $form->get('active_until_id')->setValue(0);
-
-        $typeOptions = [
-            [
-                'value' => '',
-                'label' => 'Select type ...',
-                'disabled' => true,
-                'selected' => true,
-            ],
-            [
-                'value' => 'sepa',
-                'label' => 'Sepa Bank Account',
-            ],
-            [
-                'value' => 'ipayment',
-                'label' => 'iPayment Account',
-            ],
-            [
-                'value' => 'paypal',
-                'label' => 'Paypal Account',
-            ],
-        ];
-        $form->get('type')->setAttribute('options', $typeOptions);*/
         
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');

@@ -51,7 +51,7 @@ class OrderController extends AbstractActionController {
             preg_match('/"[^"]+"/', $searchText, $matches);
             $searchElements = preg_replace('/"/', '', $matches);
 
-            $searchArray = split(' ', $searchText);
+            $searchArray = \preg_split('/\ /', $searchText);
             $exclude = false;
 
             $excludeElements = array();

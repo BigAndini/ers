@@ -17,7 +17,7 @@ $this->headTitle($title);
 <div class="jumbotron">
     <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-    <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
+    <?php echo $this->partial('partial/sepa-banktransfer-info.phtml', array('order' => $order)); ?>
 
     <p><?php echo $this->translate('We\'ve sent this information to your email address:'); ?> <strong><?php echo $order->getBuyer()->getEmail(); ?></strong></p>
 
@@ -27,6 +27,6 @@ $this->headTitle($title);
         printf($this->translate('You can request this information again, by simply bookmarking %s, or have a look at the email we\'ve sent you.'), $orderLink); ?>
     </p>
 
-    <p class="orange"><strong><?php printf($this->translate('Thanks for registering, see you in %s!'), $this->config()['ERS']['city']); ?></strong></p>
+    <p class="text-info"><strong><?php printf($this->translate('Thanks for registering, see you in %s!'), $this->config()['ERS']['city']); ?></strong></p>
 </div>
 <?php endif;

@@ -317,10 +317,14 @@ class EmailService
         
         $this->setHtmlMessage($html);
         
-        /*$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v5.pdf';
-        $terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v4.pdf';
+        $terms1 = getcwd().'/public/Terms and Conditions ERS EN v7.pdf';
         $this->addAttachment($terms1);
-        $this->addAttachment($terms2);*/
+        
+        $terms2 = getcwd().'/public/Terms and Conditions ORGA EN v6.pdf';
+        $this->addAttachment($terms2);
+        
+        $promo = getcwd().'/public/pre-reg cover photo.png';
+        $this->addAttachment($promo);
         
         $this->send();
         
@@ -329,6 +333,11 @@ class EmailService
         #$orderStatus->setValue('confirmation sent');
         #$em->persist($orderStatus);
         # TODO: Create log entry that email was sent.
+        $log = new Entity\Log();
+        $log->setUser($order->getBuyer());
+        $log->setData('confirmation mail was send out to '.$order->getBuyer()->getEmail().' for order: '.$order->getCode()->getValue());
+        $em->persist($log);
+
         $em->flush();
         
         return true;
