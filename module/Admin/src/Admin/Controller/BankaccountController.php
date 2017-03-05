@@ -31,7 +31,7 @@ class BankaccountController extends AbstractActionController {
     
     public function addAction()
     {
-        $form = new Form\BankAccount();
+        $form = new Form\PaymentType();
         #$form->get('submit')->setValue('Add');
         
         $typeOptions = [
@@ -59,7 +59,7 @@ class BankaccountController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $bankaccount = new Entity\BankAccount();
+            $bankaccount = new Entity\PaymentType();
             
             #$form->setInputFilter($bankaccount->getInputFilter());
             $form->setData($request->getPost());

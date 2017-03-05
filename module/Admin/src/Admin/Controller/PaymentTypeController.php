@@ -362,6 +362,9 @@ class PaymentTypeController extends AbstractActionController {
             case 'sepa':
                 $form = new Form\AccountSepabankDetail($em);
                 break;
+            case 'ukbt':
+                $form = new Form\AccountUkbankDetail($em);
+                break;
             case 'ipayment':
                 $form = new Form\AccountIpaymentDetail($em);
                 if(empty($paymentType->getTrxCurrency())) {
@@ -385,6 +388,10 @@ class PaymentTypeController extends AbstractActionController {
                     [
                         'value' => 'sepa',
                         'label' => 'Sepa Bank Account',
+                    ],
+                    [
+                        'value' => 'ukbt',
+                        'label' => 'UK Bank Account',
                     ],
                     [
                         'value' => 'ipayment',

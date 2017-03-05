@@ -47,7 +47,7 @@ class AjaxController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         $qb = $em->getRepository('ErsBase\Entity\BankStatement')->createQueryBuilder('s');
@@ -55,7 +55,7 @@ class AjaxController extends AbstractActionController {
         if($bankaccount->getVirtual()) {
             $qb->where(
                 $qb->expr()->andX(
-                    $qb->expr()->eq('s.bank_account_id', '?1'),
+                    $qb->expr()->eq('s.payment_type_id', '?1'),
                     $qb->expr()->neq('s.status', '?2')
                 )
             );
@@ -64,7 +64,7 @@ class AjaxController extends AbstractActionController {
         } else {
             $qb->where(
                 $qb->expr()->andX(
-                    $qb->expr()->eq('s.bank_account_id', '?1'),
+                    $qb->expr()->eq('s.payment_type_id', '?1'),
                     $qb->expr()->eq('s.status', '?2')
                     /*$qb->expr()->neq('s.status', '?2'),
                     $qb->expr()->neq('s.status', '?3'),
@@ -110,7 +110,7 @@ class AjaxController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         return $bankaccount->getVirtual();

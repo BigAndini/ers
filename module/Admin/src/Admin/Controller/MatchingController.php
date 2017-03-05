@@ -78,7 +78,7 @@ class MatchingController extends AbstractActionController {
         /*
          * add bankaccounts to view model
          */
-        $bankaccounts = $em->getRepository('ErsBase\Entity\BankAccount')
+        $bankaccounts = $em->getRepository('ErsBase\Entity\PaymentType')
             ->findBy(array());
         
         /*

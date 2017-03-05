@@ -591,7 +591,7 @@ class StatisticController extends AbstractActionController {
             
             $qb = $em->createQueryBuilder()
                     ->select('COUNT(s.id) AS stmtcount', 'SUM(col.value) AS amount, MAX(s.created) AS latestentry')
-                    ->from('ErsBase\Entity\BankAccount', 'acc')
+                    ->from('ErsBase\Entity\PaymentType', 'acc')
                     ->join('acc.bankStatements', 's', 'WITH', "s.status != 'disabled'")
                     ->join('s.bankStatementCols', 'col', 'WITH', 'col.column = :colNum')
                     ->where('acc.id = :accountId')

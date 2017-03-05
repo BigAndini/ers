@@ -485,6 +485,12 @@ class OrderController extends AbstractActionController {
                                 'hashkey' => $order->getHashkey(),
                                 ));
                     break;
+                case 'ukbt':
+                    return $this->redirect()->toRoute('payment', 
+                            array(
+                                'action' => 'banktransfer',
+                                'hashkey' => $order->getHashkey(),
+                                ));
                 case 'banktransfer':
                     return $this->redirect()->toRoute('payment', 
                             array(
@@ -520,7 +526,7 @@ class OrderController extends AbstractActionController {
                                 ));
                     break;
                 default:
-                    throw new \Exception('We were unable to handle your chose payment type: '.strtolower($order->getPaymentType()->getType()));
+                    throw new \Exception('We were unable to handle your chosen payment type: '.strtolower($order->getPaymentType()->getType()));
                     break;
             }
             

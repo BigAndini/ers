@@ -53,6 +53,20 @@ class ProductVariantValue extends Form
         
         $this->add(array(
             'type' => 'checkbox',
+            'name' => 'visible',
+            'attributes' => array(
+                'class' => 'checkbox',
+            ),
+            'options' => array(
+                'label' => 'Visible',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
+        $this->add(array(
+            'type' => 'checkbox',
             'name' => 'disabled',
             'attributes' => array(
                 'class' => 'checkbox',

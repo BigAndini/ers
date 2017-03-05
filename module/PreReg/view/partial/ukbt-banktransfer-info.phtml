@@ -13,12 +13,12 @@
             <td><?php echo $paymentType->getOwner(); ?></td>
         </tr>
         <tr>
-            <td><?php echo $this->translate('IBAN'); ?></td>
-            <td><?php echo $this->niceiban($paymentType->getIban()); ?></td>
+            <td><?php echo $this->translate('Account Number'); ?></td>
+            <td><?php echo $paymentType->getAccountNumber(); ?></td>
         </tr>
         <tr>
-            <td><?php echo $this->translate('BIC'); ?></td>
-            <td><?php echo $paymentType->getBic(); ?></td>
+            <td><?php echo $this->translate('Sort Code'); ?></td>
+            <td><?php echo $paymentType->getSortCode(); ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('Bank'); ?></td>
