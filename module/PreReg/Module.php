@@ -100,7 +100,7 @@ class Module
         $container = new Container('ers');
         #error_log('session: '.$container->init);
         if (!isset($container->init)) {
-            error_log('initializing session ('.$container->init.')');
+            #error_log('initializing session ('.$container->init.')');
             $serviceManager = $e->getApplication()->getServiceManager();
             $request        = $serviceManager->get('Request');
 
@@ -169,7 +169,7 @@ class Module
         $orderService = $serviceManager->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         if($order->getCurrency()->getShort() != $container->currency) {
-            error_log('currencies are not the same!');
+            #error_log('currencies are not the same!');
             $orderService->changeCurrency($container->currency);
         }
         

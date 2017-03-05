@@ -83,7 +83,6 @@ class LoginService
         $user = $this->getUser();
         $user->setId($this->getUserId());
         $user->increaseLoginCount();
-        error_log('this login count: '.$user->getLoginCount());
         $em->merge($user);
         $em->flush();
         

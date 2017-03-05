@@ -148,6 +148,10 @@ class Module implements ViewHelperProviderInterface
                             'label' => 'Sepa Bank Account',
                         ],
                         [
+                            'value' => 'ukbt',
+                            'label' => 'UK Bank Account',
+                        ],
+                        [
                             'value' => 'ipayment',
                             'label' => 'iPayment Account',
                         ],

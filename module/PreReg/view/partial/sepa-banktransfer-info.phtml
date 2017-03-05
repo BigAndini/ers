@@ -30,7 +30,7 @@
         </tr>
         <tr>
             <td><?php echo $this->translate('Amount'); ?></td>
-            <td><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></td>
+            <td><?php echo $this->currencyFormat($order->getSum(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
         </tr>
         <tr>
             <td><?php echo $this->translate('Reason for payment'); ?></td>

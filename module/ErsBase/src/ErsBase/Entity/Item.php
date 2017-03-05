@@ -172,6 +172,9 @@ class Item extends Base\Item
      */
     public function setPackage(\ErsBase\Entity\Base\Package $package = null)
     {
+        if($package == null) {
+            throw new \Exception('Unable to set package for item.');
+        }
         parent::setPackage($package);
         $this->setCurrency($package->getCurrency());
         #$this->package = $package;

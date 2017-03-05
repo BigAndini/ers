@@ -39,7 +39,7 @@ $this->headTitle($title);
             <?php elseif($order->getStatus()->getValue() == 'ordered'): ?>
                 <?php if($paymenttype->getType() == 'sepa'): ?>
                     <h3><?php echo $this->translate('Bank Transfer Details'); ?></h3>
-                    <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
+                    <?php echo $this->partial('partial/sepa-banktransfer-info.phtml', array('order' => $order)); ?>
                 <?php elseif($paymenttype->getType() == 'creditcard'): ?>
                     <a class="btn btn-primary" href="<?php echo $this->url('payment', array('action' => 'creditcard', 'hashkey' => $order->getHashKey())); ?>">
                         Start payment with Credit Card
