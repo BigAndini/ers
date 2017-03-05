@@ -95,7 +95,7 @@ class PaymentType extends Base\PaymentType
             /*
              * additional UK bank transfer fields
              */
-            'account_no',
+            'account_number',
             'sort_code',
             /*'owner',*/
         ];
@@ -224,6 +224,24 @@ class PaymentType extends Base\PaymentType
     }
     public function getBankCountry() {
         return $this->getSetting('bankCountry');
+    }
+    
+    /*
+     * UK bank account getter and setter
+     */
+    public function setAccountNumber($accountNumber) {
+        $this->setSetting('accountNumber', $accountNumber);
+        return $this;
+    }
+    public function getAccountNumber() {
+        return $this->getSetting('accountNumber');
+    }
+    public function setSortCode($sortCode) {
+        $this->setSetting('sortCode', $sortCode);
+        return $this;
+    }
+    public function getSortCode() {
+        return $this->getSetting('sortCode');
     }
     
     /*

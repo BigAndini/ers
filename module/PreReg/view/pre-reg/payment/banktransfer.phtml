@@ -17,7 +17,7 @@ $this->headTitle($title);
 <div class="jumbotron">
     <h1><?php echo $this->escapeHtml($title); ?></h1>
 
-    <?php echo $this->partial('partial/sepa-banktransfer-info.phtml', array('order' => $order)); ?>
+    <?php echo $this->partial('partial/'.$order->getPaymentType()->getType().'-banktransfer-info.phtml', array('order' => $order)); ?>
 
     <p><?php echo $this->translate('We\'ve sent this information to your email address:'); ?> <strong><?php echo $order->getBuyer()->getEmail(); ?></strong></p>
 

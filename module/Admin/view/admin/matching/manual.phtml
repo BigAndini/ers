@@ -44,7 +44,9 @@ echo $this->form()->openTag($form); ?>
                                             echo ' - ';
                                             echo $buyer->getFirstname().' '.$buyer->getSurname();
                                             echo '<br>';
-                                            echo '('.$order->getPaymentType()->getName().') ';
+                                            if($order->getPaymentType()):
+                                                echo '('.$order->getPaymentType()->getName().') ';    
+                                            endif;
                                             echo $order->getCreated()->format('d.m.Y H:i:s');
                                         ?>
                                     </a>

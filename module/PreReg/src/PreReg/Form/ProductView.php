@@ -174,6 +174,9 @@ class ProductView extends Form
                     $productVariant['type'] = 'Zend\Form\Element\Select';
                     $options = array();
                     foreach($variant->getProductVariantValues() as $v) {
+                        if(!$v->getVisible()) {
+                            continue;
+                        }
                         $selected = false;
                         
                         if(isset($defaults[\urlencode($variant->getName())]) &&  $v->getId() == $defaults[\urlencode($variant->getName())]) {
