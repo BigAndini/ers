@@ -109,12 +109,12 @@ class Module
             $container->remoteAddr    = $request->getServer()->get('REMOTE_ADDR');
             $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
             
-            $config = $serviceManager->get('Config');
+            /*$config = $serviceManager->get('Config');
             if (!isset($config['session'])) {
                 return;
-            }
+            }*/
 
-            $sessionConfig = $config['session'];
+            /*$sessionConfig = $config['session'];
             if (isset($sessionConfig['validators'])) {
                 $chain   = $sessionManager->getValidatorChain();
 
@@ -132,7 +132,7 @@ class Module
 
                     $chain->attach('session.validate', array($validator, 'isValid'));
                 }
-            }
+            }*/
         }
         
         $expiration_time = 3600;

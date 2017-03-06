@@ -35,9 +35,19 @@ $this->headTitle($title);
                         $checked = false;
                     endif; ?>
                     <label class="payment-type">
-                    <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
-                    <?php echo $paymenttype->getName(); ?>
+                        <?php if($order->getPaymentType()->getCurrency()->getShort() == $paymenttype->getCurrency()->getShort()): ?>
+                            <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
+                        <?php else: ?>    
+                            <input disabled="disabled" style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
+                        <?php endif; ?>
+                        <?php echo $paymenttype->getName(); ?>
                     </label>
+                    <?php if($order->getPaymentType()->getCurrency()->getShort() != $paymenttype->getCurrency()->getShort()): ?>
+                        <div class="alert alert-info">
+                            <i class="fa fa-warning"></i>
+                            The currencies of order and payment type do not fit.
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>

@@ -155,28 +155,36 @@ class StatisticController extends AbstractActionController {
         
         $paymentStatusStats = $em->createQueryBuilder()
                 #->select(array_merge(array('o.payment_status AS label'), $orderSelectFields))
-                ->select(array_merge(array('s status, s.value label'), $orderSelectFields))
+                ->select(array_merge(array('s status, s.value label', 'o.currency_id'), $orderSelectFields))
                 ->from('ErsBase\Entity\Status', 's')
                 ->leftJoin('s.orders', 'o')
                 #->groupBy('o.payment_status')
-                ->groupBy('s.value', 's.id')
+                ->groupBy('s.value', 's.id', 'o.currency_id')
                 ->orderBy('s.position')
                 ->getQuery()->getResult();
         
-        
+        $currencies = $em->getRepository('ErsBase\Entity\Currency')->findAll();
+        $factor = array();
+        foreach($currencies as $currency) {
+            $factor[$currency->getId()] = $currency->getFactor();
+        }
         
         $byStatusGroups = array('active' => array(), 'inactive' => array());
         foreach($paymentStatusStats AS $statusData) {
+            error_log($statusData['ordersum'].' '.$statusData['currency_id']);
+            $statusData['ordersum'] = $statusData['ordersum'] * $factor[$statusData['currency_id']];
+            $statusData['totalsum'] = $statusData['totalsum'] * $factor[$statusData['currency_id']];
             $group = ($statusData['status']->getActive() ? 'active' : 'inactive');
             $byStatusGroups[$group][] = $statusData;
         }
         
         $paymentTypeStats = $em->createQueryBuilder()
-                ->select(array_merge(array('pt.name AS label'), $orderSelectFields))
+                ->select(array_merge(array('pt.name AS label', 'c.short as currency'), $orderSelectFields))
                 ->from('ErsBase\Entity\PaymentType', 'pt')
                 #->join('pt.orders', 'o', 'WITH', "o.payment_status != 'cancelled' AND o.payment_status != 'refund'")
                 ->join('pt.orders', 'o')
                 ->join('o.status', 's', 'WITH', "s.active = 1")
+                ->join('pt.currency', 'c')
                 ->groupBy('pt.id')
                 ->getQuery()->getResult();
         

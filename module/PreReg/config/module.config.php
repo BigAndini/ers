@@ -416,4 +416,9 @@ return array(
             },
         ),
     ),
+    'session_manager' => array(
+        'validators' => array(
+            'Zend\Session\Validator\RemoteAddr',
+        ),
+    ),
 );

@@ -61,7 +61,7 @@
         <?php endif; ?>
     </td>
     <td><?php echo $item->getAmount(); ?></td>
-    <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+    <td><?php echo $this->currencyFormat($item->getPrice(), $item->getCurrency()->getShort(), null, 'de_DE'); ?></td>
     <td class="text-nowrap">
         <span class="h3 color-primary">
             <?php switch($item->getStatus()->getValue()):
