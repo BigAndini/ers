@@ -183,6 +183,7 @@ class OrderController extends AbstractActionController {
         return new ViewModel(array(
             'order' => $order,
             'paymentDetails' => $paymentDetails,
+            'order_search_form' => new Form\SearchOrder(),
         ));
     }
     public function changePaymentTypeAction() {
