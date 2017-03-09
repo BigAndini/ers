@@ -76,7 +76,7 @@ class PaymentController extends AbstractActionController {
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
         $order = $em->getRepository('ErsBase\Entity\Order')->findOneBy(array('hashkey' => $hashkey));
 
-        if (!$order || $order->getPaymentType()->getType() !== 'PayPal') {
+        if (!$order || $order->getPaymentType()->getType() !== 'paypal') {
             return new ViewModel(['notfound' => true]);
         }
 
@@ -140,7 +140,7 @@ class PaymentController extends AbstractActionController {
         }
 
         try {
-            if ($paypalService->executePayment($sessionData->paymentId, $queryPayerId)) {
+            if ($paypalService->executePayment($order->getPaymentType(), $sessionData->paymentId, $queryPayerId)) {
                 // payment was successful, set order to paid
                 $order->setPaymentStatus('paid');
                 foreach ($order->getPackages() as $package) {

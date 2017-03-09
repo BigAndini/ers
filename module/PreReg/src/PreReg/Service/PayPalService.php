@@ -25,7 +25,6 @@ use PayPal\Exception\PayPalConnectionException;
  */
 class PayPalService
 {
-    private $paypalContext = NULL;
     
     public function __construct() {
     }
@@ -48,21 +47,26 @@ class PayPalService
         return $this->_sl;
     }
     
-		
-    private function initPaypal() {
-        if (!$this->paypalContext) {
-            $configArr = $this->getServiceLocator()->get('Config');
-            $config = $configArr['ERS\PayPal'];
-            
-            $this->paypalContext = new ApiContext(new OAuthTokenCredential($config['client_id'], $config['client_secret']));
-            $this->paypalContext->setConfig([
-                'mode' => ($config['sandbox_mode'] ? 'sandbox' : 'live'),
-                'log.LogEnabled' => (bool)$config['log_file'],
-                'log.FileName' => $config['log_file'],
-                'log.LogLevel' => ($config['sandbox_mode'] ? 'DEBUG' : 'INFO'),
-                'http.CURLOPT_CONNECTTIMEOUT' => 40
-            ]);
-        }
+    
+    /**
+     * Configures a PayPal ApiContext according to a PaymentType and returns it.
+     */
+    private function initPaypalService(\ErsBase\Entity\PaymentType $paymentType) {
+        $clientId = $paymentType->getClientId();
+        $clientSecret = $paymentType->getClientSecret();
+        $sandboxMode = $paymentType->getSandboxMode();
+        $logFile = $paymentType->getLogFile();
+        
+        $paypalContext = new ApiContext(new OAuthTokenCredential($clientId, $clientSecret));
+        $paypalContext->setConfig([
+            'mode' => ($sandboxMode ? 'sandbox' : 'live'),
+            'log.LogEnabled' => (bool)$logFile,
+            'log.FileName' => $logFile,
+            'log.LogLevel' => ($sandboxMode ? 'DEBUG' : 'INFO'),
+            'http.CURLOPT_CONNECTTIMEOUT' => 40
+        ]);
+        
+        return $paypalContext;
     }
 
     /**
@@ -76,7 +80,7 @@ class PayPalService
      * @throws PayPalServiceException if the request to PayPal failed for some reason
      * */
     public function createPayment(\ErsBase\Entity\Order $order, $returnUrl, $cancelUrl) {
-        $this->initPaypal();
+        $paypalContext = $this->initPaypalService($order->getPaymentType());
 
         $str_total = $this->formatPrice($order->getTotalSum());
         $invoiceNumber = $order->getCode()->getValue(); // use order code as invoice number
@@ -130,7 +134,7 @@ class PayPalService
         $payment->setRedirectUrls($redirectUrls);
 
         try {
-            $payment->create($this->paypalContext);
+            $payment->create($paypalContext);
         } catch (PayPalConnectionException $ex) {
             throw new PayPalServiceException("Error creating PayPal payment.", $ex);
         }
@@ -138,11 +142,11 @@ class PayPalService
         return [$payment->getId(), $payment->getApprovalLink()];
     }
 
-    public function executePayment($paymentId, $payerId) {
-        $this->initPaypal();
+    public function executePayment(\ErsBase\Entity\PaymentType $paymentType, $paymentId, $payerId) {
+        $paypalContext = $this->initPaypalService($paymentType);
 
         try {
-            $payment = Payment::get($paymentId, $this->paypalContext);
+            $payment = Payment::get($paymentId, $paypalContext);
         } catch (PayPalConnectionException $ex) {
             throw new PayPalServiceException("Error fetching PayPal payment.", $ex);
         }
@@ -151,7 +155,7 @@ class PayPalService
         $paymentExec->setPayerId($payerId);
 
         try {
-            $payment->execute($paymentExec, $this->paypalContext);
+            $payment->execute($paymentExec, $paypalContext);
         } catch (PayPalConnectionException $ex) {
             throw new PayPalServiceException("Error executing PayPal payment.", $ex);
         }
