@@ -8,11 +8,11 @@
 
 namespace OnsiteReg;
 
-use ErsBase\Entity;
+#use ErsBase\Entity;
 use Zend\Mvc\ModuleRouteListener;
-use Zend\Session\SessionManager;
-use Zend\Session\Container;
-use Zend\Mvc\MvcEvent;
+#use Zend\Session\SessionManager;
+#use Zend\Session\Container;
+#use Zend\Mvc\MvcEvent;
 use ErsBase\Service;
 
 class Module
@@ -48,7 +48,7 @@ class Module
         $sharedManager->attach('Zend\Mvc\Application', 'dispatch.error',
                 function($e) use ($sm) {
                     if ($e->getParam('exception')){
-                        $sm->get('Logger')->crit($e->getParam('exception'));
+                        #$sm->get('Logger')->crit($e->getParam('exception'));
                         
                         /*$auth = $sm->get('zfcuser_auth_service');
                         if (!$auth->hasIdentity()) {
@@ -76,7 +76,7 @@ class Module
                 }
             );
 
-        $zfcAuthEvents = $sm->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
+        /*$zfcAuthEvents = $sm->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
 
         $zfcAuthEvents->attach( 'authenticate.success', function( $authEvent ) use( $sm ){
             $loginService =  $sm->get( 'PreReg\Service\LoginService' );
@@ -92,46 +92,16 @@ class Module
             #$loginService->setUserId($user_id);
             $loginService->onLogout();
             return true;
-        });
+        });*/
     }
     
     public function bootstrapSession($e)
     {
-        $session = $e->getApplication()
+        /*$session = $e->getApplication()
                      ->getServiceManager()
                      ->get('Zend\Session\SessionManager');
-        $session->start();
+        $session->start();*/
         
-        $container = new Container('initialized');
-        
-        $expiration_time = 3600;
-        $container->setExpirationSeconds( $expiration_time, 'initialized' );
-        if(!$session->isValid()) {
-            error_log('Session is not valid');
-            $container->init = 0;
-        }
-        if (!isset($container->init) || $container->lifetime < time()) {
-            $container->getManager()->getStorage()->clear('initialized');
-            $container = new Container('initialized');
-            $container->init = 1;
-            $container->lifetime = time()+$expiration_time;
-            
-            $container->getManager()->getStorage()->clear('cart');
-        } else {
-            $container->lifetime = time()+$expiration_time;
-        }
-        
-        $cartContainer = new Container('cart');
-        #$cartContainer->getManager()->getStorage()->clear('cart');
-        if(!isset($cartContainer->init) || $cartContainer->init != 1) {
-            $cartContainer->getManager()->getStorage()->clear('cart');
-            $cartContainer->order = new Entity\Order();
-            $cartContainer->init = 1;
-        }
-        $cartContainer->chooserCount--;
-        if($cartContainer->chooserCount <= 0) {
-            $cartContainer->chooser = false;
-        }
     }
     
     public function getAutoloaderConfig()
@@ -156,7 +126,7 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(        
-                'Zend\Session\SessionManager' => function ($sm) {
+                /*'Zend\Session\SessionManager' => function ($sm) {
                     $config = $sm->get('config');
                     if (isset($config['session'])) {
                         $session = $config['session'];
@@ -195,7 +165,7 @@ class Module
                     }
                     Container::setDefaultManager($sessionManager);
                     return $sessionManager;
-                },
+                },*/
                 'OnsiteReg\Form\ProductView' => function ($sm) {
                     $productView = new Form\ProductView();
                     $productView->setServiceLocator($sm);

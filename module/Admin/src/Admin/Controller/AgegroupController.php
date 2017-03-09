@@ -28,17 +28,23 @@ class AgegroupController extends AbstractActionController {
 
     public function addAction()
     {
+        $agegroup = new Entity\Agegroup();
+        $config = $this->getServiceLocator()
+                ->get('Config');
+        $agegroup->setAgegroup($config['ERS']['start']->modify('-8 years'));
+        
         $form = new Form\Agegroup();
-        $form->get('submit')->setValue('Add');
+        $form->bind($agegroup);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $agegroup = new Entity\Agegroup();
+            #$agegroup = new Entity\Agegroup();
             
             #$form->setInputFilter($agegroup->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $agegroup->populate($form->getData());
+                #$agegroup->populate($form->getData());
+                $agegroup = $form->getData();
                 
                 $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
@@ -68,15 +74,14 @@ class AgegroupController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $agegroup = $em->getRepository('ErsBase\Entity\Agegroup')->findOneBy(array('id' => $id));
+        $agegroup = $em->getRepository('ErsBase\Entity\Agegroup')
+                ->findOneBy(array('id' => $id));
 
         $form = new Form\Agegroup();
         $form->bind($agegroup);
-        $form->get('submit')->setAttribute('value', 'Edit');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            #$form->setInputFilter($agegroup->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {

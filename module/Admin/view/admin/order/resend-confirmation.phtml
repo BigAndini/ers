@@ -3,7 +3,7 @@
 $title = 'Resend Confirmation for Order '.$order->getCode()->getValue();
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <p>Do you really want to resend the confirmation for order <?php echo $order->getCode()->getValue(); ?>?</p>
 <?php

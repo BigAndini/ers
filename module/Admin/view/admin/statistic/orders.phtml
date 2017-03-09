@@ -2,7 +2,7 @@
 $title = 'Statistics: Orders';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <div class="panel panel-default">
     <div class="panel-heading">Orders by status</div>
@@ -76,13 +76,13 @@ $this->headTitle($title);
                 <td><?php echo $this->escapeHtml($value['label']); ?></td>
                 <td><?php echo $value['ordercount']; ?></td>
                 <td class="text-right">
-                    <?php echo $this->currencyFormat($value['ordersum'], 'EUR', null, 'de_DE'); ?>
+                    <?php echo $this->currencyFormat($value['ordersum'], $value['currency'], null, 'de_DE'); ?>
                 </td>
                 <td class="text-right">
-                    <?php echo $this->currencyFormat($value['totalsum'] - $value['ordersum'], 'EUR', null, 'de_DE'); ?>
+                    <?php echo $this->currencyFormat($value['totalsum'] - $value['ordersum'], $value['currency'], null, 'de_DE'); ?>
                 </td>
                 <td class="text-right">
-                    <?php echo $this->currencyFormat($value['totalsum'], 'EUR', null, 'de_DE'); ?>
+                    <?php echo $this->currencyFormat($value['totalsum'], $value['currency'], null, 'de_DE'); ?>
                 </td>
             </tr>
             <?php endforeach; ?>

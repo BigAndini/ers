@@ -10,6 +10,7 @@ namespace ErsBase;
 
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\ModuleRouteListener;
+use Zend\Session\Container;
 
 class Module
 {
@@ -75,6 +76,16 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(
+                'ErsBase\Entity\Order' => function ($sm) {
+                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                    $container = new Container('ers');
+                    $currency = $em->getRepository('ErsBase\Entity\Currency')
+                                ->findOneBy(array('short' => $container->currency));
+                    $order = new Entity\Order();
+                    $order->setCurrency($currency);
+                    
+                    return $order;
+                },
                 'ErsBase\Service\CodeService' => 'ErsBase\Service\Factory\CodeFactory',
                 'ErsBase\Service\EmailService' => function ($sm) {
                     $emailService = new Service\EmailService();
@@ -86,8 +97,15 @@ class Module
                     $service->setServiceLocator($sm);
                     return $service;
                 },
+                'ErsBase\Service\AgegroupService' => function($sm) {
+                    $agegroupService = new Service\AgegroupService();
+                    $agegroupService->setServiceLocator($sm);
+                    
+                    return $agegroupService;
+                },
                 'ErsBase\Service\AgegroupService:price' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
+                    $agegroupService->setServiceLocator($sm);
                     $em = $sm->get('Doctrine\ORM\EntityManager');
                     $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('price_change' => '1'));
@@ -103,6 +121,12 @@ class Module
                     $agegroupService->setAgegroups($agegroups);
                     
                     return $agegroupService;
+                },
+                'ErsBase\Service\DeadlineService' => function($sm) {
+                    $deadlineService = new Service\DeadlineService();
+                    $deadlineService->setServiceLocator($sm);
+                    
+                    return $deadlineService;
                 },
                 'ErsBase\Service\DeadlineService:price' => function($sm) {
                     $deadlineService = new Service\DeadlineService();
@@ -147,6 +171,11 @@ class Module
                 },
                 'ErsBase\Service\OrderService' => function($sm) {
                     $service = new Service\OrderService();
+                    $service->setServiceLocator($sm);
+                    return $service;
+                },
+                'ErsBase\Service\StatusService' => function($sm) {
+                    $service = new Service\StatusService();
                     $service->setServiceLocator($sm);
                     return $service;
                 },

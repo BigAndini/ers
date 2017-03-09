@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * ErsBase\Entity\Order
  *
  * @ORM\Entity()
- * @ORM\Table(name="`order`", indexes={@ORM\Index(name="fk_Order_User1_idx", columns={"buyer_id"}), @ORM\Index(name="fk_order_payment_type1_idx", columns={"payment_type_id"}), @ORM\Index(name="fk_order_code1_idx", columns={"code_id"}), @ORM\Index(name="fk_order_status1_idx", columns={"status_id"})})
+ * @ORM\Table(name="`order`", indexes={@ORM\Index(name="fk_Order_User1_idx", columns={"`buyer_id`"}), @ORM\Index(name="fk_order_payment_type1_idx", columns={"`payment_type_id`"}), @ORM\Index(name="fk_order_status1_idx", columns={"`status_id`"}), @ORM\Index(name="fk_order_code1_idx", columns={"`code_id`"}), @ORM\Index(name="fk_order_currency1_idx", columns={"`currency_id`"})})
  * @ORM\HasLifecycleCallbacks
  */
 class Order extends Base\Order
@@ -183,7 +183,7 @@ class Order extends Base\Order
      * @param \Entity\Package $package
      * @return \Entity\Order
      */
-    public function addPackage(Package $package)
+    public function addPackage(\ErsBase\Entity\Base\Package $package)
     {
         #$this->addPackage($package);
         $this->packages[] = $package;
@@ -207,21 +207,6 @@ class Order extends Base\Order
         }
         return false;
     }
-    
-    /**
-     * DEPRECATED session id is not used anymore
-     * Get Package by participant session id.
-     * 
-     * @return Entity\Package
-     */
-    /*public function getPackageByParticipantSessionId($id) {
-        foreach($this->getPackages() as $package) {
-            if($package->getParticipant()->getSessionId() == $id) {
-                return $package;
-            }
-        }
-        return false;
-    }*/
     
     /**
      * Get Package by participant id.
@@ -389,11 +374,14 @@ class Order extends Base\Order
      */
     public function getParticipants() {
         $participants = array();
-        foreach($this->getPackages() as $package) {
-            if($package->getParticipant()->getFirstname() != '' && $package->getParticipant()->getSurname() != '') {
-                $participants[] = $package->getParticipant();
+        if($this->getPackages()) {
+            foreach($this->getPackages() as $package) {
+                if($package->getParticipant()->getFirstname() != '' && $package->getParticipant()->getSurname() != '') {
+                    $participants[] = $package->getParticipant();
+                }
             }
         }
+        
         
         return $participants;
     }
@@ -486,7 +474,7 @@ class Order extends Base\Order
         $statement_amount = 0;
         foreach($this->getMatches() as $match) {
             $statement = $match->getBankStatement();
-            $statement_amount += $statement->getAmount()->getValue();
+            $statement_amount += $statement->getAmountValue();
         }
         return $statement_amount;
     }

@@ -1,30 +1,30 @@
 <?php
 
-$title = 'Delete Item from shopping cart';
+$title = $this->translate('Delete Item from shopping cart');
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
-<p>Are you sure that you want to delete 
-    <strong><?php echo $this->escapeHtml($item->getName()); ?></strong>
-    <?php if($participant != null): ?>
-    for <strong><?php echo $this->escapeHtml($participant->getFirstname().' '.$participant->getSurname()); ?></strong>
+<p>
+    <?php 
+    $productName = '<strong>'.$this->escapeHtml($item->getName()).'</strong>';
+    if($participant == null): ?>
+        <?php printf($this->translate('Are you sure that you want to delete %s?'), $productName); ?>
+    <?php else: ?>
+        <?php printf($this->translate('Are you sure that you want to delete %s for %s %s?'), $productName, $participant->getFirstname(), $participant->getSurname()); ?>
     <?php endif; ?>
     ?
 </p>
-<?php
-$url = $this->url('product', array(
-    'action' => 'delete',
-    'product_id'     => $product->getId(),
-    'participant_id'     => $participant->getId(),
-    'item_id'     => $item->getId(),
-));
-?>
-<form action="<?php echo $url; ?>" method="post">
-<div>
-    <input type="hidden" name="participant_id" value="<?php echo (int) $participant->getId(); ?>" />
-    <input type="hidden" name="item_id" value="<?php echo (int) $item->getId(); ?>" />
-    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
-    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
-</div>
-</form>
+
+<?php $obj = $form->getObject();
+$form->setAttribute('action', $this->url('product', array('action' => 'delete', 'product_id' => $obj->getProductId(), 'item_id' => $obj->getId())))
+      ->prepare();
+
+echo $this->form()->openTag($form);
+
+echo $this->formHidden($form->get('csrf'));
+echo $this->formElement($form->get('submit')); ?>
+
+<a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>"><?php echo $this->translate('Cancel'); ?></a>
+
+<?php echo $this->form()->closeTag();

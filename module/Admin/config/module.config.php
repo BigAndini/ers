@@ -35,20 +35,28 @@ return array(
             'Admin\Controller\Status'               => 'Admin\Controller\StatusController',
             'Admin\Controller\Test'                 => 'Admin\Controller\TestController',
             'Admin\Controller\Overview'             => 'Admin\Controller\OverviewController',
+            'Admin\Controller\Currency'             => 'Admin\Controller\CurrencyController',
         ),
     ),
     'navigation' => array(
         'admin_main_nav' => array(
-            'home' => array(
+            /*'home' => array(
                 'label' => 'Frontend',
                 'route' => 'home',
                 'target' => '_blank',
                 'resource'  => 'controller/PreReg\Controller\Product',
-            ),
+            ),*/
             'statistic' => array(
                 'label' => 'Stats',
+                'icon' => 'fa fa-bar-chart',
                 'route' => 'admin/statistic',
                 'pages' => array(
+                    'orgas' => array(
+                        'label' => 'for Orgas',
+                        'route' => 'admin/statistic',
+                        'action' => 'orgas',
+                        'resource'  => 'controller/Admin\Controller\Statistic',
+                    ),
                     'order' => array(
                         'label' => 'Orders',
                         'route' => 'admin/statistic',
@@ -61,10 +69,10 @@ return array(
                         'action' => 'participants',
                         'resource'  => 'controller/Admin\Controller\Statistic',
                     ),
-                    'bankaccount' => array(
+                    'account' => array(
                         'label' => 'Bank accounts',
                         'route' => 'admin/statistic',
-                        'action' => 'bankaccounts',
+                        'action' => 'paymenttypes',
                         'resource'  => 'controller/Admin\Controller\Statistic',
                     ),
                     'onsite' => array(
@@ -77,6 +85,7 @@ return array(
             ),
             'shop' => array(
                 'label' => 'Shop',
+                'icon' => 'fa fa-shopping-cart',
                 'route' => 'admin',
                 'pages' => array(
                     'tax' => array(
@@ -93,6 +102,11 @@ return array(
                         'label' => 'Agegroup',
                         'route' => 'admin/agegroup',
                         'resource'  => 'controller/Admin\Controller\Agegroup',
+                    ),
+                    'currency' => array(
+                        'label' => 'Currency',
+                        'route' => 'admin/currency',
+                        'resource'  => 'controller/Admin\Controller\Currency',
                     ),
                     'paymenttype' => array(
                         'label' => 'Payment Type',
@@ -138,6 +152,7 @@ return array(
             ),
             'user' => array(
                 'label' => 'User',
+                'icon' => 'fa fa-users',
                 'route' => 'admin/user',
                 'resource'  => 'controller/Admin\Controller\User',
                 'pages' => array(
@@ -158,11 +173,11 @@ return array(
                 'route' => 'admin/order',
                 #'resource'  => 'controller/Admin\Controller\Order',
                 'pages' => array(
-                    'overview' => array(
+                    /*'overview' => array(
                         'label' => 'Overview',
                         'route' => 'admin/order',
                         'resource'  => 'controller/Admin\Controller\Order',
-                    ),
+                    ),*/
                     'search' => array(
                         'label' => 'Search',
                         'route' => 'admin/order',
@@ -226,39 +241,47 @@ return array(
             ),
         ),
         'admin_top_nav' => array(
-            'login' => array(
-                'label' => 'Login',
-                'route' => 'zfcuser/login',
-                #'action' => 'login',
-                'resource'  => 'controller/zfcuser:login',
-            ),
-            'register' => array(
-                'label' => 'Register',
-                'route' => 'zfcuser/register',
-                #'action' => 'register',
-                'resource'  => 'controller/zfcuser:register',
-            ),
             'profile' => array(
-                'label' => 'My Profile',
-                'route' => 'profile',
-                'action' => '',
-                'resource'  => 'controller/PreReg\Controller\Profile',
-            ),
-            'logout' => array(
-                'label' => 'Logout',
-                'route' => 'zfcuser/logout',
-                #'action' => 'logout',
-                'resource'  => 'controller/zfcuser:logout',
-            ),
-            'admin' => array(
-                'label' => 'AdminPanel',
+                'label' => 'Profile',
+                'icon-only-label' => true,
+                'icon' => 'fa fa-user',
                 'route' => 'admin',
-                'resource'  => 'controller/Admin\Controller\Index',
-            ),
-            'onsite' => array(
-                'label' => 'Onsite',
-                'route' => 'onsite',
-                'resource'  => 'controller/OnsiteReg\Controller\Index',
+                'pages' => array(
+                    'login' => array(
+                        'label' => 'Login',
+                        'route' => 'zfcuser/login',
+                        #'action' => 'login',
+                        'resource'  => 'controller/zfcuser:login',
+                    ),
+                    'register' => array(
+                        'label' => 'Register',
+                        'route' => 'zfcuser/register',
+                        #'action' => 'register',
+                        'resource'  => 'controller/zfcuser:register',
+                    ),
+                    'profile' => array(
+                        'label' => 'My Profile',
+                        'route' => 'profile',
+                        'action' => '',
+                        'resource'  => 'controller/PreReg\Controller\Profile',
+                    ),
+                    'logout' => array(
+                        'label' => 'Logout',
+                        'route' => 'zfcuser/logout',
+                        #'action' => 'logout',
+                        'resource'  => 'controller/zfcuser:logout',
+                    ),
+                    'admin' => array(
+                        'label' => 'AdminPanel',
+                        'route' => 'admin',
+                        'resource'  => 'controller/Admin\Controller\Index',
+                    ),
+                    'onsite' => array(
+                        'label' => 'Onsite',
+                        'route' => 'onsite',
+                        'resource'  => 'controller/OnsiteReg\Controller\Index',
+                    ),
+                ),
             ),
         ),
     ),
@@ -319,9 +342,18 @@ return array(
                         )
                     )
                 ),
+                'send-payment-reminder' => array(
+                    'options' => array(
+                        'route'    => 'send-payment-reminder [--real|-r]',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'send-payment-reminder'
+                        )
+                    )
+                ),
                 'send-etickets' => array(
                     'options' => array(
-                        'route'    => 'send-etickets [--real|-r]',
+                        'route'    => 'send-etickets [--count=|-c=] [--real|-r]',
                         'defaults' => array(
                             'controller' => 'Admin\Controller\Cron',
                             'action' => 'send-etickets'
@@ -424,6 +456,69 @@ return array(
                         'defaults' => array(
                             'controller' => 'Admin\Controller\Cron',
                             'action' => 'correct-active-user'
+                        )
+                    )
+                ),
+                'correct-paid-orders' => array(
+                    'options' => array(
+                        'route'    => 'correct-paid-orders',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-paid-orders'
+                        )
+                    )
+                ),
+                'correct-ordered-orders' => array(
+                    'options' => array(
+                        'route'    => 'correct-ordered-orders',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-ordered-orders'
+                        )
+                    )
+                ),
+                'correct-paid-packages' => array(
+                    'options' => array(
+                        'route'    => 'correct-paid-packages',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-paid-packages'
+                        )
+                    )
+                ),
+                'correct-ordered-packages' => array(
+                    'options' => array(
+                        'route'    => 'correct-ordered-packages',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-ordered-packages'
+                        )
+                    )
+                ),
+                'correct-item-status' => array(
+                    'options' => array(
+                        'route'    => 'correct-item-status',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-item-status'
+                        )
+                    )
+                ),
+                'sorry-eticket-sepa' => array(
+                    'options' => array(
+                        'route'    => 'sorry-eticket-sepa',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'sorry-eticket-sepa'
+                        )
+                    )
+                ),
+                'sorry-eticket-cc' => array(
+                    'options' => array(
+                        'route'    => 'sorry-eticket-cc',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'sorry-eticket-cc'
                         )
                     )
                 ),
@@ -551,6 +646,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Agegroup',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'currency' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/currency[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Currency',
                                 'action' => 'index',
                             ),
                         ),
@@ -795,11 +904,13 @@ return array(
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',
-            'Logger'     => 'EddieJaoude\Zf2Logger',
+            #'Logger'     => 'EddieJaoude\Zf2Logger',
+            #'Logger'     => 'Zend\Log\Logger',
         ),
     ),
     'translator' => array(
-        'locale' => 'en_US',
+        #'locale' => 'en_US',
+        'locale' => 'de_DE',
         'translation_file_patterns' => array(
             array(
                 'type'     => 'gettext',

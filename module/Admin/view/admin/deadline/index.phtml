@@ -4,17 +4,19 @@
 $title = 'Deadline Overview';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <p>
-    <a href="<?php echo $this->url('admin/deadline', array('action'=>'add'));?>">Add Deadline</a>
+    
 </p>
 
 <table class="table">
     <tr>
-        <th>Date</th>
-        <th>Name</th>
+        <th>Start Date</th>
+        <th>Phase Name</th>
         <th>can change price</th>
-        <th>&nbsp;</th>
+        <th class="text-right">
+            <a class="btn btn-success" href="<?php echo $this->url('admin/deadline', array('action'=>'add'));?>"><i class="fa fa-plus"></i> Deadline</a>
+        </th>
     </tr>
 <?php foreach ($deadlines as $deadline) : ?>
     <tr>
@@ -27,9 +29,9 @@ $this->headTitle($title);
             <i class="fa fa-close"></i>
             <?php endif; ?>
         </td>
-        <td>
-            <a href="<?php echo $this->url('admin/deadline', array('action'=>'edit', 'id' => $deadline->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-            <a href="<?php echo $this->url('admin/deadline', array('action'=>'delete', 'id' => $deadline->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+        <td class="text-right">
+            <a class="btn btn-default" href="<?php echo $this->url('admin/deadline', array('action'=>'edit', 'id' => $deadline->getId()));?>"><i class="fa fa-edit"></i></a>
+            <a class="btn btn-danger" href="<?php echo $this->url('admin/deadline', array('action'=>'delete', 'id' => $deadline->getId()));?>"><i class="fa fa-trash"></i></a>
         </td>
     </tr>
 <?php endforeach; ?>

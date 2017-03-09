@@ -31,7 +31,7 @@ class ETicketSelect extends Form
                 'class' => 'form-control form-element',
             ),
             'options' => array(
-                'label' => 'Language',
+                'label' => _('Language'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -46,7 +46,7 @@ class ETicketSelect extends Form
                 'class' => 'form-control form-element',
             ),
             'options' => array(
-                'label' => 'Agegroup',
+                'label' => _('Agegroup'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -62,7 +62,7 @@ class ETicketSelect extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Go',
+                'value' => _('Go'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),

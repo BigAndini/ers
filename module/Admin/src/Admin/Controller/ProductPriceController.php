@@ -39,14 +39,55 @@ class ProductPriceController extends AbstractActionController {
                 ->findBy(array('price_change' => '1'), array('deadline' => 'ASC'));
         $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
                 ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
+        $currencies = $em->getRepository('ErsBase\Entity\Currency')
+                ->findBy(array('active' => 1), array('position' => 'ASC'));
         
         return new ViewModel(array(
             'product'   => $product,
             'deadlines' => $deadlines,
             'agegroups' => $agegroups,
+            'currencies' => $currencies,
         ));
     }
 
+    /**
+     * Gives an array of currencies which can be handed over to a select form element
+     * 
+     * @param type $currencyId
+     * @return array
+     */
+    private function getCurrencyOptions($currencyId = null) {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $currencys = $em->getRepository('ErsBase\Entity\Currency')
+                ->findBy(array('active' => '1'), array('position' => 'ASC'));
+        $options = array();
+        $options[] = array(
+            'value' => 0,
+            'label' => 'Select Currency ...',
+            'disabled' => true,
+            'selected' => true,
+        );
+        foreach($currencys as $currency) {
+            $selected = false;
+            if($currencyId == $currency->getId()) {
+                $selected = true;
+                $options[0]['selected'] = false;
+            }
+            $options[] = array(
+                'value' => $currency->getId(),
+                'label' => $currency->getName().' ('.$currency->getSymbol().' / '.$currency->getShort().')',
+                'selected' => $selected,
+            );
+        }
+        $selected = false;
+        if($currencyId == null) {
+            $selected = true;
+        }
+        
+        return $options;
+    }
+    
     /**
      * Gives an array of deadlines which can be handed over to a select form element
      * 
@@ -124,6 +165,10 @@ class ProductPriceController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
+        $currencyId = (int) $this->params()->fromQuery('currency_id', null);
+        $deadlineId = (int) $this->params()->fromQuery('deadline_id', null);
+        $agegroupId = (int) $this->params()->fromQuery('agegroup_id', null);
+        
         $forrest = new Service\BreadcrumbService();
         
         $em = $this->getServiceLocator()
@@ -136,8 +181,10 @@ class ProductPriceController extends AbstractActionController {
         
         $form->bind($productprice);
         
-        $form->get('Deadline_id')->setValueOptions($this->getDeadlineOptions());
-        $form->get('Agegroup_id')->setValueOptions($this->getAgegroupOptions());
+        $form->get('currency_id')->setAttribute('options', $this->getCurrencyOptions($currencyId));
+        $form->get('Deadline_id')->setAttribute('options', $this->getDeadlineOptions($deadlineId));
+        $form->get('Agegroup_id')->setAttribute('options', $this->getAgegroupOptions($agegroupId));
+        
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -170,6 +217,9 @@ class ProductPriceController extends AbstractActionController {
                     ->findOneBy(array('id' => $productprice->getProductId()));
                 $productprice->setProduct($product);
                 
+                $currency = $em->getRepository('ErsBase\Entity\Currency')
+                    ->findOneBy(array('id' => $productprice->getCurrencyId()));
+                $productprice->setCurrency($currency);
                 
                 $em->persist($productprice);
                 $em->flush();
@@ -217,6 +267,7 @@ class ProductPriceController extends AbstractActionController {
         $form = new Form\ProductPrice();
         $form->bind($productprice);
         
+        $form->get('currency_id')->setAttribute('options', $this->getCurrencyOptions($productprice->getCurrencyId()));
         $form->get('Deadline_id')->setAttribute('options', $this->getDeadlineOptions($productprice->getDeadlineId()));
         $form->get('Agegroup_id')->setAttribute('options', $this->getAgegroupOptions($productprice->getAgegroupId()));
         

@@ -1,70 +1,72 @@
 <?php
 
-$title = 'My Order';
+$title = $this->translate('My Order');
 $this->headTitle($title);
+
+$preregMail = '<a href=\'mailto:'.$this->config()['ERS']['prereg_mail'].'\'>'.$this->config()['ERS']['prereg_mail'].'</a>';
+$infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this->config()['ERS']['info_mail'].'</a>';
 ?>
 
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <div class="row">
     <div class="col-lg-6">
         <div class="order-info">
-            <h1>Buyer</h1>
+            <h2><?php echo $this->translate('Buyer'); ?></h2>
             <?php $buyer = $order->getBuyer(); ?>
             <h2><?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?></h2>
-            <p>The buyer will receive all e-Tickets for all registered participants. If you have provided an email address per participant, this participant will be informed once the ticket is paid and will be able to download the e-Ticket on his own aswell.</p>
-            <h3>We will send all information to: <?php echo $buyer->getEmail(); ?></h3>
+            <p><?php echo $this->translate('The buyer will receive all E-Tickets for all registered participants. If you have provided an email address per participant, this participant will be informed once the ticket is paid and will be able to download the E-Ticket on his own aswell.'); ?></p>
+            <h3><?php echo $this->translate('We will send all information to:'); ?> <?php echo $buyer->getEmail(); ?></h3>
         </div>
     </div>
     <div class="col-lg-6">
         <div class="order-info">
-            <h1>Payment</h1>
+            <h2><?php echo $this->translate('Payment'); ?></h2>
             <?php if($order->getPaymentStatus() == 'paid') : ?>
-            <div class="alert alert-success"><i class="fa fa-check"></i> order is paid</div>
+            <div class="alert alert-success"><i class="fa fa-check"></i> <?php echo $this->translate('order is paid'); ?></div>
             <?php elseif($order->getPaymentStatus() == 'unpaid') : ?>
-            <div class="alert alert-warning"><i class="fa fa-warning"></i> order is unpaid</div>
+            <div class="alert alert-warning"><i class="fa fa-warning"></i> <?php echo $this->translate('order is unpaid'); ?></div>
             <?php elseif($order->getPaymentStatus() == 'cancelled') : ?>
-            <div class="alert alert-danger"><i class="fa fa-close"></i> order is cancelled</div>
+            <div class="alert alert-danger"><i class="fa fa-close"></i> <?php echo $this->translate('order is cancelled'); ?></div>
             <?php endif; ?>
             <?php $paymenttype = $order->getPaymentType(); ?>
             <h3><?php echo $paymenttype->getName(); ?></h3>
             <p><?php echo $paymenttype->getExplanation(); ?></p>
             <?php #if($order->getStatus() == 'paid'): ?>
             <?php if($order->getStatus()->getValue() == 'paid'): ?>
-                <h3>This order is already paid</h3>
-                <p>Your e-Tickets will be sent out in june.</p>
-                <p><strong>Note:</strong> Please add the email address 
+                <h3><?php echo $this->translate('This order is already paid'); ?></h3>
+                <p><?php echo $this->translate('Your E-Tickets will be sent out in june.'); ?></p>
+                <p><strong><?php echo $this->translate('Note:'); ?></strong> <?php echo $this->translate('Please add the email address 
                     prereg@eja.net to your address book. To be sure the email 
-                    with your e-Tickets will not arrive in your spamfolder.</p>
+                    with your E-Tickets will not arrive in your spamfolder.'); ?></p>
             <?php elseif($order->getStatus()->getValue() == 'ordered'): ?>
-            <?php #if($order->getStatus() == 'unpaid'): ?>
-                <?php if($paymenttype->getType() == 'BankTransfer'): ?>
-                    <h3>Bank Transfer Details</h3>
-                    <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
-                <?php elseif($paymenttype->getType() == 'CreditCard'): ?>
+                <?php if($paymenttype->getType() == 'sepa'): ?>
+                    <h3><?php echo $this->translate('Bank Transfer Details'); ?></h3>
+                    <?php echo $this->partial('partial/sepa-banktransfer-info.phtml', array('order' => $order)); ?>
+                <?php elseif($paymenttype->getType() == 'creditcard'): ?>
                     <a class="btn btn-primary" href="<?php echo $this->url('payment', array('action' => 'creditcard', 'hashkey' => $order->getHashKey())); ?>">
                         Start payment with Credit Card
                     </a>
-                <?php elseif($paymenttype->getType() == 'IPayment'): ?>
+                <?php elseif($paymenttype->getType() == 'ipayment'): ?>
                     <a class="btn btn-primary" href="<?php echo $this->url('payment', array('action' => 'ipayment', 'hashkey' => $order->getHashKey())); ?>">
                         Start payment with Credit Card
                     </a>
-                <?php elseif($paymenttype->getType() == 'PayPal'): ?>
+                <?php elseif($paymenttype->getType() == 'paypal'): ?>
                     <a class="btn btn-primary" href="<?php echo $this->url('payment', array('action' => 'paypal', 'hashkey' => $order->getHashKey())); ?>">
                         Start payment with PayPal
                     </a>
                 <?php else: ?>
-                    No payment type was recognized (<?php echo $paymenttype->getType(); ?>)
+                    <?php echo $this->translate('No payment type was recognized'); ?> (<?php echo $paymenttype->getType(); ?>)
                 <?php endif; ?>
             <?php else: ?>
-                <h3>undefined status</h3>
-                <p>Please contact the EJC team to solve this problem: <a href="mailto:info@ejc2016.org">info@ejc2016.org</a></p>
+                <h3><?php echo $this->translate('undefined status'); ?></h3>
+                <p><?php echo $this->translate('Please contact the prereg coordinator to solve this problem:'); echo $preregMail; ?></p>
             <?php endif; ?>
         </div>
     </div>
 </div>
 <div>
-    <h1>Shopping Cart</h1>
+    <h2>Shopping Cart</h2>
         <div>
         <?php 
             $sum = 0;
@@ -75,7 +77,7 @@ $this->headTitle($title);
                 $user = $package->getParticipant();
             
                 if($user->getFirstname() == '' && $user->getSurname() == '') :
-                    $participant = 'unassigned items';
+                    $participant = $this->translate('unassigned items');
                 else:
                     $participant = $user->getFirstname().' '.$user->getSurname();
                 endif;
@@ -87,8 +89,8 @@ $this->headTitle($title);
                 <table class="table">
                     <tr>
                         <th>Product</th>
-                        <th class="cart-amount">Amount</th>
-                        <th class="cart-price">Price</th>
+                        <th class="cart-amount"><?php echo $this->translate('Amount'); ?></th>
+                        <th class="cart-price"><?php echo $this->translate('Price'); ?></th>
                     </tr>
                     <?php
                     $subtotal = 0;
@@ -121,13 +123,13 @@ $this->headTitle($title);
                                 </span>
                             </td>
                             <td><?php echo $item->getAmount(); ?></td>
-                            <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+                            <td><?php echo $this->currencyFormat($item->getPrice(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                         </tr>
                     <?php endforeach; ?>
                     <tr>
                         <td></td>
-                        <td>Subtotal:</td>
-                        <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
+                        <td><?php echo $this->translate('Subtotal:'); ?></td>
+                        <td><?php echo $this->currencyFormat($subtotal, $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                     </tr>
                 </table>
                 <?php endif; ?>
@@ -136,16 +138,16 @@ $this->headTitle($title);
         <?php if($paymenttype) : ?>
             <table class="table sum-table">
                 <tr>
-                    <td>Order amount:</td>
-                    <td><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+                    <td><?php echo $this->translate('Order amount:'); ?></td>
+                    <td><?php echo $this->currencyFormat($order->getPrice(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
                     <td>Payment Charge:</td>
-                    <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), 'EUR', null, 'de_DE'); ?></td>
+                    <td><?php echo $this->currencyFormat($paymenttype->calcFee($sum), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
-                    <th><span style="font-size: 18px;">Total amount:</span></th>
-                    <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
+                    <th><span style="font-size: 18px;"><?php echo $this->translate('Total amount:'); ?></span></th>
+                    <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></span></th>
                 </tr>
             </table>
         <?php endif; ?>

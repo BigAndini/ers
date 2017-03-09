@@ -206,7 +206,7 @@ class Buyer implements InputFilterAwareInterface
                                 ) {
                                     return true;
                                 }
-                                $cartContainer = new Container('cart');
+                                $cartContainer = new Container('ers');
                                 $participants = $cartContainer->order->getParticipants();
                                 foreach($participants as $participant) {
                                     if($value == $participant->getEmail()) {

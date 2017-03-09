@@ -16,14 +16,42 @@ use Zend\Session\Container;
 use ErsBase\Entity;
 
 class ProductController extends AbstractActionController {
+    
+    public function changeCurrencyAction() {
+        $form = new Form\CurrencyChooser();
+        $optionService = $this->getServiceLocator()
+                ->get('ErsBase\Service\OptionService');
+        $form->get('currency')->setValueOptions($optionService->getCurrencyOptions());
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost()); 
+            if($form->isValid()) {
+                $data = $request->getPost();
+                
+                $em = $this->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+                $currency = $em->getRepository('ErsBase\Entity\Currency')
+                    ->findOneBy(array('id' => $data['currency']));
+                if($currency) {
+                    $container = new Container('ers');
+                    $container->currency = $currency->getShort();
+                }
+            }
+            
+            $redirectUrl = $this->getRequest()->getHeader('Referer')->uri()->getPath();
+            $this->redirect()->toUrl($redirectUrl);
+        }
+    }
+    
     public function indexAction()
     {
         $this->getServiceLocator()->get('ErsBase\Service\TicketCounterService')
                 ->checkLimits();
         
-        $forrest = new Service\BreadcrumbService();
-        $forrest->reset();
-        $forrest->set('participant', 'product');
+        $breadcrumbService = new Service\BreadcrumbService();
+        $breadcrumbService->reset();
+        $breadcrumbService->set('participant', 'product');
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -38,9 +66,13 @@ class ProductController extends AbstractActionController {
                         'position' => 'ASC'
                     )
                 );
+        $container = new Container('ers');
+        $currency = $em->getRepository('ErsBase\Entity\Currency')
+                    ->findOneBy(array('short' => $container->currency));
         $products = array();
         foreach($tmp as $product) {
-            if($product->getProductPrice()->getCharge() != null) {
+            $price = $product->getProductPrice(null, null, $currency);
+            if($price != null && $price->getCharge() != null) {
                 $products[] = $product;
             }
         }
@@ -52,7 +84,7 @@ class ProductController extends AbstractActionController {
                 ->get('ErsBase\Service\DeadlineService:price');
         $deadline = $deadlineService->getDeadline();
         
-        #$cartContainer = new Container('cart');
+        #$cartContainer = new Container('ers');
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
         
@@ -60,22 +92,9 @@ class ProductController extends AbstractActionController {
             'products' => $products,
             'agegroups' => $agegroups,
             'deadline' => $deadline,
-            #'order' => $cartContainer->order,
             'order' => $orderService->getOrder(),
-            'ers_config' => $this->getServiceLocator()->get('Config')['ERS'],
         ));
     }
-    
-    /*
-     * initialize shopping cart
-     */
-    /*private function initializeCart() {
-        $cartContainer = new Container('cart');
-        if(!isset($cartContainer->init) && $cartContainer->init == 1) {
-            $cartContainer->order = new Entity\Order();
-            $cartContainer->init = 1;
-        }
-    }*/
     
     public function addAction() {
         $this->getServiceLocator()->get('ErsBase\Service\TicketCounterService')
@@ -103,9 +122,9 @@ class ProductController extends AbstractActionController {
         /*
          * Build and set breadcrumbs
          */
-        $forrest = new Service\BreadcrumbService();
-        if(!$forrest->exists('product')) {
-            $forrest->set('product', 'product');
+        $breadcrumbService = new Service\BreadcrumbService();
+        if(!$breadcrumbService->exists('product')) {
+            $breadcrumbService->set('product', 'product');
         }
         
         $params = array();
@@ -132,10 +151,10 @@ class ProductController extends AbstractActionController {
             $params2 = $params;
             $params2['item_id'] = $item_id;
         }
-        $forrest->set('participant', 'product', $params2, $options);
-        $forrest->set('cart', 'product', $params2, $options);
-        $forrest->set('product', 'product', $params2, $options);
-        $forrest->set('bc_stay', 'product', $params2, $options);
+        $breadcrumbService->set('participant', 'product', $params2, $options);
+        $breadcrumbService->set('cart', 'product', $params2, $options);
+        $breadcrumbService->set('product', 'product', $params2, $options);
+        $breadcrumbService->set('bc_stay', 'product', $params2, $options);
         
         /*
          * Get data for this product
@@ -190,12 +209,12 @@ class ProductController extends AbstractActionController {
          * Here starts the cart add Action
          */
         $logger = $this->getServiceLocator()->get('Logger');
-        
+ 
         #$this->initializeCart();
-        $cartContainer = new Container('cart');
+        $cartContainer = new Container('ers');
         
         $formfail = false;
-        
+
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = $form->getInputFilter();
@@ -205,8 +224,7 @@ class ProductController extends AbstractActionController {
             if($form->isValid())
             { 
                 $data = $request->getPost();
-                #$logger->info(var_export($data, true));
-
+                
                 /*
                  * get needed variables
                  */
@@ -271,7 +289,11 @@ class ProductController extends AbstractActionController {
                  */
                 $item = new Entity\Item();
                 
-                $item->setPrice($product->getProductPrice($agegroup, $deadline)->getCharge());
+                $container = new Container('ers');
+                $currency = $em->getRepository('ErsBase\Entity\Currency')
+                            ->findOneBy(array('short' => $container->currency));
+                
+                $item->setPrice($product->getProductPrice($agegroup, $deadline, $currency)->getCharge());
                 $item->setStatus($status);
                 $item->setProduct($product);
                 $item->setAmount(1);
@@ -294,7 +316,6 @@ class ProductController extends AbstractActionController {
                         $itemVariant->setProductVariantValue($value);
                         $item->addItemVariant($itemVariant);
                         $itemVariant->setItem($item);
-                        #$logger->info('VARIANT '.$variant->getName().': '.$value->getValue());
                     } else {
                         $logger->warn('Unable to find value for variant: '.$variant->getName().' (id: '.$variant->getId().')');
                     }
@@ -373,11 +394,11 @@ class ProductController extends AbstractActionController {
                 /*
                  * go the route of the breadcrumbs and find the way back. :)
                  */
-                $forrest = new Service\BreadcrumbService();
-                if(!$forrest->exists('product')) {
-                    $forrest->set('product', 'product');
+                $breadcrumbService = new Service\BreadcrumbService();
+                if(!$breadcrumbService->exists('product')) {
+                    $breadcrumbService->set('product', 'product');
                 }
-                $breadcrumb = $forrest->get('product');
+                $breadcrumb = $breadcrumbService->get('product');
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
@@ -390,7 +411,8 @@ class ProductController extends AbstractActionController {
         /*
          * Set form values
          */
-        $form->get('submit')->setAttribute('value', 'Add to Cart');
+        $translator = $this->getServiceLocator()->get('translator');
+        $form->get('submit')->setAttribute('value', $translator->translate('Add to Cart'));
         
         /*
          * build participant select options
@@ -415,7 +437,7 @@ class ProductController extends AbstractActionController {
         /*
          * get all variables for ViewModel
          */
-        $breadcrumb = $forrest->get('product');
+        $breadcrumb = $breadcrumbService->get('product');
         
         $chooser = $cartContainer->chooser;
         $cartContainer->chooser = false;
@@ -434,7 +456,7 @@ class ProductController extends AbstractActionController {
             'form' => $form,
             'participantForm' => $participantForm,
             'breadcrumb' => $breadcrumb,
-            'bc_stay' => $forrest->get('bc_stay'),
+            'bc_stay' => $breadcrumbService->get('bc_stay'),
             'chooser' => $chooser,
             'agegroups' => $agegroups,
             'deadline' => $deadline,
@@ -446,21 +468,21 @@ class ProductController extends AbstractActionController {
         $this->getServiceLocator()->get('ErsBase\Service\TicketCounterService')
                 ->checkLimits();
         
-        $forrest = new Service\BreadcrumbService();
-        if(!$forrest->exists('product')) {
-            $forrest->set('product', 'product', array('action' => 'edit'));
+        $breadcrumbService = new Service\BreadcrumbService();
+        if(!$breadcrumbService->exists('product')) {
+            $breadcrumbService->set('product', 'product', array('action' => 'edit'));
         }
-        #$forrest->set('participant', 'product', array('action' => 'edit'));
+        #$breadcrumbService->set('participant', 'product', array('action' => 'edit'));
         
         $viewModel = $this->addAction();
         if($viewModel instanceof ViewModel) {
             $viewModel->setTemplate('pre-reg/product/edit');
         } else {
-            $forrest = new Service\BreadcrumbService();
-            if(!$forrest->exists('product')) {
-                $forrest->set('product', 'product');
+            $breadcrumbService = new Service\BreadcrumbService();
+            if(!$breadcrumbService->exists('product')) {
+                $breadcrumbService->set('product', 'product');
             }
-            $breadcrumb = $forrest->get('product');
+            $breadcrumb = $breadcrumbService->get('product');
 
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
@@ -469,52 +491,62 @@ class ProductController extends AbstractActionController {
     }
     
     public function deleteAction() {
-        $forrest = new Service\BreadcrumbService();
+        $logger = $this->getServiceLocator()->get('Logger');
+
+        $breadcrumbService = new Service\BreadcrumbService();
         
-        if(!$forrest->exists('product')) {
-            $forrest->set('product', 'order');
+        if(!$breadcrumbService->exists('product')) {
+            $breadcrumbService->set('product', 'order');
         }
         
         $product_id = (int) $this->params()->fromRoute('product_id', 0);
-        $item_id = (int) $this->params()->fromRoute('item_id', 0);
-        if (!is_numeric($product_id) || !is_numeric($item_id)) {
-            $breadcrumb = $forrest->get('product');
+        $id = (int) $this->params()->fromRoute('item_id', 0);
+        if (!is_numeric($id)) {
+        #if (!is_numeric($product_id) || !is_numeric($item_id)) {
+            $breadcrumb = $breadcrumbService->get('product');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
-        
         
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         
-        $participant = $order->getParticipantByItemId($item_id);
-        $item = $order->getItem($item_id);
+        $participant = $order->getParticipantByItemId($id);
+        $item = $order->getItem($id);
         $product = $item->getProduct();
         
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $del = $request->getPost('del', 'No');
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
 
-            if ($del == 'Yes') {
-                $item_id = (int) $request->getPost('item_id');
-                
+        $form = new Form\SimpleForm($em);
+        $form->get('submit')->setAttributes(array(
+            'value' => _('Delete'),
+            'class' => 'btn btn-danger',
+        ));
+        
+        $form->bind($item);
+
+        if ($this->request->isPost()) {
+            $form->setData($this->request->getPost());
+
+            if ($form->isValid()) {
                 $orderService = $this->getServiceLocator()
                         ->get('ErsBase\Service\OrderService');
-                $orderService->removeItemById($item_id);
+                $orderService->removeItemById($item->getId());
                 
-                #$order->removeItemById($item_id);
+                $breadcrumb = $breadcrumbService->get('product');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            } else {
+                $logger->warn($form->getMessages());
             }
-
-            $breadcrumb = $forrest->get('product');
-            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
-        
+
         return new ViewModel(array(
-            'id'    => $product_id,
+            'form' => $form,
             'participant' => $participant,
             'item' => $item,
             'product' => $product,
-            'breadcrumb' => $forrest->get('product'),
+            'breadcrumb' => $breadcrumbService->get('product'),
         ));
     }
 }

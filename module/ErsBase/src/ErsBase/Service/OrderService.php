@@ -17,8 +17,9 @@ use ErsBase\Entity;
 class OrderService
 {
     protected $_sl;
+    protected $currency;
     protected $order;
-
+    
     public function __construct() {
         
     }
@@ -41,48 +42,182 @@ class OrderService
         return $this->_sl;
     }
     
+    public function setCurrency(Entity\Currency $currency) {
+        $this->currency = $currency;
+    }
+    public function getCurrency() {
+        if(!$this->currency) {
+            $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+            $container = new Container('ers');
+            $this->currency = $em->getRepository('ErsBase\Entity\Currency')
+                    ->findOneBy(array('short' => $container->currency));
+        }
+        return $this->currency;
+    }
+    
+    public function setOrder(Entity\Order $order) {
+        $this->order = $order;
+    }
+    
     public function getOrder() {
         if($this->order instanceof Entity\Order) {
             return $this->order;
         }
-        $cartContainer = new Container('cart');
+        $container = new Container('ers');
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
-        if(isset($cartContainer->order_id) && is_numeric($cartContainer->order_id)) {
-            $order = $em->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => $cartContainer->order_id));
-            if(!$order) {
-                # Cannot find order with given id: Creating new order...
-                $order = new Entity\Order();
-                $status = $em->getRepository('ErsBase\Entity\Status')
-                    ->findOneBy(array('value' => 'order pending'));
-                $order->setStatus($status);
-            
-                $em->persist($order);
-                $em->flush();
-
-                $cartContainer->order_id = $order->getId();
+        $em->flush();
+        if(isset($container->order_id) && is_numeric($container->order_id)) {
+            $checkOrder = $em->getRepository('ErsBase\Entity\Order')
+                    ->findOneBy(array('id' => $container->order_id));
+            if($checkOrder) {
+                $this->order = $checkOrder;
+                $this->addLoggedInUser();
+                return $checkOrder;
             }
-            
-            $this->order = $order;
-            $this->addLoggedInUser();
-            return $order;
+        }
+        
+        $newOrder = $this->createNewOrder();
+
+        $container->order_id = $newOrder->getId();
+
+        $this->order = $newOrder;
+        $this->addLoggedInUser();
+
+        return $newOrder;
+    }
+    
+    private function createNewOrder() {
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        #$newOrder = new Entity\Order();
+        $newOrder = $this->getServiceLocator()
+                ->get('ErsBase\Entity\Order');
+        $status = $em->getRepository('ErsBase\Entity\Status')
+            ->findOneBy(array('value' => 'order pending'));
+        $newOrder->setStatus($status);
+        /*$container = new Container('ers');
+        $currency = $em->getRepository('ErsBase\Entity\Currency')
+            ->findOneBy(array('short' => $container->currency));
+        $newOrder->setCurrency($currency);*/
+
+        $em->persist($newOrder);
+        $em->flush();
+        
+        return $newOrder;
+    }
+    
+    public function updateShoppingCart() {
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $debug = true;
+        $order = $this->getOrder();
+        $currency = $order->getCurrency();
+        foreach($order->getPackages() as $package) {
+            foreach($package->getItems() as $item) {
+                if($item->hasParentItems()) {
+                    continue;
+                }
+                $product = $item->getProduct();
+                $participant = $item->getPackage()->getParticipant();
+
+                $agegroupService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\AgegroupService');
+                $agegroupService->setMode('price');
+                $agegroup = $agegroupService->getAgegroupByUser($participant);
+                if($debug) {
+                    if($agegroup != null) {
+                        error_log('found agegroup: '.$agegroup->getName());
+                    }
+                }
+
+                $deadlineService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\DeadlineService');
+                $deadlineService->setMode('price');
+                $deadline = $deadlineService->getDeadline($order->getCreated());
+                if($debug) {
+                    if($deadline != null) {
+                        error_log('found deadline: '.$deadline->getName());
+                    }
+                }
+
+                $price = $product->getProductPrice($agegroup, $deadline, $currency);
+                if($debug) {
+                    error_log('price: '.$price->getCharge());
+                }
+                $item->setPrice($price->getCharge());
+                $em->persist($item);
+            }
+        }
+        $em->persist($order);
+        $em->flush();
+    }
+    
+    public function changeCurrency($paramCurrency) {
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        if(! $paramCurrency instanceof Entity\Currency) {
+            $currency = $em->getRepository('ErsBase\Entity\Currency')
+                ->findOneBy(array('short' => $paramCurrency));
         } else {
-            $order = new Entity\Order();
-            $status = $em->getRepository('ErsBase\Entity\Status')
-                ->findOneBy(array('value' => 'order pending'));
-            $order->setStatus($status);
-            
+            $currency = $paramCurrency;
+        }
+        $debug = false;
+        $order = $this->getOrder();
+        if($order->getCurrency()->getShort() != $currency->getShort()) {
+            foreach($order->getPackages() as $package) {
+                $package->setCurrency($currency);
+                if($debug) {
+                    error_log('set package to currency: '.$currency);
+                }
+                foreach($package->getItems() as $item) {
+                    $item->setCurrency($currency);
+                    if($debug) {
+                        error_log('set item to currency: '.$currency);
+                    }
+                    if($item->hasParentItems()) {
+                        continue;
+                    }
+                    $product = $item->getProduct();
+                    $participant = $item->getPackage()->getParticipant();
+
+                    $agegroupService = $this->getServiceLocator()
+                            ->get('ErsBase\Service\AgegroupService');
+                    $agegroupService->setMode('price');
+                    $agegroup = $agegroupService->getAgegroupByUser($participant);
+                    #$agegroup = $participant->getAgegroup();
+
+                    $deadlineService = $this->getServiceLocator()
+                            ->get('ErsBase\Service\DeadlineService');
+                    $deadlineService->setMode('price');
+                    $deadline = $deadlineService->getDeadline($order->getCreated());
+
+                    $price = $product->getProductPrice($agegroup, $deadline, $currency);
+                    if($debug) {
+                        error_log('price: '.$price->getCharge());
+                    }
+                    if(!$price) {
+                        throw new \Exception('Unable to find price for '.$product->getName().'.');
+                    }
+                    $item->setPrice($price->getCharge());
+                    #$em->persist($item);
+                }
+                #$em->persist($package);
+            }
+            $order->setCurrency($currency);
+            if($debug) {
+                error_log('set order to currency: '.$currency);
+            }
+            if($order->getPaymentType()) {
+                $order->setPaymentType(null);
+            }
             $em->persist($order);
             $em->flush();
-            
-            $cartContainer->order_id = $order->getId();
-            
-            $this->order = $order;
-            $this->addLoggedInUser();
-            
-            return $order;
         }
+        
+        return $this;
     }
     
     public function addLoggedInUser() {
@@ -105,13 +240,13 @@ class OrderService
     }
     
     public function setCountryId($country_id) {
-        $cartContainer = new Container('cart');
-        $cartContainer->country_id = $country_id;
+        $container = new Container('ers');
+        $container->country_id = $country_id;
     }
     
     public function getCountryId() {
-        $cartContainer = new Container('cart');
-        return $cartContainer->country_id;
+        $container = new Container('ers');
+        return $container->country_id;
     }
     
     /**
@@ -130,6 +265,7 @@ class OrderService
         if(!$status) {
             throw new \Exception('Please setup status "order pending"');
         }
+        
         $package->setStatus($status);
         $status->addPackage($package);
         
@@ -167,7 +303,7 @@ class OrderService
         if($participant->getId() == $this->getOrder()->getBuyerId()) {
             $this->getOrder()->setBuyer(null);
             $this->getOrder()->setBuyerId(null);
-            $container = new Container('initialized');
+            $container = new Container('ers');
             if(!is_array($container->checkout)) {
                 $container->checkout = array();
             }

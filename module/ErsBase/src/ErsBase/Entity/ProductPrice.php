@@ -24,5 +24,8 @@ class ProductPrice extends Base\ProductPrice
     {
         parent::__construct();
     }
-
+    
+    public function __toString() {
+        return $this->getCharge();
+    }
 }

@@ -101,7 +101,7 @@ class Package extends Base\Package
      * @param \Entity\Item $item
      * @return \Entity\Package
      */
-    public function addItem(Item $item)
+    public function addItem(\ErsBase\Entity\Base\Item $item)
     {
         $item->setPackage($this);
         foreach($item->getChildItems() as $cItem) {
@@ -133,7 +133,7 @@ class Package extends Base\Package
      * @param \ErsBase\Entity\Base\Item $item
      * @return \ErsBase\Entity\Base\Package
      */
-    public function removeItem(Item $item)
+    public function removeItem(\ErsBase\Entity\Base\Item $item)
     {
         foreach($item->getChildItems() as $cItem) {
             $this->items->removeElement($cItem);
@@ -175,22 +175,6 @@ class Package extends Base\Package
     }
     
     /**
-     * DEPREACTED session id is not used anymore
-     * Get Item entity by session id
-     * 
-     * @return \Entity\Item
-     * @return false
-     */
-    /*public function getItemBySessionId($id) {
-        foreach($this->getItems() as $item) {
-            if($item->getSessionId() == $id) {
-                return $item;
-            }
-        }
-        return false;
-    }*/
-    
-    /**
      * Check if item exists
      * 
      * @param \ErsBase\Entity\Item $item
@@ -218,35 +202,6 @@ class Package extends Base\Package
         }
         return false;
     }
-    
-    /**
-     * check if all items in this package have the same status and return the 
-     * status.
-     * 
-     * @return string
-     */
-    /*public function getStatus() {
-        $status = array();
-        foreach($this->getItems() as $item) {
-            $item_status = $item->getStatus();
-            if($item_status == 'zero_ok') {
-                $item_status = 'paid';
-            }
-            if($item_status == 'transferred') {
-                continue;
-            }
-            if(isset($status[$item_status])) {
-                $status[$item_status]++;
-            } else {
-                $status[$item_status] = 1;
-            }
-        }
-        if(count($status) == 1) {
-            return key($status);
-        } else {
-            return 'undefined';
-        }
-    }*/
     
     /**
      * Set the value of transferred_package.
@@ -280,7 +235,7 @@ class Package extends Base\Package
     public function getStatusWithShipped() {
         $status = array();
         foreach($this->getItems() as $item) {
-            $item_status = $item->getStatus();
+            $item_status = $item->getStatus()->getValue();
             if($item->getShipped()) {
                 $item_status = 'shipped';
             }
@@ -302,6 +257,20 @@ class Package extends Base\Package
     }
     
     public function getAllItems() {
-        return $this->getItems();
+        return $this->items;
+    }
+    
+    /**
+     * Set Order entity (many to one).
+     *
+     * @param \ErsBase\Entity\Base\Order $order
+     * @return \ErsBase\Entity\Base\Package
+     */
+    public function setOrder(\ErsBase\Entity\Base\Order $order = null)
+    {
+        $this->setCurrency($order->getCurrency());
+        parent::setOrder($order);
+
+        return $this;
     }
 }

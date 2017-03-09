@@ -1,9 +1,9 @@
 <?php
 
-$title = 'Payment Type: '.$paymenttype->getName();
+$title = $this->translate('Payment Type:').' '.$paymenttype->getName();
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <div>
     <?php echo $paymenttype->getLongDescription(); ?>
 </div>

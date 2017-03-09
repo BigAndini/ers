@@ -3,7 +3,7 @@ $participant = $package->getParticipant();
 $title = 'Send out e-ticket for '.$participant->getFirstname().' '.$participant->getSurname().' package '.$package->getCode()->getValue();
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <p>Do you really want to send out the e-ticket for <strong><?php echo $participant->getFirstname().' '.$participant->getSurname(); ?></strong> for the package <?php echo $package->getCode()->getValue(); ?>?</p>
 <?php

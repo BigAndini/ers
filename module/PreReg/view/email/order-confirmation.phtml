@@ -1,8 +1,20 @@
 <?php
-    $ejc_with_year = "EJC 2016";
-    $ejc_with_number = "39th European Juggling Convention";
-    $ejc_info_mail = "info@ejc2016.org";
-    $ejc_website = "http://www.ejc2016.org";
+    $orderLink = '<a href="' . 
+            $this->url('order', array(
+                'action' => 'view',
+                'hashkey' => $order->getHashKey()
+            ), array('force_canonical' => true)) . 
+            '">' . $this->translate('your order') . '</a>';
+    $termsLink = '<a href="' . 
+            $this->url('info',
+                array('action' => 'terms'),
+                array('force_canonical' => true)
+            ).'">' . $this->translate('terms and conditions') . '</a>';
+    $orderDate = $order->getCreated()->format('d.m.Y');
+    $orderId = '<b>'.$order->getCode()->getValue().'</b>';
+    $preregMail = '<a href=\'mailto:'.$this->config()['ERS']['prereg_mail'].'\'>'.$this->config()['ERS']['prereg_mail'].'</a>';
+    $infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this->config()['ERS']['info_mail'].'</a>';
+    $website = '<a href=\''.$this->config()['ERS']['website'].'\'>'.$this->config()['ERS']['website'].'</a>';
 ?>
 
 <html>
@@ -11,50 +23,40 @@
 </head>
 <body>
 <div style="font-family: sans-serif;">
-    <p>Dear <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>,</p>
+    <p><?php printf($this->translate('Dear %s %s,'), $order->getBuyer()->getFirstname(), $order->getBuyer()->getSurname()); ?></p>
 
     <p>
-        This is the confirmation for
-        <a href="<?php echo $this->url('order', array(
-            'action' => 'view',
-            'hashkey' => $order->getHashKey()
-        ), array('force_canonical' => true)); ?>">your order</a>
-        from <?php echo $order->getCreated()->format('d.m.Y'); ?> with the
-        order ID <b><?php echo $order->getCode()->getValue(); ?></b>.
+        
+        <?php 
+        
+        printf($this->translate('This is the confirmation for %s from %s with the order ID %s.'),
+                $orderLink,
+                $orderDate,
+                $orderId); ?>
     </p>
 
-    <p>
+    <!--<p>
         To receive this email in another language you can visit the <a href="<?php echo $this->url('order', array(
             'action' => 'email',
             'hashkey' => $order->getHashKey()
         ), array('force_canonical' => true)); ?>">resend email link</a>.
-    </p>
+    </p>-->
 
-    <p>
-        Thank you for registering for the <?php echo $ejc_with_number; ?>!
-        Your registration makes it easier for us to organize a <span style="color: #f48029;">gezellig</span> EJC
-        for you and all fellow jugglers.
-    </p>
+    <p><?php printf($this->translate('Thank you for registering for the %s!'), $this->config()['ERS']['name_with_number']); ?></p>
 
-    <p>You've chosen <?php echo $order->getPaymentType()->getName(); ?> as payment method.</p>
+    <p><?php printf($this->translate('You\'ve chosen %s as payment method.'), $order->getPaymentType()->getName()); ?></p>
 
     <?php
     $paymenttype = $order->getPaymentType();
-    if($paymenttype->getType() == 'BankTransfer'): ?>
+    if($paymenttype->getType() == 'sepa'): ?>
 
-        <p>To complete your order, we need to receive your bank transfer within 14 days.</p>
+        <p><?php echo $this->translate('To complete your order, we need to receive your bank transfer within 14 days.'); ?></p>
 
-        <?php echo $this->partial('partial/banktransfer-info.phtml', array('order' => $order)); ?>
+        <?php echo $this->partial('partial/sepa-banktransfer-info.phtml', array('order' => $order)); ?>
 
-        <p>
-            To see if we have already received your payment, you can visit the following link:
-            <a href="<?php echo $this->url('order', array(
-                'action' => 'view',
-                'hashkey' => $order->getHashKey()
-            ), array('force_canonical' => true)); ?>">Your order details</a>
-        </p>
+        <p><?php printf($this->translate('To see if we have already received your payment, you can visit the following link: %s'), $orderLink); ?></p>
 
-    <?php elseif($paymenttype->getType() == 'Cheque'): ?>
+    <?php elseif($paymenttype->getType() == 'cheque'): ?>
 
         <p>The conversation rate Euro to Pounds for cheques is set to 0.8 -
             this means that you need to multiply the price with 0.8, i.e.
@@ -89,7 +91,7 @@
             'hashkey' => $order->getHashKey()
         ), array('force_canonical' => true)); ?>">Your order details</a></p>
 
-    <?php elseif($paymenttype->getType() == 'CreditCard'): ?>
+    <?php elseif($paymenttype->getType() == 'creditcard'): ?>
 
         <p>We should have received your payment by now.</br>
             In case your payment was not successful, you can restart your
@@ -99,48 +101,41 @@
                 'hashkey' => $order->getHashKey()
             ), array('force_canonical' => true)); ?>">Your order details</a></p>
 
-    <?php elseif($paymenttype->getType() == 'PayPal'): ?>
+    <?php elseif($paymenttype->getType() == 'paypal'): ?>
 
-        <p>We should have received your payment by now.<br>
-            In case your payment was not successful, you can restart your
-            PayPal payment via the following link:
+        <p><?php echo $this->translate('We should have received your payment by now.'); ?><br>
+            <?php echo $this->translate('In case your payment was not successful, you can restart your
+            PayPal payment via the following link:'); ?>
             <a href="<?php echo $this->url('order', array(
                 'action' => 'view',
                 'hashkey' => $order->getHashKey()
-            ), array('force_canonical' => true)); ?>">Your order details</a></p>
+            ), array('force_canonical' => true)); ?>"><?php echo $this->translate('Your order details'); ?></a></p>
 
     <?php endif; ?>
 
     <p>
-        Please consider our general
-        <a href="<?php echo $this->url('info',
-                array('action' => 'terms'),
-                array('force_canonical' => true)
-            ); ?>">terms and conditions</a>,
-        which are attached to this email.
-        To be able to read the document, you need to install Adobe Acrobat Reader, which you can download here:
+        <?php printf($this->translate('Please consider our general %s.
+        To be able to read the document, you need to install Adobe Acrobat Reader, which you can download here:'), $termsLink); ?>
         <a href="http://get.adobe.com/reader">http://get.adobe.com/reader</a>
     </p>
 
     <p>
-        Your eTickets and further information concerning the
-        <?php echo $ejc_with_number; ?> will be delivered in another email
-        as soon as we start distributing the eTickets and your payment has been confirmed.
+        <?php printf($this->translate('Your E-Tickets and further information concerning the %s will be delivered in another email
+        as soon as we start distributing the E-Tickets and your payment has been confirmed.'), $this->config()['ERS']['name_with_number']); ?>
+    </p>
+    <p>
+        We would also like to ask for your help in spreading the word about the EJC!
+        As you know the festival is financed directly from the tickets sale. It would be AWESOME if you could invite your friends to join the EJC 2017 and become registered!
+        We have prepared a little graphics that you can use if you want to help and spread the excitement about the upcoming convention that we all share! :) It's size is tailored to fit the FaceBook cover photo, but please use it wherever you want!
     </p>
 
-    <p style="color: #f48029;"><b>
-        See you in Almere, the Netherlands between
-        the 30th of July and the 7th of August 2016 for <?php echo $ejc_with_year; ?>!
-    </b></p>
+    <p><?php $this->translate('Regards,'); ?></p>
 
-    <p>Regards,</p>
-
-    <p>Your European Juggling Association and the local <?php echo $ejc_with_number; ?> organizers.</p>
+    <p><?php printf($this->translate('Your European Juggling Association and the local %s organizers.'), $this->config()['ERS']['name_with_number']); ?></p>
 
     <hr>
     <p>
-        You purchased the following items
-        (ordered by <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>):
+        <?php printf($this->translate('You purchased the following items (ordered by %s %s):'), $order->getBuyer()->getFirstname(), $order->getBuyer()->getSurname()); ?>
     </p>
 
     <?php echo $this->partial('partial/order-info.phtml', array('order' => $order)); ?>
@@ -149,17 +144,20 @@
             text-align: center;
             padding: 1em;
             background-color: #eeeeee;">
-        This mail was sent to you by the EJC Registration System (ERS),
+        <?php printf($this->translate('This mail was sent to you by the Event Registration System (ERS),
         operated by the European Juggling Association (EJA) on
-        behalf of <?= $ejc_with_year ?>.
+        behalf of %s.'), $this->config()['ERS']['name_with_year']); ?>
         <br>
-        If you have any questions about your pre-registration,
+        <?php printf($this->translate('If you have any questions about your pre-registration,
         please contact the EJA pre-registration coordinator
-        at <a href='mailto:prereg@eja.net'>prereg@eja.net</a>.
+        at %s.'), $preregMail); ?>
         <br>
-        For more information about <?= $ejc_with_year ?>,
-        please visit <a href='<?= $ejc_website ?>'><?= $ejc_website ?></a>
-        or contact <a href='mailto:<?= $ejc_info_mail ?>'><?= $ejc_info_mail ?></a>.
+        <?php printf($this->translate('For more information about %s,
+        please visit %s
+        or contact %s.'), 
+        $this->config()['ERS']['name_with_year'],
+        $website,
+        $infoMail); ?>
     </div>
 </div>
 </body>

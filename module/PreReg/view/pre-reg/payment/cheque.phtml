@@ -1,38 +1,38 @@
 <?php
 
 if($order == null) :
-$title = 'Unable to find payment information';
+$title = $this->translate('Unable to find payment information');
 $this->headTitle($title);
 ?>
 <div class="jumbotron">
     <h1><?php echo $this->escapeHtml($title); ?></h1>
-    <p>The system was not able to find the according order for this payment info 
+    <p><?php echo $this->translate('The system was not able to find the according order for this payment info 
         page. With your purchase you got an email with all needed data. Please 
-        use the link in there.</p>
+        use the link in there.'); ?></p>
 </div>
 <?php 
 else:
 
-$title = 'Pay via Cheque';
+$title = $this->translate('Pay via Cheque');
 $this->headTitle($title);
 ?>
 <div class="jumbotron">
     <h1><?php echo $this->escapeHtml($title); ?></h1>
     
     <div>
-        <p>​Please make cheques payable to: <strong>European Juggling Association</strong>.</p>
-        <p>Your order amount in GBP is: <strong>
+        <p>​<?php echo $this->translate('Please make cheques payable to:'); ?> <strong><?php echo $this->translate('European Juggling Association'); ?></strong>.</p>
+        <p><?php echo $this->translate('Your order amount in GBP is:'); ?> <strong>
             <?php
             $pound = ($order->getSum()*0.8);
             echo $this->currencyFormat($pound, 'GBP', null, 'en_GB');
             ?>
                 </strong></p>
-        <p>Please send:</p>
+        <p><?php echo $this->translate('Please send:'); ?></p>
         <ul>
-            <li>Cheques (amount in GBP, price calculated from Euro-price * 0,8 )</li>
-            <li>your name</li>
-            <li>order ID <?php echo $order->getCode()->getValue(); ?></li>
-            <li>to the address of the UK country-rep:
+            <li><?php echo $this->translate('Cheques (amount in GBP, price calculated from Euro-price * 0,8 )'); ?></li>
+            <li><?php echo $this->translate('your name'); ?></li>
+            <li><?php echo $this->translate('order ID'); ?> <?php echo $order->getCode()->getValue(); ?></li>
+            <li><?php echo $this->translate('to the address of the UK country-rep:'); ?>
                 <pre style="width: 200px;">Ron Trickett
 14 Peterborough Road
 Newton Hall
@@ -42,9 +42,18 @@ DH1 5QX</pre>
         </ul>
     </div>
     <div>
-        <p>We sent this information to your email address: <strong><?php echo $order->getBuyer()->getEmail(); ?></strong></p>
-        <h3>You can request <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>">this information</a> again</h3>
-        <p>Simply bookmark <a href="<?php echo $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())); ?>">this link</a> or have a look at the mail we sent you.</p>
+        <p><?php echo $this->translate('We sent this information to your email address:'); ?> <strong><?php echo $order->getBuyer()->getEmail(); ?></strong></p>
+        <h3>
+            <?php 
+            $orderLink = '<a href="'.$this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())).'">'.$this->translate('this information').'</a>';
+            printf($this->translate('You can request %s again.'), $orderLink); ?>
+        </h3>
+        <p>
+            <?php 
+            $orderLink2 = '<a href="'.$this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())).'">'.$this->translate('this link').'</a>';
+            prinf($this->translate('Simply bookmark %s or have a look at the mail we sent you.'), $orderLink2); 
+            ?>
+        </p>
     </div>
 </div>
 <?php endif;

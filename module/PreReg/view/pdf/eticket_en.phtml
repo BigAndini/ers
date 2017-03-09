@@ -1,3 +1,10 @@
+<!--
+Test von cr: Anpassungen von (noch aktueller) Version von "./eticket_en.phtml" (14727bytes vom 7. Mai, 00:50).
+E-Ticket für EJC-Teilnehmer.
+23.05.: Texte aus docx-Datei geholt, Logo ersetzt, Farbe grün durch orange ersetzt.
+04.06.: Schriftgröße geändert, damit alles auf 1 Seite passt.
+07.06.: Logo durch bessere Variante ersetzt.
+-->
 <html>
     <head>
         <style type="text/css">
@@ -13,13 +20,15 @@
                 font-family: 'OpenSans-Bold';
             }
             .fa {
-                font-family: FontAwesome;
+                /*font-family: FontAwesome;*/
+		font-family: fontawesome-webfont;
             }
             .clear-both {
                 clear: both;
             }
             .small {
-                font-size: 10px;
+                /*font-size: 10px;*/
+                font-size: 9px;
             }
             .very-small {
                 font-size: 10px;
@@ -52,7 +61,7 @@
             h3, h4 {
                 margin:0;
                 padding:0;
-                color: #85b32a;
+                color: #f0882c;
             }
             table {
                 width: 100%;
@@ -71,7 +80,7 @@
                 right: 250px;
                 top: 10px;
                 font-size: 48px;
-                color: #85b32a;
+                color: #f0882c;
                 font-weight: bold;
             }
             .codes {
@@ -88,19 +97,24 @@
                 width: 200px;
                 position: absolute;
                 right: 0px;
-                top: 300px;
+                top: 240px;
                 font-size: 100%;
                 border: 1px solid #eee;
                 padding: 10px;
             }
             .order-description {
                 padding: 0px;
+                margin: 15px 0 0 0;
+                font-size: 10px;
+            }
+            .additional-order-description {
+                padding: 0px;
                 margin: 5px 0 0 0;
                 font-size: 10px;
             }
             .order-value {
                 padding: 0px;
-                margin: 0 0 10px 0;
+                margin: 0 0 0px 0;
                 font-size: 16px;
             }
             .compulsory-control {
@@ -108,15 +122,20 @@
             }
             .cc-option {
                 font-size: 20px;
-                color: #85b32a;
+                color: #f0882c;
                 width: 30px;
             }
             .ticket-heading {
                 margin-left: 20px;
+                vertical-align: middle;
+            }
+            .logo {
+                vertical-align: middle;
             }
             .day-table {
                 font-size: 10px;
                 width: 100%;
+                margin-bottom: 10px;
             }
             .day-table td {
                 text-align: center;
@@ -133,12 +152,12 @@
     </head>
     <body>
         <div class="codes">
-            <img src="<?php echo $qrcode; ?>" alt="QR-Code is missing, please regenerate your e-Ticket" /><br />
-            <img src="<?php echo $barcode; ?>" alt="Barcode is missing, please regenerate your e-Ticket" />
+            <img src="<?php echo $qrcode; ?>" alt="QR-Code is missing, please regenerate this E-Ticket" /><br />
+            <?php /* <img src="<?php echo $barcode; ?>" alt="Barcode is missing, please regenerate this E-Ticket" /> */ ?>
         </div>
         <h1>
-            <img src="<?php echo getcwd(); ?>/pdf/img/logofinal_black_green2015_300.png" alt="EJC 2015 Bruneck" width="120" />
-            <span class="ticket-heading">e-Ticket</span>
+            <img class="logo" src="<?php echo getcwd(); ?>/pdf/img/MuenchenCon_Logo_2016_150.png" alt="Logo" width="120" />
+            <span class="ticket-heading">E-Ticket</span>
         </h1>
         <?php if($agegroup): ?>
         <div class="agegroup">
@@ -223,12 +242,7 @@
                             <tr>
                                 <td><span class="cc-option">A</span></td>
                                 <td colspan="2">
-                                    <p>I hereby agree that my son / daughter (as 
-                                        stated on the right) take part at the
-                                        EJC Almere from July 30th to
-                                        August 7th 2016. I will attend the EJC myself
-                                        and therefore observe the obligatory 
-                                        supervision. I accept the disclaimer.</p>
+                                    <p>I hereby agree that my son / daughter (as stated on the right) take part at the EJC Almere from 30th of July till 7th of August 2016.</p><p>I will attend the EJC myself and therefore observe the obligatory supervision. I accept the disclaimer.</p>
                                 </td>
                             </tr>
                             <tr>
@@ -242,20 +256,9 @@
                             <tr>
                                 <td><span class="cc-option">B</span></td>
                                 <td colspan="2">
-                                    <p>I hereby agree that my son / daughter (as 
-                                        stated on the right) take part at the
-                                        EJC Almere from July 30th to
-                                        August 7th 2016. I entrust the following
-                                        chaperon with the function of legal 
-                                        guardian and the obligatory supervision. 
-                                        I guarantee that this chaperon is an 
-                                        adult (age of 18 or above) and has the 
-                                        ability to look after my son / daughter. 
-                                        The host will not check this. I will add 
-                                        a copy of a valid ID card of myself. 
-                                        Otherwise, attending will not be 
-                                        possible for my son / daughter. I 
-                                        accept the disclaimer.</p>
+                                    <p>I hereby agree that my son / daughter (as stated on the right) take part at the EJC Almere from 30th of July till 7th of August 2016.</p><p>I entrust the following chaperon with the function of legal guardian and the obligatory
+supervision. I guarantee that this chaperon is an adult (age of 18 or above) and has the ability to look after my son / daughter. The host will not check this. I will add a copy of a valid ID card of myself.</p> 
+                                        <p>Without this document attending EJC will not be possible for my son / daughter. I accept the disclaimer.</p>
                                 </td>
                             </tr>
                             <tr>
@@ -277,13 +280,7 @@
                             <tr>
                                 <td><span class="cc-option">A</span></td>
                                 <td colspan="2">
-                                    <p>I hereby agree that my son / daughter 
-                                        (as stated on the right) take part at 
-                                        the EJC Almere from July 30th to
-                                        August 7th 2016. I will attend the EJC
-                                        myself and therefore observe the 
-                                        obligatory supervision. I accept the 
-                                        disclaimer. </p>
+                                    <p>I hereby agree that my son / daughter (as stated on the right) take part at the EJC Almere from 30th of July till 7th of August 2016.</p><p>I will attend the EJC myself and therefore observe the obligatory supervision. I accept the disclaimer.</p>
                                 </td>
                             </tr>
                             <tr>
@@ -297,15 +294,7 @@
                             <tr>
                                 <td><span class="cc-option">B</span></td>
                                 <td colspan="2">
-                                    <p>I hereby agree that my son / daughter (as 
-                                        stated on the right) take part at the
-                                        EJC Almere from July 30th to
-                                        August 7th 2016. I will not attend the EJC
-                                        myself. I will attach a copy of my ID 
-                                        card to this e-Ticket. Without both 
-                                        documents the participation of my child 
-                                        at the EJC is impossible. I accept the 
-                                        disclaimer.</p>
+                                    <p>I hereby agree that my son / daughter (as stated on the right) take part at the EJC Almere from 30th of July till 7th of August 2016. I will not attend the EJC myself.</p><p>I will attach a copy of my ID card to this e-Ticket. Without this document, attending EJC will not be possible for my son / daughter. I accept the disclaimer.</p>
                                 </td>
                             </tr>
                             <tr>

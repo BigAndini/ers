@@ -63,6 +63,10 @@ class PaymentType implements InputFilterAwareInterface
                                 $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
                                     ->findOneBy(array('id' => $value));
                                 
+                                if(!$paymenttype) {
+                                    throw new \Exception('Unable to find payment type for validation.');
+                                }
+                                
                                 $now = new \DateTime();
                                 $activeFrom = $paymenttype->getActiveFrom();
                                 $activeUntil = $paymenttype->getActiveUntil();

@@ -42,7 +42,7 @@ class OrderController extends AbstractActionController {
          * - use space as and operator
          * - use (a,b,c) as or operator
          */
-        $searchText = $this->params()->fromQuery('q');
+        $searchText = \trim($this->params()->fromQuery('q'));
         if(!empty($searchText)) {
 
             $form->get('q')->setValue($searchText);
@@ -51,9 +51,7 @@ class OrderController extends AbstractActionController {
             preg_match('/"[^"]+"/', $searchText, $matches);
             $searchElements = preg_replace('/"/', '', $matches);
 
-            #$logger->info('found matches:');
-            #$logger->info($matches);
-            $searchArray = split(' ', $searchText);
+            $searchArray = \preg_split('/\ /', $searchText);
             $exclude = false;
 
             $excludeElements = array();
@@ -72,12 +70,6 @@ class OrderController extends AbstractActionController {
                     $exclude = false;
                 }
             }
-
-            #$logger->info('search elements:');
-            #$logger->info($searchElements);
-
-            #$logger->info('exclude elements:');
-            #$logger->info($excludeElements);
 
             $searchString = array(
 
@@ -164,6 +156,7 @@ class OrderController extends AbstractActionController {
         return new ViewModel(array(
             'form' => $form,
             'result' => $result,
+            'searchText' => $searchText,
         ));
     }
     
@@ -190,6 +183,7 @@ class OrderController extends AbstractActionController {
         return new ViewModel(array(
             'order' => $order,
             'paymentDetails' => $paymentDetails,
+            'order_search_form' => new Form\SearchOrder(),
         ));
     }
     public function changePaymentTypeAction() {
@@ -208,7 +202,7 @@ class OrderController extends AbstractActionController {
         $now = new \DateTime();
         
         $pts = array();
-        foreach($paymenttypes as $paymenttype) {
+        /*foreach($paymenttypes as $paymenttype) {
             if(!$paymenttype->getVisible()) {
                 continue;
             }
@@ -221,7 +215,8 @@ class OrderController extends AbstractActionController {
                 $pts[] = $paymenttype;
                 
             }
-        }
+        }*/
+        $pts = $paymenttypes;
         
         foreach($pts as $paymenttype) {
             $types[] = array(
@@ -252,8 +247,6 @@ class OrderController extends AbstractActionController {
                 $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
                         ->findOneBy(array('id' => $data['paymenttype_id']));
                 
-                $logger->info($paymenttype->getName());
-                
                 $order->setPaymentType($paymenttype);
                 
                 $em->persist($order);
@@ -278,7 +271,6 @@ class OrderController extends AbstractActionController {
         
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            $logger->info('there is no id');
             return $this->redirect()->toRoute('admin/order', array());
         }
         
@@ -323,7 +315,6 @@ class OrderController extends AbstractActionController {
         
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            $logger->info('there is no id');
             return $this->redirect()->toRoute('admin/order', array());
         }
         $em = $this->getServiceLocator()
@@ -357,8 +348,12 @@ class OrderController extends AbstractActionController {
                     }
 
                     # prepare email (participant, buyer)
-                    $emailService = new Service\EmailService();
-                    $emailService->setFrom('prereg@eja.net');
+                    #$emailService = new Service\EmailService();
+                    $emailService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\EmailService');
+                    $config = $this->getServiceLocator()
+                        ->get('config');
+                    $emailService->setFrom($config['ERS']['info_mail']);
 
                     $order = $package->getOrder();
                     $participant = $package->getParticipant();
@@ -371,11 +366,11 @@ class OrderController extends AbstractActionController {
                     }
 
                     $bcc = new Entity\User();
-                    $bcc->setEmail('prereg@eja.net');
+                    $bcc->setEmail($config['ERS']['info_mail']);
                     $emailService->addBcc($bcc);
 
-                    $subject = "Your registration for EJC 2016 (order ".$order->getCode()->getValue().")";
-                    $subject = "[EJC 2016] e-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
+                    #$subject = "Your registration for ".$config['ERS']['name_short']." (order ".$order->getCode()->getValue().")";
+                    $subject = "[".$config['ERS']['name_short']."] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
                     $emailService->setSubject($subject);
 
                     $viewModel = new ViewModel(array(
@@ -397,11 +392,6 @@ class OrderController extends AbstractActionController {
 
                     # send out email
                     $emailService->addAttachment($eticketFile);
-
-                    #$terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v5.pdf';
-                    #$terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v4.pdf';
-                    #$emailService->addAttachment($terms1);
-                    #$emailService->addAttachment($terms2);
 
                     $emailService->send();
                     $package->setTicketStatus('send_out');
@@ -426,7 +416,6 @@ class OrderController extends AbstractActionController {
         
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            $logger->info('there is no id');
             return $this->redirect()->toRoute('admin/order', array());
         }
         $em = $this->getServiceLocator()
@@ -450,17 +439,21 @@ class OrderController extends AbstractActionController {
                     ->findOneBy(array('id' => $id));
                 
                 # prepare email (participant, buyer)
-                $emailService = new Service\EmailService();
-                $emailService->setFrom('prereg@eja.net');
+                #$emailService = new Service\EmailService();
+                $emailService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\EmailService');
+                $config = $this->getServiceLocator()
+                        ->get('config');
+                $emailService->setFrom($config['ERS']['info_mail']);
 
                 $buyer = $order->getBuyer();
                 $emailService->addTo($buyer);
 
                 $bcc = new Entity\User();
-                $bcc->setEmail('prereg@eja.net');
+                $bcc->setEmail($config['ERS']['info_mail']);
                 $emailService->addBcc($bcc);
 
-                $subject = "[EJC 2016] Payment reminder for your order: ".$order->getCode()->getValue();
+                $subject = "[".$config['ERS']['name_short']."] Payment reminder for your order: ".$order->getCode()->getValue();
                 $emailService->setSubject($subject);
 
                 $viewModel = new ViewModel(array(
@@ -713,17 +706,20 @@ class OrderController extends AbstractActionController {
                 $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $id));
                 
-                $status = $em->getRepository('ErsBase\Entity\Status')
-                        ->findOneBy(array('value' => 'cancelled'));
+                /*$status = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'cancelled'));*/
                 $order->setPaymentStatus('cancelled');
-                $order->setStatus($status);
+                #$order->setStatus($status);
                 $em->persist($order);
                 
-                foreach($order->getItems() as $item) {
-                    #$item->setStatus('cancelled');
+                $statusService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\StatusService');
+                $statusService->setOrderStatus($order, 'cancelled', false);
+                
+                /*foreach($order->getItems() as $item) {
                     $item->setStatus($status);
                     $em->persist($item);
-                }
+                }*/
                 
                 $em->flush();
                 
@@ -766,8 +762,11 @@ class OrderController extends AbstractActionController {
                 $order->setPaymentStatus('paid');
                 $em->persist($order);
                 
+                $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'paid'));
+                
                 foreach($order->getItems() as $item) {
-                    $item->setStatus('paid');
+                    $item->setStatus($statusPaid);
                     $em->persist($item);
                 }
                 
@@ -817,7 +816,6 @@ class OrderController extends AbstractActionController {
                 $em->persist($order);
                 
                 foreach($order->getItems() as $item) {
-                    #$item->setStatus('refund');
                     $item->setStatus($status);
                     $em->persist($item);
                 }
@@ -868,7 +866,6 @@ class OrderController extends AbstractActionController {
                 $em->persist($order);
                 
                 foreach($order->getItems() as $item) {
-                    #$item->setStatus('ordered');
                     $item->setStatus($status);
                     $em->persist($item);
                 }

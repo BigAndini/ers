@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
         <?php #echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
-        <?php echo $this->headTitle($this->translate('EJC Registration System'))->setSeparator(' - ')->setAutoEscape(false)  // change Skeleton Application to Sticky Notes ?> 
+        <?php echo $this->headTitle($this->translate('Event Registration System'))->setSeparator(' - ')->setAutoEscape(false)  // change Skeleton Application to Sticky Notes ?> 
 
         <?php echo $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -63,11 +63,14 @@
                     echo $this->navigation()->menu('admin_main_nav')->render(); 
                     ?>
 
+                    <div class="nav navbar-nav navbar-right">
                     <?php 
+                    $partial_right = array('partial/admin-main-nav.phtml', 'admin_top_nav');
                     echo $this->navigation()
                         ->menu('admin_top_nav')
-                        ->setPartial(null)
-                        ->setUlClass('nav navbar-nav navbar-right'); ?>
+                        ->setPartial($partial_right)
+                        ->setUlClass(''); ?>
+                    </div>
                 </div><!--/.nav-collapse -->
             </div>
         </nav>

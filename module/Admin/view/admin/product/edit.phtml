@@ -3,7 +3,7 @@
 $title = 'Edit Product';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php
 $form = $this->form;
@@ -27,6 +27,7 @@ echo $this->formRow($form->get('short_description'));
 echo $this->formRow($form->get('long_description'));
 echo $this->formRow($form->get('personalized'));
 echo $this->formRow($form->get('tax_id'));
+echo $this->formRow($form->get('ticket_template'));
 echo $this->formSubmit($form->get('submit'));
 ?>
 <a href="<?php echo $this->url('admin/product');?>">Cancel</a>

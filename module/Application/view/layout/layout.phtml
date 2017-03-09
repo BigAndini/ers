@@ -3,15 +3,14 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta property="og:locale" content="en_GB" />
+        <meta property="og:locale" content="de_DE" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="EJC Registration System - EJC 2016" />
-        <meta property="og:description" content="Get your ticket for the EJC 2016 now!" />
+        <meta property="og:title" content="Event Registration System" />
+        <meta property="og:description" content="Get your ticket for <?php echo $this->layout()->ers_config['name_with_year']; ?>" />
         <meta property="og:url" content="<?php echo $this->serverUrl(); ?>" />
-        <meta property="og:site_name" content="EJC Registration System - ERS" />
-        <meta property="og:image" content="<?php echo $this->serverUrl('/img/EJC-2016-logo-with-mill.png'); ?>" />
-        <?php #echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
-        <?php echo $this->headTitle($this->translate('EJC Registration System'))->setSeparator(' - ')->setAutoEscape(false)  // change Skeleton Application to Sticky Notes ?> 
+        <meta property="og:site_name" content="Event Registration System - ERS" />
+        <meta property="og:image" content="<?php echo $this->serverUrl('/img/og_image.png'); ?>" />
+        <?php echo $this->headTitle($this->translate('Event Registration System'))->setSeparator(' - ')->setAutoEscape(false)  // change Skeleton Application to Sticky Notes ?> 
 
         <?php echo $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -19,7 +18,7 @@
         ?>
 
         <!-- Le styles -->
-        <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+        <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon2.ico'))
                 ->prependStylesheet($this->basePath() . '/css/style.css')
                 ->prependStylesheet($this->basePath() . '/css/bootstrap-theme.min.css')
                 ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
@@ -81,11 +80,6 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a href="<?php echo $this->url('home') ?>">
-                        <span class="navbar-brand" style="margin-top: -10px;">
-                            <img src="<?php echo $this->url('home'); ?>img/logo_small.jpg" alt="EJC 2016" />
-                        </span>
-                    </a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <?php 
@@ -125,12 +119,12 @@
             <hr>
             <footer>
                 <p style="float:right;">
-                    <a href="<?php echo $this->url('info', array('action' => 'terms')); ?>" target="_blank">terms and conditions</a><br />
-                    <a href="<?php echo $this->url('info', array('action' => 'impressum')); ?>">impressum</a><br />
-                    <a href="https://github.com/inbaz/ers/issues" target="_blank">report a bug</a><br />
+                    <a href="<?php echo $this->url('info', array('action' => 'terms')); ?>" target="_blank"><?php echo _('terms and conditions'); ?></a><br />
+                    <a href="<?php echo $this->url('info', array('action' => 'impressum')); ?>"><?php echo _('impressum'); ?></a><br />
+                    <a href="https://github.com/inbaz/ers/issues" target="_blank"><?php echo _('report a bug'); ?></a><br />
                     <span>Version: <?php echo exec('git symbolic-ref -q HEAD || git describe --tags --exact-match'); ?></span>
                 </p>
-                <p>&copy; 2014 - <?php echo date('Y') ?> by European Juggling Association <?php echo $this->translate('All rights reserved.') ?></p>
+                <p>&copy; 2014 - <?php echo date('Y') ?> <?php echo $this->config()['ERS']['operator'] ?> <?php echo $this->translate('All rights reserved.') ?></p>
             </footer>
         </div> <!-- /footer -->
         <?php echo $this->inlineScript() ?>

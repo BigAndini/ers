@@ -36,8 +36,11 @@ class PaymentController extends AbstractActionController {
         $order = $em->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
+        $config = $this->getServiceLocator()->get('config');
+        
         return new ViewModel(array(
             'order' => $order,
+            'config' => $config,
         ));
     }
     
@@ -181,7 +184,7 @@ class PaymentController extends AbstractActionController {
         
        
         
-        $config = $this->getServiceLocator()->get('Config');
+        /*$config = $this->getServiceLocator()->get('Config');
         
         $account_id     = $config['ERS\iPayment']['account_id'];
         $trxuser_id     = $config['ERS\iPayment']['trxuser_id'];
@@ -189,13 +192,23 @@ class PaymentController extends AbstractActionController {
         $trxpassword    = $config['ERS\iPayment']['trxpassword'];
         $sec_key        = $config['ERS\iPayment']['sec_key'];
         $tmp_action     = $config['ERS\iPayment']['action'];
+        $action = preg_replace('/%account_id%/', $account_id, $tmp_action);*/
+        
+        $paymentType = $order->getPaymentType();
+        $account_id     = $paymentType->getAccountId();
+        $trxuser_id     = $paymentType->getTrxuserId();
+        #$trx_currency   = $order->getCurrency()->getShort();
+        $trx_currency   = $paymentType->getTrxcurrency();
+        $trxpassword    = $paymentType->getTrxpassword();
+        $sec_key        = $paymentType->getSecKey();
+        $tmp_action     = $paymentType->getAction();
         $action = preg_replace('/%account_id%/', $account_id, $tmp_action);
         
         if($action == '') {
             throw new \Exception('iPayment configuration is missing');
         }
         
-        $logger = $this->getServiceLocator()->get('Logger');
+        #$logger = $this->getServiceLocator()->get('Logger');
         
         if($order != null) {
             $a = new \NumberFormatter("de-DE", \NumberFormatter::PATTERN_DECIMAL);
@@ -206,19 +219,7 @@ class PaymentController extends AbstractActionController {
             return $this->redirect()->toRoute('order', array('action' => 'cc-error'));
         }
         
-        #https://ipayment.de/merchant/99999/processor.php?trxuser_id=99999&trxpassword=0&trx_amount=12300&trx_paymenttyp=cc&trx_currency=EUR&redirect_url=http://ejc2016.ers.inbaz.org/thankyou&hidden_trigger_url=https://ejc2016.ers.inbaz.org/payment/cc-check
-        
-        $logger->info('trxuser_id: '.$trxuser_id);
-        $logger->info('trx_amount: '.$trx_amount);
-        $logger->info('trx_currency: '.$trx_currency);
-        $logger->info('trxpassword: '.$trxpassword);
-        $logger->info('sec_key: '.$sec_key);
-        
-        $logger->info('sec_string: '.$trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
-        
         $trx_securityhash = \md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
-        
-        $logger->info('trx_securityhash: '.$trx_securityhash);
         
         $param = array(
             'trxuser_id' => $trxuser_id,
@@ -243,7 +244,7 @@ class PaymentController extends AbstractActionController {
                         array('force_canonical' => true)
                 ),
             'trx_securityhash' => $trx_securityhash,
-            'shoppier_id' => $order->getCode()->getValue(),
+            'shopper_id' => $order->getCode()->getValue(),
         );
         
         $ipayment_url = $action.'?'.http_build_query($param);
@@ -325,14 +326,7 @@ class PaymentController extends AbstractActionController {
         $form->get('trxuser_id')->setValue($trxuser_id);
         $form->get('trxpassword')->setValue($trxpassword);
         
-        /*$logger->info('trxuser_id: '.$trxuser_id);
-        $logger->info('trx_amount: '.$trx_amount);
-        $logger->info('trx_currency: '.$trx_currency);
-        $logger->info('trxpassword: '.$trxpassword);
-        $logger->info('sec_key: '.$sec_key);*/
-        
         $trx_securityhash = \md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
-        #$logger->info('trx_securityhash: '.$trx_securityhash);
         
         $form->get('trx_securityhash')->setValue($trx_securityhash);
         $form->get('trx_amount')->setValue($trx_amount);
@@ -381,13 +375,11 @@ class PaymentController extends AbstractActionController {
         if(in_array($request->getServer('REMOTE_ADDR'), $allowed_ips)) {
             $ipmatch = true;
         } else {
-            $logger->info('unauthorized hidden trigger from: '.$request->getServer('REMOTE_ADDR'));
+            $logger->warn('unauthorized hidden trigger from: '.$request->getServer('REMOTE_ADDR'));
             return $response;
         }
         
         $post_param = $this->params()->fromPost();
-        $logger->info('$_POST:');
-        $logger->info($post_param);
         
         $return_checksum = array();
         if (isset($post_param["trxuser_id"])) {
@@ -407,9 +399,7 @@ class PaymentController extends AbstractActionController {
             $return_checksum[] = $post_param["ret_trx_number"];
         }
         $return_checksum[] = $sec_key;
-        $logger->info($return_checksum);
-        $logger->info('ret_param: '.$post_param["ret_param_checksum"]);
-        $logger->info('hash     : '.md5(implode($return_checksum)));
+        
         if ($post_param["ret_param_checksum"] != md5(implode($return_checksum))) {
             // Error because hash do not match!
             $logger->emerg('Unable to finish payment, checksums do not match.');

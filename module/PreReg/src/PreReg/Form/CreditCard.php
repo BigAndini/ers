@@ -147,13 +147,13 @@ class CreditCard extends Form
             'name' => 'addr_name', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Cardholder name...', 
+                'placeholder' => _('Cardholder name...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
                 'autocomplete' => 'off',
             ), 
             'options' => array( 
-                'label' => 'Cardholder name', 
+                'label' => _('Cardholder name'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -169,7 +169,7 @@ class CreditCard extends Form
                 'autocomplete' => 'off',
             ), 
             'options' => array( 
-                'label' => 'Credit Card Type', 
+                'label' => _('Credit Card Type'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -188,13 +188,13 @@ class CreditCard extends Form
             'name' => 'cc_number', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'Credit Card Number...', 
+                'placeholder' => _('Credit Card Number...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
                 'autocomplete' => 'off',
             ), 
             'options' => array( 
-                'label' => 'Credit Card Number', 
+                'label' => _('Credit Card Number'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -205,14 +205,14 @@ class CreditCard extends Form
             'name' => 'cc_checkcode', 
             'type' => 'Zend\Form\Element\Password', 
             'attributes' => array( 
-                'placeholder' => 'Card Check Code...', 
+                'placeholder' => _('Card Check Code...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
                 'maxlength' => '3',
                 'autocomplete' => 'off',
             ), 
             'options' => array( 
-                'label' => 'Card Check Code', 
+                'label' => _('Card Check Code'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -229,7 +229,7 @@ class CreditCard extends Form
             ),
             
             'options' => array( 
-                'label' => 'Expire Date', 
+                'label' => _('Expire Date'), 
                 /*'label_attributes' => array(
                     'class'  => '',
                 ),*/
@@ -264,12 +264,12 @@ class CreditCard extends Form
                     'class'  => '',
                 ),*/
                 'option_values' => array(
-                    '2015' => '2015',
-                    '2016' => '2016',
                     '2017' => '2017',
                     '2018' => '2018',
                     '2019' => '2019',
                     '2020' => '2020',
+                    '2021' => '2021',
+                    '2022' => '2022',
                 ),
             ), 
         ));
@@ -283,7 +283,7 @@ class CreditCard extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'pay now',
+                'value' => _('pay now'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary media-object',
             ),

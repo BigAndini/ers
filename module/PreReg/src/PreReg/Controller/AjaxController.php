@@ -21,14 +21,12 @@ class AjaxController extends AbstractActionController
         
         $id = $this->params()->fromRoute('name', 'fallback');
         if (!$id) {
-            $logger->err('Unable to set Session Storage');
+            $logger->emerg('Unable to set Session Storage');
             return $this->getResponse()->setContent('');
         }
         
         $breadcrumbService = new Service\BreadcrumbService();
         $breadcrumbService->activate($id);
-        
-        $logger->info('activated id: '.$id);
         
         return $this->getResponse()->setContent($id);
     }

@@ -1,0 +1,78 @@
+<?php
+$title = 'Statistics: Bank accounts';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">All enabled bank statements</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>name</th>
+                        <th class="text-right">amount</th>
+                        <th class="text-right">count</th>
+                        <th>latest statement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($activeStats as $key => $value): ?>
+                        <tr>
+                            <td><?php echo $this->escapeHtml($key); ?></td>
+                            <td class="text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></td>
+                            <td class="text-right"><?php echo $value['stmtcount']; ?></td>
+                            <td><?php echo ($value['latestentry'] ? (new DateTime($value['latestentry']))->format('d.m.Y H:i:s') : '-'); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>total sum</th>
+                        <th class="text-right"><?php echo $this->currencyFormat(array_sum(array_column($activeStats, 'amount')), 'EUR', null, 'de_DE'); ?></th>
+                        <th class="text-right"><?php echo array_sum(array_column($activeStats, 'stmtcount')); ?></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="panel-footer">Sum of all bank statements, excluding ones that were disabled.</div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Matched bank statements</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>name</th>
+                        <th class="text-right">amount</th>
+                        <th class="text-right">count</th>
+                        <th>latest statement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($matchingStats as $key => $value): ?>
+                        <tr>
+                            <td><?php echo $this->escapeHtml($key); ?></td>
+                            <td class="text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></td>
+                            <td class="text-right"><?php echo $value['stmtcount']; ?></td>
+                            <td><?php echo ($value['latestentry'] ? (new DateTime($value['latestentry']))->format('d.m.Y H:i:s') : '-'); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>total sum</th>
+                        <th class="text-right"><?php echo $this->currencyFormat(array_sum(array_column($matchingStats, 'amount')), 'EUR', null, 'de_DE'); ?></th>
+                        <th class="text-right"><?php echo array_sum(array_column($matchingStats, 'stmtcount')); ?></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="panel-footer">Sum of all bank statements that have been matched to an order.</div>
+        </div>
+    </div>
+</div>

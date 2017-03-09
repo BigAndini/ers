@@ -29,12 +29,13 @@ class Deadline extends Form
             'name' => 'deadline', 
             'type' => 'Zend\Form\Element\DateTime', 
             'attributes' => array( 
-                'placeholder' => 'Deadline...', 
+                'placeholder' => 'Start date...', 
                 'required' => 'required',
                 'class' => 'form-control form-element datetimepicker',
+                'step' => 'any',
             ), 
             'options' => array( 
-                'label' => 'Deadline', 
+                'label' => 'Phase starts at', 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -81,7 +82,7 @@ class Deadline extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Go',
+                'value' => 'Save',
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),

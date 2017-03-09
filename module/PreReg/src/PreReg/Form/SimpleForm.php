@@ -9,7 +9,7 @@
 namespace PreReg\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Application\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use ErsBase\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Form;
 
 class SimpleForm extends Form
@@ -29,7 +29,7 @@ class SimpleForm extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type' => 'submit',
-                'value' => 'Send',
+                'value' => _('Send'),
                 'class' => 'btn btn-default',
             ),
         ));

@@ -3,7 +3,7 @@
 $title = 'Manual Matching';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php
 $form = $this->form;
@@ -44,7 +44,9 @@ echo $this->form()->openTag($form); ?>
                                             echo ' - ';
                                             echo $buyer->getFirstname().' '.$buyer->getSurname();
                                             echo '<br>';
-                                            echo '('.$order->getPaymentType()->getName().') ';
+                                            if($order->getPaymentType()):
+                                                echo '('.$order->getPaymentType()->getName().') ';    
+                                            endif;
                                             echo $order->getCreated()->format('d.m.Y H:i:s');
                                         ?>
                                     </a>

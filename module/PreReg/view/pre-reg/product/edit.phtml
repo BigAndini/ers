@@ -1,22 +1,17 @@
 <?php $this->headTitle($product->getName()); ?>
-<a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);?>"><?php echo $this->translate('back to Overview'); ?></a>
-
 <?php if(count($product->getProductPrices()) == 0): ?>
-    <p class="desc-short">This product is unavailable</p>
+    <p class="desc-short"><?php echo $this->translate('This product is unavailable'); ?></p>
 <?php else: ?>
 <p class="desc-short"><?php echo $product->getShortDescription(); ?></p>
 <div class="product-view">
     <?php
     $form = $this->form;
     $form->prepare();
-    $form->get('submit')->setAttribute('value', 'save changes');
+    $form->get('submit')->setAttribute('value', 'save changes'); ?>
 
-    echo $this->form()->openTag($form); ?>
     <div class="row">
         <div class="col-md-5" style="text-align: center; margin: 20px 0;">
-            <!--<i class="fa fa-file-text-o product-icon-lg"></i>-->
             <i class="fa fa-ticket product-icon-lg"></i>
-            <!--<img src="/img/no-available-image.png" alt="No available image" width="200">-->
         </div>
         <div class="col-md-7">
             <div class="row">
@@ -27,7 +22,7 @@
             <?php if($formfail): ?>
             <div class="row">
                 <div class="alert alert-danger">
-                    <p>Please complete the whole form to put this product into the cart.</p>
+                    <p><?php echo $this->translate('Please complete the whole form to put this product into the cart.'); ?></p>
                 </div>
             </div>
             <?php endif; ?>
@@ -38,20 +33,24 @@
                 </div>
                 <div class="col-md-6">
                     <?php if($product->getPriceCount() != 1): ?>
-                        <p class="small text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
+                        <p class="small text-right"><?php echo $this->translate('The prices will increase after'); ?><br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
+                        <p class="text-right">
+                            <?php echo $this->partial('partial/currency-chooser.phtml', array('form' => $this->currencychooser())); ?>
+                        </p>
                     <?php endif; ?>
                     <?php echo $this->partial('partial/product-price.phtml', array('agegroups' => $agegroups, 'deadline' => $deadline, 'product' => $product)); ?>
                 </div>
             </div>
             <div class="row">
+                <?php echo $this->form()->openTag($form); ?>
                 <div class="col-md-6 ui-tabs-panel ui-widget-content ui-corner-all">
                     <div id="person-detail">
                         <ul>
                             <?php # agegroup is disabled at all this year
                             if(!$product->getPersonalized() && $product->getPriceCount() != 1 && false): ?>
-                                <li><a href="#agegroup">Agegroup</a></li>
+                                <li><a href="#agegroup"><?php echo $this->translate('Agegroup'); ?></a></li>
                             <?php endif; ?>
-                            <li><a href="#person">Person</a></li>
+                            <li><a href="#person"><?php echo $this->translate('Person'); ?></a></li>
                         </ul>
                         <?php if(!$product->getPersonalized() && $product->getPriceCount() != 1 && false): ?>
                             <div id="agegroup">
@@ -68,9 +67,9 @@
                         <div id="person">
                             <?php if($form->get('submit')->getAttribute('disabled') == 'disabled'): ?>
                                 <div class="alert alert-warning">
-                                    <h4>Please choose a person</h4>
-                                    <p>This is a personalized ticket. To continue, please first 
-                                        <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add the person</a> who will use the ticket for the event.</p>
+                                    <h4><?php echo $this->translate('Please choose a person'); ?></h4>
+                                    <p><?php echo $this->translate('This is a personalized ticket. To continue, please first'); ?> 
+                                        <a href="<?php echo $this->url('participant', array('action' => 'add')); ?>"><?php echo $this->translate('add the person'); ?></a> <?php echo $this->translate('who will use the ticket for the event.'); ?></p>
                                     <div class="clear-both"></div>
                                 </div>
                             <?php 
@@ -82,10 +81,10 @@
                              */
                             echo $this->formHidden($form->get('agegroup_id'));
                             ?>
-                            <p><strong>Tip:</strong><br />You can 
+                            <p><strong><?php echo $this->translate('Tip'); ?>:</strong><br /><?php echo $this->translate('You can'); ?> 
                                 <!--<a href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add a new person</a>-->
-                                <a href="#" data-toggle="modal" data-target="#addParticipant">add a new person</a>
-                                or edit the details of any person with "My Persons" from the main menu.</p>
+                                <a href="#" data-toggle="modal" data-target="#addParticipant"><?php echo $this->translate('add a new person'); ?></a>
+                                <?php echo $this->translate('or edit the details of any person with "My Persons" from the main menu.'); ?></p>
                         </div>
                     </div>
                     
@@ -120,10 +119,10 @@
                     <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
+                <?php echo $this->form()->closeTag(); ?>
             </div>
         </div>
     </div>
-    <?php echo $this->form()->closeTag(); ?>
 </div>
 <div id="addParticipant" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -131,10 +130,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Add new participant</h4>
+                <h4 class="modal-title"><?php echo $this->translate('Add new participant'); ?></h4>
             </div>
             <div class="modal-body">
-                <p>Some text in the modal.</p>
                 <?php
                 $participantForm = $this->participantForm;
                 $participantForm->setAttribute('action', $this->url('participant', array('action' => 'add')));
@@ -159,7 +157,7 @@
                 <?php echo $this->form()->closeTag(); ?>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo $this->translate('Close'); ?></button>
             </div>
         </div>
     </div>
@@ -170,21 +168,21 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">
-                    Added <span class="color-primary"><?php echo $product->getName(); ?></span> to your shopping cart.
+                    <?php echo $this->translate('Added'); ?> <span class="color-primary"><?php echo $product->getName(); ?></span> <?php echo $this->translate('to your shopping cart.'); ?>
                 </h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-6">
-                        <p><a class="btn btn-primary" href="<?php echo $this->url('product'); ?>"><i class="fa fa-caret-left"></i> add more products</a></p>
+                        <p><a class="btn btn-primary" href="<?php echo $this->url('product'); ?>"><i class="fa fa-caret-left"></i> <?php echo $this->translate('add more products'); ?></a></p>
                         <p><a class="btn btn-primary" href="<?php echo $this->url(
                             $bc_stay->route, 
                             $bc_stay->params, 
                             $bc_stay->options
-                            ); ?>"><i class="fa fa-caret-left"></i> add this product again</a></p>
+                            ); ?>"><i class="fa fa-caret-left"></i> <?php echo $this->translate('add this product again'); ?></a></p>
                     </div>
                     <div class="col-sm-6">
-                        <a class="btn btn-primary pull-right" href="<?php echo $this->url('order'); ?>">shopping cart <i class="fa fa-caret-right"></i></a>
+                        <a class="btn btn-primary pull-right" href="<?php echo $this->url('order'); ?>"><?php echo $this->translate('shopping cart'); ?> <i class="fa fa-caret-right"></i></a>
                     </div>
                 </div>
             </div>

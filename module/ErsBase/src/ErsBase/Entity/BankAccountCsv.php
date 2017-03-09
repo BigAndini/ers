@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * ErsBase\Entity\BankAccountCsv
  *
  * @ORM\Entity()
- * @ORM\Table(name="bank_account_csv", indexes={@ORM\Index(name="fk_bank_account_csv_bank_account1_idx", columns={"bank_account_id"})})
+ * @ORM\Table(name="`bank_account_csv`", indexes={@ORM\Index(name="fk_bank_account_csv_payment_type1_idx", columns={"`payment_type_id`"})})
  * @ORM\HasLifecycleCallbacks
  */
 class BankAccountCsv extends Base\BankAccountCsv

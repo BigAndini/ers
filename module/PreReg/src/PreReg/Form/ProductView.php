@@ -63,7 +63,7 @@ class ProductView extends Form
                 'class' => 'form-control form-element',
             ),
             'options' => array(
-                'label' => 'This ticket belongs to:',
+                'label' => _('This ticket belongs to:'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                     'id' => 'participant',
@@ -79,7 +79,7 @@ class ProductView extends Form
                 'class' => 'checkbox-inline',
             ),
             'options' => array(
-                'label' => 'Agegroup',
+                'label' => _('Agegroup'),
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -93,7 +93,7 @@ class ProductView extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Go',
+                'value' => _('Go'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),
@@ -122,10 +122,6 @@ class ProductView extends Form
         }
         $this->addVariants($defaults, $package_info);
     }
-    
-    /*public function getVariantCounter() {
-        return $this->variantCounter;
-    }*/
     
     private function addVariants($defaults = array(), $package_info = array()) {
         #$this->variantCounter = 0;
@@ -178,6 +174,9 @@ class ProductView extends Form
                     $productVariant['type'] = 'Zend\Form\Element\Select';
                     $options = array();
                     foreach($variant->getProductVariantValues() as $v) {
+                        if(!$v->getVisible()) {
+                            continue;
+                        }
                         $selected = false;
                         
                         if(isset($defaults[\urlencode($variant->getName())]) &&  $v->getId() == $defaults[\urlencode($variant->getName())]) {
@@ -200,7 +199,7 @@ class ProductView extends Form
                     if($package_info[$variant->getId()]) {
                         $options[] = array(
                             'value' => 0,
-                            'label' => 'no '.$variant->getName(),
+                            'label' => _('no').' '.$variant->getName(),
                         );
                     }
                     array_unshift($options, array(
@@ -255,7 +254,7 @@ class ProductView extends Form
                     'name' => 'Callback',
                     'options' => array(
                         'messages' => array(
-                            \Zend\Validator\Callback::INVALID_VALUE => 'Please select a person.',
+                            \Zend\Validator\Callback::INVALID_VALUE => _('Please select a person.'),
                         ),
                         'callback' => function($value, $context=array()) {
                             if(is_numeric($value)) {
@@ -275,11 +274,15 @@ class ProductView extends Form
                     'name' => 'Callback',
                     'options' => array(
                         'messages' => array(
-                            \Zend\Validator\Callback::INVALID_VALUE => 'Unable to add personalized product to person without birthdate. Please add date of birth in My Person list.',
+                            \Zend\Validator\Callback::INVALID_VALUE => _('Unable to add personalized product to person without birthdate. Please add date of birth in My Person list.'),
                         ),
                         'callback' => function($value, $context=array()) {
-                            $cartContainer = new Container('cart');
-                            $participant = $cartContainer->order->getParticipantById($value);
+                            $orderService = $this->getServiceLocator()
+                                    ->get('ErsBase\Service\OrderService');
+                            $order = $orderService->getOrder();
+                            $participant = $order->getParticipantById($value);
+                            #$cartContainer = new Container('ers');
+                            #$participant = $cartContainer->order->getParticipantById($value);
                             if(is_object($participant)) {
                                 if(!$participant->getBirthday() instanceof \DateTime) {
                                     return false;
@@ -308,7 +311,7 @@ class ProductView extends Form
                     'name' => 'Callback',
                     'options' => array(
                         'messages' => array(
-                            \Zend\Validator\Callback::INVALID_VALUE => 'Please select a agegroup.',
+                            \Zend\Validator\Callback::INVALID_VALUE => _('Please select a agegroup.'),
                         ),
                         'callback' => function($value, $context=array()) {
                             if(is_numeric($value)) {
@@ -327,11 +330,13 @@ class ProductView extends Form
         ])); 
         $this->inputFilter->add($factory->createInput([ 
             'name' => 'pv', 
-            'required' => true, 
+            'required' => false, 
             'filters' => array( 
                 array("name" => "Callback", "options" => array(
                     "callback" => function($values) {
-                        #$int = new \Zend\Filter\Int();
+                        if(!is_array($values)) {
+                            return array();
+                        }
                         $strip = new \Zend\Filter\StripTags();
                         $trim = new \Zend\Filter\StringTrim();
                         foreach($values as $key => $value) {
@@ -348,7 +353,7 @@ class ProductView extends Form
                     'name' => 'Callback',
                     'options' => array(
                         'messages' => array(
-                            \Zend\Validator\Callback::INVALID_VALUE => 'Please select a product variant.',
+                            \Zend\Validator\Callback::INVALID_VALUE => _('Please select a product variant.'),
                         ),
                         'callback' => function($values, $context=array()) {
                             foreach($values as $key => $value) {

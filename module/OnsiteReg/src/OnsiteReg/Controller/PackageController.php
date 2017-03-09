@@ -52,6 +52,14 @@ class PackageController extends AbstractActionController {
         
         $searchForm = new Form\Search();
         
+        $real_roles = $this->getServiceLocator()
+                ->get('BjyAuthorize\Provider\Identity\ProviderInterface')->getIdentityRoles();
+        
+        $roles = array();
+        foreach($real_roles as $r) {
+            $roles[] = $r->getRoleId();
+        }
+        
         return new ViewModel(array(
             'package' => $package,
             'shippedItems' => $shippedItems,
@@ -60,6 +68,7 @@ class PackageController extends AbstractActionController {
             'ticketAgegroup' => $ticketAgegroup,
             'form' => $form,
             'searchForm' => $searchForm,
+            'roles' => $roles,
         ));
     }
     
@@ -101,7 +110,7 @@ class PackageController extends AbstractActionController {
                     return $toDetailRedirect;
                 }
                 
-                if($item->getStatus() !== 'paid') {
+                if($item->getStatus()->getValue() !== 'paid') {
                     $this->flashMessenger()->addErrorMessage('The item ' . $item->getName() . ' cannot be set to shipped because it is not paid.');
                     return $toDetailRedirect;
                 }

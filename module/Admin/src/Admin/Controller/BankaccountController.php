@@ -21,7 +21,7 @@ class BankaccountController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $accounts = $em->getRepository('ErsBase\Entity\BankAccount')
+        $accounts = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findBy(array());
         
         return new ViewModel(array(
@@ -31,12 +31,35 @@ class BankaccountController extends AbstractActionController {
     
     public function addAction()
     {
-        $form = new Form\BankAccount();
-        $form->get('submit')->setValue('Add');
+        $form = new Form\PaymentType();
+        #$form->get('submit')->setValue('Add');
+        
+        $typeOptions = [
+            'empty' => [
+                'label' => 'Please select type of bank account',
+                'value' => 0,
+                'disabled' => true,
+                'selected' => true,
+            ],
+            'sepa' => [
+                'label' => 'SEPA Bank Account',
+                'value' => 'sepa',
+            ],
+            'ipayment' => [
+                'label' => '1&1 iPayment Account',
+                'value' => 'ipayment',
+            ],
+            'paypal' => [
+                'label' => 'Paypal Account',
+                'value' => 'paypal',
+            ],
+        ];
+        
+        $form->get('type')->setValueOptions($typeOptions);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $bankaccount = new Entity\BankAccount();
+            $bankaccount = new Entity\PaymentType();
             
             #$form->setInputFilter($bankaccount->getInputFilter());
             $form->setData($request->getPost());
@@ -71,7 +94,7 @@ class BankaccountController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')->findOneBy(array('id' => $id));
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')->findOneBy(array('id' => $id));
 
         $form = new Form\BankAccount();
         $form->bind($bankaccount);
@@ -104,7 +127,7 @@ class BankaccountController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         $request = $this->getRequest();
@@ -113,7 +136,7 @@ class BankaccountController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+                $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                     ->findOneBy(array('id' => $id));
                 $em->remove($bankaccount);
                 $em->flush();
@@ -136,14 +159,14 @@ class BankaccountController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         $form = new Form\BankAccountFormat();
         
         $statements = $em->getRepository('ErsBase\Entity\BankStatement')
                 ->findBy(
-                        array('bank_account_id' => $bankaccount->getId()),
+                        array('payment_type_id' => $bankaccount->getId()),
                         array(),
                         5
                         );
@@ -186,6 +209,9 @@ class BankaccountController extends AbstractActionController {
                 $this->getColumnOptions($colCount, $statement_format->date));
         
         if(!isset($statement_format->sign->col)) {
+            $statement_format->sign = new \stdClass();
+        }
+        if(!isset($statement_format->sign->col)) {
             $statement_format->sign->col = 0;
         }
         $form->get('sign')->setAttribute('options', 
@@ -207,7 +233,7 @@ class BankaccountController extends AbstractActionController {
                 $data = $form->getData();
                 
                 $id = (int) $request->getPost('id');
-                $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+                $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                     ->findOneBy(array('id' => $id));
                 
                 $format = array(
@@ -222,7 +248,7 @@ class BankaccountController extends AbstractActionController {
                 );
                 $bankaccount->setStatementFormat(json_encode($format));
                 
-                $hashes = array();
+                /*$hashes = array();
                 foreach($bankaccount->getBankStatements() as $statement) {
                     $amountCol = $statement->getAmount();
                     $amountCol->setValue((float) $amountCol->getValue());
@@ -250,7 +276,7 @@ class BankaccountController extends AbstractActionController {
 
                     $hashes[] = $statement->getHash();
                     $em->persist($statement);
-                }
+                }*/
                 
                 $em->persist($bankaccount);
                 $em->flush();
@@ -294,7 +320,7 @@ class BankaccountController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $accounts = $em->getRepository('ErsBase\Entity\BankAccount')
+        $accounts = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findBy(array());
         
         $options = array();
@@ -325,14 +351,14 @@ class BankaccountController extends AbstractActionController {
                 $data = $form->getData();
                 
                 $id = $data['bankaccount_id'];
-                $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+                $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                     ->findOneBy(array('id' => $id));
                 
                 $file = $data['csv-upload'];
                 
                 $bankAccountCsv = new Entity\BankAccountCsv();
                 $bankAccountCsv->setCsvFile($file['name']);
-                $bankAccountCsv->setBankAccount($bankaccount);
+                $bankAccountCsv->setPaymentType($bankaccount);
                 
                 $em->persist($bankAccountCsv);
                 
@@ -344,25 +370,24 @@ class BankaccountController extends AbstractActionController {
                     throw new \Exception('Unable to open csv');
                 }
                 
+                # only needed to disable negative statements.
+                # DO NOT ADJUST FIELDS ACCORDING TO THE STATEMENT FORMAT HERE!
                 $statement_format = json_decode($bankaccount->getStatementFormat());
-                $fix_amount = false;
+                /*$fix_amount = false;
                 if(is_array($statement_format)) {
                     $fix_amount = true;
-                }
+                }*/
                 
                 /*
                  * read every line in the file and generate bank statement entities
                  */
                 $row = 1;
                 $hashes = array();
-                while (($row_data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                    #$hash = md5(implode($row_data));
-                    
+                $separator = substr($data['separator'], 0, 1);
+                while (($row_data = fgetcsv($handle, 1000, $separator)) !== FALSE) {
                     $bs = new Entity\BankStatement();
-                    #$bs->setBankStatementCols($row_data);
-                    $bs->setBankAccount($bankaccount);
+                    $bs->setPaymentType($bankaccount);
                     $bs->setBankAccountCsv($bankAccountCsv);
-                    #$bs->setHash($hash);
                     $bs->setStatus('new');
                     foreach($row_data as $column => $value) {
                         $bsc = new Entity\BankStatementCol();
@@ -370,9 +395,6 @@ class BankaccountController extends AbstractActionController {
                         $bsc->setValue($value);
                         $bsc->setBankStatement($bs);
                         $bs->addBankStatementCol($bsc);
-                    }
-                    if($fix_amount) {
-                        $bs->getAmount()->setValue((float) $bs->getAmount()->getValue());
                     }
                     $bs->generateHash();
                     
@@ -413,7 +435,7 @@ class BankaccountController extends AbstractActionController {
         ));
     }
     
-    public function detailAction()
+    /*public function detailAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
@@ -427,7 +449,7 @@ class BankaccountController extends AbstractActionController {
         return new ViewModel(array(
             'order' => $order,
         ));
-    }
+    }*/
     
     public function uploadsAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
@@ -437,7 +459,7 @@ class BankaccountController extends AbstractActionController {
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\BankAccount')
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         return new ViewModel(array(
@@ -453,7 +475,7 @@ class BankaccountController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $csv = $em->getRepository('ErsBase\Entity\BankAccountCsv')
+        $csv = $em->getRepository('ErsBase\Entity\PaymentTypeCsv')
                 ->findOneBy(array('id' => $id));
         
         $request = $this->getRequest();
@@ -462,7 +484,7 @@ class BankaccountController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $csv = $em->getRepository('ErsBase\Entity\BankAccountCsv')
+                $csv = $em->getRepository('ErsBase\Entity\PaymentTypeCsv')
                     ->findOneBy(array('id' => $id));
                 if($csv->hasMatch()) {
                     return $this->redirect()->toRoute('admin/bankaccount');
@@ -485,6 +507,79 @@ class BankaccountController extends AbstractActionController {
 
         return new ViewModel(array(
             'csv' => $csv,
+        ));
+    }
+    
+    public function detailAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/bankaccount', array());
+        }
+        
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+                ->findOneBy(array('id' => $id));
+        
+        switch($bankaccount->getType()) {
+            case 'sepa':
+                $form = new Form\AccountSepabankDetail($em);
+                break;
+            case 'ipayment':
+                $form = new Form\AccountIpaymentDetail($em);
+                if(empty($bankaccount->getTrxCurrency())) {
+                    $bankaccount->setTrxCurrency('EUR');
+                }
+                if(empty($bankaccount->getAction())) {
+                    $bankaccount->setAction('https://ipayment.de/merchant/%account_id%/processor/2.0/');
+                }
+                break;
+            case 'paypal':
+                $form = new Form\AccountPaypalDetail($em);
+                break;
+            default:
+                $options = [
+                    [
+                        'value' => '',
+                        'label' => 'unkown type',
+                        'disabled' => true,
+                        'selected' => true,
+                    ],
+                    [
+                        'value' => 'sepa',
+                        'label' => 'Sepa Bank Account',
+                    ],
+                    [
+                        'value' => 'ipayment',
+                        'label' => 'iPayment Account',
+                    ],
+                    [
+                        'value' => 'paypal',
+                        'label' => 'Paypal Account',
+                    ],
+                ];
+
+                $form = new Form\AccountUnknownDetail($em);
+                $form->get('type')->setAttribute('options', $options);
+                break;
+        }
+        
+        $form->bind($bankaccount);
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $em->persist($form->getData());
+                $em->flush();
+
+                return $this->redirect()->toRoute('admin/bankaccount');
+            }
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
         ));
     }
 }

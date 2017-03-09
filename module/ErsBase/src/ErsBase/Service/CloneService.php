@@ -51,12 +51,14 @@ class CloneService
         $newPackage = clone $package;
         
         $newPackage->setOrder($package->getOrder());
+        $newPackage->setStatus($package->getStatus());
         
         foreach($package->getItems() as $item) {
             if($item->hasParentItems()) {
                 continue;
             }
             $newItem = $this->cloneItem($item);
+            $newItem->setStatus($item->getStatus());
             $newPackage->addItem($newItem);
         }
         $em->persist($newPackage);
@@ -74,6 +76,7 @@ class CloneService
                 ->get('Doctrine\ORM\EntityManager');
         
         $newItem = clone $item;
+        $newItem->setStatus($item->getStatus());
         
         foreach($item->getItemPackageRelatedBySurItemIds() as $itemPackage) {
             $newItemPackage = $this->cloneItemPackage($itemPackage);
@@ -88,7 +91,6 @@ class CloneService
             $item->setTransferredItem($newItem);
             $status = $em->getRepository("ErsBase\Entity\Status")
                 ->findOneBy(array('value' => 'transferred'));
-            #$item->setStatus('transferred');
             $item->setStatus($status);
             $em->persist($item);
         }
@@ -125,7 +127,9 @@ class CloneService
             }
             $newItem = clone $item;
             $item->setTransferredItem($newItem);
-            $item->setStatus('transferred');
+            $statusTransferred = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'transferred'));
+            $item->setStatus($statusTransferred);
             $item->setPackage($package);
             $em->persist($item);
             $newPackage->addItem($newItem);

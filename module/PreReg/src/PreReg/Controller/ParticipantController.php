@@ -98,8 +98,9 @@ class ParticipantController extends AbstractActionController {
                         $existing_user->loadData($user);
                         $em->persist($existing_user);
                         $orderService->addParticipant($existing_user);
-                    } elseif ($existing_user && $existing_user->getActive()) {
-                        throw new \Exception("This email address belongs to a registered user. Please log in.");
+                    } elseif ($existing_user && $existing_user->getActive() && !empty($this->zfcUserAuthentication()->getIdentity())) {
+                        #throw new \Exception("This email address belongs to a registered user. Please log in.");
+                        $orderService->addParticipant($existing_user);
                     } else {
                         // This email address is new. Make a regular participant out of it.
                         $orderService->addParticipant($user);
@@ -188,6 +189,10 @@ class ParticipantController extends AbstractActionController {
                 $em->persist($participant);
                 $em->flush();
                 
+                $orderService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\OrderService');
+                $orderService->updateShoppingCart();
+                
                 $breadcrumb = $breadcrumbService->get('participant');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
@@ -208,52 +213,50 @@ class ParticipantController extends AbstractActionController {
     }
     
     public function deleteAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+
+        $breadcrumbService = new Service\BreadcrumbService();
+
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('participant');
         }
-        
-        $breadcrumbService = new Service\BreadcrumbService();
-        if (!$breadcrumbService->exists('participant')) {
-            $breadcrumbService->set('participant', 'participant');
-        }
-        
-        $breadcrumb = $breadcrumbService->get('participant');
 
-        # $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-        # $participant = $em->getRepository('ErsBase\Entity\User')->findOneBy(['id' => $id]);
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
 
+        $form = new Form\SimpleForm($em);
+        $form->get('submit')->setAttributes(array(
+            'value' => _('Delete'),
+            'class' => 'btn btn-danger',
+        ));
+        
         $orderService = $this->getServiceLocator()->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         
         $participant = $order->getParticipantById($id);
-        
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $del = $request->getPost('del', 'No');
 
-            if ($del == 'Yes') {
-                $id = (int) $request->getPost('id');
-        
-                $participant = $order->getParticipantById($id);
-                
+        $form->bind($participant);
+
+        if ($this->request->isPost()) {
+            $form->setData($this->request->getPost());
+
+            if ($form->isValid()) {
                 $orderService->removeParticipant($participant);
+
+                $breadcrumb = $breadcrumbService->get('participant');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            } else {
+                $logger->warn($form->getMessages());
             }
-
-            return $this->redirect()->toRoute(
-                $breadcrumb->route,
-                $breadcrumb->params,
-                $breadcrumb->options
-            );
         }
-
-        $package = $order->getPackageByParticipantId($id);
         
-        return new ViewModel([
-            'id'    => $id,
-            'participant' => $participant,
+        $package = $order->getPackageByParticipantId($id);
+
+        return new ViewModel(array(
+            'form' => $form,
             'package' => $package,
-            'breadcrumb' => $breadcrumb,
-        ]);
+            'breadcrumb' => $breadcrumbService->get('participant'),
+        ));
     }
 }

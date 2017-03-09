@@ -29,7 +29,6 @@ class DeadlineController extends AbstractActionController {
     public function addAction()
     {
         $form = new Form\Deadline();
-        $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -72,7 +71,6 @@ class DeadlineController extends AbstractActionController {
 
         $form = new Form\Deadline();
         $form->bind($deadline);
-        $form->get('submit')->setAttribute('value', 'Edit');
 
         $request = $this->getRequest();
         if ($request->isPost()) {

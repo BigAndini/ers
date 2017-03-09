@@ -22,7 +22,7 @@ class EmailService
     protected $textMessage;
     protected $htmlMessage;
     protected $attachments;
-    protected $from = 'prereg@eja.net';
+    protected $from;
     protected $to;
     protected $cc;
     protected $bcc;
@@ -232,6 +232,9 @@ class EmailService
             $message->addBcc($user->getEmail());
         }
         
+        $config = $this->getServiceLocator()->get('config');
+        $this->setFrom($config['ERS']['sender_email']);
+        
         $message->addFrom($this->getFrom());
         $message->setSubject($this->getSubject());
         
@@ -240,7 +243,9 @@ class EmailService
     }
     
     public function sendExceptionEmail(\Exception $e) {
-        $this->setFrom('prereg@eja.net');
+        $config = $this->getServiceLocator()->get('config');
+        
+        $this->setFrom($config['ERS']['sender_email']);
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $role = $em->getRepository('ErsBase\Entity\Role')
@@ -285,12 +290,13 @@ class EmailService
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        #$session_order = new Container('order');
         $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $order_id));
         $buyer = $order->getBuyer();
         
-        $this->setFrom('prereg@eja.net');
+        $config = $this->getServiceLocator()->get('config');
+        
+        $this->setFrom($config['ERS']['sender_email']);
         
         $this->addTo($buyer);
         
@@ -298,11 +304,12 @@ class EmailService
         $bcc->setEmail($this->getFrom());
         $this->addBcc($bcc);
         
-        $subject = "Your registration for EJC 2016 (order ".$order->getCode()->getValue().")";
+        $subject = sprintf(_('Your registration for %s (order %s)'), $config['ERS']['name_short'], $order->getCode()->getValue());
         $this->setSubject($subject);
         
         $viewModel = new ViewModel(array(
             'order' => $order,
+            'config' => $config,
         ));
         $viewModel->setTemplate('email/order-confirmation.phtml');
         $viewRender = $this->getServiceLocator()->get('ViewRenderer');
@@ -310,10 +317,14 @@ class EmailService
         
         $this->setHtmlMessage($html);
         
-        $terms1 = getcwd().'/public/Terms-and-Conditions-ERS-EN-v5.pdf';
-        $terms2 = getcwd().'/public/Terms-and-Conditions-ORGA-EN-v4.pdf';
+        $terms1 = getcwd().'/public/Terms and Conditions ERS EN v7.pdf';
         $this->addAttachment($terms1);
+        
+        $terms2 = getcwd().'/public/Terms and Conditions organisation EN v6.pdf';
         $this->addAttachment($terms2);
+        
+        $promo = getcwd().'/public/pre-reg cover photo.png';
+        $this->addAttachment($promo);
         
         $this->send();
         
@@ -322,6 +333,11 @@ class EmailService
         #$orderStatus->setValue('confirmation sent');
         #$em->persist($orderStatus);
         # TODO: Create log entry that email was sent.
+        $log = new Entity\Log();
+        $log->setUser($order->getBuyer());
+        $log->setData('confirmation mail was send out to '.$order->getBuyer()->getEmail().' for order: '.$order->getCode()->getValue());
+        $em->persist($log);
+
         $em->flush();
         
         return true;

@@ -11,7 +11,9 @@
 
 return [
     'bjyauthorize' => [
-
+        // redirect to login page when user is not authorized
+        #'unauthorized_strategy' => 'BjyAuthorize\View\RedirectionStrategy',
+        
         // set the 'guest' role as default (must be defined in a role provider)
         'default_role' => 'guest',
         
@@ -142,18 +144,15 @@ return [
                 ['controller' => 'PreReg\Controller\Cart', 'action' => 'reset',     'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Order',                         'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Payment',                       'roles' => ['guest', 'user']],
-                #['controller' => 'PreReg\Controller\Order', 'action' => 'index',   'roles' => ['guest', 'user']],
-                #['controller' => 'PreReg\Controller\Package',                       'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Product',                       'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Participant',                   'roles' => ['guest', 'user']],
-                ['controller' => 'PreReg\Controller\Buyer',                     'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Buyer',                         'roles' => ['guest', 'user']],
+                ['controller' => 'PreReg\Controller\Ajax',                          'roles' => ['guest', 'user']],
                 ['controller' => 'PreReg\Controller\Test',                          'roles' => ['admin']],
-                #['controller' => 'PreReg\Controller\Profile', 'action' => 'index', 'roles' => ['user']],
                 
                 /* ZfcUser */
-                #['controller' => 'zfcuser', 'roles' => ['guest']],
                 ['controller' => 'zfcuser', 'action' => 'login',    'roles' => ['guest']],
-                ['controller' => 'zfcuser', 'action' => 'register', 'roles' => ['guest']],
+                ['controller' => 'zfcuser', 'action' => 'register', 'roles' => ['supradm']],
                 ['controller' => 'zfcuser', 'action' => 'index',    'roles' => ['user']],
                 ['controller' => 'zfcuser', 'action' => 'logout',   'roles' => ['user']],
                 ['controller' => 'zfcuser',                         'roles' => ['user']],
@@ -166,12 +165,11 @@ return [
                 
                 /* Onsite */
                 ['controller' => 'OnsiteReg\Controller\Index',                'roles' => ['onsitereg', 'admin', 'supradm']],
-                ['controller' => 'OnsiteReg\Controller\Search',                'roles' => ['onsitereg', 'admin', 'supradm']],
-                ['controller' => 'OnsiteReg\Controller\Package',                'roles' => ['onsitereg', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Search',               'roles' => ['onsitereg', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Package',              'roles' => ['onsitereg', 'admin', 'supradm']],
                 ['controller' => 'OnsiteReg\Controller\Redirect',             'roles' => ['guest', 'onsitereg', 'admin', 'supradm']],
                 
                 /* Admin */
-                #['controller' => 'Admin\Controller\Admin', 'action' => 'index', 'roles' => ['admin']],
                 ['controller' => 'Admin\Controller\Test',                'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Index',               'roles' => ['preregcoordinator', 'admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Statistic',           'roles' => ['preregcoordinator', 'admin', 'supradm']],
@@ -189,8 +187,9 @@ return [
                 ['controller' => 'Admin\Controller\Agegroup',            'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\PaymentType',         'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Counter',             'roles' => ['admin', 'supradm']],
-                ['controller' => 'Admin\Controller\User',                'roles' => ['preregcoordinator', 'admin', 'supradm']],
-                ['controller' => 'Admin\Controller\Role',                'roles' => ['admin', 'supradm']],
+                ['controller' => 'Admin\Controller\User',                'roles' => ['admin', 'supradm']],
+                ['controller' => 'Admin\Controller\User', 'action' => 'role',      'roles' => ['supradm']],            
+                ['controller' => 'Admin\Controller\Role',                'roles' => ['supradm']],
                 ['controller' => 'Admin\Controller\Country',             'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Bankaccount',         'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Matching',            'roles' => ['admin', 'supradm']],
@@ -198,6 +197,7 @@ return [
                 ['controller' => 'Admin\Controller\Refund',              'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Status',              'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Overview',            'roles' => ['admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Currency',            'roles' => ['admin', 'supradm']],
                 
                 /* Cron */
                 ['controller' => 'Admin\Controller\Cron',  'roles' => ['guest']],

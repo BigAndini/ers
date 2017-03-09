@@ -23,8 +23,8 @@ class OrderController extends AbstractActionController {
      * overview of this order
      */
     public function indexAction() {
-        $orderContainer = new Container('order');
-        $orderContainer->getManager()->getStorage()->clear('order');
+        #$orderContainer = new Container('order');
+        #$orderContainer->getManager()->getStorage()->clear('order');
         
         $forrest = new Service\BreadcrumbService();
         $forrest->reset();
@@ -32,7 +32,7 @@ class OrderController extends AbstractActionController {
         $forrest->set('participant', 'order');
         $forrest->set('cart', 'order');
         
-        #$cartContainer = new Container('cart');
+        #$cartContainer = new Container('ers');
         
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
@@ -41,7 +41,7 @@ class OrderController extends AbstractActionController {
         #$this->checkItemPrices();
         
         $logger = $this->getServiceLocator()->get('Logger');
-        $logger->info('=== shopping cart start ===');
+        /*$logger->info('=== shopping cart start ===');
         foreach($order->getPackages() as $package) {
             $participant = $package->getParticipant();
             $logger->info('participant: '.$participant->getFirstname().' '.$participant->getSurname());
@@ -60,7 +60,7 @@ class OrderController extends AbstractActionController {
                 }
             }
         }
-        $logger->info('=== shopping cart end ===');
+        $logger->info('=== shopping cart end ===');*/
         
         $agegroupService = $this->getServiceLocator()
                 ->get('ErsBase\Service\AgegroupService');
@@ -134,7 +134,7 @@ class OrderController extends AbstractActionController {
         
         if($order == null) {
             $logger = $this->getServiceLocator()->get('Logger');
-            $logger->info('order for hash key '.$hashkey.' not found');
+            $logger->warn('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
         
@@ -147,14 +147,14 @@ class OrderController extends AbstractActionController {
      * collect data for the buyer
      */
     public function buyerAction() {
-        $container = new Container('initialized');
+        $container = new Container('ers');
         if(!is_array($container->checkout)) {
             $container->checkout = array();
         }
         $container->checkout['/order/overview'] = 1;
         
-        $orderContainer = new Container('order');
-        $orderContainer->getManager()->getStorage()->clear('order');
+        #$orderContainer = new Container('order');
+        #$orderContainer->getManager()->getStorage()->clear('order');
         
         $form = new Form\Register();
         
@@ -254,8 +254,8 @@ class OrderController extends AbstractActionController {
         $forrest = new Service\BreadcrumbService();
         $forrest->set('paymenttype', 'order', array('action' => 'payment'));
         
-        $orderContainer = new Container('order');
-        $orderContainer->getManager()->getStorage()->clear('order');
+        #$orderContainer = new Container('order');
+        #$orderContainer->getManager()->getStorage()->clear('order');
         
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
@@ -297,7 +297,7 @@ class OrderController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $inputFilter = new InputFilter\PaymentType();
+            #$inputFilter = new InputFilter\PaymentType();
             $inputFilter = $this->getServiceLocator()
                     ->get('PreReg\InputFilter\PaymentType');
             $form->setInputFilter($inputFilter->getInputFilter());
@@ -309,12 +309,16 @@ class OrderController extends AbstractActionController {
                 $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
                         ->findOneBy(array('id' => $data['paymenttype_id']));
                 
+                if($paymenttype->getCurrency()->getShort() != $order->getCurrency()->getShort()) {
+                    throw new \Exception('Unable to set this payment type for this order. Please choose another payment type.');
+                }
+                
                 $order->setPaymentType($paymenttype);
                 
                 $em->persist($order);
                 $em->flush();
                 
-                $container = new Container('initialized');
+                $container = new Container('ers');
                 if(!is_array($container->checkout)) {
                     $container->checkout = array();
                 }
@@ -338,14 +342,11 @@ class OrderController extends AbstractActionController {
      * last check and checkout
      */
     public function checkoutAction() {
-        $container = new Container('initialized');
+        $container = new Container('ers');
         if(!is_array($container->checkout)) {
             $container->checkout = array();
         }
         $container->checkout['/order/checkout'] = 1;
-                
-        $cartContainer = new Container('cart');
-        $orderContainer = new Container('order');
         
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
@@ -360,9 +361,9 @@ class OrderController extends AbstractActionController {
                         ->findOneBy(array('id' => $order->getPaymentTypeId()));
         $order->setPaymentType($paymenttype);
         
-        if(isset($orderContainer->order_id)) {
+        /*if(isset($container->order_id)) {
             $order = $em->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => $orderContainer->order_id));
+                    ->findOneBy(array('id' => $container->order_id));
             if($order) {
                 return $this->redirect()->toRoute(
                         'order', 
@@ -371,7 +372,7 @@ class OrderController extends AbstractActionController {
                             'hashkey' => $order->getHashkey(),
                             ));
             }
-        }
+        }*/
         
         $form = new Form\Checkout();
         
@@ -465,12 +466,10 @@ class OrderController extends AbstractActionController {
             
             $em->flush();
         
-            $orderContainer->order_id = $order->getId();
-            
-            $cartContainer->init = 0;
-            
-            $container = new Container('initialized');
+            $container = new Container('ers');
             $container->checkout = array();
+            unset($container->order_id);
+            $container->init = 0;
             
             $emailService = $this->getServiceLocator()
                 ->get('ErsBase\Service\EmailService');
@@ -479,6 +478,19 @@ class OrderController extends AbstractActionController {
             $forrest = new Service\BreadcrumbService();
             $forrest->remove('terms');
             switch(strtolower($order->getPaymentType()->getType())) {
+                case 'sepa':
+                    return $this->redirect()->toRoute('payment', 
+                            array(
+                                'action' => 'banktransfer',
+                                'hashkey' => $order->getHashkey(),
+                                ));
+                    break;
+                case 'ukbt':
+                    return $this->redirect()->toRoute('payment', 
+                            array(
+                                'action' => 'banktransfer',
+                                'hashkey' => $order->getHashkey(),
+                                ));
                 case 'banktransfer':
                     return $this->redirect()->toRoute('payment', 
                             array(
@@ -514,6 +526,8 @@ class OrderController extends AbstractActionController {
                                 ));
                     break;
                 default:
+                    throw new \Exception('We were unable to handle your chosen payment type: '.strtolower($order->getPaymentType()->getType()));
+                    break;
             }
             
         }
@@ -568,8 +582,8 @@ class OrderController extends AbstractActionController {
      * say thank you after buyer
      */
     public function thankyouAction() {
-        /*$cartContainer = new Container('cart');
-        #$cartContainer->getManager()->getStorage()->clear('cart');
+        /*$cartContainer = new Container('ers');
+        #$cartContainer->getManager()->getStorage()->clear('ers');
         $cartContainer->init = 0;
         return new ViewModel(array(
             'order' => $order,
@@ -588,7 +602,7 @@ class OrderController extends AbstractActionController {
         
         if($order == null) {
             $logger = $this->getServiceLocator()->get('Logger');
-            $logger->info('order for hash key '.$hashkey.' not found');
+            $logger->warn('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
         
@@ -637,7 +651,7 @@ class OrderController extends AbstractActionController {
         
         if($order == null) {
             $logger = $this->getServiceLocator()->get('Logger');
-            $logger->info('order for hash key '.$hashkey.' not found');
+            $logger->warn('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
         
@@ -670,12 +684,59 @@ class OrderController extends AbstractActionController {
         
         if($order == null) {
             $logger = $this->getServiceLocator()->get('Logger');
-            $logger->info('order for hash key '.$hashkey.' not found');
+            $logger->warn('order for hash key '.$hashkey.' not found');
             return $this->notFoundAction();
         }
         
         return new ViewModel(array(
             'order' => $order,
+        ));
+    }
+    
+    public function checkEticketAction() {
+        $em = $this->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
+        
+        $form = new Form\CheckEticket($em);
+        $form->get('submit')->setValue('Check');
+
+        $package = null;
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $code = strtoupper($data['code']);
+
+                $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+                $qb->join('p.code', 'c');
+                $qb->where($qb->expr()->eq('c.value', ':code'));
+                $qb->setParameter('code', $code);
+                
+                $packages = $qb->getQuery()->getResult();
+                if(count($packages) == 1) {
+                    $package = $packages[0];
+                } else {
+                    $qb1 = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+                    $qb1->join('o.code', 'c');
+                    $qb1->where($qb1->expr()->eq('c.value', ':code'));
+                    $qb1->setParameter('code', $code);
+                    
+                    $orders = $qb1->getQuery()->getResult();
+                    if(count($orders) == 1) {
+                        $this->flashMessenger()->addErrorMessage($code . ' is your order code, please provide the code from your e-ticket to check it.');
+                    } else {
+                        $this->flashMessenger()->addErrorMessage('No e-ticket was found for code ' . $code . '. Please double check that you did not provide your order code.');
+                    }
+                }
+            }
+        }
+        return new ViewModel(array(
+            'form' => $form,
+            'package' => $package,
         ));
     }
 }

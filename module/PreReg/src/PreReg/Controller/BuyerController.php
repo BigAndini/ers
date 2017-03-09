@@ -47,7 +47,7 @@ class BuyerController extends AbstractActionController {
             if($form->isValid())
             { 
                 $user->populate($form->getData()); 
-                $cartContainer = new Container('cart');
+                $cartContainer = new Container('ers');
                 $cartContainer->order->addParticipant($user);
                 $cartContainer->order->setBuyer($user);
                 
@@ -83,7 +83,7 @@ class BuyerController extends AbstractActionController {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        $cartContainer = new Container('cart');
+        $cartContainer = new Container('ers');
         $participant = $cartContainer->order->getParticipantBySessionId($id);
         
         $form = new Form\Buyer(); 
@@ -105,7 +105,7 @@ class BuyerController extends AbstractActionController {
             if($form->isValid())
             { 
                 $participant = $form->getData();
-                $cartContainer = new Container('cart');
+                $cartContainer = new Container('ers');
                 $cartContainer->order->setParticipantBySessionId($participant, $id);
                 
                 $breadcrumb = $forrest->get('participant');
@@ -124,10 +124,7 @@ class BuyerController extends AbstractActionController {
         ));
     }*/
     
-    public function deleteAction() {
-        # maybe we do not need to delete a participant here, because the 
-        # participants user object is only held in the session and will be 
-        # deleted after session is not valid anymore.
+    /*public function deleteAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('participant');
@@ -140,7 +137,7 @@ class BuyerController extends AbstractActionController {
         
         $breadcrumb = $forrest->get('participant');
         
-        $cartContainer = new Container('cart');
+        $cartContainer = new Container('ers');
         $participant = $cartContainer->order->getParticipantBySessionId($id);
         
         $request = $this->getRequest();
@@ -169,5 +166,5 @@ class BuyerController extends AbstractActionController {
             'package' => $package,
             'breadcrumb' => $breadcrumb,
         ));
-    }
+    }*/
 }

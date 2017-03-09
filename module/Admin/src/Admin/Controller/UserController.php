@@ -26,8 +26,16 @@ class UserController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
+        $authorize = $this->getServiceLocator()->get('BjyAuthorize\Provider\Identity\ProviderInterface');
+        $roles = $authorize->getIdentityRoles();
+        $roleOptions = [];
+        foreach($roles as $role) {
+            $roleOptions[] = $role->getRoleId();
+        }
+        
         return new ViewModel(array(
             'users' => $em->getRepository('ErsBase\Entity\User')->findAll(),
+            'roles' => $roleOptions,
          ));
     }
 
@@ -47,8 +55,8 @@ class UserController extends AbstractActionController {
 
         $countries = array_merge($result1, $result2);
 
-        $cartContainer = new Container('cart');
-        $countryContainerId = $cartContainer->Country_id;
+        $container = new Container('ers');
+        $countryContainerId = $container->Country_id;
         
         $options = array();
         $selected = false;
@@ -85,7 +93,8 @@ class UserController extends AbstractActionController {
         }
         $breadcrumb = $forrest->get('user');
         
-        $form = new Form\User();
+        #$form = new Form\User();
+        $form = $this->getServiceLocator()->get('Admin\Form\User');
         $form->get('submit')->setValue('Add');
         $form->get('Country_id')->setValueOptions($this->getCountryOptions());
         
@@ -118,6 +127,10 @@ class UserController extends AbstractActionController {
                 
                 $em->persist($user);
                 $em->flush();
+                
+                if(array_key_exists('q', $breadcrumb->options['query'])) {
+                    $breadcrumb->options['query']['q'] = $user->getEmail();
+                }
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
@@ -197,7 +210,6 @@ class UserController extends AbstractActionController {
         
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            #return $this->redirect()->toRoute('admin/user');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         $em = $this->getServiceLocator()
@@ -229,10 +241,49 @@ class UserController extends AbstractActionController {
     }
     
     public function roleAction() {
+        $forrest = new Service\BreadcrumbService();
+        if(!$forrest->exists('user')) {
+            $forrest->set('user', 'admin/user');
+        }
+        $breadcrumb = $forrest->get('user');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $user = $em->getRepository('ErsBase\Entity\User')
+                ->findOneBy(array('id' => $id));
+        
         return new ViewModel(array(
-            'id' => $id,
-            'form' => $form,
+            'user' => $user,
+            'roles' => $user->getRoles(),
             'breadcrumb' => $breadcrumb,
+        ));
+    }
+    public function addRoleAction() {
+        return new ViewModel(array(
+            
+        ));
+    }
+    public function deleteRoleAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        /*if (!$id) {
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+        }*/
+        $role_id = (int) $this->params()->fromQuery('role_id', 0);
+        
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $user = $em->getRepository('ErsBase\Entity\User')
+                ->findOneBy(array('id' => $id));
+        $role = $em->getRepository('ErsBase\Entity\Role')
+                ->findOneBy(array('id' => $role_id));
+        
+        return new ViewModel(array(
+            'user' => $user,
+            'role' => $role,
         ));
     }
 }

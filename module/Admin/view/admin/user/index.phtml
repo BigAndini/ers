@@ -4,7 +4,7 @@
 $title = 'User Overview';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <table class="table">
     <tr>
@@ -33,7 +33,9 @@ $this->headTitle($title);
         </td>
         <td>
             <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/user', array('action'=>'edit', 'id' => $user->getId()));?>"><i class="fa fa-edit"></i></a>
-            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/user', array('action'=>'role', 'id' => $user->getId()));?>"><i class="fa fa-group"></i></a>
+            <?php if(in_array('supradm', $roles)): ?>
+                <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/user', array('action'=>'role', 'id' => $user->getId()));?>"><i class="fa fa-group"></i></a>
+            <?php endif; ?>
         </td>
     </tr>
 <?php endforeach; ?>

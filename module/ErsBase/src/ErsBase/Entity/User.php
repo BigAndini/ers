@@ -33,6 +33,7 @@ class User extends Base\User implements UserInterface, ProviderInterface
     public function __construct()
     {
         parent::__construct();
+        $this->setNewsletter(false);
     }
 
     /**
@@ -133,5 +134,15 @@ class User extends Base\User implements UserInterface, ProviderInterface
     
     public function getFullName() {
         return $this->getFirstname() . ' ' . $this->getSurname();
+    }
+    
+    public function increaseLoginCount() {
+        if($this->getLoginCount() == null) {
+            $this->setLoginCount(1);
+        } else {
+            $this->setLoginCount($this->getLoginCount()+1);
+        }
+        
+        return $this;
     }
 }

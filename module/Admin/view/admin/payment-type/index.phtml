@@ -3,20 +3,19 @@
 $title = 'Payment Type Overview';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
-<p>
-    <a href="<?php echo $this->url('admin/payment-type', array('action'=>'add'));?>">Add Payment Type</a><br />
-</p>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <table class="table">
     <tr>
         <th>Order</th>
         <th>Visible</th>
         <th>Name</th>
+        <th>Currency</th>
         <th>Type</th>
-        <th>Logo</th>
         <th>Period</th>
-        <th>&nbsp;</th>
+        <th class="text-right">
+            <a class="btn btn-success" href="<?php echo $this->url('admin/payment-type', array('action'=>'add'));?>"><i class="fa fa-plus"></i> Payment Type</a>
+        </th>
     </tr>
 <?php foreach ($paymenttypes as $paymenttype) : ?>
     <tr>
@@ -29,27 +28,8 @@ $this->headTitle($title);
             <?php endif; ?>
         </td>
         <td><?php echo $this->escapeHtml($paymenttype->getName()); ?></td>
+        <td><?php echo $this->escapeHtml($paymenttype->getCurrency()); ?></td>
         <td><?php echo $this->escapeHtml($paymenttype->getType()); ?></td>
-        <td>
-            
-            <?php if($paymenttype->getLogo() != ''): ?>
-            <p>
-                <img src="<?php echo $this->serverUrl('/media/'); ?><?php echo $paymenttype->getLogo(); ?>" alt="no logo" />
-            </p>
-            <p>
-                <a href="<?php $this->url('admin/payment-type', array('action' => 'editLogo', 'id' => $paymenttype->getId())); ?>">edit Logo</a>
-                <br />
-                <a href="<?php $this->url('admin/payment-type', array('action' => 'deleteLogo', 'id' => $paymenttype->getId())); ?>">delete Logo</a>
-            </p>
-            <?php else: ?>
-            <p>
-                <span>no logo</span>
-            </p>
-            <p>
-                <a href="<?php $this->url('admin/payment-type', array('action' => 'addLogo', 'id' => $paymenttype->getId())); ?>">add Logo</a>
-            </p>
-            <?php endif; ?>
-        </td>
         <td>
             <?php if($paymenttype->getActiveFrom() == null) : ?>
                no Deadline 
@@ -63,9 +43,12 @@ $this->headTitle($title);
             <?php echo $paymenttype->getActiveUntil()->getDeadline()->format('Y-m-d H:i:s'); ?>
             <?php endif; ?>
         </td>
-        <td>
-            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'edit', 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-            <a href="<?php echo $this->url('admin/payment-type', array('action'=>'delete', 'id' => $paymenttype->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+        <td class="text-right">
+            <a class="btn btn-default" href="<?php echo $this->url('admin/payment-type', array('action'=>'edit', 'id' => $paymenttype->getId()));?>" title="edit payment type"><i class="fa fa-edit"></i></a>
+            <a class="btn btn-default" href="<?php echo $this->url('admin/payment-type', array('action'=>'detail', 'id' => $paymenttype->getId()));?>" title="details for this payment type"><i class="fa fa-search"></i></a>
+            <a class="btn btn-default" href="<?php echo $this->url('admin/payment-type', array('action'=>'format', 'id' => $paymenttype->getId()));?>" title="add statement format"><i class="fa fa-bars"></i></a>
+            <a class="btn btn-default" href="<?php echo $this->url('admin/payment-type', array('action'=>'uploads', 'id' => $paymenttype->getId()));?>" title="upload csv"><i class="fa fa-upload"></i></a>
+            <a class="btn btn-danger" href="<?php echo $this->url('admin/payment-type', array('action'=>'delete', 'id' => $paymenttype->getId()));?>" title="delete payment type"><i class="fa fa-trash"></i></a>
         </td>
     </tr>
 <?php endforeach; ?>

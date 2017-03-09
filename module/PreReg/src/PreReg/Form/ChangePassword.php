@@ -34,12 +34,12 @@ class ChangePassword extends Form
             'name' => 'oldpassword', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'old password...', 
+                'placeholder' => _('old password...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Old Password', 
+                'label' => _('Old Password'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -50,12 +50,12 @@ class ChangePassword extends Form
             'name' => 'newpassword', 
             'type' => 'Zend\Form\Element\Text', 
             'attributes' => array( 
-                'placeholder' => 'new password...', 
+                'placeholder' => _('new password...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'New Password', 
+                'label' => _('New Password'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -66,12 +66,12 @@ class ChangePassword extends Form
             'name' => 'confirmpassword', 
             'type' => 'Zend\Form\Element\Password', 
             'attributes' => array( 
-                'placeholder' => 'confirm password...', 
+                'placeholder' => _('confirm password...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'Confirm Password', 
+                'label' => _('Confirm Password'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -87,7 +87,7 @@ class ChangePassword extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Save',
+                'value' => _('Save'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),

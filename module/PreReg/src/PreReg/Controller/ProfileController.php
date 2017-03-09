@@ -111,6 +111,7 @@ class ProfileController extends AbstractActionController {
     }
     
     public function requestPasswordAction() {
+        error_log('in request-password');
         $form = new Form\RequestPassword();
         
         $logger = $this->getServiceLocator()->get('Logger');
@@ -123,7 +124,6 @@ class ProfileController extends AbstractActionController {
             if($form->isValid())
             {
                 $data = $form->getData();
-                #$logger->info($data);
                 
                 $em = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
@@ -135,11 +135,11 @@ class ProfileController extends AbstractActionController {
                     $em->persist($user);
                     $em->flush();
                     
-                    $emailService = new Service\EmailService();
-                    #$emailService->setFrom('prereg@eja.net');
+                    $emailService = $this->getServiceLocator()
+                            ->get('ErsBase\Service\EmailService');
         
                     $emailService->addTo($user);
-                    $emailService->setSubject('EJC Registration System: Password Request Link');
+                    $emailService->setSubject(_('Event Registration System: Password Request Link'));
 
                     $viewModel = new ViewModel(array(
                         'user' => $user,
@@ -169,7 +169,7 @@ class ProfileController extends AbstractActionController {
         
         $hashkey = $this->params()->fromRoute('hashkey', '');
         if($hashkey == '') {
-            $logger->info('unable to find hashkey in route');
+            $logger->warn('unable to find hashkey in route');
             return $this->redirect()->toRoute('zfcuser/login');
         }
         $form = new Form\ResetPassword();
@@ -179,13 +179,15 @@ class ProfileController extends AbstractActionController {
         $user = $em->getRepository('ErsBase\Entity\User')
                 ->findOneBy(array('hashkey' => $hashkey));
         if(!$user) {
-            $logger->info('unable to find user with hash key: '.$hashkey);
+            $logger->warn('unable to find user with hash key: '.$hashkey);
             return $this->redirect()->toRoute('zfcuser/login');
         }
         
         $now = new \DateTime();
-        if(($user->getUpdated()->getTimestamp()+7200) <= $now->getTimestamp()) {
-            $logger->info('Too late, link is not enabled anymore: '.($user->getUpdated()->getTimestamp()+7200).' >= '.$now->getTimestamp());
+        # set time to reset password (ttrp) to 24 hours
+        $ttrp=86400;
+        if(($user->getUpdated()->getTimestamp()+$ttrp) <= $now->getTimestamp()) {
+            $logger->warn('Too late, link is not enabled for user '.$user->getEmail().' anymore: '.($user->getUpdated()->getTimestamp()+ttrp).' >= '.$now->getTimestamp());
             return $this->redirect()->toRoute('zfcuser/login');
         }
         

@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * ErsBase\Entity\BankStatement
  *
  * @ORM\Entity()
- * @ORM\Table(name="bank_statement", indexes={@ORM\Index(name="fk_bank_statement_bank_account_csv1_idx", columns={"bank_account_csv_id"}), @ORM\Index(name="fk_bank_statement_bank_account1_idx", columns={"bank_account_id"})})
+ * @ORM\Table(name="`bank_statement`", indexes={@ORM\Index(name="fk_bank_statement_bank_account_csv1_idx", columns={"`bank_account_csv_id`"}), @ORM\Index(name="fk_bank_statement_payment_type1_idx", columns={"`payment_type_id`"})})
  * @ORM\HasLifecycleCallbacks
  */
 class BankStatement extends Base\BankStatement
@@ -66,6 +66,22 @@ class BankStatement extends Base\BankStatement
     public function getAmount() {
         $statement_format = json_decode($this->getBankAccount()->getStatementFormat());
         return $this->getBankStatementColByNumber($statement_format->amount);
+    }
+    
+    /**
+     * get the value of the amount of this statement according to the format
+     */
+    public function getAmountValue() {
+        $pattern = array(
+            '/,/',
+            '/\./'
+        );
+        $replace = array(
+            '',
+            ''
+        );
+        $value = preg_replace($pattern, $replace, $this->getAmount()->getValue());
+        return (float) $value/100;
     }
     
     /**

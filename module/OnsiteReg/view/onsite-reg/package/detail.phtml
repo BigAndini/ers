@@ -181,5 +181,17 @@ echo $this->flashMessenger()
         </tr>
     </table>
 </div>
+<?php if(in_array('admin', $roles)): ?>
+<div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">Match to late payers</h3></div>
+    <?php 
+    #$late_payer_bs = 2137;
+    $late_payer_bs = 1; 
+    ?>
+    <div class="panel-body">
+        <a class="btn btn-success" href="<?php echo $this->url('admin/matching', array('action' => 'accept'), array('query' => array('statements[0]' => $late_payer_bs, 'orders[0]' => $order->getId()))); ?>">do match</a>
+    </div>    
+</div>
+<?php endif; ?>
 
 </div>

@@ -1,16 +1,34 @@
 <?php
 
-$title = 'Tickets for '.$ers_config['name_with_year'].' and other products';
+$title = sprintf($this->translate('Tickets for %s and other products'), $this->config()['ERS']['name_with_year']);
 $this->headTitle($title);
 ?>
 <?php if($deadline): ?>
     <h1><?php echo $this->escapeHtml($title); ?></h1>
     <div class="row">
-        <div class="col-md-6">
-            <p>Click on any item to add further information and place it in your shopping cart.</p>
+        <div class="col-md-8 col-lg-9">
+            <p><?php echo $this->translate('Click on any item to add further information and place it in your shopping cart.'); ?></p>
         </div>
-        <div class="col-md-6">
-            <p class="text-right">The prices will increase after<br><?php echo $deadline->getDeadline()->format('d.m.Y H:i:s T'); ?></p>
+        <div class="col-md-4 col-lg-3">
+            <p class="small text-right"><?php echo sprintf($this->translate('The prices will increase after <br /> %s'), $deadline->getDeadline()->format('d.m.Y H:i:s T')); ?></p>
+            <p class="text-right">
+                <?php #echo $this->partial('partial/currency-chooser.phtml', array('form' => $currencyChooser)); ?>
+                <?php echo $this->partial('partial/currency-chooser.phtml', array('form' => $this->currencychooser())); ?>
+                <?php 
+                #echo $this->form()->openTag($currencyChooser);
+                #echo $this->formCollection($currencyChooser);
+                #echo $this->form()->closeTag();
+                #$ccForm = $this->currencyChooser;
+                /*$currencyChooser->setAttribute('action', $this->url('product', array('action' => 'change-currency')));
+                $currencyChooser->prepare();
+
+                echo $this->form()->openTag($currencyChooser);
+                echo $this->formRow($currencyChooser->get('currency'));
+                echo $this->formHidden($currencyChooser->get('csrf'));
+                echo $this->formSubmit($currencyChooser->get('submit'));
+                echo $this->form()->closeTag();*/
+                ?>
+            </p>
         </div>
     </div>
 
@@ -32,11 +50,14 @@ $this->headTitle($title);
 else: ?>
     <div class="jumbotron">
         <h1>
-            <?php echo $this->escapeHtml('PreReg is closed'); ?>
+            <?php echo $this->escapeHtml($this->translate('PreReg is closed')); ?>
         </h1>
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
-                <p>The PreReg is already closed. For more information, please visit our homepage on <a href="<?php echo $ers_config['registration_info'] ?>"><?php echo $ers_config['registration_info'] ?></a></p>
+                <p><?php 
+                $config = $this->config();
+                $websiteLink = '<a href="'.$config['ERS']['website'].'">'.$config['ERS']['website'].'</a>';
+                printf($this->translate('The PreReg is already closed. For more information, please visit our homepage on %s'), $websiteLink); ?> </p>
             </div>
         </div>
     </div>

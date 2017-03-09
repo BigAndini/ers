@@ -35,6 +35,7 @@ class Item extends Base\Item
         $code = new Code();
         $code->genCode();
         $this->setCode($code);
+        $this->setShipped(false);
     }
 
     /**
@@ -107,7 +108,7 @@ class Item extends Base\Item
      * @param string $status
      * @return \Entity\Item
      */
-    public function setStatus($status)
+    public function setStatus(\ErsBase\Entity\Base\Status $status = null)
     {
         $this->status = $status;
         foreach($this->getChildItems() as $cItem) {
@@ -169,10 +170,16 @@ class Item extends Base\Item
      * @param \Entity\Package $package
      * @return \Entity\Item
      */
-    public function setPackage(Package $package = null)
+    public function setPackage(\ErsBase\Entity\Base\Package $package = null)
     {
-        $this->package = $package;
+        if($package == null) {
+            throw new \Exception('Unable to set package for item.');
+        }
+        parent::setPackage($package);
+        $this->setCurrency($package->getCurrency());
+        #$this->package = $package;
         foreach($this->getChildItems() as $cItem) {
+            $cItem->setCurrency($package->getCurrency());
             $cItem->setPackage($package);
             if($package) {
                 $cItem->setPackageId($package->getId());
@@ -202,5 +209,21 @@ class Item extends Base\Item
         $this->setItem($item);
         
         return $this;
+    }
+    
+    public function getItemVariantByName($name) {
+        foreach($this->getItemVariants() as $variant) {
+            if($variant->getName() == $name) {
+                return $variant;
+            }
+        }
+        return false;
+    }
+    
+    static public function variantCmp($a, $b) {
+        if ($a->getProductVariant()->getPosition() == $b->getProductVariant()->getPosition()) {
+            return 0;
+        }
+        return ($a->getProductVariant()->getPosition() < $b->getProductVariant()->getPosition()) ? -1 : 1;
     }
 }

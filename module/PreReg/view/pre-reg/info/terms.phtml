@@ -1,13 +1,12 @@
 <?php
 
-$this->headTitle('Terms & Conditions');
+$this->headTitle($this->translate('Terms & Conditions'));
 ?>
 
-<div>
-    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Back</a>
-    <div class="jumbotron">
-        <h1>Terms and Conditions</h1>
-        <a href="/Terms-and-Conditions-ERS-EN-v5.pdf" target="_blank">Terms and Conditions ERS EN v5</a><br />
-        <a href="/Terms-and-Conditions-ORGA-EN-v4.pdf" target="_blank">Terms and Conditions ORGA EN v4</a>
-    </div>
+<div class="jumbotron">
+    <h1><?php echo $this->translate('Terms and Conditions'); ?></h1>
+    <p>ERS Terms: <a href="/Terms and Conditions ERS EN v7.pdf">Terms and Conditions ERS</a><br />
+    ORGA Terms: <a href="/Terms and Conditions organisation EN v6.pdf">Terms and Conditions organisation</a></p>
+    <h3><?php echo $this->translate('Disclaimer'); ?></h3>
+    <p><?php echo $this->translate('Upon attending the EJC, in no event shall the host or its representatives or its assistants be liable for any loss or injury or any damages, unless they are grounded in cause of gross negligence or wilful act of breach of duty by the host or its representatives or its assistants. Participants attend by choice, on their own risk; they take the responsibility for their own health status and pay attention to it. We especially point out that the Convention is a sports event where professional jugglers and acrobats will train together with non - professionals of all skill levels. There will be workshops in all sorts of circus disciplines open (but maybe not appropriate!) for everyone; above that props and apparatus will be accessible, be it because the host provides them or any participant simply puts them up and let others use them as well. It is your own responsibility and neither the hosts\', nor the workshop leaders\', their representatives\' or assistants\' to make sure at any time that your health and fitness condition is adequate to take part in the workshop in question or to use props and apparatus mentioned hereinabove safely.'); ?></p>
 </div>

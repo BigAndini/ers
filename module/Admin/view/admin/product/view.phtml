@@ -3,13 +3,12 @@
 $title = $product->getName();
 $this->headTitle($title);
 ?>
-<a href="<?php echo $this->url('admin/product');?>">Back to Overview</a>
-<h1>
+<h1 class="page-header">
     <?php echo $this->escapeHtml($title); ?>
     <span style="font-size: 14px;">
-        <a href="<?php echo $this->url('admin/product', array('action'=>'edit', 'id' => $product->getId()));?>"><?php echo $this->translate('Edit'); ?></a>
-        <a href="<?php echo $this->url('admin/product', array('action'=>'copy', 'id' => $product->getId()));?>"><?php echo $this->translate('Copy'); ?></a>
-        <a href="<?php echo $this->url('admin/product', array('action'=>'delete', 'id' => $product->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+        <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/product', array('action'=>'edit', 'id' => $product->getId()));?>"><i class="fa fa-edit"></i></a>
+        <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/product', array('action'=>'copy', 'id' => $product->getId()));?>"><i class="fa fa-copy"></i></a>
+        <a class="btn btn-sm btn-danger" href="<?php echo $this->url('admin/product', array('action'=>'delete', 'id' => $product->getId()));?>"><i class="fa fa-trash"></i></a>
     </span>
 </h1>
 <div class="product-info-field">
@@ -48,6 +47,7 @@ $this->headTitle($title);
                 <tr>
                     <th>No.</th>
                     <th>Value</th>
+                    <th>Visible</th>
                     <th>Disabled</th>
                     <th></th>
                 </tr>
@@ -56,6 +56,13 @@ $this->headTitle($title);
                 <tr>
                     <td><?php echo $value->getPosition(); ?></td>
                     <td><?php echo $value->getValue(); ?></td>
+                    <td>
+                        <?php if($value->getVisible()): ?>
+                            <i class="fa fa-eye"></i>
+                        <?php else: ?>
+                            <i class="fa fa-eye-slash"></i>
+                        <?php endif; ?>
+                    </td>
                     <td>
                         <?php if($value->getDisabled()): ?>
                             <i class="fa fa-eye-slash"></i>
@@ -86,6 +93,7 @@ $this->headTitle($title);
             'agegroups' => $agegroups,
             'deadlines' => $deadlines,
             'product' => $product,
+            'currencies' => $currencies,
         )
     ); ?>
 </div>

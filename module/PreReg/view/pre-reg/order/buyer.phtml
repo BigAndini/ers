@@ -1,10 +1,10 @@
 <?php
 
-$title = 'My Shopping Cart';
+$title = $this->translate('My Shopping Cart');
 $this->headTitle($title);
 ?>
 
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php 
 /*echo $this->navigation()
@@ -31,16 +31,12 @@ echo $this->navigation()
 
     echo $this->form()->openTag($form);
 ?>
-<div class="checkout">
-    <?php echo $this->formSubmit($form->get('submit')); ?>
-</div>
 <div>
-    <h1>Select Buyer</h1>
+    <h2><?php echo $this->translate('Select Buyer'); ?></h2>
     <?php if(count($order->getPackages()) > 0): ?>
-    <p><strong>All e-Tickets will be emailed to the buyer.</strong> If you 
-        order items for multiple persons and provided their email addresses, 
-        they will automatically receive a copy of their e-Ticket.</p>
-    <h3>Choose Buyer</h3>
+    <p><strong><?php echo $this->translate('All E-Tickets will be emailed to the buyer.'); ?></strong> 
+        <?php echo $this->translate('If you order items for multiple persons and provided their email addresses, they will automatically receive a copy of their E-Ticket.'); ?></p>
+    <h3><?php echo $this->translate('Choose Buyer');?> </h3>
     <?php echo $this->formElementErrors($form->get('buyer_id')); ?>
     <?php 
     foreach($participants as $participant): ?>
@@ -61,19 +57,19 @@ echo $this->navigation()
                     echo $this->formHidden($form->get('buyer_id'));
                 endif; ?>
                 <input type="radio" <?php echo $checked ? 'checked="checked"' : '' ?> <?php echo $disabled ? 'disabled="disabled"' : ''; ?> name="buyer_id" value="<?php echo $participant->getId() ?>" />
-                <?php echo $participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getAge()->format('%Y years').')'; ?>
+                <?php echo $participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getAge()->format('%Y '.$this->translate('years')).')'; ?>
                 <span style="font-size: 14px;">
                     <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getId())); ?>">edit</a>
                 </span>
             </label>
             <?php if($participant->getEmail() != ''): ?>
-                <p>Email: <?php echo $participant->getEmail(); ?></p>
+                <p><?php echo $this->translate('Email:'); ?> <?php echo $participant->getEmail(); ?></p>
             <?php else: ?>
                 <p><a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getId())); ?>">Add email address</a> to choose this participant as buyer.</p>
             <?php endif; ?>
 
             <?php if($participant->getBirthday() != null): ?>
-            <p>Birthday: <?php echo $participant->getBirthday()->format('d.m.Y'); ?></p>
+            <p><?php echo $this->translate('Birthday:'); ?> <?php echo $participant->getBirthday()->format('d.m.Y'); ?></p>
             <?php endif; ?>
 
         </div>
@@ -85,7 +81,7 @@ echo $this->navigation()
     endif;
     ?>
     <div>
-        <a class="btn btn-primary<?php echo $login_email == '' ? '' : ' disabled'; ?>" href="<?php echo $this->url('participant', array('action' => 'add')); ?>">add Buyer</a>
+        <a class="btn btn-primary<?php echo $login_email == '' ? '' : ' disabled'; ?>" href="<?php echo $this->url('participant', array('action' => 'add')); ?>"><?php echo $this->translate('add Buyer'); ?></a>
     </div>
 </div>
 

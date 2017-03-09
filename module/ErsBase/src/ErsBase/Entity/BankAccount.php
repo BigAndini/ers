@@ -25,5 +25,5 @@ class BankAccount extends Base\BankAccount
     {
         parent::__construct();
     }
-
+    
 }

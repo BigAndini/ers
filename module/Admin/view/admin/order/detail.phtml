@@ -15,13 +15,38 @@ endif;
 
 $this->headTitle($title);
 ?>
-<div class="clear-both">
-    <a href="<?php echo $this->url('admin/order'); ?>">back to Overview</a><br />
-    <a href="<?php echo $this->url('admin/order', array('action' => 'search')); ?>">back to Search</a>
+<div class="clear-both"></div>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        <?php
+        $form = $this->order_search_form;
+        $form->setAttribute('action', $this->url('admin/order', 
+                array('action' => 'search')
+                ));
+        $form->prepare();
+
+        echo $this->form()->openTag($form); ?>
+        <div class="input-group input-group-lg">
+            <?php echo $this->formRow($form->get('q')); ?>
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+            </span>
+        </div><!-- /input-group -->
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
 </div>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 <?php if($order): ?>
-<h3>Order date: <?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></h3>
+<div class="row">
+    <div class="col-md-6">
+        <h3>Order date: <?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></h3>
+    </div>
+    <div class="col-md-6">
+        <h3>Comment</h3>
+        <?php echo $order->getComment(); ?>
+    </div>
+</div>
 
 <div class="navbar">
     <ul class="nav nav-pills">
@@ -36,12 +61,12 @@ $this->headTitle($title);
                 <li>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'resend-confirmation', 'id' => $order->getId())); ?>">Resend Confirmation</a>
                 </li>
-                <?php if($order->getPaymentStatus() != 'paid'): ?>
-                <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="e-Tickets cannot be send for unpaid orders.">
+                <?php if($order->getStatus()->getValue() != 'paid'): ?>
+                <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid orders.">
                 <?php else: ?>
                 <li>
                 <?php endif; ?>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">Send e-Tickets</a>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">Send E-Tickets</a>
                 </li>
                 <li>
                     <a href="<?php echo $this->url('admin/order', array('action' => 'send-payment-reminder', 'id' => $order->getId())); ?>">Send Payment Reminder</a>
@@ -78,7 +103,7 @@ $this->headTitle($title);
         <?php 
         $sum = 0;
         foreach ($order->getPackages() as $package) : 
-            if(count($package->getItems()) == 0) {
+            if(count($package->getAllItems()) == 0) {
                 continue;
             }
             $user = $package->getParticipant();
@@ -94,7 +119,7 @@ $this->headTitle($title);
                 <div class="row">
                     <div class="col-md-6">
                         <h3>
-                            <?php echo $participant.' ('.$package->getCode()->getValue().')'; ?>
+                            <?php echo $participant.' ('.$package->getCode()->getValue().', '.$package->getStatus()->getValue().')'; ?>
                         </h3>
                         <p>
                             date of birth: 
@@ -139,10 +164,10 @@ $this->headTitle($title);
                                         <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Change Package Detail</a>
                                         </li>
-                                        <?php if($package->getStatus() != 'paid'): ?>
-                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="e-Tickets cannot be send for unpaid packages.">
-                                        <?php else: ?>
+                                        <?php if($package->getStatus()->getValue() == 'paid'): ?>
                                         <li>
+                                        <?php else: ?>                                        
+                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid packages.">
                                         <?php endif; ?>
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'send-eticket', 'id' => $package->getId())); ?>">
                                                 <?php if($package->getTicketStatus() == 'send_out'): ?>
@@ -154,7 +179,7 @@ $this->headTitle($title);
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">Download e-Ticket</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">Download E-Ticket</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -179,17 +204,17 @@ $this->headTitle($title);
                     </div>
                 </div>
 
-                <?php if(count($package->getItems()) != 0): ?>
+                <?php if(count($package->getAllItems()) != 0): ?>
                 <table class="table">
                     <tr>
-                        <th>Product</th>
-                        <th class="cart-amount">Amount</th>
-                        <th class="cart-price">Price</th>
-                        <th>Status</th>
+                        <th class="col-md-8 col-xs-7">Product</th>
+                        <th class="cart-amount col-md-1 col-xs-1">Amount</th>
+                        <th class="cart-price col-md-1 col-xs-2">Price</th>
+                        <th class="col-md-2 col-xs-2">Status</th>
                     </tr>
                     <?php
                     $subtotal = 0;
-                    foreach ($package->getItems() as $item):
+                    foreach ($package->getAllItems() as $item):
                         if($item->hasParentItems()) {
                             continue;
                         }
@@ -202,13 +227,17 @@ $this->headTitle($title);
                     <tr>
                         <td></td>
                         <td>Subtotal:</td>
-                        <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
+                        <td><?php echo $this->currencyFormat($subtotal, $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                         <td></td>
                     </tr>
                 </table>
                 <?php endif; ?>
                 <div class="row">
-                    <div class="col-md-12 text-right">
+                    <div class="col-md-5">
+                        <h4>Comment</h4>
+                        <?php echo $package->getComment(); ?>
+                    </div>
+                    <div class="col-md-7 text-right">
                         <ul class="list-inline">
                             <li data-toggle="tooltip" data-placement="bottom" title="there is no match for this item, yet">
                                 <i class="fa fa-shopping-cart primary-color"></i> ordered
@@ -241,15 +270,15 @@ $this->headTitle($title);
             <table class="table sum-table">
                 <tr>
                     <td>Order amount:</td>
-                    <td class="text-right"><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+                    <td class="text-right"><?php echo $this->currencyFormat($order->getPrice(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
                     <td>Payment Charge:</td>
-                    <td class="text-right"><?php echo $this->currencyFormat(($order->getSum()-$order->getPrice()), 'EUR', null, 'de_DE'); ?></td>
+                    <td class="text-right"><?php echo $this->currencyFormat(($order->getSum()-$order->getPrice()), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
                     <th><span style="font-size: 18px;">Total amount:</span></th>
-                    <th class="text-right"><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></span></th>
+                    <th class="text-right"><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></span></th>
                 </tr>
             </table>
         </div>
@@ -269,7 +298,6 @@ $this->headTitle($title);
                 (<a href="mailto:<?php echo $buyer->getEmail(); ?>"><?php echo $buyer->getEmail(); ?></a>)
             </h4>
         <?php else: ?>
-            <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
             <a href="<?php echo $this->url('admin/order', array('action' => 'register')); ?>">choose Buyer</a>
         <?php endif; ?>
 
@@ -277,7 +305,6 @@ $this->headTitle($title);
         <?php if($paymenttype) : ?>
             <h4>Payment Type: <?php echo $paymenttype->getName(); ?></h4>
         <?php else: ?>
-            <?php $form->get('submit')->setAttribute('disabled', 'disabled'); ?>
             <a href="<?php echo $this->url('order', array('action' => 'payment')); ?>">choose paymenttype</a>
         <?php endif; ?>  
         <?php foreach($order->getMatches() as $match): 
@@ -300,10 +327,10 @@ $this->headTitle($title);
                                     <a class="btn btn-danger" href="<?php echo $this->url('admin/matching', array('action' => 'unlink', 'id' => $match->getId())); ?>">unlink</a>
                                 </div>
                                 <div class="col-md-4 text-right">
-                                    <?php if(is_numeric($statement->getAmount()->getValue())):
-                                        echo $this->currencyFormat((float) $statement->getAmount()->getValue(), 'EUR', null, 'de_DE');
+                                    <?php if(is_numeric($statement->getAmountValue())):
+                                        echo $this->currencyFormat($statement->getAmountValue(), 'EUR', null, 'de_DE');
                                     else :
-                                        echo $statement->getAmount()->getValue();
+                                        echo $statement->getAmountValue();
                                     endif; ?>
                                 </div>
                             </div>
@@ -315,7 +342,7 @@ $this->headTitle($title);
                             </tr>
                             <tr>
                                 <th>who</th>
-                                <td><?php echo $match->getAdmin()->getFirstname().' '.$match->getAdmin()->getSurname(); ?></td>
+                                <td><?php echo $match->getUser()->getFirstname().' '.$match->getUser()->getSurname(); ?></td>
                             </tr>
                             <tr>
                                 <th>when</th>
@@ -363,7 +390,7 @@ $this->headTitle($title);
                             </tr>
                             <tr>
                                 <th>amount</th>
-                                <td><?php echo $statement->getAmount()->getValue(); ?></td>
+                                <td><?php echo $statement->getAmountValue(); ?></td>
                             </tr>
                             <tr>
                                 <th>code</th>

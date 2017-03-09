@@ -12,7 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ErsBase\Entity;
 use Zend\Session\Container;
-#use Admin\Form;
+use Admin\Form;
 use ErsBase\Service;
 
 class ProductController extends AbstractActionController {
@@ -93,7 +93,11 @@ class ProductController extends AbstractActionController {
             $form->setData($request->getPost());
             
             if ($form->isValid()) {
-                $em->persist($form->getData());
+                #$em->persist($form->getData());
+                if($product->getDeleted() == '') {
+                    $product->setDeleted(0);
+                }
+                $em->persist($product);
                 $em->flush();
 
                 $forrest = new Service\BreadcrumbService();
@@ -135,12 +139,15 @@ class ProductController extends AbstractActionController {
         $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
                 ->findBy(array('price_change' => '1'), array('deadline' => 'ASC'));
         $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
-                ->findBy(array('price_change' => '1'), array('agegroup' => 'ASC'));
+                ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
+        $currencies = $em->getRepository('ErsBase\Entity\Currency')
+                ->findBy(array('active' => '1'), array('position' => 'ASC'));
         
         return new ViewModel(array(
             'product' => $product,
             'agegroups' => $agegroups,
             'deadlines' => $deadlines,
+            'currencies' => $currencies,
         ));
     }   
     
@@ -192,6 +199,59 @@ class ProductController extends AbstractActionController {
 
     public function deleteAction()
     {
+        $logger = $this->getServiceLocator()->get('Logger');
+
+        $breadcrumbService = new Service\BreadcrumbService();
+
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/product');
+        }
+
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+
+        $form = new Form\SimpleForm($em);
+        $form->get('submit')->setAttributes(array(
+            'value' => 'Delete',
+            'class' => 'btn btn-danger',
+        ));
+        
+        $product = $em->getRepository('ErsBase\Entity\Product')
+                ->findOneBy(array('id' => $id));
+        $form->bind($product);
+        
+        $items = $em->getRepository('ErsBase\Entity\Item')
+                ->findBy(array('Product_id' => $id));
+
+        if ($this->request->isPost()) {
+            $form->setData($this->request->getPost());
+
+            if ($form->isValid()) {
+                
+                $this->removeProductPrices($product);
+                $this->removeProductVariants($product);
+                
+                $em->remove($product);
+                $em->flush();
+
+                $breadcrumb = $breadcrumbService->get('product');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+
+        return new ViewModel(array(
+            'form' => $form,
+            'items' => $items,
+            'product' => $product,
+            'breadcrumb' => $breadcrumbService->get('product'),
+        ));
+
+        
+        
+        
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('admin/product');

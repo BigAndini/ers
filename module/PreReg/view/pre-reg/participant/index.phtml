@@ -1,18 +1,18 @@
 <?php
 
-$title = 'Personal Details';
+$title = $this->translate('Personal Details');
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
-<p>List of people I'm booking EJC tickets for.</p>
-<p><a class="btn btn-primary" href="<?php echo $this->url('participant', array('action'=>'add'));?>">Add person</a></p>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<p><?php echo $this->translate('List of people I\'m booking EJC tickets for.'); ?></p>
+<p><a class="btn btn-primary" href="<?php echo $this->url('participant', array('action'=>'add'));?>"><?php echo $this->translate('Add person'); ?></a></p>
 
 <table class="table">
     <tr>
-        <th class="person-name">Name</th>
-        <th class="person-birthday">Birthday</th>
-        <th class="person-email">Email</th>
-        <th class="person-country">Country</th>
+        <th class="person-name"><?php echo $this->translate('Name'); ?></th>
+        <th class="person-birthday"><?php echo $this->translate('Birthday'); ?></th>
+        <th class="person-email"><?php echo $this->translate('Email'); ?></th>
+        <th class="person-country"><?php echo $this->translate('Country'); ?></th>
         <th class="person-tools"></th>
     </tr>
     <?php foreach ($participants as $participant) : ?>
@@ -29,7 +29,7 @@ $this->headTitle($title);
                     $country = $participant->getCountry();
                     echo $country->getName();
                 else:
-                    echo 'no Country';
+                    echo $this->translate('no Country');
                 endif; ?>
             </td>
             <td>
@@ -39,4 +39,4 @@ $this->headTitle($title);
         </tr>
     <?php endforeach; ?>
 </table>
-<p><a class="btn btn-primary" href="<?php echo $this->url('participant', array('action'=>'add'));?>">Add person</a></p>
+<p><a class="btn btn-primary" href="<?php echo $this->url('participant', array('action'=>'add'));?>"><?php echo $this->translate('Add person'); ?></a></p>

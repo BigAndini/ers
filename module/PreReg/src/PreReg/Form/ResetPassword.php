@@ -24,12 +24,12 @@ class ResetPassword extends Form
             'name' => 'newPassword', 
             'type' => 'Zend\Form\Element\Password', 
             'attributes' => array( 
-                'placeholder' => 'your password...', 
+                'placeholder' => _('your password...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'new password', 
+                'label' => _('new password'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -40,12 +40,12 @@ class ResetPassword extends Form
             'name' => 'newPassword2', 
             'type' => 'Zend\Form\Element\Password', 
             'attributes' => array( 
-                'placeholder' => 'confirm password...', 
+                'placeholder' => _('confirm password...'), 
                 'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
-                'label' => 'confirm password', 
+                'label' => _('confirm password'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -61,7 +61,7 @@ class ResetPassword extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Save',
+                'value' => _('Save'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary',
             ),

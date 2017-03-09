@@ -44,9 +44,6 @@ class MatchingController extends AbstractActionController {
     public function manualAction() {        
         $logger = $this->getServiceLocator()->get('Logger');
         
-        #$logger->info($param_orders);
-        #$logger->info($param_statements);
-        
         $forrest = new Service\BreadcrumbService();
         $forrest->set('matching', 'admin/matching', array('action' => 'manual'));
         
@@ -81,7 +78,7 @@ class MatchingController extends AbstractActionController {
         /*
          * add bankaccounts to view model
          */
-        $bankaccounts = $em->getRepository('ErsBase\Entity\BankAccount')
+        $bankaccounts = $em->getRepository('ErsBase\Entity\PaymentType')
             ->findBy(array());
         
         /*
@@ -108,8 +105,6 @@ class MatchingController extends AbstractActionController {
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                $logger->info(var_export($data, true));
-                
                 /*
                  * get orders
                  */
@@ -127,19 +122,6 @@ class MatchingController extends AbstractActionController {
                     $statements[] = $em->getRepository('ErsBase\Entity\BankStatement')
                         ->findBy(array('id' => $statement_id));
                 }
-                
-                /*
-                 * do matches and set order to paid
-                 */
-                /*foreach($orders as $order) {
-                    if($order->getSum() <= (float) $statement->getAmount()) {
-                        $order->setStatus('paid');
-                    }
-                    $match = new Entity\Match();
-                    $match->setOrder($order);
-                    $match->setBankStatement($statement);
-                    $match->setAdminId($this->zfcUserAuthentication()->getIdentity()->getId());
-                }*/
                 
                 $params['statements'] = $data['statements'];
                 $params['orders'] = $data['orders'];
@@ -210,8 +192,6 @@ class MatchingController extends AbstractActionController {
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                $logger->info(var_export($data, true));
-                
                 $status = 'unpaid';
                 if($data['half-match'] == null) {
                     $status = 'paid';
@@ -245,20 +225,41 @@ class MatchingController extends AbstractActionController {
                 
                 $statement_sum = 0;
                 foreach($statements as $statement) {
-                    $statement_sum += (float) $statement->getAmount()->getValue();
+                    $statement_sum += $statement->getAmountValue();
                 }
                 
                 /*
                  * do matches and set order to paid
                  */
+                $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'paid'));
+                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
                 foreach($orders as $order) {
-                    foreach($order->getItems() as $item) {
+                    if($status == 'paid') {
+                        $order->setStatus($statusPaid);
+                        $em->persist($order);
+                    } elseif($status == 'unpaid') {
+                        $order->setStatus($statusOrdered);
+                        $em->persist($order);
+                    }
+        
+                    foreach($order->getPackages() as $package) {
                         if($status == 'paid') {
-                            $item->setStatus('paid');
-                            $em->persist($item);
+                            $package->setStatus($statusPaid);
+                            $em->persist($package);
                         } elseif($status == 'unpaid') {
-                            $item->setStatus('ordered');
-                            $em->persist($item);
+                            $package->setStatus($statusOrdered);
+                            $em->persist($package);
+                        }
+                        foreach($package->getItems() as $item) {
+                            if($status == 'paid') {
+                                $item->setStatus($statusPaid);
+                                $em->persist($item);
+                            } elseif($status == 'unpaid') {
+                                $item->setStatus($statusOrdered);
+                                $em->persist($item);
+                            }
                         }
                     }
                     $order->setPaymentStatus($status);
@@ -271,7 +272,8 @@ class MatchingController extends AbstractActionController {
                         $match->setBankStatement($statement);
                         $user = $this->zfcUserAuthentication()->getIdentity();
                         #$match->setAdminId($this->zfcUserAuthentication()->getIdentity()->getId());
-                        $match->setAdmin($user);
+                        #$match->setAdmin($user);
+                        $match->setUser($user);
                         $match->setComment($data['comment']);
                         
                         $em->persist($match);
@@ -335,10 +337,15 @@ class MatchingController extends AbstractActionController {
                 
                 $order = $match->getOrder();
                 $order->setPaymentStatus('unpaid');
+                $statusService = $this->getServiceLocator()->get('ErsBase\Service\StatusService');
+                $statusService->setOrderStatus($order, 'ordered', false);
                 $em->persist($order);
                 
+                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+                
                 foreach($order->getItems() as $item) {
-                    $item->setStatus('ordered');
+                    $item->setStatus($statusOrdered);
                     $em->persist($item);
                 }
                 #$em->remove($match);

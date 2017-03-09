@@ -42,6 +42,21 @@ class ProductPrice extends Form
         ));
         
         $this->add(array(
+            'name' => 'currency_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required', 
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'Currency',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
+        $this->add(array(
             'name' => 'Deadline_id',
             'type'  => 'Zend\Form\Element\Select',
             'attributes' => array(

@@ -3,7 +3,7 @@
 $title = 'Accept move for package '.$package->getCode()->getValue();
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php if($package == null) : ?>
 <h3>It was not possible to collect all data to change participant.</h3>

@@ -32,7 +32,7 @@ class Checkout extends Form
                 'class' => 'checkbox-inline',
             ), 
             'options' => array( 
-                'label' => 'I agree to all terms and conditions',
+                'label' => _('I agree to all terms and conditions'),
                 'use_hidden_element' => true,
                 'checked_value' => 1,
                 'unchecked_value' => 'no',
@@ -48,7 +48,7 @@ class Checkout extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Buy Now',
+                'value' => _('Buy Now'),
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary btn-lg',
             ),

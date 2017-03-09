@@ -9,16 +9,16 @@ if($order == null || $trx_amount == 0):
     ?>
     <div class='jumbotron'>
         <h1><?php echo $this->escapeHtml($title); ?></h1>
-        <p>Your order could not be found. Please recheck the link you've used.</p>
-        <p>If there are any problems conntact us at <a href='mailto:prereg@eja.net'>prereg@eja.net</a></p>
+        <p><?php echo $this->translate('Your order could not be found. Please recheck the link you\'ve used.'); ?></p>
+        <p><?php echo $this->translate('If there are any problems conntact us at'); ?> <a href='mailto:prereg@eja.net'>prereg@eja.net</a></p>
     </div>
 <?php else:
-    $title = 'Pay by Credit Card';
+    $title = $this->translate('Pay by Credit Card');
     $this->headTitle($title);
     ?>
     <h1><?php echo $this->escapeHtml($title); ?></h1>
     <div>
-        <h4>Amount: <?php echo $this->currencyFormat($order->getSum(), 'EUR', null, 'de_DE'); ?></h4>
+        <h4>Amount: <?php echo $this->currencyFormat($order->getSum(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></h4>
         <div class="row">
             <div class="col-md-3">
                 <?php
@@ -28,8 +28,8 @@ if($order == null || $trx_amount == 0):
                 ?>
             </div>
             <div class="col-md-3">
-                <p><strong>Note:</strong> You can find your Card Check Code at 
-                    the backsite of your credit card.</p>
+                <p><strong><?php echo $this->translate('Note:'); ?></strong> <?php echo $this->translate('You can find your Card Check Code at 
+                    the backsite of your credit card.'); ?></p>
                 <img src="/img/scr_kartenpruefziffer_01.jpg" alt=""><br />
                 <img src="/img/scr_kartenpruefziffer_02.jpg" alt="">
             </div>

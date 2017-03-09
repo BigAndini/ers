@@ -9,34 +9,54 @@
 <?php foreach ($deadlines as $deadline) : ?>
 <tr>
     <th>
-        <?php echo $deadline->getDeadline()->format('d.m.Y H:i:s'); ?>
+        <?php echo $deadline->getName().' ('.$deadline->getDeadline()->format('d.m.Y H:i:s').')'; ?>
     </th>
     <?php foreach($agegroups as $agegroup) : ?>
         <td>
-        <?php foreach($product->getProductPrices() as $price):
-            if(
-                $price->getAgegroup() != null && 
-                $price->getAgegroup()->getId() == $agegroup->getId() && 
-                $price->getDeadline() != null && 
-                $price->getDeadline()->getId() == $deadline->getId()): ?>
-                <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
-                <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
-                <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
-            <?php endif;
-        endforeach; ?>
+            <?php foreach($currencies as $currency): ?>
+                <div class="text-right">
+                    <?php $price = $product->getProductPrice($agegroup, $deadline, $currency, false);
+                    if($price): ?>
+                        <?php echo $this->currencyFormat($price->getCharge(), $currency->getShort(), null, 'de_DE'); ?>
+                        <a class="btn btn-xs btn-default" href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
+                        <a class="btn btn-xs btn-danger" href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+                    <?php else: ?>
+                        <?php echo $currency->getSymbol().': no price'; ?>
+                        <a class="btn btn-xs btn-success" href="<?php echo $this->url(
+                                'admin/product-price', 
+                                array('action' => 'add', 'id' => $product->getId()),
+                                array('query' => array(
+                                    'currency_id' => $currency->getId(),
+                                    'agegroup_id' => $agegroup->getId(),
+                                    'deadline_id' => $deadline->getId()
+                                ))); ?>"><i class="fa fa-plus"></i></a>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
         </td>
     <?php endforeach; ?>
     <td>
-    <?php foreach($product->getProductPrices() as $price):
-        if(
-            $price->getAgegroup() == null &&
-            $price->getDeadline() != null && 
-            $price->getDeadline()->getId() == $deadline->getId()): ?>
-            <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
-            <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
-            <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
-        <?php endif; 
-    endforeach;?>
+        <?php foreach($currencies as $currency): ?>
+            <div class="text-right">
+                <?php $price = $product->getProductPrice(null, $deadline, $currency, false);
+                if($price): ?>
+                    <?php echo $this->currencyFormat($price->getCharge(), $currency->getShort(), null, 'de_DE'); ?>
+                    <a class="btn btn-xs btn-default" href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
+                    <a class="btn btn-xs btn-danger" href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+                <?php else: ?>
+                    <?php echo $currency->getSymbol().': no price'; ?>
+                    <a class="btn btn-xs btn-success" href="<?php echo $this->url(
+                            'admin/product-price', 
+                            array('action' => 'add', 'id' => $product->getId()),
+                            array('query' => array(
+                                'currency_id' => $currency->getId(),
+                                'agegroup_id' => null,
+                                'deadline_id' => $deadline->getId()
+                            ))
+                            ); ?>"><i class="fa fa-plus"></i></a>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
     </td>
 </tr>
 <?php endforeach; ?>
@@ -44,29 +64,51 @@
     <th>no Deadline</th>
     <?php foreach($agegroups as $agegroup) : ?>
         <td>
-        <?php foreach($product->getProductPrices() as $price):
-            if(
-                $price->getAgegroup() != null && 
-                $price->getAgegroup()->getId() == $agegroup->getId() && 
-                $price->getDeadline() == null): ?>
-                <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
-                <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
-                <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+        <?php foreach($currencies as $currency): 
+            $price = $product->getProductPrice($agegroup, null, $currency, false);
+            if($price): ?>
+                <div class="text-right">
+                    <?php echo $this->currencyFormat($price->getCharge(), $currency->getShort(), null, 'de_DE'); ?>
+                    <a class="btn btn-xs btn-default" href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
+                    <a class="btn btn-xs btn-danger" href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+                </div>
+            <?php else: ?>
+                <div class="text-right">
+                    <?php echo $currency->getSymbol().': no price'; ?>
+                    <a class="btn btn-xs btn-success" href="<?php echo $this->url(
+                            'admin/product-price', 
+                            array('action' => 'add', 'id' => $product->getId()),
+                            array('query' => array(
+                                'currency_id' => $currency->getId(),
+                                'agegroup_id' => $agegroup->getId(),
+                                'deadline_id' => null
+                            ))); ?>"><i class="fa fa-plus"></i></a>
+                </div>
             <?php endif;
         endforeach; ?>
         </td>
     <?php endforeach; ?>
     <td>
-    <?php foreach($product->getProductPrices() as $price):
-        if(
-            $price != null &&
-            $price->getAgegroup() == null && 
-            $price->getDeadline() == null): ?>
-            <?php echo $this->currencyFormat($price->getCharge(), 'EUR', null, 'de_DE'); ?>
-            <a href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
-            <a href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
-        <?php endif; ?>
-    <?php endforeach; ?>
+        <?php foreach($currencies as $currency): ?>
+            <div class="text-right">
+            <?php $price = $product->getProductPrice(null, null, $currency, false);
+            if($price): ?>
+                <?php echo $this->currencyFormat($price->getCharge(), $currency->getShort(), null, 'de_DE'); ?>
+                <a class="btn btn-xs btn-default" href="<?php echo $this->url('admin/product-price', array('action' => 'edit', 'id' => $price->getId())) ?>"><i class="fa fa-edit"></i></a>
+                <a class="btn btn-xs btn-danger" href="<?php echo $this->url('admin/product-price', array('action' => 'delete', 'id' => $price->getId())) ?>"><i class="fa fa-remove"></i></a>
+            <?php else: ?>
+                <?php echo $currency->getSymbol().': no price'; ?>
+                <a class="btn btn-xs btn-success" href="<?php echo $this->url(
+                        'admin/product-price', 
+                        array('action' => 'add', 'id' => $product->getId()),
+                            array('query' => array(
+                                'currency_id' => $currency->getId(),
+                                'agegroup_id' => null,
+                                'deadline_id' => null
+                            ))); ?>"><i class="fa fa-plus"></i></a>    
+            <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
     </td>
 </tr>
 </table>

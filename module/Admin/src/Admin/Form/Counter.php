@@ -9,11 +9,11 @@
 namespace Admin\Form;
 
 use Zend\Form\Form;
-
+use Doctrine\ORM\EntityManager;
 
 class Counter extends Form
 {
-    public function __construct(Doctrine\ORM\EntityManager $em)
+    public function __construct(EntityManager $em)
     {
         parent::__construct('Counter');
         $this->setAttribute('method', 'post');

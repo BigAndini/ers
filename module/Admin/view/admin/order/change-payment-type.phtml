@@ -4,7 +4,7 @@
 $title = 'Change Order: '.$order->getCode()->getValue();
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 
 <?php
@@ -21,10 +21,10 @@ $this->headTitle($title);
 ?>
 <div>
     <?php if(count($paymenttypes) <= 0): ?>
-        <h1>There are currently no payment types available</h1>
+        <h2>There are currently no payment types available</h2>
         <p>There are currently no payment options available. Please check back at a later date. Sorry!</p>
     <?php else: ?>
-        <h1>Choose Payment type</h1>
+        <h2>Choose Payment type</h2>
         <?php echo $this->formElementErrors($form->get('paymenttype_id')); ?>
         <?php foreach($paymenttypes as $paymenttype): ?>
             <div class="row">
@@ -35,9 +35,19 @@ $this->headTitle($title);
                         $checked = false;
                     endif; ?>
                     <label class="payment-type">
-                    <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
-                    <?php echo $paymenttype->getName(); ?>
+                        <?php if($order->getPaymentType()->getCurrency()->getShort() == $paymenttype->getCurrency()->getShort()): ?>
+                            <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
+                        <?php else: ?>    
+                            <input disabled="disabled" style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 
+                        <?php endif; ?>
+                        <?php echo $paymenttype->getName(); ?>
                     </label>
+                    <?php if($order->getPaymentType()->getCurrency()->getShort() != $paymenttype->getCurrency()->getShort()): ?>
+                        <div class="alert alert-info">
+                            <i class="fa fa-warning"></i>
+                            The currencies of order and payment type do not fit.
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>

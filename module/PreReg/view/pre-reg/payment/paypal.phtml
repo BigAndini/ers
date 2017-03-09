@@ -1,21 +1,21 @@
 <?php
 if(isset($notfound)):
-    $title = 'Unable to find payment information';
+    $title = $this->translate('Unable to find payment information');
     $this->headTitle($title);
 ?>
 
     <div class="jumbotron">
         <h1><?php echo $this->escapeHtml($title); ?></h1>
-        <p>The system was not able to find the according order for this payment info 
-            page. With your purchase you got an email with all needed data. Please 
-            use the link in there.</p>
+        <p><?php echo $this->translate('The system was not able to find the according order for this payment info page. With your purchase you got an email with all needed data. Please use the link in there.'); ?></p>
     </div>
 
 <?php elseif(isset($error)):
-    $this->headTitle('PayPal Error');
+    $title = $this->translate('PayPal error');
+    $this->headTitle(title);
 ?>
 
     <div class="jumbotron">
+        <h1><?php echo $this->escapeHtml($title); ?></h1>
         <p class="text-danger"><i class="fa fa-warning"></i>
         <?php echo $this->escapeHtml($error); ?></p>
     </div>

@@ -1,16 +1,10 @@
 <?php
 
-$title = 'My Shopping Cart';
+$title = $this->translate('My Shopping Cart');
 $this->headTitle($title);
 ?>
 
-<h1><?php echo $this->escapeHtml($title); ?></h1>
- 
-<?php 
-/*echo $this->navigation()
-    ->menu('checkout_nav')
-    ->setUlClass('nav navbar-nav navbar-checkout');*/
-?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php 
 $partial = array('partial/checkout-nav.phtml', 'checkout_nav');
@@ -23,12 +17,15 @@ echo $this->navigation()
 ?>
 
 <div class="clear-both"></div>
-
-<div class="checkout">
-    <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'buyer')) ?>">Continue</a>
+<div class="row">
+    <div class="text-right col-md-3 col-md-offset-9 col-lg-3 col-lg-offset-9">
+        <?php echo $this->partial('partial/currency-chooser.phtml', array('form' => $this->currencychooser())); ?>
+    </div>
 </div>
+
+<h2>Your products</h2>
 <div class="reset-cart">
-    <a href="<?php echo $this->url('cart', array('action' => 'reset')) ?>">Reset My Shopping Cart and My Persons</a>
+    <a href="<?php echo $this->url('cart', array('action' => 'reset')) ?>"><?php echo $this->translate('Reset My Shopping Cart and My Persons'); ?></a>
 </div>
     <div>
         <?php 
@@ -40,10 +37,10 @@ echo $this->navigation()
                 $user = $package->getParticipant();
             
                 if($user->getFirstname() == '' && $user->getSurname() == '') :
-                    $participant = 'further items';
+                    $participant = $this->translate('further items');
                     $edit_participant = false;
                 else:
-                    $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getAge()->format('%Y years').')';
+                    $participant = $user->getFirstname().' '.$user->getSurname().' ('.$user->getAge()->format('%Y '.$this->translate('years')).')';
                     $edit_participant = true;
                 endif;
         ?>
@@ -61,19 +58,19 @@ echo $this->navigation()
                 <?php if(count($package->getItems()) != 0): ?>
                 <table class="table">
                     <tr>
-                        <th>Product</th>
-                        <th class="cart-amount">Amount</th>
-                        <th class="cart-price">Price</th>
+                        <th><?php echo $this->translate('Product'); ?></th>
+                        <th class="cart-amount"><?php echo $this->translate('Amount'); ?></th>
+                        <th class="cart-price"><?php echo $this->translate('Price'); ?></th>
                         <th class="cart-tool"></th>
                     </tr>
                     <?php
-                    $subtotal = 0;
+                    $subtotal = (float) 0;
                     foreach ($package->getItems() as $item) : 
                         if($item->hasParentItems()) {
                             continue;
                         }
-                        $subtotal += $item->getPrice();
-                        $sum += $item->getPrice();
+                        $subtotal += (float) $item->getPrice();
+                        $sum += (float) $item->getPrice();
                         ?>
                         <tr>
                             <td>
@@ -118,7 +115,7 @@ echo $this->navigation()
                                 endif; ?>
                             </td>
                             <td><?php echo $item->getAmount(); ?></td>
-                            <td><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></td>
+                            <td><?php echo $this->currencyFormat($item->getPrice(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                             <td>
                                 <?php
                                 if($participant != 'further items') :
@@ -164,8 +161,8 @@ echo $this->navigation()
                     <?php endforeach; ?>
                     <tr>
                         <td></td>
-                        <td>Subtotal:</td>
-                        <td><?php echo $this->currencyFormat($subtotal, 'EUR', null, 'de_DE'); ?></td>
+                        <td><?php echo $this->translate('Subtotal'); ?>:</td>
+                        <td><?php echo $this->currencyFormat($subtotal, $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                         <td></td>
                     </tr>
                 </table>
@@ -175,8 +172,8 @@ echo $this->navigation()
         <div>
             <table class="table sum-table">
                 <tr>
-                    <th><span style="font-size: 18px;">Order amount:</span></th>
-                    <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?></span></th>
+                    <th><span style="font-size: 18px;"><?php echo $this->translate('Order amount'); ?>:</span></th>
+                    <th><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getPrice(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></span></th>
                 </tr>
             </table>
         </div>
@@ -184,5 +181,5 @@ echo $this->navigation()
  
  <div class="clear-both"></div>
  <div class="checkout">
-     <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'buyer')) ?>">Continue</a>
+     <a class="btn btn-lg btn-primary" href="<?php echo $this->url('order', array('action' => 'buyer')) ?>"><?php echo $this->translate('Continue'); ?></a>
  </div>

@@ -13,7 +13,13 @@ namespace Admin;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\ModuleRouteListener;
 
-class Module
+use Zend\View\Helper\ServerUrl;
+use Zend\View\Helper\Url as UrlHelper;
+use Zend\Uri\Http as HttpUri;
+use Zend\Console\Console;
+use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
+
+class Module implements ViewHelperProviderInterface
 {
     public function onBootstrap(MvcEvent $e) {
         $eventManager        = $e->getApplication()->getEventManager();
@@ -49,13 +55,115 @@ class Module
         return include __DIR__ . '/config/module.config.php';
     }
     
+    public function getViewHelperConfig() {
+        return array(
+            'factories' => array(
+                'url' => function ($helperPluginManager) {
+                    $serviceLocator = $helperPluginManager->getServiceLocator();
+                    $config = $serviceLocator->get('Config');
+
+                    $viewHelper =  new UrlHelper();
+
+                    $routerName = Console::isConsole() ? 'HttpRouter' : 'Router';
+
+                    /** @var \Zend\Mvc\Router\Http\TreeRouteStack $router */
+                    $router = $serviceLocator->get($routerName);
+
+                    if (Console::isConsole()) {
+                        $requestUri = new HttpUri();
+                        $requestUri->setHost($config['website']['host'])
+                            ->setScheme($config['website']['scheme']);
+                        $router->setRequestUri($requestUri);
+                        $router->setBaseUrl($config['website']['path']);
+                    }
+
+                    $viewHelper->setRouter($router);
+
+                    $match = $serviceLocator->get('application')
+                        ->getMvcEvent()
+                        ->getRouteMatch();
+
+                    if ($match instanceof RouteMatch) {
+                        $viewHelper->setRouteMatch($match);
+                    }
+
+                    return $viewHelper;
+                },
+                'serverUrl' => function ($helperPluginManager) {
+                    $serviceLocator = $helperPluginManager->getServiceLocator();
+                    $config = $serviceLocator->get('Config');
+
+                    $serverUrlHelper = new ServerUrl();
+                    if (Console::isConsole()) {
+                        $serverUrlHelper->setHost($config['website']['host'])
+                            ->setScheme($config['website']['scheme']);
+                    }
+
+                    return $serverUrlHelper;
+                },
+            )
+        );
+    }
+    
     public function getServiceConfig() {
         return array(
             'factories' => array(
+                'Logger' => function($sm){
+                    $logger = new \Zend\Log\Logger;
+                    if(!is_dir(getcwd().'/data/log')) {
+                        mkdir(getcwd().'/data/log');
+                    }
+                    $writer = new \Zend\Log\Writer\Stream('./data/log/'.date('Y-m-d').'-zend-error.log');
+                    $logger->addWriter($writer);
+
+                    return $logger;
+                },
                 'doctrine.entitymanager'  => new \DoctrineORMModule\Service\EntityManagerFactory('orm_default'),
                 /* 
                  * Form Factories
                  */
+                'Admin\Form\PaymentType' => function($sm) {
+                    $form = new Form\PaymentType();
+                    $form->get('submit')->setValue('Save');
+
+                    $optionService = $sm->get('ErsBase\Service\OptionService');
+                    #$deadlineOptions = $this->buildDeadlineOptions();
+                    $deadlineOptions = $optionService->getDeadlineOptions();
+                    $form->get('active_from_id')->setAttribute('options', $deadlineOptions);
+                    $form->get('active_until_id')->setAttribute('options', $deadlineOptions);
+                    #$form->get('active_from_id')->setValue(0);
+                    #$form->get('active_until_id')->setValue(0);
+                    $currencyOptions = $optionService->getCurrencyOptions();
+                    $form->get('currency_id')->setAttribute('options', $currencyOptions);
+
+                    $typeOptions = [
+                        [
+                            'value' => '',
+                            'label' => 'Select type ...',
+                            'disabled' => true,
+                            'selected' => true,
+                        ],
+                        [
+                            'value' => 'sepa',
+                            'label' => 'Sepa Bank Account',
+                        ],
+                        [
+                            'value' => 'ukbt',
+                            'label' => 'UK Bank Account',
+                        ],
+                        [
+                            'value' => 'ipayment',
+                            'label' => 'iPayment Account',
+                        ],
+                        [
+                            'value' => 'paypal',
+                            'label' => 'Paypal Account',
+                        ],
+                    ];
+                    $form->get('type')->setAttribute('options', $typeOptions);
+                    
+                    return $form;
+                },
                 'Admin\Form\Product' => function($sm){
                     $form   = new Form\Product();
                     
@@ -68,6 +176,16 @@ class Module
                     }
 
                     $form->get('tax_id')->setValueOptions($options);
+                    
+                    $ticketTemplates = array(
+                        'default' => 'Default',
+                        'weekticket' => 'Week Ticket',
+                        'dayticket' => 'Day Ticket',
+                        'galashow' => 'Gala-Show Ticket',
+                        'clothes' => 'T-Shirt and Hoodie',
+                    );
+                    
+                    $form->get('ticket_template')->setValueOptions($ticketTemplates);
                     
                     return $form;
                 },
@@ -97,6 +215,11 @@ class Module
 
                     $form->get('type')->setValueOptions($options);
                     
+                    return $form;
+                },
+                'Admin\Form\User' => function($sm){
+                    $form   = new Form\User();
+                    $form->setServiceLocator($sm);
                     return $form;
                 },
                 'Admin\InputFilter\User' => function($sm){
