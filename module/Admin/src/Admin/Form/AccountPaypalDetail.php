@@ -30,12 +30,9 @@ class AccountPaypalDetail extends Form
         
         $this->add(array(
             'name' => 'sandbox_mode',
-            'type' => 'radio',
+            'type' => 'checkbox',
             'attributes' => array(
-                'required' => 'required',
-                'type'  => 'text',
-                'class' => 'form-control form-element',
-                'placeholder' => '...',
+                'class' => 'checkbox',
             ),
             'options' => array(
                 'label' => 'Sandbox Mode',
