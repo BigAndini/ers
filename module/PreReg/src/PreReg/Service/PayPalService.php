@@ -81,6 +81,7 @@ class PayPalService
      * */
     public function createPayment(\ErsBase\Entity\Order $order, $returnUrl, $cancelUrl) {
         $paypalContext = $this->initPaypalService($order->getPaymentType());
+        $currency = $order->getPaymentType()->getCurrency()->getShort();
 
         $str_total = $this->formatPrice($order->getTotalSum());
         $invoiceNumber = $order->getCode()->getValue(); // use order code as invoice number
@@ -91,7 +92,7 @@ class PayPalService
                 $paypalItems[] = (new Item())
                     ->setName($item->getProduct()->getName())
                     ->setQuantity(1)
-                    ->setCurrency('EUR')
+                    ->setCurrency($currency)
                     ->setPrice($this->formatPrice($item->getPrice()))
                 ;
             }
@@ -102,7 +103,7 @@ class PayPalService
             $paypalItems[] = (new Item())
                 ->setName('Payment fees')
                 ->setQuantity(1)
-                ->setCurrency('EUR')
+                ->setCurrency($currency)
                 ->setPrice($this->formatPrice($paymentFees))
             ;
         }
@@ -113,7 +114,7 @@ class PayPalService
 
         $transaction = new Transaction();
         $transaction->setAmount((new Amount())
-                        ->setCurrency('EUR')
+                        ->setCurrency($currency)
                         ->setTotal($str_total)
         );
         
@@ -165,7 +166,7 @@ class PayPalService
     
     /**
      * Formats a price to a string usable by the PayPal API.
-     * @param type $price price in EUR as a number
+     * @param type $price price in target currency as a number
      * @return string
      */
     private function formatPrice($price) {
