@@ -91,6 +91,7 @@ class PayPalService
             foreach($package->getItems() as $item) {
                 $paypalItems[] = (new Item())
                     ->setName($item->getProduct()->getName())
+                    ->setDescription($item->getPersonalized() ? $package->getUser()->getFullName() : NULL)
                     ->setQuantity(1)
                     ->setCurrency($currency)
                     ->setPrice($this->formatPrice($item->getPrice()))
