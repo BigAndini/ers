@@ -11,6 +11,7 @@ namespace PreReg\Service;
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Api\Payer;
+use PayPal\Api\PayerInfo;
 use PayPal\Api\Transaction;
 use PayPal\Api\Amount;
 use PayPal\Api\ItemList;
@@ -112,6 +113,9 @@ class PayPalService
         // build request to PayPal
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
+        $payer->setPayerInfo((new PayerInfo())
+                ->setEmail($order->getBuyer()->getEmail())
+        );
 
         $transaction = new Transaction();
         $transaction->setAmount((new Amount())
