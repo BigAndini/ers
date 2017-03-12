@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace PreReg\Service;
+namespace ErsBase\Service;
 
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;

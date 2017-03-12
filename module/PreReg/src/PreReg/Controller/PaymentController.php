@@ -87,7 +87,7 @@ class PaymentController extends AbstractActionController {
                 return new ViewModel(['error' => 'This order cannot be paid in its current state.']);
         }
 
-        $paypalService = $this->getServiceLocator()->get('PreReg\Service\PayPalService');
+        $paypalService = $this->getServiceLocator()->get('ErsBase\Service\PayPalService');
 
         // initiate the payment with paypal
         $returnUrl = $this->url()->fromRoute('payment', ['action' => 'paypal-confirm'], ['force_canonical' => true]);
@@ -95,10 +95,10 @@ class PaymentController extends AbstractActionController {
 
         try {
             list($paymentId, $paypalUrl) = $paypalService->createPayment($order, $returnUrl, $cancelUrl);
-        } catch (\PreReg\Service\PayPalServiceException $ex) {
+        } catch (\ErsBase\Service\PayPalServiceException $ex) {
             $logger = $this->getServiceLocator()->get('Logger');
             $logger->err($ex);
-            return new ViewModel(['error' => 'There was an error while creating the PayPal payment.']);
+            return new ViewModel(['error' => 'There was an error while creating the PayPal payment. Please try again later.']);
         }
 
         $sessionData = new Container('paypal_payment');
@@ -130,7 +130,7 @@ class PaymentController extends AbstractActionController {
             return $vm->setVariables(['error' => 'The payment id is not valid.']);
         }
 
-        $paypalService = $this->getServiceLocator()->get('PreReg\Service\PayPalService');
+        $paypalService = $this->getServiceLocator()->get('ErsBase\Service\PayPalService');
         $paidStatus = $em->getRepository('ErsBase\Entity\Status')->findOneBy(['value' => 'paid']);
         $order = $em->getRepository('ErsBase\Entity\Order')->findOneBy(['hashkey' => $sessionData->hashkey]);
 
@@ -159,7 +159,7 @@ class PaymentController extends AbstractActionController {
 
                 return $this->redirect()->toRoute('order', ['action' => 'thankyou', 'hashkey' => $order->getHashkey()]);
             }
-        } catch (\PreReg\Service\PayPalServiceException $ex) {
+        } catch (\ErsBase\Service\PayPalServiceException $ex) {
             $logger = $this->getServiceLocator()->get('Logger');
             $logger->err($ex);
             return $vm->setVariables(['error' => 'There was an error while executing the PayPal payment. Please try again. No money has been charged yet.']);
