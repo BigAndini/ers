@@ -51,6 +51,8 @@ class PayPalService
     
     /**
      * Configures a PayPal ApiContext according to a PaymentType and returns it.
+     * 
+     * @return ApiContext a PayPal ApiContext with the credentials taken from the PaymentType
      */
     private function initPaypalService(\ErsBase\Entity\PaymentType $paymentType) {
         $clientId = $paymentType->getClientId();
@@ -68,6 +70,26 @@ class PayPalService
         ]);
         
         return $paypalContext;
+    }
+    
+    
+    /**
+     * Checks if the PayPal API credentials stored in a PaymentType are valid by making a test request to PayPal.
+     * 
+     * @param \ErsBase\Entity\PaymentType $paymentType the payment type containing the credentials as its settings
+     * @return boolean true if successful, false if an error occured
+     */
+    public function testCredentials(\ErsBase\Entity\PaymentType $paymentType) {
+        $paypalContext = $this->initPaypalService($paymentType);
+        
+        try {
+            // attempt a dummy API request to see if the credentials are valid;
+            // this requests simply lists past payments
+            Payment::all(['count' => 1], $paypalContext);
+            return true;
+        } catch(PayPalConnectionException $e) {
+            return false;
+        }
     }
 
     /**
