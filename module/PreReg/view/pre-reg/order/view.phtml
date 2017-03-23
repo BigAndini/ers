@@ -14,7 +14,11 @@ $infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this-
         <div class="order-info">
             <h2><?php echo $this->translate('Buyer'); ?></h2>
             <?php $buyer = $order->getBuyer(); ?>
+            <?php if($buyer): ?>
             <h2><?php echo $buyer->getFirstname().' '.$buyer->getSurname(); ?></h2>
+            <?php else: ?>
+            <h2>No buyer found</h2>
+            <?php endif; ?>
             <p><?php echo $this->translate('The buyer will receive all E-Tickets for all registered participants. If you have provided an email address per participant, this participant will be informed once the ticket is paid and will be able to download the E-Ticket on his own aswell.'); ?></p>
             <h3><?php echo $this->translate('We will send all information to:'); ?> <?php echo $buyer->getEmail(); ?></h3>
         </div>

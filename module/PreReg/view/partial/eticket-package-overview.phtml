@@ -71,20 +71,23 @@
                  * day ticket
                  */
                 case 'dayticket': 
-                    #$productVariantName = 'Day';
-                    $productVariantName = 'Tag';
-                    $translate = array(
+                    $productVariantName = 'Day ticket - select day';
+                    #$productVariantName = 'Tag';
+                    /*$translate = array(
                         'Freitag' => '28.10.2016',
                         'Samstag' => '29.10.2016',
                         'Sonntag' => '30.10.2016',
-                    );
+                    );*/
                     ?>
                     <p class="order-description"><?php echo $product->getName(); ?></p>
                     <p class="order-value">
                         <table class="day-table">
                             <tr>
-                                <?php foreach($product->getProductVariantByName($productVariantName)->getProductVariantValues() as $value):
-                                    $timestamp = strtotime($translate[$value->getValue()]);
+                                <?php 
+                                error_log('variant name: '.$productVariantName);
+                                $productVariant = $product->getProductVariantByName($productVariantName);
+                                foreach($productVariant->getProductVariantValues() as $value):
+                                    $timestamp = strtotime($value->getValue());
                                     $date = new DateTime();
                                     $date->setTimestamp($timestamp); 
                                     ?>
@@ -93,7 +96,7 @@
                             </tr>
                             <tr>
                                 <?php foreach($product->getProductVariantByName($productVariantName)->getProductVariantValues() as $value):
-                                    $timestamp = strtotime($translate[$value->getValue()]);
+                                    $timestamp = strtotime($value->getValue());
                                     $date = new DateTime();
                                     $date->setTimestamp($timestamp); ?>
                                     <td style='font-size: 6px;'><?php echo $date->format('d.m.'); ?></td>
@@ -101,7 +104,7 @@
                             </tr>
                             <tr>
                                 <?php foreach($product->getProductVariantByName($productVariantName)->getProductVariantValues() as $value):
-                                    $timestamp = strtotime($translate[$value->getValue()]);
+                                    $timestamp = strtotime($value->getValue());
                                     $date = new DateTime();
                                     $date->setTimestamp($timestamp);
                                     $found = false;

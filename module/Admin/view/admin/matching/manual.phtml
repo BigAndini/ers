@@ -42,7 +42,11 @@ echo $this->form()->openTag($form); ?>
                                         <?php 
                                             echo $code->getValue();
                                             echo ' - ';
-                                            echo $buyer->getFirstname().' '.$buyer->getSurname();
+                                            if($buyer):
+                                                echo $buyer->getFirstname().' '.$buyer->getSurname();
+                                            else:
+                                                echo 'no buyer set';
+                                            endif;
                                             echo '<br>';
                                             if($order->getPaymentType()):
                                                 echo '('.$order->getPaymentType()->getName().') ';    

@@ -117,9 +117,15 @@ $this->headTitle($title);
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <h3>
-                            <?php echo $participant.' ('.$package->getCode()->getValue().', '.$package->getStatus()->getValue().')'; ?>
+                            <?php echo $participant.' ('.$package->getCode()->getValue();
+                            if($user->getCountry()):
+                                echo ', '.$user->getCountry();
+                            else:
+                                echo ', no Country provided';
+                            endif;
+                            echo ', '.$package->getStatus()->getValue().')'; ?>
                         </h3>
                         <p>
                             date of birth: 
@@ -128,7 +134,7 @@ $this->headTitle($title);
                             endif; ?>
                         </p>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="navbar pull-right">
                             <ul class="nav nav-pills">
                                 <li class="dropdown">

@@ -236,6 +236,9 @@ class ParticipantController extends AbstractActionController {
         
         $participant = $order->getParticipantById($id);
 
+        if(!$participant) {
+            throw new \Exception('Unable to find participant with id '.$id.' in order '.$order->getCode()->getValue());
+        }
         $form->bind($participant);
 
         if ($this->request->isPost()) {

@@ -26,4 +26,7 @@ class Country extends Base\Country
         parent::__construct();
     }
 
+    public function __toString() {
+        return $this->getName();
+    }
 }
