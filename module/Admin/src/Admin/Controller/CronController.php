@@ -39,7 +39,7 @@ class CronController extends AbstractActionController {
             } elseif($statement->getStatus() == 'disabled') {
                 continue;
             }
-            $bankaccount = $statement->getBankAccount();
+            $bankaccount = $statement->getPaymentType();
             $statement_format = json_decode($bankaccount->getStatementFormat());
             
             # TODO: check if the statement_format is already set. If not move to next statement.
@@ -107,7 +107,7 @@ class CronController extends AbstractActionController {
         foreach($orders as $order) {
             $statement_amount = $order->getStatementAmount();
             $order_amount = $order->getSum();
-            if($order_amount == $statement_amount) {
+            if($order_amount == ($statement_amount*$statement_format->factor)) {
                 $paid = true;
                 echo ".";
                 #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (exact)".PHP_EOL;
@@ -166,7 +166,7 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $bankaccount = $statement->getBankAccount();
+        $bankaccount = $statement->getPaymentType();
         #$statement_format = json_decode($bankaccount->getStatementFormat());
         
         $order = $em->getRepository('ErsBase\Entity\Order')

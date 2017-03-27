@@ -18,10 +18,17 @@ $form->prepare(); ?>
 
 <?php 
 echo $this->form()->openTag($form);
-echo $this->formHidden($form->get('id'));
+echo $this->formHidden($form->get('id')); ?>
 
-echo $this->formRow($form->get('amount'));
-echo $this->formRow($form->get('name'));
+<div class='row'>
+    <div class='col-xs-6'>
+        <?php echo $this->formRow($form->get('amount')); ?>
+    </div>
+    <div class='col-xs-6'>
+        <?php echo $this->formRow($form->get('factor')); ?>
+    </div>
+</div>
+<?php echo $this->formRow($form->get('name'));
 echo $this->formRow($form->get('date'));
 echo $this->formRow($form->get('matchKey')); ?>
 <div class='row'>
