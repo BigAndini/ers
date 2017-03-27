@@ -15,6 +15,8 @@ use ErsBase\Service;
 use Zend\Console\Request as ConsoleRequest;
 
 class CronController extends AbstractActionController {
+    protected $debug = false;
+    
     public function autoMatchingAction() {
         /*
          * Status of BankStatements
@@ -24,13 +26,17 @@ class CronController extends AbstractActionController {
          * 4. disabled
          */
         
+        $this->debug = false;
+        
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $statements = $em->getRepository('ErsBase\Entity\BankStatement')
                 ->findAll();
         
-        echo "Phase 1: check ".count($statements)." statements".PHP_EOL.PHP_EOL;
+        if($this->debug) {
+            echo "Phase 1: check ".count($statements)." statements".PHP_EOL.PHP_EOL;
+        }
         $longest_match = 0;
         foreach($statements as $statement) {
             $time_start = microtime(true);
@@ -79,7 +85,7 @@ class CronController extends AbstractActionController {
                     }
                 }
                 if(!$found) {
-                    echo "WARNING: Unable to find any code in system.".PHP_EOL;
+                    echo "WARNING: Unable to find any code in system: ";
                     echo $statement->getBankStatementColByNumber($statement_format->matchKey)->getValue().PHP_EOL;
                 }
                 $time_end = microtime(true);
@@ -89,7 +95,7 @@ class CronController extends AbstractActionController {
                 }
             }
         }
-        echo 'INFO: The longest match took '.$longest_match.' seconds.'.PHP_EOL;
+        #echo 'INFO: The longest match took '.$longest_match.' seconds.'.PHP_EOL;
         
         /*
          * check status of unpaid orders
@@ -102,22 +108,30 @@ class CronController extends AbstractActionController {
         
         $orders = $qb->getQuery()->getResult();
         
-        echo PHP_EOL."Phase 2: check ".count($orders)." orders and set payment status.".PHP_EOL;
+        if($this->debug) {
+            echo PHP_EOL."Phase 2: check ".count($orders)." orders and set payment status.".PHP_EOL;
+        }
         
         foreach($orders as $order) {
             $statement_amount = $order->getStatementAmount();
             $order_amount = $order->getSum();
             if($order_amount == ($statement_amount*$statement_format->factor)) {
                 $paid = true;
-                echo ".";
+                if($this->debug) {
+                    echo ".";
+                }
                 #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (exact)".PHP_EOL;
             } elseif($order_amount < $statement_amount) {
                 $paid = true;
-                echo "!";
+                if($this->debug) {
+                    echo "!";
+                }
                 #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (overpaid)".PHP_EOL;
             } else {
                 $paid = false;
-                echo "-";
+                if($this->debug) {
+                    echo "-";
+                }
                 #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (partial)".PHP_EOL;
             }
             if($paid) {
@@ -156,7 +170,9 @@ class CronController extends AbstractActionController {
             }
         }
         $em->flush();
-        echo PHP_EOL.PHP_EOL."done.".PHP_EOL;
+        if($this->debug) {
+            echo PHP_EOL.PHP_EOL."done.".PHP_EOL;
+        }
     }
     
     /*

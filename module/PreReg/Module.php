@@ -86,7 +86,7 @@ class Module
     public function bootstrapSession($e)
     {
         if(\Zend\Console\Console::isConsole()) {
-            echo "not starting session -> console".PHP_EOL;
+            #echo "not starting session -> console".PHP_EOL;
             return;
         }
         
