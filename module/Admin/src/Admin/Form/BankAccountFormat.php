@@ -52,6 +52,20 @@ class BankAccountFormat extends Form
             ),
         ));
         $this->add(array(
+            'name' => 'factor',
+            'attributes' => array(
+                'type'  => 'text',
+                'class' => 'form-control form-element',
+                'placeholder' => 'factor',
+            ),
+            'options' => array(
+                'label' => 'factor to multiply with amount',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        $this->add(array(
             'type' => 'Zend\Form\Element\Select',
             'name' => 'name',
             'attributes' => array(

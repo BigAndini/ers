@@ -196,6 +196,11 @@ class BankaccountController extends AbstractActionController {
         $form->get('amount')->setAttribute('options', 
                 $this->getColumnOptions($colCount, $statement_format->amount));
         
+        if(!isset($statement_format->factor)) {
+            $statement_format->factor = 1;
+        }
+        $form->get('factor')->setValue($statement_format->factor);
+        
         if(!isset($statement_format->name)) {
             $statement_format->name = 0;
         }
@@ -239,6 +244,7 @@ class BankaccountController extends AbstractActionController {
                 $format = array(
                     'matchKey' => $data['matchKey'],
                     'amount' => $data['amount'],
+                    'factor' => $data['factor'],
                     'name' => $data['name'],
                     'date' => $data['date'],
                     'sign' => array(
@@ -247,36 +253,6 @@ class BankaccountController extends AbstractActionController {
                     )
                 );
                 $bankaccount->setStatementFormat(json_encode($format));
-                
-                /*$hashes = array();
-                foreach($bankaccount->getBankStatements() as $statement) {
-                    $amountCol = $statement->getAmount();
-                    $amountCol->setValue((float) $amountCol->getValue());
-                    
-                    $em->persist($amountCol);
-                    $statement->generateHash();
-                    
-                    $bankstatement = $em->getRepository('ErsBase\Entity\BankStatement')
-                        ->findOneBy(array('hash' => $statement->getHash()));
-                    if($bankstatement) {
-                        error_log('the statement with hash '.$statement->getHash().' already exists.');
-                        $em->remove($statement);
-                        continue;
-                    }
-                    
-                    if(in_array($statement->getHash(), $hashes)) {
-                        error_log('the statement with hash '.$statement->getHash().' already exists.');
-                        $em->remove($statement);
-                        continue;
-                    }
-    
-                    if(isset($statement_format->sign->col) && isset($statement_format->sign->value) && $statement->getBankStatementColByNumber($statement_format->sign->col)->getValue() != $statement_format->sign->value) {
-                        $statement->setStatus('disabled');
-                    }
-
-                    $hashes[] = $statement->getHash();
-                    $em->persist($statement);
-                }*/
                 
                 $em->persist($bankaccount);
                 $em->flush();

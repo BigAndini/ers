@@ -321,7 +321,7 @@ class OrderService
         
         foreach($package->getItems() as $item) {
             error_log('removing item '.$item->getName().' ('.$item->getId().')');
-            $item->setPackage(null);
+            #$item->setPackage(null);
             $package->removeItem($item);
             $em->remove($item);
         }

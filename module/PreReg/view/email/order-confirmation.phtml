@@ -56,6 +56,13 @@
 
         <p><?php printf($this->translate('To see if we have already received your payment, you can visit the following link: %s'), $orderLink); ?></p>
 
+    <?php elseif($paymenttype->getType() == 'ukbt'): ?>
+
+        <p><?php echo $this->translate('To complete your order, we need to receive your bank transfer within 14 days.'); ?></p>
+
+        <?php echo $this->partial('partial/ukbt-banktransfer-info.phtml', array('order' => $order)); ?>
+
+        <p><?php printf($this->translate('To see if we have already received your payment, you can visit the following link: %s'), $orderLink); ?></p>
     <?php elseif($paymenttype->getType() == 'cheque'): ?>
 
         <p>The conversation rate Euro to Pounds for cheques is set to 0.8 -
@@ -125,13 +132,14 @@
     </p>
     <p>
         We would also like to ask for your help in spreading the word about the EJC!
-        As you know the festival is financed directly from the tickets sale. It would be AWESOME if you could invite your friends to join the EJC 2017 and become registered!
-        We have prepared a little graphics that you can use if you want to help and spread the excitement about the upcoming convention that we all share! :) It's size is tailored to fit the FaceBook cover photo, but please use it wherever you want!
+        As you know the festival is financed directly from ticket sale. It would be AWESOME if you could invite your friends to join the EJC 2017 and register!
+        We have prepared a little graphics that you can use if you want to help and spread the excitement about the upcoming convention that we all share! :) 
+        Its size is tailored to fit the FaceBook cover photo, but please use it wherever you want!
     </p>
 
     <p><?php $this->translate('Regards,'); ?></p>
 
-    <p><?php printf($this->translate('Your European Juggling Association and the local %s organizers.'), $this->config()['ERS']['name_with_number']); ?></p>
+    <p><?php printf($this->translate('Your European Juggling Association and the local %s organisers.'), $this->config()['ERS']['name_with_number']); ?></p>
 
     <hr>
     <p>

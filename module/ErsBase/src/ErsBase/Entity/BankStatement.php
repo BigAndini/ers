@@ -64,7 +64,7 @@ class BankStatement extends Base\BankStatement
      * get the amount of this statement according to the format
      */
     public function getAmount() {
-        $statement_format = json_decode($this->getBankAccount()->getStatementFormat());
+        $statement_format = json_decode($this->getPaymentType()->getStatementFormat());
         return $this->getBankStatementColByNumber($statement_format->amount);
     }
     
@@ -88,21 +88,21 @@ class BankStatement extends Base\BankStatement
      * Get the name of this statement according to the format
      */
     public function getName() {
-        $statement_format = json_decode($this->getBankAccount()->getStatementFormat());
+        $statement_format = json_decode($this->getPaymentType()->getStatementFormat());
         return $this->getBankStatementColByNumber($statement_format->name);
     }
     /**
      * Get the code of this statement according to the format
      */
     public function getCode() {
-        $statement_format = json_decode($this->getBankAccount()->getStatementFormat());
+        $statement_format = json_decode($this->getPaymentType()->getStatementFormat());
         return $this->getBankStatementColByNumber($statement_format->matchKey);
     }
     /**
      * Get the date of this statement according to the format
      */
     public function getDate() {
-        $statement_format = json_decode($this->getBankAccount()->getStatementFormat());
+        $statement_format = json_decode($this->getPaymentType()->getStatementFormat());
         $datestring = $this->getBankStatementColByNumber($statement_format->date)->getValue();
         $timestamp = strtotime($datestring);
         if($timestamp != false) {
