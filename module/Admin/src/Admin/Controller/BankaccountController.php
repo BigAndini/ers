@@ -451,7 +451,7 @@ class BankaccountController extends AbstractActionController {
         }
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $csv = $em->getRepository('ErsBase\Entity\PaymentTypeCsv')
+        $csv = $em->getRepository('ErsBase\Entity\BankAccountCsv')
                 ->findOneBy(array('id' => $id));
         
         $request = $this->getRequest();
@@ -460,7 +460,7 @@ class BankaccountController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $csv = $em->getRepository('ErsBase\Entity\PaymentTypeCsv')
+                $csv = $em->getRepository('ErsBase\Entity\BankAccountCsv')
                     ->findOneBy(array('id' => $id));
                 if($csv->hasMatch()) {
                     return $this->redirect()->toRoute('admin/bankaccount');
