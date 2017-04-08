@@ -306,7 +306,7 @@ class ETicketService
         $textImage = imagecreatetruecolor($image_width, $image_height+1);
 
         // Allocate text and background colors (RGB format):
-        $text_color = imagecolorallocate($textImage,244,128,41);
+        $text_color = imagecolorallocate($textImage,237,28,36);
         $bg_color = imagecolorallocate($textImage, 255, 255, 255);
 
         // Fill image:

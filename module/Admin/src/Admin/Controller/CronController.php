@@ -115,7 +115,7 @@ class CronController extends AbstractActionController {
         foreach($orders as $order) {
             $statement_amount = $order->getStatementAmount();
             $order_amount = $order->getSum();
-            if($order_amount == ($statement_amount*$statement_format->factor)) {
+            if($order_amount == $statement_amount) {
                 $paid = true;
                 if($this->debug) {
                     echo ".";
