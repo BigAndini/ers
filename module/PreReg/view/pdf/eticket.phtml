@@ -165,9 +165,9 @@
         <?php endif; ?>
         <div class="left-field">
             <h3><?php echo $this->translate('Brief instruction'); ?></h3>
-            <p><?php printf($this->translate('This is your <strong>E-Ticket</strong> for the %s. Please bring this document with you to the event! It\'s not necessarily needed to print your E-Ticket. You can present it on any electronical device.'), $config['ERS']['name_with_year']); ?></p>
+            <p><?php printf($this->translate('This is your <strong>E-Ticket</strong> for the %s. Please bring this document with you to the event! It isn\'t necessary to print your E-Ticket. You can present it on any electronic device.'), $config['ERS']['name_with_year']); ?></p>
             <?php if($personalized): ?>
-                <p><?php printf($this->translate('Please make sure that your data (name, firstname, date of birth) on this E-Ticket are the same as the ones on your <strong>ID card</strong> or <strong>passport</strong>. This will help us that only you can enter with your E-ticket and nobody else.')) ?></p>
+                <p><?php printf($this->translate('Please make sure that the data (name, first name, date of birth) on this E-Ticket are exactly the same as the ones on your <strong>ID card</strong> or <strong>passport</strong>. This guarantees that only you can register for the event with your E-ticket and nobody else.')) ?></p>
             
                 <?php if($agegroup):
                     switch($agegroup->getName()):
@@ -178,7 +178,7 @@
                     <?php 
                     $youthFormUrl = $this->url('info', array('action' => 'forms'), array('force_canonical' => true));
                     $youthFormLink = '<a href="'.$youthFormUrl.'">'.$youthFormUrl.'</a>';
-                    printf($this->translate('<strong>Do not forget: Bring a filled and signed U16/U18 form with you.</strong> This form needs to be signed by your parents or your legal guardian. Without this signed form we\'re not allowed to let you access the EJC area. You can find this form at %s.'),
+                    printf($this->translate('<strong>Do not forget: Bring a filled and signed U16/U18 form with you.</strong> This form must be printed and signed by your parents or your legal guardian. Without a signed U16/U18 form you cannot attend the event. You can find this form at %s.'),
                             $youthFormLink) ?>
                 </p>
                             <?php break;

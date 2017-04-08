@@ -37,6 +37,9 @@ class InfoController extends AbstractActionController {
             'deadline' => $deadline,
         ));
     }
+    public function formsAction() {
+        return new ViewModel(array());
+    }
     public function termsAction() {
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('terms')) {
