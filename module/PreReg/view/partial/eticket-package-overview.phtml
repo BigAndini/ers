@@ -87,7 +87,22 @@
                                 error_log('variant name: '.$productVariantName);
                                 $productVariant = $product->getProductVariantByName($productVariantName);
                                 foreach($productVariant->getProductVariantValues() as $value):
-                                    $timestamp = strtotime($value->getValue());
+                                    $pattern = [
+                                        '/^.*\ -\ /',
+                                        '/st\ /',
+                                        '/nd\ /',
+                                        '/rd\ /',
+                                        '/th\ /',
+                                    ];
+                                    $replace = [
+                                        '',
+                                        '',
+                                        '',
+                                        '',
+                                        '',
+                                    ];
+                                    $datestring = preg_replace($pattern, $replace, $value->getValue()).' 2017';
+                                    $timestamp = strtotime($datestring);
                                     $date = new DateTime();
                                     $date->setTimestamp($timestamp); 
                                     ?>
@@ -96,7 +111,22 @@
                             </tr>
                             <tr>
                                 <?php foreach($product->getProductVariantByName($productVariantName)->getProductVariantValues() as $value):
-                                    $timestamp = strtotime($value->getValue());
+                                    $pattern = [
+                                        '/^.*\ -\ /',
+                                        '/st\ /',
+                                        '/nd\ /',
+                                        '/rd\ /',
+                                        '/th\ /',
+                                    ];
+                                    $replace = [
+                                        '',
+                                        '',
+                                        '',
+                                        '',
+                                        '',
+                                    ];
+                                    $datestring = preg_replace($pattern, $replace, $value->getValue()).' 2017';
+                                    $timestamp = strtotime($datestring);
                                     $date = new DateTime();
                                     $date->setTimestamp($timestamp); ?>
                                     <td style='font-size: 6px;'><?php echo $date->format('d.m.'); ?></td>
