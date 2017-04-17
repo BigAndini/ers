@@ -8,8 +8,9 @@ $this->headTitle($title);
 
 <table class="table">
     <tr>
-        <th>Pos.</th>
-        <th>Name</th>
+        <th>#</th>
+        <th>name</th>
+        <th>factor</th>
         <th>active</th>
         <th class="text-right">
             <a class="btn btn-success" href="<?php echo $this->url('admin/currency', array('action'=>'add'));?>"><i class="fa fa-plus"></i> currency</a>
@@ -19,6 +20,7 @@ $this->headTitle($title);
     <tr>
         <td><?php echo $currency->getPosition(); ?></td>
         <td><?php echo $currency->getName(); ?> (<?php echo $currency->getShort().' / '.$currency->getSymbol(); ?>)</td>
+        <td><?php echo $currency->getFactor(); ?></td>
         <td>
             <?php if($currency->getActive()): ?>
             <i class="fa fa-check"></i>

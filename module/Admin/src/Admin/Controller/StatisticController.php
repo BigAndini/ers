@@ -21,7 +21,7 @@ class StatisticController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         $qb1 = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb1->select(array('SUM(o.order_sum) as ordersum'));
+        $qb1->select(array('SUM(o.order_sum_eur) as ordersum'));
         $qb1->join('o.status', 's');
         $qb1->join('o.paymentType', 'pt');
         $qb1->where($qb1->expr()->eq('s.value', ':status'));
@@ -32,7 +32,7 @@ class StatisticController extends AbstractActionController {
         $ordersums = $qb1->getQuery()->getSingleResult();
         
         
-        /* SELECT SUM( order_sum ) , SUM( total_sum )
+        /* SELECT SUM( order_sum_eur ) , SUM( total_sum_eur )
             FROM `order`
             JOIN `match` ON `order`.id = `match`.order_id
             JOIN bank_statement ON bank_statement.id = `match`.bank_statement_id
@@ -40,7 +40,7 @@ class StatisticController extends AbstractActionController {
             WHERE bank_account.id =2
          */
         $qb2 = $em->getRepository('ErsBase\Entity\Match')->createQueryBuilder('m');
-        $qb2->select(array('SUM(o.order_sum) as ordersum'));
+        $qb2->select(array('SUM(o.order_sum_eur) as ordersum'));
         $qb2->join('m.order', 'o');
         $qb2->join('m.bankStatement', 'bs');
         $qb2->join('bs.paymentType', 'pt');
@@ -141,7 +141,7 @@ class StatisticController extends AbstractActionController {
         $order_data['paymentfees'] = array_sum(array_map(function($row){ return floatval($row['fee']); }, $paymentFees));
         
         $fastResults = $em->createQueryBuilder()
-                ->select('SUM(o.total_sum) totalsum_fast', 'SUM(o.order_sum) ordersum_fast')->from('ErsBase\Entity\Order o')
+                ->select('SUM(o.total_sum_eur) totalsum_fast', 'SUM(o.order_sum_eur) ordersum_fast')->from('ErsBase\Entity\Order o')
                 ->getQuery()->getSingleResult();
         
         $order_data['ordersum_fast'] = $fastResults['ordersum_fast'];
@@ -151,48 +151,47 @@ class StatisticController extends AbstractActionController {
         
         
         
-        $orderSelectFields = array('COUNT(o.id) AS ordercount', 'SUM(o.order_sum) AS ordersum, SUM(o.total_sum) AS totalsum');
+        $orderSelectFields = array('COUNT(o.id) AS ordercount', 'SUM(o.order_sum_eur) AS ordersum, SUM(o.total_sum_eur) AS totalsum');
         
         $paymentStatusStats = $em->createQueryBuilder()
                 #->select(array_merge(array('o.payment_status AS label'), $orderSelectFields))
-                ->select(array_merge(array('s status, s.value label', 'o.currency_id'), $orderSelectFields))
+                ->select(array_merge(array('s status, s.value label'), $orderSelectFields))
                 ->from('ErsBase\Entity\Status', 's')
                 ->leftJoin('s.orders', 'o')
-                #->groupBy('o.payment_status')
-                ->groupBy('s.value', 's.id', 'o.currency_id')
+                ->groupBy('s.value', 's.id')
                 ->orderBy('s.position')
                 ->getQuery()->getResult();
         
-        $currencies = $em->getRepository('ErsBase\Entity\Currency')->findAll();
-        $factor = array();
-        foreach($currencies as $currency) {
-            $factor[$currency->getId()] = $currency->getFactor();
-        }
-        
         $byStatusGroups = array('active' => array(), 'inactive' => array());
         foreach($paymentStatusStats AS $statusData) {
-            error_log($statusData['ordersum'].' '.$statusData['currency_id']);
-            $statusData['ordersum'] = $statusData['ordersum'] * $factor[$statusData['currency_id']];
-            $statusData['totalsum'] = $statusData['totalsum'] * $factor[$statusData['currency_id']];
             $group = ($statusData['status']->getActive() ? 'active' : 'inactive');
             $byStatusGroups[$group][] = $statusData;
         }
+        error_log('active: '.count($byStatusGroups['active']));
+        error_log('inactive: '.count($byStatusGroups['inactive']));
         
         $paymentTypeStats = $em->createQueryBuilder()
                 ->select(array_merge(array('pt.name AS label', 'c.short as currency'), $orderSelectFields))
                 ->from('ErsBase\Entity\PaymentType', 'pt')
-                #->join('pt.orders', 'o', 'WITH', "o.payment_status != 'cancelled' AND o.payment_status != 'refund'")
                 ->join('pt.orders', 'o')
                 ->join('o.status', 's', 'WITH', "s.active = 1")
                 ->join('pt.currency', 'c')
                 ->groupBy('pt.id')
                 ->getQuery()->getResult();
         
-        
-        
         return new ViewModel(array(
             'stats_paymentStatusGroups' => $byStatusGroups,
-            'stats_paymentTypes' => $paymentTypeStats
+            'stats_paymentTypes' => $paymentTypeStats,
+            /*'orderActiveCount' => $em->createQueryBuilder()
+                ->select('COUNT(o.id)')
+                ->from('ErsBase\Entity\Order', 'o')
+                ->join('o.status', 's', 'WITH', "s.active = 1")
+                ->getQuery()->getSingleScalarResult(),
+            'orderInactiveCount' => $em->createQueryBuilder()
+                ->select('COUNT(o.id)')
+                ->from('ErsBase\Entity\Order', 'o')
+                ->join('o.status', 's', 'WITH', "s.active = 0")
+                ->getQuery()->getSingleScalarResult(),*/
         ));
     }
     
