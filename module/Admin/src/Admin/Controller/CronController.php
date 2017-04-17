@@ -459,7 +459,7 @@ class CronController extends AbstractActionController {
         $qb->andWhere($qb->expr()->eq('o.payment_reminder_status', ':prstatus'));
         $qb->setParameter('status', 'ordered');
         $paymentTarget = new \DateTime;
-        $paymentTarget->modify( '-5 days' );
+        $paymentTarget->modify( '-10 days' );
         $qb->setParameter('paymentTarget', $paymentTarget);
         $qb->setParameter('prstatus', '0');
         #$qb->setFirstResult( $offset )
@@ -493,10 +493,10 @@ class CronController extends AbstractActionController {
             $emailService->setFrom($config['ERS']['info_mail']);
 
             /*** real buyer ***/
-            $buyer = $order->getBuyer();
-            $emailService->addTo($buyer);
+            #$buyer = $order->getBuyer();
+            #$emailService->addTo($buyer);
             /***/
-            /*** test buyer **
+            /*** test buyer **/
             $user = new Entity\User();
             $user->setEmail('andi'.$order->getCode()->getValue().'@inbaz.org');
             $emailService->addTo($user);
@@ -525,6 +525,7 @@ class CronController extends AbstractActionController {
             $em->flush();
             
             echo "sent payment reminder for order ".$order->getCode()->getValue().PHP_EOL;
+            \sleep(5);
         }
     }
     
@@ -825,7 +826,7 @@ class CronController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's');
+        $qb->join('o.status', 's', 'WITH', 's.active = 1');
         $qb->where($qb->expr()->neq('s.value', ':status'));
         $qb->setParameter('status', 'order pending');
         
@@ -836,8 +837,9 @@ class CronController extends AbstractActionController {
             #echo $order->getCode()->getValue().PHP_EOL;
             $orig_total_sum = $order->getTotalSum();
             $orig_order_sum = $order->getOrderSum();
+            $order->getTotalSumEur();
+            $order->getOrderSumEur();
             
-            $persist = false;
             if($orig_order_sum != $order->getPrice()) {
                 $order->setOrderSum($order->getPrice());
                 echo "update order sum for ".$order->getCode()->getValue().": ".$orig_order_sum." != ".$order->getPrice().PHP_EOL;
@@ -847,9 +849,7 @@ class CronController extends AbstractActionController {
                 echo "update total sum for ".$order->getCode()->getValue().": ".$orig_total_sum." != ".$order->getSum().PHP_EOL;
             }
             
-            if($persist) {
-                $em->persist($order);
-            }
+            $em->persist($order);
         }
         $em->flush();
     }

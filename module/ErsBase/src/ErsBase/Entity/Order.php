@@ -171,7 +171,22 @@ class Order extends Base\Order
         }
         return $this->total_sum;
     }
+    
+    public function getOrderSumEur() {
+        if($this->order_sum_eur == 0) {
+            $this->order_sum_eur = $this->getPrice()*$this->getCurrency()->getFactor();
+        }
+        return $this->order_sum_eur;
+    }
 
+    public function getTotalSumEur()
+    {
+        if($this->total_sum_eur == 0) {
+            $this->total_sum_eur = $this->getSum()*$this->getCurrency()->getFactor();
+        }
+        return $this->total_sum_eur;
+    }
+    
     /**
      * Not needed here anymore the method of the base entity is used instead
      * Add Package entity to collection (one to many).
