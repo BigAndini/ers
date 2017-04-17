@@ -117,41 +117,8 @@ class StatisticController extends AbstractActionController {
     public function ordersAction() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-
-        // old, more complex queries that do not make use of the cached fields and are no longer needed
-        /*$qb = $em->createQueryBuilder();
-        $order_data = $qb
-                ->select('COUNT(DISTINCT o.id) ordercount', 'SUM(i.price) ordersum')
-                ->from('ErsBase\Entity\Order', 'o')
-                ->join('o.packages', 'p')
-                ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
-                ->getQuery()->getSingleResult();
         
-        $qb = $em->createQueryBuilder();
-        $paymentFees = $qb
-                ->select('(pay.fixFee + SUM(i.price)*pay.percentageFee/100) AS fee')
-                ->from('ErsBase\Entity\Order', 'o')
-                ->join('o.paymentType', 'pay')
-                ->join('o.packages', 'p')
-                ->join('p.items', 'i', 'WITH', "i.status != 'cancelled' AND i.status != 'refund'")
-                ->groupBy('o.id')
-                ->getQuery()->getArrayResult();
-        
-        
-        $order_data['paymentfees'] = array_sum(array_map(function($row){ return floatval($row['fee']); }, $paymentFees));
-        
-        $fastResults = $em->createQueryBuilder()
-                ->select('SUM(o.total_sum_eur) totalsum_fast', 'SUM(o.order_sum_eur) ordersum_fast')->from('ErsBase\Entity\Order o')
-                ->getQuery()->getSingleResult();
-        
-        $order_data['ordersum_fast'] = $fastResults['ordersum_fast'];
-        $order_data['totalsum_fast'] = $fastResults['totalsum_fast'];
-        $order_data['paymentfees_fast'] = $fastResults['totalsum_fast'] - $fastResults['ordersum_fast'];
-        */
-        
-        
-        
-        $orderSelectFields = array('COUNT(o.id) AS ordercount', 'SUM(o.order_sum_eur) AS ordersum, SUM(o.total_sum_eur) AS totalsum');
+        $orderSelectFields = array('COUNT(o.id) AS ordercount', 'SUM(o.order_sum) AS ordersum', 'SUM(o.total_sum) AS totalsum', 'SUM(o.order_sum_eur) AS ordersumeur', 'SUM(o.total_sum_eur) AS totalsumeur');
         
         $paymentStatusStats = $em->createQueryBuilder()
                 #->select(array_merge(array('o.payment_status AS label'), $orderSelectFields))
@@ -167,8 +134,6 @@ class StatisticController extends AbstractActionController {
             $group = ($statusData['status']->getActive() ? 'active' : 'inactive');
             $byStatusGroups[$group][] = $statusData;
         }
-        error_log('active: '.count($byStatusGroups['active']));
-        error_log('inactive: '.count($byStatusGroups['inactive']));
         
         $paymentTypeStats = $em->createQueryBuilder()
                 ->select(array_merge(array('pt.name AS label', 'c.short as currency'), $orderSelectFields))
