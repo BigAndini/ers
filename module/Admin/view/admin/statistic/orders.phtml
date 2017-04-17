@@ -28,13 +28,13 @@ $this->headTitle($title);
                         <td><div class="col-xs-offset-2"><?php echo $this->escapeHtml($value['label']); ?></div></td>
                         <td><?php echo $value['ordercount']; ?></td>
                         <td class="text-right">
-                            <?php echo $this->currencyFormat($value['ordersum'], 'EUR', null, 'de_DE'); ?>
+                            <?php echo $this->currencyFormat($value['ordersumeur'], 'EUR', null, 'de_DE'); ?>
                         </td>
                         <td class="text-right">
-                            <?php echo $this->currencyFormat($value['totalsum'] - $value['ordersum'], 'EUR', null, 'de_DE'); ?>
+                            <?php echo $this->currencyFormat($value['totalsumeur'] - $value['ordersumeur'], 'EUR', null, 'de_DE'); ?>
                         </td>
                         <td class="text-right">
-                            <?php echo $this->currencyFormat($value['totalsum'], 'EUR', null, 'de_DE'); ?>
+                            <?php echo $this->currencyFormat($value['totalsumeur'], 'EUR', null, 'de_DE'); ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -43,14 +43,14 @@ $this->headTitle($title);
                     <th><div class="col-xs-offset-2"><?php echo $this->escapeHtml($statusGroupName); ?> sum</div></th>
                     <th><?php echo array_sum(array_column($statusGroup, 'ordercount')); ?></th>
                     <th class="text-right">
-                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'ordersum')), 'EUR', null, 'de_DE'); ?>
+                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'ordersumeur')), 'EUR', null, 'de_DE'); ?>
                     </th>
                     <th class="text-right">
-                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'totalsum'))
-                                                        - array_sum(array_column($statusGroup, 'ordersum')), 'EUR', null, 'de_DE'); ?>
+                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'totalsumeur'))
+                                                        - array_sum(array_column($statusGroup, 'ordersumeur')), 'EUR', null, 'de_DE'); ?>
                     </th>
                     <th class="text-right">
-                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'totalsum')), 'EUR', null, 'de_DE'); ?>
+                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'totalsumeur')), 'EUR', null, 'de_DE'); ?>
                     </th>
                 </tr>
             </tbody>
@@ -93,14 +93,14 @@ $this->headTitle($title);
                 <th>total sum</th>
                 <th><?php echo array_sum(array_column($stats_paymentTypes, 'ordercount')); ?></th>
                 <th class="text-right">
-                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'ordersum')), 'EUR', null, 'de_DE'); ?>
+                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'ordersumeur')), 'EUR', null, 'de_DE'); ?>
                 </th>
                 <th class="text-right">
-                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'totalsum'))
-                                                    - array_sum(array_column($stats_paymentTypes, 'ordersum')), 'EUR', null, 'de_DE'); ?>
+                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'totalsumeur'))
+                                                    - array_sum(array_column($stats_paymentTypes, 'ordersumeur')), 'EUR', null, 'de_DE'); ?>
                 </th>
                 <th class="text-right">
-                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'totalsum')), 'EUR', null, 'de_DE'); ?>
+                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'totalsumeur')), 'EUR', null, 'de_DE'); ?>
                 </th>
             </tr>
         </tfoot>
