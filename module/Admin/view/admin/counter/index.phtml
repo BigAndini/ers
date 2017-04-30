@@ -13,15 +13,23 @@ $this->headTitle($title);
     <tr>
         <th>Name</th>
         <th>Limit</th>
+        <th>Values</th>
         <th>Current value</th>
         <th class="text-right">
             <a class="btn btn-success" href="<?php echo $this->url('admin/counter', array('action'=>'add'));?>"><i class="fa fa-plus"></i> Counter</a>
         </th>
     </tr>
-<?php foreach ($counters as $counter) : ?>
+<?php foreach ($counters as $counter) : 
+    $variantValues = $counter->getProductVariantValues();
+    ?>
     <tr>
         <td><?php echo $this->escapeHtml($counter->getName()); ?></td>
         <td><?php echo $counter->getValue(); ?></td>
+        <td>
+            <?php foreach($variantValues as $value): ?>
+                <p><?php echo $value->getValue(); ?></p>
+            <?php endforeach; ?>
+        </td>
         <td><i><?php echo $counterCurrentValues[$counter->getId()]; ?></i></td>
         <td class="text-right">
             <a class="btn btn-default" href="<?php echo $this->url('admin/counter', array('action'=>'edit', 'id' => $counter->getId()));?>"><i class="fa fa-edit"></i></a>
