@@ -87,6 +87,7 @@ class OrderController extends AbstractActionController {
             $qb->join('o.code', 'oc');
             $qb->join('o.packages', 'p');
             $qb->join('p.code', 'pc');
+            $qb->join('o.status', 's WITH s.active = 1');
             $i = 0;
             foreach($searchElements as $element) {
                 if($i == 0) {
@@ -129,6 +130,7 @@ class OrderController extends AbstractActionController {
             $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
             $qb->join('o.user', 'b'); # get buyer
             $qb->join('o.packages', 'p');
+            $qb->join('o.status', 's WITH s.active = 1');
             $qb->join('p.user', 'u'); # get participant
             $i = 0;
             foreach($searchElements as $element) {
