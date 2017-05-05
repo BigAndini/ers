@@ -59,7 +59,20 @@ class Product extends Form
                 'class' => 'checkbox',
             ),
             'options' => array(
-                'label' => 'Visible',
+                'label' => 'visible in shop',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        $this->add(array(
+            'type' => 'checkbox',
+            'name' => 'visible_on_eticket',
+            'attributes' => array(
+                'class' => 'checkbox',
+            ),
+            'options' => array(
+                'label' => 'visible on e-ticket',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
