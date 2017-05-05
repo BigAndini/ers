@@ -10,10 +10,11 @@ $this->headTitle($title);
 
 <table class="table">
     <tr>
-        <th>Pos.</th>
-        <th>Visible</th>
-        <th>Name</th>
-        <th>Template for E-Ticket <i class="fa fa-question-circle text-info" data-toggle="tooltip" title="Some product types can be displayed on the e-ticket via a template. If no template fits for your product request a template through an issue on github. You can find a link to the issue tracker on the bottom right of this page."></i></th>
+        <th>pos.</th>
+        <th>visible<br />in shop</th>
+        <th>visible<br />on e-ticket</th>
+        <th>name</th>
+        <th>template for e-ticket <i class="fa fa-question-circle text-info" data-toggle="tooltip" title="Some product types can be displayed on the e-ticket via a template. If no template fits for your product request a template through an issue on github. You can find a link to the issue tracker on the bottom right of this page."></i></th>
         <!--<th>Variant</th>-->
         <th>
             <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/product', array('action'=>'add'));?>"><i class="fa fa-plus"></i> <?php echo _('product'); ?></a>
@@ -24,6 +25,13 @@ $this->headTitle($title);
         <td><?php echo $this->escapeHtml($product->getPosition());?></td>
         <td>
             <?php if($product->getVisible()) : ?>
+                <i class="fa fa-lg fa-eye"></i>
+            <?php else: ?>
+                <i class="fa fa-lg fa-eye-slash"></i>
+            <?php endif; ?>
+        </td>
+        <td>
+            <?php if($product->getVisibleOnEticket()) : ?>
                 <i class="fa fa-lg fa-eye"></i>
             <?php else: ?>
                 <i class="fa fa-lg fa-eye-slash"></i>

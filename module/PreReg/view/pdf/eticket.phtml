@@ -8,9 +8,10 @@
                 margin: 0;
             }
             body {
-                margin: 20px 25px;
+                margin: 20px 25px 20px 60px;
                 padding: 0;
                 font-family: 'OpenSans-Regular';
+                font-size: 12px;
             }
             strong {
                 font-family: 'OpenSans-Bold';
@@ -63,13 +64,16 @@
                 width: 100%;
             }
             .left-field {
-                width: 485px;
+                width: 455px;
+            }
+            .left-field h3 {
+                font-size: 18px;
             }
             .short-description {
-                width: 485px;
+                width: 455px;
             }
             .disclaimer {
-                width: 485px;
+                width: 455px;
             }
             .agegroup {
                 position: absolute;
@@ -167,7 +171,8 @@
             <h3><?php echo $this->translate('Brief instruction'); ?></h3>
             <p><?php printf($this->translate('This is your <strong>E-Ticket</strong> for the %s. Please bring this document with you to the event! It isn\'t necessary to print your E-Ticket. You can present it on any electronic device.'), $config['ERS']['name_with_year']); ?></p>
             <?php if($personalized): ?>
-                <p><?php printf($this->translate('Please make sure that the data (name, first name, date of birth) on this E-Ticket are exactly the same as the ones on your <strong>ID card</strong> or <strong>passport</strong>. This guarantees that only you can register for the event with your E-ticket and nobody else.')) ?></p>
+                <!--<p><?php printf($this->translate('Please make sure that the data (name, first name, date of birth) on this E-Ticket are exactly the same as the ones on your <strong>ID card</strong> or <strong>passport</strong>. This guarantees that only you can register for the event with your E-ticket and nobody else.')) ?></p>-->
+                <p><?php printf($this->translate('On arrival at %s, please have <strong>this e-ticket</strong> and your <strong>ID card / passport</strong> ready and present them at the registration desk. Important: Your first name, last name and date of birth on this e-ticket need to be identical to those on your ID card / passport!'), $config['ERS']['name_with_year']); ?></p>
             
                 <?php if($agegroup):
                     switch($agegroup->getName()):
