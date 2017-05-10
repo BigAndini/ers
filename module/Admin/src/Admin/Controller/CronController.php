@@ -842,11 +842,11 @@ class CronController extends AbstractActionController {
             
             if($orig_order_sum != $order->getPrice()) {
                 $order->setOrderSum($order->getPrice());
-                echo "update order sum for ".$order->getCode()->getValue().": ".$orig_order_sum." != ".$order->getPrice().PHP_EOL;
+                #echo "update order sum for ".$order->getCode()->getValue().": ".$orig_order_sum." != ".$order->getPrice().PHP_EOL;
             }
             if($orig_total_sum != $order->getSum()) {
                 $order->setTotalSum($order->getSum());
-                echo "update total sum for ".$order->getCode()->getValue().": ".$orig_total_sum." != ".$order->getSum().PHP_EOL;
+                #echo "update total sum for ".$order->getCode()->getValue().": ".$orig_total_sum." != ".$order->getSum().PHP_EOL;
             }
             
             $em->persist($order);

@@ -47,7 +47,7 @@ class StatisticController extends AbstractActionController {
         $qb2->where($qb2->expr()->eq('pt.id', ':bank_account_id'));
         #$qb2->groupBy('pt.name');
         
-        $qb2->setParameter('bank_account_id', '2');
+        $qb2->setParameter('bank_account_id', '7');
         
         $volunteers1 = $qb2->getQuery()->getSingleResult();
         
