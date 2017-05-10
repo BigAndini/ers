@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -18,6 +18,8 @@
         'name_with_number'  => "39th European Juggling Convention",
         'info_mail'         => "info@ejc2016.org",
         'website'           => "http://www.ejc2016.org",
+        'website_faq'       => "http://www.ejc2017.org/en/lublin-site/teren-ejc-2017/faq/",
+        'facebook'          => "https://www.facebook.com/EJC2017",
         'year'              => 2016,
         'start'             => new DateTime('2016-07-30'),
         'end'               => new DateTime('2016-08-07'),
@@ -47,7 +49,7 @@
         // Always omit a trailing slash!
         'server' => 'prereg.eja.net/analytics',
         'site_id' => 1,
-    ], 
+    ],
 ];
 */
 return array();

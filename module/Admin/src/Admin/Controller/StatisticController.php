@@ -560,12 +560,13 @@ class StatisticController extends AbstractActionController {
         /* @var $paymenttype \ErsBase\Entity\PaymentType */
         foreach($paymenttypes as $paymenttype) {
             $statementFormat = json_decode($paymenttype->getStatementFormat());
-            
+           
             $qb = $em->createQueryBuilder()
-                    ->select('COUNT(s.id) AS stmtcount', 'SUM(col.value) AS amount, MAX(s.created) AS latestentry')
+                    ->select('COUNT(s.id) AS stmtcount', 'SUM(col.value) AS amount, MAX(s.created) AS latestentry', 'c.short as currency', 'c.factor as factor')
                     ->from('ErsBase\Entity\PaymentType', 'acc')
                     ->join('acc.bankStatements', 's', 'WITH', "s.status != 'disabled'")
                     ->join('s.bankStatementCols', 'col', 'WITH', 'col.column = :colNum')
+                    ->join('acc.currency', 'c')
                     ->where('acc.id = :accountId')
                     
                     ->setParameter('accountId', $paymenttype->getId())
@@ -573,14 +574,18 @@ class StatisticController extends AbstractActionController {
             
             $activeStats[$paymenttype->getName()] = $qb
                     ->getQuery()->getSingleResult();
-            
+                       
             // extend the query to only include matched statements
             $matchingStats[$paymenttype->getName()] = $qb
                     ->andWhere("s.status = 'matched'")
                     ->getQuery()->getSingleResult();
-        }
-        
-        
+            
+            // for Polish bank account: change amount from Groszy to Zloty (1 Zloty = 100 Groszy)
+            if ($activeStats[$paymenttype->getName()]['currency'] == 'PLN')
+                $activeStats[$paymenttype->getName()]['amount'] /= 100;
+            if ($matchingStats[$paymenttype->getName()]['currency'] == 'PLN')
+                $matchingStats[$paymenttype->getName()]['amount'] /= 100;
+        }    
         
         return new ViewModel(array(
             'activeStats' => $activeStats,
