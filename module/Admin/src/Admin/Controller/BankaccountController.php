@@ -332,6 +332,8 @@ class BankaccountController extends AbstractActionController {
                 
                 $file = $data['csv-upload'];
                 
+                # check mime type of csv file
+                
                 $bankAccountCsv = new Entity\BankAccountCsv();
                 $bankAccountCsv->setCsvFile($file['name']);
                 $bankAccountCsv->setPaymentType($bankaccount);
