@@ -536,6 +536,10 @@ class CronController extends AbstractActionController {
         $short_real = (bool) $request->getParam('r',false);
         $isReal = ($long_real | $short_real);
         
+        $long_debug = (bool) $request->getParam('debug',false);
+        $short_debug = (bool) $request->getParam('d',false);
+        $isDebug = ($long_debug | $short_debug);
+        
         $long_count = (int) $request->getParam('count',false);
         if(is_numeric($long_count) && $long_count != 0) {
             $ticket_count = $long_count;
@@ -613,12 +617,12 @@ class CronController extends AbstractActionController {
             exit();
         }
         
-        echo PHP_EOL;
+        /*echo PHP_EOL;
         for($i=10; $i > 0; $i--) {
             echo "Really sending out e-tickets in... ".$i." seconds (ctrl+c to abort)   \r";
             sleep(1);
         }
-        echo PHP_EOL;
+        echo PHP_EOL;*/
         
         $config = $this->getServiceLocator()
                         ->get('config');
@@ -675,7 +679,9 @@ class CronController extends AbstractActionController {
             $eticketFile = $eticketService->generatePdf();
 
             echo ob_get_clean();
-            echo "generated e-ticket ".$eticketFile.".".PHP_EOL;
+            if($isDebug) {
+                echo "generated e-ticket ".$eticketFile.".".PHP_EOL;
+            }
 
             $emailService->addAttachment($eticketFile);
             
