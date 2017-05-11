@@ -558,7 +558,9 @@ class CronController extends AbstractActionController {
         $qb->where('p.ticket_status IS NULL');
         $qb->orWhere("p.ticket_status = 'not_send'");
         $noStatusPackages = $qb->getQuery()->getResult();
-        echo count($noStatusPackages)." packages need to be corrected.".PHP_EOL;
+        if($isDebug) {
+            echo count($noStatusPackages)." packages need to be corrected.".PHP_EOL;
+        }
         foreach($noStatusPackages as $package) {
             $order = $package->getOrder();
             if($order->getStatus()->getValue() == 'order pending') {
@@ -607,7 +609,9 @@ class CronController extends AbstractActionController {
         }
         $can_send_packages = $em->getRepository('ErsBase\Entity\Package')
             ->findBy(array('ticket_status' => 'can_send'));
-        echo "Can send out e-tickets for ".count($can_send_packages)." packages, will process ".$ticket_count." now.".PHP_EOL;
+        if($isDebug) {
+            echo "Can send out e-tickets for ".count($can_send_packages)." packages, will process ".$ticket_count." now.".PHP_EOL;
+        }
         
         $packages = $em->getRepository('ErsBase\Entity\Package')
             ->findBy(array('ticket_status' => 'can_send'), array(), $ticket_count);
