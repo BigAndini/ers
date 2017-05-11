@@ -84,7 +84,7 @@
                         <table class="day-table">
                             <tr>
                                 <?php 
-                                error_log('variant name: '.$productVariantName);
+                                #error_log('variant name: '.$productVariantName);
                                 $productVariant = $product->getProductVariantByName($productVariantName);
                                 foreach($productVariant->getProductVariantValues() as $value):
                                     $pattern = [

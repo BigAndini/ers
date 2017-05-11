@@ -51,12 +51,12 @@ return array(
                 'icon' => 'fa fa-bar-chart',
                 'route' => 'admin/statistic',
                 'pages' => array(
-                    'orgas' => array(
+                    /*'orgas' => array(
                         'label' => 'for Orgas',
                         'route' => 'admin/statistic',
                         'action' => 'orgas',
                         'resource'  => 'controller/Admin\Controller\Statistic',
-                    ),
+                    ),*/
                     'order' => array(
                         'label' => 'Orders',
                         'route' => 'admin/statistic',
@@ -353,7 +353,7 @@ return array(
                 ),
                 'send-etickets' => array(
                     'options' => array(
-                        'route'    => 'send-etickets [--count=|-c=] [--real|-r]',
+                        'route'    => 'send-etickets [--count=|-c=] [--real|-r] [--debug|-d]',
                         'defaults' => array(
                             'controller' => 'Admin\Controller\Cron',
                             'action' => 'send-etickets'
