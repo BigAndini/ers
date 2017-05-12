@@ -112,6 +112,24 @@
         </nav>
         <div class="container">
             <div class="inner-container main-container">
+                <?php 
+                echo $this->flashMessenger()
+                        ->setMessageOpenFormat('<div%s><p>')
+                        ->setMessageCloseString('</p></div>')
+                        ->render('error', ['alert', 'alert-danger']);
+
+                echo $this->flashMessenger()
+                        ->setMessageOpenFormat('<div%s><p>')
+                        ->setMessageCloseString('</p></div>')
+                        ->render('warning', ['alert', 'alert-warning']);
+
+                
+                echo $this->flashMessenger()
+                        ->setMessageOpenFormat('<div%s><p>')
+                        ->setMessageCloseString('</p></div>')
+                        ->render('success', ['alert', 'alert-success']);
+                ?>
+
                 <?php echo $this->content; ?>
             </div> <!-- /container -->
         </div>

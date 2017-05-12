@@ -163,11 +163,12 @@ class ParticipantController extends AbstractActionController {
         
         $participant = $order->getParticipantById($id);
         
-        if (!$participant) {
-            # TODO: add flash messenger message with error and return
-        }
-        
         $breadcrumbService = new Service\BreadcrumbService();
+        $breadcrumb = $breadcrumbService->get('participant');
+        if (!$participant) {
+            $this->flashMessenger()->addErrorMessage('The user with the id '.$id.' could not be found in your order. If you waited for more than 1 hour your shopping cart has been cancelled for security reasons.');
+            return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+        }
         
         $form = new Form\Participant();
         $form->setServiceLocator($this->getServiceLocator());
@@ -193,7 +194,7 @@ class ParticipantController extends AbstractActionController {
                         ->get('ErsBase\Service\OrderService');
                 $orderService->updateShoppingCart();
                 
-                $breadcrumb = $breadcrumbService->get('participant');
+                
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
                 $logger = $this->getServiceLocator()->get('Logger');

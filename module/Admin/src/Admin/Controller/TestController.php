@@ -281,4 +281,11 @@ class TestController extends AbstractActionController {
     public function colTestAction() {
         return new ViewModel();
     }
+    
+    public function flashMessengerAction() {
+        $this->flashMessenger()->addSuccessMessage('This is a success message');
+        $this->flashMessenger()->addWarningMessage('This is a warning message');
+        $this->flashMessenger()->addErrorMessage('This is an error message');
+        return new ViewModel();
+    }
 }
