@@ -8,7 +8,7 @@ $this->headTitle($title);
 
 <div class="row">
     <div class="col-md-6">
-        <div class="panel panel-danger">
+        <div class="panel panel-success">
             <div class="panel-heading">Participants by agegroup (affecting price)</div>
             <table class="table table-striped">
                 <thead>
@@ -17,9 +17,6 @@ $this->headTitle($title);
                         <th class="text-right">participant<br>count</th>
                         <th class="text-right">paid</th>
                         <th class="text-right">onsite</th>
-                        <th class="text-right">
-                            <span data-toggle="tooltip" title="amount of already paid and placed orders">order<br>amount</span>
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,7 +26,6 @@ $this->headTitle($title);
                             <td class="text-right"><?php echo $value['count']; ?></td>
                             <td class="text-right"><?php echo $value['paid']; ?></td>
                             <td class="text-right"><?php echo $value['onsite']; ?></td>
-                            <td class="text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -40,8 +36,6 @@ $this->headTitle($title);
                         <th class="text-right"><?php echo array_sum(array_column($stats_agegroupPrice, 'count')); ?></th>
                         <th class="text-right"><?php echo array_sum(array_column($stats_agegroupPrice, 'paid')); ?></th>
                         <th class="text-right"><?php echo array_sum(array_column($stats_agegroupPrice, 'onsite')); ?></th>
-                        
-                        <th class="text-right"><?php echo $this->currencyFormat(array_sum(array_column($stats_agegroupPrice, 'amount')), 'EUR', null, 'de_DE'); ?></th>
                     </tr>
                 </tfoot>
             </table>
@@ -49,7 +43,7 @@ $this->headTitle($title);
     </div>
     
     <div class="col-md-6">
-        <div class="panel panel-danger">
+        <div class="panel panel-success">
             <div class="panel-heading">Participants by agegroup (affecting ticket)</div>
             <table class="table table-striped">
                 <thead>
@@ -58,7 +52,6 @@ $this->headTitle($title);
                         <th class="text-right">participant<br>count</th>
                         <th class="text-right">paid</th>
                         <th class="text-right">onsite</th>
-                        <th class="text-right">order<br>amount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,7 +61,6 @@ $this->headTitle($title);
                         <td class="text-right"><?php echo $value['count']; ?></td>
                         <td class="text-right"><?php echo $value['paid']; ?></td>
                         <td class="text-right"><?php echo $value['onsite']; ?></td>
-                        <td class="text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -78,7 +70,6 @@ $this->headTitle($title);
                         <th class="text-right"><?php echo array_sum(array_column($stats_agegroupTicket, 'count')); ?></th>
                         <th class="text-right"><?php echo array_sum(array_column($stats_agegroupTicket, 'paid')); ?></th>
                         <th class="text-right"><?php echo array_sum(array_column($stats_agegroupTicket, 'onsite')); ?></th>
-                        <th class="text-right"><?php echo $this->currencyFormat(array_sum(array_column($stats_agegroupTicket, 'amount')), 'EUR', null, 'de_DE'); ?></th>
                     </tr>
                 </tfoot>
             </table>
@@ -88,7 +79,7 @@ $this->headTitle($title);
 
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-danger">
+        <div class="panel panel-success">
             <div class="panel-heading">Participants by product type</div>
             <table class="table table-striped">
                 <thead>
@@ -118,7 +109,7 @@ $this->headTitle($title);
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="panel panel-danger">
             <div class="panel-heading">Participants ordered by payment type</div>
             <table class="table table-striped">
@@ -127,29 +118,25 @@ $this->headTitle($title);
                         <th>product</th>
                         <th class="text-right">participants</th>
                         <th class="text-right"><span  data-toggle="tooltip" title="Active items are items that are already paid or we are waiting for payment">active<br>items</span></th>
-                        <th class="text-right">paid</th>
-                        <th class="text-right">ordered</th>
-                        <th class="text-right">amount</th>
+                        <th class="text-right">paid<br>items</th>
+                        <th class="text-right">ordered<br>items</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($stats_paymentType as $value): ?>
                         <tr>
-                            <td class="col-md-6"><?php echo $this->escapeHtml($value['label']); ?></td>
+                            <td class="col-md-8"><?php echo $this->escapeHtml($value['label']); ?></td>
                             <td class="col-md-1 text-right"><?php echo !empty($value['usercount']) ? $value['usercount'] : 0; ?></td>
                             <td class="col-md-1 text-right"><?php echo !empty($value['itemcount']) ? $value['itemcount'] : 0; ?></td>
                             <td class="col-md-1 text-right"><?php echo !empty($value['paid']) ? $value['paid'] : 0; ?></td>
                             <td class="col-md-1 text-right"><?php echo !empty($value['ordered']) ? $value['ordered'] : 0; ?></td>
-                            <th class="col-md-2 text-right"><?php echo $this->currencyFormat(array_sum(array_column($stats_paymentType, 'amount')), 'EUR', null, 'de_DE'); ?></th>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="panel panel-danger">
             <div class="panel-heading">Participants already matched by bankaccount</div>
             <table class="table table-striped">
@@ -158,20 +145,18 @@ $this->headTitle($title);
                         <th>product</th>
                         <th class="text-right">participants</th>
                         <th class="text-right"><span  data-toggle="tooltip" title="Active items are items that are already paid or we are waiting for payment">active<br>items</span></th>
-                        <th class="text-right">paid</th>
-                        <th class="text-right">ordered</th>
-                        <th class="text-right">amount</th>
+                        <th class="text-right">paid<br>items</th>
+                        <th class="text-right">ordered<br>items</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($stats_paymentType as $value): ?>
                         <tr>
-                            <td class="col-md-6"><?php echo $this->escapeHtml($value['label']); ?></td>
+                            <td class="col-md-8"><?php echo $this->escapeHtml($value['label']); ?></td>
                             <td class="col-md-1 text-right"><?php echo !empty($value['usercount']) ? $value['usercount'] : 0;  ?></td>
                             <td class="col-md-1 text-right"><?php echo !empty($value['itemcount']) ? $value['itemcount'] : 0; ?></td>
                             <td class="col-md-1 text-right"><?php echo !empty($value['paid']) ? $value['paid'] : 0; ?></td>
                             <td class="col-md-1 text-right"><?php echo !empty($value['orered']) ? $value['ordered'] : 0; ?></td>
-                            <th class="col-md-2 text-right"><?php echo $this->currencyFormat($value['amount'], 'EUR', null, 'de_DE'); ?></th>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -214,7 +199,7 @@ $this->headTitle($title);
     
     
     <div class="col-md-6">
-        <div class="panel panel-danger">
+        <div class="panel panel-success">
             <div class="panel-heading">Participants by country</div>
             <table class="table table-striped">
                 <thead>
