@@ -52,8 +52,10 @@ class AgegroupController extends AbstractActionController {
                 $em->persist($agegroup);
                 $em->flush();
 
+                $this->flashMessenger()->addSuccessMessage('The agegroup '.$agegroup->getName().' has been successfully added');
                 return $this->redirect()->toRoute('admin/agegroup');
             } else {
+                $this->flashMessenger()->addErrorMessage($form->getMessages());
                 $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
@@ -88,7 +90,10 @@ class AgegroupController extends AbstractActionController {
                 $em->persist($form->getData());
                 $em->flush();
 
+                $this->flashMessenger()->addSuccessMessage('The agegroup has been successfully changed');
                 return $this->redirect()->toRoute('admin/agegroup');
+            } else {
+                $this->flashMessenger()->addErrorMessage($form->getMessages());
             }
         }
 
@@ -120,6 +125,8 @@ class AgegroupController extends AbstractActionController {
                     ->findOneBy(array('id' => $id));
                 $em->remove($agegroup);
                 $em->flush();
+                
+                $this->flashMessenger()->addSuccessMessage('The agegroup has been successfully deleted');
             }
 
             return $this->redirect()->toRoute('admin/agegroup');
