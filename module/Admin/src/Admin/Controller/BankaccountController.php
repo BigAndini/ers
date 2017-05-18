@@ -72,8 +72,10 @@ class BankaccountController extends AbstractActionController {
                 $em->persist($bankaccount);
                 $em->flush();
 
+                $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully added');
                 return $this->redirect()->toRoute('admin/bankaccount');
             } else {
+                $this->flashMessenger()->addErrorMessage($form->getMessages());
                 $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
@@ -109,6 +111,7 @@ class BankaccountController extends AbstractActionController {
                 $em->persist($form->getData());
                 $em->flush();
 
+                $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully changed');
                 return $this->redirect()->toRoute('admin/bankaccount');
             }
         }
@@ -140,6 +143,8 @@ class BankaccountController extends AbstractActionController {
                     ->findOneBy(array('id' => $id));
                 $em->remove($bankaccount);
                 $em->flush();
+                
+                $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully deleted');
             }
 
             return $this->redirect()->toRoute('admin/bankaccount');
@@ -256,6 +261,8 @@ class BankaccountController extends AbstractActionController {
                 
                 $em->persist($bankaccount);
                 $em->flush();
+                
+                $this->flashMessenger()->addSuccessMessage('The format for the bankaccount has been successfully changed');
 
                 return $this->redirect()->toRoute('admin/bankaccount');
             }
@@ -404,6 +411,8 @@ class BankaccountController extends AbstractActionController {
                 
                 $em->flush();
                 
+                $this->flashMessenger()->addSuccessMessage('The csv for the bankaccount has been successfully uploaded');
+                
                 return $this->redirect()->toRoute('admin/bankaccount');
             }
         }
@@ -412,22 +421,6 @@ class BankaccountController extends AbstractActionController {
             'form' => $form,
         ));
     }
-    
-    /*public function detailAction()
-    {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('admin/order', array());
-        }
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
-        
-        return new ViewModel(array(
-            'order' => $order,
-        ));
-    }*/
     
     public function uploadsAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
@@ -478,6 +471,8 @@ class BankaccountController extends AbstractActionController {
                 }
                 $em->remove($csv);
                 $em->flush();
+                
+                $this->flashMessenger()->addSuccessMessage('The csv for the bankaccount has been successfully deleted');
             }
 
             return $this->redirect()->toRoute('admin/bankaccount');

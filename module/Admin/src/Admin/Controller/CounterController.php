@@ -53,8 +53,10 @@ class CounterController extends AbstractActionController {
                 $em->persist($counter);
                 $em->flush();
 
+                $this->flashMessenger()->addSuccessMessage('The counter has been successfully added');
                 return $this->redirect()->toRoute('admin/counter');
             } else {
+                $this->flashMessenger()->addErrorMessage($form->getMessages());
                 $logger = $this->getServiceLocator()->get('Logger');
                 $logger->warn($form->getMessages());
             }
@@ -101,6 +103,8 @@ class CounterController extends AbstractActionController {
                 
                 $em->persist($counter);
                 $em->flush();
+                
+                $this->flashMessenger()->addSuccessMessage('The counter has been successfully changed');
 
                 return $this->redirect()->toRoute('admin/counter');
             }
@@ -139,6 +143,8 @@ class CounterController extends AbstractActionController {
                     ->findOneBy(array('id' => $id));
                 $em->remove($counter);
                 $em->flush();
+                
+                $this->flashMessenger()->addSuccessMessage('The counter has been successfully deleted');
             }
 
             return $this->redirect()->toRoute('admin/counter');

@@ -327,14 +327,14 @@ $this->headTitle($title);
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <?php echo $this->currencyFormat($order->getTotalSum(), 'EUR', null, 'de_DE'); ?>
+                                    <?php echo $this->currencyFormat($order->getTotalSum(), $order->getCurrency()->getShort(), null, 'de_DE'); ?>
                                 </div>
                                 <div class="col-md-4 text-center">
                                     <a class="btn btn-danger" href="<?php echo $this->url('admin/matching', array('action' => 'unlink', 'id' => $match->getId())); ?>">unlink</a>
                                 </div>
                                 <div class="col-md-4 text-right">
                                     <?php if(is_numeric($statement->getAmountValue())):
-                                        echo $this->currencyFormat($statement->getAmountValue(), 'EUR', null, 'de_DE');
+                                        echo $this->currencyFormat($statement->getAmountValue(), $statement->getPaymentType()->getCurrency()->getShort(), null, 'de_DE');
                                     else :
                                         echo $statement->getAmountValue();
                                     endif; ?>
@@ -396,7 +396,13 @@ $this->headTitle($title);
                             </tr>
                             <tr>
                                 <th>amount</th>
-                                <td><?php echo $statement->getAmountValue(); ?></td>
+                                <td>
+                                    <?php if(is_numeric($statement->getAmountValue())):
+                                        echo $this->currencyFormat($statement->getAmountValue(), $statement->getPaymentType()->getCurrency()->getShort(), null, 'de_DE');
+                                    else :
+                                        echo $statement->getAmountValue();
+                                    endif; ?>
+                                </td>
                             </tr>
                             <tr>
                                 <th>code</th>
