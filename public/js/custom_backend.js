@@ -91,7 +91,39 @@ jQuery(function($) {
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     })
+    
+    // change currency and payment type
+    $('#change-currency').change(function(event) {
+        
+    });
+    
+    $("#change-currency").change(function () {
+        var currencyId = $(this).val();
+        if(currencyId !== "") {
+            loadChangePaymenttype(currencyId);
+        }
+    });
 });
+
+function loadChangePaymenttype(currencyId) {
+    var url = "/admin/ajax/choose-payment-types/" + currencyId;
+    var count = 1;
+    $.getJSON( url, function( data ) {
+        var options = "";
+        $.each(data, function(id, content) {
+            if(typeof content.name === 'undefined') {
+                return true;
+            }
+            var disabled = " disabled";
+            if(content.active === true) {
+                disabled = "";
+            }
+            options += "<option value='" + id + "'" + disabled + ">" + content.name + "</option>";
+            count++;
+        });
+        $("#change-paymenttype").html(options).fadeIn();
+    });
+}
 
 $(document).ready(function() {
     $(".dropdown-toggle").dropdown();

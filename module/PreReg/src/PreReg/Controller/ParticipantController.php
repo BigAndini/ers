@@ -164,6 +164,9 @@ class ParticipantController extends AbstractActionController {
         $participant = $order->getParticipantById($id);
         
         $breadcrumbService = new Service\BreadcrumbService();
+        if (!$breadcrumbService->exists('participant')) {
+            $breadcrumbService->set('participant', 'product');
+        }
         $breadcrumb = $breadcrumbService->get('participant');
         if (!$participant) {
             $this->flashMessenger()->addErrorMessage('The user with the id '.$id.' could not be found in your order. If you waited for more than 1 hour your shopping cart has been cancelled for security reasons.');
@@ -202,10 +205,6 @@ class ParticipantController extends AbstractActionController {
             } 
         }
         
-        if (!$breadcrumbService->exists('participant')) {
-            $breadcrumbService->set('participant', 'participant');
-        }
-        $breadcrumb = $breadcrumbService->get('participant');
         return new ViewModel([
             'id' => $id,
             'form' => $form,
