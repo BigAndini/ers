@@ -53,7 +53,8 @@ class Item extends Base\Item
         $code->genCode();
         $this->setCode($code);
         
-        $this->setPackage(null);
+        #$this->setPackage(null);
+        $this->setPackage($this->getPackage());
         
         $itemVariants = new ArrayCollection();
         foreach($this->getItemVariants() as $variant) {

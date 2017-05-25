@@ -200,10 +200,10 @@ class OrderController extends AbstractActionController {
         
         $paymenttypes = $em->getRepository('ErsBase\Entity\PaymentType')
                 ->findBy(array(), array('position' => 'ASC'));
-        $types = array();
-        $now = new \DateTime();
+        $currencyOptions = array();
+        #$now = new \DateTime();
         
-        $pts = array();
+        #$pts = array();
         /*foreach($paymenttypes as $paymenttype) {
             if(!$paymenttype->getVisible()) {
                 continue;
@@ -218,17 +218,17 @@ class OrderController extends AbstractActionController {
                 
             }
         }*/
-        $pts = $paymenttypes;
+        #$pts = $paymenttypes;
         
-        foreach($pts as $paymenttype) {
-            $types[] = array(
+        foreach($paymenttypes as $paymenttype) {
+            $currencyOptions[] = array(
                 'value' => $paymenttype->getId(),
                 'label' => $paymenttype->getName(),
             );
         }
         
         $form = new Form\ChangePaymentType();
-        $form->get('paymenttype_id')->setValueOptions($types);
+        $form->get('paymenttype_id')->setValueOptions($currencyOptions);
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('order')) {
@@ -268,6 +268,119 @@ class OrderController extends AbstractActionController {
             'breadcrumb' => $forrest->get('order'),
         ));
     }
+    
+    public function changeCurrencyAction() {
+        $forrest = new Service\BreadcrumbService();
+        if(!$forrest->exists('order')) {
+            $forrest->set('order', 'admin/order');
+        }
+        
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $order = $em->getRepository('ErsBase\Entity\Order')
+                ->findOneBy(array('id' => $id));
+        
+        # prepare currencies
+        $currencies = $em->getRepository('ErsBase\Entity\Currency')
+                ->findBy(array(), array('position' => 'ASC'));
+        
+        $currencyOptions = [];
+        foreach($currencies as $currency) {
+            $selected = false;
+            if($currency->getId() == $order->getCurrency()->getId()) {
+                $selected = true;
+            }
+            $currencyOptions[] = array(
+                'value' => $currency->getId(),
+                'label' => $currency->getName().' ('.$currency->getShort().' / '.$currency->getSymbol().')',
+                'selected' => $selected,
+            );
+        }
+        
+        # prepare payment types
+        $paymenttypes = $em->getRepository('ErsBase\Entity\PaymentType')
+                ->findBy(array(), array('position' => 'ASC'));
+        
+        $paymenttypeOptions = [];
+        foreach($paymenttypes as $paymenttype) {
+            $selected = false;
+            if($paymenttype->getId() == $order->getPaymenttype()->getId()) {
+                $selected = true;
+            }
+            $disabled = true;
+            if($paymenttype->getCurrency()->getShort() == $order->getCurrency()->getShort()) {
+                $disabled = false;
+            }
+            $paymenttypeOptions[] = array(
+                'value' => $paymenttype->getId(),
+                'label' => $paymenttype->getName(),
+                'selected' => $selected,
+                'disabled' => $disabled,
+            );
+        }
+        
+        $form = new Form\ChangeCurrency();
+        $form->get('currency_id')->setValueOptions($currencyOptions);
+        $form->get('paymenttype_id')->setValueOptions($paymenttypeOptions);
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $currency = $em->getRepository('ErsBase\Entity\Currency')
+                        ->findOneBy(array('id' => $data['currency_id']));
+                
+                $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
+                        ->findOneBy(array('id' => $data['paymenttype_id']));
+                
+                $deadlineService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\DeadlineService:price');
+                $deadlineService->setCompareDate($order->getCreated());
+                $deadline = $deadlineService->getDeadline();
+                
+                $orderService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\OrderService');
+                $orderService->setOrder($order);
+                $orderService->changeCurrency($currency);
+                #$order->setCurrency($currency);
+                $order->setPaymentType($paymenttype);
+                
+                $agegroupService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\AgegroupService:price');
+                foreach($order->getPackages() as $package) {
+                    $participant = $package->getParticipant();
+                    $agegroup = $agegroupService->getAgegroupByDate($participant->getBirthday());
+                    
+                    $orderService->saveRecalcPackage($package, $agegroup, $deadline);
+                }
+                
+                $em->persist($order);
+                $em->flush();
+                
+                $breadcrumb = $forrest->get('order');
+                return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'order' => $order,
+            'currencies' => $currencies,
+            'breadcrumb' => $forrest->get('order'),
+        ));
+    }
+    
     public function resendConfirmationAction() {
         $logger = $this->getServiceLocator()->get('Logger');
         

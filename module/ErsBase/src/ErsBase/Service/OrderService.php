@@ -348,4 +348,116 @@ class OrderService
         $em->remove($item);
         $em->flush();
     }
+    
+    public function recalcPackage(Entity\Package $package, $agegroup, $deadline) {
+        $itemArray = array();
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+        $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'paid'));
+        
+        foreach($package->getItems() as $item) {
+            if($item->getStatus() == 'refund') {
+                continue;
+            }
+            if($item->hasParentItems()) {
+                continue;
+            }
+            $product = $item->getProduct();
+            #$price = $product->getProductPrice($agegroup, $deadline);
+            $price = $product->getProductPrice($agegroup, $deadline, $package->getCurrency());
+            
+            if($item->getPrice() != $price->getCharge()) {
+                /*
+                 * disable item and create new item
+                 */
+                #$newItem = clone $item;
+                $newItem = new Entity\Item();
+                $newItem->populate($item->getArrayCopy());
+                #$newItem->setStatus($item->getStatus());
+                foreach($item->getItemVariants() as $itemVariant) {
+                    $newItemVariant = clone $itemVariant;
+                    $newItem->addItemVariant($newItemVariant);
+                    $newItemVariant->setItem($newItem);
+                }
+                $newItem->setPrice($price->getCharge());
+
+                $newItem->setProduct($item->getProduct());
+                $newItem->setPackage($item->getPackage());
+                
+                if($newItem->getPrice() == 0) {
+                    # set item to paid if it's 0 € worth
+                    $newItem->setStatus($statusPaid);
+                } elseif($item->getStatus()->getValue() == 'paid') {
+                    # if it's not 0 € worth set the item to ordered when it was paid.
+                    $newItem->setStatus($statusOrdered);
+                } else {
+                    # let the item in the old state otherwise
+                    $newItem->setStatus($item->getStatus());
+                }
+                
+                $code = new Entity\Code();
+                $code->genCode();
+                $codecheck = 1;
+                while($codecheck != null) {
+                    $code->genCode();
+                    $codecheck = $em->getRepository('ErsBase\Entity\Code')
+                        ->findOneBy(array('value' => $code->getValue()));
+                }
+                $newItem->setCodeId(null);
+                $newItem->setCode($code);
+
+                /*
+                 * add subitems to main item
+                 */
+                foreach($item->getChildItems() as $cItem) {
+                    $itemPackage = new Entity\ItemPackage();
+                    $itemPackage->setSurItem($newItem);
+                    $itemPackage->setSubItem($cItem);
+                    $newItem->addItemPackageRelatedBySurItemId($itemPackage);
+                }
+
+                $itemArray[$item->getId()]['after'] = $newItem;
+            }
+            $itemArray[$item->getId()]['before'] = $item;
+        }
+        return $itemArray;
+    }
+    
+    public function saveRecalcPackage(Entity\Package $package, $agegroup, $deadline) {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $statusCancelled = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'cancelled'));
+
+        $itemArray = $this->recalcPackage($package, $agegroup, $deadline);
+                
+        foreach($itemArray as $items) {
+            if(isset($items['after'])) {
+                $itemAfter = $items['after'];
+                $itemBefore = $items['before'];
+
+                #$itemAfter->setStatus($itemBefore->getStatus());
+
+                $em->persist($itemAfter);
+
+                $order = $itemAfter->getPackage()->getOrder();
+                if($order->getPaymentStatus() == 'paid') {
+                    $order->setPaymentStatus('unpaid');
+                }
+                $order->setOrderSum($order->getPrice());
+                $order->setTotalSum($order->getSum());
+                $em->persist($order);
+
+                $itemBefore->setStatus($statusCancelled);
+                $em->persist($itemBefore);
+
+                $em->flush();
+            }
+        }
+    }
 }

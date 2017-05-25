@@ -268,7 +268,9 @@ class Package extends Base\Package
      */
     public function setOrder(\ErsBase\Entity\Base\Order $order = null)
     {
-        $this->setCurrency($order->getCurrency());
+        if($order != null) {
+            $this->setCurrency($order->getCurrency());
+        }
         parent::setOrder($order);
 
         return $this;

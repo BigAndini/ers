@@ -52,14 +52,17 @@ $this->headTitle($title);
     <ul class="nav nav-pills">
         <li class="dropdown">
             <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                <span>Order<span class="caret"></span></span>
+                <span>order<span class="caret"></span></span>
             </a>
             <ul id="page_2" class="dropdown-menu">
                 <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'change-payment-type', 'id' => $order->getId())); ?>">Change Payment Type</a>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'change-payment-type', 'id' => $order->getId())); ?>">change payment type</a>
                 </li>
                 <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'resend-confirmation', 'id' => $order->getId())); ?>">Resend Confirmation</a>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'change-currency', 'id' => $order->getId())); ?>">change currency</a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'resend-confirmation', 'id' => $order->getId())); ?>">resend confirmation</a>
                 </li>
                 <?php if($order->getStatus()->getValue() != 'paid'): ?>
                 <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid orders.">
@@ -78,17 +81,17 @@ $this->headTitle($title);
         </li>
         <li class="dropdown">
             <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                <span>Status<span class="caret"></span></span>
+                <span>status<span class="caret"></span></span>
             </a>
             <ul id="page_2" class="dropdown-menu">
                 <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'refund', 'id' => $order->getId())); ?>">Refund</a>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'refund', 'id' => $order->getId())); ?>">refund</a>
                 </li>
                 <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'cancel', 'id' => $order->getId())); ?>">Cancelled</a>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'cancel', 'id' => $order->getId())); ?>">cancelled</a>
                 </li>
                 <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'unpaid', 'id' => $order->getId())); ?>">Unpaid</a>
+                    <a href="<?php echo $this->url('admin/order', array('action' => 'unpaid', 'id' => $order->getId())); ?>">unpaid</a>
                 </li>
             </ul>
         </li>
