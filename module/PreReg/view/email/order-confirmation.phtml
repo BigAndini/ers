@@ -29,11 +29,13 @@
         
         <?php 
         
-        printf($this->translate('This is the confirmation for %s from %s with the order ID %s.'),
+        printf($this->translate('This is the summary for %s from %s with the order ID %s.'),
                 $orderLink,
                 $orderDate,
                 $orderId); ?>
     </p>
+    
+    <p><?php printf($this->translate('Your order is not confirmed until we receive your payment. Once we receive payment you will be sent your E-ticket, please allow 14 days for money transfer and processing')); ?></p>
 
     <!--<p>
         To receive this email in another language you can visit the <a href="<?php echo $this->url('order', array(
