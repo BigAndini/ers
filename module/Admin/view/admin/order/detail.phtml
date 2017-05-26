@@ -1,17 +1,20 @@
 <?php 
-/*$status = 'undefined';
-if($order->findOrderStatus('paid')->getValue() != ''):
-    $status = 'paid';
-elseif($order->findOrderStatus('unpaid')->getValue() != ''):
-    $status = 'unpaid';
-endif;*/
 if($order):
-    $title = 'Order '.$order->getCode()->getValue().' ('.$order->getStatus()->getValue().')';
+    $title = 'order: '.$order->getCode()->getValue().' ('.$order->getStatus()->getValue().')';
 else:
-    $title = 'Order not found';
+    $title = 'order: not found';
 endif;
 
-#$title = 'Order '.$order->getCode()->getValue().' ('.$status.')';
+$statusColors = [
+    'paid' => 'success',
+    'unpaid' => 'danger',
+    'mixed' => 'warning',
+    'shipped' => 'primary',
+];
+$statusIcons = [
+    'paid' => 'fa-check',
+    'shipped' => 'fa-barcode',
+];
 
 $this->headTitle($title);
 ?>
@@ -40,10 +43,10 @@ $this->headTitle($title);
 <?php if($order): ?>
 <div class="row">
     <div class="col-md-6">
-        <h3>Order date: <?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></h3>
+        <h3>order date: <?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></h3>
     </div>
     <div class="col-md-6">
-        <h3>Comment</h3>
+        <h3>comment</h3>
         <?php echo $order->getComment(); ?>
     </div>
 </div>
@@ -100,7 +103,7 @@ $this->headTitle($title);
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Participants / Tickets</h3>
+        <h3 class="panel-title">participants / tickets</h3>
     </div>
     <div class="panel-body">
         <?php 
@@ -116,33 +119,26 @@ $this->headTitle($title);
             else:
                 $participant = $user->getFirstname().' '.$user->getSurname();
             endif;
+            
+            $packageStatus = $package->getStatusWithShipped();
+            if($packageStatus === 'ordered') {
+                $packageStatus = 'unpaid';
+            } elseif($packageStatus === 'undefined') {
+                $packageStatus = 'mixed';
+            }
+            
+            $statusCol = isset($statusColors[$packageStatus]) ? $statusColors[$packageStatus] : 'danger';
+            $statusIcon = isset($statusIcons[$packageStatus]) ? $statusIcons[$packageStatus] : 'fa-warning';
         ?>
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-8">
-                        <h3>
-                            <?php echo $participant.' ('.$package->getCode()->getValue();
-                            if($user->getCountry()):
-                                echo ', '.$user->getCountry();
-                            else:
-                                echo ', no Country provided';
-                            endif;
-                            echo ', '.$package->getStatus()->getValue().')'; ?>
-                        </h3>
-                        <p>
-                            date of birth: 
-                            <?php if($user->getBirthday() instanceof \DateTime):
-                                echo $user->getBirthday()->format('d.m.Y');
-                            endif; ?>
-                        </p>
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6 col-md-push-6 col-xs-12">
                         <div class="navbar pull-right">
                             <ul class="nav nav-pills">
                                 <li class="dropdown">
                                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                                        <span>Participant<span class="caret"></span></span>
+                                        <span>participant<span class="caret"></span></span>
                                     </a>
                                     <ul id="page_2" class="dropdown-menu">
                                         <?php if($participant != 'unassigned items'):?>
@@ -151,7 +147,7 @@ $this->headTitle($title);
                                             </li>
                                         <?php else: ?>
                                             <li class="disabled">
-                                                <a data-toggle="tooltip" data-placement="bottom"  title="Package is not assigned. Please use change owner." href="<?php echo $this->url('admin/user', array('action' => 'edit', 'id' => $user->getId())); ?>">Edit Participant Detail</a>
+                                                <a data-toggle="tooltip" data-placement="bottom"  title="Package is not assigned. Please use change owner." href="<?php echo $this->url('admin/user', array('action' => 'edit', 'id' => $user->getId())); ?>">edit participant detail</a>
                                             </li>
                                         <?php endif; ?>
                                         <li>
@@ -164,11 +160,11 @@ $this->headTitle($title);
                                 </li>
                                 <li class="dropdown">
                                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                                        <span>Package<span class="caret"></span></span>
+                                        <span>package<span class="caret"></span></span>
                                     </a>
                                     <ul id="page_2" class="dropdown-menu">
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'recalculate', 'id' => $package->getId())); ?>">Recalculate Prices</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'recalculate', 'id' => $package->getId())); ?>">recalculate prices</a>
                                         </li>
                                         <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
                                             <a href="<?php echo $this->url('admin/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Change Package Detail</a>
@@ -188,27 +184,66 @@ $this->headTitle($title);
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">Download E-Ticket</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">download e-ticket</a>
                                         </li>
                                     </ul>
                                 </li>
                                 <li class="dropdown">
                                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                                        <span>Status<span class="caret"></span></span>
+                                        <span>status<span class="caret"></span></span>
                                     </a>
                                     <ul id="page_2" class="dropdown-menu">
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'refund', 'id' => $package->getId())); ?>">Refund</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'refund', 'id' => $package->getId())); ?>">refund</a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'cancel', 'id' => $package->getId())); ?>">Cancelled</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'cancel', 'id' => $package->getId())); ?>">cancelled</a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'unpaid', 'id' => $package->getId())); ?>">Unpaid</a>
+                                            <a href="<?php echo $this->url('admin/package', array('action' => 'unpaid', 'id' => $package->getId())); ?>">unpaid</a>
                                         </li>
                                     </ul>
                                 </li>
                             </ul>
+                        </div>
+                    </div>
+                    <div class="col-xs-8 col-md-4 col-md-pull-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><?php echo $user->getFullName().' ('.$package->getCode()->getValue().')'; ?></h3>
+                            </div>
+                                <table class="table">
+                                    <tr>
+                                        <td>date of birth</td>
+                                        <td>
+                                        <?php if($user->getBirthday()) {
+                                            echo $user->getBirthday()->format('d.m.Y') . ' (' . $user->getAge()->format('%Y') . ' years)';
+                                        } else {
+                                            echo '<span class="gray">unknown birthday</span>';
+                                        } ?>        
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>country</td>
+                                        <td>
+                                        <?php if($user->getCountry()):
+                                            echo $user->getCountry();
+                                        else:
+                                            echo 'no Country provided';
+                                        endif; ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                        </div>
+                    </div>
+                    <div class="col-xs-4 col-md-2 col-md-pull-6">
+                        <div class="panel panel-<?php echo $statusCol; ?>">
+                            <div class="panel-heading"><h3 class="panel-title">status</h3></div>
+                            <div class="panel-body">
+                                <p class="text-<?php echo $statusCol; ?> h4">
+                                    <i class="fa <?php echo $statusIcon; ?>"></i>
+                                    <?php echo $this->escapeHtml($packageStatus ?: 'unknown'); ?></p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -216,10 +251,10 @@ $this->headTitle($title);
                 <?php if(count($package->getAllItems()) != 0): ?>
                 <table class="table">
                     <tr>
-                        <th class="col-md-8 col-xs-7">Product</th>
-                        <th class="cart-amount col-md-1 col-xs-1">Amount</th>
-                        <th class="cart-price col-md-1 col-xs-2">Price</th>
-                        <th class="col-md-2 col-xs-2">Status</th>
+                        <th class="col-md-8 col-xs-7">product</th>
+                        <th class="cart-amount col-md-1 col-xs-1">amount</th>
+                        <th class="cart-price col-md-1 col-xs-2">price</th>
+                        <th class="col-md-2 col-xs-2">status</th>
                     </tr>
                     <?php
                     $subtotal = 0;
@@ -235,7 +270,7 @@ $this->headTitle($title);
                     endforeach; ?>
                     <tr>
                         <td></td>
-                        <td>Subtotal:</td>
+                        <td>subtotal:</td>
                         <td><?php echo $this->currencyFormat($subtotal, $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                         <td></td>
                     </tr>
@@ -243,7 +278,7 @@ $this->headTitle($title);
                 <?php endif; ?>
                 <div class="row">
                     <div class="col-md-5">
-                        <h4>Comment</h4>
+                        <h4>comment</h4>
                         <?php echo $package->getComment(); ?>
                     </div>
                     <div class="col-md-7 text-right">
@@ -278,15 +313,15 @@ $this->headTitle($title);
         <div>
             <table class="table sum-table">
                 <tr>
-                    <td>Order amount:</td>
+                    <td>order amount:</td>
                     <td class="text-right"><?php echo $this->currencyFormat($order->getPrice(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
-                    <td>Payment Charge:</td>
+                    <td>payment charge:</td>
                     <td class="text-right"><?php echo $this->currencyFormat(($order->getSum()-$order->getPrice()), $order->getCurrency()->getShort(), null, 'de_DE'); ?></td>
                 </tr>
                 <tr>
-                    <th><span style="font-size: 18px;">Total amount:</span></th>
+                    <th><span style="font-size: 18px;">total amount:</span></th>
                     <th class="text-right"><span style="font-size: 18px;"><?php echo $this->currencyFormat($order->getSum(), $order->getCurrency()->getShort(), null, 'de_DE'); ?></span></th>
                 </tr>
             </table>
@@ -296,7 +331,7 @@ $this->headTitle($title);
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Payment Detail</h3>
+        <h3 class="panel-title">payment detail</h3>
     </div>
     <div class="panel-body">
         <?php $buyer = $order->getBuyer(); ?>

@@ -1167,4 +1167,20 @@ class CronController extends AbstractActionController {
             $em->flush();
         }
     }
+    
+    public function overpaidOrdersAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $orders = $em->getRepository('ErsBase\Entity\Order')
+                ->findAll();
+        
+        $overpaid = [];
+        foreach($orders as $order) {
+            if($order->getSum() < $order->getStatementAmount()) {
+                $overpaid[] = $order;
+                echo $order->getCode()->getValue().' '.\number_format($order->getSum(), 2, ',', '.').' < '.\number_format($order->getStatementAmount(), 2, ',', '.').PHP_EOL;
+            }
+        }
+    }
 }
