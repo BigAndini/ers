@@ -1018,4 +1018,77 @@ class OrderController extends AbstractActionController {
             'orders' => $orders,
         ));
     }
+    
+    public function overpaidAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $orders = $em->getRepository('ErsBase\Entity\Order')
+                ->findAll();
+        
+        $overpaid = [];
+        foreach($orders as $order) {
+            if($order->getSum() < $order->getStatementAmount()) {
+                $overpaid[] = $order;
+            }
+        }
+        
+        return new ViewModel(array(
+            'orders' => $overpaid,
+        ));
+    }
+    
+    /* NOT READY, YET! */
+    public function changeOrderDateAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        
+        $form = new Form\ChangeOrderDate();
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $order = $em->getRepository('ErsBase\Entity\Order')
+                ->findOneBy(array('id' => $id));
+        
+        if(!$order) {
+            $this->flashMessenger()->addErrorMessage('Unable to find order with id '.$id);
+            return $this->redirect()->toRoute('admin');
+        }
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $deadline = $em->getRepository('ErsBase\Entity\Deadline')
+                    ->findOneBy(array('id' => $data['deadline_id']));
+                
+                return $this->redirect()->toRoute('admin/order', array(
+                    'action' => 'detail', 
+                    'id' => $order->getId()
+                ));
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+        
+        $forrest = new Service\BreadcrumbService();
+        if(!$forrest->exists('order')) {
+            $forrest->set('order', 'admin/order', 
+                    array('action' => 'search')
+                );
+        }
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'order' => $order,
+            'breadcrumb' => $forrest->get('order'),
+        ));
+    }
 }

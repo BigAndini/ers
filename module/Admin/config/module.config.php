@@ -315,6 +315,15 @@ return array(
                         )
                     )
                 ),
+                'overpaid-orders' => array(
+                    'options' => array(
+                        'route'    => 'overpaid-orders',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'overpaid-orders'
+                        )
+                    )
+                ),
                 'clean-pending-orders' => array(
                     'options' => array(
                         'route'    => 'clean-pending-orders',
