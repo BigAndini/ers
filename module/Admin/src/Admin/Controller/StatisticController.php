@@ -617,4 +617,54 @@ class StatisticController extends AbstractActionController {
             'itemStats' => $itemStats,
         ));
     }
+    
+    public function ordersPerDayAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+
+        // SELECT COUNT(*), DATE(`order`.created) 
+        // FROM `order` 
+        // JOIN status ON `order`.status_id=`status`.id 
+        // WHERE status.value = 'ordered' 
+        // GROUP BY DATE(`order`.created);
+        $qb1 = $em->getRepository("ErsBase\Entity\Order")
+                ->createQueryBuilder('o');
+        $qb1->select('COUNT(o.id) as count', 'DATE(o.created) as date');
+        $qb1->join('o.status','s');
+        $qb1->where($qb1->expr()->eq('s.active', 1));
+        $qb1->groupBy('date');
+
+        $orderStats = $qb1->getQuery()->getResult();
+        
+        return new ViewModel(array(
+            'chartData' => json_encode($orderStats),
+        ));
+    }
+    
+    public function participantsPerDayAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+
+        // SELECT COUNT(package.id), DATE(`order`.created) 
+        // FROM `order` 
+        // JOIN status ON `order`.status_id=`status`.id 
+        // JOIN package ON `package`.order_id=`order`.id 
+        // WHERE status.value = 'ordered' 
+        // GROUP BY DATE(`order`.created);
+        $qb1 = $em->getRepository("ErsBase\Entity\Order")
+                ->createQueryBuilder('o');
+        $qb1->select('COUNT(p.id) as count', 'DATE(o.created) as date');
+        $qb1->join('o.status','s');
+        $qb1->join('o.packages','p');
+        $qb1->where($qb1->expr()->eq('s.active', 1));
+        $qb1->groupBy('date');
+        
+        $stats = $qb1->getQuery()->getResult();
+        
+        return new ViewModel(array(
+            'chartData' => json_encode($stats),
+        ));
+    }
 }

@@ -15,6 +15,7 @@
         <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
                 ->appendStylesheet($this->basePath() . '/css/custom.css')
                 ->prependStylesheet($this->basePath() . '/css/style.css')
+                ->prependStylesheet($this->basePath() . '/vendor/morrisjs/morris.css')
                 ->prependStylesheet($this->basePath() . '/css/bootstrap-theme.min.css')
                 ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
                 ->prependStylesheet($this->basePath() . '/css/font-awesome.min.css')
@@ -31,6 +32,8 @@
             ->prependFile($this->basePath() . '/js/jquery-ui/jquery-ui.min.js')
             ->prependFile($this->basePath() . '/js/jquery.min.js')            
             ->appendFile($this->basePath() . '/js/custom_backend.js')
+            ->appendFile($this->basePath() . '/vendor/raphael/raphael.min.js')
+            ->appendFile($this->basePath() . '/vendor/morrisjs/morris.min.js')
             ->prependFile($this->basePath() . '/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9',))
             ->prependFile($this->basePath() . '/js/html5shiv.js',   'text/javascript', array('conditional' => 'lt IE 9',))
         ; ?>
