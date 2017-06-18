@@ -26,7 +26,7 @@ class CronController extends AbstractActionController {
          * 4. disabled
          */
         
-        $this->debug = false;
+        $this->debug = true;
         
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -112,31 +112,19 @@ class CronController extends AbstractActionController {
             echo PHP_EOL."Phase 2: check ".count($orders)." orders and set payment status.".PHP_EOL;
         }
         
+        $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'paid'));
+        $statusPartlyPaid = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'partly paid'));
+        $statusOverpaid = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'overpaid'));
+        $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'ordered'));
+        
         foreach($orders as $order) {
             $statement_amount = $order->getStatementAmount();
             $order_amount = $order->getSum();
             if($order_amount == $statement_amount) {
-                $paid = true;
-                if($this->debug) {
-                    echo ".";
-                }
-                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (exact)".PHP_EOL;
-            } elseif($order_amount < $statement_amount) {
-                $paid = true;
-                if($this->debug) {
-                    echo "!";
-                }
-                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (overpaid)".PHP_EOL;
-            } else {
-                $paid = false;
-                if($this->debug) {
-                    echo "-";
-                }
-                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (partial)".PHP_EOL;
-            }
-            if($paid) {
-                $statusPaid = $em->getRepository('ErsBase\Entity\Status')
-                        ->findOneBy(array('value' => 'paid'));
                 
                 $order->setPaymentStatus('paid');
                 $order->setStatus($statusPaid);
@@ -155,9 +143,41 @@ class CronController extends AbstractActionController {
                 }
                 
                 $em->persist($order);
+                
+                $paid = true;
+                if($this->debug) {
+                    echo ".";
+                }
+                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (exact)".PHP_EOL;
+            } elseif($order_amount < $statement_amount) {
+                
+                $order->setPaymentStatus('overpaid');
+                $order->setStatus($statusOverpaid);
+
+                foreach($order->getPackages() as $package) {
+                    if($package->getStatus()->getValue() == 'ordered') {
+                        $package->setStatus($statusPaid);
+                        $em->persist($package);
+                        foreach($package->getItems() as $item) {
+                            if($item->getStatus()->getValue() == 'ordered') {
+                                $item->setStatus($statusOverpaid);
+                                $em->persist($item);
+                            }
+                        }
+                    }
+                }
+                
+                $em->persist($order);
+                
+                $paid = true;
+                if($this->debug) {
+                    echo "!";
+                }
+                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (overpaid)".PHP_EOL;
             } else {
-                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
-                        ->findOneBy(array('value' => 'ordered'));
+                $order->setPaymentStatus('unpaid');
+                $order->setStatus($statusOrdered);
+
                 foreach($order->getPackages() as $package) {
                     $package->setStatus($statusOrdered);
                     $em->persist($package);
@@ -167,6 +187,13 @@ class CronController extends AbstractActionController {
                     }
                 }
                 
+                $em->persist($order);
+                
+                $paid = false;
+                if($this->debug) {
+                    echo "-";
+                }
+                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (partial)".PHP_EOL;
             }
         }
         $em->flush();
@@ -232,42 +259,53 @@ class CronController extends AbstractActionController {
         $statement_amount = $order->getStatementAmount();
         $order_amount = $order->getSum();
         $matchInfo = "INFO: found match for order ".$order->getCode()->getValue()." ".\number_format($order_amount, 2, ',', '.')." <=> ".\number_format($statement_amount, 2, ',', '.');
+        
+        
+        $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'paid'));
+        $statusPartlyPaid = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'partly paid'));
+        $statusOverpaid = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'overpaid'));
+        $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                        ->findOneBy(array('value' => 'ordered'));
+        
         if($order_amount == $statement_amount) {
-            $paid = true;
-            echo $matchInfo." (exact)".PHP_EOL;
-        } elseif($order_amount < $statement_amount) {
-            #$paid = true;
-            $paid = false;
-            echo $matchInfo." (overpaid)".PHP_EOL;
-        } else {
-            $paid = false;
-            echo $matchInfo." (partial)".PHP_EOL;
-        }
-        if($paid) {
-            $statusPaid = $em->getRepository('ErsBase\Entity\Status')
-                    ->findOneBy(array('value' => 'paid'));
-            
             $order->setPaymentStatus('paid');
             $order->setStatus($statusPaid);
         
             foreach($order->getPackages() as $package) {
-                if($package->getStatus()->getValue() == 'ordered') {
-                    $package->setStatus($statusPaid);
-                    $em->persist($package);
-                    foreach($package->getItems() as $item) {
-                        if($item->getStatus()->getValue() == 'ordered') {
-                            $item->setStatus($statusPaid);
-                            $em->persist($item);
-                        }
-                    }
+                $package->setStatus($statusPaid);
+                $em->persist($package);
+                foreach($package->getItems() as $item) {
+                    $item->setStatus($statusPaid);
+                    $em->persist($item);
                 }
             }
             
             $em->persist($order);
-        } else {
-            $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
-                    ->findOneBy(array('value' => 'ordered'));
             
+            $paid = true;
+            echo $matchInfo." (exact)".PHP_EOL;
+        } elseif($order_amount < $statement_amount) {
+            $order->setPaymentStatus('overpaid');
+            $order->setStatus($statusOverpaid);
+        
+            foreach($order->getPackages() as $package) {
+                $package->setStatus($statusOverpaid);
+                $em->persist($package);
+                foreach($package->getItems() as $item) {
+                    $item->setStatus($statusOverpaid);
+                    $em->persist($item);
+                }
+            }
+            
+            $em->persist($order);
+            
+            #$paid = true;
+            $paid = false;
+            echo $matchInfo." (overpaid)".PHP_EOL;
+        } else {
             foreach($order->getPackages() as $package) {
                 $package->setStatus($statusOrdered);
                 $em->persist($package);
@@ -276,7 +314,11 @@ class CronController extends AbstractActionController {
                     $em->persist($item);
                 }
             }
+            
+            $paid = false;
+            echo $matchInfo." (partial)".PHP_EOL;
         }
+
         $em->flush();
     }
     
@@ -492,16 +534,19 @@ class CronController extends AbstractActionController {
                     ->get('config');
             $emailService->setFrom($config['ERS']['info_mail']);
 
-            /*** real buyer ***/
-            #$buyer = $order->getBuyer();
-            #$emailService->addTo($buyer);
-            /***/
-            /*** test buyer **/
-            $user = new Entity\User();
-            $user->setEmail('andi'.$order->getCode()->getValue().'@inbaz.org');
-            $emailService->addTo($user);
-            /***/
-
+            if($config['environment'] == 'production') {
+                /*** real buyer ***/
+                $buyer = $order->getBuyer();
+                $emailService->addTo($buyer);
+                /***/
+            } else {
+                /*** test buyer **/
+                $user = new Entity\User();
+                $user->setEmail('andi'.$order->getCode()->getValue().'@inbaz.org');
+                $emailService->addTo($user);
+                /***/
+            }
+            
             $bcc = new Entity\User();
             $bcc->setEmail($config['ERS']['info_mail']);
             $emailService->addBcc($bcc);
@@ -641,22 +686,25 @@ class CronController extends AbstractActionController {
             $order = $package->getOrder();
             $participant = $package->getParticipant();
 
-            /*** remove last slash to comment ***/
-            $buyer = $order->getBuyer();
-            if($participant->getEmail() == '') {
-                $emailService->addTo($buyer);
-            } elseif($participant->getEmail() == $buyer->getEmail()) {
-                $emailService->addTo($buyer);
+            if($config['environment'] == 'production') {
+                /*** remove last slash to comment ***/
+                $buyer = $order->getBuyer();
+                if($participant->getEmail() == '') {
+                    $emailService->addTo($buyer);
+                } elseif($participant->getEmail() == $buyer->getEmail()) {
+                    $emailService->addTo($buyer);
+                } else {
+                    $emailService->addTo($participant);
+                    $emailService->addCc($buyer);
+                }
+                /*** remove leading slash to comment ***/
             } else {
-                $emailService->addTo($participant);
-                $emailService->addCc($buyer);
+                /*** remove last slash to comment ***/
+                $user = new Entity\User();
+                $user->setEmail('andi'.$package->getCode()->getValue().'@inbaz.org');
+                $emailService->addTo($user);
+                /*** remove leading slash to comment ***/
             }
-            /*** remove leading slash to comment ***/
-            /*** remove last slash to comment ***
-            $user = new Entity\User();
-            $user->setEmail('andi'.$package->getCode()->getValue().'@inbaz.org');
-            $emailService->addTo($user);
-            /*** remove leading slash to comment ***/
             
             $bcc = new Entity\User();
             $bcc->setEmail($config['ERS']['info_mail']);

@@ -1,6 +1,6 @@
 <?php
 
-$title = 'order overview which do include 0€ week tickets';
+$title = 'order overview which are overpaid';
 $this->headTitle($title);
 ?>
 <h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
@@ -29,12 +29,16 @@ $this->headTitle($title);
         <td><?php echo $order->getCode()->getValue(); ?></td>
         <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
         <td>
-            <?php echo $order->getUser()->getFirstname().' '.$order->getUser()->getSurname(); ?>
-            <br />
-            <a href="mailto:<?php echo $order->getBuyer()->getEmail(); ?>"><?php echo $order->getBuyer()->getEmail(); ?></a>
+            <?php if($order->getUser() != null):
+                echo $order->getUser()->getFirstname().' '.$order->getUser()->getSurname(); ?>
+                <br />
+                <a href="mailto:<?php echo $order->getBuyer()->getEmail(); ?>"><?php echo $order->getBuyer()->getEmail(); ?></a>
+            <?php endif; ?>
         </td>
         <td>
-            <?php echo $order->getPaymentType()->getName(); ?>
+            <?php if($order->getPaymentType() != null):
+                echo $order->getPaymentType()->getName(); 
+            endif; ?>
         </td>
         <td>
             <?php echo $this->currencyFormat($order->getPrice(), 'EUR', null, 'de_DE'); ?>

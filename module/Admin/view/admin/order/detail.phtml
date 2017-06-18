@@ -233,6 +233,16 @@ $this->headTitle($title);
                                         endif; ?>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>e-mail</td>
+                                        <td>
+                                        <?php if($user->getEmail()):
+                                            echo '<a href="mailto:'.$user->getEmail().'">'.$user->getEmail().'</a>';
+                                        else:
+                                            echo 'no e-mail provided';
+                                        endif; ?>
+                                        </td>
+                                    </tr>
                                 </table>
                         </div>
                     </div>

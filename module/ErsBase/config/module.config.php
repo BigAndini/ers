@@ -55,6 +55,13 @@ return [
                 ],
             ],
         ],
+        'configuration' => [
+            'orm_default' => [
+                'datetime_functions' => [
+                    'date'          => 'Admin\Doctrine\DQL\Date',
+                ],
+            ],
+        ],
     ],
     
     'zfcuser' => [

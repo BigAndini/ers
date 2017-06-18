@@ -998,6 +998,21 @@ class OrderController extends AbstractActionController {
         ));
     }
     
+    public function overpaidOrdersAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $statusOverpaid = $em->getRepository('ErsBase\Entity\Status')
+                ->findOneBy(array('value' => 'overpaid'));
+        
+        $orders = $em->getRepository('ErsBase\Entity\Order')
+                ->findBy(array('status_id' => $statusOverpaid->getId()));
+        
+        return new ViewModel(array(
+            'orders' => $orders,
+        ));
+    }
+    
     public function zeroEuroTicketsAction() {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
