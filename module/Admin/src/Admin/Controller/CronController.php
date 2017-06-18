@@ -534,16 +534,19 @@ class CronController extends AbstractActionController {
                     ->get('config');
             $emailService->setFrom($config['ERS']['info_mail']);
 
-            /*** real buyer ***/
-            $buyer = $order->getBuyer();
-            $emailService->addTo($buyer);
-            /***/
-            /*** test buyer **/
-            #$user = new Entity\User();
-            #$user->setEmail('andi'.$order->getCode()->getValue().'@inbaz.org');
-            #$emailService->addTo($user);
-            /***/
-
+            if($config['environment'] == 'production') {
+                /*** real buyer ***/
+                $buyer = $order->getBuyer();
+                $emailService->addTo($buyer);
+                /***/
+            } else {
+                /*** test buyer **/
+                $user = new Entity\User();
+                $user->setEmail('andi'.$order->getCode()->getValue().'@inbaz.org');
+                $emailService->addTo($user);
+                /***/
+            }
+            
             $bcc = new Entity\User();
             $bcc->setEmail($config['ERS']['info_mail']);
             $emailService->addBcc($bcc);
@@ -683,22 +686,25 @@ class CronController extends AbstractActionController {
             $order = $package->getOrder();
             $participant = $package->getParticipant();
 
-            /*** remove last slash to comment ***/
-            $buyer = $order->getBuyer();
-            if($participant->getEmail() == '') {
-                $emailService->addTo($buyer);
-            } elseif($participant->getEmail() == $buyer->getEmail()) {
-                $emailService->addTo($buyer);
+            if($config['environment'] == 'production') {
+                /*** remove last slash to comment ***/
+                $buyer = $order->getBuyer();
+                if($participant->getEmail() == '') {
+                    $emailService->addTo($buyer);
+                } elseif($participant->getEmail() == $buyer->getEmail()) {
+                    $emailService->addTo($buyer);
+                } else {
+                    $emailService->addTo($participant);
+                    $emailService->addCc($buyer);
+                }
+                /*** remove leading slash to comment ***/
             } else {
-                $emailService->addTo($participant);
-                $emailService->addCc($buyer);
+                /*** remove last slash to comment ***/
+                $user = new Entity\User();
+                $user->setEmail('andi'.$package->getCode()->getValue().'@inbaz.org');
+                $emailService->addTo($user);
+                /*** remove leading slash to comment ***/
             }
-            /*** remove leading slash to comment ***/
-            /*** remove last slash to comment ***
-            $user = new Entity\User();
-            $user->setEmail('andi'.$package->getCode()->getValue().'@inbaz.org');
-            $emailService->addTo($user);
-            /*** remove leading slash to comment ***/
             
             $bcc = new Entity\User();
             $bcc->setEmail($config['ERS']['info_mail']);
