@@ -51,9 +51,11 @@ $this->headTitle($title);
                         <td><?php echo $order->getCode()->getValue(); ?></td>
                         <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
                         <td>
-                            <?php echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>
-                            <br />
-                            <a href="mailto:<?php echo $order->getBuyer()->getEmail(); ?>"><?php echo $order->getBuyer()->getEmail(); ?></a>
+                            <?php if($order->getBuyer() != null):
+                                echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>
+                                <br />
+                                <a href="mailto:<?php echo $order->getBuyer()->getEmail(); ?>"><?php echo $order->getBuyer()->getEmail(); ?></a>
+                            <?php endif; ?>
                         </td>
                         <td>
                             <?php if($order->getPaymentType()):
