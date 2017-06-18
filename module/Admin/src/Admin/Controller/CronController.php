@@ -570,7 +570,6 @@ class CronController extends AbstractActionController {
             $em->flush();
             
             echo "sent payment reminder for order ".$order->getCode()->getValue().PHP_EOL;
-            \sleep(5);
         }
     }
     
