@@ -58,6 +58,7 @@ class StatusService
             if(!in_array($package->getStatus()->getValue(), $ignore)) {
                 $this->setPackageStatus($package, $status, false);
             }
+            $package = null;
         }
         $order->setStatus($status);
         $em->persist($order);
@@ -65,6 +66,8 @@ class StatusService
         if($flush) {
             $em->flush();
         }
+        $order = null;
+        $status = null;
     }
     
     public function setPackageStatus(Entity\Package $package, $status, $flush=true) {
@@ -83,8 +86,9 @@ class StatusService
         
         foreach($package->getItems() as $item) {
             if(!in_array($item->getStatus()->getValue(), $ignore)) {
-                $this->setItemSttus($item, $status, false);
+                $this->setItemStatus($item, $status, false);
             }
+            $item = null;
         }
         $package->setStatus($status);
         $em->persist($package);
@@ -92,9 +96,10 @@ class StatusService
         if($flush) {
             $em->flush();
         }
+        $package = null;
     }
     
-    public function setItemSttus(Entity\Item $item, $status, $flush=true) {
+    public function setItemStatus(Entity\Item $item, $status, $flush=true) {
         $em = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         if(is_string($status)) {
@@ -111,5 +116,6 @@ class StatusService
         if($flush) {
             $em->flush();
         }
+        $item = null;
     }
 }

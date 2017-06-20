@@ -4,7 +4,7 @@ $title = 'order overview which are overpaid';
 $this->headTitle($title);
 ?>
 <h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
-<h2>Wrong date of birth?</h2>
+<h2>Found <?php echo count($orders); ?> overpaid orders</h2>
 <table class="table">
     <tr>
         <th>Code</th>
