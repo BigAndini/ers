@@ -457,13 +457,28 @@ class BankaccountController extends AbstractActionController {
                 $id = (int) $request->getPost('id');
                 $csv = $em->getRepository('ErsBase\Entity\BankAccountCsv')
                     ->findOneBy(array('id' => $id));
-                if($csv->hasMatch()) {
+                /*if($csv->hasMatch()) {
                     return $this->redirect()->toRoute('admin/bankaccount');
-                }
+                }*/
+                
+                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('value' => 'ordered'));
+                $statusService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\StatusService');
+                
                 foreach($csv->getBankStatements() as $bs) {
                     /*
                      * Hint: cannot be deleted if there's already a match.
+                     * If somebody says it cannot be done, get out of the way 
+                     * to let me do it.
                      */
+                    foreach($bs->getMatches() as $match) {
+                        $order = $match->getOrder();
+                    
+                        $statusService->setOrderStatus($order, $statusOrdered, false);
+                        $em->remove($match);
+                    }
+                    
                     $em->remove($bs);
                     foreach($bs->getBankStatementCols() as $col) {
                         $em->remove($col);

@@ -190,6 +190,12 @@ return array(
                         'action' => 'zero-euro-tickets',
                         'resource'  => 'controller/Admin\Controller\Order',
                     ),
+                    'overpaid-orders' => array(
+                        'label' => 'Overpaid Orders',
+                        'route' => 'admin/order',
+                        'action' => 'overpaid-orders',
+                        'resource'  => 'controller/Admin\Controller\Order',
+                    ),
                 ),
             ),
             'matching' => array(

@@ -306,6 +306,7 @@ class CronController extends AbstractActionController {
             $paid = false;
             echo $matchInfo." (overpaid)".PHP_EOL;
         } else {
+            $order->setStatus($statusOrdered);
             foreach($order->getPackages() as $package) {
                 $package->setStatus($statusOrdered);
                 $em->persist($package);
@@ -981,14 +982,18 @@ class CronController extends AbstractActionController {
         $statusService = $this->getServiceLocator()
                 ->get('ErsBase\Service\StatusService');
         
+        gc_enable();
+        
         foreach($orders as $order) {
             $statusService->setOrderStatus($order, $order->getStatus(), false);
             
             $order->setTotalSum($order->getSum());
             $order->setOrderSum($order->getPrice());
             $em->persist($order);
+            $em->flush();
+            $order = null;
+            gc_collect_cycles();
         }
-        $em->flush();
     }
     
     public function correctActiveUserAction() {
