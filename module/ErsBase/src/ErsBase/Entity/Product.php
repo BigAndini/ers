@@ -172,8 +172,7 @@ class Product extends Base\Product
             $ret = $this->getProductPrice($agegroup, null, $currency, false);
             if($ret == null) {
                 $ret = $this->getProductPrice(null, null, $currency, false);
-            }
-            if($ret->getCharge() == null) {
+            } elseif($ret->getCharge() == null) {
                 $ret = $this->getProductPrice(null, null, $currency, false);
             }
         }
