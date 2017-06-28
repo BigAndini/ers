@@ -113,6 +113,11 @@ class CurrencyController extends AbstractActionController {
                 $id = (int) $request->getPost('id');
                 $currency = $em->getRepository('ErsBase\Entity\Currency')
                     ->findOneBy(array('id' => $id));
+                
+                foreach($currency->getProductPrices() as $productPrice) {
+                    $em->remove($productPrice);
+                }
+                
                 $em->remove($currency);
                 $em->flush();
             }
