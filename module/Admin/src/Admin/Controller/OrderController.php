@@ -1106,4 +1106,22 @@ class OrderController extends AbstractActionController {
             'breadcrumb' => $forrest->get('order'),
         ));
     }
+    
+    public function nowActiveAction() {
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb->andWhere($qb->expr()->gt('o.updated', ':updated'));
+        $timeout = new \DateTime;
+        $timeout->modify( '-2 hours' );
+        $qb->setParameter('updated', $timeout);
+        
+        $activeOrders = $qb->getQuery()->getResult();
+    
+        return new ViewModel(array(
+            'activeOrders' => $activeOrders,
+        ));
+    }
+    
 }

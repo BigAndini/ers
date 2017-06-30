@@ -502,7 +502,7 @@ class CronController extends AbstractActionController {
         $qb->andWhere($qb->expr()->eq('o.payment_reminder_status', ':prstatus'));
         $qb->setParameter('status', 'ordered');
         $paymentTarget = new \DateTime;
-        $paymentTarget->modify( '-10 days' );
+        $paymentTarget->modify( '-20 days' );
         $qb->setParameter('paymentTarget', $paymentTarget);
         $qb->setParameter('prstatus', '0');
         #$qb->setFirstResult( $offset )
