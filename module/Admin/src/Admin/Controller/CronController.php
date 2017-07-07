@@ -985,7 +985,7 @@ class CronController extends AbstractActionController {
         gc_enable();
         
         foreach($orders as $order) {
-            $statusService->setOrderStatus($order, $order->getStatus(), false);
+            #$statusService->setOrderStatus($order, $order->getStatus(), false);
             
             $order->setTotalSum($order->getSum());
             $order->setOrderSum($order->getPrice());
@@ -994,6 +994,31 @@ class CronController extends AbstractActionController {
             $order = null;
             gc_collect_cycles();
         }
+    }
+    
+    public function correctPackagesInPaidOrdersAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb->join('p.status', 's');
+        $qb->where($qb->expr()->eq('s.value', ':status'));
+        $qb->setParameter('status', 'ordered');
+        
+        $packages = $qb->getQuery()->getResult();
+        
+        echo "checking ".count($packages)." packages".PHP_EOL;
+        $count = 0;
+        foreach($packages as $package) {
+            $order = $package->getOrder();
+            if($order->getStatus()->getValue() == 'paid') {
+                $package->setStatus($order->getStatus());
+                $em->persist($package);
+                $count++;
+            }
+        }
+        $em->flush();
+        echo "corrected ".$count." packages".PHP_EOL;
     }
     
     public function correctActiveUserAction() {

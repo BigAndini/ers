@@ -465,6 +465,15 @@ return array(
                         )
                     )
                 ),
+                'correct-packages-in-paid-orders' => array(
+                    'options' => array(
+                        'route'    => 'correct-packages-in-paid-orders',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-packages-in-paid-orders'
+                        )
+                    )
+                ),
                 'correct-active-user' => array(
                     'options' => array(
                         'route'    => 'correct-active-user',
