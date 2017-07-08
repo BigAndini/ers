@@ -190,7 +190,6 @@ $this->headTitle($title);
                     <?php 
                     $totalSum = 0;
                     foreach($countryStats as $value): 
-                        error_log(var_export($value, true));
                         $totalSum += $value['count'];
                         ?>
                         <tr>
