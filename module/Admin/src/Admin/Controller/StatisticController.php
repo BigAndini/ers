@@ -160,11 +160,218 @@ class StatisticController extends AbstractActionController {
         ));
     }
     
-    
     public function participantsAction() {
-        $em = $this
-            ->getServiceLocator()
+        $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
+        
+        $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+                ->findAll();
+        
+        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        #$qb->join('p.status', 's');
+        $qb->join('p.status', 's', 'WITH', "s.active = 1");
+        $packages = $qb->getQuery()->getResult();
+        
+        $agegroupServicePrice = $this->getServiceLocator()
+                ->get('ErsBase\Service\AgegroupService:price');
+        $agegroupServiceTicket = $this->getServiceLocator()
+                ->get('ErsBase\Service\AgegroupService:ticket');
+        
+        $agegroupStatsPrice = array();
+        $agegroupStatsTicket = array();
+        
+        $defEntry = array(
+            'count' => 0, # number of participants
+            'onsite' => 0, # number of participants onsite
+            );
+        
+        // initialize all groups with 0
+        $agegroupStatsPrice['adult'] = $defEntry;
+        $agegroupStatsTicket['adult'] = $defEntry;
+        foreach($agegroupServicePrice->getAgegroups() AS $agegroup) {
+            $agegroupStatsPrice[$agegroup->getName()] = $defEntry;
+        }
+        foreach($agegroupServiceTicket->getAgegroups() AS $agegroup) {
+            $agegroupStatsTicket[$agegroup->getName()] = $defEntry;
+        }
+        
+        $countryStats = [];
+        
+        foreach($packages as $package) {
+            $participant = $package->getParticipant();
+            $status = $package->getStatus()->getValue();
+            $agPrice = $agegroupServicePrice->getAgegroupByDate($participant->getBirthday());
+            $agTicket = $agegroupServiceTicket->getAgegroupByDate($participant->getBirthday());
+        
+            # use references to directly write to the sub-array
+            $aggregate['price'] = &$agegroupStatsPrice[($agPrice ? $agPrice->getName() : 'adult')];
+            $aggregate['ticket'] = &$agegroupStatsTicket[($agTicket ? $agTicket->getName() : 'adult')];
+            
+            $aggregate['price']['count']++;
+            $aggregate['ticket']['count']++;
+            
+            if(empty($aggregate['price'][$status])) {
+                $aggregate['price'][$status] = 1;
+            } else {
+                $aggregate['price'][$status]++;
+            }
+            if(empty($aggregate['ticket'][$status])) {
+                $aggregate['ticket'][$status] = 1;
+            } else {
+                $aggregate['ticket'][$status]++;
+            }
+            
+            if($status == 'paid') {
+                if($participant->getCountryId()) {
+                    if(empty($countryStats[$participant->getCountryId()])) {
+                        $countryStats[$participant->getCountryId()] = 1;
+                    } else {
+                        $countryStats[$participant->getCountryId()]++;
+                    }
+                } else {
+                    if(empty($countryStats[0])) {
+                        $countryStats[0] = 1;
+                    } else {
+                        $countryStats[0]++;
+                    }
+                }
+            }
+            
+        }
+        
+        $qb = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('c');
+        #$qb->join('p.status', 's');
+        $qb->select('c.id', 'c.name');
+        $dbCountries = $qb->getQuery()->getResult();
+        
+        $countries = [];
+        foreach($dbCountries as $c) {
+            $countries[$c['id']] = $c['name'];
+            if(empty($countryStats[$c['id']])) {
+                $count = 0;
+            } else {
+                $count = $countryStats[$c['id']];
+            }
+            $countryStatsLive2[] = [
+                'id' => $c['id'],
+                'name' => $c['name'],
+                'count' => $count,
+            ];
+        }
+        $countryStatsLive2[] = [
+            'id' => 0,
+            'name' => 'country not provided',
+            'count' => $countryStats[0],
+        ];
+        
+        uasort($countryStatsLive2, function($a, $b){ return ($b['count'] - $a['count']) ?: strcmp($a['id'], $b['id']); });
+        
+        /*
+         * === by product variant ===
+         */
+        $itemsByVariantByProduct = [];
+        $allProducts = $em->getRepository('ErsBase\Entity\Product')->findBy([], ['position' => 'ASC']);
+        /* @var $product \ErsBase\Entity\Product */
+        foreach($allProducts as $product) {
+            $qb = $em->createQueryBuilder()
+                    ->select('COUNT(i.id) itemcount')
+                    ->from('ErsBase\Entity\Item', 'i')
+                    ->join('i.status', 's', 'WITH', 's.active = 1')
+                    ->where('i.Product_id = :prod_id')
+                    ->setParameter('prod_id', $product->getId());
+            
+            $variantNames = [];
+            $variantValueIdColumns = []; // list of query variables that hold the ProductVariantValue.id results
+            $variantValueLabelColumns = []; // list of query variables that hold the ProductVariantValue.value results
+            $i = 0;
+            foreach($product->getProductVariants() as $variant) {
+                $variantNames[] = $variant->getName();
+                
+                $ivarName = 'ivar' . $i; // internal name of the "ItemVariant" entities
+                $idParamName = 'variantId' . $i; // parameter to bind the variant id to
+                $varValName = 'varvalue' . $i; // internal name of the "ProductVariantValue" entities
+                $varValIdCol = 'valueId' . $i; // column name of the id of the ProductVariantValue
+                $varValLabelCol = 'label' . $i; // column name of the string value of the ProductVariantValue
+                
+                $qb = $qb->join('i.itemVariants', $ivarName, 'WITH', "$ivarName.product_variant_id = :$idParamName")
+                         ->join("$ivarName.productVariantValue", $varValName)
+                         ->addSelect("$varValName.id $varValIdCol", "$varValName.value $varValLabelCol")
+                         ->addGroupBy("$varValName.id")
+                         ->addOrderBy("$varValName.position")
+                         ->setParameter($idParamName, $variant->getId());
+                
+                $variantValueIdColumns[] = $varValIdCol;
+                $variantValueLabelColumns[] = $varValLabelCol;
+                
+                $i++;
+            }
+            
+            // skip products that don't have any variants
+            if(empty($variantNames)) continue;
+            
+            $variantData = [];
+            
+            // prepopulate with default values for all variant combinations
+            $allCombinations = $this->generateAllVariantCombinations($product);
+            foreach($allCombinations as $combinationKey => $combinationLabels) {
+               $variantData[$combinationKey] = [
+                    "variantLabels" => $combinationLabels,
+                    "itemCount" => 0
+                ];
+            }
+            
+            // fill with real itemcount values for present entries
+            foreach($qb->getQuery()->getResult() as $row) {
+                // ':'-separated list of ids as the key
+                $combinationKey = ':' . implode(':', array_map(function($col) use ($row) { return $row[$col]; }, $variantValueIdColumns));
+                $variantData[$combinationKey]["itemCount"] = $row["itemcount"];
+            }
+            
+            $itemsByVariantByProduct[] = [
+                "productName" => $product->getName(),
+                "variantNames" => $variantNames,
+                "variantData" => $variantData
+            ];
+        }
+        
+        return new ViewModel(array(
+            'agegroups' => $agegroups,
+            'agegroupStatsPrice' => $agegroupStatsPrice,
+            'agegroupStatsTicket' => $agegroupStatsTicket,
+            'countries' => $countries,
+            'countryStats' => $countryStatsLive2,
+            'itemsByVariantByProduct' => $itemsByVariantByProduct,
+        ));
+    }
+    
+    public function participantsOldAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $packageCount = [];
+        $qb = [];
+        
+        $qb['all'] = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb['all']->select('COUNT(p.id)');
+        $packageCount['all'] = $qb['all']->getQuery()->getScalarResult();
+        
+        $qb['paid'] = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb['paid']->select('COUNT(p.id)');
+        $qb['paid']->join('p.status', 's');
+        $qb['paid']->where($qb['paid']->expr()->eq('s.value', ':status'));
+        $qb['paid']->setParameter('status', 'paid');
+        
+        $packageCount['paid'] = $qb['paid']->getQuery()->getScalarResult();
+        
+        $qb['onsite'] = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb['onsite']->select('COUNT(p.id)');
+        $qb['onsite']->join('p.status', 's');
+        $qb['onsite']->where($qb['onsite']->expr()->eq('s.value', ':status'));
+        $qb['onsite']->setParameter('status', 'onsite');
+        
+        $packageCount['onsite'] = $qb['onsite']->getQuery()->getScalarResult();
+        
+        
         
         /*
          * === by agegroups & country ===
@@ -515,6 +722,7 @@ class StatisticController extends AbstractActionController {
         
         
         return new ViewModel(array(
+            'packageCount' => $packageCount,
             'stats_agegroupPrice' => $agegroupStatsPrice,
             'stats_agegroupTicket' => $agegroupStatsTicket,
             'stats_productType' => $productStats,
