@@ -996,6 +996,19 @@ class CronController extends AbstractActionController {
         }
     }
     
+    public function correctPackageStatusAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $packages = $em->getRepository('ErsBase\Entity\Package')
+                ->findAll();
+        $statusService = $this->getServiceLocator()
+                ->get('ErsBase\Service\StatusService');
+        
+        foreach($packages as $package) {
+            $statusService->setPackageStatus($package, $package->getStatus(), true);
+        }
+    }
+    
     public function correctPackagesInPaidOrdersAction() {
         # correct-packages-in-paid-orders
         $em = $this->getServiceLocator()
@@ -1009,13 +1022,18 @@ class CronController extends AbstractActionController {
         
         $packages = $qb1->getQuery()->getResult();
         
+        $statusService = $this->getServiceLocator()
+                ->get('ErsBase\Service\StatusService');
+        
         echo "checking ".count($packages)." packages".PHP_EOL;
         $count = 0;
         foreach($packages as $package) {
             $order = $package->getOrder();
+            $statusService->setPackageStatus($package, $order->getStatus(), false);
             if($order->getStatus()->getValue() == 'paid') {
-                $package->setStatus($order->getStatus());
-                $em->persist($package);
+                #$package->setStatus($order->getStatus());
+                $statusService->setPackageStatus($package, $order->getStatus(), false);
+                #$em->persist($package);
                 $count++;
             }
         }
@@ -1126,7 +1144,7 @@ class CronController extends AbstractActionController {
             if($item->getStatus()->getValue() == 'ordered' || $item->getStatus()->getValue() == 'paid' || $item->getStatus()->getValue() == 'order pending') {
                 $status = $item->getStatus();
                 $item->setStatus($package->getStatus());
-                echo $item->getCode()->getValue().": item status was: ".$status."; item status is: ".$item->getStatus().PHP_EOL;
+                #echo $item->getCode()->getValue().": item status was: ".$status."; item status is: ".$item->getStatus().PHP_EOL;
                 $em->persist($item);
             }
         }
