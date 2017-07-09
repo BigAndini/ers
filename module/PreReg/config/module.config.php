@@ -70,12 +70,6 @@ return array(
                         'action' => '',
                         'resource'  => 'controller/PreReg\Controller\Profile',
                     ),
-                    'logout' => array(
-                        'label' => 'Logout',
-                        'route' => 'zfcuser/logout',
-                        #'action' => 'logout',
-                        'resource'  => 'controller/zfcuser:logout',
-                    ),
                     'admin' => array(
                         'label' => 'AdminPanel',
                         'route' => 'admin',
@@ -85,6 +79,12 @@ return array(
                         'label' => 'Onsite',
                         'route' => 'onsite',
                         'resource'  => 'controller/OnsiteReg\Controller\Index',
+                    ),
+                    'logout' => array(
+                        'label' => 'Logout',
+                        'route' => 'zfcuser/logout',
+                        #'action' => 'logout',
+                        'resource'  => 'controller/zfcuser:logout',
                     ),
                 ),
             ),
