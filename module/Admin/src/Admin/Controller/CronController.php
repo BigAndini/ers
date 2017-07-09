@@ -956,7 +956,7 @@ class CronController extends AbstractActionController {
         $qb->andWhere($qb->expr()->lt('o.updated', ':updated'));
         
         $updated = new \DateTime();
-        $updated->sub(new \DateInterval('PT2H'));
+        $updated->sub(new \DateInterval('PT8H'));
         $qb->setParameter('updated', $updated);
         $qb->setParameter('status', 'order pending');
         
@@ -985,7 +985,7 @@ class CronController extends AbstractActionController {
         gc_enable();
         
         foreach($orders as $order) {
-            #$statusService->setOrderStatus($order, $order->getStatus(), false);
+            $statusService->setOrderStatus($order, $order->getStatus(), false);
             
             $order->setTotalSum($order->getSum());
             $order->setOrderSum($order->getPrice());
@@ -997,15 +997,17 @@ class CronController extends AbstractActionController {
     }
     
     public function correctPackagesInPaidOrdersAction() {
+        # correct-packages-in-paid-orders
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->join('p.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        $qb->setParameter('status', 'ordered');
+        # correct from package side
+        $qb1 = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb1->join('p.status', 's');
+        $qb1->where($qb1->expr()->eq('s.value', ':status'));
+        $qb1->setParameter('status', 'ordered');
         
-        $packages = $qb->getQuery()->getResult();
+        $packages = $qb1->getQuery()->getResult();
         
         echo "checking ".count($packages)." packages".PHP_EOL;
         $count = 0;
@@ -1019,6 +1021,36 @@ class CronController extends AbstractActionController {
         }
         $em->flush();
         echo "corrected ".$count." packages".PHP_EOL;
+        
+        
+        # correct from order side
+        $qb2 = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb2->join('o.status', 's');
+        $qb2->where($qb2->expr()->eq('s.value', ':status'));
+        $qb2->setParameter('status', 'paid');
+        
+        
+        $orders = $qb2->getQuery()->getResult();
+        
+        echo "checking ".count($orders)." orders".PHP_EOL;
+        $count = [];
+        foreach($orders as $order) {
+            foreach($order->getPackages() as $package) {
+                $status = $package->getStatus()->getValue();
+                if(empty($count[$status])) {
+                    $count[$status] = 1;
+                } else {
+                    $count[$status]++;
+                }
+                
+                if($status == 'ordered') {
+                    $package->setStatus($order->getStatus());
+                    $em->persist($package);
+                }
+            }
+        }
+        $em->flush();
+        var_export($count);
     }
     
     public function correctActiveUserAction() {
@@ -1100,149 +1132,6 @@ class CronController extends AbstractActionController {
         }
         
         $em->flush();
-    }
-    
-    public function sorryEticketSepaAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->join('p.status', 's');
-        $qb->join('p.order', 'o');
-        $qb->join('o.paymentType', 'pt');
-        $qb->where($qb->expr()->eq('p.ticket_status', ':ticket_status'));
-        $qb->andWhere($qb->expr()->eq('s.value', ':status'));
-        $qb->andWhere($qb->expr()->eq('pt.id', ':payment_type'));
-        
-        $qb->setParameter('ticket_status', 'send_out');
-        $qb->setParameter('status', 'ordered');
-        $qb->setParameter('payment_type', '1');
-        
-        $packages = $qb->getQuery()->getResult();
-        echo "found ".count($packages)." packages.".PHP_EOL;
-        
-        $config = $emailService = $this->getServiceLocator()
-                        ->get('config');
-        
-        foreach($packages as $package) {
-            # prepare email (participant, buyer)
-            #$emailService = new Service\EmailService();
-            $emailService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\EmailService');
-            $emailService->setFrom($config['ERS']['info_mail']);
-
-            $order = $package->getOrder();
-            $participant = $package->getParticipant();
-
-            $buyer = $order->getBuyer();
-            $emailService->addTo($buyer);
-            /*if($participant->getEmail() == '') {
-                $emailService->addTo($buyer);
-            } elseif($participant->getEmail() == $buyer->getEmail()) {
-                $emailService->addTo($buyer);
-            } else {
-                $emailService->addTo($participant);
-                $emailService->addCc($buyer);
-            }*/
-            /*$user = new Entity\User();
-            $user->setEmail('andi@inbaz.org');
-            $emailService->addTo($user);*/
-            
-            $bcc = new Entity\User();
-            $bcc->setEmail($config['ERS']['info_mail']);
-            $emailService->addBcc($bcc);
-
-            $subject = "[".$config['ERS']['name_short']."] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
-            $emailService->setSubject($subject);
-
-            $viewModel = new ViewModel(array(
-                'package' => $package,
-                'config' => $this->getServiceLocator()->get('config'),
-            ));
-            $viewModel->setTemplate('email/eticket-not-valid-sepa.phtml');
-            $viewRenderer = $this->getServiceLocator()->get('ViewRenderer');
-            $html = $viewRenderer->render($viewModel);
-
-            $emailService->setHtmlMessage($html);
-            
-            # send out email
-            $emailService->send();
-            echo "email sent to ".$buyer->getEmail().".".PHP_EOL;
-            
-            $package->setTicketStatus('not_send');
-            $em->persist($package);
-            $em->flush();
-        }
-    }
-    public function sorryEticketCcAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->join('p.status', 's');
-        $qb->join('p.order', 'o');
-        $qb->join('o.paymentType', 'pt');
-        $qb->where($qb->expr()->eq('p.ticket_status', ':ticket_status'));
-        $qb->andWhere($qb->expr()->eq('s.value', ':status'));
-        $qb->andWhere($qb->expr()->eq('pt.id', ':payment_type'));
-        
-        $qb->setParameter('ticket_status', 'send_out');
-        $qb->setParameter('status', 'ordered');
-        $qb->setParameter('payment_type', '2');
-        
-        $packages = $qb->getQuery()->getResult();
-        echo "found ".count($packages)." packages.".PHP_EOL;
-        
-        $config = $emailService = $this->getServiceLocator()
-                        ->get('config');
-        
-        foreach($packages as $package) {
-            # prepare email (participant, buyer)
-            #$emailService = new Service\EmailService();
-            $emailService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\EmailService');
-            $emailService->setFrom($config['ERS']['info_mail']);
-
-            $order = $package->getOrder();
-            $participant = $package->getParticipant();
-
-            $buyer = $order->getBuyer();
-            $emailService->addTo($buyer);
-            /*if($participant->getEmail() == '') {
-                $emailService->addTo($buyer);
-            } elseif($participant->getEmail() == $buyer->getEmail()) {
-                $emailService->addTo($buyer);
-            } else {
-                $emailService->addTo($participant);
-                $emailService->addCc($buyer);
-            }*/
-            /*$user = new Entity\User();
-            $user->setEmail('andi@inbaz.org');
-            $emailService->addTo($user);*/
-            
-            $bcc = new Entity\User();
-            $bcc->setEmail($config['ERS']['info_mail']);
-            $emailService->addBcc($bcc);
-
-            $subject = "[".$config['ERS']['name_short']."] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
-            $emailService->setSubject($subject);
-
-            $viewModel = new ViewModel(array(
-                'package' => $package,
-                'config' => $this->getServiceLocator()->get('config'),
-            ));
-            $viewModel->setTemplate('email/eticket-not-valid-cc.phtml');
-            $viewRenderer = $this->getServiceLocator()->get('ViewRenderer');
-            $html = $viewRenderer->render($viewModel);
-
-            $emailService->setHtmlMessage($html);
-            
-            # send out email
-            $emailService->send();
-            echo "email sent to ".$buyer->getEmail().".".PHP_EOL;
-            
-            $package->setTicketStatus('not_send');
-            $em->persist($package);
-            $em->flush();
-        }
     }
     
     public function overpaidOrdersAction() {

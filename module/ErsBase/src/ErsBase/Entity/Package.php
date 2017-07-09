@@ -160,6 +160,10 @@ class Package extends Base\Package
         return $items;
     }
     
+    public function getItemCount() {
+        return count($this->items);
+    }
+    
     /**
      * Get Item entity by array id.
      *
