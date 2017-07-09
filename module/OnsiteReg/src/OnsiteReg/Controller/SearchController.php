@@ -17,7 +17,7 @@ class SearchController extends AbstractActionController {
     public function indexAction() {
         $q = trim($this->params()->fromQuery('q'));
 
-        $results = [];
+        $packages = [];
         if (!empty($q)) {
             $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
@@ -70,10 +70,16 @@ class SearchController extends AbstractActionController {
                 }
             }
             
-            $results = $qb->getQuery()->getResult();
+            $dbPackages = $qb->getQuery()->getResult();
+            foreach($dbPackages as $package) {
+                if($package->getItemCount() == 0) {
+                    continue;
+                }
+                $packages[] = $package;
+            }
 
-            if (count($results) == 1) {
-                return $this->redirect()->toRoute('onsite/package', array('action' => 'detail', 'id' => $results[0]->getId()));
+            if (count($packages) == 1) {
+                return $this->redirect()->toRoute('onsite/package', array('action' => 'detail', 'id' => $packages[0]->getId()));
             }
         }
 
@@ -86,7 +92,7 @@ class SearchController extends AbstractActionController {
         return new ViewModel(array(
             'form' => $form,
             'query' => $q,
-            'results' => $results,
+            'results' => $packages,
         ));
     }
 

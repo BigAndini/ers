@@ -163,7 +163,7 @@ echo $this->flashMessenger()
                 <p><b>Contents:</b></p>
                 <ul class="list">
                 <?php foreach($order->getPackages() as $other): ?>
-                    <li><p>
+                    <li><p class="h4">
                     <?php
                     echo $this->escapeHtml($other->getParticipant()->getFullName()) . '&nbsp;(';
                     if($other == $package)
