@@ -120,6 +120,8 @@ $this->headTitle($title);
                 $participant = $user->getFirstname().' '.$user->getSurname();
             endif;
             
+            error_log($package->getStatus()->getValue());
+            error_log($package->getStatusWithShipped());
             $packageStatus = $package->getStatusWithShipped();
             if($packageStatus === 'ordered') {
                 $packageStatus = 'unpaid';

@@ -465,6 +465,15 @@ return array(
                         )
                     )
                 ),
+                'correct-package-status' => array(
+                    'options' => array(
+                        'route'    => 'correct-package-status',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'correct-package-status'
+                        )
+                    )
+                ),
                 'correct-packages-in-paid-orders' => array(
                     'options' => array(
                         'route'    => 'correct-packages-in-paid-orders',

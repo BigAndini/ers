@@ -86,6 +86,9 @@ class StatusService
         
         foreach($package->getItems() as $item) {
             if(!in_array($item->getStatus()->getValue(), $ignore)) {
+                if($item->getStatus()->getValue() != $status->getValue()) {
+                    echo "set item (".$item->getId().") status from ".$item->getStauts()->getValue()." to ".$status->getValue().PHP_EOL;
+                }
                 $this->setItemStatus($item, $status, false);
             }
             $item = null;
