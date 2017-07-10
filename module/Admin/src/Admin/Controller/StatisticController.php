@@ -267,6 +267,68 @@ class StatisticController extends AbstractActionController {
         uasort($countryStatsLive2, function($a, $b){ return ($b['count'] - $a['count']) ?: strcmp($a['id'], $b['id']); });
         
         /*
+         * === by product type ===
+         */
+        
+        // make sure the column we are indexing by with array_column does not have numeric keys,
+        // otherwise array_merge does not do what we want (overwrite default values if present)
+        $pseudoIdColumn = "CONCAT('x', prod.id) pseudoId";
+        
+        $productStatsBase = array_column($em->createQueryBuilder()
+                        ->select(
+                                $pseudoIdColumn,
+                                'prod.name label', 
+                                'COUNT(DISTINCT u.id) AS usercount', 
+                                'COUNT(i.id) itemcount')
+                        ->from('ErsBase\Entity\Product', 'prod')
+                        ->join('prod.items', 'i')
+                        ->join('i.status', 's', 'WITH', 's.active = 1')
+                        ->join('i.package', 'p')
+                        ->join('p.user', 'u')
+                        ->groupBy('prod.id')
+                        ->orderBy('prod.position')
+                        ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $productStatsPaid = array_column($em->createQueryBuilder()
+                        ->select(
+                                $pseudoIdColumn,
+                                #'prod.name label', 
+                                #'COUNT(DISTINCT u.id) AS usercount', 
+                                'COUNT(i.id) paid')
+                        ->from('ErsBase\Entity\Product', 'prod')
+                        ->join('prod.items', 'i')
+                        ->join('i.status', 's', 'WITH', 's.active = 1')
+                        ->join('i.package', 'p')
+                        ->join('p.user', 'u')
+                        ->where($qb->expr()->eq('s.value', ':status'))
+                        ->groupBy('prod.id')
+                        ->orderBy('prod.position')
+                        ->setParameter('status', 'paid')
+                        ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $productStatsOrdered = array_column($em->createQueryBuilder()
+                        ->select(
+                                $pseudoIdColumn,
+                                #'prod.name label', 
+                                #'COUNT(DISTINCT u.id) AS usercount', 
+                                'COUNT(i.id) ordered')
+                        ->from('ErsBase\Entity\Product', 'prod')
+                        ->join('prod.items', 'i')
+                        ->join('i.status', 's', 'WITH', 's.active = 1')
+                        ->join('i.package', 'p')
+                        ->join('p.user', 'u')
+                        ->where($qb->expr()->eq('s.value', ':status'))
+                        ->groupBy('prod.id')
+                        ->orderBy('prod.position')
+                        ->setParameter('status', 'ordered')
+                        ->getQuery()->getResult(), NULL, 'pseudoId');
+        
+        $productStats = array_merge_recursive(
+                $productStatsBase, 
+                $productStatsPaid, 
+                $productStatsOrdered);
+        
+        /*
          * === by product variant ===
          */
         $itemsByVariantByProduct = [];
@@ -276,8 +338,10 @@ class StatisticController extends AbstractActionController {
             $qb = $em->createQueryBuilder()
                     ->select('COUNT(i.id) itemcount')
                     ->from('ErsBase\Entity\Item', 'i')
-                    ->join('i.status', 's', 'WITH', 's.active = 1')
+                    #->join('i.status', 's', 'WITH', 's.active = 1')
+                    ->join('i.status', 's', 'WITH', 's.value = :paid')
                     ->where('i.Product_id = :prod_id')
+                    ->setParameter('paid', 'paid')
                     ->setParameter('prod_id', $product->getId());
             
             $variantNames = [];
@@ -341,6 +405,7 @@ class StatisticController extends AbstractActionController {
             'countries' => $countries,
             'countryStats' => $countryStatsLive2,
             'itemsByVariantByProduct' => $itemsByVariantByProduct,
+            'productStats' => $productStats,
         ));
     }
     

@@ -143,6 +143,64 @@ $this->headTitle($title);
 <hr>
 
 <div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-success">
+            <div class="panel-heading">Participants by product type</div>
+            <?php /* prepared to put collapsable panels into the rows with additional information */ ?>
+            <div class="panel-group">
+                <div class="panel panel-default container-fluid">
+                    <div class="panel-heading row">
+                        <div class="panel-title col-md-6">product</div>
+                        <div class="panel-title col-md-1 text-right">participants</div>
+                        <div class="panel-title col-md-1 text-right"><span  data-toggle="tooltip" title="Active items are items divat are already paid or we are waiting for payment">active<br>items</span></div>
+                        <div class="panel-title col-md-1 text-right">paid</div>
+                        <div class="panel-title col-md-1 text-right">ordered</div>
+                        <div class="panel-title col-md-2 text-right">average items<br>per participant</div>
+                    </div>
+                </div>
+                <?php foreach($productStats as $value): ?>
+                    <div class="panel panel-default container-fluid">
+                        <div class="panel-body row">
+                            <div class="col-md-6"><?php echo $this->escapeHtml($value['label']); ?></div>
+                            <div class="col-md-1 text-right"><?php echo !empty($value['usercount']) ? $value['usercount'] : 0; ?></div>
+                            <div class="col-md-1 text-right"><?php echo !empty($value['itemcount']) ? $value['itemcount'] : 0; ?></div>
+                            <div class="col-md-1 text-right"><?php echo !empty($value['paid']) ? $value['paid'] : 0; ?></div>
+                            <div class="col-md-1 text-right"><?php echo !empty($value['ordered']) ? $value['ordered'] : 0; ?></div>
+                            <div class="col-md-2 text-right"><?php echo number_format($value['itemcount'] / $value['usercount'], 3); ?></div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div> 
+            <?php /*<table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>product</th>
+                        <th class="text-right">participants</th>
+                        <th class="text-right"><span  data-toggle="tooltip" title="Active items are items that are already paid or we are waiting for payment">active<br>items</span></th>
+                        <th class="text-right">paid</th>
+                        <th class="text-right">ordered</th>
+                        <th class="text-right">average items<br>per participant</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($productStats as $value): ?>
+                        <tr>
+                            <td class="col-md-6"><?php echo $this->escapeHtml($value['label']); ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['usercount']) ? $value['usercount'] : 0; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['itemcount']) ? $value['itemcount'] : 0; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['paid']) ? $value['paid'] : 0; ?></td>
+                            <td class="col-md-1 text-right"><?php echo !empty($value['ordered']) ? $value['ordered'] : 0; ?></td>
+                            <td class="col-md-2 text-right"><?php echo number_format($value['itemcount'] / $value['usercount'], 3); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table> */ ?>
+        </div>
+    </div>
+</div>
+<hr>
+
+<div class="row">
     
     <div class="col-md-6">
         <div class="panel panel-success">
@@ -156,7 +214,7 @@ $this->headTitle($title);
                                 <?php foreach($productData["variantNames"] as $variantName) {
                                     echo '<th class="col-md-10">' . $this->escapeHtml($variantName) . '</th>';
                                 } ?>
-                                <th class="col-md-4 text-right">item<br>count</th>
+                                <th class="col-md-4 text-right">paid item<br>count</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -191,6 +249,9 @@ $this->headTitle($title);
                     <?php 
                     $totalSum = 0;
                     foreach($countryStats as $value): 
+                        if($value['count'] == 0):
+                            continue;
+                        endif;
                         $totalSum += $value['count'];
                         ?>
                         <tr>
