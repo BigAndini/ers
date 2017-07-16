@@ -16,13 +16,13 @@ use Zend\Session\Container;
 
 class CurrencyChooser extends Form implements InputFilterProviderInterface
 {    
-    protected $em;
+    protected $entityManager;
     protected $sm;
     public function getEntityManager() {
         return $this->em;
     }
-    public function setEntityManager($em) {
-        $this->em = $em;
+    public function setEntityManager($entityManager) {
+        $this->em = $entityManager;
     }
     
     public function setServiceLocator($sm) {

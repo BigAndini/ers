@@ -21,16 +21,16 @@ class MatchingController extends AbstractActionController {
         $forrest = new Service\BreadcrumbService();
         $forrest->set('matching', 'admin/matching');
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $limit = 50;
         $offset = ($limit * ($page - 1));
         # findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
-        $matchings = $em->getRepository('ErsBase\Entity\Match')
+        $matchings = $entityManager->getRepository('ErsBase\Entity\Match')
                 ->findBy(array('status' => 'active'), array('updated' => 'DESC'), $limit, $offset);
         
-        $qb = $em->getRepository('ErsBase\Entity\Match')->createQueryBuilder('m');
+        $qb = $entityManager->getRepository('ErsBase\Entity\Match')->createQueryBuilder('m');
         $qb->select('count(m.id)');
         $count = $qb->getQuery()->getSingleScalarResult();
         $pagecount = floor($count/$limit);
@@ -49,7 +49,7 @@ class MatchingController extends AbstractActionController {
         
         $form = new Form\ManualMatch();
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         /*
@@ -59,7 +59,7 @@ class MatchingController extends AbstractActionController {
          * TODO: Add filter to select status of orders. unpaid is the default 
          * status but underpaid would be nice, too.
          */
-        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
         $qb->join('o.status', 's');
         $qb->where($qb->expr()->eq('s.value', ':unpaid'));
         $qb->setParameter('unpaid', 'ordered');
@@ -78,13 +78,13 @@ class MatchingController extends AbstractActionController {
         /*
          * add bankaccounts to view model
          */
-        $bankaccounts = $em->getRepository('ErsBase\Entity\PaymentType')
+        $bankaccounts = $entityManager->getRepository('ErsBase\Entity\PaymentType')
             ->findBy(array());
         
         /*
          * add bank statements to as value options to form
          */
-        $statements = $em->getRepository('ErsBase\Entity\BankStatement')
+        $statements = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                 ->findAll();
         $statement_options = array();
         foreach($statements as $statement) {
@@ -110,7 +110,7 @@ class MatchingController extends AbstractActionController {
                  */
                 $orders = array();
                 foreach($data['orders'] as $order_id) {
-                    $orders[] = $em->getRepository('ErsBase\Entity\Order')
+                    $orders[] = $entityManager->getRepository('ErsBase\Entity\Order')
                         ->findBy(array('id' => $order_id));
                 }
                 
@@ -119,7 +119,7 @@ class MatchingController extends AbstractActionController {
                  */
                 $statements = array();
                 foreach($data['statements'] as $statement_id) {
-                    $statements[] = $em->getRepository('ErsBase\Entity\BankStatement')
+                    $statements[] = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                         ->findBy(array('id' => $statement_id));
                 }
                 
@@ -151,7 +151,7 @@ class MatchingController extends AbstractActionController {
         $params['orders'] = $param_orders;
         $params['statements'] = $param_statements;
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $form = new Form\AcceptMatch();
@@ -159,7 +159,7 @@ class MatchingController extends AbstractActionController {
         $orders = array();
         $order_options = array();
         foreach($param_orders as $order_id) {
-            $orders[] = $em->getRepository('ErsBase\Entity\Order')
+            $orders[] = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('id' => $order_id));
             $order_options[] = array(
                 'label' => $order_id,
@@ -172,7 +172,7 @@ class MatchingController extends AbstractActionController {
         $statements = array();
         $statement_options = array();
         foreach($param_statements as $statement_id) {
-            $statements[] = $em->getRepository('ErsBase\Entity\BankStatement')
+            $statements[] = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                 ->findOneBy(array('id' => $statement_id));
             $statement_options[] = array(
                 'label' => $statement_id,
@@ -202,7 +202,7 @@ class MatchingController extends AbstractActionController {
                  */
                 $orders = array();
                 foreach($data['Order_id'] as $order_id) {
-                    $orders[] = $em->getRepository('ErsBase\Entity\Order')
+                    $orders[] = $entityManager->getRepository('ErsBase\Entity\Order')
                         ->findOneBy(array('id' => $order_id));
                 }
                 
@@ -219,7 +219,7 @@ class MatchingController extends AbstractActionController {
                  */
                 $statements = array();
                 foreach($data['BankStatement_id'] as $statement_id) {
-                    $statements[] = $em->getRepository('ErsBase\Entity\BankStatement')
+                    $statements[] = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                         ->findOneBy(array('id' => $statement_id));
                 }
                 
@@ -231,39 +231,39 @@ class MatchingController extends AbstractActionController {
                 /*
                  * do matches and set order to paid
                  */
-                $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+                $statusPaid = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'paid'));
-                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                $statusOrdered = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
                 foreach($orders as $order) {
                     if($status == 'paid') {
                         $order->setStatus($statusPaid);
-                        $em->persist($order);
+                        $entityManager->persist($order);
                     } elseif($status == 'unpaid') {
                         $order->setStatus($statusOrdered);
-                        $em->persist($order);
+                        $entityManager->persist($order);
                     }
         
                     foreach($order->getPackages() as $package) {
                         if($status == 'paid') {
                             $package->setStatus($statusPaid);
-                            $em->persist($package);
+                            $entityManager->persist($package);
                         } elseif($status == 'unpaid') {
                             $package->setStatus($statusOrdered);
-                            $em->persist($package);
+                            $entityManager->persist($package);
                         }
                         foreach($package->getItems() as $item) {
                             if($status == 'paid') {
                                 $item->setStatus($statusPaid);
-                                $em->persist($item);
+                                $entityManager->persist($item);
                             } elseif($status == 'unpaid') {
                                 $item->setStatus($statusOrdered);
-                                $em->persist($item);
+                                $entityManager->persist($item);
                             }
                         }
                     }
                     $order->setPaymentStatus($status);
-                    $em->persist($order);
+                    $entityManager->persist($order);
                     
                     foreach($statements as $statement) {
                         $match = new Entity\Match();
@@ -276,13 +276,13 @@ class MatchingController extends AbstractActionController {
                         $match->setUser($user);
                         $match->setComment($data['comment']);
                         
-                        $em->persist($match);
+                        $entityManager->persist($match);
                         
                         $statement->setStatus('matched');
-                        $em->persist($statement);
+                        $entityManager->persist($statement);
                     }
                 }
-                $em->flush();
+                $entityManager->flush();
                 
                 #$params['statements'] = $data['statements'];
                 #$params['orders'] = $data['orders'];
@@ -312,10 +312,10 @@ class MatchingController extends AbstractActionController {
             $forrest->set('matching', 'admin/matching', array('action' => 'manual'));
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $match = $em->getRepository('ErsBase\Entity\Match')
+        $match = $entityManager->getRepository('ErsBase\Entity\Match')
                 ->findOneBy(array('id' => $id));
         
         $request = $this->getRequest();
@@ -325,31 +325,31 @@ class MatchingController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $match = $em->getRepository('ErsBase\Entity\Match')
+                $match = $entityManager->getRepository('ErsBase\Entity\Match')
                     ->findOneBy(array('id' => $id));
                 
                 $match->setStatus('disabled');
-                $em->persist($match);
+                $entityManager->persist($match);
                 
                 $bs = $match->getBankStatement();
                 $bs->setStatus('new');
-                $em->persist($bs);
+                $entityManager->persist($bs);
                 
                 $order = $match->getOrder();
                 $order->setPaymentStatus('unpaid');
                 $statusService = $this->getServiceLocator()->get('ErsBase\Service\StatusService');
                 $statusService->setOrderStatus($order, 'ordered', false);
-                $em->persist($order);
+                $entityManager->persist($order);
                 
-                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                $statusOrdered = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
                 
                 foreach($order->getItems() as $item) {
                     $item->setStatus($statusOrdered);
-                    $em->persist($item);
+                    $entityManager->persist($item);
                 }
-                #$em->remove($match);
-                $em->flush();
+                #$entityManager->remove($match);
+                $entityManager->flush();
                 
                 $breadcrumb = $forrest->get('matching');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
@@ -362,13 +362,13 @@ class MatchingController extends AbstractActionController {
     }
     
     public function disabledAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $forrest = new Service\BreadcrumbService();
         $forrest->set('matching', 'admin/matching', array('action' => 'disable'));
         
-        $statements = $em->getRepository('ErsBase\Entity\BankStatement')
+        $statements = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                 ->findBy(array('status' => 'disabled'), array('updated' => 'DESC'));
         
         return new ViewModel(array(
@@ -381,9 +381,9 @@ class MatchingController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/matching', array('action' => 'disabled'));
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $statement = $em->getRepository('ErsBase\Entity\BankStatement')
+        $statement = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                 ->findOneBy(array('id' => $id));
         
         $forrest = new Service\BreadcrumbService();
@@ -398,12 +398,12 @@ class MatchingController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $statement = $em->getRepository('ErsBase\Entity\BankStatement')
+                $statement = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                     ->findOneBy(array('id' => $id));
                 
                 $statement->setStatus('disabled');
-                $em->persist($statement);
-                $em->flush();
+                $entityManager->persist($statement);
+                $entityManager->flush();
                 
                 $breadcrumb = $forrest->get('matching');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
@@ -421,9 +421,9 @@ class MatchingController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/matching', array('action' => 'disabled'));
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $statement = $em->getRepository('ErsBase\Entity\BankStatement')
+        $statement = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                 ->findOneBy(array('id' => $id));
         
         $forrest = new Service\BreadcrumbService();
@@ -438,12 +438,12 @@ class MatchingController extends AbstractActionController {
             if ($ret == 'Yes') {
                 $id = (int) $request->getPost('id');
                 
-                $statement = $em->getRepository('ErsBase\Entity\BankStatement')
+                $statement = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                     ->findOneBy(array('id' => $id));
                 
                 $statement->setStatus('new');
-                $em->persist($statement);
-                $em->flush();
+                $entityManager->persist($statement);
+                $entityManager->flush();
                 
                 $breadcrumb = $forrest->get('matching');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);

@@ -31,9 +31,9 @@ class PaymentController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
         $config = $this->getServiceLocator()->get('config');
@@ -54,9 +54,9 @@ class PaymentController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
         return new ViewModel(array(
@@ -74,9 +74,9 @@ class PaymentController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
         //setup config object
@@ -124,9 +124,9 @@ class PaymentController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
        
@@ -208,9 +208,9 @@ class PaymentController extends AbstractActionController {
             return $this->notFoundAction();
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository("ErsBase\Entity\Order")
+        $order = $entityManager->getRepository("ErsBase\Entity\Order")
                 ->findOneBy(array('hashkey' => $hashkey));
         
        
@@ -359,9 +359,9 @@ class PaymentController extends AbstractActionController {
             return $response;
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
         if($order == null) {
@@ -369,7 +369,7 @@ class PaymentController extends AbstractActionController {
             return $response;
         }
         
-        $status = $em->getRepository("ErsBase\Entity\Status")
+        $status = $entityManager->getRepository("ErsBase\Entity\Status")
                 ->findOneBy(array('value' => 'paid'));
         
         $order->setPaymentStatus('paid');
@@ -382,7 +382,7 @@ class PaymentController extends AbstractActionController {
         /*foreach($order->getItems() as $item) {
             #$item->setStatus('paid');
             $item->setStatus($status);
-            $em->persist($item);
+            $entityManager->persist($item);
         }*/
         
         $order->setStatus($status);
@@ -391,9 +391,9 @@ class PaymentController extends AbstractActionController {
         $orderStatus->setOrder($order);
         $orderStatus->setValue('paid');
         $order->addOrderStatus($orderStatus);*/
-        $em->persist($order);
-        #$em->persist($orderStatus);
-        $em->flush();
+        $entityManager->persist($order);
+        #$entityManager->persist($orderStatus);
+        $entityManager->flush();
         
         return $response;
     }

@@ -27,9 +27,9 @@ class ProfileController extends AbstractActionController {
         //get the email of the user
         $email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
 
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository('ErsBase\Entity\User')->findOneBy(array('email' => $email));
+        $user = $entityManager->getRepository('ErsBase\Entity\User')->findOneBy(array('email' => $email));
         
         return new ViewModel(array(
             'user' => $user,
@@ -41,11 +41,11 @@ class ProfileController extends AbstractActionController {
             return $this->redirect()->toRoute('zfcuser/login');
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
-        $user = $em->getRepository('ErsBase\Entity\User')->findOneBy(array('email' => $email));
+        $user = $entityManager->getRepository('ErsBase\Entity\User')->findOneBy(array('email' => $email));
         
         $form = new Form\User(); 
         $request = $this->getRequest(); 
@@ -61,8 +61,8 @@ class ProfileController extends AbstractActionController {
             if($form->isValid())
             { 
                 $user = $form->getData();
-                $em->persist($user);
-                $em->flush();
+                $entityManager->persist($user);
+                $entityManager->flush();
                 
                 return $this->redirect()->toRoute('profile');
             } else {
@@ -125,15 +125,15 @@ class ProfileController extends AbstractActionController {
             {
                 $data = $form->getData();
                 
-                $em = $this->getServiceLocator()
+                $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-                $user = $em->getRepository('ErsBase\Entity\User')
+                $user = $entityManager->getRepository('ErsBase\Entity\User')
                         ->findOneBy(array('email' => $data['email']));
                 if($user) {
                     $user->genHashKey();
 
-                    $em->persist($user);
-                    $em->flush();
+                    $entityManager->persist($user);
+                    $entityManager->flush();
                     
                     $emailService = $this->getServiceLocator()
                             ->get('ErsBase\Service\EmailService');
@@ -174,9 +174,9 @@ class ProfileController extends AbstractActionController {
         }
         $form = new Form\ResetPassword();
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository('ErsBase\Entity\User')
+        $user = $entityManager->getRepository('ErsBase\Entity\User')
                 ->findOneBy(array('hashkey' => $hashkey));
         if(!$user) {
             $logger->warn('unable to find user with hash key: '.$hashkey);
@@ -209,14 +209,14 @@ class ProfileController extends AbstractActionController {
                 $user->setPassword($password);
                 $user->setHashKey(null);
                 
-                $role = $em->getRepository('ErsBase\Entity\Role')
+                $role = $entityManager->getRepository('ErsBase\Entity\Role')
                     ->findOneBy(array('roleId' => 'user'));
                 if(!$user->hasRole($role)) {
                     $user->addRole($role);
                 }
                 
-                $em->persist($user);
-                $em->flush();
+                $entityManager->persist($user);
+                $entityManager->flush();
                 
                 return $this->redirect()->toRoute('zfcuser/login');
             } else {
@@ -235,10 +235,10 @@ class ProfileController extends AbstractActionController {
     public function changeAction() {
         $email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $participant = $em->getRepository('ErsBase\Entity\User')
+        $participant = $entityManager->getRepository('ErsBase\Entity\User')
             ->findOneBy(array('email' => $email));
         
         #$form = new Form\Participant(); 
@@ -270,8 +270,8 @@ class ProfileController extends AbstractActionController {
                     $participant->setCountry(null);
                 }
                 
-                $em->persist($participant);
-                $em->flush();
+                $entityManager->persist($participant);
+                $entityManager->flush();
                 
                 $breadcrumb = $forrest->get('profile');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
@@ -289,15 +289,15 @@ class ProfileController extends AbstractActionController {
     }
     
     private function getCountryOptions($countryId = null) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
+        $qb1 = $entityManager->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
         $qb1->where($qb1->expr()->isNotNull('n.position'));
         $qb1->orderBy('n.position', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
-        $qb2 = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
+        $qb2 = $entityManager->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
         $qb2->where($qb2->expr()->isNull('n.position'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();

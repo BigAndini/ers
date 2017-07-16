@@ -41,15 +41,15 @@ class OptionService
     }
     
     public function getCountryOptions($countryId = null) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
+        $qb1 = $entityManager->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
         $qb1->where($qb1->expr()->isNotNull('n.position'));
         $qb1->orderBy('n.position', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
-        $qb2 = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
+        $qb2 = $entityManager->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
         $qb2->where($qb2->expr()->isNull('n.position'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();
@@ -88,10 +88,10 @@ class OptionService
     }
     
     public function getCurrencyOptions() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $currencies = $em->getRepository('ErsBase\Entity\Currency')
+        $currencies = $entityManager->getRepository('ErsBase\Entity\Currency')
                 ->findBy(array('active' => 1), array('position' => 'ASC'));
         
         $container = new Container('ers');
@@ -168,9 +168,9 @@ class OptionService
     }
     
     public function getAgegroupOptions($agegroup_id = null) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+        $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                     ->findBy(array('price_change' => '1'), array('agegroup' => 'DESC'));
         $options = array();
         
@@ -202,9 +202,9 @@ class OptionService
     }
     
     public function getDeadlineOptions() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+        $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                 ->findBy(array(), array('deadline' => 'ASC'));
 
         $options = array();
@@ -223,9 +223,9 @@ class OptionService
     }
     
     /*public function getCurrencyOptions() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $currencies = $em->getRepository('ErsBase\Entity\Currency')
+        $currencies = $entityManager->getRepository('ErsBase\Entity\Currency')
                 ->findBy(array(), array('position' => 'ASC'));
         
         $options = array();

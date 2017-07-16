@@ -12,10 +12,10 @@ use ErsBase\Entity;
 
 class TestCron {
     public function runCron() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orders = $em->getRepository('ErsBase\Entity\Order')
+        $orders = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findBy(array(), array('created' => 'DESC'));
         
         $logger = $this->getServiceLocator()->get('Logger');
@@ -27,11 +27,11 @@ class TestCron {
             }
             $orderStatus = new Entity\OrderStatus();
             $orderStatus->setValue('cron');
-            $em->persist($orderStatus);
+            $entityManager->persist($orderStatus);
             
             $order->setOrderStatus($orderStatus);
-            $em->persist($order);
-            $em->persist();
+            $entityManager->persist($order);
+            $entityManager->persist();
         }
     }
 }

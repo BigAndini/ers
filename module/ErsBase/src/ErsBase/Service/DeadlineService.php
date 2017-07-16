@@ -50,7 +50,7 @@ class DeadlineService
     
     public function getDeadlines() {
         if(count($this->deadlines) <= 0) {
-            $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+            $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
             $criteria = array();
             switch($this->getMode()) {
                 case 'price':
@@ -63,7 +63,7 @@ class DeadlineService
                     throw new \Exception('Please set a mode for Deadline Service: price or ticket');
                     break;
             }
-            $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+            $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                         ->findBy($criteria);
             $this->setDeadlines($deadlines);
         }

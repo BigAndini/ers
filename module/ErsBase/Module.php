@@ -38,18 +38,18 @@ class Module
         $shared->attach('ZfcUser\Service\User', 'register.post', function ($e) use ($sm) {
             $userService = $e->getTarget();
             $sm = $userService->getServiceManager();
-            $em = $sm->get('doctrine.entitymanager.orm_default');
+            $entityManager = $sm->get('doctrine.entitymanager.orm_default');
             $newUser = $e->getParam('user');
             #$registrationForm = $e->getParam('form');
             $config = $sm->get('config');
             $criteria = array('roleId' => $config['bjyauthorize']['new_user_default_role']);
-            $defaultUserRole = $em->getRepository('ErsBase\Entity\UserRole')->findOneBy($criteria);
+            $defaultUserRole = $entityManager->getRepository('ErsBase\Entity\UserRole')->findOneBy($criteria);
             
             if ($defaultUserRole !== null)
             {
                 $newUser->addRole($defaultUserRole);
-                $em->persist($newUser);
-                $em->flush();
+                $entityManager->persist($newUser);
+                $entityManager->flush();
             }
         });
     }
@@ -77,9 +77,9 @@ class Module
         return array(
             'factories' => array(
                 'ErsBase\Entity\Order' => function ($sm) {
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                    $entityManager = $sm->get('Doctrine\ORM\EntityManager');
                     $container = new Container('ers');
-                    $currency = $em->getRepository('ErsBase\Entity\Currency')
+                    $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                                 ->findOneBy(array('short' => $container->currency));
                     $order = new Entity\Order();
                     $order->setCurrency($currency);
@@ -106,8 +106,8 @@ class Module
                 'ErsBase\Service\AgegroupService:price' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
                     $agegroupService->setServiceLocator($sm);
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+                    $entityManager = $sm->get('Doctrine\ORM\EntityManager');
+                    $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('price_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
@@ -115,8 +115,8 @@ class Module
                 },
                 'ErsBase\Service\AgegroupService:ticket' => function($sm) {
                     $agegroupService = new Service\AgegroupService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+                    $entityManager = $sm->get('Doctrine\ORM\EntityManager');
+                    $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('ticket_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
@@ -130,8 +130,8 @@ class Module
                 },
                 'ErsBase\Service\DeadlineService:price' => function($sm) {
                     $deadlineService = new Service\DeadlineService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+                    $entityManager = $sm->get('Doctrine\ORM\EntityManager');
+                    $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findBy(array('price_change' => '1'));
                     $deadlineService->setDeadlines($deadlines);
                     
@@ -139,8 +139,8 @@ class Module
                 },
                 'ErsBase\Service\DeadlineService:noprice' => function($sm) {
                     $deadlineService = new Service\DeadlineService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+                    $entityManager = $sm->get('Doctrine\ORM\EntityManager');
+                    $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findBy(array('price_change' => '0'));
                     $deadlineService->setDeadlines($deadlines);
                     
@@ -148,8 +148,8 @@ class Module
                 },
                 'ErsBase\Service\DeadlineService:all' => function($sm) {
                     $deadlineService = new Service\DeadlineService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+                    $entityManager = $sm->get('Doctrine\ORM\EntityManager');
+                    $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findAll();
                     $deadlineService->setDeadlines($deadlines);
                     
@@ -163,8 +163,8 @@ class Module
                 'ErsBase\Service\ETicketService' => function($sm) {
                     $service = new Service\ETicketService();
                     $service->setServiceLocator($sm);
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $products = $em->getRepository('ErsBase\Entity\Product')
+                    $entityManager = $sm->get('Doctrine\ORM\EntityManager');
+                    $products = $entityManager->getRepository('ErsBase\Entity\Product')
                                 ->findBy(array('visible_on_eticket' => '1'), array('position' => 'ASC'));
                     $service->setProducts($products);
                     return $service;

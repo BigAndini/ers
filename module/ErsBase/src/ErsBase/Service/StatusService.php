@@ -41,10 +41,10 @@ class StatusService
     }
     
     public function setOrderStatus(Entity\Order $order, $status, $flush=true) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         if(is_string($status)) {
-            $status = $em->getRepository('ErsBase\Entity\Status')
+            $status = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => $status));
         }
         if(!$status instanceof Entity\Status) {
@@ -61,20 +61,20 @@ class StatusService
             $package = null;
         }
         $order->setStatus($status);
-        $em->persist($order);
+        $entityManager->persist($order);
         
         if($flush) {
-            $em->flush();
+            $entityManager->flush();
         }
         $order = null;
         $status = null;
     }
     
     public function setPackageStatus(Entity\Package $package, $status, $flush=true) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         if(is_string($status)) {
-            $status = $em->getRepository('ErsBase\Entity\Status')
+            $status = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => $status));
         }
         if(!$status instanceof Entity\Status) {
@@ -94,19 +94,19 @@ class StatusService
             $item = null;
         }
         $package->setStatus($status);
-        $em->persist($package);
+        $entityManager->persist($package);
         
         if($flush) {
-            $em->flush();
+            $entityManager->flush();
         }
         $package = null;
     }
     
     public function setItemStatus(Entity\Item $item, $status, $flush=true) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         if(is_string($status)) {
-            $status = $em->getRepository('ErsBase\Entity\Status')
+            $status = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => $status));
         }
         if(!$status instanceof Entity\Status) {
@@ -114,10 +114,10 @@ class StatusService
         }
         
         $item->setStatus($status);
-        $em->persist($item);
+        $entityManager->persist($item);
         
         if($flush) {
-            $em->flush();
+            $entityManager->flush();
         }
         $item = null;
     }

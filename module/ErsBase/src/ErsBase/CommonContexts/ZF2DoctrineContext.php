@@ -88,9 +88,9 @@ class ZF2DoctrineContext extends BehatContext implements ServiceManagerAwareInte
      */
     protected function getMetadata(EntityManager $entityManager)
     {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
-        return $em->getMetadataFactory()->getAllMetadata();
+        return $entityManager->getMetadataFactory()->getAllMetadata();
         #return $entityManager->getMetadataFactory()->getAllMetadata();
     }
 

@@ -19,9 +19,9 @@ class SearchController extends AbstractActionController {
 
         $packages = [];
         if (!empty($q)) {
-            $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+            $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-            $qb = $em->createQueryBuilder()
+            $qb = $entityManager->createQueryBuilder()
                     ->select('p')
                     ->from('ErsBase\Entity\Package', 'p')
                     ->join('p.user', 'u') # participant

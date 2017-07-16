@@ -19,7 +19,7 @@ class OverviewController extends AbstractActionController {
     }
 
     public function configAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $breadcrumbService = new Service\BreadcrumbService();
@@ -32,13 +32,13 @@ class OverviewController extends AbstractActionController {
         $breadcrumbService->set('product', 'admin/overview/config');
         
         return new ViewModel(array(
-            'taxes' => $em->getRepository('ErsBase\Entity\Tax')->findAll(),
-            'deadlines' => $em->getRepository('ErsBase\Entity\Deadline')->findAll(),
-            'agegroups' => $em->getRepository('ErsBase\Entity\Agegroup')->findAll(),
-            'paymenttypes' => $em->getRepository('ErsBase\Entity\PaymentType')->findAll(),
-            'counters' => $em->getRepository('ErsBase\Entity\Counter')->findAll(),
-            'statuses' => $em->getRepository('ErsBase\Entity\Status')->findAll(),
-            'products' => $em->getRepository('ErsBase\Entity\Product')->findAll(),
+            'taxes' => $entityManager->getRepository('ErsBase\Entity\Tax')->findAll(),
+            'deadlines' => $entityManager->getRepository('ErsBase\Entity\Deadline')->findAll(),
+            'agegroups' => $entityManager->getRepository('ErsBase\Entity\Agegroup')->findAll(),
+            'paymenttypes' => $entityManager->getRepository('ErsBase\Entity\PaymentType')->findAll(),
+            'counters' => $entityManager->getRepository('ErsBase\Entity\Counter')->findAll(),
+            'statuses' => $entityManager->getRepository('ErsBase\Entity\Status')->findAll(),
+            'products' => $entityManager->getRepository('ErsBase\Entity\Product')->findAll(),
         ));
     }
 }

@@ -16,13 +16,13 @@ use Zend\Session\Container;
 
 class Participant extends Form implements InputFilterProviderInterface
 {    
-    protected $em;
+    protected $entityManager;
     protected $sm;
     public function getEntityManager() {
         return $this->em;
     }
-    public function setEntityManager($em) {
-        $this->em = $em;
+    public function setEntityManager($entityManager) {
+        $this->em = $entityManager;
     }
     
     public function setServiceLocator($sm) {
@@ -315,8 +315,8 @@ class Participant extends Form implements InputFilterProviderInterface
                                 \Zend\Validator\Callback::INVALID_VALUE => _('A person with this email address already exists. To make changes to your existing order contact prereg@eja.net or choose another e-mail'),
                             ),
                             'callback' => function($value, $context=array()) {
-                                $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-                                $user = $em->getRepository('ErsBase\Entity\User')
+                                $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+                                $user = $entityManager->getRepository('ErsBase\Entity\User')
                                         ->findOneBy(array('email' => $value));
 
                                 # The email address is new -> ok

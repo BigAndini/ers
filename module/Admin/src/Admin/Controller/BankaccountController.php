@@ -18,10 +18,10 @@ class BankaccountController extends AbstractActionController {
  
     public function indexAction()
     {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $accounts = $em->getRepository('ErsBase\Entity\PaymentType')
+        $accounts = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findBy(array());
         
         return new ViewModel(array(
@@ -66,11 +66,11 @@ class BankaccountController extends AbstractActionController {
             if ($form->isValid()) {
                 $bankaccount->populate($form->getData());
                 
-                $em = $this->getServiceLocator()
+                $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                $em->persist($bankaccount);
-                $em->flush();
+                $entityManager->persist($bankaccount);
+                $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully added');
                 return $this->redirect()->toRoute('admin/bankaccount');
@@ -94,9 +94,9 @@ class BankaccountController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')->findOneBy(array('id' => $id));
+        $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')->findOneBy(array('id' => $id));
 
         $form = new Form\BankAccount();
         $form->bind($bankaccount);
@@ -108,8 +108,8 @@ class BankaccountController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $em->persist($form->getData());
-                $em->flush();
+                $entityManager->persist($form->getData());
+                $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully changed');
                 return $this->redirect()->toRoute('admin/bankaccount');
@@ -128,9 +128,9 @@ class BankaccountController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/bankaccount');
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+        $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         $request = $this->getRequest();
@@ -139,10 +139,10 @@ class BankaccountController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+                $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                     ->findOneBy(array('id' => $id));
-                $em->remove($bankaccount);
-                $em->flush();
+                $entityManager->remove($bankaccount);
+                $entityManager->flush();
                 
                 $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully deleted');
             }
@@ -162,14 +162,14 @@ class BankaccountController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/bankaccount');
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+        $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         $form = new Form\BankAccountFormat();
         
-        $statements = $em->getRepository('ErsBase\Entity\BankStatement')
+        $statements = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                 ->findBy(
                         array('payment_type_id' => $bankaccount->getId()),
                         array(),
@@ -243,7 +243,7 @@ class BankaccountController extends AbstractActionController {
                 $data = $form->getData();
                 
                 $id = (int) $request->getPost('id');
-                $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+                $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                     ->findOneBy(array('id' => $id));
                 
                 $format = array(
@@ -259,8 +259,8 @@ class BankaccountController extends AbstractActionController {
                 );
                 $bankaccount->setStatementFormat(json_encode($format));
                 
-                $em->persist($bankaccount);
-                $em->flush();
+                $entityManager->persist($bankaccount);
+                $entityManager->flush();
                 
                 $this->flashMessenger()->addSuccessMessage('The format for the bankaccount has been successfully changed');
 
@@ -300,10 +300,10 @@ class BankaccountController extends AbstractActionController {
     public function uploadCsvAction() {
         $form = new Form\UploadCsv();
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $accounts = $em->getRepository('ErsBase\Entity\PaymentType')
+        $accounts = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findBy(array());
         
         $options = array();
@@ -334,7 +334,7 @@ class BankaccountController extends AbstractActionController {
                 $data = $form->getData();
                 
                 $id = $data['bankaccount_id'];
-                $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+                $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                     ->findOneBy(array('id' => $id));
                 
                 $file = $data['csv-upload'];
@@ -345,7 +345,7 @@ class BankaccountController extends AbstractActionController {
                 $bankAccountCsv->setCsvFile($file['name']);
                 $bankAccountCsv->setPaymentType($bankaccount);
                 
-                $em->persist($bankAccountCsv);
+                $entityManager->persist($bankAccountCsv);
                 
                 /*
                  * open file for reading
@@ -383,7 +383,7 @@ class BankaccountController extends AbstractActionController {
                     }
                     $bs->generateHash();
                     
-                    $bankstatement = $em->getRepository('ErsBase\Entity\BankStatement')
+                    $bankstatement = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                         ->findOneBy(array('hash' => $bs->getHash()));
                     if($bankstatement) {
                         continue;
@@ -404,12 +404,12 @@ class BankaccountController extends AbstractActionController {
                         }
                     }
                     
-                    $em->persist($bs);
+                    $entityManager->persist($bs);
                     $row++;
                 }
                 fclose($handle);
                 
-                $em->flush();
+                $entityManager->flush();
                 
                 $this->flashMessenger()->addSuccessMessage('The csv for the bankaccount has been successfully uploaded');
                 
@@ -428,9 +428,9 @@ class BankaccountController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/bankaccount', array());
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+        $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         return new ViewModel(array(
@@ -444,9 +444,9 @@ class BankaccountController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/bankaccount');
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $csv = $em->getRepository('ErsBase\Entity\BankAccountCsv')
+        $csv = $entityManager->getRepository('ErsBase\Entity\BankAccountCsv')
                 ->findOneBy(array('id' => $id));
         
         $request = $this->getRequest();
@@ -455,13 +455,13 @@ class BankaccountController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $csv = $em->getRepository('ErsBase\Entity\BankAccountCsv')
+                $csv = $entityManager->getRepository('ErsBase\Entity\BankAccountCsv')
                     ->findOneBy(array('id' => $id));
                 /*if($csv->hasMatch()) {
                     return $this->redirect()->toRoute('admin/bankaccount');
                 }*/
                 
-                $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+                $statusOrdered = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
                 $statusService = $this->getServiceLocator()
                         ->get('ErsBase\Service\StatusService');
@@ -476,16 +476,16 @@ class BankaccountController extends AbstractActionController {
                         $order = $match->getOrder();
                     
                         $statusService->setOrderStatus($order, $statusOrdered, false);
-                        $em->remove($match);
+                        $entityManager->remove($match);
                     }
                     
-                    $em->remove($bs);
+                    $entityManager->remove($bs);
                     foreach($bs->getBankStatementCols() as $col) {
-                        $em->remove($col);
+                        $entityManager->remove($col);
                     }
                 }
-                $em->remove($csv);
-                $em->flush();
+                $entityManager->remove($csv);
+                $entityManager->flush();
                 
                 $this->flashMessenger()->addSuccessMessage('The csv for the bankaccount has been successfully deleted');
             }
@@ -504,17 +504,17 @@ class BankaccountController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/bankaccount', array());
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+        $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         switch($bankaccount->getType()) {
             case 'sepa':
-                $form = new Form\AccountSepabankDetail($em);
+                $form = new Form\AccountSepabankDetail($entityManager);
                 break;
             case 'ipayment':
-                $form = new Form\AccountIpaymentDetail($em);
+                $form = new Form\AccountIpaymentDetail($entityManager);
                 if(empty($bankaccount->getTrxCurrency())) {
                     $bankaccount->setTrxCurrency('EUR');
                 }
@@ -523,7 +523,7 @@ class BankaccountController extends AbstractActionController {
                 }
                 break;
             case 'paypal':
-                $form = new Form\AccountPaypalDetail($em);
+                $form = new Form\AccountPaypalDetail($entityManager);
                 break;
             default:
                 $options = [
@@ -547,7 +547,7 @@ class BankaccountController extends AbstractActionController {
                     ],
                 ];
 
-                $form = new Form\AccountUnknownDetail($em);
+                $form = new Form\AccountUnknownDetail($entityManager);
                 $form->get('type')->setAttribute('options', $options);
                 break;
         }
@@ -559,8 +559,8 @@ class BankaccountController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $em->persist($form->getData());
-                $em->flush();
+                $entityManager->persist($form->getData());
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute('admin/bankaccount');
             }

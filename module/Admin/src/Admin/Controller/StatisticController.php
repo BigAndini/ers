@@ -17,10 +17,10 @@ class StatisticController extends AbstractActionController {
     }
     
     public function orgasAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $qb1 = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
         $qb1->select(array('SUM(o.order_sum_eur) as ordersum'));
         $qb1->join('o.status', 's');
         $qb1->join('o.paymentType', 'pt');
@@ -39,7 +39,7 @@ class StatisticController extends AbstractActionController {
             JOIN bank_account ON bank_account.id = bank_statement.bank_account_id
             WHERE bank_account.id =2
          */
-        $qb2 = $em->getRepository('ErsBase\Entity\Match')->createQueryBuilder('m');
+        $qb2 = $entityManager->getRepository('ErsBase\Entity\Match')->createQueryBuilder('m');
         $qb2->select(array('SUM(o.order_sum_eur) as ordersum'));
         $qb2->join('m.order', 'o');
         $qb2->join('m.bankStatement', 'bs');
@@ -51,7 +51,7 @@ class StatisticController extends AbstractActionController {
         
         $volunteers1 = $qb2->getQuery()->getSingleResult();
         
-        $qb3 = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb3 = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
         $qb3->select(array('COUNT(p.id) as participants'));
         $qb3->join('p.status', 's');
         $qb3->where($qb3->expr()->eq('s.value', ':status1'));
@@ -62,9 +62,9 @@ class StatisticController extends AbstractActionController {
         
         $participants = $qb3->getQuery()->getSingleResult();
         
-        $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+        $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                 ->findBy(array(), array('deadline' => 'DESC'));
-        $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+        $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                 ->findBy(array('price_change' => 1), array('agegroup' => 'DESC'));
         $last_agegroup = new \ErsBase\Entity\Agegroup();
         $last_agegroup->setAgegroup(new \DateTime('01.01.1000'));
@@ -74,7 +74,7 @@ class StatisticController extends AbstractActionController {
         
         foreach($deadlines as $deadline) {
             foreach($agegroups as $agegroup) {
-                $qb4 = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+                $qb4 = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
                 $qb4->select(array('COUNT(p.id) as participants', 's.value'));
                 $qb4->join('p.status', 's');
                 $qb4->join('p.order', 'o');
@@ -115,12 +115,12 @@ class StatisticController extends AbstractActionController {
     }
     
     public function ordersAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $orderSelectFields = array('COUNT(o.id) AS ordercount', 'SUM(o.order_sum) AS ordersum', 'SUM(o.total_sum) AS totalsum', 'SUM(o.order_sum_eur) AS ordersumeur', 'SUM(o.total_sum_eur) AS totalsumeur');
         
-        $paymentStatusStats = $em->createQueryBuilder()
+        $paymentStatusStats = $entityManager->createQueryBuilder()
                 #->select(array_merge(array('o.payment_status AS label'), $orderSelectFields))
                 ->select(array_merge(array('s status, s.value label'), $orderSelectFields))
                 ->from('ErsBase\Entity\Status', 's')
@@ -135,7 +135,7 @@ class StatisticController extends AbstractActionController {
             $byStatusGroups[$group][] = $statusData;
         }
         
-        $paymentTypeStats = $em->createQueryBuilder()
+        $paymentTypeStats = $entityManager->createQueryBuilder()
                 ->select(array_merge(array('pt.name AS label', 'c.short as currency'), $orderSelectFields))
                 ->from('ErsBase\Entity\PaymentType', 'pt')
                 ->join('pt.orders', 'o')
@@ -147,12 +147,12 @@ class StatisticController extends AbstractActionController {
         return new ViewModel(array(
             'stats_paymentStatusGroups' => $byStatusGroups,
             'stats_paymentTypes' => $paymentTypeStats,
-            /*'orderActiveCount' => $em->createQueryBuilder()
+            /*'orderActiveCount' => $entityManager->createQueryBuilder()
                 ->select('COUNT(o.id)')
                 ->from('ErsBase\Entity\Order', 'o')
                 ->join('o.status', 's', 'WITH', "s.active = 1")
                 ->getQuery()->getSingleScalarResult(),
-            'orderInactiveCount' => $em->createQueryBuilder()
+            'orderInactiveCount' => $entityManager->createQueryBuilder()
                 ->select('COUNT(o.id)')
                 ->from('ErsBase\Entity\Order', 'o')
                 ->join('o.status', 's', 'WITH', "s.active = 0")
@@ -161,13 +161,13 @@ class StatisticController extends AbstractActionController {
     }
     
     public function participantsAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+        $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                 ->findAll();
         
-        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
         #$qb->join('p.status', 's');
         $qb->join('p.status', 's', 'WITH', "s.active = 1");
         $packages = $qb->getQuery()->getResult();
@@ -239,7 +239,7 @@ class StatisticController extends AbstractActionController {
             
         }
         
-        $qb = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('c');
+        $qb = $entityManager->getRepository('ErsBase\Entity\Country')->createQueryBuilder('c');
         #$qb->join('p.status', 's');
         $qb->select('c.id', 'c.name');
         $dbCountries = $qb->getQuery()->getResult();
@@ -274,7 +274,7 @@ class StatisticController extends AbstractActionController {
         // otherwise array_merge does not do what we want (overwrite default values if present)
         $pseudoIdColumn = "CONCAT('x', prod.id) pseudoId";
         
-        $productStatsBase = array_column($em->createQueryBuilder()
+        $productStatsBase = array_column($entityManager->createQueryBuilder()
                         ->select(
                                 $pseudoIdColumn,
                                 'prod.name label', 
@@ -289,7 +289,7 @@ class StatisticController extends AbstractActionController {
                         ->orderBy('prod.position')
                         ->getQuery()->getResult(), NULL, 'pseudoId');
         
-        $productStatsPaid = array_column($em->createQueryBuilder()
+        $productStatsPaid = array_column($entityManager->createQueryBuilder()
                         ->select(
                                 $pseudoIdColumn,
                                 #'prod.name label', 
@@ -306,7 +306,7 @@ class StatisticController extends AbstractActionController {
                         ->setParameter('status', 'paid')
                         ->getQuery()->getResult(), NULL, 'pseudoId');
         
-        $productStatsOrdered = array_column($em->createQueryBuilder()
+        $productStatsOrdered = array_column($entityManager->createQueryBuilder()
                         ->select(
                                 $pseudoIdColumn,
                                 #'prod.name label', 
@@ -332,10 +332,10 @@ class StatisticController extends AbstractActionController {
          * === by product variant ===
          */
         $itemsByVariantByProduct = [];
-        $allProducts = $em->getRepository('ErsBase\Entity\Product')->findBy([], ['position' => 'ASC']);
+        $allProducts = $entityManager->getRepository('ErsBase\Entity\Product')->findBy([], ['position' => 'ASC']);
         /* @var $product \ErsBase\Entity\Product */
         foreach($allProducts as $product) {
-            $qb = $em->createQueryBuilder()
+            $qb = $entityManager->createQueryBuilder()
                     ->select('COUNT(i.id) itemcount')
                     ->from('ErsBase\Entity\Item', 'i')
                     #->join('i.status', 's', 'WITH', 's.active = 1')
@@ -410,17 +410,17 @@ class StatisticController extends AbstractActionController {
     }
     
     public function participantsOldAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $packageCount = [];
         $qb = [];
         
-        $qb['all'] = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb['all'] = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
         $qb['all']->select('COUNT(p.id)');
         $packageCount['all'] = $qb['all']->getQuery()->getScalarResult();
         
-        $qb['paid'] = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb['paid'] = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
         $qb['paid']->select('COUNT(p.id)');
         $qb['paid']->join('p.status', 's');
         $qb['paid']->where($qb['paid']->expr()->eq('s.value', ':status'));
@@ -428,7 +428,7 @@ class StatisticController extends AbstractActionController {
         
         $packageCount['paid'] = $qb['paid']->getQuery()->getScalarResult();
         
-        $qb['onsite'] = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $qb['onsite'] = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
         $qb['onsite']->select('COUNT(p.id)');
         $qb['onsite']->join('p.status', 's');
         $qb['onsite']->where($qb['onsite']->expr()->eq('s.value', ':status'));
@@ -441,7 +441,7 @@ class StatisticController extends AbstractActionController {
         /*
          * === by agegroups & country ===
          */
-        $qb = $em->createQueryBuilder();
+        $qb = $entityManager->createQueryBuilder();
         $users = $qb
                 ->select(
                         'u.birthday', 
@@ -535,7 +535,7 @@ class StatisticController extends AbstractActionController {
         // otherwise array_merge does not do what we want (overwrite default values if present)
         $pseudoIdColumn = "CONCAT('x', prod.id) pseudoId";
         
-        $productStatsBase = array_column($em->createQueryBuilder()
+        $productStatsBase = array_column($entityManager->createQueryBuilder()
                         ->select(
                                 $pseudoIdColumn,
                                 'prod.name label', 
@@ -550,7 +550,7 @@ class StatisticController extends AbstractActionController {
                         ->orderBy('prod.position')
                         ->getQuery()->getResult(), NULL, 'pseudoId');
         
-        $productStatsPaid = array_column($em->createQueryBuilder()
+        $productStatsPaid = array_column($entityManager->createQueryBuilder()
                         ->select(
                                 $pseudoIdColumn,
                                 #'prod.name label', 
@@ -567,7 +567,7 @@ class StatisticController extends AbstractActionController {
                         ->setParameter('status', 'paid')
                         ->getQuery()->getResult(), NULL, 'pseudoId');
         
-        $productStatsOrdered = array_column($em->createQueryBuilder()
+        $productStatsOrdered = array_column($entityManager->createQueryBuilder()
                         ->select(
                                 $pseudoIdColumn,
                                 #'prod.name label', 
@@ -596,7 +596,7 @@ class StatisticController extends AbstractActionController {
         
         $pseudoIdColumn = "CONCAT('x', pt.id) pseudoId";
         
-        $paymentTypeStatsBase = array_column($em->createQueryBuilder()
+        $paymentTypeStatsBase = array_column($entityManager->createQueryBuilder()
                 ->select(
                         $pseudoIdColumn,
                         'pt.name label', 
@@ -613,7 +613,7 @@ class StatisticController extends AbstractActionController {
                 ->orderBy('pt.position')
                 ->getQuery()->getResult(), NULL, 'pseudoId');
         
-        $paymentTypeStatsPaid = array_column($em->createQueryBuilder()
+        $paymentTypeStatsPaid = array_column($entityManager->createQueryBuilder()
                 ->select(
                         $pseudoIdColumn,
                         'COUNT(i.id) paid')
@@ -629,7 +629,7 @@ class StatisticController extends AbstractActionController {
                 ->setParameter('status', 'paid')
                 ->getQuery()->getResult(), NULL, 'pseudoId');
         
-        $paymentTypeStatsOrdered = array_column($em->createQueryBuilder()
+        $paymentTypeStatsOrdered = array_column($entityManager->createQueryBuilder()
                 ->select(
                         $pseudoIdColumn,
                         'COUNT(i.id) ordered')
@@ -656,7 +656,7 @@ class StatisticController extends AbstractActionController {
         
         $pseudoIdColumn = "CONCAT('x', pt.id) pseudoId";
         
-        $bankAccountStatsBase = array_column($em->createQueryBuilder()
+        $bankAccountStatsBase = array_column($entityManager->createQueryBuilder()
                 ->select(
                         $pseudoIdColumn,
                         'pt.name label', 
@@ -675,7 +675,7 @@ class StatisticController extends AbstractActionController {
                 #->orderBy('pt.position')
                 ->getQuery()->getResult(), NULL, 'pseudoId');
         
-        $bankAccountStatsPaid = array_column($em->createQueryBuilder()
+        $bankAccountStatsPaid = array_column($entityManager->createQueryBuilder()
                 ->select(
                         $pseudoIdColumn,
                         'COUNT(i.id) paid')
@@ -693,7 +693,7 @@ class StatisticController extends AbstractActionController {
                 ->setParameter('status', 'paid')
                 ->getQuery()->getResult(), NULL, 'pseudoId');
         
-        $bankAccountStatsOrdered = array_column($em->createQueryBuilder()
+        $bankAccountStatsOrdered = array_column($entityManager->createQueryBuilder()
                 ->select(
                         $pseudoIdColumn,
                         'COUNT(i.id) ordered')
@@ -720,10 +720,10 @@ class StatisticController extends AbstractActionController {
          * === by product variant ===
          */
         $itemsByVariantByProduct = [];
-        $allProducts = $em->getRepository('ErsBase\Entity\Product')->findBy([], ['position' => 'ASC']);
+        $allProducts = $entityManager->getRepository('ErsBase\Entity\Product')->findBy([], ['position' => 'ASC']);
         /* @var $product \ErsBase\Entity\Product */
         foreach($allProducts as $product) {
-            $qb = $em->createQueryBuilder()
+            $qb = $entityManager->createQueryBuilder()
                     ->select('COUNT(i.id) itemcount')
                     ->from('ErsBase\Entity\Item', 'i')
                     ->join('i.status', 's', 'WITH', 's.active = 1')
@@ -821,20 +821,20 @@ class StatisticController extends AbstractActionController {
     }
     
     public function paymenttypesAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $activeStats = array();
         $matchingStats = array();
         
-        $paymenttypes = $em->getRepository('ErsBase\Entity\PaymentType')
+        $paymenttypes = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findAll();
         
         /* @var $paymenttype \ErsBase\Entity\PaymentType */
         foreach($paymenttypes as $paymenttype) {
             $statementFormat = json_decode($paymenttype->getStatementFormat());
            
-            $qb = $em->createQueryBuilder()
+            $qb = $entityManager->createQueryBuilder()
                     ->select('COUNT(s.id) AS stmtcount', 'SUM(col.value) AS amount, MAX(s.created) AS latestentry', 'c.short as currency', 'c.factor as factor')
                     ->from('ErsBase\Entity\PaymentType', 'acc')
                     ->join('acc.bankStatements', 's', 'WITH', "s.status != 'disabled'")
@@ -867,10 +867,10 @@ class StatisticController extends AbstractActionController {
     }
     
     public function onsiteAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
+        $qb = $entityManager->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
         $qb->where("i.shipped = 1");
         $qb->andWhere($qb->expr()->orX(
                 $qb->expr()->eq("i.Product_id", "1"),
@@ -892,7 +892,7 @@ class StatisticController extends AbstractActionController {
     }
     
     public function ordersPerDayAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
 
@@ -901,7 +901,7 @@ class StatisticController extends AbstractActionController {
         // JOIN status ON `order`.status_id=`status`.id 
         // WHERE status.value = 'ordered' 
         // GROUP BY DATE(`order`.created);
-        $qb1 = $em->getRepository("ErsBase\Entity\Order")
+        $qb1 = $entityManager->getRepository("ErsBase\Entity\Order")
                 ->createQueryBuilder('o');
         $qb1->select('COUNT(o.id) as count', 'DATE(o.created) as date');
         $qb1->join('o.status','s');
@@ -916,7 +916,7 @@ class StatisticController extends AbstractActionController {
     }
     
     public function participantsPerDayAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
 
@@ -926,7 +926,7 @@ class StatisticController extends AbstractActionController {
         // JOIN package ON `package`.order_id=`order`.id 
         // WHERE status.value = 'ordered' 
         // GROUP BY DATE(`order`.created);
-        $qb1 = $em->getRepository("ErsBase\Entity\Order")
+        $qb1 = $entityManager->getRepository("ErsBase\Entity\Order")
                 ->createQueryBuilder('o');
         $qb1->select('COUNT(p.id) as count', 'DATE(o.created) as date');
         $qb1->join('o.status','s');

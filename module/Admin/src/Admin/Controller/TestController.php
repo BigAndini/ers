@@ -25,11 +25,11 @@ class TestController extends AbstractActionController {
     {
         set_time_limit( 0 );
 
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        /*$orders = $em->getRepository('ErsBase\Entity\Order')
+        /*$orders = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findBy(array(), array('created' => 'ASC'));*/
-        $packages = $em->getRepository('ErsBase\Entity\Package')
+        $packages = $entityManager->getRepository('ErsBase\Entity\Package')
                 ->findBy(array(), array('created' => 'ASC'));
         
         $filename = getcwd() . "/tmp/excel-" . date( "m-d-Y" ) . ".xls";
@@ -103,13 +103,13 @@ class TestController extends AbstractActionController {
     
     public function datatablesAction()
     {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('n');
+        $qb = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('n');
         
-        /*$em = $this->getEntityManager();
-        $queryBuilder = $em->createQueryBuilder();
+        /*$entityManager = $this->getEntityManager();
+        $queryBuilder = $entityManager->createQueryBuilder();
         
         $queryBuilder->add('select', 'p , q')
               ->add('from', '\ErsBase\Entity\Order q')
@@ -133,10 +133,10 @@ class TestController extends AbstractActionController {
     }
     
     public function paidOrderSumAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orders = $em->getRepository('ErsBase\Entity\Order')
+        $orders = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findBy(array('payment_status' => 'paid'));
         
         $orderSum = 0;
@@ -153,18 +153,18 @@ class TestController extends AbstractActionController {
     }
     
     public function orderSaveAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orders = $em->getRepository('ErsBase\Entity\Order')
+        $orders = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findBy(array('total_sum' => 0));
         $count = 0;
         foreach($orders as $order) {
             $order->setTotalSum($order->getSum());
             $order->setOrderSum($order->getPrice());
-            $em->persist($order);
+            $entityManager->persist($order);
             if($count >= 10) {
-                $em->flush();
+                $entityManager->flush();
                 $count = 0;
             }
             $count++;
@@ -172,13 +172,13 @@ class TestController extends AbstractActionController {
     }
     
     public function eticketHtmlAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $package = $em->getRepository('ErsBase\Entity\Package')
+        $package = $entityManager->getRepository('ErsBase\Entity\Package')
                 ->findOneBy(array('id' => 52));
         
-        $products = $em->getRepository('ErsBase\Entity\Product')
+        $products = $entityManager->getRepository('ErsBase\Entity\Product')
                 ->findAll();
         
         $config = $this->getServiceLocator()->get('Config');

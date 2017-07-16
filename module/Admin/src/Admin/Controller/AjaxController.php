@@ -22,10 +22,10 @@ class AjaxController extends AbstractActionController {
         $viewModel = new ViewModel();
         $viewModel->setTemplate("partial/ajax/matching-order");
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 #->findOneBy(array('id' => '297'));
                 #->findOneBy(array('id' => '12'));
                 #->findOneBy(array('id' => '54'));
@@ -44,13 +44,13 @@ class AjaxController extends AbstractActionController {
         $viewModel = new ViewModel();
         $viewModel->setTemplate("partial/ajax/matching-bankstatement");
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+        $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
-        $qb = $em->getRepository('ErsBase\Entity\BankStatement')->createQueryBuilder('s');
+        $qb = $entityManager->getRepository('ErsBase\Entity\BankStatement')->createQueryBuilder('s');
         $qb->leftJoin('s.matches', 'm');
         if($bankaccount->getVirtual()) {
             $qb->where(
@@ -93,10 +93,10 @@ class AjaxController extends AbstractActionController {
         $viewModel = new ViewModel();
         $viewModel->setTemplate("partial/ajax/matching-statementcols");
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $statement = $em->getRepository('ErsBase\Entity\BankStatement')
+        $statement = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                 ->findOneBy(array('id' => $id));
         
         $viewModel->setVariable("statement", $statement);
@@ -107,10 +107,10 @@ class AjaxController extends AbstractActionController {
     public function virtualBankaccountAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+        $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         return $bankaccount->getVirtual();
@@ -125,11 +125,11 @@ class AjaxController extends AbstractActionController {
             # get currency id
             $id = $this->params()->fromRoute("id");
             
-            $em = $this->getServiceLocator()
+            $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-            $currency = $em->getRepository('ErsBase\Entity\Currency')
+            $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                     ->findOneBy(array('id' => $id));
-            $paymenttypes = $em->getRepository('ErsBase\Entity\PaymentType')
+            $paymenttypes = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                     ->findBy(array(), array('position' => 'ASC'));
             
             

@@ -167,8 +167,8 @@ class Module implements ViewHelperProviderInterface
                 'Admin\Form\Product' => function($sm){
                     $form   = new Form\Product();
                     
-                    $em = $sm->get('doctrine.entitymanager');
-                    $taxes = $em->getRepository('ErsBase\Entity\Tax')->findAll();
+                    $entityManager = $sm->get('doctrine.entitymanager');
+                    $taxes = $entityManager->getRepository('ErsBase\Entity\Tax')->findAll();
                     
                     $options = array();
                     foreach($taxes as $tax) {
@@ -192,8 +192,8 @@ class Module implements ViewHelperProviderInterface
                 'Admin\Form\Role' => function($sm){
                     $form = new Form\Role();
                     
-                    $em = $sm->get('doctrine.entitymanager');
-                    $roles = $em->getRepository('ErsBase\Entity\UserRole')->findBy(array(), array('roleId' => 'ASC'));
+                    $entityManager = $sm->get('doctrine.entitymanager');
+                    $roles = $entityManager->getRepository('ErsBase\Entity\UserRole')->findBy(array(), array('roleId' => 'ASC'));
                     
                     $options = array();
                     $options[null] = 'no parent';
