@@ -21,15 +21,15 @@ class RefundController extends AbstractActionController {
         /*
          * search for orders that do contain items in status refund
          */
-        /*$qb = $entityManager->getRepository('ErsBase\Entity\Order')
+        /*$queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->createQueryBuild('o');*/
-        $qb = $entityManager->getRepository('ErsBase\Entity\Order')
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->createQueryBuilder('o');
-        $qb->join('o.packages', 'p');
-        $qb->join('p.items', 'i');
-        $qb->where("i.status = 'refund'");
+        $queryBuilder->join('o.packages', 'p');
+        $queryBuilder->join('p.items', 'i');
+        $queryBuilder->where("i.status = 'refund'");
         
-        $orders = $qb->getQuery()->getResult();
+        $orders = $queryBuilder->getQuery()->getResult();
         
         $items = $entityManager->getRepository('ErsBase\Entity\Item')
                 ->findBy(array('status' => 'refund'), array('updated' => 'DESC'));

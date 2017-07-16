@@ -28,8 +28,8 @@ class ItemController extends AbstractActionController {
     }
     
     public function detailAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $itemId = (int) $this->params()->fromRoute('id', 0);
+        if (!$itemId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         
@@ -37,7 +37,7 @@ class ItemController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $itemId));
         
         return new ViewModel(array(
             'package' => $package,
@@ -45,21 +45,21 @@ class ItemController extends AbstractActionController {
     }
     
     public function editAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $itemId = (int) $this->params()->fromRoute('id', 0);
+        if (!$itemId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
     }
     
     public function orderedAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $itemId = (int) $this->params()->fromRoute('id', 0);
+        if (!$itemId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $itemId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('item')) {
@@ -71,10 +71,10 @@ class ItemController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $itemId = (int) $request->getPost('id');
                 
                 $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $itemId));
                 
                 $statusOrdered = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
@@ -95,14 +95,14 @@ class ItemController extends AbstractActionController {
     }
     
     public function cancelAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $itemId = (int) $this->params()->fromRoute('id', 0);
+        if (!$itemId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $itemId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('item')) {
@@ -114,10 +114,10 @@ class ItemController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $itemId = (int) $request->getPost('id');
                 
                 $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $itemId));
                 
                 $statusCancelled = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'cancelled'));
@@ -143,14 +143,14 @@ class ItemController extends AbstractActionController {
     }
     
     public function uncancelAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $itemId = (int) $this->params()->fromRoute('id', 0);
+        if (!$itemId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $itemId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('item')) {
@@ -162,10 +162,10 @@ class ItemController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $itemId = (int) $request->getPost('id');
                 
                 $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $itemId));
                 
                 $statusOrdered = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
@@ -187,14 +187,14 @@ class ItemController extends AbstractActionController {
     }
     
     public function refundAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $itemId = (int) $this->params()->fromRoute('id', 0);
+        if (!$itemId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $itemId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('item')) {
@@ -206,10 +206,10 @@ class ItemController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $itemId = (int) $request->getPost('id');
                 
                 $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $itemId));
                 
                 $statusRefund = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'refund'));
@@ -235,14 +235,14 @@ class ItemController extends AbstractActionController {
     }
     
     public function undoRefundAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $itemId = (int) $this->params()->fromRoute('id', 0);
+        if (!$itemId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $itemId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('item')) {
@@ -254,10 +254,10 @@ class ItemController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $itemId = (int) $request->getPost('id');
                 
                 $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $itemId));
                 
                 $statusOrdered = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
@@ -282,14 +282,14 @@ class ItemController extends AbstractActionController {
     }
     
     public function zeroOkAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $itemId = (int) $this->params()->fromRoute('id', 0);
+        if (!$itemId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $itemId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('item')) {
@@ -301,10 +301,10 @@ class ItemController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $itemId = (int) $request->getPost('id');
                 
                 $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $itemId));
                 
                 $statusZeroOk = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'zero_ok'));
@@ -326,14 +326,14 @@ class ItemController extends AbstractActionController {
     }
     
     public function zeroNotOkAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $itemId = (int) $this->params()->fromRoute('id', 0);
+        if (!$itemId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $itemId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('item')) {
@@ -345,10 +345,10 @@ class ItemController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $itemId = (int) $request->getPost('id');
                 
                 $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $itemId));
                 
                 $statusOrdered = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
@@ -370,14 +370,14 @@ class ItemController extends AbstractActionController {
     }
     
     public function paidAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $itemId = (int) $this->params()->fromRoute('id', 0);
+        if (!$itemId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $itemId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('item')) {
@@ -389,10 +389,10 @@ class ItemController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $itemId = (int) $request->getPost('id');
                 
                 $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $itemId));
                 
                 $statusPaid = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'paid'));
@@ -414,8 +414,8 @@ class ItemController extends AbstractActionController {
     }
     
     public function changeParticipantAction() {    
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $itemId = (int) $this->params()->fromRoute('id', 0);
+        if (!$itemId) {
             return $this->redirect()->toRoute('admin/order', array('action' => 'search'));
         }
         
@@ -424,7 +424,7 @@ class ItemController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $itemId));
         
         $form = new Form\SearchPackage();
         
@@ -437,13 +437,13 @@ class ItemController extends AbstractActionController {
 
             $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-            $qb = $entityManager->createQueryBuilder()
+            $queryBuilder = $entityManager->createQueryBuilder()
                     ->select('u')
                     ->from('ErsBase\Entity\User', 'u')
                     ->orderBy('u.firstname')
                     ->where('1=1');
             
-            /*$qb = $entityManager->createQueryBuilder()
+            /*$queryBuilder = $entityManager->createQueryBuilder()
                     ->select('p')
                     ->from('ErsBase\Entity\Package', 'p')
                     ->join('p.participant', 'u')
@@ -456,11 +456,11 @@ class ItemController extends AbstractActionController {
 
             if (preg_match('~^\d+$~', $q)) {
                 // if the entire query consists of nothing but a number, treat it as a user ID
-                $qb->andWhere('u.id = :id');
-                $qb->setParameter(':id', (int) $q);
+                $queryBuilder->andWhere('u.id = :id');
+                $queryBuilder->setParameter(':id', (int) $q);
             } else {
-                $exprUName = $qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.surname'));
-                //$exprBName = $qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname'));
+                $exprUName = $queryBuilder->expr()->concat('u.firstname', $queryBuilder->expr()->concat($queryBuilder->expr()->literal(' '), 'u.surname'));
+                //$exprBName = $queryBuilder->expr()->concat('b.firstname', $queryBuilder->expr()->concat($queryBuilder->expr()->literal(' '), 'b.surname'));
 
                 $words = preg_split('~\s+~', $q);
                 $i = 0;
@@ -473,26 +473,26 @@ class ItemController extends AbstractActionController {
 
                     $param = ':p' . $i;
                     $paramDate = ':pd' . $i;
-                    $qb->andWhere(
-                            $qb->expr()->orX(
-                                    $qb->expr()->like($exprUName, $param), //
-                                    $qb->expr()->like('u.email', $param), //
-                                    //$qb->expr()->like($exprBName, $param),
-                                    #$qb->expr()->like('pcode.value', $param), //
-                                    #$qb->expr()->like('ocode.value', $param), //
-                                    ($wordAsDate ? $qb->expr()->eq('u.birthday', $paramDate) : '1=0')
+                    $queryBuilder->andWhere(
+                            $queryBuilder->expr()->orX(
+                                    $queryBuilder->expr()->like($exprUName, $param), //
+                                    $queryBuilder->expr()->like('u.email', $param), //
+                                    //$queryBuilder->expr()->like($exprBName, $param),
+                                    #$queryBuilder->expr()->like('pcode.value', $param), //
+                                    #$queryBuilder->expr()->like('ocode.value', $param), //
+                                    ($wordAsDate ? $queryBuilder->expr()->eq('u.birthday', $paramDate) : '1=0')
                             )
                     );
 
-                    $qb->setParameter($param, '%' . $word . '%');
+                    $queryBuilder->setParameter($param, '%' . $word . '%');
                     if($wordAsDate)
-                        $qb->setParameter($paramDate, $wordAsDate);
+                        $queryBuilder->setParameter($paramDate, $wordAsDate);
 
                     $i++;
                 }
             }
 
-            $results = $qb->getQuery()->getResult();
+            $results = $queryBuilder->getQuery()->getResult();
         }
         
         $forrest = new Service\BreadcrumbService();

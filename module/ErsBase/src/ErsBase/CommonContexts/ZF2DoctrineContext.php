@@ -21,9 +21,9 @@ use Doctrine\DBAL\Connection;
 class ZF2DoctrineContext extends BehatContext implements ServiceManagerAwareInterface
 {
     /**
-     * @var \Zend\ServiceManager $sm
+     * @var \Zend\ServiceManager $serviceManager
      */
-    private $sm = null;
+    private $serviceManager = null;
 
     /**
      * @param \Behat\Behat\Event\ScenarioEvent|\Behat\Behat\Event\OutlineExampleEvent $event
@@ -66,12 +66,12 @@ class ZF2DoctrineContext extends BehatContext implements ServiceManagerAwareInte
     }
     
     /**
-     * @param \Zend\ServiceManager $sm
+     * @param \Zend\ServiceManager $serviceManager
      *
      * @return null
      */
-    public function setServiceManager($sm) {
-        $this->sm = $sm;
+    public function setServiceManager($serviceManager) {
+        $this->sm = $serviceManager;
     }
     
     /**

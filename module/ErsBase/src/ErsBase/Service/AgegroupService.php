@@ -14,14 +14,14 @@ class AgegroupService
 {
     protected $agegroups;
     protected $mode = '';
-    protected $sm;
+    protected $serviceManager;
     
     public function __construct() {
         $this->agegroups = array();
     }
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
     }
     public function getServiceLocator() {
         return $this->sm;

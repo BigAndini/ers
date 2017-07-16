@@ -15,15 +15,15 @@ class DeadlineService
 {
     protected $deadlines = array();
     protected $mode;
-    protected $sm;
+    protected $serviceManager;
     protected $compareDate;
     
     public function __construct() {
         $this->compareDate = new \DateTime;
     }
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
     }
     public function getServiceLocator() {
         return $this->sm;

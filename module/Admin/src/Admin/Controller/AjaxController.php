@@ -50,37 +50,37 @@ class AjaxController extends AbstractActionController {
         $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
-        $qb = $entityManager->getRepository('ErsBase\Entity\BankStatement')->createQueryBuilder('s');
-        $qb->leftJoin('s.matches', 'm');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\BankStatement')->createQueryBuilder('s');
+        $queryBuilder->leftJoin('s.matches', 'm');
         if($bankaccount->getVirtual()) {
-            $qb->where(
-                $qb->expr()->andX(
-                    $qb->expr()->eq('s.payment_type_id', '?1'),
-                    $qb->expr()->neq('s.status', '?2')
+            $queryBuilder->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq('s.payment_type_id', '?1'),
+                    $queryBuilder->expr()->neq('s.status', '?2')
                 )
             );
-            $qb->setParameter(1, $id);
-            $qb->setParameter(2, 'disabled');
+            $queryBuilder->setParameter(1, $id);
+            $queryBuilder->setParameter(2, 'disabled');
         } else {
-            $qb->where(
-                $qb->expr()->andX(
-                    $qb->expr()->eq('s.payment_type_id', '?1'),
-                    $qb->expr()->eq('s.status', '?2')
-                    /*$qb->expr()->neq('s.status', '?2'),
-                    $qb->expr()->neq('s.status', '?3'),
-                    $qb->expr()->orX(
-                        $qb->expr()->isNull('m.BankStatement_id'),
-                        $qb->expr()->neq('m.status', '?4')
+            $queryBuilder->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq('s.payment_type_id', '?1'),
+                    $queryBuilder->expr()->eq('s.status', '?2')
+                    /*$queryBuilder->expr()->neq('s.status', '?2'),
+                    $queryBuilder->expr()->neq('s.status', '?3'),
+                    $queryBuilder->expr()->orX(
+                        $queryBuilder->expr()->isNull('m.BankStatement_id'),
+                        $queryBuilder->expr()->neq('m.status', '?4')
                     )*/
                 )
             );
-            $qb->setParameter(1, $id);
-            $qb->setParameter(2, 'new');
-            /*$qb->setParameter(3, 'matched');
-            $qb->setParameter(4, 'disabled');*/
+            $queryBuilder->setParameter(1, $id);
+            $queryBuilder->setParameter(2, 'new');
+            /*$queryBuilder->setParameter(3, 'matched');
+            $queryBuilder->setParameter(4, 'disabled');*/
         }
         
-        $statements = $qb->getQuery()->getResult();
+        $statements = $queryBuilder->getQuery()->getResult();
 
         $viewModel->setVariable("statements", $statements);
         $viewModel->setTerminal(true);

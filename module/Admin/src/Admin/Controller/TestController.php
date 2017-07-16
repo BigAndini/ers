@@ -106,7 +106,7 @@ class TestController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('n');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('n');
         
         /*$entityManager = $this->getEntityManager();
         $queryBuilder = $entityManager->createQueryBuilder();
@@ -118,9 +118,9 @@ class TestController extends AbstractActionController {
         
         $table = new DataTables\Order;
         /*$table->setAdapter($this->getDbAdapter())
-                ->setSource($qb)
+                ->setSource($queryBuilder)
                 ->setParamAdapter($this->getRequest()->getPost());*/
-        $table->setSource($qb)
+        $table->setSource($queryBuilder)
                 ->setParamAdapter($this->getRequest()->getPost());
         
         return new ViewModel(array(

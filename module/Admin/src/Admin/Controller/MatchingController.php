@@ -30,9 +30,9 @@ class MatchingController extends AbstractActionController {
         $matchings = $entityManager->getRepository('ErsBase\Entity\Match')
                 ->findBy(array('status' => 'active'), array('updated' => 'DESC'), $limit, $offset);
         
-        $qb = $entityManager->getRepository('ErsBase\Entity\Match')->createQueryBuilder('m');
-        $qb->select('count(m.id)');
-        $count = $qb->getQuery()->getSingleScalarResult();
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Match')->createQueryBuilder('m');
+        $queryBuilder->select('count(m.id)');
+        $count = $queryBuilder->getQuery()->getSingleScalarResult();
         $pagecount = floor($count/$limit);
         return new ViewModel(array(
             'matchings' => $matchings,
@@ -59,12 +59,12 @@ class MatchingController extends AbstractActionController {
          * TODO: Add filter to select status of orders. unpaid is the default 
          * status but underpaid would be nice, too.
          */
-        $qb = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':unpaid'));
-        $qb->setParameter('unpaid', 'ordered');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder->join('o.status', 's');
+        $queryBuilder->where($queryBuilder->expr()->eq('s.value', ':unpaid'));
+        $queryBuilder->setParameter('unpaid', 'ordered');
         
-        $orders = $qb->getQuery()->getResult();
+        $orders = $queryBuilder->getQuery()->getResult();
         
         $order_options = array();
         foreach($orders as $order) {

@@ -30,10 +30,12 @@ class Agegroup extends Base\Agegroup
     {
         if($agegroup instanceof \DateTime) {
             $this->agegroup = $agegroup;
-        } else {
+            return $this;
+        } elseif(is_string($agegroup)) {
             $this->agegroup = \date_create_from_format('d.m.Y', $agegroup);
+            return $this;
         }
 
-        return $this;
+        throw new \Exception('Unable to get the form in which agegroup is provided');
     }
 }

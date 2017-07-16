@@ -27,14 +27,14 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class CurrencyChooser extends AbstractHelper implements ServiceLocatorAwareInterface{
 
-    protected $sm;
+    protected $serviceManager;
 
     public function __construct() {
-        #$this->sm = $sm;
+        #$this->sm = $serviceManager;
     }
     
-    public function setServiceLocator(ServiceLocatorInterface $sm) {
-        $this->sm = $sm;
+    public function setServiceLocator(ServiceLocatorInterface $serviceManager) {
+        $this->sm = $serviceManager;
     }
     public function getServiceLocator() {
         return $this->sm;

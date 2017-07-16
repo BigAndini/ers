@@ -14,15 +14,15 @@ use ErsBase\Entity;
 
 class CloneService
 {
-    protected $sm;
+    protected $serviceManager;
     protected $transfer;
 
     public function __construct() {
         $this->transfer = false;
     }
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
     }
     public function getServiceLocator() {
         return $this->sm;

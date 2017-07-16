@@ -13,10 +13,10 @@ use Zend\InputFilter\InputFilterProviderInterface;
 
 class User extends Form implements InputFilterProviderInterface
 {
-    protected $sm;
+    protected $serviceManager;
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
         
         return $this;
     }
@@ -25,9 +25,9 @@ class User extends Form implements InputFilterProviderInterface
         return $this->sm;
     }
     
-    public function __construct($sm = null)
+    public function __construct($serviceManager = null)
     {
-        $this->setServiceLocator($sm);
+        $this->setServiceLocator($serviceManager);
         
         parent::__construct('User');
         $this->setAttribute('method', 'post');

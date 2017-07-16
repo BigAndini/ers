@@ -46,8 +46,8 @@ class Module
         setlocale(LC_TIME, 'en_US');
         
         $application   = $e->getApplication();
-        $sm = $application->getServiceManager();
-        $auth = $sm->get('BjyAuthorize\Service\Authorize');
+        $serviceManager = $application->getServiceManager();
+        $auth = $serviceManager->get('BjyAuthorize\Service\Authorize');
 
         if(!\Zend\Console\Console::isConsole()) {
             $acl  = $auth->getAcl();
@@ -58,26 +58,26 @@ class Module
         
         $sharedManager = $application->getEventManager()->getSharedManager();
         $sharedManager->attach('Zend\Mvc\Application', 'dispatch.error',
-                function($e) use ($sm) {
+                function($e) use ($serviceManager) {
                     if ($e->getParam('exception')){
-                        $emailService = $sm->get('ErsBase\Service\EmailService');
+                        $emailService = $serviceManager->get('ErsBase\Service\EmailService');
                         $emailService->sendExceptionEmail($e->getParam('exception'));
                     }
                 }
             );
 
-        $zfcAuthEvents = $sm->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
+        $zfcAuthEvents = $serviceManager->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
 
-        $zfcAuthEvents->attach( 'authenticate.success', function( $authEvent ) use( $sm ){
-            $loginService =  $sm->get( 'PreReg\Service\LoginService' );
+        $zfcAuthEvents->attach( 'authenticate.success', function( $authEvent ) use( $serviceManager ){
+            $loginService =  $serviceManager->get( 'PreReg\Service\LoginService' );
             $user_id = $authEvent->getIdentity();
             $loginService->setUserId($user_id);
             $loginService->onLogin();
             return true;
         });
         
-        $zfcAuthEvents->attach( 'logout', function( $authEvent ) use( $sm ){
-            $loginService =  $sm->get( 'PreReg\Service\LoginService' );
+        $zfcAuthEvents->attach( 'logout', function( $authEvent ) use( $serviceManager ){
+            $loginService =  $serviceManager->get( 'PreReg\Service\LoginService' );
             $loginService->onLogout();
             return true;
         });
@@ -217,7 +217,7 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(
-                'Logger' => function($sm){
+                'Logger' => function($serviceManager){
                     $logger = new \Zend\Log\Logger;
                     if(!is_dir(getcwd().'/data/log')) {
                         mkdir(getcwd().'/data/log');
@@ -227,8 +227,8 @@ class Module
 
                     return $logger;
                 },
-                'Zend\Session\SessionManager' => function ($sm) {
-                    $config = $sm->get('config');
+                'Zend\Session\SessionManager' => function ($serviceManager) {
+                    $config = $serviceManager->get('config');
                     if (isset($config['session'])) {
                         $session = $config['session'];
 
@@ -249,7 +249,7 @@ class Module
                         $sessionSaveHandler = null;
                         if (isset($session['save_handler'])) {
                             // class should be fetched from service manager since it will require constructor arguments
-                            $sessionSaveHandler = $sm->get($session['save_handler']);
+                            $sessionSaveHandler = $serviceManager->get($session['save_handler']);
                         }
 
                         $sessionManager = new SessionManager($sessionConfig, $sessionStorage, $sessionSaveHandler);
@@ -267,20 +267,20 @@ class Module
                     Container::setDefaultManager($sessionManager);
                     return $sessionManager;
                 },
-                'PreReg\Form\CurrencyChooser' => function ($sm) {
+                'PreReg\Form\CurrencyChooser' => function ($serviceManager) {
                     $form = new Form\CurrencyChooser();
                     
-                    $optionService = $sm->get('ErsBase\Service\OptionService');
+                    $optionService = $serviceManager->get('ErsBase\Service\OptionService');
                     $form->get('currency')->setValueOptions($optionService->getCurrencyOptions());
                     
                     return $form;
                 },
-                'PreReg\Form\ProductView' => function ($sm) {
+                'PreReg\Form\ProductView' => function ($serviceManager) {
                     $productView = new Form\ProductView();
-                    $productView->setServiceLocator($sm);
+                    $productView->setServiceLocator($serviceManager);
                     return $productView;
                 },
-                'PreReg\Form\CreditCard' => function ($sm) {
+                'PreReg\Form\CreditCard' => function ($serviceManager) {
                     $form = new Form\CreditCard();
                     
                     $years = array();
@@ -303,29 +303,29 @@ class Module
                     
                     return $form;
                 },
-                'PreReg\Service\LoginService' => function($sm) {
+                'PreReg\Service\LoginService' => function($serviceManager) {
                     $loginService = new Service\LoginService();
-                    $loginService->setServiceLocator($sm);
+                    $loginService->setServiceLocator($serviceManager);
                     return $loginService;
                 },
-                'PreReg\InputFilter\Register' => function($sm) {
+                'PreReg\InputFilter\Register' => function($serviceManager) {
                     $inputFilter = new InputFilter\Register();
-                    $inputFilter->setServiceLocator($sm);
+                    $inputFilter->setServiceLocator($serviceManager);
                     return $inputFilter;
                 },
-                'PreReg\InputFilter\Participant' => function($sm) {
+                'PreReg\InputFilter\Participant' => function($serviceManager) {
                     $inputFilter = new InputFilter\Participant();
-                    $inputFilter->setServiceLocator($sm);
+                    $inputFilter->setServiceLocator($serviceManager);
                     return $inputFilter;
                 },
-                'PreReg\Form\Participant' => function($sm) {
+                'PreReg\Form\Participant' => function($serviceManager) {
                     $form = new Form\Participant();
-                    $form->setServiceLocator($sm);
+                    $form->setServiceLocator($serviceManager);
                     return $form;
                 },
-                'PreReg\InputFilter\PaymentType' => function($sm) {
+                'PreReg\InputFilter\PaymentType' => function($serviceManager) {
                     $inputFilter = new InputFilter\PaymentType();
-                    $inputFilter->setServiceLocator($sm);
+                    $inputFilter->setServiceLocator($serviceManager);
                     return $inputFilter;
                 },
             ),

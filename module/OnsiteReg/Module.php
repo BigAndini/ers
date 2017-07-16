@@ -34,8 +34,8 @@ class Module
         $this->bootstrapSession($e);
         
         $application   = $e->getApplication();
-        $sm = $application->getServiceManager();
-        $auth = $sm->get('BjyAuthorize\Service\Authorize');
+        $serviceManager = $application->getServiceManager();
+        $auth = $serviceManager->get('BjyAuthorize\Service\Authorize');
 
         if(!\Zend\Console\Console::isConsole()) {
             $acl  = $auth->getAcl();
@@ -46,11 +46,11 @@ class Module
         
         $sharedManager = $application->getEventManager()->getSharedManager();
         $sharedManager->attach('Zend\Mvc\Application', 'dispatch.error',
-                function($e) use ($sm) {
+                function($e) use ($serviceManager) {
                     if ($e->getParam('exception')){
-                        #$sm->get('Logger')->crit($e->getParam('exception'));
+                        #$serviceManager->get('Logger')->crit($e->getParam('exception'));
                         
-                        /*$auth = $sm->get('zfcuser_auth_service');
+                        /*$auth = $serviceManager->get('zfcuser_auth_service');
                         if (!$auth->hasIdentity()) {
                             $url = $e->getRouter()->assemble(array(), array('name' => 'zfcuser/login'));
                             $response=$e->getResponse();
@@ -76,18 +76,18 @@ class Module
                 }
             );
 
-        /*$zfcAuthEvents = $sm->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
+        /*$zfcAuthEvents = $serviceManager->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
 
-        $zfcAuthEvents->attach( 'authenticate.success', function( $authEvent ) use( $sm ){
-            $loginService =  $sm->get( 'PreReg\Service\LoginService' );
+        $zfcAuthEvents->attach( 'authenticate.success', function( $authEvent ) use( $serviceManager ){
+            $loginService =  $serviceManager->get( 'PreReg\Service\LoginService' );
             $user_id = $authEvent->getIdentity();
             $loginService->setUserId($user_id);
             $loginService->onLogin();
             return true;
         });
         
-        $zfcAuthEvents->attach( 'logout', function( $authEvent ) use( $sm ){
-            $loginService =  $sm->get( 'PreReg\Service\LoginService' );
+        $zfcAuthEvents->attach( 'logout', function( $authEvent ) use( $serviceManager ){
+            $loginService =  $serviceManager->get( 'PreReg\Service\LoginService' );
             #$user_id = $authEvent->getIdentity();
             #$loginService->setUserId($user_id);
             $loginService->onLogout();
@@ -126,8 +126,8 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(        
-                /*'Zend\Session\SessionManager' => function ($sm) {
-                    $config = $sm->get('config');
+                /*'Zend\Session\SessionManager' => function ($serviceManager) {
+                    $config = $serviceManager->get('config');
                     if (isset($config['session'])) {
                         $session = $config['session'];
 
@@ -148,7 +148,7 @@ class Module
                         $sessionSaveHandler = null;
                         if (isset($session['save_handler'])) {
                             // class should be fetched from service manager since it will require constructor arguments
-                            $sessionSaveHandler = $sm->get($session['save_handler']);
+                            $sessionSaveHandler = $serviceManager->get($session['save_handler']);
                         }
 
                         $sessionManager = new SessionManager($sessionConfig, $sessionStorage, $sessionSaveHandler);
@@ -166,12 +166,12 @@ class Module
                     Container::setDefaultManager($sessionManager);
                     return $sessionManager;
                 },*/
-                'OnsiteReg\Form\ProductView' => function ($sm) {
+                'OnsiteReg\Form\ProductView' => function ($serviceManager) {
                     $productView = new Form\ProductView();
-                    $productView->setServiceLocator($sm);
+                    $productView->setServiceLocator($serviceManager);
                     return $productView;
                 },
-                'OnsiteReg\Form\CreditCard' => function ($sm) {
+                'OnsiteReg\Form\CreditCard' => function ($serviceManager) {
                     $form = new Form\CreditCard();
                     
                     $years = array();
@@ -194,27 +194,27 @@ class Module
                     
                     return $form;
                 },
-                'OnsiteReg\Service\AgegroupService:price' => function($sm) {
+                'OnsiteReg\Service\AgegroupService:price' => function($serviceManager) {
                     $agegroupService = new Service\AgegroupService();
-                    $entityManager = $sm->get('Doctrine\ORM\EntityManager');
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
                     $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('price_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
                     return $agegroupService;
                 },
-                'OnsiteReg\Service\AgegroupService:ticket' => function($sm) {
+                'OnsiteReg\Service\AgegroupService:ticket' => function($serviceManager) {
                     $agegroupService = new Service\AgegroupService();
-                    $entityManager = $sm->get('Doctrine\ORM\EntityManager');
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
                     $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('ticket_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
                     return $agegroupService;
                 },
-                'OnsiteReg\Service\ETicketService' => function($sm) {
+                'OnsiteReg\Service\ETicketService' => function($serviceManager) {
                     $eticketService = new Service\ETicketService();
-                    $eticketService->setServiceLocator($sm);
+                    $eticketService->setServiceLocator($serviceManager);
                     return $eticketService;
                 },
             ),

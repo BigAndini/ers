@@ -24,19 +24,19 @@ class TicketCounterService {
     public function getCurrentItemCount(\ErsBase\Entity\Counter $counter) {
         $entityManager = $this->sl->get('Doctrine\ORM\EntityManager');
         
-        $qb = $entityManager->createQueryBuilder()
+        $queryBuilder = $entityManager->createQueryBuilder()
                 ->select('COUNT(DISTINCT i.id)')
                 ->from('ErsBase\Entity\Item', 'i')
                 ->join('i.status', 's', 'WITH', 's.active = 1');
 
         $i = 0;
         foreach ($counter->getProductVariantValues() as $variantValue) {
-            $qb->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.product_variant_value_id = :pvvid' . $i);
-            $qb->setParameter(':pvvid' . $i, $variantValue->getId());
+            $queryBuilder->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.product_variant_value_id = :pvvid' . $i);
+            $queryBuilder->setParameter(':pvvid' . $i, $variantValue->getId());
             $i++;
         }
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return $queryBuilder->getQuery()->getSingleScalarResult();
     }
     
     public function checkLimits() {
