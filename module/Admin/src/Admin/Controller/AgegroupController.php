@@ -54,11 +54,10 @@ class AgegroupController extends AbstractActionController {
 
                 $this->flashMessenger()->addSuccessMessage('The agegroup '.$agegroup->getName().' has been successfully added');
                 return $this->redirect()->toRoute('admin/agegroup');
-            } else {
-                $this->flashMessenger()->addErrorMessage($form->getMessages());
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
             }
+            $this->flashMessenger()->addErrorMessage($form->getMessages());
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
         
         return new ViewModel(array(

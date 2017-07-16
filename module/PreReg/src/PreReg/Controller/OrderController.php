@@ -172,11 +172,10 @@ class OrderController extends AbstractActionController {
         if(count($order->getPackages()) > 0) {
             $users = $order->getParticipants();
             $buyer = array();
+            $disabled = false;
             if($this->zfcUserAuthentication()->hasIdentity()) {
                 $login_email = $this->zfcUserAuthentication()->getIdentity()->getEmail();
                 $disabled = true;
-            } else {
-                $disabled = false;
             }
             foreach($users as $participant) {
                 if($participant->getEmail() == $login_email) {
@@ -553,31 +552,6 @@ class OrderController extends AbstractActionController {
         ));
     }
     
-    private function genTermsPDF() {
-        $pdfView = new ViewModel();
-        
-        $pdfView->setTemplate('pre-reg/info/terms');
-        /*$pdfView->setVariables(array(
-            'name' => $name,
-            'code' => $code,
-            'qrcode' => $base64_qrcode,
-            'barcode' => $base64_barcode,
-        ));*/
-        $pdfRenderer = $this->getServiceLocator()->get('ViewPdfRenderer');
-        $html = $pdfRenderer->getHtmlRenderer()->render($pdfView);
-        $pdfEngine = $pdfRenderer->getEngine();
-
-        $pdfEngine->load_html($html);
-        $pdfEngine->render();
-        $pdfContent = $pdfEngine->output();
-        
-        $filename = "EJC2015_Terms_and_Services.pdf";
-        $filepath = getcwd().'/tmp/'.$filename;
-        file_put_contents($filepath, $pdfContent);
-        
-        return $filepath;
-    }
-    
     /*
      * say thank you after buyer
      */
@@ -711,21 +685,21 @@ class OrderController extends AbstractActionController {
                 
                 $code = strtoupper($data['code']);
 
-                $qb = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-                $qb->join('p.code', 'c');
-                $qb->where($qb->expr()->eq('c.value', ':code'));
-                $qb->setParameter('code', $code);
+                $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+                $queryBuilder->join('p.code', 'c');
+                $queryBuilder->where($queryBuilder->expr()->eq('c.value', ':code'));
+                $queryBuilder->setParameter('code', $code);
                 
-                $packages = $qb->getQuery()->getResult();
+                $packages = $queryBuilder->getQuery()->getResult();
                 if(count($packages) == 1) {
                     $package = $packages[0];
                 } else {
-                    $qb1 = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-                    $qb1->join('o.code', 'c');
-                    $qb1->where($qb1->expr()->eq('c.value', ':code'));
-                    $qb1->setParameter('code', $code);
+                    $queryBuilder1 = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+                    $queryBuilder1->join('o.code', 'c');
+                    $queryBuilder1->where($queryBuilder1->expr()->eq('c.value', ':code'));
+                    $queryBuilder1->setParameter('code', $code);
                     
-                    $orders = $qb1->getQuery()->getResult();
+                    $orders = $queryBuilder1->getQuery()->getResult();
                     if(count($orders) == 1) {
                         $this->flashMessenger()->addErrorMessage($code . ' is your order code, please provide the code from your e-ticket to check it.');
                     } else {

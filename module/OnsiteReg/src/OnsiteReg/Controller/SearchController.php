@@ -21,7 +21,7 @@ class SearchController extends AbstractActionController {
         if (!empty($q)) {
             $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-            $qb = $entityManager->createQueryBuilder()
+            $queryBuilder = $entityManager->createQueryBuilder()
                     ->select('p')
                     ->from('ErsBase\Entity\Package', 'p')
                     ->join('p.user', 'u') # participant
@@ -34,11 +34,11 @@ class SearchController extends AbstractActionController {
 
             if (preg_match('~^\d+$~', $q)) {
                 // if the entire query consists of nothing but a number, treat it as a package ID
-                $qb->andWhere('p.id = :id');
-                $qb->setParameter(':id', (int) $q);
+                $queryBuilder->andWhere('p.id = :id');
+                $queryBuilder->setParameter(':id', (int) $q);
             } else {
-                $exprUName = $qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.surname'));
-                //$exprBName = $qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname'));
+                $exprUName = $queryBuilder->expr()->concat('u.firstname', $queryBuilder->expr()->concat($queryBuilder->expr()->literal(' '), 'u.surname'));
+                //$exprBName = $queryBuilder->expr()->concat('b.firstname', $queryBuilder->expr()->concat($queryBuilder->expr()->literal(' '), 'b.surname'));
 
                 $words = preg_split('~\s+~', $q);
                 $i = 0;
@@ -51,26 +51,26 @@ class SearchController extends AbstractActionController {
                     
                     $param = ':p' . $i;
                     $paramDate = ':pd' . $i;
-                    $qb->andWhere(
-                            $qb->expr()->orX(
-                                    $qb->expr()->like($exprUName, $param), //
-                                    $qb->expr()->like('u.email', $param), //
-                                    //$qb->expr()->like($exprBName, $param),
-                                    $qb->expr()->like('pcode.value', $param), //
-                                    $qb->expr()->like('ocode.value', $param), //
-                                    ($wordAsDate ? $qb->expr()->eq('u.birthday', $paramDate) : '1=0')
+                    $queryBuilder->andWhere(
+                            $queryBuilder->expr()->orX(
+                                    $queryBuilder->expr()->like($exprUName, $param), //
+                                    $queryBuilder->expr()->like('u.email', $param), //
+                                    //$queryBuilder->expr()->like($exprBName, $param),
+                                    $queryBuilder->expr()->like('pcode.value', $param), //
+                                    $queryBuilder->expr()->like('ocode.value', $param), //
+                                    ($wordAsDate ? $queryBuilder->expr()->eq('u.birthday', $paramDate) : '1=0')
                             )
                     );
                     
-                    $qb->setParameter($param, '%' . $word . '%');
+                    $queryBuilder->setParameter($param, '%' . $word . '%');
                     if($wordAsDate)
-                        $qb->setParameter($paramDate, $wordAsDate);
+                        $queryBuilder->setParameter($paramDate, $wordAsDate);
 
                     $i++;
                 }
             }
             
-            $dbPackages = $qb->getQuery()->getResult();
+            $dbPackages = $queryBuilder->getQuery()->getResult();
             foreach($dbPackages as $package) {
                 if($package->getItemCount() == 0) {
                     continue;

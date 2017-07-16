@@ -398,20 +398,20 @@ return array(
             'currencychooser' => 'PreReg\View\Helper\CurrencyChooser',
         ),
         'factories' => array(
-            'config' => function($sm) {
-                $helper = new \PreReg\View\Helper\Config($sm);
+            'config' => function($serviceManager) {
+                $helper = new \PreReg\View\Helper\Config($serviceManager);
                 return $helper;
             },
-            'session' => function($sm) {
+            'session' => function($serviceManager) {
                 $helper = new \PreReg\View\Helper\Session();
                 return $helper;
             },
-            'checkoutactive' => function($sm) {
+            'checkoutactive' => function($serviceManager) {
                 $helper = new \PreReg\View\Helper\CheckoutActive();
                 return $helper;
             },
-            'niceiban' => function($sm) {
-                $helper = new \PreReg\View\Helper\NiceIban($sm);
+            'niceiban' => function($serviceManager) {
+                $helper = new \PreReg\View\Helper\NiceIban($serviceManager);
                 return $helper;
             },
         ),

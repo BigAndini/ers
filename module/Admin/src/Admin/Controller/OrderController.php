@@ -71,10 +71,6 @@ class OrderController extends AbstractActionController {
                 }
             }
 
-            $searchString = array(
-
-            );
-
             $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
 
@@ -83,27 +79,27 @@ class OrderController extends AbstractActionController {
             /*
              * search code
              */
-            $qb = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-            $qb->join('o.code', 'oc');
-            $qb->join('o.packages', 'p');
-            $qb->join('p.code', 'pc');
-            $qb->join('o.status', 's WITH s.active = 1');
+            $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+            $queryBuilder->join('o.code', 'oc');
+            $queryBuilder->join('o.packages', 'p');
+            $queryBuilder->join('p.code', 'pc');
+            $queryBuilder->join('o.status', 's WITH s.active = 1');
             $i = 0;
             foreach($searchElements as $element) {
                 if($i == 0) {
-                    $qb->where('oc.value LIKE :param'.$i);
+                    $queryBuilder->where('oc.value LIKE :param'.$i);
                 } else {
-                    $qb->orWhere('oc.value LIKE :param'.$i);
+                    $queryBuilder->orWhere('oc.value LIKE :param'.$i);
                 }
-                $qb->setParameter('param'.$i, $element);
+                $queryBuilder->setParameter('param'.$i, $element);
                 $i++;
 
                 $code = new Entity\Code();
                 $code->setValue($element);
                 if($code->checkCode()) {
-                    $qb->orWhere('oc.value LIKE :param'.$i);
-                    $qb->orWhere('pc.value LIKE :param'.$i);
-                    $qb->setParameter('param'.$i, $code->getValue());
+                    $queryBuilder->orWhere('oc.value LIKE :param'.$i);
+                    $queryBuilder->orWhere('pc.value LIKE :param'.$i);
+                    $queryBuilder->setParameter('param'.$i, $code->getValue());
                     $i++;
                 }
 
@@ -112,44 +108,44 @@ class OrderController extends AbstractActionController {
             $check_first = $i;
             foreach($excludeElements as $elemnt) {
                 if($i == $check_first) {
-                    $qb->where('oc.value NOT LIKE :param'.$i);
+                    $queryBuilder->where('oc.value NOT LIKE :param'.$i);
                 } else {
-                    $qb->orWhere('oc.value NOT LIKE :param'.$i);
+                    $queryBuilder->orWhere('oc.value NOT LIKE :param'.$i);
                 }
-                $qb->orWhere('pc.value NOT LIKE :param'.$i);
-                $qb->setParameter('param'.$i, $element);
+                $queryBuilder->orWhere('pc.value NOT LIKE :param'.$i);
+                $queryBuilder->setParameter('param'.$i, $element);
                 $i++;
             }
 
-            $result = array_merge($result, $qb->getQuery()->getResult());
+            $result = array_merge($result, $queryBuilder->getQuery()->getResult());
 
             /*
              * search firstname, surname, email, birthdate
              * of buyer and participant
              */
-            $qb = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-            $qb->join('o.user', 'b'); # get buyer
-            $qb->join('o.packages', 'p');
-            $qb->join('o.status', 's WITH s.active = 1');
-            $qb->join('p.user', 'u'); # get participant
+            $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+            $queryBuilder->join('o.user', 'b'); # get buyer
+            $queryBuilder->join('o.packages', 'p');
+            $queryBuilder->join('o.status', 's WITH s.active = 1');
+            $queryBuilder->join('p.user', 'u'); # get participant
             $i = 0;
             foreach($searchElements as $element) {
-                $b_expr = $qb->expr()->lower($qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname')));
-                $u_expr = $qb->expr()->lower($qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.surname')));
-                $be_expr = $qb->expr()->lower('b.email');
-                $ue_expr = $qb->expr()->lower('u.email');
+                $b_expr = $queryBuilder->expr()->lower($queryBuilder->expr()->concat('b.firstname', $queryBuilder->expr()->concat($queryBuilder->expr()->literal(' '), 'b.surname')));
+                $u_expr = $queryBuilder->expr()->lower($queryBuilder->expr()->concat('u.firstname', $queryBuilder->expr()->concat($queryBuilder->expr()->literal(' '), 'u.surname')));
+                $be_expr = $queryBuilder->expr()->lower('b.email');
+                $ue_expr = $queryBuilder->expr()->lower('u.email');
                 if($i == 0) {
-                    $qb->where($qb->expr()->like($b_expr, ':param'.$i));
+                    $queryBuilder->where($queryBuilder->expr()->like($b_expr, ':param'.$i));
                 } else {
-                    $qb->orWhere($qb->expr()->like($b_expr, ':param'.$i));
+                    $queryBuilder->orWhere($queryBuilder->expr()->like($b_expr, ':param'.$i));
                 }
-                $qb->orWhere($qb->expr()->like($u_expr, ':param'.$i));
-                $qb->orWhere($qb->expr()->like($be_expr, ':param'.$i));
-                $qb->orWhere($qb->expr()->like($ue_expr, ':param'.$i));
-                $qb->setParameter('param'.$i, '%'.strtolower($element).'%');
+                $queryBuilder->orWhere($queryBuilder->expr()->like($u_expr, ':param'.$i));
+                $queryBuilder->orWhere($queryBuilder->expr()->like($be_expr, ':param'.$i));
+                $queryBuilder->orWhere($queryBuilder->expr()->like($ue_expr, ':param'.$i));
+                $queryBuilder->setParameter('param'.$i, '%'.strtolower($element).'%');
                 $i++;
             }
-            $result = array_merge($result, $qb->getQuery()->getResult());
+            $result = array_merge($result, $queryBuilder->getQuery()->getResult());
 
         } else {
             $logger->warn($form->getMessages());
@@ -382,7 +378,7 @@ class OrderController extends AbstractActionController {
     }
     
     public function resendConfirmationAction() {
-        $logger = $this->getServiceLocator()->get('Logger');
+        #$logger = $this->getServiceLocator()->get('Logger');
         
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
@@ -616,13 +612,13 @@ class OrderController extends AbstractActionController {
 
             $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-            $qb = $entityManager->createQueryBuilder()
+            $queryBuilder = $entityManager->createQueryBuilder()
                     ->select('u')
                     ->from('ErsBase\Entity\User', 'u')
                     ->orderBy('u.firstname')
                     ->where('1=1');
             
-            /*$qb = $entityManager->createQueryBuilder()
+            /*$queryBuilder = $entityManager->createQueryBuilder()
                     ->select('p')
                     ->from('ErsBase\Entity\Package', 'p')
                     ->join('p.participant', 'u')
@@ -635,11 +631,11 @@ class OrderController extends AbstractActionController {
 
             if (preg_match('~^\d+$~', $q)) {
                 // if the entire query consists of nothing but a number, treat it as a user ID
-                $qb->andWhere('u.id = :id');
-                $qb->setParameter(':id', (int) $q);
+                $queryBuilder->andWhere('u.id = :id');
+                $queryBuilder->setParameter(':id', (int) $q);
             } else {
-                $exprUName = $qb->expr()->concat('u.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'u.surname'));
-                //$exprBName = $qb->expr()->concat('b.firstname', $qb->expr()->concat($qb->expr()->literal(' '), 'b.surname'));
+                $exprUName = $queryBuilder->expr()->concat('u.firstname', $queryBuilder->expr()->concat($queryBuilder->expr()->literal(' '), 'u.surname'));
+                //$exprBName = $queryBuilder->expr()->concat('b.firstname', $queryBuilder->expr()->concat($queryBuilder->expr()->literal(' '), 'b.surname'));
 
                 $words = preg_split('~\s+~', $q);
                 $i = 0;
@@ -652,26 +648,26 @@ class OrderController extends AbstractActionController {
 
                     $param = ':p' . $i;
                     $paramDate = ':pd' . $i;
-                    $qb->andWhere(
-                            $qb->expr()->orX(
-                                    $qb->expr()->like($exprUName, $param), //
-                                    $qb->expr()->like('u.email', $param), //
-                                    //$qb->expr()->like($exprBName, $param),
-                                    #$qb->expr()->like('pcode.value', $param), //
-                                    #$qb->expr()->like('ocode.value', $param), //
-                                    ($wordAsDate ? $qb->expr()->eq('u.birthday', $paramDate) : '1=0')
+                    $queryBuilder->andWhere(
+                            $queryBuilder->expr()->orX(
+                                    $queryBuilder->expr()->like($exprUName, $param), //
+                                    $queryBuilder->expr()->like('u.email', $param), //
+                                    //$queryBuilder->expr()->like($exprBName, $param),
+                                    #$queryBuilder->expr()->like('pcode.value', $param), //
+                                    #$queryBuilder->expr()->like('ocode.value', $param), //
+                                    ($wordAsDate ? $queryBuilder->expr()->eq('u.birthday', $paramDate) : '1=0')
                             )
                     );
 
-                    $qb->setParameter($param, '%' . $word . '%');
+                    $queryBuilder->setParameter($param, '%' . $word . '%');
                     if($wordAsDate)
-                        $qb->setParameter($paramDate, $wordAsDate);
+                        $queryBuilder->setParameter($paramDate, $wordAsDate);
 
                     $i++;
                 }
             }
 
-            $results = $qb->getQuery()->getResult();
+            $results = $queryBuilder->getQuery()->getResult();
         }
         
         $forrest = new Service\BreadcrumbService();
@@ -1019,7 +1015,7 @@ class OrderController extends AbstractActionController {
         
         $repository = $entityManager->getRepository('ErsBase\Entity\Order');
 
-        $qb = $repository->createQueryBuilder('o')
+        $queryBuilder = $repository->createQueryBuilder('o')
                 ->select('o')
                 ->join('o.packages', 'p')
                 ->join('p.items', 'i')
@@ -1027,7 +1023,7 @@ class OrderController extends AbstractActionController {
                 ->andWhere("i.status != 'zero_ok'")
                 ->andWhere('i.Product_id = 1');
 
-        $orders = $qb->getQuery()->getResult();
+        $orders = $queryBuilder->getQuery()->getResult();
         
         return new ViewModel(array(
             'orders' => $orders,
@@ -1111,13 +1107,13 @@ class OrderController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->andWhere($qb->expr()->gt('o.updated', ':updated'));
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder->andWhere($queryBuilder->expr()->gt('o.updated', ':updated'));
         $timeout = new \DateTime;
         $timeout->modify( '-2 hours' );
-        $qb->setParameter('updated', $timeout);
+        $queryBuilder->setParameter('updated', $timeout);
         
-        $activeOrders = $qb->getQuery()->getResult();
+        $activeOrders = $queryBuilder->getQuery()->getResult();
     
         return new ViewModel(array(
             'activeOrders' => $activeOrders,

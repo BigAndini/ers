@@ -71,14 +71,14 @@ class CounterController extends AbstractActionController {
 
     public function editAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $counterId = (int) $this->params()->fromRoute('id', 0);
+        if (!$counterId) {
             return $this->redirect()->toRoute('admin/counter', array('action' => 'add'));
         }
         
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $counter = $entityManager->getRepository('ErsBase\Entity\Counter')->find($id);
+        $counter = $entityManager->getRepository('ErsBase\Entity\Counter')->find($counterId);
         if(!$counter) {
             return $this->notFoundAction();
         }
@@ -111,7 +111,7 @@ class CounterController extends AbstractActionController {
         }
 
         return new ViewModel(array(
-            'id' => $id,
+            'id' => $counterId,
             'form' => $form,
         ));
     }
@@ -121,14 +121,14 @@ class CounterController extends AbstractActionController {
      */
     public function deleteAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $counterId = (int) $this->params()->fromRoute('id', 0);
+        if (!$counterId) {
             return $this->redirect()->toRoute('admin/counter');
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $counter = $entityManager->getRepository('ErsBase\Entity\Counter')
-                ->find($id);
+                ->find($counterId);
         if(!$counter) {
             return $this->notFoundAction();
         }
@@ -138,9 +138,9 @@ class CounterController extends AbstractActionController {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $counterId = (int) $request->getPost('id');
                 $counter = $entityManager->getRepository('ErsBase\Entity\Counter')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $counterId));
                 $entityManager->remove($counter);
                 $entityManager->flush();
                 
@@ -151,7 +151,7 @@ class CounterController extends AbstractActionController {
         }
 
         return new ViewModel(array(
-            'id'    => $id,
+            'id'    => $counterId,
             'counter' => $counter,
         ));
     }

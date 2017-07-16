@@ -59,10 +59,9 @@ class ProductController extends AbstractActionController {
                 $entityManager->flush();
 
                 return $this->redirect()->toRoute('admin/product');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
             }
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
         
         return new ViewModel(array(
@@ -177,7 +176,6 @@ class ProductController extends AbstractActionController {
             if ($form->isValid()) {
                 $entityManager->persist($product);
                 $entityManager->flush();
-                $new_id = $product->getId();
                 
                 #$this->copyProductPrices($productId, $new_id);   
                 #$this->copyProductVariants($productId, $new_id);

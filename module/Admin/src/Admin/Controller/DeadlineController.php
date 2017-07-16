@@ -103,11 +103,11 @@ class DeadlineController extends AbstractActionController {
                 ->findOneBy(array('id' => $id));
         $productprices = $deadline->getProductPrices();
         
-        $qb = $entityManager->getRepository('ErsBase\Entity\PaymentType')->createQueryBuilder('n');
-        $paymenttypes = $qb->where(
-                $qb->expr()->orX(
-                    $qb->expr()->eq('n.active_from_id', $id),
-                    $qb->expr()->eq('n.active_until_id', $id)
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\PaymentType')->createQueryBuilder('n');
+        $paymenttypes = $queryBuilder->where(
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->eq('n.active_from_id', $id),
+                    $queryBuilder->expr()->eq('n.active_until_id', $id)
             ))->getQuery()->getResult();
         
         $request = $this->getRequest();

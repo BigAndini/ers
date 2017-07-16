@@ -40,7 +40,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     /**
      * @BeforeSuite
      */
-    public static function prepare($event)
+    public static function prepare()
     {
         // prepare system for test suite
         // before it runs

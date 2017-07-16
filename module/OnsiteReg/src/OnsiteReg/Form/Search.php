@@ -13,7 +13,7 @@ use Zend\Form\Form;
 
 class Search extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('Search');
         $this->setAttribute('method', 'get');

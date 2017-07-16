@@ -101,12 +101,12 @@ class CronController extends AbstractActionController {
          * check status of unpaid orders
          * set orders to paid if statements have the correct value
          */
-        $qb = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's');
-        $qb->where('s.value = :status');
-        $qb->setParameter('status', 'ordered');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder->join('o.status', 's');
+        $queryBuilder->where('s.value = :status');
+        $queryBuilder->setParameter('status', 'ordered');
         
-        $orders = $qb->getQuery()->getResult();
+        $orders = $queryBuilder->getQuery()->getResult();
         
         if($this->debug) {
             echo PHP_EOL."Phase 2: check ".count($orders)." orders and set payment status.".PHP_EOL;
@@ -482,10 +482,10 @@ class CronController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb1->where($qb1->expr()->isNull('o.payment_reminder_status'));
+        $queryBuilder1 = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder1->where($queryBuilder1->expr()->isNull('o.payment_reminder_status'));
         
-        $correctOrders = $qb1->getQuery()->getResult();
+        $correctOrders = $queryBuilder1->getQuery()->getResult();
         
         echo "found ".count($correctOrders)." orders to correct".PHP_EOL;
         foreach($correctOrders as $o) {
@@ -495,20 +495,20 @@ class CronController extends AbstractActionController {
         $entityManager->flush();
         
         #$limit = 3;
-        $qb = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        $qb->andWhere($qb->expr()->lt('o.created', ':paymentTarget'));
-        $qb->andWhere($qb->expr()->eq('o.payment_reminder_status', ':prstatus'));
-        $qb->setParameter('status', 'ordered');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder->join('o.status', 's');
+        $queryBuilder->where($queryBuilder->expr()->eq('s.value', ':status'));
+        $queryBuilder->andWhere($queryBuilder->expr()->lt('o.created', ':paymentTarget'));
+        $queryBuilder->andWhere($queryBuilder->expr()->eq('o.payment_reminder_status', ':prstatus'));
+        $queryBuilder->setParameter('status', 'ordered');
         $paymentTarget = new \DateTime;
         $paymentTarget->modify( '-20 days' );
-        $qb->setParameter('paymentTarget', $paymentTarget);
-        $qb->setParameter('prstatus', '0');
-        #$qb->setFirstResult( $offset )
-        #$qb->setMaxResults( $limit );
+        $queryBuilder->setParameter('paymentTarget', $paymentTarget);
+        $queryBuilder->setParameter('prstatus', '0');
+        #$queryBuilder->setFirstResult( $offset )
+        #$queryBuilder->setMaxResults( $limit );
         
-        $notPaidOrders = $qb->getQuery()->getResult();
+        $notPaidOrders = $queryBuilder->getQuery()->getResult();
         echo count($notPaidOrders)." not paid orders found from before ".$paymentTarget->format('d.m.Y').".".PHP_EOL;
         
         if(!$isReal) {
@@ -599,10 +599,10 @@ class CronController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         # correct package ticket_status
-        $qb = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->where('p.ticket_status IS NULL');
-        $qb->orWhere("p.ticket_status = 'not_send'");
-        $noStatusPackages = $qb->getQuery()->getResult();
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $queryBuilder->where('p.ticket_status IS NULL');
+        $queryBuilder->orWhere("p.ticket_status = 'not_send'");
+        $noStatusPackages = $queryBuilder->getQuery()->getResult();
         if($isDebug) {
             echo count($noStatusPackages)." packages need to be corrected.".PHP_EOL;
         }
@@ -822,9 +822,9 @@ class CronController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $entityManager->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
-        $qb->where('i.agegroup IS NULL');
-        $items = $qb->getQuery()->getResult();
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
+        $queryBuilder->where('i.agegroup IS NULL');
+        $items = $queryBuilder->getQuery()->getResult();
         /*$items = $entityManager->getRepository('ErsBase\Entity\Item')
                 ->findAll();*/
         
@@ -883,12 +883,12 @@ class CronController extends AbstractActionController {
     public function calcSumsAction() {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $qb = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's', 'WITH', 's.active = 1');
-        $qb->where($qb->expr()->neq('s.value', ':status'));
-        $qb->setParameter('status', 'order pending');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder->join('o.status', 's', 'WITH', 's.active = 1');
+        $queryBuilder->where($queryBuilder->expr()->neq('s.value', ':status'));
+        $queryBuilder->setParameter('status', 'order pending');
         
-        $orders = $qb->getQuery()->getResult();
+        $orders = $queryBuilder->getQuery()->getResult();
         echo 'found '.count($orders).' orders'.PHP_EOL;
         
         foreach($orders as $order) {
@@ -916,14 +916,14 @@ class CronController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $entityManager->getRepository('ErsBase\Entity\User')->createQueryBuilder('u');
-        $qb->leftJoin('u.roles', 'r');
-        $qb->where($qb->expr()->isNull('r.roleId'));
-        $qb->andWhere($qb->expr()->lt('u.updated', ':updated'));
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\User')->createQueryBuilder('u');
+        $queryBuilder->leftJoin('u.roles', 'r');
+        $queryBuilder->where($queryBuilder->expr()->isNull('r.roleId'));
+        $queryBuilder->andWhere($queryBuilder->expr()->lt('u.updated', ':updated'));
         $updated = new \DateTime();
         $updated->sub(new \DateInterval('PT2H'));
-        $qb->setParameter('updated', $updated);
-        $users = $qb->getQuery()->getResult();
+        $queryBuilder->setParameter('updated', $updated);
+        $users = $queryBuilder->getQuery()->getResult();
         echo 'found '.count($users).' users'.PHP_EOL;
         foreach($users as $user) {
             foreach($user->getOrders() as $order) {
@@ -950,17 +950,17 @@ class CronController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        $qb->andWhere($qb->expr()->lt('o.updated', ':updated'));
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder->join('o.status', 's');
+        $queryBuilder->where($queryBuilder->expr()->eq('s.value', ':status'));
+        $queryBuilder->andWhere($queryBuilder->expr()->lt('o.updated', ':updated'));
         
         $updated = new \DateTime();
         $updated->sub(new \DateInterval('PT8H'));
-        $qb->setParameter('updated', $updated);
-        $qb->setParameter('status', 'order pending');
+        $queryBuilder->setParameter('updated', $updated);
+        $queryBuilder->setParameter('status', 'order pending');
         
-        $orders = $qb->getQuery()->getResult();
+        $orders = $queryBuilder->getQuery()->getResult();
         echo 'found '.count($orders).' orders'.PHP_EOL;
         foreach($orders as $order) {
             $entityManager->remove($order);
@@ -1015,12 +1015,12 @@ class CronController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         # correct from package side
-        $qb1 = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb1->join('p.status', 's');
-        $qb1->where($qb1->expr()->eq('s.value', ':status'));
-        $qb1->setParameter('status', 'ordered');
+        $queryBuilder1 = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $queryBuilder1->join('p.status', 's');
+        $queryBuilder1->where($queryBuilder1->expr()->eq('s.value', ':status'));
+        $queryBuilder1->setParameter('status', 'ordered');
         
-        $packages = $qb1->getQuery()->getResult();
+        $packages = $queryBuilder1->getQuery()->getResult();
         
         $statusService = $this->getServiceLocator()
                 ->get('ErsBase\Service\StatusService');
@@ -1042,13 +1042,13 @@ class CronController extends AbstractActionController {
         
         
         # correct from order side
-        $qb2 = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb2->join('o.status', 's');
-        $qb2->where($qb2->expr()->eq('s.value', ':status'));
-        $qb2->setParameter('status', 'paid');
+        $queryBuilder2 = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder2->join('o.status', 's');
+        $queryBuilder2->where($queryBuilder2->expr()->eq('s.value', ':status'));
+        $queryBuilder2->setParameter('status', 'paid');
         
         
-        $orders = $qb2->getQuery()->getResult();
+        $orders = $queryBuilder2->getQuery()->getResult();
         
         echo "checking ".count($orders)." orders".PHP_EOL;
         $count = [];
@@ -1091,12 +1091,12 @@ class CronController extends AbstractActionController {
     public function correctPaidPackagesAction() {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $qb = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->join('p.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        $qb->setParameter('status', 'paid');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $queryBuilder->join('p.status', 's');
+        $queryBuilder->where($queryBuilder->expr()->eq('s.value', ':status'));
+        $queryBuilder->setParameter('status', 'paid');
         
-        $packages = $qb->getQuery()->getResult();
+        $packages = $queryBuilder->getQuery()->getResult();
         
         foreach($packages as $package) {
             $order = $package->getOrder();
@@ -1114,12 +1114,12 @@ class CronController extends AbstractActionController {
     public function correctOrderedPackagesAction() {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $qb = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->join('p.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        $qb->setParameter('status', 'ordered');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $queryBuilder->join('p.status', 's');
+        $queryBuilder->where($queryBuilder->expr()->eq('s.value', ':status'));
+        $queryBuilder->setParameter('status', 'ordered');
         
-        $packages = $qb->getQuery()->getResult();
+        $packages = $queryBuilder->getQuery()->getResult();
         
         foreach($packages as $package) {
             $order = $package->getOrder();

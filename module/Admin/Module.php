@@ -108,7 +108,7 @@ class Module implements ViewHelperProviderInterface
     public function getServiceConfig() {
         return array(
             'factories' => array(
-                'Logger' => function($sm){
+                'Logger' => function($serviceManager){
                     $logger = new \Zend\Log\Logger;
                     if(!is_dir(getcwd().'/data/log')) {
                         mkdir(getcwd().'/data/log');
@@ -122,11 +122,11 @@ class Module implements ViewHelperProviderInterface
                 /* 
                  * Form Factories
                  */
-                'Admin\Form\PaymentType' => function($sm) {
+                'Admin\Form\PaymentType' => function($serviceManager) {
                     $form = new Form\PaymentType();
                     $form->get('submit')->setValue('Save');
 
-                    $optionService = $sm->get('ErsBase\Service\OptionService');
+                    $optionService = $serviceManager->get('ErsBase\Service\OptionService');
                     #$deadlineOptions = $this->buildDeadlineOptions();
                     $deadlineOptions = $optionService->getDeadlineOptions();
                     $form->get('active_from_id')->setAttribute('options', $deadlineOptions);
@@ -164,10 +164,10 @@ class Module implements ViewHelperProviderInterface
                     
                     return $form;
                 },
-                'Admin\Form\Product' => function($sm){
+                'Admin\Form\Product' => function($serviceManager){
                     $form   = new Form\Product();
                     
-                    $entityManager = $sm->get('doctrine.entitymanager');
+                    $entityManager = $serviceManager->get('doctrine.entitymanager');
                     $taxes = $entityManager->getRepository('ErsBase\Entity\Tax')->findAll();
                     
                     $options = array();
@@ -189,10 +189,10 @@ class Module implements ViewHelperProviderInterface
                     
                     return $form;
                 },
-                'Admin\Form\Role' => function($sm){
+                'Admin\Form\Role' => function($serviceManager){
                     $form = new Form\Role();
                     
-                    $entityManager = $sm->get('doctrine.entitymanager');
+                    $entityManager = $serviceManager->get('doctrine.entitymanager');
                     $roles = $entityManager->getRepository('ErsBase\Entity\UserRole')->findBy(array(), array('roleId' => 'ASC'));
                     
                     $options = array();
@@ -205,7 +205,7 @@ class Module implements ViewHelperProviderInterface
                     
                     return $form;
                 },
-                'Admin\Form\ProductVariant' => function($sm){
+                'Admin\Form\ProductVariant' => function($serviceManager){
                     $form   = new Form\ProductVariant();
                     
                     $options = array();
@@ -217,34 +217,34 @@ class Module implements ViewHelperProviderInterface
                     
                     return $form;
                 },
-                'Admin\Form\User' => function($sm){
+                'Admin\Form\User' => function($serviceManager){
                     $form   = new Form\User();
-                    $form->setServiceLocator($sm);
+                    $form->setServiceLocator($serviceManager);
                     return $form;
                 },
-                'Admin\InputFilter\User' => function($sm){
+                'Admin\InputFilter\User' => function($serviceManager){
                     $inputFilter   = new InputFilter\User();
-                    $inputFilter->setServiceLocator($sm);
+                    $inputFilter->setServiceLocator($serviceManager);
                     return $inputFilter;
                 },
-                'Admin\InputFilter\AcceptBuyerChange' => function($sm){
+                'Admin\InputFilter\AcceptBuyerChange' => function($serviceManager){
                     $inputFilter   = new InputFilter\AcceptBuyerChange();
-                    $inputFilter->setServiceLocator($sm);
+                    $inputFilter->setServiceLocator($serviceManager);
                     return $inputFilter;
                 },
-                'Admin\InputFilter\AcceptParticipantChangeItem' => function($sm){
+                'Admin\InputFilter\AcceptParticipantChangeItem' => function($serviceManager){
                     $inputFilter   = new InputFilter\AcceptParticipantChangeItem();
-                    $inputFilter->setServiceLocator($sm);
+                    $inputFilter->setServiceLocator($serviceManager);
                     return $inputFilter;
                 },
-                'Admin\InputFilter\AcceptParticipantChangePackage' => function($sm){
+                'Admin\InputFilter\AcceptParticipantChangePackage' => function($serviceManager){
                     $inputFilter   = new InputFilter\AcceptParticipantChangePackage();
-                    $inputFilter->setServiceLocator($sm);
+                    $inputFilter->setServiceLocator($serviceManager);
                     return $inputFilter;
                 },
-                'Admin\InputFilter\AcceptMovePackage' => function($sm){
+                'Admin\InputFilter\AcceptMovePackage' => function($serviceManager){
                     $inputFilter   = new InputFilter\AcceptMovePackage();
-                    $inputFilter->setServiceLocator($sm);
+                    $inputFilter->setServiceLocator($serviceManager);
                     return $inputFilter;
                 },
             ),

@@ -26,15 +26,15 @@ use Zend\Session\Container;
 class CheckoutActive extends AbstractHelper {
 
     #protected $serviceManager;
-    protected $sm;
+    protected $serviceManager;
 
     public function __construct() {
         #$this->serviceManager = $serviceManager;
-        #$this->setServiceLocator($sm);
+        #$this->setServiceLocator($serviceManager);
     }
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
     }
     public function getServiceLocator() {
         return $this->sm;

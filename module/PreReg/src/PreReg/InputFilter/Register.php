@@ -18,7 +18,7 @@ class Register implements InputFilterAwareInterface
 { 
     protected $inputFilter; 
     protected $entityManager;
-    protected $sm;
+    protected $serviceManager;
     protected $loginEmail;
     protected $email;
     
@@ -29,8 +29,8 @@ class Register implements InputFilterAwareInterface
         return $this->em;
     }
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
     }
     public function getServiceLocator() {
         return $this->sm;

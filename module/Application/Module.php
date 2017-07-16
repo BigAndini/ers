@@ -20,17 +20,17 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
-        #$sm = $e->getApplication()->getServiceManager();
+        #$serviceManager = $e->getApplication()->getServiceManager();
         // Add ACL information to the Navigation view helper
-        #$authorize = $sm->get('BjyAuthorize\Service\Authorize');
+        #$authorize = $serviceManager->get('BjyAuthorize\Service\Authorize');
         #$acl = $authorize->getAcl();
         #\Zend\View\Helper\Navigation::setDefaultAcl($acl);
         #\Zend\View\Helper\Navigation::setDefaultRole('guest');
         
         $eventManager->attach('render', function($e) {
-            $sm = $e->getApplication()->getServiceManager();
+            $serviceManager = $e->getApplication()->getServiceManager();
 
-            $config = $sm->get('Config');
+            $config = $serviceManager->get('Config');
             
             $view = $e->getViewModel();
             $view->setVariable('ers_config', $config['ERS']);

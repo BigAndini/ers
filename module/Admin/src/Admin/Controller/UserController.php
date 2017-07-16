@@ -43,15 +43,15 @@ class UserController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $entityManager->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
-        $qb1->where($qb1->expr()->isNotNull('n.position'));
-        $qb1->orderBy('n.position', 'ASC');
-        $result1 = $qb1->getQuery()->getResult();
+        $queryBuilder1 = $entityManager->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
+        $queryBuilder1->where($queryBuilder1->expr()->isNotNull('n.position'));
+        $queryBuilder1->orderBy('n.position', 'ASC');
+        $result1 = $queryBuilder1->getQuery()->getResult();
         
-        $qb2 = $entityManager->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
-        $qb2->where($qb2->expr()->isNull('n.position'));
-        $qb2->orderBy('n.name', 'ASC');
-        $result2 = $qb2->getQuery()->getResult();
+        $queryBuilder2 = $entityManager->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
+        $queryBuilder2->where($queryBuilder2->expr()->isNull('n.position'));
+        $queryBuilder2->orderBy('n.name', 'ASC');
+        $result2 = $queryBuilder2->getQuery()->getResult();
 
         $countries = array_merge($result1, $result2);
 
