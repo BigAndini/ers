@@ -31,7 +31,7 @@ class Agegroup extends Base\Agegroup
         if($agegroup instanceof \DateTime) {
             $this->agegroup = $agegroup;
         } else {
-            $this->agegroup = \DateTime::createFromFormat('d.m.Y', $agegroup);
+            $this->agegroup = \date_create_from_format('d.m.Y', $agegroup);
         }
 
         return $this;

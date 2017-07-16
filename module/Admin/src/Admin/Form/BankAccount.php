@@ -13,7 +13,7 @@ use Zend\Form\Form;
 
 class BankAccount extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('BankAccount');
         $this->setAttribute('method', 'post');
@@ -68,51 +68,6 @@ class BankAccount extends Form
                 ),
             ),
         ));
-        
-        /*$this->add(array(
-            'name' => 'bank',
-            'attributes' => array(
-                'required' => 'required',
-                'type'  => 'text',
-                'class' => 'form-control form-element',
-                'placeholder' => 'Bank...',
-            ),
-            'options' => array(
-                'label' => 'Bank',
-                'label_attributes' => array(
-                    'class'  => 'media-object',
-                ),
-            ),
-        ));
-        
-        $this->add(array(
-            'name' => 'iban',
-            'attributes' => array(
-                'type'  => 'text',
-                'class' => 'form-control form-element',
-                'placeholder' => 'IBAN...',
-            ),
-            'options' => array(
-                'label' => 'IBAN',
-                'label_attributes' => array(
-                    'class'  => 'media-object',
-                ),
-            ),
-        ));
-        $this->add(array(
-            'name' => 'bic',
-            'attributes' => array(
-                'type'  => 'text',
-                'class' => 'form-control form-element',
-                'placeholder' => 'BIC...',
-            ),
-            'options' => array(
-                'label' => 'BIC',
-                'label_attributes' => array(
-                    'class'  => 'media-object',
-                ),
-            ),
-        ));*/
         
         $this->add(array( 
             'name' => 'csrf', 

@@ -152,15 +152,15 @@ class UserController extends AbstractActionController {
         }
         $breadcrumb = $forrest->get('user');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $userId = (int) $this->params()->fromRoute('id', 0);
+        if (!$userId) {
             return $this->redirect()->toRoute('admin/user', array(
                 'action' => 'add'
             ));
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $entityManager->getRepository('ErsBase\Entity\User')->findOneBy(array('id' => $id));
+        $user = $entityManager->getRepository('ErsBase\Entity\User')->findOneBy(array('id' => $userId));
         
         $form = new Form\User($this->getServiceLocator());
         $form->bind($user);
@@ -194,7 +194,7 @@ class UserController extends AbstractActionController {
         }
 
         return new ViewModel(array(
-            'id' => $id,
+            'id' => $userId,
             'form' => $form,
             'breadcrumb' => $breadcrumb,
         ));
@@ -208,23 +208,23 @@ class UserController extends AbstractActionController {
         }
         $breadcrumb = $forrest->get('user');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $userId = (int) $this->params()->fromRoute('id', 0);
+        if (!$userId) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $user = $entityManager->getRepository('ErsBase\Entity\User')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $userId));
 
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $userId = (int) $request->getPost('id');
                 $user = $entityManager->getRepository('ErsBase\Entity\User')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $userId));
                 $entityManager->remove($user);
                 $entityManager->flush();
             }
@@ -234,7 +234,7 @@ class UserController extends AbstractActionController {
         }
 
         return new ViewModel(array(
-            'id'    => $id,
+            'id'    => $userId,
             'user' => $user,
             'breadcrumb' => $breadcrumb,
         ));
@@ -247,14 +247,14 @@ class UserController extends AbstractActionController {
         }
         $breadcrumb = $forrest->get('user');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $userId = (int) $this->params()->fromRoute('id', 0);
+        if (!$userId) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $user = $entityManager->getRepository('ErsBase\Entity\User')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $userId));
         
         return new ViewModel(array(
             'user' => $user,
@@ -268,8 +268,8 @@ class UserController extends AbstractActionController {
         ));
     }
     public function deleteRoleAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        /*if (!$id) {
+        $userId = (int) $this->params()->fromRoute('id', 0);
+        /*if (!$userId) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }*/
         $role_id = (int) $this->params()->fromQuery('role_id', 0);
@@ -277,7 +277,7 @@ class UserController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $user = $entityManager->getRepository('ErsBase\Entity\User')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $userId));
         $role = $entityManager->getRepository('ErsBase\Entity\Role')
                 ->findOneBy(array('id' => $role_id));
         

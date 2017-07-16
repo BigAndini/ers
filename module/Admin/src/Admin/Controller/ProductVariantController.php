@@ -86,8 +86,8 @@ class ProductVariantController extends AbstractActionController
 
     public function editAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $productVariantId = (int) $this->params()->fromRoute('id', 0);
+        if (!$productVariantId) {
             return $this->redirect()->toRoute('admin/product-variant', array(
                 'action' => 'add'
             ));
@@ -97,7 +97,7 @@ class ProductVariantController extends AbstractActionController
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $productvariant = $entityManager->getRepository('ErsBase\Entity\ProductVariant')->findOneBy(array('id' => $id));
+        $productvariant = $entityManager->getRepository('ErsBase\Entity\ProductVariant')->findOneBy(array('id' => $productVariantId));
 
         #$form  = new Form\ProductVariant();
         $form = $this->getServiceLocator()->get('Admin\Form\ProductVariant');
@@ -127,7 +127,7 @@ class ProductVariantController extends AbstractActionController
         $product = $entityManager->getRepository('ErsBase\Entity\Product')->findOneBy(array('id' => $productvariant->getProductId()));
 
         return new ViewModel(array(
-            'id' => $id,
+            'id' => $productVariantId,
             'product' => $product,
             'form' => $form,
             'breadcrumb' => $forrest->get('product-variant'),
@@ -136,8 +136,8 @@ class ProductVariantController extends AbstractActionController
 
     public function deleteAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $productVariantId = (int) $this->params()->fromRoute('id', 0);
+        if (!$productVariantId) {
             return $this->redirect()->toRoute('admin/product');
         }
         $forrest = new Service\BreadcrumbService();
@@ -151,9 +151,9 @@ class ProductVariantController extends AbstractActionController
 
             if ($del == 'Yes') {
                 
-                $id = (int) $request->getPost('id');
+                $productVariantId = (int) $request->getPost('id');
                 $productvariant = $entityManager->getRepository('ErsBase\Entity\ProductVariant')
-                        ->findOneBy(array('id' => $id));
+                        ->findOneBy(array('id' => $productVariantId));
                 $values = $entityManager->getRepository('ErsBase\Entity\ProductVariantValue')
                         ->findBy(array('ProductVariant_id' => $productvariant->getId()));
                 foreach($values as $value) {
@@ -168,12 +168,12 @@ class ProductVariantController extends AbstractActionController
         }
         
         $productvariant = $entityManager->getRepository('ErsBase\Entity\ProductVariant')
-                        ->findOneBy(array('id' => $id));
+                        ->findOneBy(array('id' => $productVariantId));
         $product = $entityManager->getRepository('ErsBase\Entity\Product')
                 ->findOneBy(array('id' => $productvariant->getProductId()));
         
         return new ViewModel(array(
-            'id'    => $id,
+            'id'    => $productVariantId,
             'product' => $product,
             'productvariant' => $productvariant,
             'breadcrumb' => $forrest->get('product-variant'),

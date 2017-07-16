@@ -30,7 +30,7 @@ class SymfonyDoctrineContext extends BehatContext implements KernelAwareInterfac
      *
      * @return null
      */
-    public function buildSchema($event)
+    public function buildSchema()
     {
         foreach ($this->getEntityManagers() as $entityManager) {
             $metadata = $this->getMetadata($entityManager);
@@ -50,7 +50,7 @@ class SymfonyDoctrineContext extends BehatContext implements KernelAwareInterfac
      *
      * @return null
      */
-    public function closeDBALConnections($event)
+    public function closeDBALConnections()
     {
         /** @var EntityManager $entityManager */
         foreach ($this->getEntityManagers() as $entityManager) {
