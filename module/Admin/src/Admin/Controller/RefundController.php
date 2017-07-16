@@ -15,15 +15,15 @@ use ErsBase\Service;
 
 class RefundController extends AbstractActionController {
     public function indexAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         /*
          * search for orders that do contain items in status refund
          */
-        /*$qb = $em->getRepository('ErsBase\Entity\Order')
+        /*$qb = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->createQueryBuild('o');*/
-        $qb = $em->getRepository('ErsBase\Entity\Order')
+        $qb = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->createQueryBuilder('o');
         $qb->join('o.packages', 'p');
         $qb->join('p.items', 'i');
@@ -31,7 +31,7 @@ class RefundController extends AbstractActionController {
         
         $orders = $qb->getQuery()->getResult();
         
-        $items = $em->getRepository('ErsBase\Entity\Item')
+        $items = $entityManager->getRepository('ErsBase\Entity\Item')
                 ->findBy(array('status' => 'refund'), array('updated' => 'DESC'));
         
         return new ViewModel(array(
@@ -45,9 +45,9 @@ class RefundController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/refund', array());
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('id' => $id));
 
         #$form = $this->getServiceLocator()->get('Admin\Form\Product');
@@ -63,21 +63,21 @@ class RefundController extends AbstractActionController {
             
             if ($form->isValid()) {
                 $data = $form->getData();
-                $order = $em->getRepository('ErsBase\Entity\Order')
+                $order = $entityManager->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $data['id']));
                 $order->setRefundSum($order->getRefundSum()+$data['amount']);
-                $em->persist($order);
+                $entityManager->persist($order);
                 
                 if($order->getRefundSum() == $order->getPrice('refund')) {
-                    $statusCancelled = $em->getRepository('ErsBase\Entity\Status')
+                    $statusCancelled = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'cancelled'));
                     foreach($order->getItemsByStatus('refund') as $item) {
                         $item->setStatus($statusCancelled);
-                        $em->persist($item);
+                        $entityManager->persist($item);
                     }
                 }
                 
-                $em->flush();
+                $entityManager->flush();
 
                 $forrest = new Service\BreadcrumbService();
                 if(!$forrest->exists('refund')) {

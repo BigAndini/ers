@@ -17,7 +17,7 @@ use Zend\Session\Container;
 class Participant implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
-    protected $em;
+    protected $entityManager;
     protected $sm;
     
     public function setServiceLocator($sm) {
@@ -28,8 +28,8 @@ class Participant implements InputFilterAwareInterface
         return $this->sm;
     }
     
-    public function setEntityManager(\Doctrine\ORM\EntityManager $em) {
-        $this->em = $em;
+    public function setEntityManager(\Doctrine\ORM\EntityManager $entityManager) {
+        $this->em = $entityManager;
     }
     public function getEntityManager() {
         return $this->em;
@@ -204,9 +204,9 @@ class Participant implements InputFilterAwareInterface
                                     return true;
                                 }*/
                                 $cartContainer = new Container('ers');
-                                $em = $this->getServiceLocator()
+                                $entityManager = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
-                                $order = $em->getRepository('ErsBase\Entity\Order')
+                                $order = $entityManager->getRepository('ErsBase\Entity\Order')
                                         ->findOneBy(array('id' => $cartContainer->order_id));
                                 #$participants = $cartContainer->order->getParticipants();
                                 $participants = $order->getParticipants();

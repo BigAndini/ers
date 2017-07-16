@@ -17,13 +17,13 @@ use Zend\Session\Container;
 class Register implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
-    protected $em;
+    protected $entityManager;
     protected $sm;
     protected $loginEmail;
     protected $email;
     
-    public function setEntityManager(\Doctrine\ORM\EntityManager $em) {
-        $this->em = $em;
+    public function setEntityManager(\Doctrine\ORM\EntityManager $entityManager) {
+        $this->em = $entityManager;
     }
     public function getEntityManager() {
         return $this->em;
@@ -114,10 +114,10 @@ class Register implements InputFilterAwareInterface
                                     }
                                 }
                                 
-                                $em = $this->getServiceLocator()
+                                $entityManager = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $user = $em->getRepository('ErsBase\Entity\User')->findOneBy(array(
+                                $user = $entityManager->getRepository('ErsBase\Entity\User')->findOneBy(array(
                                     'email' => $participant->getEmail(),
                                     'active' => true,
                                     ));

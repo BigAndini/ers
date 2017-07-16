@@ -23,7 +23,7 @@ class UserController extends AbstractActionController {
         $forrest = new Service\BreadcrumbService();
         $forrest->set('user', 'admin/user');
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $authorize = $this->getServiceLocator()->get('BjyAuthorize\Provider\Identity\ProviderInterface');
@@ -34,21 +34,21 @@ class UserController extends AbstractActionController {
         }
         
         return new ViewModel(array(
-            'users' => $em->getRepository('ErsBase\Entity\User')->findAll(),
+            'users' => $entityManager->getRepository('ErsBase\Entity\User')->findAll(),
             'roles' => $roleOptions,
          ));
     }
 
     private function getCountryOptions($countryId = null) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
+        $qb1 = $entityManager->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
         $qb1->where($qb1->expr()->isNotNull('n.position'));
         $qb1->orderBy('n.position', 'ASC');
         $result1 = $qb1->getQuery()->getResult();
         
-        $qb2 = $em->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
+        $qb2 = $entityManager->getRepository('ErsBase\Entity\Country')->createQueryBuilder('n');
         $qb2->where($qb2->expr()->isNull('n.position'));
         $qb2->orderBy('n.name', 'ASC');
         $result2 = $qb2->getQuery()->getResult();
@@ -122,11 +122,11 @@ class UserController extends AbstractActionController {
                 
                 $user->setActive(true);
                 
-                $em = $this->getServiceLocator()
+                $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                $em->persist($user);
-                $em->flush();
+                $entityManager->persist($user);
+                $entityManager->flush();
                 
                 if(array_key_exists('q', $breadcrumb->options['query'])) {
                     $breadcrumb->options['query']['q'] = $user->getEmail();
@@ -158,9 +158,9 @@ class UserController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository('ErsBase\Entity\User')->findOneBy(array('id' => $id));
+        $user = $entityManager->getRepository('ErsBase\Entity\User')->findOneBy(array('id' => $id));
         
         $form = new Form\User($this->getServiceLocator());
         $form->bind($user);
@@ -183,8 +183,8 @@ class UserController extends AbstractActionController {
                     $user->setCountry(null);
                     $user->setCountryId(null);
                 }
-                $em->persist($user);
-                $em->flush();
+                $entityManager->persist($user);
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
@@ -212,9 +212,9 @@ class UserController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository('ErsBase\Entity\User')
+        $user = $entityManager->getRepository('ErsBase\Entity\User')
                 ->findOneBy(array('id' => $id));
 
         $request = $this->getRequest();
@@ -223,10 +223,10 @@ class UserController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $user = $em->getRepository('ErsBase\Entity\User')
+                $user = $entityManager->getRepository('ErsBase\Entity\User')
                     ->findOneBy(array('id' => $id));
-                $em->remove($user);
-                $em->flush();
+                $entityManager->remove($user);
+                $entityManager->flush();
             }
 
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
@@ -251,9 +251,9 @@ class UserController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository('ErsBase\Entity\User')
+        $user = $entityManager->getRepository('ErsBase\Entity\User')
                 ->findOneBy(array('id' => $id));
         
         return new ViewModel(array(
@@ -274,11 +274,11 @@ class UserController extends AbstractActionController {
         }*/
         $role_id = (int) $this->params()->fromQuery('role_id', 0);
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $user = $em->getRepository('ErsBase\Entity\User')
+        $user = $entityManager->getRepository('ErsBase\Entity\User')
                 ->findOneBy(array('id' => $id));
-        $role = $em->getRepository('ErsBase\Entity\Role')
+        $role = $entityManager->getRepository('ErsBase\Entity\Role')
                 ->findOneBy(array('id' => $role_id));
         
         return new ViewModel(array(

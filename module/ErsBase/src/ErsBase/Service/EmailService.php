@@ -246,9 +246,9 @@ class EmailService
         $config = $this->getServiceLocator()->get('config');
         
         $this->setFrom($config['ERS']['sender_email']);
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $role = $em->getRepository('ErsBase\Entity\Role')
+        $role = $entityManager->getRepository('ErsBase\Entity\Role')
                     ->findOneBy(array('roleId' => 'supradm'));
         $users = $role->getUsers();
         if(count($users) <= 0) {
@@ -287,10 +287,10 @@ class EmailService
     }
     
     public function sendConfirmationEmail($order_id) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $order_id));
         $buyer = $order->getBuyer();
         
@@ -331,14 +331,14 @@ class EmailService
         #$orderStatus = new Entity\OrderStatus();
         #$orderStatus->setOrder($order);
         #$orderStatus->setValue('confirmation sent');
-        #$em->persist($orderStatus);
+        #$entityManager->persist($orderStatus);
         # TODO: Create log entry that email was sent.
         $log = new Entity\Log();
         $log->setUser($order->getBuyer());
         $log->setData('confirmation mail was send out to '.$order->getBuyer()->getEmail().' for order: '.$order->getCode()->getValue());
-        $em->persist($log);
+        $entityManager->persist($log);
 
-        $em->flush();
+        $entityManager->flush();
         
         return true;
     }

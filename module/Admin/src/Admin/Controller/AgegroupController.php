@@ -17,11 +17,11 @@ class AgegroupController extends AbstractActionController {
     
     public function indexAction()
     {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'agegroups' => $em->getRepository('ErsBase\Entity\Agegroup')
+            'agegroups' => $entityManager->getRepository('ErsBase\Entity\Agegroup')
                 ->findBy(array(), array('agegroup' => 'ASC')),
          ));
     }
@@ -46,11 +46,11 @@ class AgegroupController extends AbstractActionController {
                 #$agegroup->populate($form->getData());
                 $agegroup = $form->getData();
                 
-                $em = $this->getServiceLocator()
+                $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                $em->persist($agegroup);
-                $em->flush();
+                $entityManager->persist($agegroup);
+                $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage('The agegroup '.$agegroup->getName().' has been successfully added');
                 return $this->redirect()->toRoute('admin/agegroup');
@@ -74,9 +74,9 @@ class AgegroupController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $agegroup = $em->getRepository('ErsBase\Entity\Agegroup')
+        $agegroup = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                 ->findOneBy(array('id' => $id));
 
         $form = new Form\Agegroup();
@@ -87,8 +87,8 @@ class AgegroupController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $em->persist($form->getData());
-                $em->flush();
+                $entityManager->persist($form->getData());
+                $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage('The agegroup has been successfully changed');
                 return $this->redirect()->toRoute('admin/agegroup');
@@ -109,9 +109,9 @@ class AgegroupController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/agegroup');
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $agegroup = $em->getRepository('ErsBase\Entity\Agegroup')
+        $agegroup = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                 ->findOneBy(array('id' => $id));
         $productprices = $agegroup->getProductPrices();
 
@@ -121,10 +121,10 @@ class AgegroupController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $agegroup = $em->getRepository('ErsBase\Entity\Agegroup')
+                $agegroup = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                     ->findOneBy(array('id' => $id));
-                $em->remove($agegroup);
-                $em->flush();
+                $entityManager->remove($agegroup);
+                $entityManager->flush();
                 
                 $this->flashMessenger()->addSuccessMessage('The agegroup has been successfully deleted');
             }

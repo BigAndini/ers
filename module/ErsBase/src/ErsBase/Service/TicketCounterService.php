@@ -22,9 +22,9 @@ class TicketCounterService {
     }
 
     public function getCurrentItemCount(\ErsBase\Entity\Counter $counter) {
-        $em = $this->sl->get('Doctrine\ORM\EntityManager');
+        $entityManager = $this->sl->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->createQueryBuilder()
+        $qb = $entityManager->createQueryBuilder()
                 ->select('COUNT(DISTINCT i.id)')
                 ->from('ErsBase\Entity\Item', 'i')
                 ->join('i.status', 's', 'WITH', 's.active = 1');
@@ -40,9 +40,9 @@ class TicketCounterService {
     }
     
     public function checkLimits() {
-        $em = $this->sl->get('Doctrine\ORM\EntityManager');
+        $entityManager = $this->sl->get('Doctrine\ORM\EntityManager');
         
-        $counters = $em->getRepository('ErsBase\Entity\Counter')
+        $counters = $entityManager->getRepository('ErsBase\Entity\Counter')
                 ->findAll();
 
         /* @var $counter \ErsBase\Entity\Counter */
@@ -64,12 +64,12 @@ class TicketCounterService {
                 // However, this cannot be represented yet and is also not needed for show tickets, which only have one variant value.
                 foreach ($counter->getProductVariantValues() as $variantValue) {
                     $variantValue->setDisabled(1);
-                    $em->persist($variantValue);
+                    $entityManager->persist($variantValue);
                 }
             }
         }
 
-        $em->flush();
+        $entityManager->flush();
     }
 
 }

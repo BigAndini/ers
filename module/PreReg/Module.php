@@ -157,10 +157,10 @@ class Module
         
         if(!isset($container->currency)) {
             # TODO: put this into a CurrencyService
-            /*$em = $this->getServiceLocator()
+            /*$entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
 
-            $currency = $em->getRepository('ErsBase\Entity\Currency')
+            $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                 ->findOneBy(array('position' => '1'));*/
             
             $container->currency = 'EUR';

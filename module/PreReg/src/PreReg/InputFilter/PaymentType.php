@@ -57,10 +57,10 @@ class PaymentType implements InputFilterAwareInterface
                                     return false;
                                 }
                 
-                                $em = $this->getServiceLocator()
+                                $entityManager = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
+                                $paymenttype = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                                     ->findOneBy(array('id' => $value));
                                 
                                 if(!$paymenttype) {

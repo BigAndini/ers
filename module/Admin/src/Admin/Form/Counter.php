@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManager;
 
 class Counter extends Form
 {
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $entityManager)
     {
         parent::__construct('Counter');
         $this->setAttribute('method', 'post');
@@ -53,7 +53,7 @@ class Counter extends Form
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
-                'object_manager' => $em,
+                'object_manager' => $entityManager,
                 'target_class' => 'ErsBase\Entity\ProductVariantValue',
                 'label_generator' => function($entity){ return $entity->getProductVariant()->getProduct()->getName() . ' - ' . $entity->getProductVariant()->getName() . ' - ' . $entity->getValue(); },
                 'display_empty_item' => true,

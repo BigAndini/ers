@@ -36,7 +36,7 @@ class CloneService
     }
     
     public function cloneOrder(Entity\Order $order) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         $newOrder = clone $order;
@@ -45,7 +45,7 @@ class CloneService
     }
     
     public function clonePackage(Entity\Package $package) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         $newPackage = clone $package;
@@ -61,18 +61,18 @@ class CloneService
             $newItem->setStatus($item->getStatus());
             $newPackage->addItem($newItem);
         }
-        $em->persist($newPackage);
+        $entityManager->persist($newPackage);
         
         if($this->getTransfer()) {
             $package->setTransferredPackage($newPackage);
-            $em->persist($package);
+            $entityManager->persist($package);
         }
         
         return $newPackage;
     }
     
     public function cloneItem(Entity\Item $item) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         $newItem = clone $item;
@@ -82,24 +82,24 @@ class CloneService
             $newItemPackage = $this->cloneItemPackage($itemPackage);
             $newItemPackage->setSurItem($newItem);
             $newItem->addItemPackageRelatedBySurItemId($newItemPackage);
-            $em->persist($newItemPackage);
+            $entityManager->persist($newItemPackage);
         }
-        $em->persist($newItem);
+        $entityManager->persist($newItem);
         
         if($this->getTransfer()) {
             #$item->setTransferredItemId($newItem->getId());
             $item->setTransferredItem($newItem);
-            $status = $em->getRepository("ErsBase\Entity\Status")
+            $status = $entityManager->getRepository("ErsBase\Entity\Status")
                 ->findOneBy(array('value' => 'transferred'));
             $item->setStatus($status);
-            $em->persist($item);
+            $entityManager->persist($item);
         }
         
         return $newItem;
     }
     
     public function cloneItemPackage(Entity\ItemPackage $itemPackage) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         $newItemPackage = clone $itemPackage;
@@ -110,13 +110,13 @@ class CloneService
         $newSubItem = $this->cloneItem($itemPackage->getSubItem());
         $newItemPackage->setSubItem($newSubItem);
         
-        #$em->persist($newItemPackage);
+        #$entityManager->persist($newItemPackage);
         
         return $newItemPackage;
     }
     
     public function transferPackage(Entity\Package $package) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         $newPackage = clone $package;
@@ -127,17 +127,17 @@ class CloneService
             }
             $newItem = clone $item;
             $item->setTransferredItem($newItem);
-            $statusTransferred = $em->getRepository('ErsBase\Entity\Status')
+            $statusTransferred = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'transferred'));
             $item->setStatus($statusTransferred);
             $item->setPackage($package);
-            $em->persist($item);
+            $entityManager->persist($item);
             $newPackage->addItem($newItem);
             $newItem->setPackage($newPackage);
-            $em->persist($newItem);
+            $entityManager->persist($newItem);
         }
         $package->setTransferredPackage($newPackage);
-        $em->persist($package);
+        $entityManager->persist($package);
         
         return $newPackage;
     }
