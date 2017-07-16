@@ -82,16 +82,11 @@ class Participant extends Form implements InputFilterProviderInterface
  
         $this->add(array( 
             'name' => 'birthday', 
-            #'type' => 'Zend\Form\Element\Date',
-            #'type' => 'Zend\Form\Element\Text',
             'type' => 'PreReg\Form\Element\DateText',
             'attributes' => array( 
                 'placeholder' => _('Birthday...'), 
                 'required' => 'required',
                 'class' => 'form-control form-element datepicker',
-                #'min' => '1900-01-01', 
-                #'max' => 2015-08-09, 
-                #'step' => '1', 
             ), 
             'options' => array( 
                 'label' => _('Date of birth'),
@@ -100,7 +95,6 @@ class Participant extends Form implements InputFilterProviderInterface
                 ),
             ), 
         ));
-        #$this->get('birthday')->setFormat('Y-m-d');
         $this->get('birthday')->setFormat('d.m.Y');
  
         $this->add(array( 
@@ -108,7 +102,6 @@ class Participant extends Form implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Email', 
             'attributes' => array( 
                 'placeholder' => _('Email Address...'), 
-                #'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
