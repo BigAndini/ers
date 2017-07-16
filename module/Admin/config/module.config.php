@@ -562,6 +562,7 @@ return array(
         'routes' => array(
             'admin' => array(
                 'type' => 'segment',
+                'priority' => 10,
                 'options' => array(
                     #'route' => '/admin[/]',
                     'route' => '/admin',
@@ -574,6 +575,7 @@ return array(
                 'child_routes' => array(
                     'test' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/test[/:action][/:id]',
                             'constraints' => array(
@@ -588,6 +590,7 @@ return array(
                     ),
                     'statistic' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/statistic[/:action]',
                             'constraints' => array(
@@ -601,6 +604,7 @@ return array(
                     ),
                     'tax' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/tax[/:action][/:id]',
                             'constraints' => array(
@@ -615,6 +619,7 @@ return array(
                     ),
                     'product' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/product[/:action][/:id]',
                             'constraints' => array(
@@ -629,6 +634,7 @@ return array(
                     ),
                     'matching' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/matching[/:action][/:id]',
                             'constraints' => array(
@@ -643,6 +649,7 @@ return array(
                     ),
                     'refund' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/refund[/:action][/:id]',
                             'constraints' => array(
@@ -657,6 +664,7 @@ return array(
                     ),
                     'deadline' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/deadline[/:action][/:id]',
                             'constraints' => array(
@@ -671,6 +679,7 @@ return array(
                     ),
                     'agegroup' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/agegroup[/:action][/:id]',
                             'constraints' => array(
@@ -685,6 +694,7 @@ return array(
                     ),
                     'currency' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/currency[/:action][/:id]',
                             'constraints' => array(
@@ -699,6 +709,7 @@ return array(
                     ),
                     'payment-type' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/payment-type[/:action][/:id]',
                             'constraints' => array(
@@ -713,6 +724,7 @@ return array(
                     ),
                     'overview' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/overview[/:action][/:id]',
                             'constraints' => array(
@@ -727,6 +739,7 @@ return array(
                     ),
                     'ajax' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/ajax[/:action][/:id]',
                             'constraints' => array(
@@ -741,6 +754,7 @@ return array(
                     ),
                     'counter' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/counter[/:action][/:id]',
                             'constraints' => array(
@@ -755,6 +769,7 @@ return array(
                     ),
                     'status' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/status[/:action][/:id]',
                             'constraints' => array(
@@ -769,6 +784,7 @@ return array(
                     ),
                     'user' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/user[/:action][/:id]',
                             'constraints' => array(
@@ -783,6 +799,7 @@ return array(
                     ),
                     'role' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/role[/:action][/:id]',
                             'constraints' => array(
@@ -797,6 +814,7 @@ return array(
                     ),
                     'order' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/order[/:action][/:id]',
                             'constraints' => array(
@@ -811,6 +829,7 @@ return array(
                     ),
                     'package' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/package[/:action][/:id]',
                             'constraints' => array(
@@ -825,6 +844,7 @@ return array(
                     ),
                     'item' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/item[/:action][/:id]',
                             'constraints' => array(
@@ -839,6 +859,7 @@ return array(
                     ),
                     'bankaccount' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/bankaccount[/:action][/:id]',
                             'constraints' => array(
@@ -853,6 +874,7 @@ return array(
                     ),
                     'product-price' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/product-price[/:action][/:id]',
                             'constraints' => array(
@@ -867,6 +889,7 @@ return array(
                     ),
                     'product-variant' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/product-variant[/:action][/:id]',
                             'constraints' => array(
@@ -881,6 +904,7 @@ return array(
                     ),
                     'product-variant-value' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/product-variant-value[/:action][/:id]',
                             'constraints' => array(
@@ -895,6 +919,7 @@ return array(
                     ),
                     'product-package' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/product-package[/:action][/:id][/:subproduct_id]',
                             'constraints' => array(
@@ -910,6 +935,7 @@ return array(
                     ),
                     'country' => array(
                         'type' => 'segment',
+                        'priority' => 10,
                         'options' => array(
                             'route'    => '/country[/:action][/:id]',
                             'constraints' => array(

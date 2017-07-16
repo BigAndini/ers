@@ -33,7 +33,6 @@
         "adminweb/qrcode-zf2-module": "0.0.10",
         "satsume/ckeditor-module": "dev-master",
         "dudapiotr/zftable": "3.*",
-        "org_heigl/piwik" : "1.0.*",
         "goalio/goalio-rememberme": "*",
         "goalio/goalio-rememberme-doctrine-orm": "*",
         "behat/behat": "@stable",
@@ -41,7 +40,12 @@
         "behat/mink-extension": "@stable",
         "behat/mink-goutte-driver": "@stable",
         "inbaz/zf2behat-extension" : "dev-master",
-        "codacy/coverage": "dev-master"
+        "codacy/coverage": "dev-master",
+        "components/bootstrap": "3.3.5",
+        "components/jquery": "2.2.4",
+        "components/jqueryui": "1.10.4",
+        "components/font-awesome": "4.3.0",
+        "trentrichardson/jquery-timepicker-addon": "1.6.3"
     },
     "require-dev": {
         
