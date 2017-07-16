@@ -40,7 +40,8 @@
         "behat/mink": "@stable",
         "behat/mink-extension": "@stable",
         "behat/mink-goutte-driver": "@stable",
-        "inbaz/zf2behat-extension" : "dev-master"
+        "inbaz/zf2behat-extension" : "dev-master",
+        "codacy/coverage": "dev-master"
     },
     "require-dev": {
         
