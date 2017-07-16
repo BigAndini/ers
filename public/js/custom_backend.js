@@ -7,6 +7,26 @@
 
 // /public/js/custom.js
 
+function loadChangePaymenttype(currencyId) {
+    var url = "/admin/ajax/choose-payment-types/" + currencyId;
+    var count = 1;
+    $.getJSON( url, function( data ) {
+        var options = "";
+        $.each(data, function(id, content) {
+            if(typeof content.name === 'undefined') {
+                return true;
+            }
+            var disabled = " disabled";
+            if(content.active === true) {
+                disabled = "";
+            }
+            options += "<option value='" + id + "'" + disabled + ">" + content.name + "</option>";
+            count++;
+        });
+        $("#change-paymenttype").html(options).fadeIn();
+    });
+}
+
 jQuery(function($) {
     $('.datepicker').datepicker({
         /*dateFormat: "yy-mm-dd",*/
@@ -104,26 +124,6 @@ jQuery(function($) {
         }
     });
 });
-
-function loadChangePaymenttype(currencyId) {
-    var url = "/admin/ajax/choose-payment-types/" + currencyId;
-    var count = 1;
-    $.getJSON( url, function( data ) {
-        var options = "";
-        $.each(data, function(id, content) {
-            if(typeof content.name === 'undefined') {
-                return true;
-            }
-            var disabled = " disabled";
-            if(content.active === true) {
-                disabled = "";
-            }
-            options += "<option value='" + id + "'" + disabled + ">" + content.name + "</option>";
-            count++;
-        });
-        $("#change-paymenttype").html(options).fadeIn();
-    });
-}
 
 $(document).ready(function() {
     $(".dropdown-toggle").dropdown();

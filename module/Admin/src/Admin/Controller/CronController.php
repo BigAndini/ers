@@ -209,9 +209,6 @@ class CronController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $bankaccount = $statement->getPaymentType();
-        #$statement_format = json_decode($bankaccount->getStatementFormat());
-        
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
             ->findOneBy(array('code_id' => $code->getId()));
         
@@ -224,14 +221,12 @@ class CronController extends AbstractActionController {
                 $item = $entityManager->getRepository('ErsBase\Entity\Item')
                     ->findOneBy(array('code_id' => $code->getId()));
                 if(!$item) {
-                    echo "Unable to find neither item nor package nor order with code: ".$code->getValue().PHP_EOL;
-                    exit();
-                } else {
-                    $order = $item->getPackage()->getOrder();
+                    throw new \Exception("Unable to find neither item nor package nor order with code: ".$code->getValue());
                 }
-            } else {
-                $order = $package->getOrder();
+                #$order = $item->getPackage()->getOrder();
+                $package = $item->getPackage();
             }
+            $order = $package->getOrder();
         }
         
         $statement->setStatus('matched');
@@ -1142,7 +1137,6 @@ class CronController extends AbstractActionController {
         foreach($items as $item) {
             $package = $item->getPackage();
             if($item->getStatus()->getValue() == 'ordered' || $item->getStatus()->getValue() == 'paid' || $item->getStatus()->getValue() == 'order pending') {
-                $status = $item->getStatus();
                 $item->setStatus($package->getStatus());
                 #echo $item->getCode()->getValue().": item status was: ".$status."; item status is: ".$item->getStatus().PHP_EOL;
                 $entityManager->persist($item);
