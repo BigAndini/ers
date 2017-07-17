@@ -31,8 +31,8 @@
             ->prependFile($this->basePath() . '/components/jquery-ui/jquery-ui.min.js')
             ->prependFile($this->basePath() . '/components/jquery/jquery.min.js')        
             ->appendFile($this->basePath() . '/js/custom_onsite.js')
-            ->prependFile($this->basePath() . '/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9',))
-            ->prependFile($this->basePath() . '/js/html5shiv.js',   'text/javascript', array('conditional' => 'lt IE 9',))
+            ->prependFile($this->basePath() . '/components/respond/respond-built.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+            ->prependFile($this->basePath() . '/components/html5shiv/html5shiv-built.js',   'text/javascript', array('conditional' => 'lt IE 9',))
         ; ?>
 
     </head>

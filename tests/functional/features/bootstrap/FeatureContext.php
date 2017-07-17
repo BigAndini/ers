@@ -44,7 +44,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     {
         // prepare system for test suite
         // before it runs
-        echo "prepare".PHP_EOL;
+        #echo "prepare".PHP_EOL;
         #$em = new \DoctrineORMModule\Service\EntityManagerFactory('orm_default');
         #echo 'class: '.get_class($em).PHP_EOL;
         #$users = $em->getRepository('ErsBase\Entity\User')->findAll();
@@ -61,7 +61,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     {
         // clean database after scenarios,
         // tagged with @database
-        echo "cleanBuyer".PHP_EOL;
+        #echo "cleanBuyer".PHP_EOL;
     }
     
     /**
@@ -71,7 +71,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     {
         // clean database after scenarios,
         // tagged with @database
-        echo "prepareBuyer".PHP_EOL;
+        #echo "prepareBuyer".PHP_EOL;
     }
     
     /**
