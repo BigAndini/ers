@@ -416,9 +416,17 @@ return array(
             },
         ),
     ),
-    'session_manager' => array(
-        'validators' => array(
-            'Zend\Session\Validator\RemoteAddr',
-        ),
-    ),
+    'session_manager' => [
+        /*'config' => [
+            'class' => Session\Config\SessionConfig::class,
+            'options' => [
+                'name' => 'myapp',
+            ],
+        ],*/
+        'storage' => Session\Storage\SessionArrayStorage::class,
+        'validators' => [
+            Session\Validator\RemoteAddr::class,
+            Session\Validator\HttpUserAgent::class,
+        ],
+    ],
 );
