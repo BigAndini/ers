@@ -41,14 +41,14 @@ class RefundController extends AbstractActionController {
     }
     
     public function enterAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/refund', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
 
         #$form = $this->getServiceLocator()->get('Admin\Form\Product');
         $form = new Form\EnterRefund();
@@ -89,7 +89,7 @@ class RefundController extends AbstractActionController {
         }
 
         return new ViewModel(array(
-            'id' => $id,
+            'id' => $orderId,
             'form' => $form,
             'order' => $order,
         ));

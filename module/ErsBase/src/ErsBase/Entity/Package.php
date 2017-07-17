@@ -119,10 +119,10 @@ class Package extends Base\Package
      * 
      * @param type $id
      */
-    public function removeItemById($id) {
-        $item = $this->getItemById($id);
+    public function removeItemById($itemId) {
+        $item = $this->getItemById($itemId);
         if(!$item) {
-            throw new \Exception('Unable to remove item with id '.$id);
+            throw new \Exception('Unable to remove item with id '.$itemId);
         }
         return $this->removeItem($item);
     }
@@ -169,9 +169,9 @@ class Package extends Base\Package
      *
      * @return \Entity\Item
      */
-    public function getItemById($id) {
+    public function getItemById($itemId) {
         foreach($this->getItems() as $item) {
-            if($item->getId() == $id) {
+            if($item->getId() == $itemId) {
                 return $item;
             }
         }

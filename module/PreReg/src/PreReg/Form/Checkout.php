@@ -17,7 +17,7 @@ class Checkout extends Form
 {
     public $inputFilter;
     
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('Buyer');
         

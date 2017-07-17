@@ -46,10 +46,9 @@ class DeadlineController extends AbstractActionController {
                 $entityManager->flush();
 
                 return $this->redirect()->toRoute('admin/deadline');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
             }
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
         
         return new ViewModel(array(

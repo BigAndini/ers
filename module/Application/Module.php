@@ -14,25 +14,25 @@ use Zend\Mvc\MvcEvent;
 
 class Module
 {
-    public function onBootstrap(MvcEvent $e)
+    public function onBootstrap(MvcEvent $event)
     {
-        $eventManager        = $e->getApplication()->getEventManager();
+        $eventManager        = $event->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
-        #$serviceManager = $e->getApplication()->getServiceManager();
+        #$serviceManager = $event->getApplication()->getServiceManager();
         // Add ACL information to the Navigation view helper
         #$authorize = $serviceManager->get('BjyAuthorize\Service\Authorize');
         #$acl = $authorize->getAcl();
         #\Zend\View\Helper\Navigation::setDefaultAcl($acl);
         #\Zend\View\Helper\Navigation::setDefaultRole('guest');
         
-        $eventManager->attach('render', function($e) {
-            $serviceManager = $e->getApplication()->getServiceManager();
+        $eventManager->attach('render', function($event) {
+            $serviceManager = $event->getApplication()->getServiceManager();
 
             $config = $serviceManager->get('Config');
             
-            $view = $e->getViewModel();
+            $view = $event->getViewModel();
             $view->setVariable('ers_config', $config['ERS']);
         });
     }

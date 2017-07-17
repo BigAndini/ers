@@ -9,8 +9,8 @@
 
 function makeid()
 {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var text = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
     for( var i=0; i < 6; i++ )
         text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -27,7 +27,7 @@ jQuery(function($) {
                 window.sessionStorage.setItem('tabId', makeid());
             }
             $.ajax({
-                url:"/ajax/session-storage/"+window.sessionStorage.getItem('tabId')
+                url:'/ajax/session-storage/'+window.sessionStorage.getItem('tabId')
             }).done(function(data) {
                 $('#tabId').html(data);
             });
@@ -35,8 +35,8 @@ jQuery(function($) {
     });
     
     $('.datepicker').datepicker({
-        /*dateFormat: "yy-mm-dd",*/
-        dateFormat: "dd.mm.yy",
+        /*dateFormat: 'yy-mm-dd',*/
+        dateFormat: 'dd.mm.yy',
         addSliderAccess: true,
         firstDay: 1,
         changeMonth: true, 
@@ -54,8 +54,8 @@ jQuery(function($) {
         }
     });
     $('.datetimepicker').datetimepicker({
-        timeFormat: "HH:mm:ss",
-        dateFormat: "yy-mm-dd",
+        timeFormat: 'HH:mm:ss',
+        dateFormat: 'yy-mm-dd',
         addSliderAccess: true,
 	sliderAccessArgs: { touchonly: false }
     });
@@ -66,17 +66,17 @@ jQuery(function($) {
         cookiePolicyLink: '/info/cookie'
     });
     
-    $( "#person-detail" ).tabs({
+    $( '#person-detail' ).tabs({
         create: function( event, ui ) {
-            $( "#person-detail" ).find('input').prop('disabled', true);
-            $( "#person-detail" ).find('select').prop('disabled', true);
+            $( '#person-detail' ).find('input').prop('disabled', true);
+            $( '#person-detail' ).find('select').prop('disabled', true);
             ui.panel.find('input').prop('disabled', false);
             ui.panel.find('select').prop('disabled', false);
         },
         /*activate: function( event, ui ) {},*/
         beforeActivate: function( event, ui ) {
-            $( "#person-detail" ).find('input').prop('disabled', true);
-            $( "#person-detail" ).find('select').prop('disabled', true);
+            $( '#person-detail' ).find('input').prop('disabled', true);
+            $( '#person-detail' ).find('select').prop('disabled', true);
             ui.newPanel.find('input').prop('disabled', false);
             ui.newPanel.find('select').prop('disabled', false);
         }

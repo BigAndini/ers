@@ -160,23 +160,23 @@ class OrderController extends AbstractActionController {
     
     public function detailAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         $paymentDetails = $entityManager->getRepository('ErsBase\Entity\PaymentDetail')
-                ->findBy(array('order_id' => $id), array('created' => 'DESC'));
+                ->findBy(array('order_id' => $orderId), array('created' => 'DESC'));
         
         $forrest = new Service\BreadcrumbService();
-        $forrest->set('order', 'admin/order', array('action' => 'detail', 'id' => $id));
-        $forrest->set('user', 'admin/order', array('action' => 'detail', 'id' => $id));
-        $forrest->set('package', 'admin/order', array('action' => 'detail', 'id' => $id));
-        $forrest->set('item', 'admin/order', array('action' => 'detail', 'id' => $id));
-        $forrest->set('matching', 'admin/order', array('action' => 'detail', 'id' => $id));
+        $forrest->set('order', 'admin/order', array('action' => 'detail', 'id' => $orderId));
+        $forrest->set('user', 'admin/order', array('action' => 'detail', 'id' => $orderId));
+        $forrest->set('package', 'admin/order', array('action' => 'detail', 'id' => $orderId));
+        $forrest->set('item', 'admin/order', array('action' => 'detail', 'id' => $orderId));
+        $forrest->set('matching', 'admin/order', array('action' => 'detail', 'id' => $orderId));
         
         return new ViewModel(array(
             'order' => $order,
@@ -185,14 +185,14 @@ class OrderController extends AbstractActionController {
         ));
     }
     public function changePaymentTypeAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         $paymenttypes = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findBy(array(), array('position' => 'ASC'));
@@ -235,7 +235,7 @@ class OrderController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $inputFilter = new InputFilter\PaymentType();
+            #$inputFilter = new InputFilter\PaymentType();
             #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
@@ -273,14 +273,14 @@ class OrderController extends AbstractActionController {
         
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         # prepare currencies
         $currencies = $entityManager->getRepository('ErsBase\Entity\Currency')
@@ -380,15 +380,15 @@ class OrderController extends AbstractActionController {
     public function resendConfirmationAction() {
         #$logger = $this->getServiceLocator()->get('Logger');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('order')) {
@@ -400,10 +400,10 @@ class OrderController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $orderId = (int) $request->getPost('id');
                 
                 $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $orderId));
                 
                 $emailService = $this->getServiceLocator()
                         ->get('ErsBase\Service\EmailService');
@@ -424,14 +424,14 @@ class OrderController extends AbstractActionController {
     public function sendEticketsAction() {
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('order')) {
@@ -443,10 +443,10 @@ class OrderController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $orderId = (int) $request->getPost('id');
                 
                 $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $orderId));
                 
                 if($order->getPaymentStatus() != 'paid') {
                     return $this->redirect()->toRoute('admin/order', array('action' => 'send-eticket'));
@@ -525,14 +525,14 @@ class OrderController extends AbstractActionController {
     public function sendPaymentReminderAction() {
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('order')) {
@@ -544,10 +544,10 @@ class OrderController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $orderId = (int) $request->getPost('id');
                 
                 $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $orderId));
                 
                 # prepare email (participant, buyer)
                 #$emailService = new Service\EmailService();
@@ -592,14 +592,14 @@ class OrderController extends AbstractActionController {
     public function changeBuyerAction() {
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         $form = new Form\SearchUser();
         
@@ -703,8 +703,8 @@ class OrderController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $inputFilter = $this->getServiceLocator()
-                    ->get('Admin\InputFilter\AcceptBuyerChange');
+            /*$inputFilter = $this->getServiceLocator()
+                    ->get('Admin\InputFilter\AcceptBuyerChange');*/
             #$inputFilter = new InputFilter\AcceptBuyerChange();
             #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
@@ -731,9 +731,8 @@ class OrderController extends AbstractActionController {
                     'action' => 'detail', 
                     'id' => $order->getId()
                 ));
-            } else {
-                $logger->warn($form->getMessages());
             }
+            $logger->warn($form->getMessages());
         }
         
         $user = null;
@@ -767,12 +766,12 @@ class OrderController extends AbstractActionController {
     }
     
     public function changePackageAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $orderId = (int) $this->params()->fromRoute('id', 0);
         
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         return new ViewModel(array(
             'package' => $package,
@@ -780,12 +779,12 @@ class OrderController extends AbstractActionController {
     }
     
     public function changeItemAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $orderId = (int) $this->params()->fromRoute('id', 0);
         
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $item = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         return new ViewModel(array(
             'item' => $item,
@@ -793,14 +792,14 @@ class OrderController extends AbstractActionController {
     }
     
     public function cancelAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('order')) {
@@ -812,10 +811,10 @@ class OrderController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $orderId = (int) $request->getPost('id');
                 
                 $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $orderId));
                 
                 /*$status = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'cancelled'));*/
@@ -846,14 +845,14 @@ class OrderController extends AbstractActionController {
     }
     
     public function paidAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('order')) {
@@ -865,10 +864,10 @@ class OrderController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $orderId = (int) $request->getPost('id');
                 
                 $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $orderId));
                 
                 $order->setPaymentStatus('paid');
                 $entityManager->persist($order);
@@ -895,14 +894,14 @@ class OrderController extends AbstractActionController {
     }
     
     public function refundAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('order')) {
@@ -914,10 +913,10 @@ class OrderController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $orderId = (int) $request->getPost('id');
                 
                 $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $orderId));
                 
                 $status = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'refund'));
@@ -945,14 +944,14 @@ class OrderController extends AbstractActionController {
     }
     
     public function unpaidAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('order')) {
@@ -964,10 +963,10 @@ class OrderController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $orderId = (int) $request->getPost('id');
                 
                 $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $orderId));
                 
                 $status = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'ordered'));
@@ -1053,8 +1052,8 @@ class OrderController extends AbstractActionController {
     public function changeOrderDateAction() {
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $orderId = (int) $this->params()->fromRoute('id', 0);
+        if (!$orderId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         
@@ -1064,10 +1063,10 @@ class OrderController extends AbstractActionController {
                 ->get('Doctrine\ORM\EntityManager');
         
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $orderId));
         
         if(!$order) {
-            $this->flashMessenger()->addErrorMessage('Unable to find order with id '.$id);
+            $this->flashMessenger()->addErrorMessage('Unable to find order with id '.$orderId);
             return $this->redirect()->toRoute('admin');
         }
         
@@ -1084,9 +1083,8 @@ class OrderController extends AbstractActionController {
                     'action' => 'detail', 
                     'id' => $order->getId()
                 ));
-            } else {
-                $logger->warn($form->getMessages());
             }
+            $logger->warn($form->getMessages());
         }
         
         $forrest = new Service\BreadcrumbService();

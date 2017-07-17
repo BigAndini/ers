@@ -13,7 +13,7 @@ use Zend\Form\Form;
 
 class Role extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('Deadline');
         $this->setAttribute('method', 'post');

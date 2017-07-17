@@ -17,35 +17,35 @@ use BjyAuthorize\View\RedirectionStrategy;
 
 class Module
 {
-    public function onBootstrap($e)
+    public function onBootstrap($event)
     {
-        $eventManager        = $e->getApplication()->getEventManager();
+        $eventManager        = $event->getApplication()->getEventManager();
 
         #$strategy = new RedirectionStrategy();
 
         // eventually set the URI to be used for redirects
-        #$baseUrl = $e->getRequest()->getUriString();
+        #$baseUrl = $event->getRequest()->getUriString();
         #$strategy->setRedirectUri('/user/login?redirect='.\rawurlencode($baseUrl));
         #$eventManager->attach($strategy);
         
-        $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($e) {
-            $controller      = $e->getTarget();
+        $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($event) {
+            $controller      = $event->getTarget();
             $controllerClass = get_class($controller);
             $moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
-            $config          = $e->getApplication()->getServiceManager()->get('config');
+            $config          = $event->getApplication()->getServiceManager()->get('config');
             if (isset($config['module_layouts'][$moduleNamespace])) {
                 $controller->layout($config['module_layouts'][$moduleNamespace]);
             }
         }, 100);
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
-        $this->bootstrapSession($e);
+        $this->bootstrapSession($event);
         
-        $translator = $e->getApplication()->getServiceManager()->get('translator');
+        $translator = $event->getApplication()->getServiceManager()->get('translator');
         $translator->setLocale('en_US');
         setlocale(LC_TIME, 'en_US');
         
-        $application   = $e->getApplication();
+        $application   = $event->getApplication();
         $serviceManager = $application->getServiceManager();
         $auth = $serviceManager->get('BjyAuthorize\Service\Authorize');
 
@@ -58,10 +58,10 @@ class Module
         
         $sharedManager = $application->getEventManager()->getSharedManager();
         $sharedManager->attach('Zend\Mvc\Application', 'dispatch.error',
-                function($e) use ($serviceManager) {
-                    if ($e->getParam('exception')){
+                function($event) use ($serviceManager) {
+                    if ($event->getParam('exception')){
                         $emailService = $serviceManager->get('ErsBase\Service\EmailService');
-                        $emailService->sendExceptionEmail($e->getParam('exception'));
+                        $emailService->sendExceptionEmail($event->getParam('exception'));
                     }
                 }
             );
@@ -83,14 +83,14 @@ class Module
         });
     }
     
-    public function bootstrapSession($e)
+    public function bootstrapSession($event)
     {
         if(\Zend\Console\Console::isConsole()) {
             #echo "not starting session -> console".PHP_EOL;
             return;
         }
         
-        $sessionManager = $e->getApplication()
+        $sessionManager = $event->getApplication()
                     ->getServiceManager()
                     ->get('Zend\Session\SessionManager');
         $sessionManager->start();
@@ -101,7 +101,7 @@ class Module
         #error_log('session: '.$container->init);
         if (!isset($container->init)) {
             #error_log('initializing session ('.$container->init.')');
-            $serviceManager = $e->getApplication()->getServiceManager();
+            $serviceManager = $event->getApplication()->getServiceManager();
             $request        = $serviceManager->get('Request');
 
             $sessionManager->regenerateId(true);
@@ -165,7 +165,7 @@ class Module
             
             $container->currency = 'EUR';
         }
-        $serviceManager = $e->getApplication()->getServiceManager();
+        $serviceManager = $event->getApplication()->getServiceManager();
         $orderService = $serviceManager->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         if($order->getCurrency()->getShort() != $container->currency) {

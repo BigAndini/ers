@@ -13,7 +13,7 @@ use Zend\InputFilter\InputFilterProviderInterface;
 
 class Currency extends Form implements InputFilterProviderInterface
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('Currency');
         $this->setAttribute('method', 'post');
