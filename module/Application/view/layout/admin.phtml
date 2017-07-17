@@ -33,8 +33,8 @@
             ->appendFile($this->basePath() . '/js/custom_backend.js')
             ->appendFile($this->basePath() . '/vendor/raphael/raphael.min.js')
             ->appendFile($this->basePath() . '/vendor/morrisjs/morris.min.js')
-            ->prependFile($this->basePath() . '/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9',))
-            ->prependFile($this->basePath() . '/js/html5shiv.js',   'text/javascript', array('conditional' => 'lt IE 9',))
+            ->prependFile($this->basePath() . '/components/respond/respond-built.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+            ->prependFile($this->basePath() . '/components/html5shiv/html5shiv-built.js',   'text/javascript', array('conditional' => 'lt IE 9',))
         ; ?>
 
     </head>
