@@ -29,22 +29,22 @@ class PackageController extends AbstractActionController {
     }
     
     public function detailAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $packageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$packageId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
-            $forrest->set('package', 'admin/package', array('action' => 'detail', 'id' => $id));
+            $forrest->set('package', 'admin/package', array('action' => 'detail', 'id' => $packageId));
         }
-        $forrest->set('item', 'admin/package', array('action' => 'detail', 'id' => $id));
+        $forrest->set('item', 'admin/package', array('action' => 'detail', 'id' => $packageId));
         
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $packageId));
         
         return new ViewModel(array(
             'package' => $package,
@@ -52,14 +52,14 @@ class PackageController extends AbstractActionController {
     }
     
     public function unpaidAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $packageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$packageId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $packageId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
@@ -71,10 +71,10 @@ class PackageController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $packageId = (int) $request->getPost('id');
                 
                 $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $packageId));
                 
                 $statusOrdered = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
@@ -98,14 +98,14 @@ class PackageController extends AbstractActionController {
     }
     
     public function paidAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $packageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$packageId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $packageId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
@@ -117,18 +117,17 @@ class PackageController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $packageId = (int) $request->getPost('id');
                 
                 $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $packageId));
                 
                 $statusPaid = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'paid'));
                 
-                foreach($package->getItems() as $item) {
-                    $item->setStatus($statusPaid);
-                    $entityManager->persist($item);
-                }
+                $statusService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\StatusService');
+                $statusService->setPackageStatus($package, $statusPaid, false);
                 
                 $entityManager->flush();
                 
@@ -144,14 +143,14 @@ class PackageController extends AbstractActionController {
     }
     
     public function refundAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $packageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$packageId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $packageId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
@@ -163,10 +162,10 @@ class PackageController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $packageId = (int) $request->getPost('id');
                 
                 $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $packageId));
                 
                 $statusRefund = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'refund'));
@@ -190,14 +189,14 @@ class PackageController extends AbstractActionController {
     }
     
     public function cancelAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $packageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$packageId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $packageId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
@@ -209,10 +208,10 @@ class PackageController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $packageId = (int) $request->getPost('id');
                 
                 $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $packageId));
                 
                 $statusCancelled = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'cancelled'));
@@ -236,14 +235,14 @@ class PackageController extends AbstractActionController {
     }
     
     public function recalculateAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $packageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$packageId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $packageId));
         
         $forrest = new Service\BreadcrumbService();
         if(!$forrest->exists('package')) {
@@ -287,9 +286,9 @@ class PackageController extends AbstractActionController {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $packageId = (int) $request->getPost('id');
                 $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $packageId));
                 
                 $statusCancelled = $entityManager->getRepository('ErsBase\Entity\Status')
                                 ->findOneBy(array('value' => 'cancelled'));
@@ -333,14 +332,14 @@ class PackageController extends AbstractActionController {
     }
     
     public function downloadEticketAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $packageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$packageId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $packageId));
         
         /*$languages = array(
             array(
@@ -380,10 +379,10 @@ class PackageController extends AbstractActionController {
             #$form->setInputFilter($agegroup->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $id = (int) $request->getPost('id');
+                $packageId = (int) $request->getPost('id');
                 
                 $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $packageId));
                 
                 $eticketService = $this->getServiceLocator()
                     ->get('ErsBase\Service\ETicketService');
@@ -428,25 +427,25 @@ class PackageController extends AbstractActionController {
         
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $packageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$packageId) {
             $breadcrumb = $forrest->get('package');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $packageId));
         
         $request = $this->getRequest();
         if ($request->isPost()) {
             $ret = $request->getPost('del', 'No');
 
             if ($ret == 'Yes') {
-                $id = (int) $request->getPost('id');
+                $packageId = (int) $request->getPost('id');
                 
                 $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                    ->findOneBy(array('id' => $id));
+                    ->findOneBy(array('id' => $packageId));
                 
                 if($package->getStatus() != 'paid') {
                     return $this->redirect()->toRoute('admin/package', array('action' => 'send-eticket'));
@@ -520,14 +519,14 @@ class PackageController extends AbstractActionController {
     public function changeParticipantAction() {
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $packageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$packageId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $packageId));
         
         $form = new Form\SearchPackage();
         
@@ -709,14 +708,14 @@ class PackageController extends AbstractActionController {
     public function moveAction() {
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $packageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$packageId) {
             return $this->redirect()->toRoute('admin/order', array());
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $package = $entityManager->getRepository('ErsBase\Entity\Package')
-                ->findOneBy(array('id' => $id));
+                ->findOneBy(array('id' => $packageId));
         
         $form = new Form\SearchOrder();
         
