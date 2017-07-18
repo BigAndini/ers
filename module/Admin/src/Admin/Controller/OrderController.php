@@ -875,10 +875,9 @@ class OrderController extends AbstractActionController {
                 $statusPaid = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'paid'));
                 
-                foreach($order->getItems() as $item) {
-                    $item->setStatus($statusPaid);
-                    $entityManager->persist($item);
-                }
+                $statusService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\StatusService');
+                $statusService->setOrderStatus($order, $statusPaid, false);
                 
                 $entityManager->flush();
                 
