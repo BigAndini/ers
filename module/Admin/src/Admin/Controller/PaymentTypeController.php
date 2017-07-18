@@ -56,16 +56,18 @@ class PaymentTypeController extends AbstractActionController {
                 $paymenttype = new Entity\PaymentType();
                 $paymenttype->populate($form->getData());
 
-                $paymenttype->setActiveFromId(null);
                 if ($paymenttype->getActiveFromId() != 0) {
                     $active_from = $entityManager->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveFromId());
                     $paymenttype->setActiveFrom($active_from);
+                } else {
+                    $paymenttype->setActiveFromId(null);
                 }
                 
-                $paymenttype->setActiveUntilId(null);
-                if ($paymenttype->getActiveUntilId() == 0) {
+                if ($paymenttype->getActiveUntilId() != 0) {
                     $active_until = $entityManager->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveUntilId());
                     $paymenttype->setActiveUntil($active_until);
+                } else {
+                    $paymenttype->setActiveUntilId(null);
                 }
                 
                 $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
