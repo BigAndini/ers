@@ -19,7 +19,8 @@ class RoleFactory implements FactoryInterface
         $form = new Form\Role();
 
         $entityManager = $serviceLocator->get('doctrine.entitymanager');
-        $roles = $entityManager->getRepository('ErsBase\Entity\UserRole')->findBy(array(), array('roleId' => 'ASC'));
+        $roles = $entityManager->getRepository('ErsBase\Entity\Role')
+                ->findBy(array(), array('roleId' => 'ASC'));
 
         $options = array();
         $options[null] = 'no parent';
