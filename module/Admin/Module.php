@@ -21,13 +21,13 @@ use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 
 class Module implements ViewHelperProviderInterface
 {
-    public function onBootstrap(MvcEvent $e) {
-        $eventManager        = $e->getApplication()->getEventManager();
-        $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($e) {
-            $controller      = $e->getTarget();
+    public function onBootstrap(MvcEvent $event) {
+        $eventManager        = $event->getApplication()->getEventManager();
+        $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($event) {
+            $controller      = $event->getTarget();
             $controllerClass = get_class($controller);
             $moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
-            $config          = $e->getApplication()->getServiceManager()->get('config');
+            $config          = $event->getApplication()->getServiceManager()->get('config');
             if (isset($config['module_layouts'][$moduleNamespace])) {
                 $controller->layout($config['module_layouts'][$moduleNamespace]);
             }
@@ -122,101 +122,10 @@ class Module implements ViewHelperProviderInterface
                 /* 
                  * Form Factories
                  */
-                'Admin\Form\PaymentType' => function($serviceManager) {
-                    $form = new Form\PaymentType();
-                    $form->get('submit')->setValue('Save');
-
-                    $optionService = $serviceManager->get('ErsBase\Service\OptionService');
-                    #$deadlineOptions = $this->buildDeadlineOptions();
-                    $deadlineOptions = $optionService->getDeadlineOptions();
-                    $form->get('active_from_id')->setAttribute('options', $deadlineOptions);
-                    $form->get('active_until_id')->setAttribute('options', $deadlineOptions);
-                    #$form->get('active_from_id')->setValue(0);
-                    #$form->get('active_until_id')->setValue(0);
-                    $currencyOptions = $optionService->getCurrencyOptions();
-                    $form->get('currency_id')->setAttribute('options', $currencyOptions);
-
-                    $typeOptions = [
-                        [
-                            'value' => '',
-                            'label' => 'Select type ...',
-                            'disabled' => true,
-                            'selected' => true,
-                        ],
-                        [
-                            'value' => 'sepa',
-                            'label' => 'Sepa Bank Account',
-                        ],
-                        [
-                            'value' => 'ukbt',
-                            'label' => 'UK Bank Account',
-                        ],
-                        [
-                            'value' => 'ipayment',
-                            'label' => 'iPayment Account',
-                        ],
-                        [
-                            'value' => 'paypal',
-                            'label' => 'Paypal Account',
-                        ],
-                    ];
-                    $form->get('type')->setAttribute('options', $typeOptions);
-                    
-                    return $form;
-                },
-                'Admin\Form\Product' => function($serviceManager){
-                    $form   = new Form\Product();
-                    
-                    $entityManager = $serviceManager->get('doctrine.entitymanager');
-                    $taxes = $entityManager->getRepository('ErsBase\Entity\Tax')->findAll();
-                    
-                    $options = array();
-                    foreach($taxes as $tax) {
-                        $options[$tax->getId()] = $tax->getName().' - '.$tax->getPercentage().'%';
-                    }
-
-                    $form->get('tax_id')->setValueOptions($options);
-                    
-                    $ticketTemplates = array(
-                        'default' => 'Default',
-                        'weekticket' => 'Week Ticket',
-                        'dayticket' => 'Day Ticket',
-                        'galashow' => 'Gala-Show Ticket',
-                        'clothes' => 'T-Shirt and Hoodie',
-                    );
-                    
-                    $form->get('ticket_template')->setValueOptions($ticketTemplates);
-                    
-                    return $form;
-                },
-                'Admin\Form\Role' => function($serviceManager){
-                    $form = new Form\Role();
-                    
-                    $entityManager = $serviceManager->get('doctrine.entitymanager');
-                    $roles = $entityManager->getRepository('ErsBase\Entity\UserRole')->findBy(array(), array('roleId' => 'ASC'));
-                    
-                    $options = array();
-                    $options[null] = 'no parent';
-                    foreach($roles as $role) {
-                        $options[$role->getId()] = $role->getRoleId();
-                    }
-
-                    $form->get('Parent_id')->setValueOptions($options);
-                    
-                    return $form;
-                },
-                'Admin\Form\ProductVariant' => function($serviceManager){
-                    $form   = new Form\ProductVariant();
-                    
-                    $options = array();
-                    $options['text'] = 'Text';
-                    $options['date'] = 'Date';
-                    $options['select'] = 'Select';
-
-                    $form->get('type')->setValueOptions($options);
-                    
-                    return $form;
-                },
+                'Admin\Form\PaymentType' => 'Admin\Form\Factory\PaymentTypeFactory',
+                'Admin\Form\Product' => 'Admin\Form\Factory\ProductFactory',
+                'Admin\Form\ProductVariant' => 'Admin\Form\Factory\ProductVariantFactory',
+                'Admin\Form\Role' => 'Admin\Form\Factory\RoleFactory',
                 'Admin\Form\User' => function($serviceManager){
                     $form   = new Form\User();
                     $form->setServiceLocator($serviceManager);

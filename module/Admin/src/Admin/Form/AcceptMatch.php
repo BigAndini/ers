@@ -13,7 +13,7 @@ use Zend\Form\Form;
 
 class AcceptMatch extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('AcceptMatch');
         $this->setAttribute('method', 'post');

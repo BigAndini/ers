@@ -200,7 +200,7 @@ class Product extends Base\Product
     public function getFormerPrices()
     {
         $now = new \DateTime();
-        $diff = 0;
+        #$diff = 0;
         $ret = new ArrayCollection();
         foreach($this->getProductPrices() as $price) {
             if($now > $price->getDeadline()->getDeadline()) {

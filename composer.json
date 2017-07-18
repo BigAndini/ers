@@ -47,7 +47,8 @@
         "components/font-awesome": "4.3.0",
         "trentrichardson/jquery-timepicker-addon": "1.6.3",
         "afarkas/html5shiv": "3.7.3",
-        "rogeriopradoj/respond": "1.4.2"
+        "rogeriopradoj/respond": "1.4.2",
+        "codeception/codeception": "dev-master"
     },
     "require-dev": {
         

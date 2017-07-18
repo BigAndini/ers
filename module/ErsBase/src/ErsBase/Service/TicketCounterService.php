@@ -56,7 +56,7 @@ class TicketCounterService {
             $count = $this->getCurrentItemCount($counter);
 
             if ($count >= $counter->getValue()) {
-                $logger = $this->sl->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->info('Disabling variant values of counter "' . $counter->getName() . '" because ' . $counter->getValue() . ' items were reached.');
 
                 // NOTE: Disabling all associated variant values is actually semantically wrong.

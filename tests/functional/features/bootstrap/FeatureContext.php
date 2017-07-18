@@ -25,7 +25,7 @@ use Doctrine\DBAL\Connection;
 #class FeatureContext extends MinkContext
 class FeatureContext extends MinkContext implements Context, SnippetAcceptingContext
 {
-    protected $em;
+    protected $entityManager;
     /**
      * Initializes context.
      *
@@ -45,9 +45,9 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         // prepare system for test suite
         // before it runs
         #echo "prepare".PHP_EOL;
-        #$em = new \DoctrineORMModule\Service\EntityManagerFactory('orm_default');
-        #echo 'class: '.get_class($em).PHP_EOL;
-        #$users = $em->getRepository('ErsBase\Entity\User')->findAll();
+        #$entityManager = new \DoctrineORMModule\Service\EntityManagerFactory('orm_default');
+        #echo 'class: '.get_class($entityManager).PHP_EOL;
+        #$users = $entityManager->getRepository('ErsBase\Entity\User')->findAll();
         #echo 'found '.count($users).' users'.PHP_EOL;
         /*$this->getMainContext()
             ->getSubcontext('zf2_doctrine')

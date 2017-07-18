@@ -76,10 +76,9 @@ class ParticipantController extends AbstractActionController {
 
                 $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-                if ($user->getCountryId() == 0) {
-                    $user->setCountryId(null);
-                    $user->setCountry(null);
-                } else {
+                $user->setCountryId(null);
+                $user->setCountry(null);
+                if ($user->getCountryId() != 0) {
                     $country = $entityManager->getRepository('ErsBase\Entity\Country')
                         ->findOneBy(array('id' => $user->getCountryId()));
                     $user->setCountryId($country->getId());

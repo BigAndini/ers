@@ -77,10 +77,9 @@ class PaymentTypeController extends AbstractActionController {
                 $entityManager->flush();
 
                 return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
             }
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
 
         return new ViewModel(array(

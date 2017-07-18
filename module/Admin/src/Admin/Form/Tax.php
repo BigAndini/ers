@@ -12,7 +12,7 @@ use Zend\Form\Form;
 
 class Tax extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         // we want to ignore the name passed
         parent::__construct('Tax');

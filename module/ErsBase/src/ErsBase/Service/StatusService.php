@@ -71,6 +71,7 @@ class StatusService
     }
     
     public function setPackageStatus(Entity\Package $package, $status, $flush=true) {
+        $logger = $this->getServiceLocator()->get('Logger');
         $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         if(is_string($status)) {
@@ -87,7 +88,7 @@ class StatusService
         foreach($package->getItems() as $item) {
             if(!in_array($item->getStatus()->getValue(), $ignore)) {
                 if($item->getStatus()->getValue() != $status->getValue()) {
-                    error_log("set item (".$item->getId().") status from ".$item->getStauts()->getValue()." to ".$status->getValue());
+                    $logger->info("set item (".$item->getId().") status from ".$item->getStatus()->getValue()." to ".$status->getValue());
                 }
                 $this->setItemStatus($item, $status, false);
             }

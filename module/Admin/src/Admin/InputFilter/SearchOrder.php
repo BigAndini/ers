@@ -17,7 +17,7 @@ class SearchOrder implements InputFilterAwareInterface
 { 
     protected $inputFilter; 
     
-    public function setInputFilter(InputFilterInterface $inputFilter) { 
+    public function setInputFilter(InputFilterInterface $inputFilter) {
         throw new \Exception("Not used"); 
     } 
     

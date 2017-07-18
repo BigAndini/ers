@@ -17,35 +17,37 @@ use BjyAuthorize\View\RedirectionStrategy;
 
 class Module
 {
-    public function onBootstrap($e)
+    public function onBootstrap($event)
     {
-        $eventManager        = $e->getApplication()->getEventManager();
+        $eventManager        = $event->getApplication()->getEventManager();
 
         #$strategy = new RedirectionStrategy();
 
         // eventually set the URI to be used for redirects
-        #$baseUrl = $e->getRequest()->getUriString();
+        #$baseUrl = $event->getRequest()->getUriString();
         #$strategy->setRedirectUri('/user/login?redirect='.\rawurlencode($baseUrl));
         #$eventManager->attach($strategy);
         
-        $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($e) {
-            $controller      = $e->getTarget();
+        $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($event) {
+            $controller      = $event->getTarget();
             $controllerClass = get_class($controller);
             $moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
-            $config          = $e->getApplication()->getServiceManager()->get('config');
+            $config          = $event->getApplication()->getServiceManager()->get('config');
             if (isset($config['module_layouts'][$moduleNamespace])) {
                 $controller->layout($config['module_layouts'][$moduleNamespace]);
             }
         }, 100);
+        
+        # bootstrap session
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
-        $this->bootstrapSession($e);
+        $this->bootstrapSession($event);
         
-        $translator = $e->getApplication()->getServiceManager()->get('translator');
+        $translator = $event->getApplication()->getServiceManager()->get('translator');
         $translator->setLocale('en_US');
         setlocale(LC_TIME, 'en_US');
         
-        $application   = $e->getApplication();
+        $application   = $event->getApplication();
         $serviceManager = $application->getServiceManager();
         $auth = $serviceManager->get('BjyAuthorize\Service\Authorize');
 
@@ -58,10 +60,10 @@ class Module
         
         $sharedManager = $application->getEventManager()->getSharedManager();
         $sharedManager->attach('Zend\Mvc\Application', 'dispatch.error',
-                function($e) use ($serviceManager) {
-                    if ($e->getParam('exception')){
+                function($event) use ($serviceManager) {
+                    if ($event->getParam('exception')){
                         $emailService = $serviceManager->get('ErsBase\Service\EmailService');
-                        $emailService->sendExceptionEmail($e->getParam('exception'));
+                        $emailService->sendExceptionEmail($event->getParam('exception'));
                     }
                 }
             );
@@ -83,56 +85,58 @@ class Module
         });
     }
     
-    public function bootstrapSession($e)
+    public function bootstrapSession($event)
     {
         if(\Zend\Console\Console::isConsole()) {
             #echo "not starting session -> console".PHP_EOL;
             return;
         }
         
-        $sessionManager = $e->getApplication()
+        $sessionManager = $event->getApplication()
                     ->getServiceManager()
                     ->get('Zend\Session\SessionManager');
         $sessionManager->start();
         
-        #error_log(var_export($_SESSION, true));
-        
         $container = new Container('ers');
-        #error_log('session: '.$container->init);
-        if (!isset($container->init)) {
-            #error_log('initializing session ('.$container->init.')');
-            $serviceManager = $e->getApplication()->getServiceManager();
-            $request        = $serviceManager->get('Request');
+        if (isset($container->init)) {
+            return;
+        }
+        
+        $serviceManager = $event->getApplication()->getServiceManager();
+        $request        = $serviceManager->get('Request');
 
-            $sessionManager->regenerateId(true);
-            $container->init          = 1;
-            $container->remoteAddr    = $request->getServer()->get('REMOTE_ADDR');
-            $container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
-            
-            $config = $serviceManager->get('Config');
-            if (!isset($config['session'])) {
-                return;
+        $sessionManager->regenerateId(true);
+        $container->init          = 1;
+        $container->remoteAddr    = $request->getServer()->get('REMOTE_ADDR');
+        # not needed since we do not check this.
+        #$container->httpUserAgent = $request->getServer()->get('HTTP_USER_AGENT');
+
+        $config = $serviceManager->get('Config');
+        if (!isset($config['session'])) {
+            return;
+        }
+
+        $sessionConfig = $config['session'];
+        
+        if (! isset($sessionConfig['validators'])) {
+            return;
+        }
+
+        $chain   = $sessionManager->getValidatorChain();
+
+        foreach ($sessionConfig['validators'] as $validator) {
+            switch ($validator) {
+                case Validator\HttpUserAgent::class:
+                    $validator = new $validator($container->httpUserAgent);
+                    break;
+                case Validator\RemoteAddr::class:
+                    $validator  = new $validator($container->remoteAddr);
+                    break;
+                default:
+                    $validator = new $validator();
             }
 
-            $sessionConfig = $config['session'];
-            if (isset($sessionConfig['validators'])) {
-                $chain   = $sessionManager->getValidatorChain();
-
-                foreach ($sessionConfig['validators'] as $validator) {
-                    switch ($validator) {
-                        case 'Zend\Session\Validator\HttpUserAgent':
-                            $validator = new $validator($container->httpUserAgent);
-                            break;
-                        case 'Zend\Session\Validator\RemoteAddr':
-                            $validator  = new $validator($container->remoteAddr);
-                            break;
-                        default:
-                            $validator = new $validator();
-                    }
-
-                    $chain->attach('session.validate', array($validator, 'isValid'));
-                }
-            }
+            $chain->attach('session.validate', array($validator, 'isValid'));
         }
         
         $expiration_time = 3600;
@@ -147,13 +151,11 @@ class Module
             $container->getManager()->getStorage()->clear('ers');
             $container = new Container('ers');
             $container->init = 1;
-            $container->lifetime = time()+$expiration_time;
             $container->checkout = array();
             
             $container->getManager()->getStorage()->clear('cart');
-        } else {
-            $container->lifetime = time()+$expiration_time;
         }
+        $container->lifetime = time()+$expiration_time;
         
         if(!isset($container->currency)) {
             # TODO: put this into a CurrencyService
@@ -165,7 +167,7 @@ class Module
             
             $container->currency = 'EUR';
         }
-        $serviceManager = $e->getApplication()->getServiceManager();
+        
         $orderService = $serviceManager->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         if($order->getCurrency()->getShort() != $container->currency) {
@@ -227,43 +229,49 @@ class Module
 
                     return $logger;
                 },
-                'Zend\Session\SessionManager' => function ($serviceManager) {
-                    $config = $serviceManager->get('config');
-                    if (isset($config['session'])) {
-                        $session = $config['session'];
-
-                        $sessionConfig = null;
-                        if (isset($session['config'])) {
-                            $class = isset($session['config']['class'])  ? $session['config']['class'] : 'Zend\Session\Config\SessionConfig';
-                            $options = isset($session['config']['options']) ? $session['config']['options'] : array();
-                            $sessionConfig = new $class();
-                            $sessionConfig->setOptions($options);
-                        }
-
-                        $sessionStorage = null;
-                        if (isset($session['storage'])) {
-                            $class = $session['storage'];
-                            $sessionStorage = new $class();
-                        }
-
-                        $sessionSaveHandler = null;
-                        if (isset($session['save_handler'])) {
-                            // class should be fetched from service manager since it will require constructor arguments
-                            $sessionSaveHandler = $serviceManager->get($session['save_handler']);
-                        }
-
-                        $sessionManager = new SessionManager($sessionConfig, $sessionStorage, $sessionSaveHandler);
-
-                        if (isset($session['validators'])) {
-                            $chain = $sessionManager->getValidatorChain();
-                            foreach ($session['validators'] as $validator) {
-                                $validator = new $validator();
-                                $chain->attach('session.validate', array($validator, 'isValid'));
-                            }
-                        }
-                    } else {
+                SessionManager::class => function ($container) {
+                    $config = $container->get('config');
+                    if (! isset($config['session'])) {
                         $sessionManager = new SessionManager();
+                        Container::setDefaultManager($sessionManager);
+                        return $sessionManager;
                     }
+
+                    $session = $config['session'];
+
+                    $sessionConfig = null;
+                    if (isset($session['config'])) {
+                        $class = isset($session['config']['class'])
+                            ?  $session['config']['class']
+                            : SessionConfig::class;
+
+                        $options = isset($session['config']['options'])
+                            ?  $session['config']['options']
+                            : [];
+
+                        $sessionConfig = new $class();
+                        $sessionConfig->setOptions($options);
+                    }
+
+                    $sessionStorage = null;
+                    if (isset($session['storage'])) {
+                        $class = $session['storage'];
+                        $sessionStorage = new $class();
+                    }
+
+                    $sessionSaveHandler = null;
+                    if (isset($session['save_handler'])) {
+                        // class should be fetched from service manager
+                        // since it will require constructor arguments
+                        $sessionSaveHandler = $container->get($session['save_handler']);
+                    }
+
+                    $sessionManager = new SessionManager(
+                        $sessionConfig,
+                        $sessionStorage,
+                        $sessionSaveHandler
+                    );
+
                     Container::setDefaultManager($sessionManager);
                     return $sessionManager;
                 },

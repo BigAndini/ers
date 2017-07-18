@@ -185,13 +185,6 @@ class User implements InputFilterAwareInterface
                                 \Zend\Validator\Callback::INVALID_VALUE => 'There is already a person with this email address in the system.',
                             ),
                             'callback' => function($value, $context=array()) {
-                                /*if(
-                                    isset($context['session_id']) && 
-                                    is_numeric($context['session_id']) && 
-                                    $context['session_id'] != 0
-                                ) {
-                                    return true;
-                                }*/
                                 $entityManager = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 $user = $entityManager->getRepository('ErsBase\Entity\User')

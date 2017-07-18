@@ -75,16 +75,16 @@ class Order extends Base\Order
     private function genHash() {
         $alphabet = "0123456789ACDFGHKMNPRUVWXY";
         $memory = '';
-        $n = '';
+        $randNumber = '';
         #srand(time());
         srand(rand()*time());
         for ($i = 0; $i < $this->length; $i++) {
             
-            while($n == '' || $memory == $alphabet[$n]) {
-                $n = rand(0, strlen($alphabet)-1);
+            while($randNumber == '' || $memory == $alphabet[$randNumber]) {
+                $randNumber = rand(0, strlen($alphabet)-1);
             }
-            $memory = $alphabet[$n];
-            $code[$i] = $alphabet[$n];
+            $memory = $alphabet[$randNumber];
+            $code[$i] = $alphabet[$randNumber];
         }
         
         $this->setHashkey(implode($code).$this->genChecksum(implode($code)));
@@ -228,9 +228,9 @@ class Order extends Base\Order
      * 
      * @return Entity\Package
      */
-    public function getPackageByParticipantId($id) {
+    public function getPackageByParticipantId($participantId) {
         foreach($this->getPackages() as $package) {
-            if($package->getParticipant()->getId() == $id) {
+            if($package->getParticipant()->getId() == $participantId) {
                 return $package;
             }
         }
@@ -422,9 +422,9 @@ class Order extends Base\Order
      * @return Entity\User
      * @return false
      */
-    public function getParticipantById($id) {
+    public function getParticipantById($participantId) {
         foreach($this->getParticipants() as $participant) {
-            if($participant->getId() == $id) {
+            if($participant->getId() == $participantId) {
                 return $participant;
             }
         }
