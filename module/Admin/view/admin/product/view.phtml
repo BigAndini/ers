@@ -12,7 +12,7 @@ $this->headTitle($title);
     </span>
 </h1>
 <div class="product-info-field">
-    <p>Product_id: <?php echo $product->getId(); ?></p>
+    <p>product_id: <?php echo $product->getId(); ?></p>
     <p>order: <?php echo $product->getPosition(); ?></p>
     <p>short description: <?php echo $product->getShortDescription(); ?></p>
     <p>long description: <?php echo $product->getLongDescription(); ?></p>
@@ -58,16 +58,16 @@ $this->headTitle($title);
                     <td><?php echo $value->getValue(); ?></td>
                     <td>
                         <?php if($value->getVisible()): ?>
-                            <i class="fa fa-eye"></i>
+                            <i class="fa fa-check"></i>
                         <?php else: ?>
-                            <i class="fa fa-eye-slash"></i>
+                            <i class="fa fa-times"></i>
                         <?php endif; ?>
                     </td>
                     <td>
                         <?php if($value->getDisabled()): ?>
-                            <i class="fa fa-eye-slash"></i>
+                            <i class="fa fa-check"></i>
                         <?php else: ?>
-                            <i class="fa fa-eye"></i>
+                            <i class="fa fa-times"></i>
                         <?php endif; ?>
                     </td>
                     <td>
@@ -127,7 +127,7 @@ $this->headTitle($title);
         </span>
     </h3>
     <div>
-        <p>Product_id: <?php echo $subproduct->getId(); ?></p>
+        <p>product_id: <?php echo $subproduct->getId(); ?></p>
         <p>order: <?php echo $subproduct->getPosition(); ?></p>
         <p>short description: <?php echo $subproduct->getShortDescription(); ?></p>
         <p>long description: <?php echo $subproduct->getLongDescription(); ?></p>

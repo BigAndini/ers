@@ -67,6 +67,19 @@ class Product extends Form
         ));
         $this->add(array(
             'type' => 'checkbox',
+            'name' => 'calculated_as_subproduct',
+            'attributes' => array(
+                'class' => 'checkbox',
+            ),
+            'options' => array(
+                'label' => 'calculated as subproduct (if this is a subproduct, should the price be calculated on top of the main product?)',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        $this->add(array(
+            'type' => 'checkbox',
             'name' => 'visible_on_eticket',
             'attributes' => array(
                 'class' => 'checkbox',

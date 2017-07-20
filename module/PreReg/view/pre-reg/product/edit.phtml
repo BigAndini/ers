@@ -88,8 +88,8 @@
                         </div>
                     </div>
                     
-                    <?php $form->get('Product_id')->setAttribute('value', $product->getId());
-                    echo $this->formHidden($form->get('Product_id'));
+                    <?php $form->get('product_id')->setAttribute('value', $product->getId());
+                    echo $this->formHidden($form->get('product_id'));
                     #$prices = $product->getProductPrices();
 
                     /*for($i = 0; $i<$form->getVariantCounter(); $i++) {

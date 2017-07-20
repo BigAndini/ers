@@ -26,14 +26,14 @@ class ProductPackage extends Form
         ));
         
         $this->add(array(
-            'name' => 'Product_id',
+            'name' => 'product_id',
             'attributes' => array(
                 'type'  => 'hidden',
             ),
         ));
         
         $this->add(array(
-            'name' => 'SubProduct_id',
+            'name' => 'sub_product_id',
             'type'  => 'Zend\Form\Element\Select',
             'attributes' => array(
                 'required' => 'required', 

@@ -61,6 +61,7 @@ class Module implements ViewHelperProviderInterface
                 'url' => function ($helperPluginManager) {
                     $serviceLocator = $helperPluginManager->getServiceLocator();
                     $config = $serviceLocator->get('Config');
+                    $settingService = $serviceLocator->get('ErsBase\Service\SettingService');
 
                     $viewHelper =  new UrlHelper();
 
@@ -71,10 +72,15 @@ class Module implements ViewHelperProviderInterface
 
                     if (Console::isConsole()) {
                         $requestUri = new HttpUri();
-                        $requestUri->setHost($config['website']['host'])
+                        /*$requestUri->setHost($config['website']['host'])
                             ->setScheme($config['website']['scheme']);
                         $router->setRequestUri($requestUri);
-                        $router->setBaseUrl($config['website']['path']);
+                        $router->setBaseUrl($config['website']['path']);*/
+                        
+                        $requestUri->setHost($settingService->get('website.host'))
+                            ->setScheme($settingService->get('website.scheme'));
+                        $router->setRequestUri($requestUri);
+                        $router->setBaseUrl($settingService->get('website.path'));
                     }
 
                     $viewHelper->setRouter($router);
@@ -110,11 +116,15 @@ class Module implements ViewHelperProviderInterface
             'factories' => array(
                 'Logger' => function($sm){
                     $logger = new \Zend\Log\Logger;
-                    if(!is_dir(getcwd().'/data/log')) {
-                        mkdir(getcwd().'/data/log');
+                    if(!is_dir(getcwd().'/data/logs')) {
+                        mkdir(getcwd().'/data/logs');
                     }
-                    $writer = new \Zend\Log\Writer\Stream('./data/log/'.date('Y-m-d').'-zend-error.log');
+                    $writer = new \Zend\Log\Writer\Stream('./data/logs/'.date('Y-m-d').'-zend.log');
                     $logger->addWriter($writer);
+                    
+                    #$filter = new Zend\Log\Filter\Priority(Logger::CRIT);
+                    #$writer->addFilter($filter);
+
 
                     return $logger;
                 },

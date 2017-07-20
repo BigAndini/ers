@@ -92,6 +92,11 @@ class Module
                     $emailService->setServiceLocator($sm);
                     return $emailService;
                 },
+                'ErsBase\Service\SettingService' => function ($sm) {
+                    $settingService = new Service\SettingService();
+                    $settingService->setServiceLocator($sm);
+                    return $settingService;
+                },
                 'ErsBase\Service\CloneService' => function ($sm) {
                     $service = new Service\CloneService();
                     $service->setServiceLocator($sm);

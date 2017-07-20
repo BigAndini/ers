@@ -15,17 +15,78 @@ use Doctrine\ORM\Mapping as ORM;
  * ErsBase\Entity\ProductPrice
  *
  * @ORM\Entity()
- * @ORM\Table(name="product_price", indexes={@ORM\Index(name="fk_ProductPrice_Product1_idx", columns={"Product_id"}), @ORM\Index(name="fk_ProductPrice_Deadline1_idx", columns={"Deadline_id"}), @ORM\Index(name="fk_ProductPrice_Counter1_idx", columns={"Counter_id"}), @ORM\Index(name="fk_ProductPrice_Currency1_idx", columns={"Currency_id"}), @ORM\Index(name="fk_ProductPrice_Agegroup1_idx", columns={"Agegroup_id"})})
+ * @ORM\Table(name="`product_price`", indexes={@ORM\Index(name="fk_ProductPrice_Product1_idx", columns={"`product_id`"}), @ORM\Index(name="fk_ProductPrice_Deadline1_idx", columns={"`Deadline_id`"}), @ORM\Index(name="fk_ProductPrice_Counter1_idx", columns={"`Counter_id`"}), @ORM\Index(name="fk_ProductPrice_Currency1_idx", columns={"`Currency_id`"}), @ORM\Index(name="fk_ProductPrice_Agegroup1_idx", columns={"`Agegroup_id`"})})
  * @ORM\HasLifecycleCallbacks
  */
 class ProductPrice extends Base\ProductPrice
 {
+    protected $price_calculated;
+    
+    protected $full_charge;
+
+    public function setPriceCalculated($price_calculated) {
+        $this->price_calculated = $price_calculated;
+        
+        return $this;
+    }
+    public function getPriceCalculated() {
+        return $this->price_calculated;
+    }
+    
     public function __construct()
     {
+        $this->setPriceCalculated(false);
         parent::__construct();
     }
     
     public function __toString() {
         return $this->getCharge();
+    }
+    
+    public function setFullCharge($full_charge) {
+        $this->full_charge = $full_charge;
+        
+        return $this;
+    }
+    
+    public function getFullCharge() {
+        if(!$this->getPriceCalculated()) {
+            $this->setPriceCalculated(true);
+            $product = $this->getProduct();
+            $charge = $this->getCharge();
+            
+            #error_log('base charge: '.$this->getBaseCharge());
+            #error_log('initial charge: '.$charge.' ('.$product->getName().')');
+            if($product) {
+                foreach($product->getChildProducts() as $productPackage) {
+                    $childProduct = $productPackage->getSubProduct();
+                    #error_log('found child product: '.$childProduct->getName());
+                    $childProduct->getName(); /* this is needed for whatever reason to enable getCalculatedAsSubproduct correctly */
+                    if($childProduct->getCalculatedAsSubproduct() == true) {
+                        /*if($this->getAgegroup()) {
+                            error_log('agegroup: '.$this->getAgegroup()->getName());
+                        } else {
+                            error_log('no agegroup');
+                        }
+                        if($this->getDeadline()) {
+                            error_log('deadline: '.$this->getDeadline()->getName());
+                        } else {
+                            error_log('no deadline');
+                        }*/
+
+                        #error_log('currency: '.$this->getCurrency()->getName());
+                        $childPrice = $childProduct->getProductPrice($this->getAgegroup(), $this->getDeadline(), $this->getCurrency(), true);
+                        $charge += $childPrice->getCharge();
+                        #error_log('child charge: '.$childPrice->getCharge().' ('.$childProduct->getName().')');
+                        #error_log('local charge: '.$charge);
+                    }
+                }
+            }
+            #error_log('return charge: '.$charge);
+            $this->setFullCharge($charge);
+            #error_log('--------------END CALCULATION-------------');
+        }
+        
+        return $charge;
     }
 }

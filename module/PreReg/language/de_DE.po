@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Event Registration System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-21 17:10+0200\n"
-"PO-Revision-Date: 2016-10-21 17:10+0200\n"
+"POT-Creation-Date: 2017-07-17 22:49+0200\n"
+"PO-Revision-Date: 2017-07-17 22:49+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ERS Team <info@inbaz.org>\n"
 "Language: de_DE\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
@@ -34,60 +34,40 @@ msgstr "Meine Personen"
 msgid "My Shopping Cart"
 msgstr "Mein Einkaufswagen"
 
-#: ../config/module.config.php:50
-msgid "Login"
-msgstr "Login"
-
-#: ../config/module.config.php:62 ../view/pre-reg/profile/index.phtml:3
-msgid "My Profile"
-msgstr "Mein Profil"
-
-#: ../config/module.config.php:68
-msgid "Logout"
-msgstr "Logout"
-
-#: ../config/module.config.php:74
-msgid "AdminPanel"
-msgstr "Admin Zugang"
-
-#: ../config/module.config.php:79
-msgid "Onsite"
-msgstr "Onsite"
-
-#: ../config/module.config.php:92 ../view/pre-reg/order/checkout.phtml:61
+#: ../config/module.config.php:94 ../view/pre-reg/order/checkout.phtml:61
 msgid "Shopping Cart"
 msgstr "Einkaufswagen"
 
-#: ../config/module.config.php:98 ../view/pre-reg/order/checkout.phtml:28
-#: ../view/pre-reg/order/view.phtml:12
+#: ../config/module.config.php:100 ../view/pre-reg/order/checkout.phtml:28
+#: ../view/pre-reg/order/view.phtml:15
 msgid "Buyer"
 msgstr "Käufer"
 
-#: ../config/module.config.php:104
+#: ../config/module.config.php:106
 msgid "Payment type"
-msgstr "Bezahlart "
+msgstr "Zahlart"
 
-#: ../config/module.config.php:110
+#: ../config/module.config.php:112
 msgid "Checkout"
 msgstr "Bestellung"
 
-#: ../config/module.config.php:118
+#: ../config/module.config.php:120
 msgid "Change my user data"
 msgstr "Meine Benutzerdaten ändern"
 
-#: ../config/module.config.php:124
+#: ../config/module.config.php:126
 msgid "Change my password"
 msgstr "Mein Passwort ändern"
 
-#: ../config/module.config.php:130
+#: ../config/module.config.php:132
 msgid "View tickets"
 msgstr "Tickets ansehen"
 
-#: ../config/module.config.php:136
+#: ../config/module.config.php:138
 msgid "My Persons"
 msgstr "Meine Personen"
 
-#: ../src/PreReg/Controller/CartController.php:237
+#: ../src/PreReg/Controller/CartController.php:52
 msgid "Clear Shopping Cart"
 msgstr "Einkaufswagen löschen "
 
@@ -95,16 +75,16 @@ msgstr "Einkaufswagen löschen "
 msgid "Register now!"
 msgstr "Jetzt anmelden! "
 
-#: ../src/PreReg/Controller/ParticipantController.php:226
-#: ../src/PreReg/Controller/ProductController.php:500
+#: ../src/PreReg/Controller/ParticipantController.php:230
+#: ../src/PreReg/Controller/ProductController.php:526
 msgid "Delete"
 msgstr "löschen"
 
-#: ../src/PreReg/Controller/ProductController.php:390
+#: ../src/PreReg/Controller/ProductController.php:418
 msgid "Add to Cart"
 msgstr "in den Einkaufswagen"
 
-#: ../src/PreReg/Controller/ProfileController.php:141
+#: ../src/PreReg/Controller/ProfileController.php:142
 msgid "Event Registration System: Password Request Link"
 msgstr "Event Registration System: Passwort ändern Link"
 
@@ -169,7 +149,7 @@ msgid "Confirm Password"
 msgstr "Passwort bestätigen"
 
 #: ../src/PreReg/Form/ChangePassword.php:90
-#: ../src/PreReg/Form/Participant.php:146
+#: ../src/PreReg/Form/Participant.php:164
 #: ../src/PreReg/Form/ResetPassword.php:64
 msgid "Save"
 msgstr "Speichern"
@@ -232,19 +212,20 @@ msgstr "Ablaufdatum"
 msgid "pay now"
 msgstr "Jetzt bezahlen"
 
+#: ../src/PreReg/Form/CurrencyChooser.php:68
+#: ../src/PreReg/Form/ETicketSelect.php:65
+#: ../src/PreReg/Form/ProductView.php:96
+msgid "Go"
+msgstr "Los"
+
 #: ../src/PreReg/Form/ETicketSelect.php:34
 msgid "Language"
 msgstr "Sprache"
 
 #: ../src/PreReg/Form/ETicketSelect.php:49
-#: ../src/PreReg/Form/ProductView.php:82 ../view/pre-reg/product/edit.phtml:50
+#: ../src/PreReg/Form/ProductView.php:82 ../view/pre-reg/product/edit.phtml:51
 msgid "Agegroup"
 msgstr "Altersgruppe"
-
-#: ../src/PreReg/Form/ETicketSelect.php:65
-#: ../src/PreReg/Form/ProductView.php:96
-msgid "Go"
-msgstr "Los"
 
 #: ../src/PreReg/Form/Participant.php:89 ../src/PreReg/Form/User.php:71
 msgid "Birthday..."
@@ -259,35 +240,39 @@ msgid "Email (optional)"
 msgstr "E-Mail (optional)"
 
 #: ../src/PreReg/Form/Participant.php:130
+msgid "I'd like to receive information about the next EJC."
+msgstr ""
+
+#: ../src/PreReg/Form/Participant.php:148
 msgid "Where are you from?"
 msgstr "Wo kommst du her?"
 
-#: ../src/PreReg/Form/Participant.php:186
-#: ../src/PreReg/Form/Participant.php:222
+#: ../src/PreReg/Form/Participant.php:204
+#: ../src/PreReg/Form/Participant.php:240
 msgid ""
 "The provided name contains invalid character. These charaters are not "
 "allowed:"
 msgstr ""
 "Der angegebene Name beinhaltet ungültige Zeichen. Diese Zeichen sind erlaubt:"
 
-#: ../src/PreReg/Form/Participant.php:256
+#: ../src/PreReg/Form/Participant.php:274
 msgid "Please choose a valid birthday"
 msgstr "Bitte ein gültiges Geburtsdatum angeben"
 
-#: ../src/PreReg/Form/Participant.php:288 ../src/PreReg/Form/User.php:179
+#: ../src/PreReg/Form/Participant.php:306 ../src/PreReg/Form/User.php:179
 msgid "Email address format is not invalid"
 msgstr "Das Format der E-Mail Adresse ist ungültig"
 
-#: ../src/PreReg/Form/Participant.php:297
+#: ../src/PreReg/Form/Participant.php:315
 msgid ""
 "A person with this email address already exists. To make changes to your "
-"existing order contact prereg@eja.net or choose another e-mail"
+"existing order contact anmeldung@circulum.de or choose another e-mail"
 msgstr ""
 "Eine andere Person mit dieser E-Mail Adresse ist bereits im System. Um die "
 "bestehende Bestellung zu ändern kontaktiere bitte info@muenchen-con.de oder "
-"wähle eine andere E-Mail Adresse."
+"wähle eine andere E-Mail Adresse"
 
-#: ../src/PreReg/Form/PaymentType.php:36 ../view/pre-reg/order/payment.phtml:35
+#: ../src/PreReg/Form/PaymentType.php:36 ../view/pre-reg/order/payment.phtml:37
 msgid "Choose Payment type"
 msgstr "Bezahlmethode auswählen"
 
@@ -295,15 +280,15 @@ msgstr "Bezahlmethode auswählen"
 msgid "This ticket belongs to:"
 msgstr "Dieses Ticket gehört:"
 
-#: ../src/PreReg/Form/ProductView.php:199
+#: ../src/PreReg/Form/ProductView.php:210
 msgid "no"
 msgstr "nein"
 
-#: ../src/PreReg/Form/ProductView.php:254
+#: ../src/PreReg/Form/ProductView.php:265
 msgid "Please select a person."
 msgstr "Bitte wähle eine Person. "
 
-#: ../src/PreReg/Form/ProductView.php:274
+#: ../src/PreReg/Form/ProductView.php:285
 msgid ""
 "Unable to add personalized product to person without birthdate. Please add "
 "date of birth in My Person list."
@@ -312,15 +297,15 @@ msgstr ""
 "kein Geburtsdatum angegeben wurde. Bitte passe das Geburtsdatum unter Meine "
 "Personen an."
 
-#: ../src/PreReg/Form/ProductView.php:307
+#: ../src/PreReg/Form/ProductView.php:322
 msgid "Please select a agegroup."
 msgstr "Bitte eine Altersgruppe wählen"
 
-#: ../src/PreReg/Form/ProductView.php:349
+#: ../src/PreReg/Form/ProductView.php:364
 msgid "Please select a product variant."
 msgstr "Bitte eine Produktvariante wählen"
 
-#: ../src/PreReg/Form/Register.php:34 ../view/pre-reg/order/buyer.phtml:42
+#: ../src/PreReg/Form/Register.php:34 ../view/pre-reg/order/buyer.phtml:39
 msgid "Choose Buyer"
 msgstr "Käufer bestimmen"
 
@@ -353,43 +338,44 @@ msgstr "Geburtsdatum"
 msgid "Ok"
 msgstr "Ok"
 
-#: ../view/email/eticket-participant.phtml:13
-#: ../view/email/order-confirmation.phtml:17
+#: ../view/email/eticket-participant.phtml:16
+#: ../view/email/order-confirmation.phtml:12
 #: ../view/email/payment-reminder.phtml:8
 #: ../view/pre-reg/order/checkout.phtml:203
 msgid "terms and conditions"
 msgstr "Geschäftsbedingungen"
 
-#: ../view/email/eticket-participant.phtml:54
-#: ../view/email/order-confirmation.phtml:30
+#: ../view/email/eticket-participant.phtml:57
+#: ../view/email/order-confirmation.phtml:26
 #: ../view/email/payment-reminder.phtml:51
 #, php-format
 msgid "Dear %s %s,"
 msgstr "Hallo %s %s,"
 
-#: ../view/email/eticket-participant.phtml:57
+#: ../view/email/eticket-participant.phtml:60
 #, php-format
-msgid "thank you again for registering for %s."
+msgid "thank you again for registering for %s!"
 msgstr "Danke für deine Anmeldung für die %s."
 
-#: ../view/email/eticket-participant.phtml:59
+#: ../view/email/eticket-participant.phtml:62
 #, php-format
 msgid ""
-"We received the payment for your oder with ID %s from %s. The payment to "
-"your order is now confirmed. You find your e-ticket attached to this email."
+"We received the payment for your order with ID %s from %s, so your order is "
+"now confirmed. You find your e-ticket attached to this email."
 msgstr ""
 "Wir haben die Bezahlung für deine Bestellung mit der Nummer %s vom %s "
-"erhalten. Du findest dein E-Ticket im Anhang dieser E-Mail. "
+"erhalten. Du findest dein E-Ticket im Anhang dieser E-Mail."
 
-#: ../view/email/eticket-participant.phtml:65
+#: ../view/email/eticket-participant.phtml:68
 #, php-format
 msgid ""
-"First of all, <strong>please make sure that your name and date of birth on "
-"the e-ticket are identical to your name and date of birth on your identity "
-"card</strong>. If they aren’t, please send an email with your order number "
-"and the updated data to %s. We will then change the data and send you an up-"
-"to-date e-ticket. Please note that you cannot register onsite if your name "
-"and date of birth don’t match your ID card."
+"<strong>Please make sure that your name and date of birth on the e-ticket "
+"are identical to your name and date of birth on your identity card.</strong> "
+"If they are not identical, please send us an email with your order number "
+"and your correct name and date of birth to %s. We will then send you a new "
+"version of your e-ticket with the corrected data. Please note that you "
+"cannot register onsite if your name and date of birth do not match your ID "
+"card."
 msgstr ""
 "Stelle zunächst bitte sicher, dass <strong>dein Name und Geburtsdatum auf "
 "dem E-Ticket und auf deinem Ausweis identisch sind</strong>. Falls du eine "
@@ -399,126 +385,164 @@ msgstr ""
 "nicht anmelden kannst, wenn Name und Geburtsdatum auf dem E-Ticket nicht mit "
 "den Daten auf deinem Ausweis übereinstimmen."
 
-#: ../view/email/eticket-participant.phtml:69
-msgid ""
-"Please bring the e-ticket and a valid ID card to the event and present both "
-"documents at the registration desk. You can either print the e-ticket or "
-"present it on an electronic device."
-msgstr ""
-"Bitte bringe dein E-Ticket und einen gültigen Ausweis zur Veranstaltung mit "
-"und lege beides an der Anmeldung vor. Du kannst das E-Ticket ausdrucken oder "
-"auch mit Hilfe eines elektronischen Geräts vorzeigen."
-
 #: ../view/email/eticket-participant.phtml:72
 msgid ""
+"<strong>Please bring the e-ticket and a valid ID card to the event and "
+"present both documents at the registration desk.</strong> We recommend to "
+"print the e-ticket, but you can also present it on an electronic device."
+msgstr ""
+"<strong>Bitte bringe dein E-Ticket und einen gültigen Ausweis zur "
+"Veranstaltung mit und lege beides an der Anmeldung vor.</strong> Du kannst "
+"das E-Ticket ausdrucken oder auch mit Hilfe eines elektronischen Geräts "
+"vorzeigen."
+
+#: ../view/email/eticket-participant.phtml:75
+msgid ""
 "Please bring the e-ticket to the event and present the document at the "
-"registration desk. You can either print the e-ticket or present it on an "
-"electronic device."
+"registration desk. We recommend to print the e-ticket, but you can also "
+"present it on an electronic device."
 msgstr ""
 "Bitte bringe dein E-Ticket zur Veranstaltung mit und zeige es an der "
 "Anmeldung vor. Du kannst das E-Ticket ausdrucken oder auch mit Hilfe eines "
 "elektronischen Geräts vorzeigen."
 
-#: ../view/email/eticket-participant.phtml:75
+#: ../view/email/eticket-participant.phtml:79
 #, php-format
-msgid ""
-"To be able to read the documents, you need to install Adobe Acrobat Reader, "
-"which you can download here: %s."
+msgid "For the latest information about %s, stay tuned to %s"
 msgstr ""
-"Um die Dokumente öffnen zu können, brauchst du den Adobe Acrobat Reader, den "
-"du hier herunterladen kannst: %s."
 
-#: ../view/email/eticket-participant.phtml:78
+#: ../view/email/eticket-participant.phtml:83
 #, php-format
-msgid ""
-"By registering for this event, you agree to the terms and conditions of "
-"attendance and participation as stated on our website at %s."
-msgstr "Durch die Anmeldung zu unserer Veranstaltung stimmst du den %s zu."
-
-#: ../view/email/eticket-participant.phtml:80
-#, php-format
-msgid ""
-"For the latest information about %s stay tuned to %s. If you have any "
-"further questions concerning your e-ticket, please contact us via %s."
+msgid " or to the facebook page at %s."
 msgstr ""
-"Um die neuesten Informationen zur %s zu erhalten, besuche %s. Falls du noch "
-"Fragen zu deinem E-Ticket hast, kannst du uns unter %s kontaktieren. "
 
-#: ../view/email/eticket-participant.phtml:86
+#: ../view/email/eticket-participant.phtml:91
+#, php-format
+msgid "If you have any question about %s or your e-ticket, "
+msgstr ""
+
+#: ../view/email/eticket-participant.phtml:94
+#, php-format
 msgid ""
-"We wish you a pleasant journey and we’re looking forward to welcoming you "
-"soon!"
-msgstr "Wir wünschen dir eine gute Anfahrt und freuen uns auf dich!"
+"please check the %s first – your question might already be answered there! "
+"If it is not, "
+msgstr ""
 
-#: ../view/email/eticket-participant.phtml:88
+#: ../view/email/eticket-participant.phtml:97
+#, php-format
+msgid ""
+"please contact the %s team via %s (for questions regarding EJC itself) or "
+"the EJA preregistration coordinator via %s (for questions about your e-"
+"ticket)."
+msgstr ""
+
+#: ../view/email/eticket-participant.phtml:102
+#, php-format
+msgid ""
+"We wish you a pleasant journey to %s and we look forward to meeting you at "
+"%s... it's gonna be awesome!"
+msgstr ""
+"Wir wünschen dir eine gute Anfahrt nach %s und freuen uns auf dich auf der "
+"%s zu treffen!"
+
+#: ../view/email/eticket-participant.phtml:106
 #: ../view/email/payment-reminder.phtml:67
-#: ../view/email/request-password.phtml:25 ../view/pdf/eticket.phtml:191
+#: ../view/email/request-password.phtml:25 ../view/pdf/eticket.phtml:200
 msgid "Best regards,"
 msgstr "Viele Grüße"
+
+#: ../view/email/eticket-participant.phtml:110
+#, php-format
+msgid ""
+"<i>To be able to read the attached documents, you need to install Adobe "
+"Acrobat Reader, which you can download here: %s.</i>"
+msgstr ""
+"<i>Um die Dokumente öffnen zu können, brauchst du den Adobe Acrobat Reader, "
+"den du hier herunterladen kannst: %s.</i>"
+
+#: ../view/email/eticket-participant.phtml:113
+#, php-format
+msgid ""
+"<i>By registering for this event, you agree to the terms and conditions of "
+"attendance and participation as stated on our website at %s.</i>"
+msgstr ""
+"<i>Durch die Anmeldung zu unserer Veranstaltung stimmst du den %s zu.</i>"
 
 #: ../view/email/exception.phtml:14 ../view/error/index.phtml:1
 msgid "An error occurred"
 msgstr "Ein Fehler ist aufgetreten"
 
 #: ../view/email/exception.phtml:22 ../view/error/404.phtml:65
-#: ../view/error/index.phtml:19
+#: ../view/error/index.phtml:23
 msgid "Additional information"
 msgstr "Zusätzliche Information"
 
 #: ../view/email/exception.phtml:25 ../view/email/exception.phtml:49
 #: ../view/error/404.phtml:68 ../view/error/404.phtml:92
-#: ../view/error/index.phtml:22 ../view/error/index.phtml:46
+#: ../view/error/index.phtml:26 ../view/error/index.phtml:50
 msgid "File"
 msgstr "Datei"
 
 #: ../view/email/exception.phtml:29 ../view/email/exception.phtml:53
 #: ../view/error/404.phtml:72 ../view/error/404.phtml:96
-#: ../view/error/index.phtml:26 ../view/error/index.phtml:50
+#: ../view/error/index.phtml:30 ../view/error/index.phtml:54
 msgid "Message"
 msgstr "Nachricht "
 
 #: ../view/email/exception.phtml:33 ../view/email/exception.phtml:57
 #: ../view/error/404.phtml:76 ../view/error/404.phtml:100
-#: ../view/error/index.phtml:30 ../view/error/index.phtml:54
+#: ../view/error/index.phtml:34 ../view/error/index.phtml:58
 msgid "Stack trace"
 msgstr "Stapelüberwachung"
 
 #: ../view/email/exception.phtml:43 ../view/error/404.phtml:86
-#: ../view/error/index.phtml:40
+#: ../view/error/index.phtml:44
 msgid "Previous exceptions"
 msgstr "Vorherige Ausnahme"
 
 #: ../view/email/exception.phtml:70 ../view/error/404.phtml:115
-#: ../view/error/index.phtml:69
+#: ../view/error/index.phtml:73
 msgid "No Exception available"
 msgstr "Es ist keine Ausnahme verfügbar"
 
-#: ../view/email/order-confirmation.phtml:12
+#: ../view/email/order-confirmation.phtml:7
 msgid "your order"
 msgstr "deine Bestellung"
 
-#: ../view/email/order-confirmation.phtml:36
+#: ../view/email/order-confirmation.phtml:32
 #, php-format
-msgid "This is the confirmation for %s from %s with the order ID %s."
-msgstr "Dies ist die Bestätigung für %s vom %s mit der Bestellnummer %s"
+msgid "This is the summary for %s from %s with the order ID %s."
+msgstr "Dies ist die Bestätigung für %s vom %s mit der Bestellnummer %s."
 
-#: ../view/email/order-confirmation.phtml:49
+#: ../view/email/order-confirmation.phtml:38
+msgid ""
+"Your order is not confirmed until we receive your payment. Once we receive "
+"payment you will be sent your E-ticket, please allow 14 days for money "
+"transfer and processing"
+msgstr ""
+"Deine Bestellung ist bestätigt bis wir deine Zahlung erhalten haben. Sobald "
+"wir deine Zahlung erhalten haben senden wir dir dein E-Ticket zu. Wir "
+"brauchen zwischen 7 und 14 Tagen, um deine Zahlung deiner Bestellung "
+"zuzuordnen"
+
+#: ../view/email/order-confirmation.phtml:47
 #, php-format
 msgid "Thank you for registering for the %s!"
 msgstr "Danke für deine Anmeldung zur %s"
 
-#: ../view/email/order-confirmation.phtml:51
+#: ../view/email/order-confirmation.phtml:49
 #, php-format
 msgid "You've chosen %s as payment method."
 msgstr "Du hast %s als Bezahlart ausgewählt. "
 
-#: ../view/email/order-confirmation.phtml:57
+#: ../view/email/order-confirmation.phtml:55
 msgid ""
-"To complete your order, we need to receive your bank transfer within 14 days."
+"To complete your order, we need to receive your bank transfer within 7 days."
 msgstr ""
-"Zu deiner Bestellung benötigen wir eine Überweisung innerhalb von 14 Tagen. "
+"Zu deiner Bestellung benötigen wir eine Überweisung innerhalb von 7 Tagen."
 
-#: ../view/email/order-confirmation.phtml:61
+#: ../view/email/order-confirmation.phtml:59
+#: ../view/email/order-confirmation.phtml:67
 #, php-format
 msgid ""
 "To see if we have already received your payment, you can visit the following "
@@ -527,11 +551,19 @@ msgstr ""
 "Ob wir deine Bezahlung bereits erhalten haben, kannst du unter folgendem "
 "link überprüfen: %s"
 
-#: ../view/email/order-confirmation.phtml:110
+#: ../view/email/order-confirmation.phtml:63
+msgid ""
+"To complete your order, we need to receive your bank transfer within 14 days."
+msgstr ""
+"Bitte überweise das Geld innerhalb der nächsten 7 Tage. Sollte Dir ein "
+"Überweisung nicht möglich sein, dann melde Dich bitte unter "
+"anmeldung@circulum.de bei uns."
+
+#: ../view/email/order-confirmation.phtml:115
 msgid "We should have received your payment by now."
 msgstr "Wir sollten deine Bezahlung jetzt erhalten haben. "
 
-#: ../view/email/order-confirmation.phtml:111
+#: ../view/email/order-confirmation.phtml:116
 msgid ""
 "In case your payment was not successful, you can restart your\n"
 "            PayPal payment via the following link:"
@@ -539,71 +571,43 @@ msgstr ""
 "Falls deine Bezahlung nicht erfolgreich war, kannst du deine PayPal "
 "Bezahlung über diesen link nochmal starten: %s"
 
-#: ../view/email/order-confirmation.phtml:116
+#: ../view/email/order-confirmation.phtml:121
 msgid "Your order details"
 msgstr "Details zu deiner Bestellung"
 
-#: ../view/email/order-confirmation.phtml:121
+#: ../view/email/order-confirmation.phtml:126
 #, php-format
 msgid ""
-"Please consider our general %s which are attached to this email.\n"
-"        To be able to read the document, you need to install Adobe Acrobat "
-"Reader, which you can download here:"
+"Please consider our general %s. To be able to read the document, you need to "
+"install Adobe Acrobat Reader, which you can download here:"
 msgstr ""
-"Bitte beachte unsere allgemeinen %s, die du im Anhang dieser E-Mail findest. "
+"Bitte beachte unsere allgemeinen %s. Um das Dokument zu öffnen brauchst du "
+"den Adobe Reader, den du hier herunterladen kannst:"
 
-#: ../view/email/order-confirmation.phtml:127
+#: ../view/email/order-confirmation.phtml:131
 #, php-format
 msgid ""
 "Your E-Tickets and further information concerning the %s will be delivered "
-"in another email\n"
-"        as soon as we start distributing the E-Tickets and your payment has "
-"been confirmed."
+"in another email as soon as we start distributing the E-Tickets and your "
+"payment has been confirmed."
 msgstr ""
 "Deine E-Tickets und weitere Informationen bezüglich der %s erhältst du in "
 "einer weiteren E-Mail, sobald der Versand der E-Tickets begonnen hat und "
-"deine Bezahlung bestätigt ist. "
+"deine Bezahlung bestätigt ist."
 
-#: ../view/email/order-confirmation.phtml:131
+#: ../view/email/order-confirmation.phtml:134
 msgid "Regards,"
 msgstr "Viele Grüße, "
 
-#: ../view/email/order-confirmation.phtml:133
+#: ../view/email/order-confirmation.phtml:136
 #, php-format
-msgid "Your European Juggling Association and the local %s organizers."
-msgstr "Euer %s Orgateam "
+msgid "Your European Juggling Association and the local %s organisers."
+msgstr "Euer %s Orgateam"
 
-#: ../view/email/order-confirmation.phtml:137
+#: ../view/email/order-confirmation.phtml:140
 #, php-format
 msgid "You purchased the following items (ordered by %s %s):"
 msgstr "Du hast die folgenden Artikel gekauft (bestellt von %s %s)"
-
-#: ../view/email/order-confirmation.phtml:146
-#, php-format
-msgid ""
-"This mail was sent to you by the Event Registration System (ERS),\n"
-"        operated by the European Juggling Association (EJA) on\n"
-"        behalf of %s."
-msgstr ""
-"Diese E-Mail wurde dir  im Namen von %s vom Event Registration System (ERS) "
-"verschickt, das von der European Juggling Association (EJA) betrieben wird. "
-
-#: ../view/email/order-confirmation.phtml:150
-#, php-format
-msgid ""
-"If you have any questions about your pre-registration,\n"
-"        please contact the EJA pre-registration coordinator\n"
-"        at %s."
-msgstr ""
-"Wenn du Fragen zu unserer Voranmeldung hast, kontaktiere uns bitte unter %s"
-
-#: ../view/email/order-confirmation.phtml:154
-#, php-format
-msgid ""
-"For more information about %s,\n"
-"        please visit %s\n"
-"        or contact %s."
-msgstr "Für mehr Informationen zur %s, besuche %s oder kontaktiere %s. "
 
 #: ../view/email/payment-reminder.phtml:55
 #, php-format
@@ -705,53 +709,73 @@ msgstr "Controller"
 msgid "resolves to %s"
 msgstr "wird aufgelöst in %s"
 
-#: ../view/partial/banktransfer-info.phtml:7
-msgid ""
-"Please transfer the amount by SEPA bank transfer to the following account:"
+#: ../view/partial/eticket-package-overview.phtml:67
+msgid "Separate"
+msgstr "Separates"
+
+#: ../view/partial/eticket-package-overview.phtml:76
+msgid "separate"
+msgstr "separates"
+
+#: ../view/partial/sepa-banktransfer-info.phtml:3
+msgid "There is no order to show bank transfer details for"
+msgstr ""
+
+#: ../view/partial/sepa-banktransfer-info.phtml:9
+#: ../view/partial/ukbt-banktransfer-info.phtml:9
+msgid "Please transfer the amount by bank transfer to the following account:"
 msgstr ""
 "Bitte überweise den offenen Betrag per SEPA Überweisung auf folgendes "
 "Bankkonto:"
 
-#: ../view/partial/banktransfer-info.phtml:10
+#: ../view/partial/sepa-banktransfer-info.phtml:12
+#: ../view/partial/ukbt-banktransfer-info.phtml:12
 msgid "Owner"
 msgstr "Inhaber"
 
-#: ../view/partial/banktransfer-info.phtml:14
+#: ../view/partial/sepa-banktransfer-info.phtml:16
 msgid "IBAN"
 msgstr "IBAN"
 
-#: ../view/partial/banktransfer-info.phtml:18
+#: ../view/partial/sepa-banktransfer-info.phtml:20
 msgid "BIC"
 msgstr "BIC"
 
-#: ../view/partial/banktransfer-info.phtml:22
+#: ../view/partial/sepa-banktransfer-info.phtml:24
+#: ../view/partial/ukbt-banktransfer-info.phtml:24
 msgid "Bank"
 msgstr "Bank"
 
-#: ../view/partial/banktransfer-info.phtml:26
+#: ../view/partial/sepa-banktransfer-info.phtml:28
+#: ../view/partial/ukbt-banktransfer-info.phtml:28
 #: ../view/pre-reg/participant/index.phtml:15
 msgid "Country"
 msgstr "Land "
 
-#: ../view/partial/banktransfer-info.phtml:30
-#: ../view/pre-reg/order/checkout.phtml:84 ../view/pre-reg/order/index.phtml:59
-#: ../view/pre-reg/order/view.phtml:85
+#: ../view/partial/sepa-banktransfer-info.phtml:32
+#: ../view/partial/ukbt-banktransfer-info.phtml:32
+#: ../view/pre-reg/order/checkout.phtml:84 ../view/pre-reg/order/index.phtml:62
+#: ../view/pre-reg/order/view.phtml:96
 msgid "Amount"
 msgstr "Menge"
 
-#: ../view/partial/banktransfer-info.phtml:34
+#: ../view/partial/sepa-banktransfer-info.phtml:36
+#: ../view/partial/ukbt-banktransfer-info.phtml:36
 msgid "Reason for payment"
 msgstr "Verwendungszweck"
 
-#: ../view/partial/banktransfer-info.phtml:39
+#: ../view/partial/sepa-banktransfer-info.phtml:41
+#: ../view/partial/ukbt-banktransfer-info.phtml:41
 msgid "Owner address"
 msgstr "Inhaberadresse"
 
-#: ../view/partial/banktransfer-info.phtml:47
+#: ../view/partial/sepa-banktransfer-info.phtml:49
+#: ../view/partial/ukbt-banktransfer-info.phtml:49
 msgid "Bank address"
 msgstr "Bankadresse"
 
-#: ../view/partial/banktransfer-info.phtml:56
+#: ../view/partial/sepa-banktransfer-info.phtml:58
+#: ../view/partial/ukbt-banktransfer-info.phtml:58
 #, php-format
 msgid ""
 "Make sure to fill in this reason for payment <strong>%s</strong> as the "
@@ -762,44 +786,68 @@ msgstr ""
 "für die Überweisung angegeben hast. Andernfalls können wir deine Bezahlung "
 "nicht deiner Bestellung zuordnen. "
 
-#: ../view/partial/eticket-package-overview.phtml:58
-msgid "Separate"
-msgstr "Separates"
+#: ../view/partial/ukbt-banktransfer-info.phtml:16
+msgid "Account Number"
+msgstr "Kontonummer"
 
-#: ../view/partial/eticket-package-overview.phtml:67
-msgid "separate"
-msgstr "separates"
+#: ../view/partial/ukbt-banktransfer-info.phtml:20
+msgid "Sort Code"
+msgstr "Bankleitzahl"
 
-#: ../view/pdf/eticket.phtml:164
+#: ../view/pdf/eticket.phtml:171
 msgid "Brief instruction"
 msgstr "Kurzanleitung"
 
-#: ../view/pdf/eticket.phtml:165
+#: ../view/pdf/eticket.phtml:172
 #, php-format
 msgid ""
-"Dies ist dein <strong>E-Ticket</strong> für die %s. Bitte bringe es zur "
-"Veranstaltung mit! Es ist nicht unbedingt nötig, das E-Ticket auszudrucken. "
-"Du kannst es auch auf einem elektronischen Gerät dabei haben und vorzeigen."
+"This is your <strong>E-Ticket</strong> for the %s. Please bring this "
+"document with you to the event! It isn't necessary to print your E-Ticket. "
+"You can present it on any electronic device."
 msgstr ""
+"Bitte bringe dein <strong>E-Ticket</strong> zur %s mit und zeige es an der "
+"Anmeldung vor. Du kannst das E-Ticket ausdrucken oder auch mit Hilfe eines "
+"elektronischen Geräts vorzeigen."
 
-#: ../view/pdf/eticket.phtml:167
+#: ../view/pdf/eticket.phtml:174
 msgid ""
-"Stelle bitte unbedingt sicher, dass deine Daten (Name, Vorname, "
-"Geburtsdatum) auf diesem E-Ticket mit den Daten auf deinem <strong>Ausweis</"
-"strong> übereinstimmen. Andernfalls können wir dich vor Ort leider nicht "
-"anmelden! "
+"Please make sure that the data (name, first name, date of birth) on this E-"
+"Ticket are exactly the same as the ones on your <strong>ID card</strong> or "
+"<strong>passport</strong>. This guarantees that only you can register for "
+"the event with your E-ticket and nobody else."
 msgstr ""
+"Bitte stelle sicher, dass deine Angaben auf dem E-Ticket (Vor-, Nachname und "
+"Geburtsdatum) mit den Informationen auf deinem Ausweis übereinstimmen. Damit "
+"gehen wir sicher, dass nur du deine Eintrittskarte ausgehändigt bekommst und "
+"niemand anderes."
 
-#: ../view/pdf/eticket.phtml:178
+#: ../view/pdf/eticket.phtml:175
 #, php-format
 msgid ""
-"<strong>Auf keinen Fall vergessen: Bringe einen ausgedruckten, ausgefüllten "
-"und von einem Erziehungsberechtigten unterschrieben U16/U18 Zettel mit.</"
-"strong> Auf diesem erlaubt dir ein Erziehungsberechtigter, allein (U18) oder "
-"mit einer verantwortungsbewussten Person über 18 (U16) an der Veranstaltung "
-"teilzunehmen. Ohne die nötige Unterschrift können wir dich nicht auf das "
-"Gelände lassen! Du findest den passenden Zettel unter %s."
+"On arrival at %s, please have <strong>this e-ticket</strong> and your "
+"<strong>ID card / passport</strong> ready and present them at the "
+"registration desk. Important: Your first name, last name and date of birth "
+"on this e-ticket need to be identical to those on your ID card / passport!"
 msgstr ""
+"Wenn du auf der %s ankommst, halte bitte <strong>dein E-Ticket</strong> und "
+"deinen <strong>Ausweis</strong> bereit und zeige beides am Anmeldeschalter "
+"vor. Wichtig: Dein Vor- und Nachname sowie dein Geburtsdatum auf dem E-"
+"Ticket muss mit den Angaben auf deinem Ausweis übereinstimmen, um sicher zu "
+"gehen, dass nur du deine Eintrittskarte ausgehändigt bekommst."
+
+#: ../view/pdf/eticket.phtml:186
+#, php-format
+msgid ""
+"<strong>Do not forget: Bring a filled and signed U16/U18 form with you.</"
+"strong> This form must be printed and signed by your parents or your legal "
+"guardian. Without a signed U16/U18 form you cannot attend the event. You can "
+"find this form at %s."
+msgstr ""
+"<strong>Nicht vergessen: Bringt das ausgefüllte U16/U18 Formular mit.</"
+"strong> Dieses Formular muss ausgedruckt und von einem "
+"Erziehungsberechtigten unterschrieben sein. Ohne dieses unterschriebene U16/"
+"U18 Formular kannst du nicht an der Veranstaltung teilnehmen. Das Formular "
+"findest du unter %s."
 
 #: ../view/pre-reg/cart/reset.phtml:4
 msgid "Your Shopping Cart is empty now"
@@ -818,7 +866,7 @@ msgstr ""
 "\" löschen möchtest?"
 
 #: ../view/pre-reg/cart/reset.phtml:30 ../view/pre-reg/product/delete.phtml:28
-#: ../view/pre-reg/product/edit.phtml:105 ../view/pre-reg/profile/edit.phtml:27
+#: ../view/pre-reg/product/edit.phtml:106 ../view/pre-reg/profile/edit.phtml:27
 #: ../view/pre-reg/profile/password.phtml:56
 #: ../view/pre-reg/profile/request-password.phtml:35
 msgid "Cancel"
@@ -832,6 +880,43 @@ msgstr "Dieses System verwendet Cookies. "
 msgid "e-ticket Translations"
 msgstr "E-Ticket Übersetzungen "
 
+#: ../view/pre-reg/info/forms.phtml:2
+msgid "Forms for participants of age under 16 and under 18"
+msgstr "Formulare für Teilnehmer unter 16 und unter 18 Jahren"
+
+#: ../view/pre-reg/info/forms.phtml:8
+msgid "Participants under 16"
+msgstr "Teilnehmer unter 16 Jahren"
+
+#: ../view/pre-reg/info/forms.phtml:9
+msgid ""
+"Participants under 16 years need an adult supervisor who is responsible for "
+"the participant throughout the event."
+msgstr ""
+"Teilnehmer unter 16 Jahren brauchen eine erwachsene Aufsichtsperson, die die "
+"Verantwortung für den Teilnehmer über die gesamte Veranstaltung übernimmt."
+
+#: ../view/pre-reg/info/forms.phtml:12
+msgid "Participants under 18"
+msgstr "Teilnehmer unter 18 Jahren"
+
+#: ../view/pre-reg/info/forms.phtml:13
+msgid ""
+"Participants under 18 years need a letter of agreement signed by a legal "
+"guardian, so that they are allowed to attend the event on their own."
+msgstr ""
+"Teilnehmer unter 18 Jahren brauchen die schriftliche und unterschriebene "
+"Erlaubnis eines Erziehungsberechtigten, dass sie die Erlaubnis haben an der "
+"Veranstaltung teilzunehmen."
+
+#: ../view/pre-reg/info/forms.phtml:18
+msgid "get the form for U16 participants"
+msgstr "U16 Formular herunterladen"
+
+#: ../view/pre-reg/info/forms.phtml:21
+msgid "get the form for U18 participants"
+msgstr "U18 Formular herunterladen"
+
 #: ../view/pre-reg/info/impressum.phtml:3
 msgid "Impressum"
 msgstr "Impressum"
@@ -840,90 +925,36 @@ msgstr "Impressum"
 msgid "Welcome to the"
 msgstr "Willkommen zum"
 
-#: ../view/pre-reg/info/index.phtml:18
-#, php-format
-msgid ""
-"The %s will take place from %s - %s in %s (%s). You can find all up-to-date "
-"information on %s."
-msgstr ""
-"Die %s wird vom %s - %s in %s (%s) stattfinden. Aktuelle Informationen "
-"findest du unter %s. "
+#: ../view/pre-reg/info/index.phtml:58 ../view/pre-reg/product/index.phtml:53
+msgid "PreReg is closed"
+msgstr "Die Voranmeldung ist geschlossen"
 
-#: ../view/pre-reg/info/index.phtml:27
+#: ../view/pre-reg/info/index.phtml:62 ../view/pre-reg/product/index.phtml:60
 #, php-format
 msgid ""
-"On this website you can purchase tickets for %s as well as other items such "
-"as galashow tickets."
+"The PreReg is already closed. For more information, please visit our "
+"homepage on %s"
 msgstr ""
-"Auf dieser Seite kannst du Tickets für die %s und andere Artikel wie z.B. "
-"Galashowtickets kaufen. "
+"Die Voranmeldung ist bereits geschlossen. Mehr Information findest du auf "
+"unserer Homepage unter %s"
 
 #: ../view/pre-reg/info/payment.phtml:3
 msgid "Payment Type:"
-msgstr "Bezahlart"
+msgstr "Zahlart"
 
 #: ../view/pre-reg/info/terms.phtml:3
 msgid "Terms & Conditions"
 msgstr "Geschäftsbedingungen "
 
-#: ../view/pre-reg/info/terms.phtml:7
-msgid "Back"
-msgstr "zurück"
-
-#: ../view/pre-reg/info/terms.phtml:9
-msgid "Terms and Conditions"
-msgstr "Geschäftsbedingungen"
-
-#: ../view/pre-reg/info/terms.phtml:12
-msgid "Disclaimer"
-msgstr "Haftungsausschluss"
-
-#: ../view/pre-reg/info/terms.phtml:13
-msgid ""
-"Upon attending the EJC, in no event shall the host or its representatives or "
-"its assistants be liable for any loss or injury or any damages, unless they "
-"are grounded in cause of gross negligence or wilful act of breach of duty by "
-"the host or its representatives or its assistants. Participants attend by "
-"choice, on their own risk; they take the responsibility for their own health "
-"status and pay attention to it. We especially point out that the Convention "
-"is a sports event where professional jugglers and acrobats will train "
-"together with non - professionals of all skill levels. There will be "
-"workshops in all sorts of circus disciplines open (but maybe not "
-"appropriate!) for everyone; above that props and apparatus will be "
-"accessible, be it because the host provides them or any participant simply "
-"puts them up and let others use them as well. It is your own responsibility "
-"and neither the hosts', nor the workshop leaders', their representatives' or "
-"assistants' to make sure at any time that your health and fitness condition "
-"is adequate to take part in the workshop in question or to use props and "
-"apparatus mentioned hereinabove safely."
-msgstr ""
-"Bei Teilnahme an der MünchenCon 2016 gilt Haftungsausschluss für die "
-"Veranstalter, ihre Vertreter und Erfüllungsgehilfen für Schäden jeder Art, "
-"es sei denn, sie beruhen auf einer grob fahrlässigen oder vorsätzlichen "
-"Pflichtverletzung der Veranstalter, ihrer Vertreter oder Erfüllungsgehilfen. "
-"Teilnehmer nehmen aus freiem Willen und auf eigenes Risiko an der "
-"Veranstaltung teil, verantworten ihren Gesundheitszustand selbst und achten "
-"auf diesen.\n"
-"Die Veranstalter weisen ausdrücklich darauf hin, dass die MünchenCon eine "
-"Sportveranstaltung ist, an der professionelle Artisten gemeinsam mit Laien "
-"aller Niveaus trainieren. Workshops für alle Leistungsgruppen werden für "
-"jedermann angeboten, sind aber nicht notwendigerweise für jeden geeignet. "
-"Zudem sind Requisiten aller Arten zugänglich, sei es weil der Veranstalter "
-"oder ein Teilnehmer sie der Allgemeinheit zur Verfügung stellen. Jeder "
-"Teilnehmer ist sich dessen bewusst, dass es in seiner eigenen Verantwortung "
-"steht, seinen gesundheitlichen und körperlichen Zustand auf die Workshops, "
-"an denen er teilnimmt, und die oben beschriebenen Requisiten, die er "
-"verwendet, abzustimmen.  "
-
-#: ../view/pre-reg/order/buyer.phtml:38
+#: ../view/pre-reg/order/buyer.phtml:35
 msgid "Select Buyer"
 msgstr "Wähle einen Käufer"
 
-#: ../view/pre-reg/order/buyer.phtml:40
+#: ../view/pre-reg/order/buyer.phtml:37
 msgid "All E-Tickets will be emailed to the buyer."
-msgstr "Alle E-Tickets werden an den Käufer geschickt. "
+msgstr "Alle E-Tickets werden an den Käufer geschickt."
 
-#: ../view/pre-reg/order/buyer.phtml:41
+#: ../view/pre-reg/order/buyer.phtml:38
 msgid ""
 "If you order items for multiple persons and provided their email addresses, "
 "they will automatically receive a copy of their E-Ticket."
@@ -931,20 +962,20 @@ msgstr ""
 "Wenn du Artikel für mehrere Personen bestellst und ihre E-Mail Adressen "
 "angibst, erhalten sie automatisch eine Kopie ihres E-Tickets."
 
-#: ../view/pre-reg/order/buyer.phtml:63 ../view/pre-reg/order/checkout.phtml:74
-#: ../view/pre-reg/order/index.phtml:40
+#: ../view/pre-reg/order/buyer.phtml:60 ../view/pre-reg/order/checkout.phtml:74
+#: ../view/pre-reg/order/index.phtml:43
 msgid "years"
 msgstr "Jahre"
 
-#: ../view/pre-reg/order/buyer.phtml:69
+#: ../view/pre-reg/order/buyer.phtml:66
 msgid "Email:"
 msgstr "E-Mail:"
 
-#: ../view/pre-reg/order/buyer.phtml:75
+#: ../view/pre-reg/order/buyer.phtml:72
 msgid "Birthday:"
 msgstr "Geburtsdatum:"
 
-#: ../view/pre-reg/order/buyer.phtml:87
+#: ../view/pre-reg/order/buyer.phtml:84
 msgid "add Buyer"
 msgstr "Käufer hinzufügen "
 
@@ -973,13 +1004,14 @@ msgstr ""
 "Anschluss werden wir dein Ticket aktivieren. "
 
 #: ../view/pre-reg/order/check-eticket.phtml:38
+#, php-format
 msgid ""
-"If you have already paid for the ticket with the ticket code <strong><?php "
-"echo $package->getCode()->getValue() ?></strong>, please contact <a href="
-"\"mailto:prereg@eja.net\">prereg@eja.net</a>. We will solve the issue."
+"If you have already paid for the ticket with the ticket code <strong>%s</"
+"strong>, please contact <a href=\"mailto:anmeldung@circulum.de"
+"\">anmeldung@circulum.de</a>. We will solve the issue."
 msgstr ""
-"Wenn du dein Ticket mit dem Ticket Code X schon bezahlt hast, kontaktiere "
-"bitte X. Wir helfen dir. "
+"Wenn du dein Ticket mit dem Ticket Code <strong>%s</strong> schon bezahlt "
+"hast, kontaktiere bitte X. Wir helfen dir."
 
 #: ../view/pre-reg/order/checkout.phtml:32
 msgid ""
@@ -991,7 +1023,7 @@ msgstr ""
 "Der Käufer erhält die E-Tickets aller registrierten Teilnehmer. Diejenigen "
 "Teilnehmer, deren E-Mail Adresse angegeben wurde, werden darüber informiert. "
 
-#: ../view/pre-reg/order/checkout.phtml:33 ../view/pre-reg/order/view.phtml:16
+#: ../view/pre-reg/order/checkout.phtml:33 ../view/pre-reg/order/view.phtml:23
 msgid "We will send all information to:"
 msgstr "Wir senden alle Informationen an: "
 
@@ -999,7 +1031,7 @@ msgstr "Wir senden alle Informationen an: "
 msgid "choose Buyer"
 msgstr "Wähle einen Käufer"
 
-#: ../view/pre-reg/order/checkout.phtml:42 ../view/pre-reg/order/view.phtml:21
+#: ../view/pre-reg/order/checkout.phtml:42 ../view/pre-reg/order/view.phtml:28
 msgid "Payment"
 msgstr "Bezahlung"
 
@@ -1007,26 +1039,26 @@ msgstr "Bezahlung"
 msgid "choose paymenttype"
 msgstr "Wähle eine Bezahlart"
 
-#: ../view/pre-reg/order/checkout.phtml:72 ../view/pre-reg/order/index.phtml:37
+#: ../view/pre-reg/order/checkout.phtml:72 ../view/pre-reg/order/index.phtml:40
 msgid "further items"
 msgstr "Weitere Artikel "
 
-#: ../view/pre-reg/order/checkout.phtml:83 ../view/pre-reg/order/index.phtml:58
+#: ../view/pre-reg/order/checkout.phtml:83 ../view/pre-reg/order/index.phtml:61
 msgid "Product"
 msgstr "Produkt"
 
-#: ../view/pre-reg/order/checkout.phtml:85 ../view/pre-reg/order/index.phtml:60
-#: ../view/pre-reg/order/view.phtml:86
+#: ../view/pre-reg/order/checkout.phtml:85 ../view/pre-reg/order/index.phtml:63
+#: ../view/pre-reg/order/view.phtml:97
 msgid "Price"
 msgstr "Preis"
 
 #: ../view/pre-reg/order/checkout.phtml:144
-#: ../view/pre-reg/order/view.phtml:124
+#: ../view/pre-reg/order/view.phtml:135
 msgid "Subtotal:"
-msgstr "Zwischensumme"
+msgstr "Zwischensumme:"
 
 #: ../view/pre-reg/order/checkout.phtml:154
-#: ../view/pre-reg/order/view.phtml:134
+#: ../view/pre-reg/order/view.phtml:145
 msgid "Order amount:"
 msgstr "Höhe der Bestellung"
 
@@ -1035,7 +1067,7 @@ msgid "Payment Charge:"
 msgstr "Gebühr"
 
 #: ../view/pre-reg/order/checkout.phtml:162
-#: ../view/pre-reg/order/view.phtml:142
+#: ../view/pre-reg/order/view.phtml:153
 msgid "Total amount:"
 msgstr "Gesamtsumme"
 
@@ -1081,27 +1113,27 @@ msgstr "Bestellung ändern"
 msgid "Resend your emails in another language"
 msgstr "Sende diese E-Mail in einer anderen Sprache"
 
-#: ../view/pre-reg/order/index.phtml:22 ../view/pre-reg/order/index.phtml:181
-msgid "Continue"
-msgstr "Weiter"
-
-#: ../view/pre-reg/order/index.phtml:25
+#: ../view/pre-reg/order/index.phtml:28
 msgid "Reset My Shopping Cart and My Persons"
 msgstr "Setze meinen Einkaufswagen und die Liste \"Meine Personen\" zurück "
 
-#: ../view/pre-reg/order/index.phtml:161
+#: ../view/pre-reg/order/index.phtml:164
 msgid "Subtotal"
 msgstr "Zwischensumme"
 
-#: ../view/pre-reg/order/index.phtml:172
+#: ../view/pre-reg/order/index.phtml:175
 msgid "Order amount"
 msgstr "Höhe der Bestellung "
 
-#: ../view/pre-reg/order/payment.phtml:32
+#: ../view/pre-reg/order/index.phtml:184
+msgid "Continue"
+msgstr "Weiter"
+
+#: ../view/pre-reg/order/payment.phtml:34
 msgid "There are currently no payment types available"
 msgstr "Momentan sind keine Bezahlarten verfügbar"
 
-#: ../view/pre-reg/order/payment.phtml:33
+#: ../view/pre-reg/order/payment.phtml:35
 msgid ""
 "There are currently no payment options available. Please check back at a "
 "later date. Sorry!"
@@ -1109,25 +1141,30 @@ msgstr ""
 "Momentan sind keine Bezahlarten verfügbar. Bitte versuche es später noch "
 "einmal. Entschuldigung! "
 
-#: ../view/pre-reg/order/payment.phtml:54
+#: ../view/pre-reg/order/payment.phtml:62
 msgid "payment fee:"
 msgstr "Gebühr für Bezahlart:"
 
-#: ../view/pre-reg/order/payment.phtml:63
+#: ../view/pre-reg/order/payment.phtml:74
+#, php-format
+msgid "This payment type is only available for the currency %s."
+msgstr "Diese Bezahlart war nur bis zum %s verfügbar."
+
+#: ../view/pre-reg/order/payment.phtml:83
 msgid "This payment type is not available, yet. It will be available from"
 msgstr ""
 "Diese Bezahlart ist noch nicht verfügbar. Sie wird ab dem X benutzbar sein. "
 
-#: ../view/pre-reg/order/payment.phtml:63
+#: ../view/pre-reg/order/payment.phtml:83
 msgid "until"
 msgstr "bis"
 
-#: ../view/pre-reg/order/payment.phtml:63
-#: ../view/pre-reg/order/payment.phtml:72
+#: ../view/pre-reg/order/payment.phtml:83
+#: ../view/pre-reg/order/payment.phtml:92
 msgid "Please choose another payment type."
 msgstr "Bitte wähle eine andere Bezahlart"
 
-#: ../view/pre-reg/order/payment.phtml:72
+#: ../view/pre-reg/order/payment.phtml:92
 msgid "This payment type was available until"
 msgstr "Diese Bezahlart war nur bis zum X verfügbar"
 
@@ -1137,12 +1174,12 @@ msgstr "Danke"
 
 #: ../view/pre-reg/order/thankyou.phtml:10
 msgid ""
-"...for your purchase and with that for your support to make the EJC 2016 "
+"...for your purchase and with that for your support to make the EJC 2017 "
 "possible."
 msgstr ""
-"für deinen Kauf. Durch deine Unterstützung wird die EJC 2016 erst möglich. "
+"für deinen Kauf. Durch deine Unterstützung wird die EJC 2016 erst möglich."
 
-#: ../view/pre-reg/order/thankyou.phtml:12 ../view/pre-reg/order/view.phtml:36
+#: ../view/pre-reg/order/thankyou.phtml:12 ../view/pre-reg/order/view.phtml:43
 #: ../view/pre-reg/payment/creditcard.phtml:31
 msgid "Note:"
 msgstr "Bitte beachte: "
@@ -1150,24 +1187,24 @@ msgstr "Bitte beachte: "
 #: ../view/pre-reg/order/thankyou.phtml:12
 msgid ""
 "To receive the email with your E-Tickets correctly \n"
-"        it's important that you add the email address prereg@eja.net to "
-"your \n"
+"        it's important that you add the email address anmeldung@circulum.de "
+"to your \n"
 "        address book."
 msgstr ""
 "Um die E-Mail mit deine E-Tickets zu erhalten, ist es wichtig, dass du die E-"
-"Mail Adresse prereg@eja.net zu deinem Adressbuch hinzufügst. "
+"Mail Adresse prereg@eja.net zu deinem Adressbuch hinzufügst."
 
 #: ../view/pre-reg/order/thankyou.phtml:16
 msgid ""
 "We sent an order confirmation mail to your email address. If you did not \n"
 "        receive this email, please have a look at your spam folder. If it's "
 "not \n"
-"        there contact us at <a href='mailto: prereg@eja.net'>prereg@eja.net</"
-"a>."
+"        there contact us at <a href='mailto: anmeldung@circulum."
+"de'>anmeldung@circulum.de</a>."
 msgstr ""
 "Wir haben eine Bestätigungs- E-Mail an deine Mailadresse geschickt. Falls du "
 "sie nicht erhalten hast, bitte schaue in deinem Spamfilter nach. Falls sie "
-"dort nicht ist, bitte kontaktiere "
+"dort nicht ist, bitte kontaktiere."
 
 #: ../view/pre-reg/order/thankyou.phtml:20
 msgid "In this email you will find further information of your purchase."
@@ -1177,7 +1214,7 @@ msgstr "In dieser E-Mail findest du weitere Informationen zu deinem Kauf. "
 msgid "My Order"
 msgstr "Meine Bestellung "
 
-#: ../view/pre-reg/order/view.phtml:15
+#: ../view/pre-reg/order/view.phtml:22
 msgid ""
 "The buyer will receive all E-Tickets for all registered participants. If you "
 "have provided an email address per participant, this participant will be "
@@ -1189,55 +1226,55 @@ msgstr ""
 "dass ihr Ticket bezahlt wurde und können dann ihr E-Ticket selbst "
 "herunterladen. "
 
-#: ../view/pre-reg/order/view.phtml:23
+#: ../view/pre-reg/order/view.phtml:30
 msgid "order is paid"
 msgstr "Die Bestellung ist bezahlt. "
 
-#: ../view/pre-reg/order/view.phtml:25
+#: ../view/pre-reg/order/view.phtml:32
 msgid "order is unpaid"
 msgstr "Die Bestellung ist nicht bezahlt. "
 
-#: ../view/pre-reg/order/view.phtml:27
+#: ../view/pre-reg/order/view.phtml:34
 msgid "order is cancelled"
 msgstr "Die Bestellung wurde storniert. "
 
-#: ../view/pre-reg/order/view.phtml:34
+#: ../view/pre-reg/order/view.phtml:41
 msgid "This order is already paid"
 msgstr "Die Bestellung ist bereits bezahlt. "
 
-#: ../view/pre-reg/order/view.phtml:35
+#: ../view/pre-reg/order/view.phtml:42
 msgid "Your E-Tickets will be sent out in june."
 msgstr "Deine E-Tickets werden im Juni versendet. "
 
-#: ../view/pre-reg/order/view.phtml:36
+#: ../view/pre-reg/order/view.phtml:43
 msgid ""
 "Please add the email address \n"
-"                    prereg@eja.net to your address book. To be sure the "
-"email \n"
+"                    anmeldung@circulum.de to your address book. To be sure "
+"the email \n"
 "                    with your E-Tickets will not arrive in your spamfolder."
 msgstr ""
 "Bitte füge die Mailadresse prereg@eja.net zu deinem Adressbuch hinzu, um "
 "sicher zu gehen, dass die Mail mit deinen E-Tickets nicht im Spamordner "
-"landet. "
+"landet."
 
-#: ../view/pre-reg/order/view.phtml:41
+#: ../view/pre-reg/order/view.phtml:48
 msgid "Bank Transfer Details"
 msgstr "Angaben zur Überweisung"
 
-#: ../view/pre-reg/order/view.phtml:52
+#: ../view/pre-reg/order/view.phtml:63
 msgid "No payment type was recognized"
 msgstr "Es wurde kein Bezahltyp erkannt"
 
-#: ../view/pre-reg/order/view.phtml:55
+#: ../view/pre-reg/order/view.phtml:66
 msgid "undefined status"
 msgstr "Status unbekannt"
 
-#: ../view/pre-reg/order/view.phtml:56
-msgid "Please contact the EJC team to solve this problem:"
+#: ../view/pre-reg/order/view.phtml:67
+msgid "Please contact the prereg coordinator to solve this problem:"
 msgstr ""
-"Bitte kontaktiere das EJC Team. Wir helfen dir bei der Lösung des Problems. "
+"Bitte kontaktiere das EJC Team. Wir helfen dir bei der Lösung des Problems."
 
-#: ../view/pre-reg/order/view.phtml:73
+#: ../view/pre-reg/order/view.phtml:84
 msgid "unassigned items"
 msgstr "nicht zugeordnete Posten"
 
@@ -1269,14 +1306,14 @@ msgstr "Geburtsdatum"
 msgid "Add Person"
 msgstr "Person hinzufügen"
 
-#: ../view/pre-reg/participant/add.phtml:29
-#: ../view/pre-reg/participant/edit.phtml:37
+#: ../view/pre-reg/participant/add.phtml:30
+#: ../view/pre-reg/participant/edit.phtml:38
 #: ../view/pre-reg/profile/change.phtml:26
 msgid "Note for personal data:"
 msgstr "Beachte zu deinen persönlichen Informationen"
 
-#: ../view/pre-reg/participant/add.phtml:29
-#: ../view/pre-reg/participant/edit.phtml:37
+#: ../view/pre-reg/participant/add.phtml:30
+#: ../view/pre-reg/participant/edit.phtml:38
 #: ../view/pre-reg/profile/change.phtml:26
 msgid ""
 "Please enter your  first name, surname and \n"
@@ -1290,14 +1327,14 @@ msgstr ""
 "auf deinem Ausweis. Diese Daten werden bei der Anmeldung überprüft und "
 "müssen mit dem E-Ticket übereinstimmen. "
 
-#: ../view/pre-reg/participant/add.phtml:33
-#: ../view/pre-reg/participant/edit.phtml:41
+#: ../view/pre-reg/participant/add.phtml:34
+#: ../view/pre-reg/participant/edit.phtml:42
 #: ../view/pre-reg/profile/change.phtml:30
 msgid "Note for email address:"
 msgstr "Beachte zu deiner Mailadresse: "
 
-#: ../view/pre-reg/participant/add.phtml:33
-#: ../view/pre-reg/participant/edit.phtml:41
+#: ../view/pre-reg/participant/add.phtml:34
+#: ../view/pre-reg/participant/edit.phtml:42
 #: ../view/pre-reg/profile/change.phtml:30
 msgid ""
 "If you enter the email \n"
@@ -1307,13 +1344,13 @@ msgstr ""
 "Wenn du die E-Mail Adresse dieser Person eingibst, erhält sie automatisch "
 "eine Kopie ihres E-Tickets. "
 
-#: ../view/pre-reg/participant/add.phtml:36
-#: ../view/pre-reg/participant/edit.phtml:44
+#: ../view/pre-reg/participant/add.phtml:37
+#: ../view/pre-reg/participant/edit.phtml:45
 #: ../view/pre-reg/profile/change.phtml:33
 msgid "Note for the buyer:"
 msgstr "Beachte zum Käufer: "
 
-#: ../view/pre-reg/participant/add.phtml:36
+#: ../view/pre-reg/participant/add.phtml:37
 #: ../view/pre-reg/profile/change.phtml:33
 msgid ""
 "The person who performs the \n"
@@ -1324,12 +1361,12 @@ msgstr ""
 "Die Person, die den Kauf ausführt, erhält automatisch alle bestellten E-"
 "Tickets. Deswegen muss eine E-Mail Adresse angegeben werden. "
 
-#: ../view/pre-reg/participant/add.phtml:39
+#: ../view/pre-reg/participant/add.phtml:40
 #: ../view/pre-reg/profile/change.phtml:36
 msgid "Note for edit details:"
-msgstr "Beachte beim Ändern: "
+msgstr "Beachte beim Ändern:"
 
-#: ../view/pre-reg/participant/add.phtml:39
+#: ../view/pre-reg/participant/add.phtml:40
 #: ../view/pre-reg/profile/change.phtml:36
 msgid ""
 "You can edit this person's \n"
@@ -1350,7 +1387,7 @@ msgstr "Diese Artikel werden mit diesem Teilnehmer gelöscht: "
 msgid "Edit Person"
 msgstr "Person ändern"
 
-#: ../view/pre-reg/participant/edit.phtml:44
+#: ../view/pre-reg/participant/edit.phtml:45
 msgid ""
 "The person who performs the \n"
 "            purchase will automatically receive all ordered E-Tickets. For "
@@ -1532,59 +1569,55 @@ msgstr "link "
 
 #: ../view/pre-reg/payment/paypal.phtml:3
 msgid "Payment Type: "
-msgstr "Bezahlart"
+msgstr "Zahlart: "
 
-#: ../view/pre-reg/product/add.phtml:2 ../view/pre-reg/product/edit.phtml:2
-msgid "back to Overview"
-msgstr "zurück zur Übersicht"
-
-#: ../view/pre-reg/product/add.phtml:7 ../view/pre-reg/product/edit.phtml:170
+#: ../view/pre-reg/product/add.phtml:6 ../view/pre-reg/product/edit.phtml:171
 msgid "Added"
 msgstr "hinzugefügt"
 
-#: ../view/pre-reg/product/add.phtml:7 ../view/pre-reg/product/edit.phtml:170
+#: ../view/pre-reg/product/add.phtml:6 ../view/pre-reg/product/edit.phtml:171
 msgid "to your shopping cart."
 msgstr "zu deinem Einkaufswagen"
 
-#: ../view/pre-reg/product/add.phtml:11 ../view/pre-reg/product/add.phtml:201
-#: ../view/pre-reg/product/edit.phtml:176
+#: ../view/pre-reg/product/add.phtml:10 ../view/pre-reg/product/add.phtml:204
+#: ../view/pre-reg/product/edit.phtml:177
 msgid "add more products"
 msgstr "Füge mehr Produkte hinzu"
 
-#: ../view/pre-reg/product/add.phtml:16 ../view/pre-reg/product/add.phtml:206
-#: ../view/pre-reg/product/edit.phtml:181
+#: ../view/pre-reg/product/add.phtml:15 ../view/pre-reg/product/add.phtml:209
+#: ../view/pre-reg/product/edit.phtml:182
 msgid "add this product again"
 msgstr "Füge dieses Produkt nochmals hinzu"
 
-#: ../view/pre-reg/product/add.phtml:19 ../view/pre-reg/product/add.phtml:209
-#: ../view/pre-reg/product/edit.phtml:184
+#: ../view/pre-reg/product/add.phtml:18 ../view/pre-reg/product/add.phtml:212
+#: ../view/pre-reg/product/edit.phtml:185
 msgid "shopping cart"
 msgstr "Einkaufswagen "
 
-#: ../view/pre-reg/product/add.phtml:27 ../view/pre-reg/product/edit.phtml:5
+#: ../view/pre-reg/product/add.phtml:26 ../view/pre-reg/product/edit.phtml:3
 msgid "This product is unavailable"
 msgstr "Dieses Produkt ist nicht vorhanden"
 
-#: ../view/pre-reg/product/add.phtml:48 ../view/pre-reg/product/edit.phtml:28
+#: ../view/pre-reg/product/add.phtml:47 ../view/pre-reg/product/edit.phtml:25
 msgid "Please complete the whole form to put this product into the cart."
 msgstr ""
 "Bitte komplettiere deine Angaben. Erst dann kann das Produkt in den "
 "Einkaufswagen gelegt werden. "
 
-#: ../view/pre-reg/product/add.phtml:59 ../view/pre-reg/product/index.phtml:13
+#: ../view/pre-reg/product/add.phtml:58 ../view/pre-reg/product/index.phtml:13
 #, php-format
 msgid "The prices will increase after <br /> %s"
 msgstr "Diese Preise werden ab dem <br /> %s höher sein. "
 
-#: ../view/pre-reg/product/add.phtml:89 ../view/pre-reg/product/edit.phtml:69
+#: ../view/pre-reg/product/add.phtml:92 ../view/pre-reg/product/edit.phtml:70
 msgid "Please choose a person"
 msgstr "Bitte wähle eine Person"
 
-#: ../view/pre-reg/product/add.phtml:92 ../view/pre-reg/product/edit.phtml:71
+#: ../view/pre-reg/product/add.phtml:95 ../view/pre-reg/product/edit.phtml:72
 msgid "add the person"
 msgstr "Person hinzufügen"
 
-#: ../view/pre-reg/product/add.phtml:93
+#: ../view/pre-reg/product/add.phtml:96
 #, php-format
 msgid ""
 "This is a personalized ticket. To continue, please first %s who will use the "
@@ -1593,41 +1626,41 @@ msgstr ""
 "Dieses Ticket ist personalisiert. Um weiter zu machen, füge bitte %s hinzu, "
 "die das Ticket für diese Veranstaltung nutzen wird."
 
-#: ../view/pre-reg/product/add.phtml:109 ../view/pre-reg/product/edit.phtml:83
+#: ../view/pre-reg/product/add.phtml:112 ../view/pre-reg/product/edit.phtml:84
 msgid "Tip"
 msgstr "Tipp"
 
-#: ../view/pre-reg/product/add.phtml:109 ../view/pre-reg/product/edit.phtml:83
+#: ../view/pre-reg/product/add.phtml:112 ../view/pre-reg/product/edit.phtml:84
 msgid "You can"
 msgstr "Du kannst"
 
-#: ../view/pre-reg/product/add.phtml:110 ../view/pre-reg/product/edit.phtml:85
+#: ../view/pre-reg/product/add.phtml:113 ../view/pre-reg/product/edit.phtml:86
 msgid "add a new person"
 msgstr "eine neue Person hinzufügen"
 
-#: ../view/pre-reg/product/add.phtml:111 ../view/pre-reg/product/edit.phtml:86
+#: ../view/pre-reg/product/add.phtml:114 ../view/pre-reg/product/edit.phtml:87
 msgid ""
 "or edit the details of any person with \"My Persons\" from the main menu."
 msgstr ""
 "oder die Details jeder Person aus der \"Meine Personen\" Liste im Hauptmenü "
 "ändern. "
 
-#: ../view/pre-reg/product/add.phtml:135
+#: ../view/pre-reg/product/add.phtml:138
 msgid "Included Items:"
 msgstr "Enthaltene Artikel: "
 
-#: ../view/pre-reg/product/add.phtml:157 ../view/pre-reg/product/edit.phtml:132
+#: ../view/pre-reg/product/add.phtml:160 ../view/pre-reg/product/edit.phtml:133
 msgid "Add new participant"
 msgstr "Füge einen neuen Teilnehmer hinzu"
 
-#: ../view/pre-reg/product/add.phtml:182 ../view/pre-reg/product/edit.phtml:159
+#: ../view/pre-reg/product/add.phtml:185 ../view/pre-reg/product/edit.phtml:160
 msgid "Close"
 msgstr "Schließen"
 
-#: ../view/pre-reg/product/add.phtml:195
+#: ../view/pre-reg/product/add.phtml:198
 #, php-format
 msgid "Added %s to your shopping cart."
-msgstr "%s wurde zu deinem Einkaufswagen hinzugefügt. "
+msgstr "%s wurde zu deinem Einkaufswagen hinzugefügt."
 
 #: ../view/pre-reg/product/delete.phtml:3
 msgid "Delete Item from shopping cart"
@@ -1643,21 +1676,21 @@ msgstr "Bist du sicher, dass du %s löschen willst?"
 msgid "Are you sure that you want to delete %s for %s %s?"
 msgstr "Bist du sicher, dass du %s für %s %s löschen willst?"
 
-#: ../view/pre-reg/product/edit.phtml:39
+#: ../view/pre-reg/product/edit.phtml:36
 msgid "The prices will increase after"
 msgstr "Die Preise werden am X erhöht. "
 
-#: ../view/pre-reg/product/edit.phtml:52
+#: ../view/pre-reg/product/edit.phtml:53
 msgid "Person"
 msgstr "Person"
 
-#: ../view/pre-reg/product/edit.phtml:70
+#: ../view/pre-reg/product/edit.phtml:71
 msgid "This is a personalized ticket. To continue, please first"
 msgstr ""
 "Dies ist ein personalisiertes Ticket. Bitte füge im nächsten Schritt zuerst "
 "die Person hinzu, "
 
-#: ../view/pre-reg/product/edit.phtml:71
+#: ../view/pre-reg/product/edit.phtml:72
 msgid "who will use the ticket for the event."
 msgstr "die das Ticket für die Veranstaltung verwenden wird. "
 
@@ -1674,19 +1707,6 @@ msgstr ""
 "Klicke auf einen Artikel, um weitere Informationen hinzuzufügen und lege ihn "
 "anschließend in deinen Einkaufswagen"
 
-#: ../view/pre-reg/product/index.phtml:35
-msgid "PreReg is closed"
-msgstr "Die Voranmeldung ist geschlossen"
-
-#: ../view/pre-reg/product/index.phtml:41
-#, php-format
-msgid ""
-"The PreReg is already closed. For more information, please visit our "
-"homepage on %s"
-msgstr ""
-"Die Voranmeldung ist bereits geschlossen. Mehr Information findest du auf "
-"unserer Homepage unter %s"
-
 #: ../view/pre-reg/profile/change.phtml:2
 msgid "Change My Profile"
 msgstr "Ändere mein Profil"
@@ -1694,7 +1714,11 @@ msgstr "Ändere mein Profil"
 #: ../view/pre-reg/profile/edit.phtml:3
 #: ../view/pre-reg/profile/password.phtml:3
 msgid "Edit Profile"
-msgstr "Ändere das Profil "
+msgstr "Ändere das Profil"
+
+#: ../view/pre-reg/profile/index.phtml:3
+msgid "My Profile"
+msgstr "Mein Profil"
 
 #: ../view/pre-reg/profile/index.phtml:35
 msgid "Country:"
@@ -1714,7 +1738,7 @@ msgstr "Bestätige dein Passwort"
 
 #: ../view/pre-reg/profile/request-password.phtml:3
 msgid "Request password change"
-msgstr "Ändere dein Passwort "
+msgstr "Ändere dein Passwort"
 
 #: ../view/pre-reg/profile/request-password.phtml:10
 msgid ""
@@ -1731,6 +1755,111 @@ msgstr "Falls du keine E-Mail erhalten hast, überprüfe bitte deinen Spamordner
 #: ../view/pre-reg/profile/request-password.phtml:23
 msgid "Your email address..."
 msgstr "Deine Mailadresse... "
+
+#~ msgid ""
+#~ "This mail was sent to you by the Event Registration System (ERS),\n"
+#~ "        operated by the European Juggling Association (EJA) on\n"
+#~ "        behalf of %s."
+#~ msgstr ""
+#~ "Diese E-Mail wurde dir im Namen von %s vom Event Registration System "
+#~ "(ERS) verschickt, das von der European Juggling Association (EJA) "
+#~ "betrieben wird."
+
+#~ msgid ""
+#~ "If you have any questions about your pre-registration,\n"
+#~ "        please contact the EJA pre-registration coordinator\n"
+#~ "        at %s."
+#~ msgstr ""
+#~ "Wenn du Fragen zu unserer Voranmeldung hast, kontaktiere uns bitte unter "
+#~ "%s."
+
+#~ msgid ""
+#~ "For more information about %s,\n"
+#~ "        please visit %s\n"
+#~ "        or contact %s."
+#~ msgstr "Für mehr Informationen zur %s, besuche %s oder kontaktiere %s."
+
+#~ msgid "Login"
+#~ msgstr "Login"
+
+#~ msgid "Logout"
+#~ msgstr "Logout"
+
+#~ msgid "AdminPanel"
+#~ msgstr "Admin Zugang"
+
+#~ msgid "Onsite"
+#~ msgstr "Onsite"
+
+#~ msgid ""
+#~ "For the latest information about %s stay tuned to %s. If you have any "
+#~ "further questions concerning your e-ticket, please contact us via %s."
+#~ msgstr ""
+#~ "Um die neuesten Informationen zur %s zu erhalten, besuche %s. Falls du "
+#~ "noch Fragen zu deinem E-Ticket hast, kannst du uns unter %s kontaktieren. "
+
+#~ msgid ""
+#~ "The %s will take place from %s - %s in %s (%s). You can find all up-to-"
+#~ "date information on %s."
+#~ msgstr ""
+#~ "Die %s wird vom %s - %s in %s (%s) stattfinden. Aktuelle Informationen "
+#~ "findest du unter %s. "
+
+#~ msgid ""
+#~ "On this website you can purchase tickets for %s as well as other items "
+#~ "such as galashow tickets."
+#~ msgstr ""
+#~ "Auf dieser Seite kannst du Tickets für die %s und andere Artikel wie z.B. "
+#~ "Galashowtickets kaufen. "
+
+#~ msgid "Back"
+#~ msgstr "zurück"
+
+#~ msgid "Terms and Conditions"
+#~ msgstr "Geschäftsbedingungen"
+
+#~ msgid "Disclaimer"
+#~ msgstr "Haftungsausschluss"
+
+#~ msgid ""
+#~ "Upon attending the EJC, in no event shall the host or its representatives "
+#~ "or its assistants be liable for any loss or injury or any damages, unless "
+#~ "they are grounded in cause of gross negligence or wilful act of breach of "
+#~ "duty by the host or its representatives or its assistants. Participants "
+#~ "attend by choice, on their own risk; they take the responsibility for "
+#~ "their own health status and pay attention to it. We especially point out "
+#~ "that the Convention is a sports event where professional jugglers and "
+#~ "acrobats will train together with non - professionals of all skill "
+#~ "levels. There will be workshops in all sorts of circus disciplines open "
+#~ "(but maybe not appropriate!) for everyone; above that props and apparatus "
+#~ "will be accessible, be it because the host provides them or any "
+#~ "participant simply puts them up and let others use them as well. It is "
+#~ "your own responsibility and neither the hosts', nor the workshop "
+#~ "leaders', their representatives' or assistants' to make sure at any time "
+#~ "that your health and fitness condition is adequate to take part in the "
+#~ "workshop in question or to use props and apparatus mentioned hereinabove "
+#~ "safely."
+#~ msgstr ""
+#~ "Bei Teilnahme an der MünchenCon 2016 gilt Haftungsausschluss für die "
+#~ "Veranstalter, ihre Vertreter und Erfüllungsgehilfen für Schäden jeder "
+#~ "Art, es sei denn, sie beruhen auf einer grob fahrlässigen oder "
+#~ "vorsätzlichen Pflichtverletzung der Veranstalter, ihrer Vertreter oder "
+#~ "Erfüllungsgehilfen. Teilnehmer nehmen aus freiem Willen und auf eigenes "
+#~ "Risiko an der Veranstaltung teil, verantworten ihren Gesundheitszustand "
+#~ "selbst und achten auf diesen.\n"
+#~ "Die Veranstalter weisen ausdrücklich darauf hin, dass die MünchenCon eine "
+#~ "Sportveranstaltung ist, an der professionelle Artisten gemeinsam mit "
+#~ "Laien aller Niveaus trainieren. Workshops für alle Leistungsgruppen "
+#~ "werden für jedermann angeboten, sind aber nicht notwendigerweise für "
+#~ "jeden geeignet. Zudem sind Requisiten aller Arten zugänglich, sei es weil "
+#~ "der Veranstalter oder ein Teilnehmer sie der Allgemeinheit zur Verfügung "
+#~ "stellen. Jeder Teilnehmer ist sich dessen bewusst, dass es in seiner "
+#~ "eigenen Verantwortung steht, seinen gesundheitlichen und körperlichen "
+#~ "Zustand auf die Workshops, an denen er teilnimmt, und die oben "
+#~ "beschriebenen Requisiten, die er verwendet, abzustimmen.  "
+
+#~ msgid "back to Overview"
+#~ msgstr "zurück zur Übersicht"
 
 #~ msgid ""
 #~ "The PreReg is already closed. For more information, please visit our "

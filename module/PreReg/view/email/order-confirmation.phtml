@@ -44,7 +44,7 @@
         ), array('force_canonical' => true)); ?>">resend email link</a>.
     </p>-->
 
-    <p><?php printf($this->translate('Thank you for registering for the %s!'), $this->config()['ERS']['name_with_number']); ?></p>
+    <p>Danke für deine Anmeldung zur Berliner Jonglierconvention 2017.</p>
 
     <p><?php printf($this->translate('You\'ve chosen %s as payment method.'), $order->getPaymentType()->getName()); ?></p>
 
@@ -52,7 +52,7 @@
     $paymenttype = $order->getPaymentType();
     if($paymenttype->getType() == 'sepa'): ?>
 
-        <p><?php echo $this->translate('To complete your order, we need to receive your bank transfer within 14 days.'); ?></p>
+        <p><?php echo $this->translate('To complete your order, we need to receive your bank transfer within 7 days.'); ?></p>
 
         <?php echo $this->partial('partial/sepa-banktransfer-info.phtml', array('order' => $order)); ?>
 
@@ -123,25 +123,17 @@
     <?php endif; ?>
 
     <p>
-        <?php printf($this->translate('Please consider our general %s.
-        To be able to read the document, you need to install Adobe Acrobat Reader, which you can download here:'), $termsLink); ?>
+        <?php printf($this->translate('Please consider our general %s. To be able to read the document, you need to install Adobe Acrobat Reader, which you can download here:'), $termsLink); ?>
         <a href="http://get.adobe.com/reader">http://get.adobe.com/reader</a>
     </p>
 
     <p>
-        <?php printf($this->translate('Your E-Tickets and further information concerning the %s will be delivered in another email
-        as soon as we start distributing the E-Tickets and your payment has been confirmed.'), $this->config()['ERS']['name_with_number']); ?>
+        <?php printf($this->translate('Your E-Tickets and further information concerning the %s will be delivered in another email as soon as we start distributing the E-Tickets and your payment has been confirmed.'), $this->config()['ERS']['name_with_number']); ?>
     </p>
-    <p>
-        We would also like to ask for your help in spreading the word about the EJC!
-        As you know the festival is financed directly from ticket sale. It would be AWESOME if you could invite your friends to join the EJC 2017 and register!
-        We have prepared a little graphics that you can use if you want to help and spread the excitement about the upcoming convention that we all share! :) 
-        Its size is tailored to fit the FaceBook cover photo, but please use it wherever you want!
-    </p>
-
+    
     <p><?php $this->translate('Regards,'); ?></p>
 
-    <p><?php printf($this->translate('Your European Juggling Association and the local %s organisers.'), $this->config()['ERS']['name_with_number']); ?></p>
+    <p>Euer Berliner Convention Orga-Team</p>
 
     <hr>
     <p>
@@ -154,20 +146,10 @@
             text-align: center;
             padding: 1em;
             background-color: #eeeeee;">
-        <?php printf($this->translate('This mail was sent to you by the Event Registration System (ERS),
-        operated by the European Juggling Association (EJA) on
-        behalf of %s.'), $this->config()['ERS']['name_with_year']); ?>
-        <br>
-        <?php printf($this->translate('If you have any questions about your pre-registration,
-        please contact the EJA pre-registration coordinator
-        at %s.'), $preregMail); ?>
-        <br>
-        <?php printf($this->translate('For more information about %s,
-        please visit %s
-        or contact %s.'), 
-        $this->config()['ERS']['name_with_year'],
-        $website,
-        $infoMail); ?>
+        Diese E-Mail wurde dir im Namen der Berliner Jonglierconvention 2017 vom Event Registration System (ERS) geschickt, 
+        das vom Circulum e.V. betrieben wird.<br />
+        Wenn du Fragen zu unserer Voranmeldung hast, kontaktiere uns bitte unter <a href="mailto:anmeldung@circulum.de">anmeldung@circulum.de</a><br />
+        Für mehr Informationen zur Berlin Convention 2017, besuche <a href="http://www.circulum.de">http://www.circulum.de</a>.
     </div>
 </div>
 </body>

@@ -23,19 +23,28 @@
                  */
                 case 'weekticket': ?>
                     <?php if(!isset($items[$product->getId()]) || count($items[$product->getId()]) == 0): ?>
-                        <p class="order-description"><span class="order-value fa">&#xf096;</span> <?php echo $product->getName(); ?></p>
+                        <p class="order-description">
+                            <span class="order-value fa">&#xf096;</span> <?php echo $product->getName(); ?>
+                        </p>
                     <?php else:
                         foreach($items[$product->getId()] as $item):
                             if($item->hasParentItems()) :
                                 continue;
                             endif; ?>
-                            <p class="order-description"><span class="order-value fa">&#xf046;</span> <?php echo $product->getName(); ?></p>
-                            <?php foreach($item->getChildItems() as $cItem): ?>
+                            <p class="order-description">
+                                <span class="order-value fa">&#xf046;</span> <?php echo $product->getName(); ?>
+                            </p>
+                            <?php foreach($item->getItemVariants() as $variant): ?>
                                 <p class="additional-order-description">
-                                    included <?php echo $cItem->getProduct()->getName(); ?>: 
+                                    <?php echo $variant->getName(); ?>: <?php echo $variant->getValue(); ?>
+                                </p>
+                            <?php endforeach; ?>
+                            <?php foreach($item->getChildItems() as $childItem): ?>
+                                <p class="additional-order-description">
+                                    included <?php echo $childItem->getProduct()->getName(); ?>: 
                                 </p>
                                 <p class="order-value">
-                                    <?php foreach($cItem->getItemVariants() as $variant): ?>
+                                    <?php foreach($childItem->getItemVariants() as $variant): ?>
                                         <span><?php echo $variant->getValue(); ?></span>
                                     <?php endforeach; ?>
                                 </p>

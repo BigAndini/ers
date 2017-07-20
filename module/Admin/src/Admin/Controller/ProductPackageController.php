@@ -68,8 +68,8 @@ class ProductPackageController extends AbstractActionController {
         
         $thisProduct = $em->getRepository('ErsBase\Entity\Product')
                 ->findOneBy(array('id' => $id));
-        $form->get('SubProduct_id')->setValueOptions($this->getProductOptions($thisProduct));
-        $form->get('Product_id')->setValue($id);
+        $form->get('sub_product_id')->setValueOptions($this->getProductOptions($thisProduct));
+        $form->get('product_id')->setValue($id);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -136,8 +136,8 @@ class ProductPackageController extends AbstractActionController {
 
         $thisProduct = $em->getRepository('ErsBase\Entity\Product')
                 ->findOneBy(array('id' => $productPackage->getProductId()));
-        $form->get('SubProduct_id')->setValueOptions($this->getProductOptions($thisProduct, $subproduct_id));
-        $form->get('Product_id')->setValue($id);
+        $form->get('sub_product_id')->setValueOptions($this->getProductOptions($thisProduct, $subproduct_id));
+        $form->get('product_id')->setValue($id);
         
         $request = $this->getRequest();
         if ($request->isPost()) {

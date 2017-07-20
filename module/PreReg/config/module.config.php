@@ -398,27 +398,31 @@ return array(
             'currencychooser' => 'PreReg\View\Helper\CurrencyChooser',
         ),
         'factories' => array(
+            'setting' => function($sm) {
+                $helper = new \ErsBase\View\Helper\Setting($sm);
+                return $helper;
+            },
             'config' => function($sm) {
-                $helper = new \PreReg\View\Helper\Config($sm);
+                $helper = new \ErsBase\View\Helper\Config($sm);
                 return $helper;
             },
             'session' => function($sm) {
-                $helper = new \PreReg\View\Helper\Session();
+                $helper = new \ErsBase\View\Helper\Session();
                 return $helper;
             },
             'checkoutactive' => function($sm) {
-                $helper = new \PreReg\View\Helper\CheckoutActive();
+                $helper = new \ErsBase\View\Helper\CheckoutActive();
                 return $helper;
             },
             'niceiban' => function($sm) {
-                $helper = new \PreReg\View\Helper\NiceIban($sm);
+                $helper = new \ErsBase\View\Helper\NiceIban($sm);
                 return $helper;
             },
         ),
     ),
     'session_manager' => array(
         'validators' => array(
-            'Zend\Session\Validator\RemoteAddr',
+            #'Zend\Session\Validator\RemoteAddr',
         ),
     ),
 );

@@ -5,19 +5,19 @@ $this->headTitle($title);
 <h1 class="page-title"><?php echo $title; ?></h1>
 <div class="row">
     <div class="col-md-6">
-        <h2>Participants under 16</h2>
-        <p>Participants under 16 years need an adult supervisor who is responsible for the participant throughout the event.</p>
+        <h2><?php echo $this->translate('Participants under 16'); ?></h2>
+        <p><?php echo $this->translate('Participants under 16 years need an adult supervisor who is responsible for the participant throughout the event.'); ?></p>
     </div>
     <div class="col-md-6">
-        <h2>Participants under 18</h2>
-        <p>Participants under 18 years need a letter of agreement signed by a legal guardian, so that they are allowed to attend the event on their own.</p>
+        <h2><?php echo $this->translate('Participants under 18'); ?></h2>
+        <p><?php echo $this->translate('Participants under 18 years need a letter of agreement signed by a legal guardian, so that they are allowed to attend the event on their own.'); ?></p>
     </div>
 </div>
 <div class="row">
     <div class="col-md-6 text-center">
-        <a class="btn btn-lg btn-primary" href="/U16_consent-form.pdf" type="application/octet-stream" download>get the form for U16 participants</a>
+        <a class="btn btn-lg btn-primary" href="http://www.circulum.de/convention/download/participants_under_16.pdf" type="application/octet-stream" download><?php echo $this->translate('get the form for U16 participants'); ?></a>
     </div>
     <div class="col-md-6 text-center">
-        <a class="btn btn-lg btn-primary" href="/U18_consent-form.pdf" type="application/octet-stream" download>get the form for U18 participants</a>
+        <a class="btn btn-lg btn-primary" href="http://www.circulum.de/convention/download/participants_under_18.pdf" type="application/octet-stream" download><?php echo $this->translate('get the form for U18 participants'); ?></a>
     </div>
 </div>

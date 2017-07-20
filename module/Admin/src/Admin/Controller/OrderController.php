@@ -452,13 +452,21 @@ class OrderController extends AbstractActionController {
                 $order = $em->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $id));
                 
-                if($order->getPaymentStatus() != 'paid') {
+                
+                $validStatus = $em->getRepository('ErsBase\Entity\Status')
+                    ->findBy(array('valid' => 1));
+                $validArray = array_filter($validStatus, function($status) {return $status->getValid();});
+                
+                if(!in_array($order->getStatus(), $validArray)) {
+                #if($order->getPaymentStatus() != 'paid') {
+                    $this->flashMessenger()->addErrorMessage('Order '.$order->getCode()->getValue().' is not in a valid state to send out e-tickets.');
                     return $this->redirect()->toRoute('admin/order', array('action' => 'send-eticket'));
                 }
                 
                 $eticketService = $this->getServiceLocator()->get('ErsBase\Service\ETicketService');
                 foreach($order->getPackages() as $package) {
-                    if($package->getStatus() != 'paid') {
+                    #if($package->getStatus() != 'paid') {
+                    if(!in_array($package->getStatus(), $validArray)) {
                         continue;
                     }
 
@@ -516,6 +524,7 @@ class OrderController extends AbstractActionController {
                 
                 
                 $breadcrumb = $forrest->get('order');
+                $this->flashMessenger()->addSuccessMessage('E-tickets for order '.$order->getCode()->getValue().' has been send out.');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
@@ -583,6 +592,7 @@ class OrderController extends AbstractActionController {
                 $emailService->send();
                 
                 $breadcrumb = $forrest->get('order');
+                $this->flashMessenger()->addSuccessMessage('Payment reminder for order '.$order->getCode()->getValue.' has been send out.');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
@@ -731,6 +741,7 @@ class OrderController extends AbstractActionController {
                 $em->persist($order);
                 $em->flush();
                 
+                $this->flashMessenger()->addSuccessMessage('Buyer has been changed.');
                 return $this->redirect()->toRoute('admin/order', array(
                     'action' => 'detail', 
                     'id' => $order->getId()
@@ -1025,7 +1036,7 @@ class OrderController extends AbstractActionController {
                 ->join('p.items', 'i')
                 ->where('i.price = 0')
                 ->andWhere("i.status != 'zero_ok'")
-                ->andWhere('i.Product_id = 1');
+                ->andWhere('i.product_id = 1');
 
         $orders = $qb->getQuery()->getResult();
         
@@ -1124,4 +1135,185 @@ class OrderController extends AbstractActionController {
         ));
     }
     
+    public function changeStatusAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $order = $em->getRepository('ErsBase\Entity\Order')
+                ->findOneBy(array('id' => $id));
+        
+        if(!$order) {
+            throw new \Exception('Unable to find order with id '.$id);
+        }
+        
+        $form = new Form\SimpleForm($em);
+        
+        $form->get('submit')->setAttributes(array(
+            'value' => _('save'),
+            'class' => 'btn btn-success',
+        ));
+
+        $status = $em->getRepository('ErsBase\Entity\Status')
+                ->findBy(array(), array('position' => 'ASC'));
+        
+        $statusId = $order->getStatus()->getId();
+        
+        $statusOptions = array();
+        $selected = false;
+        foreach($status as $s) {
+            $selected = false;
+            if($statusId == $s->getId()) {
+                $selected = true;
+            }
+            $statusOptions[] = array(
+                'value' => $s->getId(),
+                'label' => $s->getActive() ? 'active: '.$s->getValue() : 'inactive: '.$s->getValue(),
+                'selected' => $selected,
+            );
+        }
+        $form->add(array(
+            'name' => 'status_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => _('new status'),
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                'value_options' => $statusOptions,
+            ),
+        ));
+        
+        $form->add(array(
+            'name' => 'order_id',
+            'type'  => 'Zend\Form\Element\Hidden',
+            'attributes' => array(
+                'required' => 'required',
+                'value' => $order->getId(),
+            ),
+        ));
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $status = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('id' => $data['status_id']));
+                
+                $order = $em->getRepository('ErsBase\Entity\Order')
+                    ->findOneBy(array('id' => $data['order_id']));
+                
+                $statusService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\StatusService');
+                
+                $statusService->setOrderStatus($order, $status, true);
+                
+                return $this->redirect()->toRoute('admin/order', array(
+                    'action' => 'detail', 
+                    'id' => $order->getId()
+                ));
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+
+        return new ViewModel(array(
+            'form' => $form,
+            'order' => $order,
+        ));
+    }
+    
+    public function changeCommentAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            $this->flashMessenger()->addErrorMessage('Unable to find order without id.');
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $order = $em->getRepository('ErsBase\Entity\Order')
+                ->findOneBy(array('id' => $id));
+        
+        if(!$order) {
+            throw new \Exception('Unable to find order with id '.$id);
+        }
+        
+        $form = new Form\SimpleForm($em);
+        
+        $form->get('submit')->setAttributes(array(
+            'value' => _('save'),
+            'class' => 'btn btn-success',
+        ));
+
+        $form->add(array(
+            'name' => 'comment',
+            'type'  => 'textarea',
+            'attributes' => array(
+                'required' => 'required',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => _('comment'),
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        $form->get('comment')->setValue($order->getComment());
+        
+        $form->add(array(
+            'name' => 'order_id',
+            'type'  => 'Zend\Form\Element\Hidden',
+            'attributes' => array(
+                'required' => 'required',
+                'value' => $order->getId(),
+            ),
+        ));
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $order = $em->getRepository('ErsBase\Entity\Order')
+                    ->findOneBy(array('id' => $data['order_id']));
+                
+                $order->setComment($data['comment']);
+                
+                $em->persist($order);
+                $em->flush();
+                
+                $this->flashMessenger()->addSuccessMessage('Comment for for order '.$order->getCode()->getValue().' has been saved.');
+                return $this->redirect()->toRoute('admin/order', array(
+                    'action' => 'detail', 
+                    'id' => $order->getId()
+                ));
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+
+        return new ViewModel(array(
+            'form' => $form,
+            'order' => $order,
+        ));
+    }
 }

@@ -1,6 +1,6 @@
 <div>
     <?php if($order == null): ?>
-    <h1>There is no order to show bank transfer details for</h1>
+    <h1><?php echo $this->translate('There is no order to show bank transfer details for'); ?></h1>
     <p>Go to <a href="<?php echo $this->url('product'); ?>">products</a> and 
         choose the items you want.</p>
     <?php else: 

@@ -72,7 +72,7 @@ class BankaccountController extends AbstractActionController {
                 $em->persist($bankaccount);
                 $em->flush();
 
-                $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully added');
+                $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully added.');
                 return $this->redirect()->toRoute('admin/bankaccount');
             } else {
                 $this->flashMessenger()->addErrorMessage($form->getMessages());
@@ -111,7 +111,7 @@ class BankaccountController extends AbstractActionController {
                 $em->persist($form->getData());
                 $em->flush();
 
-                $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully changed');
+                $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully changed.');
                 return $this->redirect()->toRoute('admin/bankaccount');
             }
         }
@@ -144,7 +144,7 @@ class BankaccountController extends AbstractActionController {
                 $em->remove($bankaccount);
                 $em->flush();
                 
-                $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully deleted');
+                $this->flashMessenger()->addSuccessMessage('The bankaccount has been successfully deleted.');
             }
 
             return $this->redirect()->toRoute('admin/bankaccount');
@@ -262,7 +262,7 @@ class BankaccountController extends AbstractActionController {
                 $em->persist($bankaccount);
                 $em->flush();
                 
-                $this->flashMessenger()->addSuccessMessage('The format for the bankaccount has been successfully changed');
+                $this->flashMessenger()->addSuccessMessage('The format for the bankaccount has been successfully changed.');
 
                 return $this->redirect()->toRoute('admin/bankaccount');
             }
@@ -411,7 +411,7 @@ class BankaccountController extends AbstractActionController {
                 
                 $em->flush();
                 
-                $this->flashMessenger()->addSuccessMessage('The csv for the bankaccount has been successfully uploaded');
+                $this->flashMessenger()->addSuccessMessage('The csv for the bankaccount has been successfully uploaded.');
                 
                 return $this->redirect()->toRoute('admin/bankaccount');
             }
@@ -487,7 +487,7 @@ class BankaccountController extends AbstractActionController {
                 $em->remove($csv);
                 $em->flush();
                 
-                $this->flashMessenger()->addSuccessMessage('The csv for the bankaccount has been successfully deleted');
+                $this->flashMessenger()->addSuccessMessage('The csv for the bankaccount has been successfully deleted.');
             }
 
             return $this->redirect()->toRoute('admin/bankaccount');
@@ -562,6 +562,7 @@ class BankaccountController extends AbstractActionController {
                 $em->persist($form->getData());
                 $em->flush();
 
+                $this->flashMessenger()->addSuccessMessage('Details have been successfully saved.');
                 return $this->redirect()->toRoute('admin/bankaccount');
             }
         }

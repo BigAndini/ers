@@ -42,8 +42,11 @@ class Module
         $this->bootstrapSession($e);
         
         $translator = $e->getApplication()->getServiceManager()->get('translator');
-        $translator->setLocale('en_US');
-        setlocale(LC_TIME, 'en_US');
+        #$translator->setLocale('en_US');
+        #setlocale(LC_TIME, 'en_US');
+        $translator->setLocale('de_DE');
+        setlocale(LC_TIME, 'de_DE');
+        
         
         $application   = $e->getApplication();
         $sm = $application->getServiceManager();
@@ -188,7 +191,7 @@ class Module
             error_log('  participant_id: '.$package->getParticipantId());
             $items = $package->getItems();
             foreach($items as $item) {
-                error_log(' - '.$item->getName().' (Product_id: '.$item->getProductId().')');
+                error_log(' - '.$item->getName().' (product_id: '.$item->getProductId().')');
             }
             error_log('  --------------------');
         }
@@ -219,11 +222,23 @@ class Module
             'factories' => array(
                 'Logger' => function($sm){
                     $logger = new \Zend\Log\Logger;
-                    if(!is_dir(getcwd().'/data/log')) {
-                        mkdir(getcwd().'/data/log');
+                    if(!is_dir(getcwd().'/data/logs')) {
+                        mkdir(getcwd().'/data/logs');
                     }
-                    $writer = new \Zend\Log\Writer\Stream('./data/log/'.date('Y-m-d').'-zend-error.log');
+                    $writer = new \Zend\Log\Writer\Stream('./data/logs/'.date('Y-m-d').'-zend.log');
                     $logger->addWriter($writer);
+                    
+                    #EMERG   = 0;  // Emergency: system is unusable
+                    #ALERT   = 1;  // Alert: action must be taken immediately
+                    #CRIT    = 2;  // Critical: critical conditions
+                    #ERR     = 3;  // Error: error conditions
+                    #WARN    = 4;  // Warning: warning conditions
+                    #NOTICE  = 5;  // Notice: normal but significant condition
+                    #INFO    = 6;  // Informational: informational messages
+                    #DEBUG   = 7;  // Debug: debug messages
+
+                    #$filter = new \Zend\Log\Filter\Priority(\Zend\Log\Logger::CRIT);
+                    #$writer->addFilter($filter);
 
                     return $logger;
                 },

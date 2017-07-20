@@ -62,12 +62,12 @@ class Product extends Base\Product
             if($agegroup) {
                 error_log($this->getId().': agegroup: '.$agegroup->getName());
             } else {
-                error_log($this->getId().': no agegroup');
+                error_log($this->getId().': adult');
             }
             if($deadline) {
                 error_log($this->getId().': deadline: '.$deadline->getName());
             } else {
-                error_log($this->getId().': no deadline');
+                error_log($this->getId().': after last deadline');
             }
             error_log($this->getId().': found '.count($this->getProductPrices()).' prices');
         }
@@ -158,6 +158,7 @@ class Product extends Base\Product
                 if($debug) {
                     error_log($this->getId().': set ret to price: '.$price->getCharge().' id: '.$price->getId());
                 }
+                
                 $ret = $price;
             }
         }

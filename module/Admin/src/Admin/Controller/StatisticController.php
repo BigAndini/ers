@@ -455,7 +455,7 @@ class StatisticController extends AbstractActionController {
                     ->select('COUNT(i.id) itemcount')
                     ->from('ErsBase\Entity\Item', 'i')
                     ->join('i.status', 's', 'WITH', 's.active = 1')
-                    ->where('i.Product_id = :prod_id')
+                    ->where('i.product_id = :prod_id')
                     ->setParameter('prod_id', $product->getId());
             
             $variantNames = [];
@@ -600,8 +600,8 @@ class StatisticController extends AbstractActionController {
         $qb = $em->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
         $qb->where("i.shipped = 1");
         $qb->andWhere($qb->expr()->orX(
-                $qb->expr()->eq("i.Product_id", "1"),
-                $qb->expr()->eq("i.Product_id", "4")));
+                $qb->expr()->eq("i.product_id", "1"),
+                $qb->expr()->eq("i.product_id", "4")));
         $shippedItems = $qb->getQuery()->getResult();
         
         $itemStats = array();

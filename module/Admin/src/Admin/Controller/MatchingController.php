@@ -287,6 +287,7 @@ class MatchingController extends AbstractActionController {
                 #$params['statements'] = $data['statements'];
                 #$params['orders'] = $data['orders'];
                 
+                $this->flashMessenger()->addSuccessMessage('Order has been successfully matched.');
                 return $this->redirect()->toRoute('admin/matching', array('action' => 'manual'));
             } else {
                 $logger->warn($form->getMessages());
@@ -352,6 +353,7 @@ class MatchingController extends AbstractActionController {
                 $em->flush();
                 
                 $breadcrumb = $forrest->get('matching');
+                $this->flashMessenger()->addSuccessMessage('Order was successfully unlinked.');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }

@@ -45,6 +45,7 @@ class DeadlineController extends AbstractActionController {
                 $em->persist($deadline);
                 $em->flush();
 
+                $this->flashMessenger()->addSuccessMessage('Deadline has been successfully added.');
                 return $this->redirect()->toRoute('admin/deadline');
             } else {
                 $logger = $this->getServiceLocator()->get('Logger');
@@ -81,6 +82,7 @@ class DeadlineController extends AbstractActionController {
                 $em->persist($form->getData());
                 $em->flush();
 
+                $this->flashMessenger()->addSuccessMessage('Deadline has been successfully changed.');
                 return $this->redirect()->toRoute('admin/deadline');
             }
         }
@@ -122,6 +124,7 @@ class DeadlineController extends AbstractActionController {
                 $em->flush();
             }
 
+            $this->flashMessenger()->addSuccessMessage('Deadline has been successfully deleted.');
             return $this->redirect()->toRoute('admin/deadline');
         }
 

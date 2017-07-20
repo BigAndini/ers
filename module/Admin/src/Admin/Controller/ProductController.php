@@ -183,6 +183,7 @@ class ProductController extends AbstractActionController {
                 #$this->copyProductVariants($id, $new_id);
 
                 $forrest = new Service\BreadcrumbService();
+                $forrest->set('product', 'admin/product');
                 $breadcrumb = $forrest->get('product');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
@@ -222,7 +223,7 @@ class ProductController extends AbstractActionController {
         $form->bind($product);
         
         $items = $em->getRepository('ErsBase\Entity\Item')
-                ->findBy(array('Product_id' => $id));
+                ->findBy(array('product_id' => $id));
 
         if ($this->request->isPost()) {
             $form->setData($this->request->getPost());
@@ -261,7 +262,7 @@ class ProductController extends AbstractActionController {
         $Product = $em->getRepository('ErsBase\Entity\Product')
                 ->findOneBy(array('id' => $id));
         $Items = $em->getRepository('ErsBase\Entity\Item')
-                ->findBy(array('Product_id' => $id));
+                ->findBy(array('product_id' => $id));
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -293,7 +294,7 @@ class ProductController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $ProductPrices = $em->getRepository('ErsBase\Entity\ProductPrice')
-                ->findBy(array('Product_id' => $Product->getId()));
+                ->findBy(array('product_id' => $Product->getId()));
         foreach($ProductPrices as $price) {
             $em->remove($price);
         }
@@ -302,7 +303,7 @@ class ProductController extends AbstractActionController {
         $em = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $ProductVariants = $em->getRepository('ErsBase\Entity\ProductVariant')
-                ->findBy(array('Product_id' => $Product->getId()));
+                ->findBy(array('product_id' => $Product->getId()));
         foreach($ProductVariants as $variant) {
             $ProductVariantValues = $em->getRepository('ErsBase\Entity\ProductVariantValue')
                     ->findBy(array('ProductVariant_id' => $variant->getId()), array('position' => 'ASC'));

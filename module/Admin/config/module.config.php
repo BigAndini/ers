@@ -36,6 +36,8 @@ return array(
             'Admin\Controller\Test'                 => 'Admin\Controller\TestController',
             'Admin\Controller\Overview'             => 'Admin\Controller\OverviewController',
             'Admin\Controller\Currency'             => 'Admin\Controller\CurrencyController',
+            'Admin\Controller\Export'               => 'Admin\Controller\ExportController',
+            'Admin\Controller\Setting'              => 'Admin\Controller\SettingController',
         ),
     ),
     'navigation' => array(
@@ -294,12 +296,31 @@ return array(
     'console' => array(
         'router' => array(
             'routes' => array(
-                'cron' => array(
+                'default-route' => array(
+                    'type'     => 'catchall',
+                    'options' => array(
+                        #'route'    => 'consoledefault',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action'     => 'consoledefault'
+                        )
+                    )
+                ),
+                /*'cron' => array(
                     'options' => array(
                         'route'    => 'cron',
                         'defaults' => array(
                             'controller' => 'Admin\Controller\Cron',
                             'action' => 'cron'
+                        )
+                    )
+                ),
+                'test-mailq' => array(
+                    'options' => array(
+                        'route'    => 'test-mailq',
+                        'defaults' => array(
+                            'controller' => 'Admin\Controller\Cron',
+                            'action' => 'test-mailq'
                         )
                     )
                 ),
@@ -536,7 +557,7 @@ return array(
                             'action' => 'sorry-eticket-cc'
                         )
                     )
-                ),
+                ),*/
             ),
         ),
     ),
@@ -564,6 +585,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Test',
+                                'action'     => 'index',
+                            ),
+                        ),
+                    ),
+                    'export' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/export[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Export',
                                 'action'     => 'index',
                             ),
                         ),
@@ -900,6 +935,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Admin\Controller\Country',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'setting' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route'    => '/setting[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Admin\Controller\Setting',
                                 'action' => 'index',
                             ),
                         ),

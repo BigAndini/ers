@@ -18,8 +18,8 @@ $form->prepare();
 
 echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('id'));
-echo $this->formHidden($form->get('Product_id'));
-echo $this->formRow($form->get('SubProduct_id'));
+echo $this->formHidden($form->get('product_id'));
+echo $this->formRow($form->get('sub_product_id'));
 echo $this->formRow($form->get('active'));
 echo $this->formRow($form->get('amount'));
 echo $this->formHidden($form->get('csrf'));

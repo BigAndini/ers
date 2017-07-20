@@ -35,7 +35,7 @@ class ProductVariantController extends AbstractActionController
         
         $form = new Form\ProductVariant();
         $form->get('submit')->setValue('Add');
-        $form->get('Product_id')->setValue($product_id);
+        $form->get('product_id')->setValue($product_id);
         $options['text'] = 'Text';
         $options['select'] = 'Select';
         $options['date'] = 'Date';

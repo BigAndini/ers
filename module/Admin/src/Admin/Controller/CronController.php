@@ -17,6 +17,18 @@ use Zend\Console\Request as ConsoleRequest;
 class CronController extends AbstractActionController {
     protected $debug = false;
     
+    public function consoledefaultAction() {
+        $params = $this->getRequest()->getParams()->toArray();
+        
+        $method = $this->getMethodFromAction($params[0]);
+        #echo $method.PHP_EOL;
+        if(!method_exists($this, $method)) {
+            throw new \Exception('Unable to find method: '.$method);
+        }
+        
+        $this->$method();
+    }
+    
     public function autoMatchingAction() {
         /*
          * Status of BankStatements
@@ -1234,5 +1246,118 @@ class CronController extends AbstractActionController {
                 echo $order->getCode()->getValue().' '.\number_format($order->getSum(), 2, ',', '.').' < '.\number_format($order->getStatementAmount(), 2, ',', '.').PHP_EOL;
             }
         }
+    }
+    
+    public function processMailqAction() {
+        $emailService = $em = $this->getServiceLocator()
+            ->get('ErsBase\Service\EmailService');
+        
+        $emailService->mailqWorker();
+    }
+    
+    public function insertTestMail2Action() {
+        
+        $emailService = $this->getServiceLocator()
+                ->get('ErsBase\Service\EmailService');
+        
+        $from = 'anmeldung@circulum.de';
+        $recipients = [
+            'andi@inbaz.org'
+        ];
+        $subject = 'This is a testmail';
+        $content = '<h1>This is html content</h1>';
+        
+        $emailService->addMailToQueue($from, $recipients, $subject, $content);
+        #$emailService->addMailToQueue($from, $recipients, $subject, $content, $is_html = true, $attachments = array());
+    }
+    
+    
+    public function insertTestMail3Action() {
+        
+        $emailService = $this->getServiceLocator()
+                ->get('ErsBase\Service\EmailService');
+        
+        $from = 'anmeldung@circulum.de';
+        $recipients = [
+            'andi@inbaz.org'
+        ];
+        $subject = 'This is a testmail';
+        $content = '<h1>This is html content</h1>';
+        
+        $attachments = [
+            'public/Terms and Conditions ERS EN v7.pdf',
+            'public/Terms and Conditions organisation EN v6.pdf',
+        ];
+        
+        $emailService->addMailToQueue($from, $recipients, $subject, $content, true, $attachments);
+        #$emailService->addMailToQueue($from, $recipients, $subject, $content, $is_html = true, $attachments = array());
+    }
+    
+    public function insertTestMailAction() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $mailq = new Entity\Mailq();
+        
+        $user = $em->getRepository('ErsBase\Entity\User')
+                ->findOneBy(['email' => 'andi@inbaz.org']);
+        
+        $mailq->setFrom($user);
+        
+        $att = new Entity\MailAttachment();
+        $att->setLocation('public/Terms and Conditions ERS EN v7.pdf');
+        $att->setMailq($mailq);
+        $mailq->addMailAttachment($att);
+        
+        $mailq->setSubject('Testmail');
+        #$mailq->setTextMessage('This is a text message.');
+        $mailq->setHtmlMessage('<h1>This is a text message.</h1>');
+        $mailq->setIsHtml(true);
+        
+        $em->persist($mailq);
+        $em->flush();
+        
+        $emailService = $this->getServiceLocator()
+                ->get('ErsBase\Service\EmailService');
+        
+        $from = 'andi@inbaz.org';
+        $recipients = [
+            'andi@sixhop.net',
+            'andi@eja.net'
+        ];
+        $recipients = [
+            [
+                'email' => 'andi1@inbaz.org',
+                'type' => 'to',
+            ],
+            [
+                'email' => 'andi2@inbaz.org',
+                'type' => 'cc',
+            ],
+            [
+                'email' => 'ers@inbaz.org',
+                'type' => 'bcc',
+            ],
+        ];
+        $content = 'This is text content';
+        $content = '<h1>This is html content</h1>';
+        $is_html = true;
+        $emailService->addMailToQueue(
+                $from,
+                $recipients,
+                $content,
+                $is_html
+                );
+        
+        $mailqHasTo = new Entity\MailqHasUser();
+        $mailqHasTo->setUser($user);
+        $mailqHasTo->setUserId($user->getId());
+        
+        $mailqHasTo->setMailq($mailq);
+        $mailqHasTo->setMailqId($mailq->getId());
+        $mailqHasTo->setTo();
+        
+        $em->persist($mailqHasTo);
+        $em->flush();
     }
 }
