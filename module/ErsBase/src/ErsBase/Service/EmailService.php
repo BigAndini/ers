@@ -181,10 +181,8 @@ class EmailService
      
         $content  = new Mime\Message();
         
-        if(!$this->isHtmlMessage()) {
-            $content->addPart($this->getTextMessage());
-        } else {
-            $content->addPart($this->getTextMessage());
+        $content->addPart($this->getTextMessage());
+        if($this->isHtmlMessage()) {
             $content->addPart($this->getHtmlMessage());
         }
         

@@ -28,6 +28,8 @@ class CronController extends AbstractActionController {
         
         $this->debug = true;
         
+        $logger = $this->getServiceLocator()->get('Logger');
+        
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
@@ -35,7 +37,7 @@ class CronController extends AbstractActionController {
                 ->findAll();
         
         if($this->debug) {
-            echo "Phase 1: check ".count($statements)." statements".PHP_EOL.PHP_EOL;
+            $logger->info("Phase 1: check ".count($statements)." statements");
         }
         $longest_match = 0;
         foreach($statements as $statement) {
@@ -56,7 +58,7 @@ class CronController extends AbstractActionController {
             }
             
             if(empty($statement_format->matchKey)) {
-                echo 'WARNING: matchKey not set for bank account '.$bankaccount->getName().PHP_EOL;
+                $logger->error('WARNING: matchKey not set for bank account '.$bankaccount->getName());
                 continue;
             }
             $ret = $this->findCodes($statement->getBankStatementColByNumber($statement_format->matchKey)->getValue());
@@ -85,8 +87,9 @@ class CronController extends AbstractActionController {
                     }
                 }
                 if(!$found) {
-                    echo "WARNING: Unable to find any code in system: ";
-                    echo $statement->getBankStatementColByNumber($statement_format->matchKey)->getValue().PHP_EOL;
+                    $logger->warn("WARNING: Unable to find any code in system: ".
+                            $statement->getBankStatementColByNumber($statement_format->matchKey)->getValue()
+                            );
                 }
                 $time_end = microtime(true);
                 $time = $time_end - $time_start;
@@ -95,7 +98,7 @@ class CronController extends AbstractActionController {
                 }
             }
         }
-        #echo 'INFO: The longest match took '.$longest_match.' seconds.'.PHP_EOL;
+        $logger->info('INFO: The longest match took '.$longest_match.' seconds.');
         
         /*
          * check status of unpaid orders
@@ -109,7 +112,7 @@ class CronController extends AbstractActionController {
         $orders = $queryBuilder->getQuery()->getResult();
         
         if($this->debug) {
-            echo PHP_EOL."Phase 2: check ".count($orders)." orders and set payment status.".PHP_EOL;
+            $logger->info("Phase 2: check ".count($orders)." orders and set payment status.");
         }
         
         $statusPaid = $entityManager->getRepository('ErsBase\Entity\Status')
@@ -145,10 +148,7 @@ class CronController extends AbstractActionController {
                 $entityManager->persist($order);
                 
                 $paid = true;
-                if($this->debug) {
-                    echo ".";
-                }
-                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (exact)".PHP_EOL;
+                $logger->debug("DEBUG: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (exact)");
             } elseif($order_amount < $statement_amount) {
                 
                 $order->setPaymentStatus('overpaid');
@@ -170,10 +170,7 @@ class CronController extends AbstractActionController {
                 $entityManager->persist($order);
                 
                 $paid = true;
-                if($this->debug) {
-                    echo "!";
-                }
-                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (overpaid)".PHP_EOL;
+                $logger->debug("DEBUG: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (overpaid)");
             } else {
                 $order->setPaymentStatus('unpaid');
                 $order->setStatus($statusOrdered);
@@ -190,15 +187,12 @@ class CronController extends AbstractActionController {
                 $entityManager->persist($order);
                 
                 $paid = false;
-                if($this->debug) {
-                    echo "-";
-                }
-                #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (partial)".PHP_EOL;
+                $logger->debug("DEBUG: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (partial)");
             }
         }
         $entityManager->flush();
         if($this->debug) {
-            echo PHP_EOL.PHP_EOL."done.".PHP_EOL;
+            $logger->info("done.");
         }
     }
     
@@ -206,6 +200,7 @@ class CronController extends AbstractActionController {
      * TODO: Move to MatchService
      */
     private function createMatch(Entity\BankStatement $statement, Entity\Code $code) {
+        $logger = $this->getServiceLocator()->get('Logger');
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
@@ -281,7 +276,7 @@ class CronController extends AbstractActionController {
             $entityManager->persist($order);
             
             $paid = true;
-            echo $matchInfo." (exact)".PHP_EOL;
+            $logger->info($matchInfo." (exact)");
         } elseif($order_amount < $statement_amount) {
             $order->setPaymentStatus('overpaid');
             $order->setStatus($statusOverpaid);
@@ -299,7 +294,7 @@ class CronController extends AbstractActionController {
             
             #$paid = true;
             $paid = false;
-            echo $matchInfo." (overpaid)".PHP_EOL;
+            $logger->info($matchInfo." (overpaid)");
         } else {
             $order->setStatus($statusOrdered);
             foreach($order->getPackages() as $package) {
@@ -312,7 +307,7 @@ class CronController extends AbstractActionController {
             }
             
             $paid = false;
-            echo $matchInfo." (partial)".PHP_EOL;
+            $logger->info($matchInfo." (partial)");
         }
 
         $entityManager->flush();
@@ -437,36 +432,6 @@ class CronController extends AbstractActionController {
         fclose($fp);
     }
     
-    public function generateEticketsAction() {
-        $time_start = microtime();
-        
-        $entityManager = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        #$order = $entityManager->getRepository('ErsBase\Entity\Order')
-                #->findOneBy(array('id' => '297'));
-                #->findOneBy(array('id' => '12'));
-                #->findOneBy(array('id' => '54'));
-        
-        $orders = $entityManager->getRepository('ErsBase\Entity\Order')
-                ->findAll();
-        $count = 0;
-        $eticketService = $this->getServiceLocator()
-            ->get('ErsBase\Service\ETicketService');
-        
-        foreach($orders as $order) {
-            echo "You are using " . intval(memory_get_usage() / 1024 / 1024) ." MB". PHP_EOL;
-            foreach($order->getPackages() as $package) {
-                $eticketService->setPackage($package);
-                $eticketService->generatePdf();
-                $count++;
-                $entityManager->detach($package);
-            }
-            $entityManager->detach($order);
-        }
-        echo "generated ".$count." etickets in ".(microtime()-$time_start).' $unit'.PHP_EOL;
-    }
-    
     public function sendPaymentReminderAction() {
         $request = $this->getRequest();
         
@@ -474,6 +439,7 @@ class CronController extends AbstractActionController {
         $short_real = (bool) $request->getParam('r',false);
         $isReal = ($long_real | $short_real);
         
+        $logger = $this->getServiceLocator()->get('Logger');
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
@@ -482,14 +448,13 @@ class CronController extends AbstractActionController {
         
         $correctOrders = $queryBuilder1->getQuery()->getResult();
         
-        echo "found ".count($correctOrders)." orders to correct".PHP_EOL;
+        $logger->info("found ".count($correctOrders)." orders to correct");
         foreach($correctOrders as $o) {
             $o->setPaymentReminderStatus(0);
             $entityManager->persist($o);
         }
         $entityManager->flush();
         
-        #$limit = 3;
         $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
         $queryBuilder->join('o.status', 's');
         $queryBuilder->where($queryBuilder->expr()->eq('s.value', ':status'));
@@ -500,11 +465,9 @@ class CronController extends AbstractActionController {
         $paymentTarget->modify( '-20 days' );
         $queryBuilder->setParameter('paymentTarget', $paymentTarget);
         $queryBuilder->setParameter('prstatus', '0');
-        #$queryBuilder->setFirstResult( $offset )
-        #$queryBuilder->setMaxResults( $limit );
         
         $notPaidOrders = $queryBuilder->getQuery()->getResult();
-        echo count($notPaidOrders)." not paid orders found from before ".$paymentTarget->format('d.m.Y').".".PHP_EOL;
+        $logger->info(count($notPaidOrders)." not paid orders found from before ".$paymentTarget->format('d.m.Y').".");
         
         if(!$isReal) {
             echo "Use -r parameter to really send out all payment reminder.".PHP_EOL;
@@ -512,12 +475,12 @@ class CronController extends AbstractActionController {
         }
         
         # countdown
-        echo PHP_EOL;
+        /*echo PHP_EOL;
         for($i=10; $i > 0; $i--) {
             echo "Really sending out payment reminder in... ".$i." seconds (ctrl+c to abort)   \r";
             sleep(1);
         }
-        echo PHP_EOL;
+        echo PHP_EOL;*/
         
         $config = $this->getServiceLocator()
                         ->get('config');
@@ -565,7 +528,7 @@ class CronController extends AbstractActionController {
             $entityManager->persist($order);
             $entityManager->flush();
             
-            echo "sent payment reminder for order ".$order->getCode()->getValue().PHP_EOL;
+            $logger->info("sent payment reminder for order ".$order->getCode()->getValue());
         }
     }
     
@@ -590,6 +553,7 @@ class CronController extends AbstractActionController {
             $ticket_count = $short_count;
         }
         
+        $logger = $this->getServiceLocator()->get('Logger');
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
@@ -599,7 +563,7 @@ class CronController extends AbstractActionController {
         $queryBuilder->orWhere("p.ticket_status = 'not_send'");
         $noStatusPackages = $queryBuilder->getQuery()->getResult();
         if($isDebug) {
-            echo count($noStatusPackages)." packages need to be corrected.".PHP_EOL;
+            $logger->debug(count($noStatusPackages)." packages need to be corrected.");
         }
         foreach($noStatusPackages as $package) {
             $order = $package->getOrder();
@@ -624,7 +588,7 @@ class CronController extends AbstractActionController {
             }
             if($productId[1] > 1) {
                 $order = $package->getOrder();
-                echo "Found more than one week ticket in package ".$package->getCode()->getValue()." (order: ".$order->getCode()->getValue().").".PHP_EOL;
+                $logger->warn("Found more than one week ticket in package ".$package->getCode()->getValue()." (order: ".$order->getCode()->getValue().").");
             }
             # if the package status is paid and
             # there is only one week ticket in this package
@@ -650,7 +614,7 @@ class CronController extends AbstractActionController {
         $can_send_packages = $entityManager->getRepository('ErsBase\Entity\Package')
             ->findBy(array('ticket_status' => 'can_send'));
         if($isDebug) {
-            echo "Can send out e-tickets for ".count($can_send_packages)." packages, will process ".$ticket_count." now.".PHP_EOL;
+            $logger->debug("Can send out e-tickets for ".count($can_send_packages)." packages, will process ".$ticket_count." now.");
         }
         
         $packages = $entityManager->getRepository('ErsBase\Entity\Package')
@@ -660,13 +624,6 @@ class CronController extends AbstractActionController {
             echo "Use -r parameter to really send out all etickets.".PHP_EOL;
             exit();
         }
-        
-        /*echo PHP_EOL;
-        for($i=10; $i > 0; $i--) {
-            echo "Really sending out e-tickets in... ".$i." seconds (ctrl+c to abort)   \r";
-            sleep(1);
-        }
-        echo PHP_EOL;*/
         
         $config = $this->getServiceLocator()
                         ->get('config');
@@ -727,7 +684,7 @@ class CronController extends AbstractActionController {
 
             echo ob_get_clean();
             if($isDebug) {
-                echo "generated e-ticket ".$eticketFile.".".PHP_EOL;
+                $logger->debug("generated e-ticket ".$eticketFile.".");
             }
 
             $emailService->addAttachment($eticketFile);
@@ -742,27 +699,30 @@ class CronController extends AbstractActionController {
     }
     
     public function emailStatusAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $users = $entityManager->getRepository('ErsBase\Entity\User')
                 ->findAll();
         
-        echo "checking ".count($users)." emails".PHP_EOL;
+        $logger->debug("checking ".count($users)." emails");
         foreach($users as $user) {
             if($user->getEmail() == '') {
                 continue;
             }
             
-            echo "checking email status for ".$user->getEmail()."... ";
+            $logEntry = "checking email status for ".$user->getEmail()."... ";
             $result = $this->validateEmail($user->getEmail());
             if($result) {
-                echo "OK!".PHP_EOL;
+                
+                $logEntry .= "OK!";
                 $user->setEmailStatus('ok');
             } else {
-                echo "failed!".PHP_EOL;
+                $logEntry .= "failed!";
                 $user->setEmailStatus('fail');
             }
+            $logger->info($logEntry);
             $entityManager->persist($user);
             $entityManager->flush();
         }
@@ -813,68 +773,6 @@ class CronController extends AbstractActionController {
         return $response;
     }
     
-    public function itemAgegroupAction() {
-        $entityManager = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
-        $queryBuilder->where('i.agegroup IS NULL');
-        $items = $queryBuilder->getQuery()->getResult();
-        /*$items = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findAll();*/
-        
-        echo "checking ".count($items)." items".PHP_EOL;
-        
-        $count = 0;
-        foreach($items as $item) {
-            $package = $item->getPackage();
-            
-            $agegroupService = $this->getServiceLocator()
-                    ->get('ErsBase\Service\AgegroupService:price');
-            switch($item->getProductId()) {
-                case 1:
-                    # week ticket
-                    $participant = $package->getParticipant();
-                    $agegroup = $agegroupService->getAgegroupByDate($participant->getBirthday());
-                    
-                    if($agegroup) {
-                        $item->setAgegroup($agegroup->getAgegroup());
-                        $entityManager->persist($item);
-
-                        foreach($item->getChildItems() as $cItem) {
-                            $cItem->setAgegroup($agegroup->getAgegroup());
-                            $entityManager->persist($cItem);
-                        }
-                    }
-                    break;
-                case 4:
-                    # day ticket
-                    $participant = $package->getParticipant();
-                    $agegroup = $agegroupService->getAgegroupByDate($participant->getBirthday());
-                    
-                    if($agegroup) {
-                        $item->setAgegroup($agegroup->getAgegroup());
-                        $entityManager->persist($item);
-                    }
-                    break;
-                case 5:
-                    # gala-show ticket
-                    if($item->getPrice() != 0) {
-                        # gala-show ticket for 0 € are handled by the week ticket case
-                        echo "This is a gala show ticket for ".$item->getPrice()." € (".$item->getId().")".PHP_EOL;
-                        $count += 1;
-                    }
-                    break;
-                default:
-                    echo "Don't know what to do with product id ".$item->getProductId().", yet.".PHP_EOL;
-                    break;
-            }
-        }
-        $entityManager->flush();
-        
-        echo "found ".$count." items with no owner".PHP_EOL;
-    }
-    
     public function calcSumsAction() {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
@@ -884,10 +782,8 @@ class CronController extends AbstractActionController {
         $queryBuilder->setParameter('status', 'order pending');
         
         $orders = $queryBuilder->getQuery()->getResult();
-        echo 'found '.count($orders).' orders'.PHP_EOL;
         
         foreach($orders as $order) {
-            #echo $order->getCode()->getValue().PHP_EOL;
             $orig_total_sum = $order->getTotalSum();
             $orig_order_sum = $order->getOrderSum();
             $order->getTotalSumEur();
@@ -895,11 +791,9 @@ class CronController extends AbstractActionController {
             
             if($orig_order_sum != $order->getPrice()) {
                 $order->setOrderSum($order->getPrice());
-                #echo "update order sum for ".$order->getCode()->getValue().": ".$orig_order_sum." != ".$order->getPrice().PHP_EOL;
             }
             if($orig_total_sum != $order->getSum()) {
                 $order->setTotalSum($order->getSum());
-                #echo "update total sum for ".$order->getCode()->getValue().": ".$orig_total_sum." != ".$order->getSum().PHP_EOL;
             }
             
             $entityManager->persist($order);
@@ -916,29 +810,49 @@ class CronController extends AbstractActionController {
         $queryBuilder->where($queryBuilder->expr()->isNull('r.roleId'));
         $queryBuilder->andWhere($queryBuilder->expr()->lt('u.updated', ':updated'));
         $updated = new \DateTime();
-        $updated->sub(new \DateInterval('PT2H'));
+        $updated->sub(new \DateInterval('PT8H'));
         $queryBuilder->setParameter('updated', $updated);
         $users = $queryBuilder->getQuery()->getResult();
         echo 'found '.count($users).' users'.PHP_EOL;
         foreach($users as $user) {
+            foreach($user->getPackages() as $package) {
+                foreach($package->getAllItems() as $item) {
+                    echo "1. remove item: ".$item->getId().PHP_EOL;
+                    $entityManager->remove($item);
+                    $entityManager->flush();
+                }
+                echo "1. remove package: ".$package->getId().PHP_EOL;
+                $entityManager->remove($package);
+                $entityManager->flush();
+            }
+            
             foreach($user->getOrders() as $order) {
                 if($order->getStatus()->getValue() != 'order pending') {
                     echo "ERROR: found order ".$order->getId()." which may not be pending. (".$order->getStatus()->getValue().") (user_id: ".$user->getId().")".PHP_EOL;
                 } else {
+                    foreach($order->getPackages() as $package) {
+                        foreach($package->getAllItems() as $item) {
+                            echo "remove item: ".$item->getId().PHP_EOL;
+                            $entityManager->remove($item);
+                            $entityManager->flush();
+                        }
+                        echo "remove package: ".$package->getId().PHP_EOL;
+                        $entityManager->remove($package);
+                        $entityManager->flush();
+                    }
+                    #$entityManager->remove($order->getBuyer());
+                    #$entityManager->flush();
+                    echo "remove order: ".$order->getId().PHP_EOL;
                     $entityManager->remove($order);
+                    $entityManager->flush();
                 }
             }
-            foreach($user->getPackages() as $package) {
-                foreach($package->getItems() as $item) {
-                    $entityManager->remove($item);
-                }
-                $entityManager->remove($package);
-            }
+            
+            echo "remove user: ".$user->getId().PHP_EOL;
             $entityManager->remove($user);
+            $entityManager->flush();
         }
         $entityManager->flush();
-        
-        
     }
     
     public function cleanupOrderAction() {
@@ -961,7 +875,7 @@ class CronController extends AbstractActionController {
             $entityManager->remove($order);
             foreach($order->getPackages() as $package) {
                 $entityManager->remove($package);
-                foreach($package->getItems() as $item) {
+                foreach($package->getAllItems() as $item) {
                     $entityManager->remove($item);
                 }
             }
@@ -1064,23 +978,6 @@ class CronController extends AbstractActionController {
         }
         $entityManager->flush();
         var_export($count);
-    }
-    
-    public function correctActiveUserAction() {
-        $entityManager = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $users = $entityManager->getRepository('ErsBase\Entity\User')
-                ->findAll();
-        foreach($users as $user) {
-            foreach($user->getPackages() as $package) {
-                $order = $package->getOrder();
-                if($order->getStatus()->getActive()) {
-                    $user->setActive(true);
-                    $entityManager->persist($user);
-                }
-            }
-        }
-        $entityManager->flush();
     }
     
     public function correctPaidPackagesAction() {
