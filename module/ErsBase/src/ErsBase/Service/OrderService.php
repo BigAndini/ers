@@ -370,58 +370,59 @@ class OrderService
             #$price = $product->getProductPrice($agegroup, $deadline);
             $price = $product->getProductPrice($agegroup, $deadline, $package->getCurrency());
             
-            if($item->getPrice() != $price->getCharge()) {
-                /*
-                 * disable item and create new item
-                 */
-                #$newItem = clone $item;
-                $newItem = new Entity\Item();
-                $newItem->populate($item->getArrayCopy());
-                #$newItem->setStatus($item->getStatus());
-                foreach($item->getItemVariants() as $itemVariant) {
-                    $newItemVariant = clone $itemVariant;
-                    $newItem->addItemVariant($newItemVariant);
-                    $newItemVariant->setItem($newItem);
-                }
-                $newItem->setPrice($price->getCharge());
-
-                $newItem->setProduct($item->getProduct());
-                $newItem->setPackage($item->getPackage());
-                
-                if($newItem->getPrice() == 0) {
-                    # set item to paid if it's 0 € worth
-                    $newItem->setStatus($statusPaid);
-                } elseif($item->getStatus()->getValue() == 'paid') {
-                    # if it's not 0 € worth set the item to ordered when it was paid.
-                    $newItem->setStatus($statusOrdered);
-                } else {
-                    # let the item in the old state otherwise
-                    $newItem->setStatus($item->getStatus());
-                }
-                
-                $code = new Entity\Code();
-                $code->genCode();
-                $codecheck = 1;
-                while($codecheck != null) {
-                    $code->genCode();
-                    $codecheck = $entityManager->getRepository('ErsBase\Entity\Code')
-                        ->findOneBy(array('value' => $code->getValue()));
-                }
-                $newItem->setCodeId(null);
-                $newItem->setCode($code);
-
-                /*
-                 * add subitems to main item
-                 */
-                foreach($item->getChildItems() as $cItem) {
-                    $itemPackage = new Entity\ItemPackage();
-                    $itemPackage->setSurItem($newItem);
-                    $itemPackage->setSubItem($cItem);
-                    $newItem->addItemPackageRelatedBySurItemId($itemPackage);
-                }
-
-                $itemArray[$item->getId()]['after'] = $newItem;
+            if($item->getPrice() == $price->getCharge()) {
+                continue;
             }
+            /*
+             * disable item and create new item
+             */
+            #$newItem = clone $item;
+            $newItem = new Entity\Item();
+            $newItem->populate($item->getArrayCopy());
+            #$newItem->setStatus($item->getStatus());
+            foreach($item->getItemVariants() as $itemVariant) {
+                $newItemVariant = clone $itemVariant;
+                $newItem->addItemVariant($newItemVariant);
+                $newItemVariant->setItem($newItem);
+            }
+            $newItem->setPrice($price->getCharge());
+
+            $newItem->setProduct($item->getProduct());
+            $newItem->setPackage($item->getPackage());
+
+            if($newItem->getPrice() == 0) {
+                # set item to paid if it's 0 € worth
+                $newItem->setStatus($statusPaid);
+            } elseif($item->getStatus()->getValue() == 'paid') {
+                # if it's not 0 € worth set the item to ordered when it was paid.
+                $newItem->setStatus($statusOrdered);
+            } else {
+                # let the item in the old state otherwise
+                $newItem->setStatus($item->getStatus());
+            }
+                
+            $code = new Entity\Code();
+            $code->genCode();
+            $codecheck = 1;
+            while($codecheck != null) {
+                $code->genCode();
+                $codecheck = $entityManager->getRepository('ErsBase\Entity\Code')
+                    ->findOneBy(array('value' => $code->getValue()));
+            }
+            $newItem->setCodeId(null);
+            $newItem->setCode($code);
+
+            /*
+             * add subitems to main item
+             */
+            foreach($item->getChildItems() as $cItem) {
+                $itemPackage = new Entity\ItemPackage();
+                $itemPackage->setSurItem($newItem);
+                $itemPackage->setSubItem($cItem);
+                $newItem->addItemPackageRelatedBySurItemId($itemPackage);
+            }
+
+            $itemArray[$item->getId()]['after'] = $newItem;
             $itemArray[$item->getId()]['before'] = $item;
         }
         return $itemArray;
