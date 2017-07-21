@@ -11,7 +11,7 @@ namespace ErsBase\Service;
 #use Zend\Session\Container;
 #use ErsBase\Entity;
 
-class DeadlineService
+class DeadlineService extends ServiceLocatorAwareService
 {
     protected $deadlines = array();
     protected $mode;
@@ -20,13 +20,6 @@ class DeadlineService
     
     public function __construct() {
         $this->compareDate = new \DateTime;
-    }
-    
-    public function setServiceLocator($serviceManager) {
-        $this->sm = $serviceManager;
-    }
-    public function getServiceLocator() {
-        return $this->sm;
     }
     
     public function setMode($mode) {
