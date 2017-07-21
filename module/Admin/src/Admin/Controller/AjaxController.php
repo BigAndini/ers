@@ -117,41 +117,39 @@ class AjaxController extends AbstractActionController {
     }
     
     public function choosePaymentTypesAction() {
-        if ($this->getRequest()->isXmlHttpRequest()) {
-        /*if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) 
-             && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {*/
-            
-            
-            # get currency id
-            $id = $this->params()->fromRoute("id");
-            
-            $entityManager = $this->getServiceLocator()
-                    ->get('Doctrine\ORM\EntityManager');
-            $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
-                    ->findOneBy(array('id' => $id));
-            $paymenttypes = $entityManager->getRepository('ErsBase\Entity\PaymentType')
-                    ->findBy(array(), array('position' => 'ASC'));
-            
-            
-            error_log('found '.count($paymenttypes).' pts');
-            $paymenttypeOptions = [];
-            foreach($paymenttypes as $paymenttype) {
-                $active = false;
-                if($paymenttype->getCurrency()->getShort() == $currency->getShort()) {
-                    $active = true;
-                }
-                $paymenttypeOptions[$paymenttype->getId()] = [
-                    'name' => $paymenttype->getName(),
-                    'active' => $active,
-                ];
-            }
-            
-            error_log('found '.count($paymenttypeOptions).' options');
-            return new JsonModel($paymenttypeOptions);
-        } else {
+        if (!$this->getRequest()->isXmlHttpRequest()) {
             // return a 404 if this action is not called via ajax
             $this->getResponse()->setStatusCode(404);
             return NULL;
         }
+        /*if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) 
+             && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {*/
+
+        # get currency id
+        $id = $this->params()->fromRoute("id");
+
+        $entityManager = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
+                ->findOneBy(array('id' => $id));
+        $paymenttypes = $entityManager->getRepository('ErsBase\Entity\PaymentType')
+                ->findBy(array(), array('position' => 'ASC'));
+
+
+        error_log('found '.count($paymenttypes).' pts');
+        $paymenttypeOptions = [];
+        foreach($paymenttypes as $paymenttype) {
+            $active = false;
+            if($paymenttype->getCurrency()->getShort() == $currency->getShort()) {
+                $active = true;
+            }
+            $paymenttypeOptions[$paymenttype->getId()] = [
+                'name' => $paymenttype->getName(),
+                'active' => $active,
+            ];
+        }
+
+        error_log('found '.count($paymenttypeOptions).' options');
+        return new JsonModel($paymenttypeOptions);
     }
 }

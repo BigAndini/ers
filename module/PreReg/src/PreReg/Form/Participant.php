@@ -267,9 +267,11 @@ class Participant extends Form implements InputFilterProviderInterface
                                 \Zend\Validator\Callback::INVALID_VALUE => _('Please choose a valid birthday'),
                             ),
                             'callback' => function($value, $context=array()) {
-                                $min = \DateTime::createFromFormat('d.m.Y', '01.01.1900');
+                                #$min = \DateTime::createFromFormat('d.m.Y', '01.01.1900');
+                                $min = \date_create_from_format('d.m.Y', '01.01.1900');
                                 $max = new \DateTime();
-                                $birthday = \DateTime::createFromFormat('d.m.Y', $value);
+                                #$birthday = \DateTime::createFromFormat('d.m.Y', $value);
+                                $birthday = \date_create_from_format('d.m.Y', $value);
                                 if(!$birthday instanceof \DateTime) {
                                     return false;
                                 }

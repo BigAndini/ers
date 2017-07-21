@@ -211,29 +211,29 @@ class StatisticController extends AbstractActionController {
             $aggregate['ticket']['count']++;
             
             if(empty($aggregate['price'][$status])) {
-                $aggregate['price'][$status] = 1;
-            } else {
-                $aggregate['price'][$status]++;
+                $aggregate['price'][$status] = 0;
             }
+            $aggregate['price'][$status]++;
+
             if(empty($aggregate['ticket'][$status])) {
-                $aggregate['ticket'][$status] = 1;
-            } else {
-                $aggregate['ticket'][$status]++;
-            }
+                $aggregate['ticket'][$status] = 0;
+            } 
+            $aggregate['ticket'][$status]++;
+
             
             if($status == 'paid') {
                 if($participant->getCountryId()) {
                     if(empty($countryStats[$participant->getCountryId()])) {
-                        $countryStats[$participant->getCountryId()] = 1;
-                    } else {
-                        $countryStats[$participant->getCountryId()]++;
+                        $countryStats[$participant->getCountryId()] = 0;
                     }
+                    $countryStats[$participant->getCountryId()]++;
+
                 } else {
                     if(empty($countryStats[0])) {
-                        $countryStats[0] = 1;
-                    } else {
-                        $countryStats[0]++;
+                        $countryStats[0] = 0;
                     }
+                    $countryStats[0]++;
+
                 }
             }
             
@@ -247,9 +247,8 @@ class StatisticController extends AbstractActionController {
         $countries = [];
         foreach($dbCountries as $c) {
             $countries[$c['id']] = $c['name'];
-            if(empty($countryStats[$c['id']])) {
-                $count = 0;
-            } else {
+            $count = 0;
+            if(!empty($countryStats[$c['id']])) {
                 $count = $countryStats[$c['id']];
             }
             $countryStatsLive2[] = [
@@ -879,11 +878,10 @@ class StatisticController extends AbstractActionController {
         
         $itemStats = array();
         foreach($shippedItems as $item) {
-            if(isset($itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')])) {
-                $itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')]++;
-            } else {
-                $itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')] = 1;
+            if(!isset($itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')])) {
+                $itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')] = 0;
             }
+            $itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')]++;
         }
         
         return new ViewModel(array(

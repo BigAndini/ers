@@ -65,14 +65,12 @@ class ProfileController extends AbstractActionController {
                 $entityManager->flush();
                 
                 return $this->redirect()->toRoute('profile');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            } 
+            }
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages()); 
         }
         
         return new ViewModel(array(
-            'id' => $id,
             'form' => $form,
         ));
     }
@@ -105,7 +103,6 @@ class ProfileController extends AbstractActionController {
         }
         
         return new ViewModel(array(
-            'id' => $id,
             'form' => $form,
         ));
     }

@@ -117,27 +117,10 @@ class Order extends Base\Order
         $code = substr($this->getHashkey(),0,$this->length);
         if($this->genChecksum($code) == $checksum) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
     
-    /*
-     * DEPRECATED session id is not used anymore
-     */
-    /*public function getSessionId($part) {
-        switch($part) {
-            case 'package':
-                $this->package_id++;
-                return $this->package_id;
-                #return \count($this->getPackages())+1;
-            case 'item':
-                $this->item_id++;
-                return $this->item_id;
-                #return \count($this->getItems())+1;
-        }
-    }*/
-
     public function setBuyer($buyer = null) {
         return $this->setUser($buyer);
     }
@@ -445,7 +428,7 @@ class Order extends Base\Order
                 }
             }
         }
-        return false;
+        return null;
     }
     
     /**

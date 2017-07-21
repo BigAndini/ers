@@ -15,34 +15,17 @@ use Zend\Session\Container;
 /**
  * Login Serivce
  */
-class LoginService
+class LoginService extends \ErsBase\Service\ServiceLocatorAwareService
 {
-    protected $_sl;
     protected $_user;
-
+    protected $_agegroup;
+    protected $_Items;
+    protected $_personalItems;
 
     public function __construct() {
         $this->_agegroup = null;
         $this->_Items = new ArrayCollection();
         $this->_personalItems = new ArrayCollection();
-    }
-    
-    /**
-     * set ServiceLocator
-     * 
-     * @param ServiceLocator $sl
-     */
-    public function setServiceLocator($sl) {
-        $this->_sl = $sl;
-    }
-    
-    /**
-     * get ServiceLocator
-     * 
-     * @return ServiceLocator
-     */
-    protected function getServiceLocator() {
-        return $this->_sl;
     }
     
     public function setUser(Entity\User $user) {

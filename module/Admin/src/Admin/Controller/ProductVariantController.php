@@ -65,10 +65,9 @@ class ProductVariantController extends AbstractActionController
                         $breadcrumb->params, 
                         $breadcrumb->options
                         );
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
             }
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
         
         $entityManager = $this->getServiceLocator()

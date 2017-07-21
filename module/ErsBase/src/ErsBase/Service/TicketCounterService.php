@@ -8,19 +8,8 @@
 
 namespace ErsBase\Service;
 
-class TicketCounterService {
-    /* @var $sl \Zend\ServiceManager\ServiceLocatorInterface */
-
-    private $sl;
-
-    public function setServiceLocator(\Zend\ServiceManager\ServiceLocatorInterface $sl) {
-        $this->sl = $sl;
-    }
-
-    public function getServiceLocator() {
-        return $this->sl;
-    }
-
+class TicketCounterService extends ServiceLocatorAwareService
+{
     public function getCurrentItemCount(\ErsBase\Entity\Counter $counter) {
         $entityManager = $this->sl->get('Doctrine\ORM\EntityManager');
         

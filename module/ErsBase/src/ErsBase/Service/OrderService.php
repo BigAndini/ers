@@ -14,32 +14,13 @@ use ErsBase\Entity;
 /**
  * order service
  */
-class OrderService
+class OrderService extends ServiceLocatorAwareService
 {
-    protected $_sl;
     protected $currency;
     protected $order;
     
     public function __construct() {
         
-    }
-    
-    /**
-     * set ServiceLocator
-     * 
-     * @param ServiceLocator $sl
-     */
-    public function setServiceLocator($sl) {
-        $this->_sl = $sl;
-    }
-    
-    /**
-     * get ServiceLocator
-     * 
-     * @return ServiceLocator
-     */
-    protected function getServiceLocator() {
-        return $this->_sl;
     }
     
     public function setCurrency(Entity\Currency $currency) {
@@ -86,6 +67,16 @@ class OrderService
         $this->addLoggedInUser();
 
         return $newOrder;
+    }
+    
+    public function setCountryId($country_id) {
+        $container = new Container('ers');
+        $container->country_id = $country_id;
+    }
+    
+    public function getCountryId() {
+        $container = new Container('ers');
+        return $container->country_id;
     }
     
     private function createNewOrder() {
@@ -156,60 +147,56 @@ class OrderService
     }
     
     public function changeCurrency($paramCurrency) {
+        $logger = $this->getServiceLocator()->get('Logger');
         $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
+        
+        $currency = $paramCurrency;
         if(! $paramCurrency instanceof Entity\Currency) {
             $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                 ->findOneBy(array('short' => $paramCurrency));
-        } else {
-            $currency = $paramCurrency;
         }
         $debug = false;
         $order = $this->getOrder();
-        if($order->getCurrency()->getShort() != $currency->getShort()) {
-            foreach($order->getPackages() as $package) {
-                $package->setCurrency($currency);
-                if($debug) {
-                    error_log('set package to currency: '.$currency);
+        if($order->getCurrency()->getShort() == $currency->getShort()) {
+            return $this;
+        }
+        foreach($order->getPackages() as $package) {
+            $package->setCurrency($currency);
+            $logger->debug(get_class().': set package to currency: '.$currency);
+            foreach($package->getItems() as $item) {
+                $item->setCurrency($currency);
+                
+                $logger->debug(get_class().': set item to currency: '.$currency);
+                if($item->hasParentItems()) {
+                    continue;
                 }
-                foreach($package->getItems() as $item) {
-                    $item->setCurrency($currency);
-                    if($debug) {
-                        error_log('set item to currency: '.$currency);
-                    }
-                    if($item->hasParentItems()) {
-                        continue;
-                    }
-                    $product = $item->getProduct();
-                    $participant = $item->getPackage()->getParticipant();
+                $product = $item->getProduct();
+                $participant = $item->getPackage()->getParticipant();
 
-                    $agegroupService = $this->getServiceLocator()
-                            ->get('ErsBase\Service\AgegroupService');
-                    $agegroupService->setMode('price');
-                    $agegroup = $agegroupService->getAgegroupByUser($participant);
-                    #$agegroup = $participant->getAgegroup();
+                $agegroupService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\AgegroupService');
+                $agegroupService->setMode('price');
+                $agegroup = $agegroupService->getAgegroupByUser($participant);
+                
+                $deadlineService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\DeadlineService');
+                $deadlineService->setMode('price');
+                $deadline = $deadlineService->getDeadline($order->getCreated());
 
-                    $deadlineService = $this->getServiceLocator()
-                            ->get('ErsBase\Service\DeadlineService');
-                    $deadlineService->setMode('price');
-                    $deadline = $deadlineService->getDeadline($order->getCreated());
-
-                    $price = $product->getProductPrice($agegroup, $deadline, $currency);
-                    if($debug) {
-                        error_log('price: '.$price->getCharge());
-                    }
-                    if(!$price) {
-                        throw new \Exception('Unable to find price for '.$product->getName().'.');
-                    }
-                    $item->setPrice($price->getCharge());
-                    #$entityManager->persist($item);
+                $price = $product->getProductPrice($agegroup, $deadline, $currency);
+                if(!$price) {
+                    throw new \Exception('Unable to find price for '.$product->getName().'.');
                 }
-                #$entityManager->persist($package);
+                $logger->debug(get_class().': price: '.$price->getCharge());
+                
+                $item->setPrice($price->getCharge());
             }
+
             $order->setCurrency($currency);
-            if($debug) {
-                error_log('set order to currency: '.$currency);
-            }
+            $logger->debug(get_class().': set order to currency: '.$currency);
+                
+            # reset payment type if there is already on chosen
             if($order->getPaymentType()) {
                 $order->setPaymentType(null);
             }
@@ -237,16 +224,6 @@ class OrderService
             }
         }
         
-    }
-    
-    public function setCountryId($country_id) {
-        $container = new Container('ers');
-        $container->country_id = $country_id;
-    }
-    
-    public function getCountryId() {
-        $container = new Container('ers');
-        return $container->country_id;
     }
     
     /**
@@ -279,7 +256,7 @@ class OrderService
     
     public function removeParticipant(Entity\User $participant, $flush=true) {
         if(!$participant) {
-            throw new \Exception('Unable to find participant with id: '.$id);
+            throw new \Exception('Unable to find participant to delete');
         }
         
         # remove package of the active order

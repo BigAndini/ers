@@ -160,10 +160,10 @@ class PaymentController extends AbstractActionController {
         if($order == null) {
             return $this->redirect()->toRoute('order', array('action' => 'cc-error'));
         }
-        $a = new \NumberFormatter("de-DE", \NumberFormatter::PATTERN_DECIMAL);
-        $a->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
-        $a->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
-        $trx_amount = $a->format($order->getSum()*100); # amount in cents
+        $numberFormatter = new \NumberFormatter("de-DE", \NumberFormatter::PATTERN_DECIMAL);
+        $numberFormatter->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
+        $numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
+        $trx_amount = $numberFormatter->format($order->getSum()*100); # amount in cents
         
         $trx_securityhash = \md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
         

@@ -806,9 +806,6 @@ class PackageController extends AbstractActionController {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $inputFilter = $this->getServiceLocator()
-                    ->get('Admin\InputFilter\AcceptMovePackage');
-            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -835,9 +832,6 @@ class PackageController extends AbstractActionController {
                 } else {
                     $order = $entityManager->getRepository('ErsBase\Entity\Order')
                         ->findOneBy(array('id' => $data['order_id']));
-                    
-                    
-                    
                 }
                 
                 $oldOrder = $package->getOrder();

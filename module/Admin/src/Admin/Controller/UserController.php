@@ -133,10 +133,9 @@ class UserController extends AbstractActionController {
                 }
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
+            } 
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
         
         return new ViewModel(array(
@@ -169,9 +168,6 @@ class UserController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $inputFilter = $this->getServiceLocator()
-                    ->get('Admin\InputFilter\User');
-            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -187,10 +183,9 @@ class UserController extends AbstractActionController {
                 $entityManager->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
             }
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
 
         return new ViewModel(array(

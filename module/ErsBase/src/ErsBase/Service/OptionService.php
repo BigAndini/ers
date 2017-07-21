@@ -14,31 +14,8 @@ use ErsBase\Entity;
 /**
  * order service
  */
-class OptionService
+class OptionService extends ServiceLocatorAwareService
 {
-    protected $_sl;
-
-    public function __construct() {
-        
-    }
-    
-    /**
-     * set ServiceLocator
-     * 
-     * @param ServiceLocator $sl
-     */
-    public function setServiceLocator($sl) {
-        $this->_sl = $sl;
-    }
-    
-    /**
-     * get ServiceLocator
-     * 
-     * @return ServiceLocator
-     */
-    protected function getServiceLocator() {
-        return $this->_sl;
-    }
     
     public function getCountryOptions($countryId = null) {
         $entityManager = $this->getServiceLocator()
@@ -111,8 +88,7 @@ class OptionService
         return $options;
     }
     
-    public function getPersonOptions(\ErsBase\Entity\Product $product, $participant_id=null) {
-        $cartContainer = new Container('ers');
+    public function getPersonOptions($participant_id=null) {
         $options = array();
         if($participant_id == null) {
             $selected = true;
@@ -128,7 +104,6 @@ class OptionService
         $orderService = $this->getServiceLocator()
                 ->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
-        #foreach($cartContainer->order->getParticipants() as $v) {
         foreach($order->getParticipants() as $v) {
             $disabled = false;
             if($v->getFirstname() == '') {

@@ -295,7 +295,7 @@ class CreditCard extends Form
         if (!$this->inputFilter) 
         { 
             $inputFilter = new InputFilter(); 
-            $factory = new InputFactory();             
+            #$factory = new InputFactory();             
 
             /*$inputFilter->add($factory->createInput([ 
                 'name' => 'firstname', 

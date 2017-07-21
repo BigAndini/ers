@@ -183,10 +183,9 @@ class ProductController extends AbstractActionController {
                 $forrest = new Service\BreadcrumbService();
                 $breadcrumb = $forrest->get('product');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
             }
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
 
         return new ViewModel(array(
@@ -309,15 +308,5 @@ class ProductController extends AbstractActionController {
             }
             $entityManager->remove($variant);
         }
-    }
-    
-    public function addLogoAction() {
-        
-    }
-    public function editLogoAction() {
-        
-    }
-    public function deleteLogoAction() {
-        
     }
 }

@@ -17,23 +17,23 @@ use ErsBase\Service;
 
 class Module
 {
-    public function onBootstrap($e)
+    public function onBootstrap($event)
     {
-        $eventManager        = $e->getApplication()->getEventManager();
-        $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($e) {
-            $controller      = $e->getTarget();
+        $eventManager        = $event->getApplication()->getEventManager();
+        $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($event) {
+            $controller      = $event->getTarget();
             $controllerClass = get_class($controller);
             $moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
-            $config          = $e->getApplication()->getServiceManager()->get('config');
+            $config          = $event->getApplication()->getServiceManager()->get('config');
             if (isset($config['module_layouts'][$moduleNamespace])) {
                 $controller->layout($config['module_layouts'][$moduleNamespace]);
             }
         }, 100);
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
-        $this->bootstrapSession($e);
+        $this->bootstrapSession($event);
         
-        $application   = $e->getApplication();
+        $application   = $event->getApplication();
         $serviceManager = $application->getServiceManager();
         $auth = $serviceManager->get('BjyAuthorize\Service\Authorize');
 
@@ -46,14 +46,14 @@ class Module
         
         $sharedManager = $application->getEventManager()->getSharedManager();
         $sharedManager->attach('Zend\Mvc\Application', 'dispatch.error',
-                function($e) use ($serviceManager) {
-                    if ($e->getParam('exception')){
-                        #$serviceManager->get('Logger')->crit($e->getParam('exception'));
+                function($event) use ($serviceManager) {
+                    if ($event->getParam('exception')){
+                        #$serviceManager->get('Logger')->crit($event->getParam('exception'));
                         
                         /*$auth = $serviceManager->get('zfcuser_auth_service');
                         if (!$auth->hasIdentity()) {
-                            $url = $e->getRouter()->assemble(array(), array('name' => 'zfcuser/login'));
-                            $response=$e->getResponse();
+                            $url = $event->getRouter()->assemble(array(), array('name' => 'zfcuser/login'));
+                            $response=$event->getResponse();
                             $response->getHeaders()->addHeaderLine('Location', $url);
                             $response->setStatusCode(302);
                             $response->sendHeaders(); 
@@ -69,7 +69,7 @@ class Module
                                 return $response;
                             };
                             //Attach the "break" as a listener with a high priority
-                            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack,-10000);
+                            $event->getApplication()->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack,-10000);
                             return $response;
                         }*/
                     }
@@ -95,9 +95,9 @@ class Module
         });*/
     }
     
-    public function bootstrapSession($e)
+    public function bootstrapSession($event)
     {
-        /*$session = $e->getApplication()
+        /*$session = $event->getApplication()
                      ->getServiceManager()
                      ->get('Zend\Session\SessionManager');
         $session->start();*/
