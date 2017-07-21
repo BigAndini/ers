@@ -1,0 +1,43 @@
+<?php
+$this->headTitle("Cashdesk");
+
+
+echo $this->flashMessenger()
+        ->setMessageOpenFormat('<div%s><p>')
+        ->setMessageSeparatorString('</p><p>')
+        ->setMessageCloseString('</p></div>')
+        ->render('error', ['alert', 'alert-danger']);
+
+?>
+
+<div class="row">
+    <div class="col-xs-12 text-right">
+        <span class="h3"><?php echo $this->currencyFormat($sum, 'EUR', null, 'de_DE'); ?></span>
+        <a class="btn btn-lg btn-success" href="<?php echo $this->url('onsite/cash', ['action' => 'checkout']); ?>">Checkout</a>
+    </div>
+    <div class="col-xs-12">
+        <h2>choose agegroup</h2>
+        <?php $btnType = 'btn-default';
+        if($agegroup == 'adult'):
+            $btnType = 'btn-primary';
+        endif; ?>
+        <a class="btn btn-lg <?php echo $btnType ?>">adult</a>    
+        <?php foreach($agegroups as $ag):
+            $btnType = 'btn-default';
+            if($agegroup == $ag->getId()):
+                $btnType = 'btn-primary';
+            endif; ?>
+            <a class="btn btn-lg <?php echo $btnType ?>"><?php echo $ag->getName(); ?></a>    
+        <?php endforeach; ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+    <h2>choose product</h2>
+    </div>
+<?php foreach($products as $product): ?>
+    <div class="col-md-6 text-center">
+        <a class="btn btn-lg btn-fullwidth btn-bottomspace btn-default"><?php echo $product->getName(); ?></a>
+    </div>
+<?php endforeach; ?>
+</div>

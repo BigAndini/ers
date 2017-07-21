@@ -414,6 +414,27 @@ div.product-info-field {
     padding: 15px 26px;
 }
 
+.btn-fullwidth {
+    width: 100%;
+}
+.btn-bottomspace {
+    margin-bottom: 20px;
+}
+
+.btn-xl,
+.btn-group-xl > .btn {
+  padding: 20px 16px;
+  font-size: 24px;
+  line-height: 1.5;
+  border-radius: 6px;
+
+}
+
+.row-space {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 .cart-amount {
     width: 150px;
 }
