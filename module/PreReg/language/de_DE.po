@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Event Registration System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-17 22:49+0200\n"
-"PO-Revision-Date: 2017-07-17 22:49+0200\n"
+"POT-Creation-Date: 2017-07-20 18:59+0200\n"
+"PO-Revision-Date: 2017-07-20 18:59+0200\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ERS Team <info@inbaz.org>\n"
 "Language: de_DE\n"
@@ -525,11 +525,6 @@ msgstr ""
 "brauchen zwischen 7 und 14 Tagen, um deine Zahlung deiner Bestellung "
 "zuzuordnen"
 
-#: ../view/email/order-confirmation.phtml:47
-#, php-format
-msgid "Thank you for registering for the %s!"
-msgstr "Danke für deine Anmeldung zur %s"
-
 #: ../view/email/order-confirmation.phtml:49
 #, php-format
 msgid "You've chosen %s as payment method."
@@ -598,11 +593,6 @@ msgstr ""
 #: ../view/email/order-confirmation.phtml:134
 msgid "Regards,"
 msgstr "Viele Grüße, "
-
-#: ../view/email/order-confirmation.phtml:136
-#, php-format
-msgid "Your European Juggling Association and the local %s organisers."
-msgstr "Euer %s Orgateam"
 
 #: ../view/email/order-confirmation.phtml:140
 #, php-format
@@ -925,11 +915,11 @@ msgstr "Impressum"
 msgid "Welcome to the"
 msgstr "Willkommen zum"
 
-#: ../view/pre-reg/info/index.phtml:58 ../view/pre-reg/product/index.phtml:53
+#: ../view/pre-reg/info/index.phtml:59 ../view/pre-reg/product/index.phtml:38
 msgid "PreReg is closed"
 msgstr "Die Voranmeldung ist geschlossen"
 
-#: ../view/pre-reg/info/index.phtml:62 ../view/pre-reg/product/index.phtml:60
+#: ../view/pre-reg/info/index.phtml:61 ../view/pre-reg/product/index.phtml:43
 #, php-format
 msgid ""
 "The PreReg is already closed. For more information, please visit our "
@@ -1403,8 +1393,8 @@ msgstr ""
 "Personen\" in der Menüleiste klickst. "
 
 #: ../view/pre-reg/participant/index.phtml:7
-msgid "List of people I'm booking EJC tickets for."
-msgstr "Liste der Leute, für die ich EJC Tickets buche: "
+msgid "List of people I'm booking tickets for."
+msgstr "Liste der Leute, für die ich Tickets buche:"
 
 #: ../view/pre-reg/participant/index.phtml:8
 #: ../view/pre-reg/participant/index.phtml:42
@@ -1755,6 +1745,12 @@ msgstr "Falls du keine E-Mail erhalten hast, überprüfe bitte deinen Spamordner
 #: ../view/pre-reg/profile/request-password.phtml:23
 msgid "Your email address..."
 msgstr "Deine Mailadresse... "
+
+#~ msgid "Thank you for registering for the %s!"
+#~ msgstr "Danke für deine Anmeldung zur %s"
+
+#~ msgid "Your European Juggling Association and the local %s organisers."
+#~ msgstr "Euer %s Orgateam"
 
 #~ msgid ""
 #~ "This mail was sent to you by the Event Registration System (ERS),\n"

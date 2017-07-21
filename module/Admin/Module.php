@@ -203,7 +203,7 @@ class Module implements ViewHelperProviderInterface
                     $form = new Form\Role();
                     
                     $em = $sm->get('doctrine.entitymanager');
-                    $roles = $em->getRepository('ErsBase\Entity\UserRole')->findBy(array(), array('roleId' => 'ASC'));
+                    $roles = $em->getRepository('ErsBase\Entity\Role')->findBy(array(), array('roleId' => 'ASC'));
                     
                     $options = array();
                     $options[null] = 'no parent';
