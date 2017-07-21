@@ -8,12 +8,6 @@
 
 namespace ErsBase\Service;
 
-use Zend\Session\Container;
-use ErsBase\Entity;
-
-/**
- * order service
- */
 class ServiceLocatorAwareService
 {
     protected $_sl;
@@ -38,7 +32,7 @@ class ServiceLocatorAwareService
      * 
      * @return ServiceLocator
      */
-    protected function getServiceLocator() {
+    public function getServiceLocator() {
         return $this->_sl;
     }
     

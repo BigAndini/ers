@@ -43,7 +43,8 @@ class DeadlineService extends ServiceLocatorAwareService
     
     public function getDeadlines() {
         if(count($this->deadlines) <= 0) {
-            $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+            $entityManager = $this->getServiceLocator()
+                    ->get('Doctrine\ORM\EntityManager');
             $criteria = array();
             switch($this->getMode()) {
                 case 'price':
