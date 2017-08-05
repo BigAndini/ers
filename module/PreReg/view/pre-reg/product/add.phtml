@@ -30,7 +30,6 @@
     $form = $this->form;
     $form->prepare(); ?>
 
-    
     <div class="row">
         <div class="col-md-5" style="text-align: center; margin: 20px 0;">
             <i class="fa fa-ticket product-icon-lg"></i>
@@ -70,9 +69,9 @@
                         <ul>
                             <?php # agegroup is disabled at all this year
                             if(!$product->getPersonalized() && $product->getPriceCount() != 1 && false): ?>
-                                <li><a href="#agegroup">Agegroup</a></li>
+                                <li><a href="#agegroup"><?php echo $this->translate('Agegroup'); ?></a></li>
                             <?php endif; ?>
-                            <li><a href="#person">Person</a></li>
+                            <li><a href="#person"><?php echo $this->translate('Person'); ?></a></li>
                         </ul>
                         <?php if(!$product->getPersonalized() && $product->getPriceCount() != 1 && false): ?>
                             <div id="agegroup">
@@ -124,7 +123,6 @@
                         echo $this->formRow($form->get('variant_value_'.$i));
                         echo $this->formRow($form->get('variant_type_'.$i));
                     }*/
-                    
                     foreach($product->getProductVariants() as $variant) {
                         echo $this->formRow($form->get('pv['.$variant->getId().']'));
                     }

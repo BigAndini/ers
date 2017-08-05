@@ -114,40 +114,41 @@ class OrderService
         
         $debug = true;
         $order = $this->getOrder();
-        $currency = $order->getCurrency();
+        #$currency = $order->getCurrency();
         foreach($order->getPackages() as $package) {
+            $participant = $package->getParticipant();
+
+            $agegroupService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\AgegroupService');
+            $agegroupService->setMode('price');
+            $agegroup = $agegroupService->getAgegroupByUser($participant);
+            if($debug) {
+                if($agegroup != null) {
+                    error_log('found agegroup: '.$agegroup->getName());
+                }
+            }
+
+            $deadlineService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\DeadlineService');
+            $deadlineService->setMode('price');
+            $deadline = $deadlineService->getDeadline($order->getCreated());
+            if($debug) {
+                if($deadline != null) {
+                    error_log('found deadline: '.$deadline->getName());
+                }
+            }
+
             foreach($package->getItems() as $item) {
+                if($item->getStatus() == 'refund') {
+                    continue;
+                }
                 if($item->hasParentItems()) {
                     continue;
                 }
                 $product = $item->getProduct();
-                $participant = $item->getPackage()->getParticipant();
+                $price = $product->getProductPrice($agegroup, $deadline, $package->getCurrency());
 
-                $agegroupService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\AgegroupService');
-                $agegroupService->setMode('price');
-                $agegroup = $agegroupService->getAgegroupByUser($participant);
-                if($debug) {
-                    if($agegroup != null) {
-                        error_log('found agegroup: '.$agegroup->getName());
-                    }
-                }
-
-                $deadlineService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\DeadlineService');
-                $deadlineService->setMode('price');
-                $deadline = $deadlineService->getDeadline($order->getCreated());
-                if($debug) {
-                    if($deadline != null) {
-                        error_log('found deadline: '.$deadline->getName());
-                    }
-                }
-
-                $price = $product->getProductPrice($agegroup, $deadline, $currency);
-                if($debug) {
-                    error_log('price: '.$price->getCharge());
-                }
-                $item->setPrice($price->getCharge());
+                $item->setPrice($price->getFullCharge());
                 $em->persist($item);
             }
         }
@@ -196,12 +197,12 @@ class OrderService
 
                     $price = $product->getProductPrice($agegroup, $deadline, $currency);
                     if($debug) {
-                        error_log('price: '.$price->getCharge());
+                        error_log('price: '.$price->getFullCharge());
                     }
                     if(!$price) {
                         throw new \Exception('Unable to find price for '.$product->getName().'.');
                     }
-                    $item->setPrice($price->getCharge());
+                    $item->setPrice($price->getFullCharge());
                     #$em->persist($item);
                 }
                 #$em->persist($package);
@@ -370,7 +371,7 @@ class OrderService
             #$price = $product->getProductPrice($agegroup, $deadline);
             $price = $product->getProductPrice($agegroup, $deadline, $package->getCurrency());
             
-            if($item->getPrice() != $price->getCharge()) {
+            if($item->getPrice() != $price->getFullCharge()) {
                 /*
                  * disable item and create new item
                  */
@@ -383,7 +384,7 @@ class OrderService
                     $newItem->addItemVariant($newItemVariant);
                     $newItemVariant->setItem($newItem);
                 }
-                $newItem->setPrice($price->getCharge());
+                $newItem->setPrice($price->getFullCharge());
 
                 $newItem->setProduct($item->getProduct());
                 $newItem->setPackage($item->getPackage());

@@ -50,42 +50,39 @@ class ProductPrice extends Base\ProductPrice
     }
     
     public function getFullCharge() {
-        if(!$this->getPriceCalculated()) {
-            $this->setPriceCalculated(true);
-            $product = $this->getProduct();
-            $charge = $this->getCharge();
-            
-            #error_log('base charge: '.$this->getBaseCharge());
-            #error_log('initial charge: '.$charge.' ('.$product->getName().')');
-            if($product) {
-                foreach($product->getChildProducts() as $productPackage) {
-                    $childProduct = $productPackage->getSubProduct();
-                    #error_log('found child product: '.$childProduct->getName());
-                    $childProduct->getName(); /* this is needed for whatever reason to enable getCalculatedAsSubproduct correctly */
-                    if($childProduct->getCalculatedAsSubproduct() == true) {
-                        /*if($this->getAgegroup()) {
-                            error_log('agegroup: '.$this->getAgegroup()->getName());
-                        } else {
-                            error_log('no agegroup');
-                        }
-                        if($this->getDeadline()) {
-                            error_log('deadline: '.$this->getDeadline()->getName());
-                        } else {
-                            error_log('no deadline');
-                        }*/
+        $product = $this->getProduct();
+        $charge = $this->getCharge();
 
-                        #error_log('currency: '.$this->getCurrency()->getName());
-                        $childPrice = $childProduct->getProductPrice($this->getAgegroup(), $this->getDeadline(), $this->getCurrency(), true);
-                        $charge += $childPrice->getCharge();
-                        #error_log('child charge: '.$childPrice->getCharge().' ('.$childProduct->getName().')');
-                        #error_log('local charge: '.$charge);
+        #error_log('base charge: '.$this->getBaseCharge());
+        #error_log('initial charge: '.$charge.' ('.$product->getName().')');
+        if($product) {
+            foreach($product->getChildProducts() as $productPackage) {
+                $childProduct = $productPackage->getSubProduct();
+                #error_log('found child product: '.$childProduct->getName());
+                $childProduct->getName(); /* this is needed for whatever reason to enable getCalculatedAsSubproduct correctly */
+                if($childProduct->getCalculatedAsSubproduct() == true) {
+                    /*if($this->getAgegroup()) {
+                        error_log('agegroup: '.$this->getAgegroup()->getName());
+                    } else {
+                        error_log('no agegroup');
                     }
+                    if($this->getDeadline()) {
+                        error_log('deadline: '.$this->getDeadline()->getName());
+                    } else {
+                        error_log('no deadline');
+                    }*/
+
+                    #error_log('currency: '.$this->getCurrency()->getName());
+                    $childPrice = $childProduct->getProductPrice($this->getAgegroup(), $this->getDeadline(), $this->getCurrency(), true);
+                    $charge += $childPrice->getCharge();
+                    #error_log('child charge: '.$childPrice->getCharge().' ('.$childProduct->getName().')');
+                    #error_log('local charge: '.$charge);
                 }
             }
-            #error_log('return charge: '.$charge);
-            $this->setFullCharge($charge);
-            #error_log('--------------END CALCULATION-------------');
         }
+        #error_log('return charge: '.$charge);
+        $this->setFullCharge($charge);
+        #error_log('--------------END CALCULATION-------------');
         
         return $charge;
     }
