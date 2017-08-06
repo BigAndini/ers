@@ -901,7 +901,7 @@ class CronController extends AbstractActionController {
         $qb->setParameter('status', 'order pending');
         
         $orders = $qb->getQuery()->getResult();
-        echo 'found '.count($orders).' orders'.PHP_EOL;
+        #echo 'found '.count($orders).' orders'.PHP_EOL;
         
         foreach($orders as $order) {
             #echo $order->getCode()->getValue().PHP_EOL;

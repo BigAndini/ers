@@ -157,13 +157,14 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title"><?php echo $this->translate('Add new participant'); ?></h4>
             </div>
+            <div class="modal-body">
             <?php
             $participantForm = $this->participantForm;
             $participantForm->setAttribute('action', $this->url('participant', array('action' => 'add')));
             $participantForm->prepare();
 
             echo $this->form()->openTag($participantForm); ?>
-            <div class="modal-body">
+
                 <div class="row">
                     <div class="col-md-6">
                         <?php echo $this->formRow($participantForm->get('firstname')); ?>
