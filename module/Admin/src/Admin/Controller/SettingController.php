@@ -110,7 +110,7 @@ class SettingController extends AbstractActionController {
         if($setting && $setting->getType() != '') {
             return $this->redirect()->toRoute('admin/setting', array('action' => 'edit-'.$setting->getType(), 'id' => $setting->getId()));
         } else {
-            throw new Exception('unable to find setting or unable to find setting type');
+            throw new \Exception('unable to find setting or unable to find setting type');
         }
     }
 
