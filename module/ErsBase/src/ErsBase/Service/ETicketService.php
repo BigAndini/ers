@@ -306,7 +306,14 @@ class ETicketService
         $textImage = imagecreatetruecolor($image_width, $image_height+1);
 
         // Allocate text and background colors (RGB format):
-        $text_color = imagecolorallocate($textImage,237,28,36);
+        $settingService = $this->getServiceLocator()
+                ->get('ErsBase\Service\SettingService');
+        $primaryColor = $settingService->get('pdf.primary-color');
+        if($primaryColor == '' || substr($primaryColor,1,1) != '#') {
+            $primaryColor = '#F48029';
+        }
+        list($r, $g, $b) = sscanf($primaryColor, "#%02x%02x%02x");
+        $text_color = imagecolorallocate($textImage,$r,$g,$b);
         $bg_color = imagecolorallocate($textImage, 255, 255, 255);
 
         // Fill image:

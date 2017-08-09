@@ -1,11 +1,4 @@
 <?php
-    #old
-    /*$ejc_with_year = "EJC 2016";
-    $ejc_with_number = "39th European Juggling Convention";
-    $ejc_info_mail = "info@ejc2016.org";
-    $ejc_website = "http://www.ejc2016.org";*/
-    
-    # new
     $config = $this->config();
     $website = '<a href="'.$config['ERS']['website'].'">'.$config['ERS']['website'].'</a>';
     $website_faq = '<a href="'.$config['ERS']['website_faq'].'">FAQ</a>';
@@ -17,6 +10,12 @@
     
     $participant = $package->getParticipant(); 
     $order = $package->getOrder();
+    
+    
+    $primaryColor = $this->setting('pdf.primary-color');
+    if($primaryColor == '' || substr($primaryColor,1,1) != '#') {
+        $primaryColor = '#F48029';
+    }
 ?>
 
 <html>
@@ -33,7 +32,7 @@
             }
             .header {
             	margin-top: 0px;
-            	background-color: #ea5356;
+            	background-color: <?php echo $primaryColor; ?>;
             	color: #fff;
             }
             .clear-both {
@@ -54,6 +53,10 @@
             <?php echo $config['ERS']['name_with_year'].' - '.$config['ERS']['start']->format('d.m.Y').' - '.$config['ERS']['end']->format('d.m.Y').' - '.$website; ?>
         </div>
         
+        <div class="content">
+            <?php echo $this->setting('email.e-ticket'); ?>
+        </div>
+
         <p><?php printf($this->translate('Dear %s %s,'),
                 $participant->getFirstname(),
                 $participant->getSurname()); ?></p>
