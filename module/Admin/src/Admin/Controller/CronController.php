@@ -276,22 +276,22 @@ class CronController extends AbstractActionController {
         $statusPaid = $em->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'paid'));
         if(!$statusPaid) {
-            throw new Exception('Unable to find status paid, please create this status.');
+            throw new \Exception('Unable to find status paid, please create this status.');
         }
         $statusPartlyPaid = $em->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'partly paid'));
         if(!$statusPartlyPaid) {
-            throw new Exception('Unable to find status partly paid, please create this status.');
+            throw new \Exception('Unable to find status partly paid, please create this status.');
         }
         $statusOverpaid = $em->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'overpaid'));
         if(!$statusOverpaid) {
-            throw new Exception('Unable to find status overpaid, please create this status.');
+            throw new \Exception('Unable to find status overpaid, please create this status.');
         }
         $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'ordered'));
         if(!$statusOrdered) {
-            throw new Exception('Unable to find status ordered, please create this status.');
+            throw new \Exception('Unable to find status ordered, please create this status.');
         }
         
         if($order_amount == $statement_amount) {
