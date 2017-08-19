@@ -228,6 +228,7 @@ class EmailService
                 $recipient->setEmail($email);
                 $recipient->setFirstname('System');
                 $recipient->setSurname('User');
+                $recipient->setActive(true);
                 
                 $em->persist($recipient);
                 $em->flush();
