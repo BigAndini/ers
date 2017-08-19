@@ -21,6 +21,15 @@ class TestController extends AbstractActionController {
         return $this->notFoundAction();
     }
     
+    public function mailqAction() {
+        $emailService = $em = $this->getServiceLocator()
+            ->get('ErsBase\Service\EmailService');
+        
+        $emailService->mailqWorker();
+        return new ViewModel(array(
+        ));
+    }
+    
     public function exportXlsAction()
     {
         set_time_limit( 0 );

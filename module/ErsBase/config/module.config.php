@@ -18,6 +18,7 @@ return [
             'ErsBase\Service\ETicketService' => false,
             'ErsBase\Service\EmailService' => false,
             'ErsBase\Service\AgegroupService:ticket' => false,
+            'ErsBase\Service\PackageService' => false,
         ],
         'factories' => [
             'Zend\Session\SessionManager' => 'Zend\Session\Service\SessionManagerFactory',

@@ -463,63 +463,21 @@ class OrderController extends AbstractActionController {
                     return $this->redirect()->toRoute('admin/order', array('action' => 'send-eticket'));
                 }
                 
-                $eticketService = $this->getServiceLocator()->get('ErsBase\Service\ETicketService');
+                $eticketService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\ETicketService');
+                
+                $settingService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\SettingService');
                 foreach($order->getPackages() as $package) {
                     #if($package->getStatus() != 'paid') {
                     if(!in_array($package->getStatus(), $validArray)) {
                         continue;
                     }
 
-                    # prepare email (participant, buyer)
-                    #$emailService = new Service\EmailService();
-                    $emailService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\EmailService');
-                    $config = $this->getServiceLocator()
-                        ->get('config');
-                    $emailService->setFrom($config['ERS']['info_mail']);
-
-                    $order = $package->getOrder();
-                    $participant = $package->getParticipant();
-
-                    $buyer = $order->getBuyer();
-                    $emailService->addTo($buyer);
-
-                    if($participant->getEmail() != '') {
-                        $emailService->addTo($participant);
-                    }
-
-                    $bcc = new Entity\User();
-                    $bcc->setEmail($config['ERS']['info_mail']);
-                    $emailService->addBcc($bcc);
-
-                    #$subject = "Your registration for ".$config['ERS']['name_short']." (order ".$order->getCode()->getValue().")";
-                    $subject = "[".$config['ERS']['name_short']."] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
-                    $emailService->setSubject($subject);
-
-                    $viewModel = new ViewModel(array(
-                        'package' => $package,
-                    ));
-                    $viewModel->setTemplate('email/eticket-participant.phtml');
-                    $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-                    $html = $viewRender->render($viewModel);
-
-                    $emailService->setHtmlMessage($html);
-
-                    # generate e-ticket pdf
-                    $eticketService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\ETicketService');
-
-                    $eticketService->setLanguage('en');
-                    $eticketService->setPackage($package);
-                    $eticketFile = $eticketService->generatePdf();
-
-                    # send out email
-                    $emailService->addAttachment($eticketFile);
-
-                    $emailService->send();
-                    $package->setTicketStatus('send_out');
-                    $em->persist($package);
-                    $em->flush();
+                    $packageService = $this->getServiceLocator()
+                            ->get('ErsBase\Service\PackageService');
+                    $packageService->setPackage($package);
+                    $packageService->sendEticket();
                 }
                 
                 
@@ -564,35 +522,14 @@ class OrderController extends AbstractActionController {
                 
                 # prepare email (participant, buyer)
                 #$emailService = new Service\EmailService();
-                $emailService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\EmailService');
-                $config = $this->getServiceLocator()
-                        ->get('config');
-                $emailService->setFrom($config['ERS']['info_mail']);
-
-                $buyer = $order->getBuyer();
-                $emailService->addTo($buyer);
-
-                $bcc = new Entity\User();
-                $bcc->setEmail($config['ERS']['info_mail']);
-                $emailService->addBcc($bcc);
-
-                $subject = "[".$config['ERS']['name_short']."] Payment reminder for your order: ".$order->getCode()->getValue();
-                $emailService->setSubject($subject);
-
-                $viewModel = new ViewModel(array(
-                    'order' => $order,
-                ));
-                $viewModel->setTemplate('email/payment-reminder.phtml');
-                $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-                $html = $viewRender->render($viewModel);
-
-                $emailService->setHtmlMessage($html);
-
-                $emailService->send();
+                
+                $orderService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\OrderService');
+                $orderService->setOrder($order);
+                $orderService->sendPaymentReminder();
                 
                 $breadcrumb = $forrest->get('order');
-                $this->flashMessenger()->addSuccessMessage('Payment reminder for order '.$order->getCode()->getValue.' has been send out.');
+                $this->flashMessenger()->addSuccessMessage('Payment reminder for order '.$order->getCode()->getValue().' has been send out.');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }

@@ -130,6 +130,11 @@ return array(
                         'route' => 'admin/status',
                         'resource'  => 'controller/Admin\Controller\Status',
                     ),
+                    'setting' => array(
+                        'label' => 'Settings',
+                        'route' => 'admin/setting',
+                        'resource'  => 'controller/Admin\Controller\Setting',
+                    ),
                 ),
             ),
             'product' => array(

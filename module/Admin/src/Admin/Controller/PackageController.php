@@ -11,10 +11,8 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ErsBase\Entity;
-use ErsBase\Service as ersService;
-use Admin\Form;
 use ErsBase\Service;
-use Admin\InputFilter;
+use Admin\Form;
 
 class PackageController extends AbstractActionController {
     public function indexAction()
@@ -457,78 +455,10 @@ class PackageController extends AbstractActionController {
                     return $this->redirect()->toRoute('admin/package', array('action' => 'send-eticket'));
                 }
                 
-                # prepare email (participant, buyer)
-                #$emailService = new ersService\EmailService();
-                $emailService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\EmailService');
-                /*$config = $this->getServiceLocator()
-                        ->get('config');*/
-                #$emailService->setFrom($config['ERS']['info_mail']);
-
-                $order = $package->getOrder();
-                $participant = $package->getParticipant();
-                
-                $recipients = [];
-                
-                $buyer = $order->getBuyer();
-                if($participant->getEmail() == '') {
-                    $recipients[] = [
-                        'email' => $buyer,
-                        'type' => 'to',
-                    ];
-                } elseif($participant->getEmail() == $buyer->getEmail()) {
-                    $recipients[] = [
-                        'email' => $buyer,
-                        'type' => 'to',
-                    ];
-                } else {
-                    $recipients[] = [
-                        'email' => $participant,
-                        'type' => 'to',
-                    ];
-                    $recipients[] = [
-                        'email' => $buyer,
-                        'type' => 'cc',
-                    ];
-                }
-                
-                $settingService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\SettingService');
-                $recipients[] = [
-                    'email' => $settingService->get('ers.info_mail'),
-                    'type' => 'bcc',
-                ];
-                
-
-                $subject = "[".$settingService->get('ers.name_short')."] "._('E-Ticket for')." ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
-
-                $viewModel = new ViewModel(array(
-                    'package' => $package,
-                ));
-                $viewModel->setTemplate('email/eticket-participant.phtml');
-                $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-                $html = $viewRender->render($viewModel);
-
-                # generate e-ticket pdf
-                $eticketService = $this->getServiceLocator()
-                    ->get('ErsBase\Service\ETicketService');
-
-                $eticketService->setLanguage('en');
-                $eticketService->setPackage($package);
-                $eticketFile = $eticketService->generatePdf();
-
-                # send out email
-                $attachments = [
-                    $eticketFile,
-                ];
-
-                $emailService->addMailToQueue(null, $recipients, $subject, $html, true, $attachments);
-                
-                $package->setTicketStatus('send_out');
-                $em->persist($package);
-                $em->flush();
-                
-                $logger->info('E-tickets for package '.$package->getCode()->getValue().' has been send out.');
+                $packageService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\PackageService');
+                $packageService->setPackage($package);
+                $packageService->sendEticket();
                 
                 $breadcrumb = $forrest->get('order');
                 $this->flashMessenger()->addSuccessMessage('E-tickets for package '.$package->getCode()->getValue().' has been send out.');

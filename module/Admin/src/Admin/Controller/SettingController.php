@@ -42,6 +42,12 @@ class SettingController extends AbstractActionController {
                 $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
+                $findSetting = $entityManager->getRepository('ErsBase\Entity\Setting')
+                    ->findOneBy(array('key' => $setting->getKey()));
+                if($findSetting) {
+                    throw new \Exception('There is already a setting with the key '.$setting->getKey().'. Please edit the existing one.');
+                }
+                
                 $setting->setType('text');
                 $entityManager->persist($setting);
                 $entityManager->flush();
@@ -74,6 +80,12 @@ class SettingController extends AbstractActionController {
                 
                 $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
+        
+                $findSetting = $entityManager->getRepository('ErsBase\Entity\Setting')
+                    ->findOneBy(array('key' => $setting->getKey()));
+                if($findSetting) {
+                    throw new \Exception('There is already a setting with the key '.$setting->getKey().'. Please edit the existing one.');
+                }
                 
                 $setting->setType('textarea');
                 

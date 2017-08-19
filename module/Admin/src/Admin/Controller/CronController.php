@@ -703,70 +703,37 @@ class CronController extends AbstractActionController {
         foreach($packages as $package) {
             # prepare email (participant, buyer)
             #$emailService = new Service\EmailService();
-            $emailService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\EmailService');
-            $emailService->setFrom($config['ERS']['info_mail']);
+            #$emailService = $this->getServiceLocator()
+            #            ->get('ErsBase\Service\EmailService');
+            #$emailService->setFrom($config['ERS']['info_mail']);
 
-            $order = $package->getOrder();
-            $participant = $package->getParticipant();
+            #$order = $package->getOrder();
+            #$participant = $package->getParticipant();
 
-            if($config['environment'] == 'production') {
-                /*** remove last slash to comment ***/
-                $buyer = $order->getBuyer();
-                if($participant->getEmail() == '') {
-                    $emailService->addTo($buyer);
-                } elseif($participant->getEmail() == $buyer->getEmail()) {
-                    $emailService->addTo($buyer);
-                } else {
-                    $emailService->addTo($participant);
-                    $emailService->addCc($buyer);
-                }
-                /*** remove leading slash to comment ***/
-            } else {
-                /*** remove last slash to comment ***/
-                $user = new Entity\User();
-                $user->setEmail('andi'.$package->getCode()->getValue().'@inbaz.org');
-                $emailService->addTo($user);
-                /*** remove leading slash to comment ***/
-            }
+            #if($config['environment'] == 'production') {
+            #    /*** remove last slash to comment ***/
+            #    $buyer = $order->getBuyer();
+            #    if($participant->getEmail() == '') {
+            #        $emailService->addTo($buyer);
+            #    } elseif($participant->getEmail() == $buyer->getEmail()) {
+            #        $emailService->addTo($buyer);
+            #    } else {
+            #        $emailService->addTo($participant);
+            #        $emailService->addCc($buyer);
+            #    }
+            #    /*** remove leading slash to comment ***/
+            #} else {
+            #    /*** remove last slash to comment ***/
+            #    $user = new Entity\User();
+            #    $user->setEmail('andi'.$package->getCode()->getValue().'@inbaz.org');
+            #    $emailService->addTo($user);
+            #    /*** remove leading slash to comment ***/
+            #}
             
-            $bcc = new Entity\User();
-            $bcc->setEmail($config['ERS']['info_mail']);
-            $emailService->addBcc($bcc);
-
-            $subject = "[".$config['ERS']['name_short']."] "._('E-Ticket for')." ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
-            $emailService->setSubject($subject);
-
-            $viewModel = new ViewModel(array(
-                'package' => $package,
-            ));
-            $viewModel->setTemplate('email/eticket-participant.phtml');
-            $viewRenderer = $this->getServiceLocator()->get('ViewRenderer');
-            $html = $viewRenderer->render($viewModel);
-
-            $emailService->setHtmlMessage($html);
-
-            # generate e-ticket pdf
-            $eticketService = $this->getServiceLocator()
-                ->get('ErsBase\Service\ETicketService');
-
-            $eticketService->setLanguage('en');
-            $eticketService->setPackage($package);
-            $eticketFile = $eticketService->generatePdf();
-
-            echo ob_get_clean();
-            if($isDebug) {
-                echo "generated e-ticket ".$eticketFile.".".PHP_EOL;
-            }
-
-            $emailService->addAttachment($eticketFile);
-            
-            # send out email
-            $emailService->send();
-            
-            $package->setTicketStatus('send_out');
-            $em->persist($package);
-            $em->flush();
+            $packageService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\PackageService');
+            $packageService->setPackage($package);
+            $packageService->sendEticket();
         }
     }
     

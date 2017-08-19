@@ -101,16 +101,17 @@ class EmailService
         $settingService = $this->getServiceLocator()
                     ->get('ErsBase\Service\SettingService');
         
-        $recipients = [
-            [
-                'email' => $buyer,
-                'type' => 'to',
-            ],
-            [
+        $recipients = [];
+        $recipients[] = [
+            'email' => $buyer,
+            'type' => 'to',
+        ];
+        #if($settingService->get('ers.bcc_email') != '') {
+            $recipients[] = [
                 'email' => $settingService->get('ers.sender_email'),
                 'type' => 'bcc',
-            ],
-        ];
+            ];    
+        #}
         
         #$subject = sprintf(_('Your registration for %s (order %s)'), $config['ERS']['name_short'], $order->getCode()->getValue());
         $subject = sprintf(_('Deine Bestellung für die %s (order %s)'), $settingService->get('ers.name_short'), $order->getCode()->getValue());

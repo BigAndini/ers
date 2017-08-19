@@ -10,6 +10,7 @@ namespace ErsBase\Service;
 
 use Zend\Session\Container;
 use ErsBase\Entity;
+use Zend\View\Model\ViewModel;
 
 /**
  * order service
@@ -460,5 +461,51 @@ class OrderService
                 $em->flush();
             }
         }
+    }
+    
+    public function sendPaymentReminder() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $emailService = $this->getServiceLocator()
+                ->get('ErsBase\Service\EmailService');
+
+        $order = $this->getOrder();
+        $buyer = $order->getBuyer();
+        $recipients[] = [
+            'email' => $buyer,
+            'type' => 'to',
+        ];
+
+        $settingService = $this->getServiceLocator()
+                ->get('ErsBase\Service\SettingService');
+
+        if($settingService->get('ers.bcc_mail') != '') {
+            $recipients[] = [
+                'email' => $settingService->get('ers.bcc_mail'),
+                'type' => 'bcc',
+            ];
+        }
+
+        #$subject = "[".$settingService->get('ers.name_short')."] Payment reminder for your order: ".$order->getCode()->getValue();
+        $subject = "[".$settingService->get('ers.name_short')."] Zahlungserinnerung für deine Bestellung: ".$order->getCode()->getValue();
+
+        $viewModel = new ViewModel(array(
+            'order' => $order,
+        ));
+        $viewModel->setTemplate('email/payment-reminder.phtml');
+        $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+        $html = $viewRender->render($viewModel);
+
+        $shortcodeService = $this->getServiceLocator()
+                ->get('ErsBase\Service\ShortcodeService');
+        $shortcodeService->setText($html);
+        $shortcodeService->setObject('order', $order);
+        $shortcodeService->setObject('buyer', $order->getBuyer());
+        $shortcodeService->processFilters();
+        $html = $shortcodeService->getText();
+        
+        $emailService->addMailToQueue(null, $recipients, $subject, $html, true);
+
+        $logger->info('payment reminder for order '.$order->getCode()->getValue().' has been send out.');
     }
 }

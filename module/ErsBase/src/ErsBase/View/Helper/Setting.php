@@ -40,58 +40,10 @@ class Setting extends AbstractHelper {
     }
 
     public function __invoke($key, $type = null, $param = array()) {
-        $entityManager = $this->getServiceManager()->getServiceLocator()
-                ->get('Doctrine\ORM\EntityManager');
-        $setting = $entityManager->getRepository('ErsBase\Entity\Setting')
-                ->findOneBy(['key' => $key]);
-        if(!$setting) {
-            return '';
-            
-        }
+        $settingService = $this->getServiceManager()->getServiceLocator()
+                ->get('ErsBase\Service\SettingService');
         
-        switch($type) {
-            case 'hyperlink':
-                if($param['class']) {
-                    $class = ' class="'.$param['class'].'"';
-                }
-                if($param['target']) {
-                    $target = ' target="'.$param['target'].'"';
-                }
-                return '<a '.$class.'.href="'.$setting->getValue().'"'.$target.'>'.$setting->getValue().'</a>';
-                break;
-            case 'email':
-                return '<a href="mailto:'.$setting->getValue().'">'.$setting->getValue().'</a>';
-                break;
-            case 'date':
-                if(!$param['fromFormat']) {
-                    $param['fromFormat'] = 'd.m.Y';
-                }
-                $date = date_create_from_format($param['fromFormat'], $setting->getValue());
-                if(!$date) {
-                    throw new \Exception('Unable to create date with format '.$param['fromFormat'].' from: '.$setting->getValue());
-                }
-                if(!$param['toFormat']) {
-                    $param['toFormat'] = "%a %d.%m.%Y";
-                }
-                return strftime($param['toFormat'], $date->getTimestamp());
-                break;
-            case 'datetime':
-                if(!$param['fromFormat']) {
-                    $param['fromFormat'] = 'd.m.Y H:i:s';
-                }
-                $date = date_create_from_format($param['fromFormat'], $setting->getValue());
-                if(!$date) {
-                    throw new \Exception('Unable to create datetime with format '.$param['fromFormat'].' from: '.$setting->getValue());
-                }
-                if(!$param['toFormat']) {
-                    $param['toFormat'] = "%d.%m.%Y %H:%M:%S";
-                }
-                return strftime($param['toFormat'], $date->getTimestamp());
-                break;
-            default:
-                return $setting->getValue();
-        }
-        
+        return $settingService->get($key, $type, $param);
     }
 
 }

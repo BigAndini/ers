@@ -179,8 +179,18 @@ class Module
                     $service->setServiceLocator($sm);
                     return $service;
                 },
+                'ErsBase\Service\PackageService' => function($sm) {
+                    $service = new Service\PackageService();
+                    $service->setServiceLocator($sm);
+                    return $service;
+                },
                 'ErsBase\Service\StatusService' => function($sm) {
                     $service = new Service\StatusService();
+                    $service->setServiceLocator($sm);
+                    return $service;
+                },
+                'ErsBase\Service\ShortcodeService' => function($sm) {
+                    $service = new Service\ShortcodeService();
                     $service->setServiceLocator($sm);
                     return $service;
                 },
