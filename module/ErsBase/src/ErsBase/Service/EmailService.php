@@ -220,8 +220,16 @@ class EmailService
                 ->get('Doctrine\ORM\EntityManager');
         
         if(!$recipient instanceof Entity\User) {
+            $email = $recipient;
             $recipient = $em->getRepository('ErsBase\Entity\User')
                     ->findOneBy(['email' => $recipient]);
+            if(!$recipient) {
+                $recipient = new Entity\User();
+                $recipient->setEmail($email);
+                
+                $em->persist($recipient);
+                $em->flush();
+            }
         }
 
         $mailqHasUser = new Entity\MailqHasUser();
