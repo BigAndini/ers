@@ -226,6 +226,8 @@ class EmailService
             if(!$recipient) {
                 $recipient = new Entity\User();
                 $recipient->setEmail($email);
+                $recipient->setFirstname('System');
+                $recipient->setSurname('User');
                 
                 $em->persist($recipient);
                 $em->flush();
