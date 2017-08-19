@@ -6,7 +6,7 @@
     $infoMail = '<a href="mailto:'.$config['ERS']['info_mail'].'">'.$config['ERS']['info_mail'].'</a>';
     $preregMail = '<a href="mailto:'.$config['ERS']['prereg_mail'].'">'.$config['ERS']['prereg_mail'].'</a>';
     $adobeReaderLink = '<a href="http://get.adobe.com/reader/">http://get.adobe.com/reader/</a>';
-    $termsLink = '<a href="'.$this->url('info', array('action' => 'terms'), array('force_canonical' => true)).'">'.$this->translate('terms and conditions').'</a>';
+    #$termsLink = '<a href="'.$this->url('info', array('action' => 'terms'), array('force_canonical' => true)).'">'.$this->translate('terms and conditions').'</a>';
     
     $participant = $package->getParticipant(); 
     $order = $package->getOrder();
