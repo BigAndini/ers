@@ -13,15 +13,31 @@ use Zend\View\Model\ViewModel;
 use ErsBase\Entity;
 use ErsBase\Service;
 use Zend\Console\Request as ConsoleRequest;
+use Zend\Stdlib\Parameters;
 
 class CronController extends AbstractActionController {
     protected $debug = false;
+    protected $params;
+
+    public function setParams($params = array()) {
+        #$this->params = new Parameters();
+        $this->params = $params;
+        #var_export($this->params);
+    }
+    
+    public function getParam($name, $default = null)
+    {
+        #return $this->params->get($name, $default);
+    }
     
     public function consoledefaultAction() {
+        $this->request = $this->getRequest();
         $params = $this->getRequest()->getParams()->toArray();
+        $methodName = array_shift($params);
         
-        $method = $this->getMethodFromAction($params[0]);
-        #echo $method.PHP_EOL;
+        $this->setParams($params);
+        
+        $method = $this->getMethodFromAction($methodName);
         if(!method_exists($this, $method)) {
             throw new \Exception('Unable to find method: '.$method);
         }
@@ -672,10 +688,17 @@ class CronController extends AbstractActionController {
         }
         $em->flush();
         
-        if(empty($ticket_count) || !is_numeric($ticket_count)) {
-            $ticket_count = 100;
-            #$ticket_count = 3;
+        $settingService = $this->getServiceLocator()
+                ->get('ErsBase\Service\SettingService');
+        
+        $ticket_count = 5;
+        if($settingService->get('ers.send_ticket_count') != '' && is_numeric($settingService->get('ers.send_ticket_count'))) {
+            $ticket_count = $settingService->get('ers.send_ticket_count');
         }
+        /*if(empty($ticket_count) || !is_numeric($ticket_count)) {
+            #$ticket_count = 100;
+            $ticket_count = 5;
+        }*/
         $can_send_packages = $em->getRepository('ErsBase\Entity\Package')
             ->findBy(array('ticket_status' => 'can_send'));
         if($isDebug) {
@@ -685,10 +708,10 @@ class CronController extends AbstractActionController {
         $packages = $em->getRepository('ErsBase\Entity\Package')
             ->findBy(array('ticket_status' => 'can_send'), array(), $ticket_count);
         
-        if(!$isReal) {
-            echo "Use -r parameter to really send out all etickets.".PHP_EOL;
-            exit();
-        }
+        #if(!$isReal) {
+        #    echo "Use -r parameter to really send out all etickets.".PHP_EOL;
+        #    exit();
+        #}
         
         /*echo PHP_EOL;
         for($i=10; $i > 0; $i--) {
@@ -697,9 +720,7 @@ class CronController extends AbstractActionController {
         }
         echo PHP_EOL;*/
         
-        $config = $this->getServiceLocator()
-                        ->get('config');
-        
+        #exit();
         foreach($packages as $package) {
             # prepare email (participant, buyer)
             #$emailService = new Service\EmailService();

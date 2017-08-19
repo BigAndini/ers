@@ -304,7 +304,7 @@ return array(
                 'default-route' => array(
                     'type'     => 'catchall',
                     'options' => array(
-                        #'route'    => 'consoledefault',
+                        #'route'    => 'consoledefault [--count=|-c=] [--real|-r] [--debug|-d]',
                         'defaults' => array(
                             'controller' => 'Admin\Controller\Cron',
                             'action'     => 'consoledefault'
