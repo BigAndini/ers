@@ -89,17 +89,6 @@ class TestController extends AbstractActionController {
             fputcsv( $handle, $finalRow, "\t" );
         }
         fclose($handle);
-        #$this->_helper->layout->disableLayout();
-        #$this->_helper->viewRenderer->setNoRender();
-        /*$this->getResponse()->setRawHeader( "Content-Type: application/vnd.ms-excel; charset=UTF-8" )
-            ->setRawHeader( "Content-Disposition: attachment; filename=excel.xls" )
-            ->setRawHeader( "Content-Transfer-Encoding: binary" )
-            ->setRawHeader( "Expires: 0" )
-            ->setRawHeader( "Cache-Control: must-revalidate, post-check=0, pre-check=0" )
-            ->setRawHeader( "Pragma: public" )
-            ->setRawHeader( "Content-Length: " . filesize( $filename ) )
-            ->sendResponse();
-        readfile( $filename ); exit();*/
         
         $response = new \Zend\Http\Response();
         $response->getHeaders()
@@ -108,7 +97,98 @@ class TestController extends AbstractActionController {
                 ->addHeaderLine('Content-Length', filesize($filename));
         $response->setContent(file_get_contents($filename));
         return $response;
-    } 
+    }
+    
+    public function exportXls2Action()
+    {
+        set_time_limit( 0 );
+
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        /*$orders = $em->getRepository('ErsBase\Entity\Order')
+                ->findBy(array(), array('created' => 'ASC'));*/
+        $packages = $em->getRepository('ErsBase\Entity\Package')
+                ->findBy(array(), array('created' => 'ASC'));
+        
+        $filename = getcwd() . "/tmp/excel-" . date( "m-d-Y" ) . ".xls";
+        $realPath = realpath( $filename );
+        if ( false === $realPath ) {
+            touch( $filename );
+            chmod( $filename, 0644 );
+        }
+        $filename = realpath( $filename );
+        
+        $finalData = array();
+        $finalData[] = array(
+            'package code',
+            'order code',
+            'participant firstname',
+            'participant surname',
+            'participant email',
+            'participant date of birth',
+            'agegroup',
+            'order comment',
+            'package comment',
+            'date of purchase',
+            'status',
+            'list of items',
+        );
+        $agegroupService = $this->getServiceLocator()
+                ->get('ErsBase\Service\AgegroupService:ticket');
+        
+        foreach ($packages as $package) {
+            $order = $package->getOrder();
+            $item_list = '';
+            foreach($package->getItems() as $item) {
+                $item_list .= $item->getName().';';
+                foreach($item->getItemVariants() as $variant) {
+                    $item_list .= $variant->getName().';'.$variant->getValue().';';
+                }
+                $item_list .= ";";
+            }
+            #$item_list = preg_replace('/\r\n$/', '', $item_list);
+        
+            $agegroup = $agegroupService->getAgegroupByUser($package->getParticipant());
+            if($agegroup) {
+                $agegroupValue = $agegroup->getName();
+            } else {
+                $agegroupValue = 'adult';
+            }
+            
+            $finalData[] = array(
+                utf8_decode($package->getCode()->getValue()),
+                utf8_decode($order->getCode()->getValue()),
+                utf8_decode($package->getParticipant()->getFirstname()),
+                utf8_decode($package->getParticipant()->getSurname()),
+                utf8_decode($package->getParticipant()->getEmail()),
+                utf8_decode($package->getParticipant()->getBirthday()->format('d.m.Y')),
+                utf8_decode($agegroupValue),
+                utf8_decode($order->getComment()),
+                utf8_decode($package->getComment()),
+                utf8_decode($order->getCreated()->format('d.m.Y H:i:s')),
+                utf8_decode($package->getStatus()),
+                utf8_decode($item_list),
+            );
+        }
+        $handle = fopen( $filename, "w" );
+        if(!$handle) {
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn('unable to open file '.$filename);
+            exit();
+        }
+        foreach ($finalData as $finalRow) {
+            fputcsv( $handle, $finalRow, "\t" );
+        }
+        fclose($handle);
+        
+        $response = new \Zend\Http\Response();
+        $response->getHeaders()
+                ->addHeaderLine('Content-Type', 'application/vnd.ms-excel; charset=utf-8')
+                ->addHeaderLine('Content-Disposition', 'attachment; filename=orders-'.date('Ymd\THis').'.xls')
+                ->addHeaderLine('Content-Length', filesize($filename));
+        $response->setContent(file_get_contents($filename));
+        return $response;
+    }
     
     public function datatablesAction()
     {
