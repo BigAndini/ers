@@ -275,4 +275,12 @@ class Package extends Base\Package
 
         return $this;
     }
+    
+    public function getPrice() {
+        $sum = 0;
+        foreach($this->getItems() as $item) {
+            $sum += $item->getPrice();
+        }
+        return $sum;
+    }
 }

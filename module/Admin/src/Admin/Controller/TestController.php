@@ -131,6 +131,7 @@ class TestController extends AbstractActionController {
             'package comment',
             'date of purchase',
             'status',
+            'price',
             'list of items',
         );
         $agegroupService = $this->getServiceLocator()
@@ -167,6 +168,7 @@ class TestController extends AbstractActionController {
                 utf8_decode($package->getComment()),
                 utf8_decode($order->getCreated()->format('d.m.Y H:i:s')),
                 utf8_decode($package->getStatus()),
+                utf8_decode($package->getPrice()),
                 utf8_decode($item_list),
             );
         }
