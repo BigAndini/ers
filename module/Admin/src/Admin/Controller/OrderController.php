@@ -470,7 +470,8 @@ class OrderController extends AbstractActionController {
                         ->get('ErsBase\Service\SettingService');
                 foreach($order->getPackages() as $package) {
                     #if($package->getStatus() != 'paid') {
-                    if(!in_array($package->getStatus(), $validArray)) {
+                    #if(!in_array($package->getStatus(), $validArray)) {
+                    if(!$package->getStatus()->getValid()) {
                         continue;
                     }
 
