@@ -674,7 +674,8 @@ class CronController extends AbstractActionController {
             # if the package status is paid and
             # there is only one week ticket in this package
             # or this package doesn't contain no week ticket
-            if($package->getStatus() == 'paid') {
+            #if($package->getStatus() == 'paid') {
+            if($package->getStatus()->getValid()) {
                 if($productId[1] == 1 || $productId[1] == 0) {
                     $package->setTicketStatus('can_send');
                 } else {
