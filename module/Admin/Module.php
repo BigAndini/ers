@@ -72,10 +72,6 @@ class Module implements ViewHelperProviderInterface
 
                     if (Console::isConsole()) {
                         $requestUri = new HttpUri();
-                        /*$requestUri->setHost($config['website']['host'])
-                            ->setScheme($config['website']['scheme']);
-                        $router->setRequestUri($requestUri);
-                        $router->setBaseUrl($config['website']['path']);*/
                         
                         $requestUri->setHost($settingService->get('website.host'))
                             ->setScheme($settingService->get('website.scheme'));

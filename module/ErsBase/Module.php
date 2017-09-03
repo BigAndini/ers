@@ -218,4 +218,44 @@ class Module
             ),
         );
     }
+    
+    public function getViewHelperConfig() {
+        return array(
+            'factories' => array(
+                'url' => function ($helperPluginManager) {
+                    $serviceLocator = $helperPluginManager->getServiceLocator();
+                    #$config = $serviceLocator->get('Config');
+                    $settingService = $serviceLocator->get('ErsBase\Service\SettingService');
+
+                    $viewHelper =  new UrlHelper();
+
+                    $routerName = Console::isConsole() ? 'HttpRouter' : 'Router';
+
+                    /** @var \Zend\Mvc\Router\Http\TreeRouteStack $router */
+                    $router = $serviceLocator->get($routerName);
+
+                    if (Console::isConsole()) {
+                        $requestUri = new HttpUri();
+                        
+                        $requestUri->setHost($settingService->get('website.host'))
+                            ->setScheme($settingService->get('website.scheme'));
+                        $router->setRequestUri($requestUri);
+                        $router->setBaseUrl($settingService->get('website.path'));
+                    }
+
+                    $viewHelper->setRouter($router);
+
+                    $match = $serviceLocator->get('application')
+                        ->getMvcEvent()
+                        ->getRouteMatch();
+
+                    if ($match instanceof RouteMatch) {
+                        $viewHelper->setRouteMatch($match);
+                    }
+
+                    return $viewHelper;
+                },
+            )
+        );
+    }
 }
