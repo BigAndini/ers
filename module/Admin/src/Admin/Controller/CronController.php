@@ -542,7 +542,7 @@ class CronController extends AbstractActionController {
         $qb->andWhere($qb->expr()->eq('o.payment_reminder_status', ':prstatus'));
         $qb->setParameter('status', 'ordered');
         $paymentTarget = new \DateTime;
-        $paymentTarget->modify( '-20 days' );
+        $paymentTarget->modify( '-10 days' );
         $qb->setParameter('paymentTarget', $paymentTarget);
         $qb->setParameter('prstatus', '0');
         #$qb->setFirstResult( $offset )
@@ -551,10 +551,10 @@ class CronController extends AbstractActionController {
         $notPaidOrders = $qb->getQuery()->getResult();
         echo count($notPaidOrders)." not paid orders found from before ".$paymentTarget->format('d.m.Y').".".PHP_EOL;
         
-        if(!$isReal) {
-            echo "Use -r parameter to really send out all payment reminder.".PHP_EOL;
-            exit();
-        }
+        #if(!$isReal) {
+        #    echo "Use -r parameter to really send out all payment reminder.".PHP_EOL;
+        #    exit();
+        #}
         
         # countdown
         echo PHP_EOL;
@@ -564,52 +564,12 @@ class CronController extends AbstractActionController {
         }
         echo PHP_EOL;
         
-        $config = $this->getServiceLocator()
-                        ->get('config');
-        
         foreach($notPaidOrders as $order) {
-            # prepare email (participant, buyer)
-            $emailService = $this->getServiceLocator()
-                    ->get('ErsBase\Service\EmailService');
-            $config = $this->getServiceLocator()
-                    ->get('config');
-            $emailService->setFrom($config['ERS']['info_mail']);
+            $orderService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\OrderService');
+            $orderService->setOrder($order);
+            $orderService->sendPaymentReminder();
 
-            if($config['environment'] == 'production') {
-                /*** real buyer ***/
-                $buyer = $order->getBuyer();
-                $emailService->addTo($buyer);
-                /***/
-            } else {
-                /*** test buyer **/
-                $user = new Entity\User();
-                $user->setEmail('andi'.$order->getCode()->getValue().'@inbaz.org');
-                $emailService->addTo($user);
-                /***/
-            }
-            
-            $bcc = new Entity\User();
-            $bcc->setEmail($config['ERS']['info_mail']);
-            $emailService->addBcc($bcc);
-
-            $subject = "[".$config['ERS']['name_short']."] "._('Payment reminder for your order:')." ".$order->getCode()->getValue();
-            $emailService->setSubject($subject);
-
-            $viewModel = new ViewModel(array(
-                'order' => $order,
-            ));
-            $viewModel->setTemplate('email/payment-reminder.phtml');
-            $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-            $html = $viewRender->render($viewModel);
-
-            $emailService->setHtmlMessage($html);
-
-            $emailService->send();
-            
-            $order->setPaymentReminderStatus($order->getPaymentReminderStatus()+1);
-            $em->persist($order);
-            $em->flush();
-            
             echo "sent payment reminder for order ".$order->getCode()->getValue().PHP_EOL;
         }
     }

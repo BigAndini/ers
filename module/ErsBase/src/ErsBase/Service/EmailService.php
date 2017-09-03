@@ -127,17 +127,7 @@ class EmailService
         $viewRender = $this->getServiceLocator()->get('ViewRenderer');
         $html = $viewRender->render($viewModel);
         
-        #$this->setHtmlMessage($html);
-        
-        /*$attachments = [
-            'public/Terms and Conditions ERS EN v7.pdf',
-            'public/Terms and Conditions organisation EN v6.pdf',
-            'public/pre-reg cover photo.png',
-        ];*/
-        
-        
         $this->addMailToQueue(null, $recipients, $subject, $html);
-        #$this->send();
         
         $logger->info('confirmation mail was send out to '.$order->getBuyer()->getEmail().' for order: '.$order->getCode()->getValue());
         
