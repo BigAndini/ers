@@ -235,6 +235,14 @@ class Module
                     $router = $serviceLocator->get($routerName);
 
                     if (Console::isConsole()) {
+                        if(
+                                empty($settingService->get('website.host')) ||
+                                empty($settingService->get('website.scheme')) ||
+                                empty($settingService->get('website.path'))
+                                ) {
+                            throw new \Exception('Please configure the setting website.host, website.scheme and website.path for console urls.');
+                        }
+                        
                         $requestUri = new HttpUri();
                         
                         $requestUri->setHost($settingService->get('website.host'))
