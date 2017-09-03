@@ -507,5 +507,11 @@ class OrderService
         $emailService->addMailToQueue(null, $recipients, $subject, $html, true);
 
         $logger->info('payment reminder for order '.$order->getCode()->getValue().' has been send out.');
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        $order->setPaymentReminderStatus(($order->getPaymentReminderstatus()+1));
+        $em->persist($order);
+        $em->flush();
     }
 }
