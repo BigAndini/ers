@@ -1,17 +1,17 @@
 <?php
     # new
-    $config = $this->config();
+    #$config = $this->config();
     $website = '<a href="'.$config['ERS']['website'].'">'.$config['ERS']['website'].'</a>';
-    $infoMail = '<a href="mailto:'.$config['ERS']['info_mail'].'">'.$config['ERS']['info_mail'].'</a>';
-    $adobeReaderLink = '<a href="http://get.adobe.com/reader/">http://get.adobe.com/reader/</a>';
-    $termsUrl = $this->url('info', array('action' => 'terms'), array('force_canonical' => true));
-    $termsLink = '<a href="'.$termsUrl.'">'.$this->translate('terms and conditions').'</a>';
-    $orderUrl = $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey()), array('force_canonical' => true));;
-    $orderLink = '<a href="'.$orderUrl.'">'.$orderUrl.'</a>';
+    #$infoMail = '<a href="mailto:'.$config['ERS']['info_mail'].'">'.$config['ERS']['info_mail'].'</a>';
+    #$adobeReaderLink = '<a href="http://get.adobe.com/reader/">http://get.adobe.com/reader/</a>';
+    #$termsUrl = $this->url('info', array('action' => 'terms'), array('force_canonical' => true));
+    #$termsLink = '<a href="'.$termsUrl.'">'.$this->translate('terms and conditions').'</a>';
+    #$orderUrl = $this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey()), array('force_canonical' => true));;
+    #$orderLink = '<a href="'.$orderUrl.'">'.$orderUrl.'</a>';
     
     #$participant = $package->getParticipant(); 
     #$order = $package->getOrder();
-    $buyer = $order->getBuyer();
+    #$buyer = $order->getBuyer();
 ?>
 <html>
     <head>
