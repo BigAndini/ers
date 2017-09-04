@@ -138,6 +138,9 @@ class TestController extends AbstractActionController {
                 ->get('ErsBase\Service\AgegroupService:ticket');
         
         foreach ($packages as $package) {
+            if($package->getStatus()->getValue() == 'order pending') {
+                continue;
+            }
             $order = $package->getOrder();
             $item_list = '';
             foreach($package->getItems() as $item) {
