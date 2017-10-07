@@ -131,6 +131,7 @@ class TestController extends AbstractActionController {
             'package comment',
             'date of purchase',
             'status',
+            'shipped',
             'price',
             'list of items',
         );
@@ -143,14 +144,25 @@ class TestController extends AbstractActionController {
             }
             $order = $package->getOrder();
             $item_list = '';
+            $shipCount = 0;
             foreach($package->getItems() as $item) {
                 $item_list .= $item->getName().';';
                 foreach($item->getItemVariants() as $variant) {
                     $item_list .= $variant->getName().';'.$variant->getValue().';';
                 }
                 $item_list .= ";";
+                
+                if($item->getShipped()) {
+                    $shipCount++;
+                }
             }
-            #$item_list = preg_replace('/\r\n$/', '', $item_list);
+            if(count($package->getItems()) == $shipCount) {
+                $shipped = 'yes';
+            } elseif($shipCount == 0) {
+                $shipped = 'no';
+            } else {
+                $shipped = 'partly';
+            }
         
             $agegroup = $agegroupService->getAgegroupByUser($package->getParticipant());
             if($agegroup) {
@@ -158,6 +170,8 @@ class TestController extends AbstractActionController {
             } else {
                 $agegroupValue = 'adult';
             }
+            
+            
             
             $finalData[] = array(
                 utf8_decode($package->getCode()->getValue()),
@@ -171,6 +185,7 @@ class TestController extends AbstractActionController {
                 utf8_decode($package->getComment()),
                 utf8_decode($order->getCreated()->format('d.m.Y H:i:s')),
                 utf8_decode($package->getStatus()),
+                utf8_decode($shipped),
                 utf8_decode($package->getPrice()),
                 utf8_decode($item_list),
             );
