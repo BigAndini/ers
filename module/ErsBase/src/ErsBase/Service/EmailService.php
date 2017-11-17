@@ -42,7 +42,7 @@ class EmailService
         return $this->_sl;
     }
 
-    public function sendExceptionEmail(\Exception $e) {        
+    public function sendExceptionEmail($e) {        
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $role = $entityManager->getRepository('ErsBase\Entity\Role')
