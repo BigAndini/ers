@@ -17,6 +17,7 @@ class DeadlineService
     protected $mode;
     protected $serviceManager;
     protected $compareDate;
+    protected $sm;
     
     public function __construct() {
         $this->compareDate = new \DateTime;
