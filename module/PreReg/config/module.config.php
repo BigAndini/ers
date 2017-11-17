@@ -70,12 +70,6 @@ return array(
                         'action' => '',
                         'resource'  => 'controller/PreReg\Controller\Profile',
                     ),
-                    'logout' => array(
-                        'label' => 'Logout',
-                        'route' => 'zfcuser/logout',
-                        #'action' => 'logout',
-                        'resource'  => 'controller/zfcuser:logout',
-                    ),
                     'admin' => array(
                         'label' => 'AdminPanel',
                         'route' => 'admin',
@@ -85,6 +79,12 @@ return array(
                         'label' => 'Onsite',
                         'route' => 'onsite',
                         'resource'  => 'controller/OnsiteReg\Controller\Index',
+                    ),
+                    'logout' => array(
+                        'label' => 'Logout',
+                        'route' => 'zfcuser/logout',
+                        #'action' => 'logout',
+                        'resource'  => 'controller/zfcuser:logout',
                     ),
                 ),
             ),
@@ -398,31 +398,39 @@ return array(
             'currencychooser' => 'PreReg\View\Helper\CurrencyChooser',
         ),
         'factories' => array(
-            'setting' => function($sm) {
-                $helper = new \ErsBase\View\Helper\Setting($sm);
+            'setting' => function($serviceManager) {
+                $helper = new \ErsBase\View\Helper\Setting($serviceManager);
                 return $helper;
             },
-            'config' => function($sm) {
-                $helper = new \ErsBase\View\Helper\Config($sm);
+            'config' => function($serviceManager) {
+                $helper = new \ErsBase\View\Helper\Config($serviceManager);
                 return $helper;
             },
-            'session' => function($sm) {
+            'session' => function($serviceManager) {
                 $helper = new \ErsBase\View\Helper\Session();
                 return $helper;
             },
-            'checkoutactive' => function($sm) {
+            'checkoutactive' => function($serviceManager) {
                 $helper = new \ErsBase\View\Helper\CheckoutActive();
                 return $helper;
             },
-            'niceiban' => function($sm) {
-                $helper = new \ErsBase\View\Helper\NiceIban($sm);
+            'niceiban' => function($serviceManager) {
+                $helper = new \ErsBase\View\Helper\NiceIban($serviceManager);
                 return $helper;
             },
         ),
     ),
-    'session_manager' => array(
-        'validators' => array(
-            #'Zend\Session\Validator\RemoteAddr',
-        ),
-    ),
+    'session_manager' => [
+        /*'config' => [
+            'class' => Session\Config\SessionConfig::class,
+            'options' => [
+                'name' => 'myapp',
+            ],
+        ],*/
+        /*'storage' => Session\Storage\SessionArrayStorage::class,
+        'validators' => [
+            Session\Validator\RemoteAddr::class,
+            Session\Validator\HttpUserAgent::class,
+        ],*/
+    ],
 );

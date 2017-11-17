@@ -13,7 +13,7 @@ use Zend\Form\Form;
 
 class EnterRefund extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('Product');
         $this->setAttribute('method', 'post');

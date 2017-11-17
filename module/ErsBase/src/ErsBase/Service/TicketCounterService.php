@@ -24,9 +24,9 @@ class TicketCounterService {
     public function getCurrentItemCount(\ErsBase\Entity\Counter $counter) {
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->createQueryBuilder()
+        $queryBuilder = $entityManager->createQueryBuilder()
                 ->select('COUNT(DISTINCT i.id)')
                 ->from('ErsBase\Entity\Item', 'i')
                 ->join('i.status', 's', 'WITH', 's.active = 1');
@@ -73,9 +73,9 @@ class TicketCounterService {
     }
     
     public function checkLimits() {
-        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
         
-        $counters = $em->getRepository('ErsBase\Entity\Counter')
+        $counters = $entityManager->getRepository('ErsBase\Entity\Counter')
                 ->findAll();
 
         /* @var $counter \ErsBase\Entity\Counter */
@@ -89,7 +89,7 @@ class TicketCounterService {
             $count = $this->getCurrentItemCount($counter);
 
             if ($count >= $counter->getValue()) {
-                $logger = $this->sl->get('Logger');
+                $logger = $this->getServiceLocator()->get('Logger');
                 $logger->info('Disabling variant values of counter "' . $counter->getName() . '" because ' . $counter->getValue() . ' items were reached.');
 
                 // NOTE: Disabling all associated variant values is actually semantically wrong.
@@ -119,7 +119,7 @@ class TicketCounterService {
             }
         }
 
-        $em->flush();
+        $entityManager->flush();
     }
 
 }

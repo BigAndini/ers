@@ -13,7 +13,7 @@ use Zend\Form\Form;
 
 class ManualMatch extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('ManualMatch');
         $this->setAttribute('method', 'post');

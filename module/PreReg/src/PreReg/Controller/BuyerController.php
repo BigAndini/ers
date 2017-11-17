@@ -38,9 +38,9 @@ class BuyerController extends AbstractActionController {
             $user = new Entity\User();
 
             $inputFilter = new InputFilter\Buyer();
-            $em = $this->getServiceLocator()
+            $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
-            $inputFilter->setEntityManager($em);
+            $inputFilter->setEntityManager($entityManager);
             $form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
             
@@ -89,7 +89,7 @@ class BuyerController extends AbstractActionController {
         $form = new Form\Buyer(); 
         $request = $this->getRequest(); 
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $form->bind($participant);
@@ -98,7 +98,7 @@ class BuyerController extends AbstractActionController {
         {
             $inputFilter = new InputFilter\Buyer();
             
-            $inputFilter->setEntityManager($em);
+            $inputFilter->setEntityManager($entityManager);
             $form->setInputFilter($inputFilter->getInputFilter()); 
             $form->setData($request->getPost()); 
                 

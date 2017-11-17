@@ -22,10 +22,10 @@ class AjaxController extends AbstractActionController {
         $viewModel = new ViewModel();
         $viewModel->setTemplate("partial/ajax/matching-order");
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 #->findOneBy(array('id' => '297'));
                 #->findOneBy(array('id' => '12'));
                 #->findOneBy(array('id' => '54'));
@@ -44,43 +44,43 @@ class AjaxController extends AbstractActionController {
         $viewModel = new ViewModel();
         $viewModel->setTemplate("partial/ajax/matching-bankstatement");
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+        $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
-        $qb = $em->getRepository('ErsBase\Entity\BankStatement')->createQueryBuilder('s');
-        $qb->leftJoin('s.matches', 'm');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\BankStatement')->createQueryBuilder('s');
+        $queryBuilder->leftJoin('s.matches', 'm');
         if($bankaccount->getVirtual()) {
-            $qb->where(
-                $qb->expr()->andX(
-                    $qb->expr()->eq('s.payment_type_id', '?1'),
-                    $qb->expr()->neq('s.status', '?2')
+            $queryBuilder->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq('s.payment_type_id', '?1'),
+                    $queryBuilder->expr()->neq('s.status', '?2')
                 )
             );
-            $qb->setParameter(1, $id);
-            $qb->setParameter(2, 'disabled');
+            $queryBuilder->setParameter(1, $id);
+            $queryBuilder->setParameter(2, 'disabled');
         } else {
-            $qb->where(
-                $qb->expr()->andX(
-                    $qb->expr()->eq('s.payment_type_id', '?1'),
-                    $qb->expr()->eq('s.status', '?2')
-                    /*$qb->expr()->neq('s.status', '?2'),
-                    $qb->expr()->neq('s.status', '?3'),
-                    $qb->expr()->orX(
-                        $qb->expr()->isNull('m.BankStatement_id'),
-                        $qb->expr()->neq('m.status', '?4')
+            $queryBuilder->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq('s.payment_type_id', '?1'),
+                    $queryBuilder->expr()->eq('s.status', '?2')
+                    /*$queryBuilder->expr()->neq('s.status', '?2'),
+                    $queryBuilder->expr()->neq('s.status', '?3'),
+                    $queryBuilder->expr()->orX(
+                        $queryBuilder->expr()->isNull('m.BankStatement_id'),
+                        $queryBuilder->expr()->neq('m.status', '?4')
                     )*/
                 )
             );
-            $qb->setParameter(1, $id);
-            $qb->setParameter(2, 'new');
-            /*$qb->setParameter(3, 'matched');
-            $qb->setParameter(4, 'disabled');*/
+            $queryBuilder->setParameter(1, $id);
+            $queryBuilder->setParameter(2, 'new');
+            /*$queryBuilder->setParameter(3, 'matched');
+            $queryBuilder->setParameter(4, 'disabled');*/
         }
         
-        $statements = $qb->getQuery()->getResult();
+        $statements = $queryBuilder->getQuery()->getResult();
 
         $viewModel->setVariable("statements", $statements);
         $viewModel->setTerminal(true);
@@ -93,10 +93,10 @@ class AjaxController extends AbstractActionController {
         $viewModel = new ViewModel();
         $viewModel->setTemplate("partial/ajax/matching-statementcols");
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $statement = $em->getRepository('ErsBase\Entity\BankStatement')
+        $statement = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                 ->findOneBy(array('id' => $id));
         
         $viewModel->setVariable("statement", $statement);
@@ -107,10 +107,10 @@ class AjaxController extends AbstractActionController {
     public function virtualBankaccountAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $bankaccount = $em->getRepository('ErsBase\Entity\PaymentType')
+        $bankaccount = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findOneBy(array('id' => $id));
         
         return $bankaccount->getVirtual();
@@ -125,11 +125,11 @@ class AjaxController extends AbstractActionController {
             # get currency id
             $id = $this->params()->fromRoute("id");
             
-            $em = $this->getServiceLocator()
+            $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-            $currency = $em->getRepository('ErsBase\Entity\Currency')
+            $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                     ->findOneBy(array('id' => $id));
-            $paymenttypes = $em->getRepository('ErsBase\Entity\PaymentType')
+            $paymenttypes = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                     ->findBy(array(), array('position' => 'ASC'));
             
             

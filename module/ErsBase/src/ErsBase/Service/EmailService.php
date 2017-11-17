@@ -42,11 +42,10 @@ class EmailService
         return $this->_sl;
     }
 
-    public function sendExceptionEmail(\Exception $e) {
-        
-        $em = $this->getServiceLocator()
+    public function sendExceptionEmail(\Exception $e) {        
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $role = $em->getRepository('ErsBase\Entity\Role')
+        $role = $entityManager->getRepository('ErsBase\Entity\Role')
                     ->findOneBy(array('roleId' => 'developer'));
         if(!$role) {
             return false;
@@ -91,10 +90,11 @@ class EmailService
     public function sendConfirmationEmail($order_id) {
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $em = $this->getServiceLocator()
+       
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $order_id));
         $buyer = $order->getBuyer();
         

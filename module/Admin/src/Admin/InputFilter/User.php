@@ -17,18 +17,18 @@ use Zend\Session\Container;
 class User implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
-    protected $em;
-    protected $sm;
+    protected $entityManager;
+    protected $serviceManager;
     
-    public function setEntityManager(\Doctrine\ORM\EntityManager $em) {
-        $this->em = $em;
+    public function setEntityManager(\Doctrine\ORM\EntityManager $entityManager) {
+        $this->em = $entityManager;
     }
     public function getEntityManager() {
         return $this->em;
     }
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
     }
     public function getServiceLocator() {
         return $this->sm;
@@ -185,16 +185,9 @@ class User implements InputFilterAwareInterface
                                 \Zend\Validator\Callback::INVALID_VALUE => 'There is already a person with this email address in the system.',
                             ),
                             'callback' => function($value, $context=array()) {
-                                /*if(
-                                    isset($context['session_id']) && 
-                                    is_numeric($context['session_id']) && 
-                                    $context['session_id'] != 0
-                                ) {
-                                    return true;
-                                }*/
-                                $em = $this->getServiceLocator()
+                                $entityManager = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
-                                $user = $em->getRepository('ErsBase\Entity\User')
+                                $user = $entityManager->getRepository('ErsBase\Entity\User')
                                         ->findOneBy(array('email' => $value));
                                 if($user && $user->getId() != $context['id']) {
                                     return false;

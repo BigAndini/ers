@@ -29,7 +29,31 @@ class AccountIpaymentDetail extends Form
          * action
          */
         
+        $this->addAccountId();
+        $this->addTrxuserId();
+        $this->addTrxCurrency();
+        $this->addTrxpassword();
+        $this->addSecKey();
+        $this->addAction();
         
+        
+        
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Csrf',
+            'name' => 'csrf',
+        ));
+
+        $this->add(array(
+            'name' => 'submit',
+            'attributes' => array(
+                'type' => 'submit',
+                'value' => 'Send',
+                'class' => 'btn btn-success',
+            ),
+        ));
+    }
+    
+    private function addAccountId() {
         $this->add(array(
             'name' => 'account_id',
             'attributes' => array(
@@ -45,7 +69,8 @@ class AccountIpaymentDetail extends Form
                 ),
             ),
         ));
-        
+    }
+    private function addTrxuserId() {
         $this->add(array(
             'name' => 'trxuser_id',
             'attributes' => array(
@@ -61,7 +86,8 @@ class AccountIpaymentDetail extends Form
                 ),
             ),
         ));
-        
+    }
+    private function addTrxCurrency() {
         $this->add(array(
             'name' => 'trx_currency',
             'attributes' => array(
@@ -77,7 +103,8 @@ class AccountIpaymentDetail extends Form
                 ),
             ),
         ));
-        
+    }
+    private function addTrxpassword() {
         $this->add(array(
             'name' => 'trxpassword',
             'attributes' => array(
@@ -93,7 +120,8 @@ class AccountIpaymentDetail extends Form
                 ),
             ),
         ));
-        
+    }
+    private function addSecKey() {
         $this->add(array(
             'name' => 'sec_key',
             'attributes' => array(
@@ -109,7 +137,8 @@ class AccountIpaymentDetail extends Form
                 ),
             ),
         ));
-        
+    }
+    private function addAction() {
         $this->add(array(
             'name' => 'action',
             'attributes' => array(
@@ -123,20 +152,6 @@ class AccountIpaymentDetail extends Form
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
-            ),
-        ));
-        
-        $this->add(array(
-            'type' => 'Zend\Form\Element\Csrf',
-            'name' => 'csrf',
-        ));
-
-        $this->add(array(
-            'name' => 'submit',
-            'attributes' => array(
-                'type' => 'submit',
-                'value' => 'Send',
-                'class' => 'btn btn-success',
             ),
         ));
     }

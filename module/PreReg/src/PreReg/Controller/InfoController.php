@@ -67,14 +67,14 @@ class InfoController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('product');
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $forrest = new Service\BreadcrumbService();
         $breadcrumb = $forrest->get('paymenttype');
         
         return new ViewModel(array(
-            'paymenttype' => $em->getRepository('ErsBase\Entity\PaymentType')->findOneBy(array('id' => $id)),
+            'paymenttype' => $entityManager->getRepository('ErsBase\Entity\PaymentType')->findOneBy(array('id' => $id)),
             'breadcrumb' => $breadcrumb,
         ));
     }
@@ -113,10 +113,10 @@ class InfoController extends AbstractActionController {
     
     private function getAgegroupOptions($selected='') {
         $options = array();
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+        $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                 ->findBy(array('ticket_change' => '1'), array('agegroup' => 'ASC'));
         
         $sel = false;
@@ -161,10 +161,10 @@ class InfoController extends AbstractActionController {
         $form->get('lang')->setValueOptions($this->getLanguageOptions($lang));
         $form->get('agegroup')->setValueOptions($this->getAgegroupOptions($agegroup_id));
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $agegroup = $em->getRepository('ErsBase\Entity\Agegroup')
+        $agegroup = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                 ->findOneBy(array('id' => $agegroup_id));
         
         return new ViewModel(array(

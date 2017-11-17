@@ -16,17 +16,17 @@ use Zend\Session\Container;
 
 class Participant extends Form implements InputFilterProviderInterface
 {    
-    protected $em;
-    protected $sm;
+    protected $entityManager;
+    protected $serviceManager;
     public function getEntityManager() {
         return $this->em;
     }
-    public function setEntityManager($em) {
-        $this->em = $em;
+    public function setEntityManager($entityManager) {
+        $this->em = $entityManager;
     }
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
         
         return $this;
     }
@@ -82,16 +82,11 @@ class Participant extends Form implements InputFilterProviderInterface
  
         $this->add(array( 
             'name' => 'birthday', 
-            #'type' => 'Zend\Form\Element\Date',
-            #'type' => 'Zend\Form\Element\Text',
             'type' => 'PreReg\Form\Element\DateText',
             'attributes' => array( 
                 'placeholder' => _('Birthday...'), 
                 'required' => 'required',
                 'class' => 'form-control form-element datepicker',
-                #'min' => '1900-01-01', 
-                #'max' => 2015-08-09, 
-                #'step' => '1', 
             ), 
             'options' => array( 
                 'label' => _('Date of birth'),
@@ -100,7 +95,6 @@ class Participant extends Form implements InputFilterProviderInterface
                 ),
             ), 
         ));
-        #$this->get('birthday')->setFormat('Y-m-d');
         $this->get('birthday')->setFormat('d.m.Y');
  
         $this->add(array( 
@@ -108,7 +102,6 @@ class Participant extends Form implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Email', 
             'attributes' => array( 
                 'placeholder' => _('Email Address...'), 
-                #'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 
@@ -315,8 +308,8 @@ class Participant extends Form implements InputFilterProviderInterface
                                 \Zend\Validator\Callback::INVALID_VALUE => _('A person with this email address already exists. To make changes to your existing order contact anmeldung@circulum.de or choose another e-mail'),
                             ),
                             'callback' => function($value, $context=array()) {
-                                $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-                                $user = $em->getRepository('ErsBase\Entity\User')
+                                $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+                                $user = $entityManager->getRepository('ErsBase\Entity\User')
                                         ->findOneBy(array('email' => $value));
 
                                 # The email address is new -> ok

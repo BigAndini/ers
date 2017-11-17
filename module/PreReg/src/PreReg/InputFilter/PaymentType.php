@@ -16,10 +16,10 @@ use Zend\InputFilter\InputFilterInterface;
 class PaymentType implements InputFilterAwareInterface 
 { 
     protected $inputFilter;
-    protected $sm;
+    protected $serviceManager;
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
     }
     
     public function getServiceLocator() {
@@ -57,10 +57,10 @@ class PaymentType implements InputFilterAwareInterface
                                     return false;
                                 }
                 
-                                $em = $this->getServiceLocator()
+                                $entityManager = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')
+                                $paymenttype = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                                     ->findOneBy(array('id' => $value));
                                 
                                 if(!$paymenttype) {

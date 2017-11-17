@@ -22,17 +22,18 @@ class PackageController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('onsite', array());
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         /* @var $package \ErsBase\Entity\Package */
-        $package = $em->getRepository('ErsBase\Entity\Package')
+        $package = $entityManager->getRepository('ErsBase\Entity\Package')
                 ->find($id);
         
-//        $forrest = new \ErsBase\Service\BreadcrumbFactory();
+        #$forrest = new \ErsBase\Service\BreadcrumbFactory();
+        $forrest = new \ErsBase\Service\BreadcrumbService();
 //        $forrest->set('order', 'onsite/package', array('action' => 'detail', 'id' => $id));
 //        $forrest->set('user', 'onsite/package', array('action' => 'detail', 'id' => $id));
-//        $forrest->set('package', 'onsite/package', array('action' => 'detail', 'id' => $id));
+        $forrest->set('package', 'onsite/package', array('action' => 'detail', 'id' => $id));
 //        $forrest->set('item', 'onsite/package', array('action' => 'detail', 'id' => $id));
         
         $agegroupService = $this->getServiceLocator()->get('ErsBase\Service\AgegroupService:ticket');
@@ -77,11 +78,11 @@ class PackageController extends AbstractActionController {
             return $this->redirect()->toRoute('onsite/search');
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $id = $this->params()->fromRoute('id', 0);
-        $package = $em->getRepository('ErsBase\Entity\Package')->find($id);
+        $package = $entityManager->getRepository('ErsBase\Entity\Package')->find($id);
         if(!$package) {
             return $this->notFoundAction();
         }
@@ -118,17 +119,17 @@ class PackageController extends AbstractActionController {
                 
                 $item->setShipped(true);
                 $item->setShippedDate(new \DateTime());
-                $em->persist($item);
+                $entityManager->persist($item);
                 
                 $log = new \ErsBase\Entity\Log();
                 $log->setUser($this->zfcUserAuthentication()->getIdentity());
                 $log->setData('SHIPPED Item ' . $item->getName() . ' of package ' . $package->getCode()->getValue() . '.');
-                $em->persist($log);
+                $entityManager->persist($log);
                 
                 # TODO: create log entry for this.
                 error_log('set item ' . $item->getId() . ' of package ' . $package->getId() . ' to shipped');
             }
-            $em->flush();
+            $entityManager->flush();
             
             $this->flashMessenger()->addSuccessMessage('The items were successfully marked as shipped!');
         }
@@ -145,13 +146,13 @@ class PackageController extends AbstractActionController {
     }
     
     public function undoItemAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $packageId = $this->params()->fromRoute('id', 0);
         $itemId = $this->params()->fromRoute('item-id', 0);
         
-        $package = $em->getRepository('ErsBase\Entity\Package')->find($packageId);
+        $package = $entityManager->getRepository('ErsBase\Entity\Package')->find($packageId);
         
         if(!$package)
             return $this->notFoundAction();
@@ -170,14 +171,14 @@ class PackageController extends AbstractActionController {
             if($form->isValid()) {
                 $item->setShipped(false);
                 $item->setShippedDate(null);
-                $em->persist($item);
+                $entityManager->persist($item);
                 
                 $log = new \ErsBase\Entity\Log();
                 $log->setUser($this->zfcUserAuthentication()->getIdentity());
                 $log->setData('UNSHIPPED Item ' . $item->getName() . ' of package ' . $package->getCode()->getValue() . '.');
-                $em->persist($log);
+                $entityManager->persist($log);
                 
-                $em->flush();
+                $entityManager->flush();
                 
                 $this->flashMessenger()->addSuccessMessage('The item was successfully marked as unshipped again!');
                 return $this->redirect()->toRoute('onsite/package', ['action' => 'detail', 'id' => $package->getId()]);

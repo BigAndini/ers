@@ -42,12 +42,12 @@ class CartController extends AbstractActionController {
 
         $breadcrumbService = new Service\BreadcrumbService();
         
-        $emptycart = false;
+        $entityManagerptycart = false;
 
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
 
-        $form = new Form\SimpleForm($em);
+        $form = new Form\SimpleForm($entityManager);
         $form->get('submit')->setAttributes(array(
             'value' => _('Clear Shopping Cart'),
             'class' => 'btn btn-danger',
@@ -65,20 +65,20 @@ class CartController extends AbstractActionController {
                 foreach($order->getPackages() as $package) {
                     $participant = $package->getUser();
                     if(!$participant->getActive()) {
-                        $em->remove($participant);
+                        $entityManager->remove($participant);
                     }
                     foreach($package->getItems() as $item) {
-                        $em->remove($item);
+                        $entityManager->remove($item);
                     }
-                    $em->remove($package);
+                    $entityManager->remove($package);
                 }
-                $em->remove($order);
+                $entityManager->remove($order);
                 
                 $container = new Container('ers');
                 $container->init = 0;
                 unset($container->order_id);
                 unset($container->checkout);
-                $emptycart = true;
+                $entityManagerptycart = true;
             } else {
                 $logger->warn($form->getMessages());
             }
@@ -87,7 +87,7 @@ class CartController extends AbstractActionController {
         return new ViewModel(array(
             'form' => $form,
             'breadcrumb' => $breadcrumbService->get('cart'),
-            'emptycart' => $emptycart,
+            'emptycart' => $entityManagerptycart,
         ));
     }
 }

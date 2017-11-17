@@ -17,11 +17,11 @@ use Admin\InputFilter;
 class PaymentTypeController extends AbstractActionController {
 
     public function indexAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
 
         return new ViewModel(array(
-            'paymenttypes' => $em->getRepository('ErsBase\Entity\PaymentType')
+            'paymenttypes' => $entityManager->getRepository('ErsBase\Entity\PaymentType')
                     ->findBy(array(), array('position' => 'ASC')),
         ));
     }
@@ -42,13 +42,13 @@ class PaymentTypeController extends AbstractActionController {
         $form->get('active_from_id')->setValue(0);
         $form->get('active_until_id')->setValue(0);
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = new InputFilter\PaymentType();
-            $inputFilter->setEntityManager($em);
+            $inputFilter->setEntityManager($entityManager);
 
             $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
@@ -56,32 +56,32 @@ class PaymentTypeController extends AbstractActionController {
                 $paymenttype = new Entity\PaymentType();
                 $paymenttype->populate($form->getData());
 
-                if ($paymenttype->getActiveFromId() == 0) {
-                    $paymenttype->setActiveFromId(null);
-                } else {
-                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveFromId());
+                if ($paymenttype->getActiveFromId() != 0) {
+                    $active_from = $entityManager->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveFromId());
                     $paymenttype->setActiveFrom($active_from);
-                }
-                if ($paymenttype->getActiveUntilId() == 0) {
-                    $paymenttype->setActiveUntilId(null);
                 } else {
-                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveUntilId());
-                    $paymenttype->setActiveUntil($active_until);
+                    $paymenttype->setActiveFromId(null);
                 }
                 
-                $currency = $em->getRepository('ErsBase\Entity\Currency')
+                if ($paymenttype->getActiveUntilId() != 0) {
+                    $active_until = $entityManager->getRepository('ErsBase\Entity\Deadline')->find($paymenttype->getActiveUntilId());
+                    $paymenttype->setActiveUntil($active_until);
+                } else {
+                    $paymenttype->setActiveUntilId(null);
+                }
+                
+                $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                         ->findOneBy(array('id' => $paymenttype->getCurrencyId()));
                 $paymenttype->setCurrency($currency);
                 $paymenttype->setCurrencyId($currency->getId());
 
-                $em->persist($paymenttype);
-                $em->flush();
+                $entityManager->persist($paymenttype);
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute('admin/payment-type');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
             }
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
 
         return new ViewModel(array(
@@ -91,15 +91,15 @@ class PaymentTypeController extends AbstractActionController {
 
 
     public function editAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $paymenttypeId = (int) $this->params()->fromRoute('id', 0);
+        if (!$paymenttypeId) {
             return $this->redirect()->toRoute('admin/payment-type', ['action' => 'add']);
         }
 
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
 
-        $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')->find($id);
+        $paymenttype = $entityManager->getRepository('ErsBase\Entity\PaymentType')->find($paymenttypeId);
         if (!$paymenttype)
             return $this->notFoundAction();
 
@@ -145,7 +145,7 @@ class PaymentTypeController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $inputFilter = new InputFilter\PaymentType();
-            $inputFilter->setEntityManager($em);
+            $inputFilter->setEntityManager($entityManager);
 
             $form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
@@ -154,26 +154,26 @@ class PaymentTypeController extends AbstractActionController {
                 if ($paymenttype->getActiveFromId() == 0) {
                     $paymenttype->setActiveFromId(null);
                 } else {
-                    $active_from = $em->getRepository('ErsBase\Entity\Deadline')
+                    $active_from = $entityManager->getRepository('ErsBase\Entity\Deadline')
                             ->find($paymenttype->getActiveFromId());
                     $paymenttype->setActiveFrom($active_from);
                 }
                 if ($paymenttype->getActiveUntilId() == 0) {
                     $paymenttype->setActiveUntilId(null);
                 } else {
-                    $active_until = $em->getRepository('ErsBase\Entity\Deadline')
+                    $active_until = $entityManager->getRepository('ErsBase\Entity\Deadline')
                             ->find($paymenttype->getActiveUntilId());
                     $paymenttype->setActiveUntil($active_until);
                 }
                 
-                $currency = $em->getRepository('ErsBase\Entity\Currency')
+                $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                         ->findOneBy(array('id' => $paymenttype->getCurrencyId()));
                 $paymenttype->setCurrency($currency);
                 $paymenttype->setCurrencyId($currency->getId());
                 
 
-                $em->persist($paymenttype);
-                $em->flush();
+                $entityManager->persist($paymenttype);
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute('admin/payment-type');
             } else {
@@ -184,19 +184,19 @@ class PaymentTypeController extends AbstractActionController {
 
         return new ViewModel(array(
             'form' => $form,
-            'id' => $id,
+            'id' => $paymenttypeId,
         ));
     }
     
 
     public function deleteAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id)
+        $paymenttypeId = (int) $this->params()->fromRoute('id', 0);
+        if (!$paymenttypeId)
             return $this->redirect()->toRoute('admin/payment-type');
 
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
-        $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')->find($id);
+        $paymenttype = $entityManager->getRepository('ErsBase\Entity\PaymentType')->find($paymenttypeId);
 
         if (!$paymenttype)
             return $this->notFoundAction();
@@ -208,17 +208,17 @@ class PaymentTypeController extends AbstractActionController {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
-                $id = (int) $request->getPost('id');
-                $paymenttype = $em->getRepository('ErsBase\Entity\PaymentType')->find($id);
-                $em->remove($paymenttype);
-                $em->flush();
+                $paymenttypeId = (int) $request->getPost('id');
+                $paymenttype = $entityManager->getRepository('ErsBase\Entity\PaymentType')->find($paymenttypeId);
+                $entityManager->remove($paymenttype);
+                $entityManager->flush();
             }
 
             return $this->redirect()->toRoute('admin/payment-type');
         }
 
         return new ViewModel(array(
-            'id' => $id,
+            'id' => $paymenttypeId,
             'orders' => $orders,
             'paymenttype' => $paymenttype,
         ));
@@ -227,10 +227,10 @@ class PaymentTypeController extends AbstractActionController {
     public function uploadCsvAction() {
         $form = new Form\UploadCsv();
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $accounts = $em->getRepository('ErsBase\Entity\PaymentType')
+        $accounts = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                 ->findBy(array());
         
         $options = array();
@@ -261,10 +261,9 @@ class PaymentTypeController extends AbstractActionController {
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                #$id = $data['payment_type_id'];
-                $id = $data['payment_type_id'];
-                $paymentType = $em->getRepository('ErsBase\Entity\PaymentType')
-                    ->findOneBy(array('id' => $id));
+                $paymenttypeId = $data['payment_type_id'];
+                $paymentType = $entityManager->getRepository('ErsBase\Entity\PaymentType')
+                    ->findOneBy(array('id' => $paymenttypeId));
                 
                 $file = $data['csv-upload'];
                 
@@ -272,7 +271,7 @@ class PaymentTypeController extends AbstractActionController {
                 $bankAccountCsv->setCsvFile($file['name']);
                 $bankAccountCsv->setPaymentType($paymentType);
                 
-                $em->persist($bankAccountCsv);
+                $entityManager->persist($bankAccountCsv);
                 
                 /*
                  * open file for reading
@@ -310,7 +309,7 @@ class PaymentTypeController extends AbstractActionController {
                     }
                     $bs->generateHash();
                     
-                    $bankstatement = $em->getRepository('ErsBase\Entity\PaymentType')
+                    $bankstatement = $entityManager->getRepository('ErsBase\Entity\PaymentType')
                         ->findOneBy(array('hash' => $bs->getHash()));
                     if($bankstatement) {
                         continue;
@@ -331,12 +330,12 @@ class PaymentTypeController extends AbstractActionController {
                         }
                     }
                     
-                    $em->persist($bs);
+                    $entityManager->persist($bs);
                     $row++;
                 }
                 fclose($handle);
                 
-                $em->flush();
+                $entityManager->flush();
                 
                 return $this->redirect()->toRoute('admin/payment-type');
             }
@@ -348,25 +347,25 @@ class PaymentTypeController extends AbstractActionController {
     }
     
     public function detailAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $paymenttypeId = (int) $this->params()->fromRoute('id', 0);
+        if (!$paymenttypeId) {
             return $this->redirect()->toRoute('admin/payment-type', array());
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $paymentType = $em->getRepository('ErsBase\Entity\PaymentType')
-                ->findOneBy(array('id' => $id));
+        $paymentType = $entityManager->getRepository('ErsBase\Entity\PaymentType')
+                ->findOneBy(array('id' => $paymenttypeId));
         
         switch($paymentType->getType()) {
             case 'sepa':
-                $form = new Form\AccountSepabankDetail($em);
+                $form = new Form\AccountSepabankDetail($entityManager);
                 break;
             case 'ukbt':
-                $form = new Form\AccountUkbankDetail($em);
+                $form = new Form\AccountUkbankDetail($entityManager);
                 break;
             case 'ipayment':
-                $form = new Form\AccountIpaymentDetail($em);
+                $form = new Form\AccountIpaymentDetail($entityManager);
                 if(empty($paymentType->getTrxCurrency())) {
                     $paymentType->setTrxCurrency('EUR');
                 }
@@ -375,7 +374,7 @@ class PaymentTypeController extends AbstractActionController {
                 }
                 break;
             case 'paypal':
-                $form = new Form\AccountPaypalDetail($em);
+                $form = new Form\AccountPaypalDetail($entityManager);
                 break;
             default:
                 $options = [
@@ -403,7 +402,7 @@ class PaymentTypeController extends AbstractActionController {
                     ],
                 ];
 
-                $form = new Form\AccountUnknownDetail($em);
+                $form = new Form\AccountUnknownDetail($entityManager);
                 $form->get('type')->setAttribute('options', $options);
                 break;
         }
@@ -415,8 +414,8 @@ class PaymentTypeController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $em->persist($form->getData());
-                $em->flush();
+                $entityManager->persist($form->getData());
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute('admin/payment-type');
             }

@@ -16,10 +16,10 @@ use Zend\InputFilter\InputFilterInterface;
 class AcceptParticipantChangeItem implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
-    protected $sm;
+    protected $serviceManager;
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
     }
     
     public function getServiceLocator() {
@@ -57,10 +57,10 @@ class AcceptParticipantChangeItem implements InputFilterAwareInterface
                                     return false;
                                 }
                 
-                                $em = $this->getServiceLocator()
+                                $entityManager = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $item = $em->getRepository('ErsBase\Entity\Item')
+                                $item = $entityManager->getRepository('ErsBase\Entity\Item')
                                     ->findOneBy(array('id' => $value));
                 
                                 if($item) {
@@ -93,10 +93,10 @@ class AcceptParticipantChangeItem implements InputFilterAwareInterface
                                     return false;
                                 }
                 
-                                $em = $this->getServiceLocator()
+                                $entityManager = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $user = $em->getRepository('ErsBase\Entity\User')
+                                $user = $entityManager->getRepository('ErsBase\Entity\User')
                                     ->findOneBy(array('id' => $value));
                 
                                 if($user) {

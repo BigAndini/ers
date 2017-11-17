@@ -9,11 +9,11 @@
 namespace Admin\Form;
 
 use Zend\Form\Form;
+use Zend\InputFilter\InputFilterProviderInterface;
 
-
-class Role extends Form
+class Role extends Form implements InputFilterProviderInterface
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('Deadline');
         $this->setAttribute('method', 'post');
@@ -34,6 +34,21 @@ class Role extends Form
             ),
             'options' => array(
                 'label' => 'Name',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        
+        $this->add(array(
+            'type' => 'checkbox',
+            'name' => 'active',
+            'attributes' => array(
+                'class' => 'checkbox',
+                'value' => '1',
+            ),
+            'options' => array(
+                'label' => 'Active',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -68,5 +83,59 @@ class Role extends Form
                 'class' => 'btn btn-primary',
             ),
         ));
+    }
+    
+            /**
+     * Should return an array specification compatible with
+     * {@link Zend\InputFilter\Factory::createInputFilter()}.
+     *
+     * @return array
+     */
+    public function getInputFilterSpecification()
+    {
+        return array(
+            'id' => array(
+                'required' => false,
+                'filters' => array(
+                ),
+                'validators' => array(
+
+                ),
+            ),
+            'roleId' => array(
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+
+                ),
+            ),
+            'Parent_id' => array(
+                'required' => false,
+                'filters' => array(
+                ),
+                'validators' => array(
+
+                ),
+            ),
+            'active' => array(
+                'required' => false,
+                'filters' => array(
+                ),
+                'validators' => array(
+
+                ),
+            ),
+            /*'price' => array(
+                'required' => true,
+                'validators' => array(
+                    array(
+                        'name' => 'Float',
+                    ),
+                ),
+            ),*/
+        );
     }
 }

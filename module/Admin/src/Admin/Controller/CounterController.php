@@ -17,10 +17,10 @@ class CounterController extends AbstractActionController {
     
     public function indexAction()
     {
-        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
         $counterService = $this->getServiceLocator()->get('ErsBase\Service\TicketCounterService');
         
-        $counters = $em->getRepository('ErsBase\Entity\Counter')->findAll();
+        $counters = $entityManager->getRepository('ErsBase\Entity\Counter')->findAll();
         $counterCurrentValues = [];
         foreach($counters as $counter) {
             $counterCurrentValues[$counter->getId()] = $counterService->getCurrentItemCount($counter);
@@ -34,10 +34,10 @@ class CounterController extends AbstractActionController {
 
     public function addAction()
     {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
 
-        $form = new Form\Counter($em);
+        $form = new Form\Counter($entityManager);
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -48,6 +48,7 @@ class CounterController extends AbstractActionController {
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $counter->populate($form->getData());
+
                 if($form->get('productVariantValue')->getValue()) {
                     $counter->addProductVariantValue($em->getRepository('ErsBase\Entity\ProductVariantValue')
                         ->find((int)$form->get('productVariantValue')->getValue()));
@@ -61,9 +62,11 @@ class CounterController extends AbstractActionController {
                         ->find((int)$form->get('product')->getValue()));
                 }
                 
+
+                #$counter->addProductVariantValue($entityManager->getRepository('ErsBase\Entity\ProductVariantValue')->find((int)$form->get('productVariantValue')->getValue()));
                 
-                $em->persist($counter);
-                $em->flush();
+                $entityManager->persist($counter);
+                $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage('The counter has been successfully added.');
                 return $this->redirect()->toRoute('admin/counter');
@@ -80,19 +83,19 @@ class CounterController extends AbstractActionController {
 
     public function editAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $counterId = (int) $this->params()->fromRoute('id', 0);
+        if (!$counterId) {
             return $this->redirect()->toRoute('admin/counter', array('action' => 'add'));
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $counter = $em->getRepository('ErsBase\Entity\Counter')->find($id);
+        $counter = $entityManager->getRepository('ErsBase\Entity\Counter')->find($counterId);
         if(!$counter) {
             return $this->notFoundAction();
         }
 
-        $form = new Form\Counter($em);
+        $form = new Form\Counter($entityManager);
         $form->bind($counter);
         $form->get('submit')->setAttribute('value', 'Edit');
         
@@ -119,9 +122,11 @@ class CounterController extends AbstractActionController {
                     $counter->addProduct($em->getRepository('ErsBase\Entity\Product')
                         ->find((int)$form->get('product')->getValue()));
                 }*/
+                $counter->getProductVariantValues()->clear();
+                $counter->addProductVariantValue($entityManager->getRepository('ErsBase\Entity\ProductVariantValue')->find((int)$form->get('productVariantValue')->getValue()));
                 
-                $em->persist($counter);
-                $em->flush();
+                $entityManager->persist($counter);
+                $entityManager->flush();
                 
                 $this->flashMessenger()->addSuccessMessage('The counter has been successfully changed.');
 
@@ -130,7 +135,7 @@ class CounterController extends AbstractActionController {
         }
 
         return new ViewModel(array(
-            'id' => $id,
+            'id' => $counterId,
             'form' => $form,
         ));
     }
@@ -140,14 +145,14 @@ class CounterController extends AbstractActionController {
      */
     public function deleteAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $counterId = (int) $this->params()->fromRoute('id', 0);
+        if (!$counterId) {
             return $this->redirect()->toRoute('admin/counter');
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $counter = $em->getRepository('ErsBase\Entity\Counter')
-                ->find($id);
+        $counter = $entityManager->getRepository('ErsBase\Entity\Counter')
+                ->find($counterId);
         if(!$counter) {
             return $this->notFoundAction();
         }
@@ -157,11 +162,11 @@ class CounterController extends AbstractActionController {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
-                $id = (int) $request->getPost('id');
-                $counter = $em->getRepository('ErsBase\Entity\Counter')
-                    ->findOneBy(array('id' => $id));
-                $em->remove($counter);
-                $em->flush();
+                $counterId = (int) $request->getPost('id');
+                $counter = $entityManager->getRepository('ErsBase\Entity\Counter')
+                    ->findOneBy(array('id' => $counterId));
+                $entityManager->remove($counter);
+                $entityManager->flush();
                 
                 $this->flashMessenger()->addSuccessMessage('The counter has been successfully deleted.');
             }
@@ -170,7 +175,7 @@ class CounterController extends AbstractActionController {
         }
 
         return new ViewModel(array(
-            'id'    => $id,
+            'id'    => $counterId,
             'counter' => $counter,
         ));
     }

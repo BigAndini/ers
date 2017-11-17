@@ -20,13 +20,13 @@ class RedirectController extends AbstractActionController {
         }
         
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         // get the corresponding code
         $codeValue = $this->params()->fromRoute('code', '');
         /* @var $code \ErsBase\Entity\Code */
-        $code = $em->getRepository('ErsBase\Entity\Code')
+        $code = $entityManager->getRepository('ErsBase\Entity\Code')
                 ->findOneBy(array('value' => $codeValue));
         
         if(!$code) {

@@ -100,9 +100,9 @@ class Code extends Base\Code
         $code = substr($this->getValue(),0,$this->length);
         if($this->genChecksum($code) == $checksum) {
             return true;
-        } else {
-            return false;
         }
+        
+        return false;
     }
 
     private function normalizeText($text) {

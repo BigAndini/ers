@@ -10,7 +10,6 @@ return [
     'service_manager' => [
         'aliases' => [
             'translator' => 'MvcTranslator',
-            #'Logger'     => 'EddieJaoude\Zf2Logger',
         ],
         'shared' => [
             'DOMPDF' => false,

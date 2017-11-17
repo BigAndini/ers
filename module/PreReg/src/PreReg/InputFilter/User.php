@@ -16,10 +16,10 @@ use Zend\InputFilter\InputFilterInterface;
 class User implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
-    protected $em;
+    protected $entityManager;
     
-    public function setEntityManager(\Doctrine\ORM\EntityManager $em) {
-        $this->em = $em;
+    public function setEntityManager(\Doctrine\ORM\EntityManager $entityManager) {
+        $this->em = $entityManager;
     }
     public function getEntityManager() {
         return $this->em;

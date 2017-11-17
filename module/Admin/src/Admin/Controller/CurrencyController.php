@@ -17,11 +17,11 @@ class CurrencyController extends AbstractActionController {
     
     public function indexAction()
     {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'currencys' => $em->getRepository('ErsBase\Entity\Currency')
+            'currencys' => $entityManager->getRepository('ErsBase\Entity\Currency')
                 ->findBy(array(), array('position' => 'ASC')),
         ));
     }
@@ -40,11 +40,11 @@ class CurrencyController extends AbstractActionController {
             if ($form->isValid()) {
                 $currency->populate($form->getData());
                 
-                $em = $this->getServiceLocator()
+                $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                $em->persist($currency);
-                $em->flush();
+                $entityManager->persist($currency);
+                $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage('Currency has been successfully added.');
                 return $this->redirect()->toRoute('admin/currency');
@@ -67,9 +67,9 @@ class CurrencyController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $currency = $em->getRepository('ErsBase\Entity\Currency')->findOneBy(array('id' => $id));
+        $currency = $entityManager->getRepository('ErsBase\Entity\Currency')->findOneBy(array('id' => $id));
 
         $form = new Form\Currency();
         $form->bind($currency);
@@ -81,8 +81,8 @@ class CurrencyController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $em->persist($form->getData());
-                $em->flush();
+                $entityManager->persist($form->getData());
+                $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage('Currency has been successfully changed.');
                 return $this->redirect()->toRoute('admin/currency');
@@ -101,9 +101,9 @@ class CurrencyController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/currency');
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $currency = $em->getRepository('ErsBase\Entity\Currency')
+        $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                 ->findOneBy(array('id' => $id));
         $productprices = $currency->getProductPrices();
 
@@ -113,15 +113,15 @@ class CurrencyController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $currency = $em->getRepository('ErsBase\Entity\Currency')
+                $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                     ->findOneBy(array('id' => $id));
                 
                 foreach($currency->getProductPrices() as $productPrice) {
-                    $em->remove($productPrice);
+                    $entityManager->remove($productPrice);
                 }
                 
-                $em->remove($currency);
-                $em->flush();
+                $entityManager->remove($currency);
+                $entityManager->flush();
             }
 
             $this->flashMessenger()->addSuccessMessage('Currency has been successfully deleted.');

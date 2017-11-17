@@ -13,7 +13,7 @@ use Zend\Form\Form;
 
 class ProductPackage extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('Agegroup');
         $this->setAttribute('method', 'post');

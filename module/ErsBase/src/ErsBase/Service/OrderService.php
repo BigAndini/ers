@@ -48,10 +48,10 @@ class OrderService
     }
     public function getCurrency() {
         if(!$this->currency) {
-            $em = $this->getServiceLocator()
+            $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
             $container = new Container('ers');
-            $this->currency = $em->getRepository('ErsBase\Entity\Currency')
+            $this->currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                     ->findOneBy(array('short' => $container->currency));
         }
         return $this->currency;
@@ -66,11 +66,11 @@ class OrderService
             return $this->order;
         }
         $container = new Container('ers');
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
-        $em->flush();
+        $entityManager->flush();
         if(isset($container->order_id) && is_numeric($container->order_id)) {
-            $checkOrder = $em->getRepository('ErsBase\Entity\Order')
+            $checkOrder = $entityManager->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $container->order_id));
             if($checkOrder) {
                 $this->order = $checkOrder;
@@ -90,27 +90,27 @@ class OrderService
     }
     
     private function createNewOrder() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         #$newOrder = new Entity\Order();
         $newOrder = $this->getServiceLocator()
                 ->get('ErsBase\Entity\Order');
-        $status = $em->getRepository('ErsBase\Entity\Status')
+        $status = $entityManager->getRepository('ErsBase\Entity\Status')
             ->findOneBy(array('value' => 'order pending'));
         $newOrder->setStatus($status);
         /*$container = new Container('ers');
-        $currency = $em->getRepository('ErsBase\Entity\Currency')
+        $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
             ->findOneBy(array('short' => $container->currency));
         $newOrder->setCurrency($currency);*/
 
-        $em->persist($newOrder);
-        $em->flush();
+        $entityManager->persist($newOrder);
+        $entityManager->flush();
         
         return $newOrder;
     }
     
     public function updateShoppingCart() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         $debug = true;
@@ -150,18 +150,18 @@ class OrderService
                 $price = $product->getProductPrice($agegroup, $deadline, $package->getCurrency());
 
                 $item->setPrice($price->getFullCharge());
-                $em->persist($item);
+                $entityManager->persist($item);
             }
         }
-        $em->persist($order);
-        $em->flush();
+        $entityManager->persist($order);
+        $entityManager->flush();
     }
     
     public function changeCurrency($paramCurrency) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         if(! $paramCurrency instanceof Entity\Currency) {
-            $currency = $em->getRepository('ErsBase\Entity\Currency')
+            $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                 ->findOneBy(array('short' => $paramCurrency));
         } else {
             $currency = $paramCurrency;
@@ -204,9 +204,9 @@ class OrderService
                         throw new \Exception('Unable to find price for '.$product->getName().'.');
                     }
                     $item->setPrice($price->getFullCharge());
-                    #$em->persist($item);
+                    #$entityManager->persist($item);
                 }
-                #$em->persist($package);
+                #$entityManager->persist($package);
             }
             $order->setCurrency($currency);
             if($debug) {
@@ -215,8 +215,8 @@ class OrderService
             if($order->getPaymentType()) {
                 $order->setPaymentType(null);
             }
-            $em->persist($order);
-            $em->flush();
+            $entityManager->persist($order);
+            $entityManager->flush();
         }
         
         return $this;
@@ -231,9 +231,9 @@ class OrderService
             $order = $this->getOrder();
             $package = $order->getPackageByParticipantEmail($login_email);
             if(!$package) {
-                $em = $this->getServiceLocator()
+                $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-                $user = $em->getRepository('ErsBase\Entity\User')
+                $user = $entityManager->getRepository('ErsBase\Entity\User')
                         ->findOneBy(array('email' => $login_email));
                 $this->addParticipant($user);
             }
@@ -260,9 +260,9 @@ class OrderService
     
     public function addParticipant(Entity\User $participant) {
         $package = new Entity\Package();
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
-        $status = $em->getRepository('ErsBase\Entity\Status')
+        $status = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'order pending'));
         if(!$status) {
             throw new \Exception('Please setup status "order pending"');
@@ -292,15 +292,15 @@ class OrderService
         
         $this->removePackage($package, false);
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
-        #$em->remove($package);
+        #$entityManager->remove($package);
         if(!$participant->getActive()) {
             foreach($participant->getPackages() as $oldPackage) {
                 $this->removePackage($oldPackage, false);
-                #$em->remove($oldPackage);
+                #$entityManager->remove($oldPackage);
             }
-            $em->remove($participant);
+            $entityManager->remove($participant);
         }
         if($participant->getId() == $this->getOrder()->getBuyerId()) {
             $this->getOrder()->setBuyer(null);
@@ -313,52 +313,52 @@ class OrderService
         }
         
         if($flush) {
-            $em->flush();
+            $entityManager->flush();
         }
     }
     
     public function removePackage(Entity\Package $package, $flush=true) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         foreach($package->getItems() as $item) {
             error_log('removing item '.$item->getName().' ('.$item->getId().')');
             #$item->setPackage(null);
             $package->removeItem($item);
-            $em->remove($item);
+            $entityManager->remove($item);
         }
         $package->setParticipant(null);
-        $em->remove($package);
+        $entityManager->remove($package);
         if($flush) {
-            $em->flush();
+            $entityManager->flush();
         }
     }
     
     public function removeItemById($item_id) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $item = $em->getRepository('ErsBase\Entity\Item')
+        $item = $entityManager->getRepository('ErsBase\Entity\Item')
             ->findOneBy(array('id' => $item_id));
         if(!$item) {
             throw new \Exception('Unable to remove item with id: '.$item_id);
         }
         foreach($item->getChildItems() as $cItem) {
             error_log('remove child item '.$cItem->getName());
-            $em->remove($cItem);
+            $entityManager->remove($cItem);
         }
         error_log('remove item '.$item->getName());
-        $em->remove($item);
-        $em->flush();
+        $entityManager->remove($item);
+        $entityManager->flush();
     }
     
     public function recalcPackage(Entity\Package $package, $agegroup, $deadline) {
         $itemArray = array();
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+        $statusOrdered = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'ordered'));
-        $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+        $statusPaid = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('value' => 'paid'));
         
         foreach($package->getItems() as $item) {
@@ -406,7 +406,7 @@ class OrderService
                 $codecheck = 1;
                 while($codecheck != null) {
                     $code->genCode();
-                    $codecheck = $em->getRepository('ErsBase\Entity\Code')
+                    $codecheck = $entityManager->getRepository('ErsBase\Entity\Code')
                         ->findOneBy(array('value' => $code->getValue()));
                 }
                 $newItem->setCodeId(null);
@@ -430,10 +430,10 @@ class OrderService
     }
     
     public function saveRecalcPackage(Entity\Package $package, $agegroup, $deadline) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $statusCancelled = $em->getRepository('ErsBase\Entity\Status')
+        $statusCancelled = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'cancelled'));
 
         $itemArray = $this->recalcPackage($package, $agegroup, $deadline);
@@ -445,7 +445,7 @@ class OrderService
 
                 #$itemAfter->setStatus($itemBefore->getStatus());
 
-                $em->persist($itemAfter);
+                $entityManager->persist($itemAfter);
 
                 $order = $itemAfter->getPackage()->getOrder();
                 if($order->getPaymentStatus() == 'paid') {
@@ -453,12 +453,12 @@ class OrderService
                 }
                 $order->setOrderSum($order->getPrice());
                 $order->setTotalSum($order->getSum());
-                $em->persist($order);
+                $entityManager->persist($order);
 
                 $itemBefore->setStatus($statusCancelled);
-                $em->persist($itemBefore);
+                $entityManager->persist($itemBefore);
 
-                $em->flush();
+                $entityManager->flush();
             }
         }
     }

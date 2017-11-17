@@ -33,23 +33,23 @@ class Module
         
         
         $shared = $eventManager->getSharedManager();
-        $sm = $app->getServiceManager();
+        $serviceManager = $app->getServiceManager();
 
-        $shared->attach('ZfcUser\Service\User', 'register.post', function ($e) use ($sm) {
+        $shared->attach('ZfcUser\Service\User', 'register.post', function ($e) use ($serviceManager) {
             $userService = $e->getTarget();
-            $sm = $userService->getServiceManager();
-            $em = $sm->get('doctrine.entitymanager.orm_default');
+            $serviceManager = $userService->getServiceManager();
+            $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
             $newUser = $e->getParam('user');
             #$registrationForm = $e->getParam('form');
-            $config = $sm->get('config');
+            $config = $serviceManager->get('config');
             $criteria = array('roleId' => $config['bjyauthorize']['new_user_default_role']);
-            $defaultUserRole = $em->getRepository('ErsBase\Entity\UserRole')->findOneBy($criteria);
+            $defaultUserRole = $entityManager->getRepository('ErsBase\Entity\UserRole')->findOneBy($criteria);
             
             if ($defaultUserRole !== null)
             {
                 $newUser->addRole($defaultUserRole);
-                $em->persist($newUser);
-                $em->flush();
+                $entityManager->persist($newUser);
+                $entityManager->flush();
             }
         });
     }
@@ -76,10 +76,10 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(
-                'ErsBase\Entity\Order' => function ($sm) {
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
+                'ErsBase\Entity\Order' => function ($serviceManager) {
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
                     $container = new Container('ers');
-                    $currency = $em->getRepository('ErsBase\Entity\Currency')
+                    $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                                 ->findOneBy(array('short' => $container->currency));
                     $order = new Entity\Order();
                     $order->setCurrency($currency);
@@ -87,116 +87,118 @@ class Module
                     return $order;
                 },
                 'ErsBase\Service\CodeService' => 'ErsBase\Service\Factory\CodeFactory',
-                'ErsBase\Service\EmailService' => function ($sm) {
+                'ErsBase\Service\EmailService' => function ($serviceManager) {
                     $emailService = new Service\EmailService();
-                    $emailService->setServiceLocator($sm);
+                    $emailService->setServiceLocator($serviceManager);
                     return $emailService;
                 },
-                'ErsBase\Service\SettingService' => function ($sm) {
+                'ErsBase\Service\SettingService' => function ($serviceManager) {
                     $settingService = new Service\SettingService();
-                    $settingService->setServiceLocator($sm);
+                    $settingService->setServiceLocator($serviceManager);
                     return $settingService;
                 },
-                'ErsBase\Service\CloneService' => function ($sm) {
+                
+                'ErsBase\Service\CloneService' => function ($serviceManager) {
                     $service = new Service\CloneService();
-                    $service->setServiceLocator($sm);
+                    $service->setServiceLocator($serviceManager);
                     return $service;
                 },
-                'ErsBase\Service\AgegroupService' => function($sm) {
+                'ErsBase\Service\AgegroupService' => function($serviceManager) {
                     $agegroupService = new Service\AgegroupService();
-                    $agegroupService->setServiceLocator($sm);
+                    $agegroupService->setServiceLocator($serviceManager);
                     
                     return $agegroupService;
                 },
-                'ErsBase\Service\AgegroupService:price' => function($sm) {
+                'ErsBase\Service\AgegroupService:price' => function($serviceManager) {
                     $agegroupService = new Service\AgegroupService();
-                    $agegroupService->setServiceLocator($sm);
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+                    $agegroupService->setServiceLocator($serviceManager);
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('price_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
                     return $agegroupService;
                 },
-                'ErsBase\Service\AgegroupService:ticket' => function($sm) {
+                'ErsBase\Service\AgegroupService:ticket' => function($serviceManager) {
                     $agegroupService = new Service\AgegroupService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                                 ->findBy(array('ticket_change' => '1'));
                     $agegroupService->setAgegroups($agegroups);
                     
                     return $agegroupService;
                 },
-                'ErsBase\Service\DeadlineService' => function($sm) {
+                'ErsBase\Service\DeadlineService' => function($serviceManager) {
                     $deadlineService = new Service\DeadlineService();
-                    $deadlineService->setServiceLocator($sm);
+                    $deadlineService->setServiceLocator($serviceManager);
                     
                     return $deadlineService;
                 },
-                'ErsBase\Service\DeadlineService:price' => function($sm) {
+                'ErsBase\Service\DeadlineService:price' => function($serviceManager) {
                     $deadlineService = new Service\DeadlineService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findBy(array('price_change' => '1'));
                     $deadlineService->setDeadlines($deadlines);
                     
                     return $deadlineService;
                 },
-                'ErsBase\Service\DeadlineService:noprice' => function($sm) {
+                'ErsBase\Service\DeadlineService:noprice' => function($serviceManager) {
                     $deadlineService = new Service\DeadlineService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findBy(array('price_change' => '0'));
                     $deadlineService->setDeadlines($deadlines);
                     
                     return $deadlineService;
                 },
-                'ErsBase\Service\DeadlineService:all' => function($sm) {
+                'ErsBase\Service\DeadlineService:all' => function($serviceManager) {
                     $deadlineService = new Service\DeadlineService();
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $deadlines = $em->getRepository('ErsBase\Entity\Deadline')
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findAll();
                     $deadlineService->setDeadlines($deadlines);
                     
                     return $deadlineService;
                 },
-                'ErsBase\Service\TicketCounterService' => function($sm) {
+                'ErsBase\Service\TicketCounterService' => function($serviceManager) {
                     $ticketCounterService = new Service\TicketCounterService();
-                    $ticketCounterService->setServiceLocator($sm);
+                    $ticketCounterService->setServiceLocator($serviceManager);
                     return $ticketCounterService;
                 },
-                'ErsBase\Service\ETicketService' => function($sm) {
+                'ErsBase\Service\ETicketService' => function($serviceManager) {
                     $service = new Service\ETicketService();
-                    $service->setServiceLocator($sm);
-                    $em = $sm->get('Doctrine\ORM\EntityManager');
-                    $products = $em->getRepository('ErsBase\Entity\Product')
+                    $service->setServiceLocator($serviceManager);
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $products = $entityManager->getRepository('ErsBase\Entity\Product')
                                 ->findBy(array('visible_on_eticket' => '1'), array('position' => 'ASC'));
                     $service->setProducts($products);
                     return $service;
                 },
-                'ErsBase\Service\OrderService' => function($sm) {
+                'ErsBase\Service\OrderService' => function($serviceManager) {
                     $service = new Service\OrderService();
-                    $service->setServiceLocator($sm);
+                    $service->setServiceLocator($serviceManager);
                     return $service;
                 },
-                'ErsBase\Service\PackageService' => function($sm) {
+                'ErsBase\Service\PackageService' => function($serviceManager) {
                     $service = new Service\PackageService();
-                    $service->setServiceLocator($sm);
+                    $service->setServiceLocator($serviceManager);
                     return $service;
                 },
-                'ErsBase\Service\StatusService' => function($sm) {
+       
+                'ErsBase\Service\StatusService' => function($serviceManager) {
                     $service = new Service\StatusService();
-                    $service->setServiceLocator($sm);
+                    $service->setServiceLocator($serviceManager);
                     return $service;
                 },
-                'ErsBase\Service\ShortcodeService' => function($sm) {
+                'ErsBase\Service\ShortcodeService' => function($serviceManager) {
                     $service = new Service\ShortcodeService();
-                    $service->setServiceLocator($sm);
+                    $service->setServiceLocator($serviceManager);
                     return $service;
                 },
-                'ErsBase\Service\OptionService' => function($sm) {
+                'ErsBase\Service\OptionService' => function($serviceManager) {
                     $service = new Service\OptionService();
-                    $service->setServiceLocator($sm);
+                    $service->setServiceLocator($serviceManager);
                     return $service;
                 },
             ),
