@@ -63,7 +63,7 @@
         
     </head>
     <body>
-        <?php if (!isset($this->setting('environment'))) : ?>
+        <?php if (! $this->setting('environment') == '') : ?>
         <div class="alert alert-danger text-center">
             <p>Please add the <strong>environment</strong> config key to one of your local configurations.</p>
         </div>
