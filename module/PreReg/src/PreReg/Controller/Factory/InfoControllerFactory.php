@@ -18,7 +18,7 @@ use PreReg\Controller;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class ControllerFactory implements FactoryInterface
+class InfoControllerFactory implements FactoryInterface
 {    
     /**
       * Create service
@@ -27,14 +27,27 @@ class ControllerFactory implements FactoryInterface
       *
       * @return mixed
       */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $container)
     {
-        $realServiceLocator = $serviceLocator->getServiceLocator();
+        $realServiceLocator = $container->getServiceLocator();
         #$postService        = $realServiceLocator->get('Blog\Service\PostServiceInterface');
 
         #error_log('name: '.$name);
         #error_log('requestedName: '.$requestedName);
         
-        return new Controller\IndexController($realServiceLocator);
+        
+        return $this($container, Controller\IndexController::class);
+        #return new Controller\IndexController($realServiceLocator);
+    }
+    
+    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    {
+        $parentLocator = $container->getServiceLocator();
+        
+        error_log('name: '.$name);
+        #error_log('requestedName: '.$requestedName);
+        
+        #$ErrorLogerService = $parentLocator->get('Error_Logger');
+        return new CollectionController( $parentLocator );
     }
 }

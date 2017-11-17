@@ -17,7 +17,7 @@ return array(
             'PreReg\Controller\Buyer'       => 'PreReg\Controller\BuyerController',
             'PreReg\Controller\Product'     => 'PreReg\Controller\ProductController',
             'PreReg\Controller\Profile'     => 'PreReg\Controller\Factory\ControllerFactory',
-            'PreReg\Controller\Info'        => 'PreReg\Controller\Factory\ControllerFactory',
+            'PreReg\Controller\Info'        => 'PreReg\Controller\Factory\InfoControllerFactory',
             'PreReg\Controller\Payment'     => 'PreReg\Controller\PaymentController',
             'PreReg\Controller\Test'        => 'PreReg\Controller\TestController',
         ],
