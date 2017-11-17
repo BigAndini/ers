@@ -873,7 +873,8 @@ class StatisticController extends AbstractActionController {
         $queryBuilder->where("i.shipped = 1");
         $queryBuilder->andWhere($queryBuilder->expr()->orX(
                 $queryBuilder->expr()->eq("i.Product_id", "1"),
-                $queryBuilder->expr()->eq("i.Product_id", "4")));
+                $queryBuilder->expr()->eq("i.Product_id", "2"),
+                $queryBuilder->expr()->eq("i.Product_id", "3")));
         $shippedItems = $queryBuilder->getQuery()->getResult();
         
         $itemStats = array();

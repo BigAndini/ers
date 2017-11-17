@@ -12,6 +12,6 @@ modules:
             cleanup: false # run populator before each test
             #populator: 'mysql -u $user -h $host $dbname < $dump'
         - PhpBrowser:
-            url: https://test.ers2.inbaz.org/
+            url: https://dev.ers2.inbaz.org/
         - \Helper\Acceptance
         

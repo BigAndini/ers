@@ -10,7 +10,7 @@ namespace ErsBase\Service;
 
 class ServiceLocatorAwareService
 {
-    protected $_sl;
+    public $_sl;
     
     public function __construct($serviceLocator = null) {
         if($serviceLocator != null) {
