@@ -21,7 +21,7 @@ class BaseController extends AbstractActionController {
         }
     }
     
-    public function setServiceLocator($sm) {
+    public function setServiceLocator(ServiceLocatorInterface $sm) {
         $this->sm = $sm;
     }
             
