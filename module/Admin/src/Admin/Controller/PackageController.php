@@ -11,10 +11,8 @@ namespace Admin\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ErsBase\Entity;
-use ErsBase\Service as ersService;
-use Admin\Form;
 use ErsBase\Service;
-use Admin\InputFilter;
+use Admin\Form;
 
 class PackageController extends AbstractActionController {
     public function indexAction()
@@ -447,65 +445,23 @@ class PackageController extends AbstractActionController {
                 $package = $entityManager->getRepository('ErsBase\Entity\Package')
                     ->findOneBy(array('id' => $packageId));
                 
-                if($package->getStatus() != 'paid') {
+                $validStatus = $em->getRepository('ErsBase\Entity\Status')
+                    ->findBy(array('valid' => 1));
+                $validArray = array_filter($validStatus, function($status) {return $status->getValid();});
+                
+                #if($package->getStatus() != 'paid') {
+                if(!in_array($package->getStatus(), $validArray)) {
                     return $this->redirect()->toRoute('admin/package', array('action' => 'send-eticket'));
                 }
                 
-                # prepare email (participant, buyer)
-                #$emailService = new ersService\EmailService();
-                $emailService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\EmailService');
-                $config = $this->getServiceLocator()
-                        ->get('config');
-                $emailService->setFrom($config['ERS']['info_mail']);
 
-                $order = $package->getOrder();
-                $participant = $package->getParticipant();
-                
-                
-                $buyer = $order->getBuyer();
-                if($participant->getEmail() == '') {
-                    $emailService->addTo($buyer);
-                } elseif($participant->getEmail() == $buyer->getEmail()) {
-                    $emailService->addTo($buyer);
-                } else {
-                    $emailService->addTo($participant);
-                    $emailService->addCc($buyer);
-                }
-
-                $bcc = new Entity\User();
-                $bcc->setEmail($config['ERS']['info_mail']);
-                $emailService->addBcc($bcc);
-
-                $subject = "[".$config['ERS']['name_short']."] "._('E-Ticket for')." ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
-                $emailService->setSubject($subject);
-
-                $viewModel = new ViewModel(array(
-                    'package' => $package,
-                ));
-                $viewModel->setTemplate('email/eticket-participant.phtml');
-                $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-                $html = $viewRender->render($viewModel);
-
-                $emailService->setHtmlMessage($html);
-
-                # generate e-ticket pdf
-                $eticketService = $this->getServiceLocator()
-                    ->get('ErsBase\Service\ETicketService');
-
-                $eticketService->setLanguage('en');
-                $eticketService->setPackage($package);
-                $eticketFile = $eticketService->generatePdf();
-
-                # send out email
-                $emailService->addAttachment($eticketFile);
-
-                $emailService->send();
-                $package->setTicketStatus('send_out');
-                $entityManager->persist($package);
-                $entityManager->flush();
+                $packageService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\PackageService');
+                $packageService->setPackage($package);
+                $packageService->sendEticket();
                 
                 $breadcrumb = $forrest->get('order');
+                $this->flashMessenger()->addSuccessMessage('E-tickets for package '.$package->getCode()->getValue().' has been send out.');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
@@ -920,6 +876,201 @@ class PackageController extends AbstractActionController {
             'order' => $order,
             'package' => $package,
             'breadcrumb' => $forrest->get('package'),
+        ));
+    }
+    
+    public function changeStatusAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $package = $em->getRepository('ErsBase\Entity\Package')
+                ->findOneBy(array('id' => $id));
+        
+        if(!$package) {
+            throw new \Exception('Unable to find package with ir '.$id);
+        }
+        
+        $form = new Form\SimpleForm($em);
+        
+        #$form->bind($package);
+        
+        $form->get('submit')->setAttributes(array(
+            'value' => _('save'),
+            'class' => 'btn btn-success',
+        ));
+
+        $status = $em->getRepository('ErsBase\Entity\Status')
+                ->findBy(array(), array('position' => 'ASC'));
+        
+        $statusId = $package->getStatus()->getId();
+        
+        $statusOptions = array();
+        $selected = false;
+        foreach($status as $s) {
+            $selected = false;
+            if($statusId == $s->getId()) {
+                $selected = true;
+            }
+            $statusOptions[] = array(
+                'value' => $s->getId(),
+                'label' => $s->getActive() ? 'active: '.$s->getValue() : 'inactive: '.$s->getValue(),
+                'selected' => $selected,
+            );
+        }
+        $form->add(array(
+            'name' => 'status_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => _('new status'),
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                'value_options' => $statusOptions,
+            ),
+        ));
+        $form->add(array(
+            'name' => 'package_id',
+            'type'  => 'Zend\Form\Element\Hidden',
+            'attributes' => array(
+                'required' => 'required',
+                'value' => $package->getId(),
+            ),
+        ));
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $status = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('id' => $data['status_id']));
+                
+                $package = $em->getRepository('ErsBase\Entity\Package')
+                    ->findOneBy(array('id' => $data['package_id']));
+                
+                if(!$package instanceof \ErsBase\Entity\Package) {
+                    throw new \Exception('Unable to find package with id: '.$data['package_id']);
+                }
+                
+                $statusService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\StatusService');
+                
+                error_log('status: '.$status->getValue());
+                
+                $statusService->setPackageStatus($package, $status, true);
+                
+                $order = $package->getOrder();
+                return $this->redirect()->toRoute('admin/order', array(
+                    'action' => 'detail', 
+                    'id' => $order->getId()
+                ));
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+
+        
+        return new ViewModel(array(
+            'form' => $form,
+            'package' => $package,
+        ));
+    }
+    
+    public function changeCommentAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            $this->flashMessenger()->addErrorMessage('Unable to find package without id.');
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $package = $em->getRepository('ErsBase\Entity\Package')
+                ->findOneBy(array('id' => $id));
+        
+        if(!$package) {
+            throw new \Exception('Unable to find package with id '.$id);
+        }
+        
+        $form = new Form\SimpleForm($em);
+        
+        $form->get('submit')->setAttributes(array(
+            'value' => _('save'),
+            'class' => 'btn btn-success',
+        ));
+
+        $form->add(array(
+            'name' => 'comment',
+            'type'  => 'textarea',
+            'attributes' => array(
+                'required' => 'required',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => _('comment'),
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        $form->get('comment')->setValue($package->getComment());
+        
+        $form->add(array(
+            'name' => 'package_id',
+            'type'  => 'Zend\Form\Element\Hidden',
+            'attributes' => array(
+                'required' => 'required',
+                'value' => $package->getId(),
+            ),
+        ));
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $package = $em->getRepository('ErsBase\Entity\Package')
+                    ->findOneBy(array('id' => $data['package_id']));
+                
+                if(!$package) {
+                    throw new \Exception('Unable to find package with id '.$data['package_id']);
+                }
+                
+                $package->setComment($data['comment']);
+                
+                $em->persist($package);
+                $em->flush();
+                
+                $this->flashMessenger()->addSuccessMessage('Comment for for package '.$package->getCode()->getValue().' has been saved.');
+                return $this->redirect()->toRoute('admin/order', array(
+                    'action' => 'detail', 
+                    'id' => $package->getOrder()->getId()
+                ));
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+
+        return new ViewModel(array(
+            'form' => $form,
+            'package' => $package,
         ));
     }
 }

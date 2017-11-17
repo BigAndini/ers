@@ -45,10 +45,16 @@ echo $this->navigation()
                             $now->getTimestamp() > $paymenttype->getActiveFrom()->getDeadline()->getTimestamp() &&
                             $paymenttype->getCurrency()->getShort() == $this->session()->currency
                             ): ?>
-                        <?php if($order->getPaymentTypeId() != null && $order->getPaymentTypeId() == $paymenttype->getId()) :
-                            $checked = true;
+                        <?php if($order->getPaymentTypeId() != null):
+                            if($order->getPaymentTypeId() == $paymenttype->getId()) :
+                                $checked = true;
+                            endif;
                         else:
-                            $checked = false;
+                            if($paymenttype->getPreselected()):
+                                $checked = true;
+                            else:
+                                $checked = false;
+                            endif;
                         endif; ?>
                         <label class="payment-type">
                             <input style="display: inline;" <?php echo $checked ? 'checked="checked"' : ''; ?> type='radio' name='paymenttype_id' value='<?php echo $paymenttype->getId(); ?>' /> 

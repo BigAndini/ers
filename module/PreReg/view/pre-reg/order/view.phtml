@@ -41,7 +41,7 @@ $infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this-
                 <h3><?php echo $this->translate('This order is already paid'); ?></h3>
                 <p><?php echo $this->translate('Your E-Tickets will be sent out in june.'); ?></p>
                 <p><strong><?php echo $this->translate('Note:'); ?></strong> <?php echo $this->translate('Please add the email address 
-                    prereg@eja.net to your address book. To be sure the email 
+                    anmeldung@circulum.de to your address book. To be sure the email 
                     with your E-Tickets will not arrive in your spamfolder.'); ?></p>
             <?php elseif($order->getStatus()->getValue() == 'ordered'): ?>
                 <?php if($paymenttype->getType() == 'sepa'): ?>

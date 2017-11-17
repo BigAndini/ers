@@ -216,7 +216,7 @@ class OptionService
         }
         $options[] = array(
             'value' => 0,
-            'label' => 'no Deadline'
+            'label' => 'after last deadline'
         );
 
         return $options;

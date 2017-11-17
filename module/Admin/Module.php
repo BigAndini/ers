@@ -61,6 +61,7 @@ class Module implements ViewHelperProviderInterface
                 'url' => function ($helperPluginManager) {
                     $serviceLocator = $helperPluginManager->getServiceLocator();
                     $config = $serviceLocator->get('Config');
+                    $settingService = $serviceLocator->get('ErsBase\Service\SettingService');
 
                     $viewHelper =  new UrlHelper();
 
@@ -70,11 +71,20 @@ class Module implements ViewHelperProviderInterface
                     $router = $serviceLocator->get($routerName);
 
                     if (Console::isConsole()) {
+                        if(
+                                empty($settingService->get('website.host')) ||
+                                empty($settingService->get('website.scheme')) ||
+                                empty($settingService->get('website.path'))
+                                ) {
+                            throw new \Exception('Please configure the setting website.host, website.scheme and website.path for console urls.');
+                        }
+                        
                         $requestUri = new HttpUri();
-                        $requestUri->setHost($config['website']['host'])
-                            ->setScheme($config['website']['scheme']);
+                        
+                        $requestUri->setHost($settingService->get('website.host'))
+                            ->setScheme($settingService->get('website.scheme'));
                         $router->setRequestUri($requestUri);
-                        $router->setBaseUrl($config['website']['path']);
+                        $router->setBaseUrl($settingService->get('website.path'));
                     }
 
                     $viewHelper->setRouter($router);
@@ -110,11 +120,15 @@ class Module implements ViewHelperProviderInterface
             'factories' => array(
                 'Logger' => function($serviceManager){
                     $logger = new \Zend\Log\Logger;
-                    if(!is_dir(getcwd().'/data/log')) {
-                        mkdir(getcwd().'/data/log');
+                    if(!is_dir(getcwd().'/data/logs')) {
+                        mkdir(getcwd().'/data/logs');
                     }
-                    $writer = new \Zend\Log\Writer\Stream('./data/log/'.date('Y-m-d').'-zend-error.log');
+                    $writer = new \Zend\Log\Writer\Stream('./data/logs/'.date('Y-m-d').'-zend.log');
                     $logger->addWriter($writer);
+                    
+                    #$filter = new Zend\Log\Filter\Priority(Logger::CRIT);
+                    #$writer->addFilter($filter);
+
 
                     return $logger;
                 },

@@ -185,13 +185,13 @@ $this->headTitle($title);
                 <td><?php echo $paymenttype->getType(); ?></td>
                 <td>
                     <?php if($paymenttype->getActiveFrom() == null) : ?>
-                       no Deadline 
+                       after last deadline
                     <?php else: ?>
                     <?php echo $paymenttype->getActiveFrom()->getDeadline()->format('Y-m-d H:i:s'); ?>
                     <?php endif; ?>
                     <?php echo ' - '; ?>
                     <?php if($paymenttype->getActiveUntil() == null) : ?>
-                       no Deadline 
+                       after last deadline
                     <?php else: ?>
                     <?php echo $paymenttype->getActiveUntil()->getDeadline()->format('Y-m-d H:i:s'); ?>
                     <?php endif; ?>

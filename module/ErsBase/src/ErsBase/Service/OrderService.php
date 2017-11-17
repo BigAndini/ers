@@ -10,6 +10,7 @@ namespace ErsBase\Service;
 
 use Zend\Session\Container;
 use ErsBase\Entity;
+use Zend\View\Model\ViewModel;
 
 /**
  * order service
@@ -114,40 +115,41 @@ class OrderService
         
         $debug = true;
         $order = $this->getOrder();
-        $currency = $order->getCurrency();
+        #$currency = $order->getCurrency();
         foreach($order->getPackages() as $package) {
+            $participant = $package->getParticipant();
+
+            $agegroupService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\AgegroupService');
+            $agegroupService->setMode('price');
+            $agegroup = $agegroupService->getAgegroupByUser($participant);
+            if($debug) {
+                if($agegroup != null) {
+                    error_log('found agegroup: '.$agegroup->getName());
+                }
+            }
+
+            $deadlineService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\DeadlineService');
+            $deadlineService->setMode('price');
+            $deadline = $deadlineService->getDeadline($order->getCreated());
+            if($debug) {
+                if($deadline != null) {
+                    error_log('found deadline: '.$deadline->getName());
+                }
+            }
+
             foreach($package->getItems() as $item) {
+                if($item->getStatus() == 'refund') {
+                    continue;
+                }
                 if($item->hasParentItems()) {
                     continue;
                 }
                 $product = $item->getProduct();
-                $participant = $item->getPackage()->getParticipant();
+                $price = $product->getProductPrice($agegroup, $deadline, $package->getCurrency());
 
-                $agegroupService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\AgegroupService');
-                $agegroupService->setMode('price');
-                $agegroup = $agegroupService->getAgegroupByUser($participant);
-                if($debug) {
-                    if($agegroup != null) {
-                        error_log('found agegroup: '.$agegroup->getName());
-                    }
-                }
-
-                $deadlineService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\DeadlineService');
-                $deadlineService->setMode('price');
-                $deadline = $deadlineService->getDeadline($order->getCreated());
-                if($debug) {
-                    if($deadline != null) {
-                        error_log('found deadline: '.$deadline->getName());
-                    }
-                }
-
-                $price = $product->getProductPrice($agegroup, $deadline, $currency);
-                if($debug) {
-                    error_log('price: '.$price->getCharge());
-                }
-                $item->setPrice($price->getCharge());
+                $item->setPrice($price->getFullCharge());
                 $entityManager->persist($item);
             }
         }
@@ -196,12 +198,12 @@ class OrderService
 
                     $price = $product->getProductPrice($agegroup, $deadline, $currency);
                     if($debug) {
-                        error_log('price: '.$price->getCharge());
+                        error_log('price: '.$price->getFullCharge());
                     }
                     if(!$price) {
                         throw new \Exception('Unable to find price for '.$product->getName().'.');
                     }
-                    $item->setPrice($price->getCharge());
+                    $item->setPrice($price->getFullCharge());
                     #$entityManager->persist($item);
                 }
                 #$entityManager->persist($package);
@@ -370,7 +372,7 @@ class OrderService
             #$price = $product->getProductPrice($agegroup, $deadline);
             $price = $product->getProductPrice($agegroup, $deadline, $package->getCurrency());
             
-            if($item->getPrice() != $price->getCharge()) {
+            if($item->getPrice() != $price->getFullCharge()) {
                 /*
                  * disable item and create new item
                  */
@@ -383,7 +385,7 @@ class OrderService
                     $newItem->addItemVariant($newItemVariant);
                     $newItemVariant->setItem($newItem);
                 }
-                $newItem->setPrice($price->getCharge());
+                $newItem->setPrice($price->getFullCharge());
 
                 $newItem->setProduct($item->getProduct());
                 $newItem->setPackage($item->getPackage());
@@ -459,5 +461,57 @@ class OrderService
                 $entityManager->flush();
             }
         }
+    }
+    
+    public function sendPaymentReminder() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $emailService = $this->getServiceLocator()
+                ->get('ErsBase\Service\EmailService');
+
+        $order = $this->getOrder();
+        $buyer = $order->getBuyer();
+        $recipients[] = [
+            'email' => $buyer,
+            'type' => 'to',
+        ];
+
+        $settingService = $this->getServiceLocator()
+                ->get('ErsBase\Service\SettingService');
+
+        if($settingService->get('ers.bcc_mail') != '') {
+            $recipients[] = [
+                'email' => $settingService->get('ers.bcc_mail'),
+                'type' => 'bcc',
+            ];
+        }
+
+        #$subject = "[".$settingService->get('ers.name_short')."] Payment reminder for your order: ".$order->getCode()->getValue();
+        $subject = "[".$settingService->get('ers.name_short')."] Zahlungserinnerung für deine Bestellung: ".$order->getCode()->getValue();
+
+        $viewModel = new ViewModel(array(
+            'order' => $order,
+        ));
+        $viewModel->setTemplate('email/payment-reminder.phtml');
+        $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+        $html = $viewRender->render($viewModel);
+
+        $shortcodeService = $this->getServiceLocator()
+                ->get('ErsBase\Service\ShortcodeService');
+        $shortcodeService->setText($html);
+        $shortcodeService->setObject('order', $order);
+        $shortcodeService->setObject('buyer', $order->getBuyer());
+        $shortcodeService->processFilters();
+        $html = $shortcodeService->getText();
+        
+        $emailService->addMailToQueue(null, $recipients, $subject, $html, true);
+
+        $logger->info('payment reminder for order '.$order->getCode()->getValue().' has been send out.');
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        $order->setPaymentReminderStatus(($order->getPaymentReminderstatus()+1));
+        $em->persist($order);
+        $em->flush();
     }
 }

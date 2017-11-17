@@ -727,7 +727,7 @@ class StatisticController extends AbstractActionController {
                     ->select('COUNT(i.id) itemcount')
                     ->from('ErsBase\Entity\Item', 'i')
                     ->join('i.status', 's', 'WITH', 's.active = 1')
-                    ->where('i.Product_id = :prod_id')
+                    ->where('i.product_id = :prod_id')
                     ->setParameter('prod_id', $product->getId());
             
             $variantNames = [];

@@ -48,20 +48,32 @@ class CounterController extends AbstractActionController {
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $counter->populate($form->getData());
-                $counter->addProductVariantValue($entityManager->getRepository('ErsBase\Entity\ProductVariantValue')->find((int)$form->get('productVariantValue')->getValue()));
+
+                if($form->get('productVariantValue')->getValue()) {
+                    $counter->addProductVariantValue($em->getRepository('ErsBase\Entity\ProductVariantValue')
+                        ->find((int)$form->get('productVariantValue')->getValue()));
+                }
+                if($form->get('productVariant')->getValue()) {
+                    $counter->addProductVariant($em->getRepository('ErsBase\Entity\ProductVariant')
+                        ->find((int)$form->get('productVariant')->getValue()));
+                }
+                if($form->get('product')->getValue()) {
+                    $counter->addProduct($em->getRepository('ErsBase\Entity\Product')
+                        ->find((int)$form->get('product')->getValue()));
+                }
+                
+
+                #$counter->addProductVariantValue($entityManager->getRepository('ErsBase\Entity\ProductVariantValue')->find((int)$form->get('productVariantValue')->getValue()));
                 
                 $entityManager->persist($counter);
                 $entityManager->flush();
 
-                $this->flashMessenger()->addSuccessMessage('The counter has been successfully added');
+                $this->flashMessenger()->addSuccessMessage('The counter has been successfully added.');
                 return $this->redirect()->toRoute('admin/counter');
-            } else {
-                $this->flashMessenger()->addErrorMessage($form->getMessages());
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
-            }
-            
-            var_dump($form->getMessages());
+            } 
+            $this->flashMessenger()->addErrorMessage($form->getMessages());
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
         
         return new ViewModel(array(
@@ -98,13 +110,25 @@ class CounterController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
+                /*if($form->get('productVariantValue')->getValue()) {
+                    $counter->addProductVariantValue($em->getRepository('ErsBase\Entity\ProductVariantValue')
+                        ->find((int)$form->get('productVariantValue')->getValue()));
+                }
+                if($form->get('productVariant')->getValue()) {
+                    $counter->addProductVariant($em->getRepository('ErsBase\Entity\ProductVariant')
+                        ->find((int)$form->get('productVariant')->getValue()));
+                }
+                if($form->get('product')->getValue()) {
+                    $counter->addProduct($em->getRepository('ErsBase\Entity\Product')
+                        ->find((int)$form->get('product')->getValue()));
+                }*/
                 $counter->getProductVariantValues()->clear();
                 $counter->addProductVariantValue($entityManager->getRepository('ErsBase\Entity\ProductVariantValue')->find((int)$form->get('productVariantValue')->getValue()));
                 
                 $entityManager->persist($counter);
                 $entityManager->flush();
                 
-                $this->flashMessenger()->addSuccessMessage('The counter has been successfully changed');
+                $this->flashMessenger()->addSuccessMessage('The counter has been successfully changed.');
 
                 return $this->redirect()->toRoute('admin/counter');
             }
@@ -144,7 +168,7 @@ class CounterController extends AbstractActionController {
                 $entityManager->remove($counter);
                 $entityManager->flush();
                 
-                $this->flashMessenger()->addSuccessMessage('The counter has been successfully deleted');
+                $this->flashMessenger()->addSuccessMessage('The counter has been successfully deleted.');
             }
 
             return $this->redirect()->toRoute('admin/counter');

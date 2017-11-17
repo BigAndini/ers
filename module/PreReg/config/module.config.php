@@ -398,20 +398,24 @@ return array(
             'currencychooser' => 'PreReg\View\Helper\CurrencyChooser',
         ),
         'factories' => array(
+            'setting' => function($serviceManager) {
+                $helper = new \ErsBase\View\Helper\Setting($serviceManager);
+                return $helper;
+            },
             'config' => function($serviceManager) {
-                $helper = new \PreReg\View\Helper\Config($serviceManager);
+                $helper = new \ErsBase\View\Helper\Config($serviceManager);
                 return $helper;
             },
             'session' => function($serviceManager) {
-                $helper = new \PreReg\View\Helper\Session();
+                $helper = new \ErsBase\View\Helper\Session();
                 return $helper;
             },
             'checkoutactive' => function($serviceManager) {
-                $helper = new \PreReg\View\Helper\CheckoutActive();
+                $helper = new \ErsBase\View\Helper\CheckoutActive();
                 return $helper;
             },
             'niceiban' => function($serviceManager) {
-                $helper = new \PreReg\View\Helper\NiceIban($serviceManager);
+                $helper = new \ErsBase\View\Helper\NiceIban($serviceManager);
                 return $helper;
             },
         ),
@@ -423,10 +427,10 @@ return array(
                 'name' => 'myapp',
             ],
         ],*/
-        'storage' => Session\Storage\SessionArrayStorage::class,
+        /*'storage' => Session\Storage\SessionArrayStorage::class,
         'validators' => [
             Session\Validator\RemoteAddr::class,
             Session\Validator\HttpUserAgent::class,
-        ],
+        ],*/
     ],
 );

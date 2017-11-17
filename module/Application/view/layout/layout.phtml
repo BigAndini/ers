@@ -9,7 +9,10 @@
         <meta property="og:description" content="Get your ticket for <?php echo $this->layout()->ers_config['name_with_year']; ?>" />
         <meta property="og:url" content="<?php echo $this->serverUrl(); ?>" />
         <meta property="og:site_name" content="Event Registration System - ERS" />
-        <meta property="og:image" content="<?php echo $this->serverUrl('/img/og_image.png'); ?>" />
+        <?php if($this->setting('ers.og_image')): ?>
+            <meta property="og:image" content="<?php echo $this->serverUrl($this->setting('ers.og_image')); ?>" />
+        <?php endif; ?>
+        
         <?php echo $this->headTitle($this->translate('Event Registration System'))->setSeparator(' - ')->setAutoEscape(false)  // change Skeleton Application to Sticky Notes ?> 
 
         <?php echo $this->headMeta()

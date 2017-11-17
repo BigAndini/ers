@@ -1,0 +1,35 @@
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('admin/package', 
+        array(
+            'action' => 'change-status',
+            'id' => $package->getId()
+            )
+        ));
+$form->prepare();
+
+$title = 'Set status for package '.$package->getCode()->getValue().': '.$package->getPArticipant();
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php
+
+
+echo $this->form()->openTag($form); ?>
+
+<?php echo $this->formHidden($form->get('package_id')); ?>
+
+<div class="row">
+    <div class="col-md-12">
+        <?php echo $this->formRow($form->get('status_id')); ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-right">
+        <?php echo $this->formSubmit($form->get('submit')); ?>
+    </div>
+</div>
+
+<?php echo $this->formHidden($form->get('csrf')); ?>
+<?php echo $this->form()->closeTag(); ?>

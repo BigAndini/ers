@@ -35,7 +35,7 @@ echo $this->flashMessenger()
                         <h3><i class="fa fa-times"></i> <?php echo $this->translate('We\'re sorry, your e-ticket is not valid. You will not be able to attend EJC with this e-ticket.'); ?></h3>
                         <ol>
                             <li><?php echo $this->translate('If you haven\'t paid for your ticket, yet, please do so. We will then activate your ticket.'); ?></li>
-                            <li><?php echo $this->translate('If you have already paid for the ticket with the ticket code <strong><?php echo $package->getCode()->getValue() ?></strong>, please contact <a href="mailto:prereg@eja.net">prereg@eja.net</a>. We will solve the issue.'); ?></li>
+                            <li><?php sprintf($this->translate('If you have already paid for the ticket with the ticket code <strong>%s</strong>, please contact <a href="mailto:anmeldung@circulum.de">anmeldung@circulum.de</a>. We will solve the issue.'), $package->getCode()->getValue()); ?></li>
                         </ol>
 
                     <?php endif; ?>

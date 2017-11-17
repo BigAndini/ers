@@ -117,7 +117,7 @@ class ProductPriceController extends AbstractActionController {
         }
         $options[] = array(
             'value' => 0,
-            'label' => 'no Deadline',
+            'label' => 'after last deadline',
             'selected' => $selected,
         );
         return $options;
@@ -152,7 +152,7 @@ class ProductPriceController extends AbstractActionController {
         }
         $options[] = array(
             'value' => 0,
-            'label' => 'no Agegroup',
+            'label' => 'adult',
             'selected' => $selected,
         );
         return $options;

@@ -1,22 +1,21 @@
 <?php
-    #old
-    /*$ejc_with_year = "EJC 2016";
-    $ejc_with_number = "39th European Juggling Convention";
-    $ejc_info_mail = "info@ejc2016.org";
-    $ejc_website = "http://www.ejc2016.org";*/
-    
-    # new
     $config = $this->config();
     $website = '<a href="'.$config['ERS']['website'].'">'.$config['ERS']['website'].'</a>';
-    $website_faq = '<a href="'.$config['ERS']['website_faq'].'">FAQ</a>';
-    $facebook = '<a href="'.$config['ERS']['facebook'].'">'.$config['ERS']['facebook'].'</a>';
-    $infoMail = '<a href="mailto:'.$config['ERS']['info_mail'].'">'.$config['ERS']['info_mail'].'</a>';
-    $preregMail = '<a href="mailto:'.$config['ERS']['prereg_mail'].'">'.$config['ERS']['prereg_mail'].'</a>';
-    $adobeReaderLink = '<a href="http://get.adobe.com/reader/">http://get.adobe.com/reader/</a>';
-    $termsLink = '<a href="'.$this->url('info', array('action' => 'terms'), array('force_canonical' => true)).'">'.$this->translate('terms and conditions').'</a>';
+    #$website_faq = '<a href="'.$config['ERS']['website_faq'].'">FAQ</a>';
+    #$facebook = '<a href="'.$config['ERS']['facebook'].'">'.$config['ERS']['facebook'].'</a>';
+    #$infoMail = '<a href="mailto:'.$config['ERS']['info_mail'].'">'.$config['ERS']['info_mail'].'</a>';
+    #$preregMail = '<a href="mailto:'.$config['ERS']['prereg_mail'].'">'.$config['ERS']['prereg_mail'].'</a>';
+    #$adobeReaderLink = '<a href="http://get.adobe.com/reader/">http://get.adobe.com/reader/</a>';
+    #$termsLink = '<a href="'.$this->url('info', array('action' => 'terms'), array('force_canonical' => true)).'">'.$this->translate('terms and conditions').'</a>';
     
     $participant = $package->getParticipant(); 
     $order = $package->getOrder();
+    
+    
+    $primaryColor = $this->setting('pdf.primary-color');
+    if($primaryColor == '' || substr($primaryColor,1,1) != '#') {
+        $primaryColor = '#F48029';
+    }
 ?>
 
 <html>
@@ -33,7 +32,7 @@
             }
             .header {
             	margin-top: 0px;
-            	background-color: #ea5356;
+            	background-color: <?php echo $primaryColor; ?>;
             	color: #fff;
             }
             .clear-both {
@@ -51,66 +50,11 @@
     </head>
     <body>
         <div class='header'>
-            <?php echo $config['ERS']['name_with_year'].' - '.$config['ERS']['start']->format('d.m.Y').' - '.$config['ERS']['end']->format('d.m.Y').' - '.$website; ?>
+            <?php echo $this->setting('ers.name_with_year').' - '.$this->setting('ers.start', 'date', ['fromFormat' => 'Y-m-d', 'toFormat' => '%a %d.%m.%Y']).' - '.$this->setting('ers.end', 'date', ['fromFormat' => 'Y-m-d', 'toFormat' => '%a %d.%m.%Y']).' - '.$website; ?>
         </div>
         
-        <p><?php printf($this->translate('Dear %s %s,'),
-                $participant->getFirstname(),
-                $participant->getSurname()); ?></p>
-        <p><?php printf($this->translate('thank you again for registering for %s!'), $config['ERS']['name_with_year']); ?></p>
-        <p>
-            <?php printf($this->translate('We received the payment for your order with ID %s from %s, so your order is now confirmed. You find your e-ticket attached to this email.'), 
-                    $order->getCode()->getValue(), 
-                    $order->getCreated()->format('d.m.Y')); ?>
-        </p>
-        <?php if($package->hasPersonalizedItem()): ?>
-        <p>
-            <?php printf($this->translate('<strong>Please make sure that your name and date of birth on the e-ticket are identical to your name and date of birth on your identity card.</strong> If they are not identical, please send us an email with your order number and your correct name and date of birth to %s. We will then send you a new version of your e-ticket with the corrected data. Please note that you cannot register onsite if your name and date of birth do not match your ID card.'),
-                    $preregMail); ?>
-        </p>
-        <p>
-            <?php printf($this->translate('<strong>Please bring the e-ticket and a valid ID card to the event and present both documents at the registration desk.</strong> We recommend to print the e-ticket, but you can also present it on an electronic device.')); ?>
-        </p>
-        <?php else: ?>
-            <?php printf($this->translate('Please bring the e-ticket to the event and present the document at the registration desk. We recommend to print the e-ticket, but you can also present it on an electronic device.')); ?>
-        <?php endif; ?>
-        
-        <p>
-            <?php printf($this->translate('For the latest information about %s, stay tuned to %s'),
-            $config['ERS']['name_with_year'],
-            $website); ?>
-            <?php if ($config['ERS']['facebook'] != ""): ?>
-            <?php printf($this->translate(" or to the facebook page at %s."),
-                    $facebook) ?>
-            <?php else: ?>
-            <?php echo "." ?>
-            <?php endif; ?>
-        </p>
-        
-        <p>
-            <?php printf($this->translate('If you have any question about %s or your e-ticket, '),
-                    $config['ERS']['name_with_year']); ?>
-            <?php if ($config['ERS']['website_faq'] != ""): ?>
-            <?php printf($this->translate('please check the %s first – your question might already be answered there! If it is not, '),
-                    $website_faq) ?>
-            <?php endif; ?>
-            <?php printf($this->translate('please contact the %s team via %s (for questions regarding EJC itself) or the EJA preregistration coordinator via %s (for questions about your e-ticket).'),
-            $config['ERS']['name_with_year'],
-            $infoMail,
-            $preregMail) ?></p>
-        
-        <p><?php printf($this->translate('We wish you a pleasant journey to %s and we look forward to meeting you at %s... it\'s gonna be awesome!'),
-                $config['ERS']['city'],
-                $config['ERS']['name_with_year']) ?></p>
-        
-        <p><?php echo $this->translate('Best regards,'); ?><br />
-            <?php echo "your " . $config['ERS']['salutation']; ?></p>
-        
-                <p>
-        <?php printf($this->translate('<i>To be able to read the attached documents, you need to install Adobe Acrobat Reader, which you can download here: %s.</i>'), $adobeReaderLink); ?>
-        </p>
-        
-        <p><?php printf($this->translate('<i>By registering for this event, you agree to the terms and conditions of attendance and participation as stated on our website at %s.</i>'), $termsLink); ?></p>
-                
+        <div class="content">
+            <?php echo $this->setting('email.e-ticket'); ?>
+        </div>
     </body>
 </html>

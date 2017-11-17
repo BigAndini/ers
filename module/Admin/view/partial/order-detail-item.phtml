@@ -98,9 +98,9 @@
                     <?php endif; ?>
                     
                     <?php break;
-                default: ?>
-                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-question color-primary" title="unknown"></i>
-                    <?php break;
+                default:
+                    echo $item->getStatus()->getValue();
+                    break;
             endswitch; ?>
         </span>
         <div class="navbar pull-right">
@@ -109,7 +109,7 @@
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">
                         <span>tools<span class="caret"></span></span>
                     </a>
-                    <ul id="page_2" class="dropdown-menu">
+                    <ul id="page_2" class="dropdown-menu pull-right">
                         <li>
                             <?php if($item->getStatus() == 'cancelled'): ?>
                                 <a href="<?php echo $this->url('admin/item', array('action' => 'uncancel', 'id' => $item->getId())); ?>">uncancel</a>

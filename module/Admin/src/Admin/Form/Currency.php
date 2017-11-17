@@ -147,7 +147,7 @@ class Currency extends Form implements InputFilterProviderInterface
         ));
     }
     
-        /**
+    /**
      * Should return an array specification compatible with
      * {@link Zend\InputFilter\Factory::createInputFilter()}.
      *

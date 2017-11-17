@@ -92,6 +92,12 @@ class Module
                     $emailService->setServiceLocator($serviceManager);
                     return $emailService;
                 },
+                'ErsBase\Service\SettingService' => function ($serviceManager) {
+                    $settingService = new Service\SettingService();
+                    $settingService->setServiceLocator($serviceManager);
+                    return $settingService;
+                },
+                
                 'ErsBase\Service\CloneService' => function ($serviceManager) {
                     $service = new Service\CloneService();
                     $service->setServiceLocator($serviceManager);
@@ -174,8 +180,19 @@ class Module
                     $service->setServiceLocator($serviceManager);
                     return $service;
                 },
+                'ErsBase\Service\PackageService' => function($serviceManager) {
+                    $service = new Service\PackageService();
+                    $service->setServiceLocator($serviceManager);
+                    return $service;
+                },
+       
                 'ErsBase\Service\StatusService' => function($serviceManager) {
                     $service = new Service\StatusService();
+                    $service->setServiceLocator($serviceManager);
+                    return $service;
+                },
+                'ErsBase\Service\ShortcodeService' => function($serviceManager) {
+                    $service = new Service\ShortcodeService();
                     $service->setServiceLocator($serviceManager);
                     return $service;
                 },
@@ -201,6 +218,54 @@ class Module
                     
                 ),
             ),
+        );
+    }
+    
+    public function getViewHelperConfig() {
+        return array(
+            'factories' => array(
+                'url' => function ($helperPluginManager) {
+                    $serviceLocator = $helperPluginManager->getServiceLocator();
+                    #$config = $serviceLocator->get('Config');
+                    $settingService = $serviceLocator->get('ErsBase\Service\SettingService');
+
+                    $viewHelper =  new UrlHelper();
+
+                    $routerName = Console::isConsole() ? 'HttpRouter' : 'Router';
+
+                    /** @var \Zend\Mvc\Router\Http\TreeRouteStack $router */
+                    $router = $serviceLocator->get($routerName);
+
+                    if (Console::isConsole()) {
+                        if(
+                                empty($settingService->get('website.host')) ||
+                                empty($settingService->get('website.scheme')) ||
+                                empty($settingService->get('website.path'))
+                                ) {
+                            throw new \Exception('Please configure the setting website.host, website.scheme and website.path for console urls.');
+                        }
+                        
+                        $requestUri = new HttpUri();
+                        
+                        $requestUri->setHost($settingService->get('website.host'))
+                            ->setScheme($settingService->get('website.scheme'));
+                        $router->setRequestUri($requestUri);
+                        $router->setBaseUrl($settingService->get('website.path'));
+                    }
+
+                    $viewHelper->setRouter($router);
+
+                    $match = $serviceLocator->get('application')
+                        ->getMvcEvent()
+                        ->getRouteMatch();
+
+                    if ($match instanceof RouteMatch) {
+                        $viewHelper->setRouteMatch($match);
+                    }
+
+                    return $viewHelper;
+                },
+            )
         );
     }
 }

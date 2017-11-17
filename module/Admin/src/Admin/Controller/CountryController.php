@@ -75,6 +75,7 @@ class CountryController extends AbstractActionController {
                 $entityManager->persist($country);
                 $entityManager->flush();
 
+                $this->flashMessenger()->addSuccessMessage('Country has been successfully changed.');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
@@ -115,6 +116,7 @@ class CountryController extends AbstractActionController {
                 $entityManager->flush();
             }
 
+            $this->flashMessenger()->addSuccessMessage('Country has been successfully deleted.');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
 

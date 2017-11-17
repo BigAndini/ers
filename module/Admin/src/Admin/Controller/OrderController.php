@@ -448,70 +448,38 @@ class OrderController extends AbstractActionController {
                 $order = $entityManager->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $orderId));
                 
-                if($order->getPaymentStatus() != 'paid') {
+                
+                $validStatus = $em->getRepository('ErsBase\Entity\Status')
+                    ->findBy(array('valid' => 1));
+                $validArray = array_filter($validStatus, function($status) {return $status->getValid();});
+                
+                if(!in_array($order->getStatus(), $validArray)) {
+                #if($order->getPaymentStatus() != 'paid') {
+                    $this->flashMessenger()->addErrorMessage('Order '.$order->getCode()->getValue().' is not in a valid state to send out e-tickets.');
                     return $this->redirect()->toRoute('admin/order', array('action' => 'send-eticket'));
                 }
                 
-                $eticketService = $this->getServiceLocator()->get('ErsBase\Service\ETicketService');
+                $eticketService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\ETicketService');
+                
+                $settingService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\SettingService');
                 foreach($order->getPackages() as $package) {
-                    if($package->getStatus() != 'paid') {
+                    #if($package->getStatus() != 'paid') {
+                    #if(!in_array($package->getStatus(), $validArray)) {
+                    if(!$package->getStatus()->getValid()) {
                         continue;
                     }
 
-                    # prepare email (participant, buyer)
-                    #$emailService = new Service\EmailService();
-                    $emailService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\EmailService');
-                    $config = $this->getServiceLocator()
-                        ->get('config');
-                    $emailService->setFrom($config['ERS']['info_mail']);
-
-                    $order = $package->getOrder();
-                    $participant = $package->getParticipant();
-
-                    $buyer = $order->getBuyer();
-                    $emailService->addTo($buyer);
-
-                    if($participant->getEmail() != '') {
-                        $emailService->addTo($participant);
-                    }
-
-                    $bcc = new Entity\User();
-                    $bcc->setEmail($config['ERS']['info_mail']);
-                    $emailService->addBcc($bcc);
-
-                    #$subject = "Your registration for ".$config['ERS']['name_short']." (order ".$order->getCode()->getValue().")";
-                    $subject = "[".$config['ERS']['name_short']."] E-Ticket for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
-                    $emailService->setSubject($subject);
-
-                    $viewModel = new ViewModel(array(
-                        'package' => $package,
-                    ));
-                    $viewModel->setTemplate('email/eticket-participant.phtml');
-                    $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-                    $html = $viewRender->render($viewModel);
-
-                    $emailService->setHtmlMessage($html);
-
-                    # generate e-ticket pdf
-                    $eticketService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\ETicketService');
-
-                    $eticketService->setLanguage('en');
-                    $eticketService->setPackage($package);
-                    $eticketFile = $eticketService->generatePdf();
-
-                    # send out email
-                    $emailService->addAttachment($eticketFile);
-
-                    $emailService->send();
-                    $package->setTicketStatus('send_out');
-                    $entityManager->persist($package);
-                    $entityManager->flush();
+                    $packageService = $this->getServiceLocator()
+                            ->get('ErsBase\Service\PackageService');
+                    $packageService->setPackage($package);
+                    $packageService->sendEticket();
                 }
                 
                 
                 $breadcrumb = $forrest->get('order');
+                $this->flashMessenger()->addSuccessMessage('E-tickets for order '.$order->getCode()->getValue().' has been send out.');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
@@ -551,34 +519,14 @@ class OrderController extends AbstractActionController {
                 
                 # prepare email (participant, buyer)
                 #$emailService = new Service\EmailService();
-                $emailService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\EmailService');
-                $config = $this->getServiceLocator()
-                        ->get('config');
-                $emailService->setFrom($config['ERS']['info_mail']);
-
-                $buyer = $order->getBuyer();
-                $emailService->addTo($buyer);
-
-                $bcc = new Entity\User();
-                $bcc->setEmail($config['ERS']['info_mail']);
-                $emailService->addBcc($bcc);
-
-                $subject = "[".$config['ERS']['name_short']."] Payment reminder for your order: ".$order->getCode()->getValue();
-                $emailService->setSubject($subject);
-
-                $viewModel = new ViewModel(array(
-                    'order' => $order,
-                ));
-                $viewModel->setTemplate('email/payment-reminder.phtml');
-                $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-                $html = $viewRender->render($viewModel);
-
-                $emailService->setHtmlMessage($html);
-
-                $emailService->send();
+                
+                $orderService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\OrderService');
+                $orderService->setOrder($order);
+                $orderService->sendPaymentReminder();
                 
                 $breadcrumb = $forrest->get('order');
+                $this->flashMessenger()->addSuccessMessage('Payment reminder for order '.$order->getCode()->getValue().' has been send out.');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
@@ -727,6 +675,7 @@ class OrderController extends AbstractActionController {
                 $entityManager->persist($order);
                 $entityManager->flush();
                 
+                $this->flashMessenger()->addSuccessMessage('Buyer has been changed.');
                 return $this->redirect()->toRoute('admin/order', array(
                     'action' => 'detail', 
                     'id' => $order->getId()
@@ -1019,7 +968,7 @@ class OrderController extends AbstractActionController {
                 ->join('p.items', 'i')
                 ->where('i.price = 0')
                 ->andWhere("i.status != 'zero_ok'")
-                ->andWhere('i.Product_id = 1');
+                ->andWhere('i.product_id = 1');
 
         $orders = $queryBuilder->getQuery()->getResult();
         
@@ -1117,4 +1066,185 @@ class OrderController extends AbstractActionController {
         ));
     }
     
+    public function changeStatusAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $order = $em->getRepository('ErsBase\Entity\Order')
+                ->findOneBy(array('id' => $id));
+        
+        if(!$order) {
+            throw new \Exception('Unable to find order with id '.$id);
+        }
+        
+        $form = new Form\SimpleForm($em);
+        
+        $form->get('submit')->setAttributes(array(
+            'value' => _('save'),
+            'class' => 'btn btn-success',
+        ));
+
+        $status = $em->getRepository('ErsBase\Entity\Status')
+                ->findBy(array(), array('position' => 'ASC'));
+        
+        $statusId = $order->getStatus()->getId();
+        
+        $statusOptions = array();
+        $selected = false;
+        foreach($status as $s) {
+            $selected = false;
+            if($statusId == $s->getId()) {
+                $selected = true;
+            }
+            $statusOptions[] = array(
+                'value' => $s->getId(),
+                'label' => $s->getActive() ? 'active: '.$s->getValue() : 'inactive: '.$s->getValue(),
+                'selected' => $selected,
+            );
+        }
+        $form->add(array(
+            'name' => 'status_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => _('new status'),
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                'value_options' => $statusOptions,
+            ),
+        ));
+        
+        $form->add(array(
+            'name' => 'order_id',
+            'type'  => 'Zend\Form\Element\Hidden',
+            'attributes' => array(
+                'required' => 'required',
+                'value' => $order->getId(),
+            ),
+        ));
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $status = $em->getRepository('ErsBase\Entity\Status')
+                    ->findOneBy(array('id' => $data['status_id']));
+                
+                $order = $em->getRepository('ErsBase\Entity\Order')
+                    ->findOneBy(array('id' => $data['order_id']));
+                
+                $statusService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\StatusService');
+                
+                $statusService->setOrderStatus($order, $status, true);
+                
+                return $this->redirect()->toRoute('admin/order', array(
+                    'action' => 'detail', 
+                    'id' => $order->getId()
+                ));
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+
+        return new ViewModel(array(
+            'form' => $form,
+            'order' => $order,
+        ));
+    }
+    
+    public function changeCommentAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            $this->flashMessenger()->addErrorMessage('Unable to find order without id.');
+            return $this->redirect()->toRoute('admin/order', array());
+        }
+        
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $order = $em->getRepository('ErsBase\Entity\Order')
+                ->findOneBy(array('id' => $id));
+        
+        if(!$order) {
+            throw new \Exception('Unable to find order with id '.$id);
+        }
+        
+        $form = new Form\SimpleForm($em);
+        
+        $form->get('submit')->setAttributes(array(
+            'value' => _('save'),
+            'class' => 'btn btn-success',
+        ));
+
+        $form->add(array(
+            'name' => 'comment',
+            'type'  => 'textarea',
+            'attributes' => array(
+                'required' => 'required',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => _('comment'),
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        $form->get('comment')->setValue($order->getComment());
+        
+        $form->add(array(
+            'name' => 'order_id',
+            'type'  => 'Zend\Form\Element\Hidden',
+            'attributes' => array(
+                'required' => 'required',
+                'value' => $order->getId(),
+            ),
+        ));
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $order = $em->getRepository('ErsBase\Entity\Order')
+                    ->findOneBy(array('id' => $data['order_id']));
+                
+                $order->setComment($data['comment']);
+                
+                $em->persist($order);
+                $em->flush();
+                
+                $this->flashMessenger()->addSuccessMessage('Comment for for order '.$order->getCode()->getValue().' has been saved.');
+                return $this->redirect()->toRoute('admin/order', array(
+                    'action' => 'detail', 
+                    'id' => $order->getId()
+                ));
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+
+        return new ViewModel(array(
+            'form' => $form,
+            'order' => $order,
+        ));
+    }
 }

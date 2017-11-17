@@ -97,6 +97,8 @@ class ProductController extends AbstractActionController {
     }
     
     public function addAction() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
         $this->getServiceLocator()->get('ErsBase\Service\TicketCounterService')
                 ->checkLimits();
         /*
@@ -166,9 +168,9 @@ class ProductController extends AbstractActionController {
         $status = $entityManager->getRepository('ErsBase\Entity\Status')
                 ->findOneBy(array('value' => 'order pending'));
         # TODO: check if order pending status was found.
+           
         
         $form = $this->getServiceLocator()->get('PreReg\Form\ProductView');
-        #$url = $this->url()->fromRoute('cart', array('action' => 'add'));
         $url = $this->url()->fromRoute('product', $params2, $options);
         $form->setAttribute('action', $url);
         
@@ -176,7 +178,7 @@ class ProductController extends AbstractActionController {
          * Get variants for this product and subproducts
          */
         $variants = $entityManager->getRepository('ErsBase\Entity\ProductVariant')
-                ->findBy(array('Product_id' => $product_id));
+                ->findBy(array('product_id' => $product_id));
         $defaults = $this->params()->fromQuery();
         
         $package_info = array();
@@ -185,11 +187,11 @@ class ProductController extends AbstractActionController {
         }
         
         $productPackages = $entityManager->getRepository('ErsBase\Entity\ProductPackage')
-                ->findBy(array('Product_id' => $product_id));
+                ->findBy(array('product_id' => $product_id));
         foreach($productPackages as $package) {
             $subProduct = $package->getSubProduct();
             $subVariants = $entityManager->getRepository('ErsBase\Entity\ProductVariant')
-                ->findBy(array('Product_id' => $subProduct->getId()));
+                ->findBy(array('product_id' => $subProduct->getId()));
             foreach($subVariants as $variant) {
                 $package_info[$variant->getId()] = true;
             }
@@ -208,9 +210,6 @@ class ProductController extends AbstractActionController {
         /*
          * Here starts the cart add Action
          */
-        $logger = $this->getServiceLocator()->get('Logger');
- 
-        #$this->initializeCart();
         $cartContainer = new Container('ers');
         
         $formfail = false;
@@ -258,6 +257,10 @@ class ProductController extends AbstractActionController {
                 $product = $entityManager->getRepository('ErsBase\Entity\Product')
                         ->findOneBy(array('id' => $data['Product_id']));
 
+                if(!$product) {
+                    throw new Exception('Unable to find product with id '.$data['product_id']);
+                }
+                
                 /*
                  * search the according agegroup
                  */
@@ -281,7 +284,7 @@ class ProductController extends AbstractActionController {
                  *  prepare product data to populate item
                  */
                 $product_data = $product->getArrayCopy();
-                $product_data['Product_id'] = $product_data['id'];
+                $product_data['product_id'] = $product_data['id'];
                 unset($product_data['id']);
                 
                 /*
@@ -293,7 +296,7 @@ class ProductController extends AbstractActionController {
                 $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                             ->findOneBy(array('short' => $container->currency));
                 
-                $item->setPrice($product->getProductPrice($agegroup, $deadline, $currency)->getCharge());
+                $item->setPrice($product->getProductPrice($agegroup, $deadline, $currency)->getFullCharge());
                 $item->setStatus($status);
                 $item->setProduct($product);
                 $item->setAmount(1);
@@ -335,6 +338,7 @@ class ProductController extends AbstractActionController {
                  */
                 $productPackages = $entityManager->getRepository('ErsBase\Entity\ProductPackage')
                     ->findBy(array('Product_id' => $product->getId()));
+
                 foreach($productPackages as $package) {
                     $subProduct = $package->getSubProduct();
                     $subItem = new Entity\Item();
@@ -345,17 +349,17 @@ class ProductController extends AbstractActionController {
                         $subItem->setAgegroup($agegroup->getAgegroup());
                     }
                     $product_data = $subProduct->getArrayCopy();
-                    $product_data['Product_id'] = $product_data['id'];
+                    $product_data['product_id'] = $product_data['id'];
                     unset($product_data['id']);
                     $subItem->populate($product_data);
                     $subItem->setPrice(0);
 
-                    $add = false;
+                    $add = true;
                     foreach($subProduct->getProductVariants() as $variant) {
                         $value = $entityManager->getRepository('ErsBase\Entity\ProductVariantValue')
                             ->findOneBy(array('id' => $variant_data[$variant->getId()]));
                         if($value && !$value->getDisabled()) {
-                            $add = true;
+                            #$add = true;
                             $itemVariant = new Entity\ItemVariant();
                             $itemVariant->populateFromEntity($variant, $value);
                             $itemVariant->setProductVariant($variant);

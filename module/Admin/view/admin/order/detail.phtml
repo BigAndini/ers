@@ -7,13 +7,22 @@ endif;
 
 $statusColors = [
     'paid' => 'success',
+    'free' => 'success',
+    'bar' => 'warning',
     'unpaid' => 'danger',
     'mixed' => 'warning',
     'shipped' => 'primary',
 ];
 $statusIcons = [
     'paid' => 'fa-check',
+    'free' => 'fa-check',
+    'bar' => 'fa-money',
     'shipped' => 'fa-barcode',
+];
+$allowTicketSendStatus = [
+    'paid',
+    'bar',
+    'free'
 ];
 
 $this->headTitle($title);
@@ -39,66 +48,89 @@ $this->headTitle($title);
     </div>
 </div>
 
-<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<div class="row page-header">
+    <div class="col-md-8">
+        <h1>
+            <?php echo $this->escapeHtml($title); ?>
+        </h1>
+    </div>
+    <div class="col-md-4 h4">
+        <div class="navbar pull-right">
+            <ul class="nav nav-pills">
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                        <span>order<span class="caret"></span></span>
+                    </a>
+                    <ul id="page_2" class="dropdown-menu pull-right">
+                        <li>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'change-payment-type', 'id' => $order->getId())); ?>">change payment type</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'change-currency', 'id' => $order->getId())); ?>">change currency</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'resend-confirmation', 'id' => $order->getId())); ?>">resend confirmation</a>
+                        </li>
+                        <?php if(!in_array($order->getStatus()->getValue(), $allowTicketSendStatus)): ?>
+                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid orders.">
+                        <?php else: ?>
+                        <li>
+                        <?php endif; ?>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">send e-tickets</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'send-payment-reminder', 'id' => $order->getId())); ?>">send payment reminder</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'change-buyer', 'id' => $order->getId())); ?>">change buyer</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                        <span>status<span class="caret"></span></span>
+                    </a>
+                    <ul id="page_2" class="dropdown-menu pull-right">
+                        <li>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'change-status', 'id' => $order->getId())); ?>">change-status</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'refund', 'id' => $order->getId())); ?>">refund</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'cancel', 'id' => $order->getId())); ?>">cancelled</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'unpaid', 'id' => $order->getId())); ?>">unpaid</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 <?php if($order): ?>
 <div class="row">
     <div class="col-md-6">
         <h3>order date: <?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></h3>
     </div>
     <div class="col-md-6">
-        <h3>comment</h3>
-        <?php echo $order->getComment(); ?>
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <div class="panel-title row">
+                    <div class="col-md-6">order comment</div>
+                    <div class="col-md-6 text-right">
+                        <a class="btn btn-sm btn-warning" href="<?php echo $this->url('admin/order', array('action' => 'change-comment', 'id' => $order->getId())); ?>">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <?php echo $order->getComment(); ?>
+            </div>
+        </div>
     </div>
-</div>
-
-<div class="navbar">
-    <ul class="nav nav-pills">
-        <li class="dropdown">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                <span>order<span class="caret"></span></span>
-            </a>
-            <ul id="page_2" class="dropdown-menu">
-                <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'change-payment-type', 'id' => $order->getId())); ?>">change payment type</a>
-                </li>
-                <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'change-currency', 'id' => $order->getId())); ?>">change currency</a>
-                </li>
-                <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'resend-confirmation', 'id' => $order->getId())); ?>">resend confirmation</a>
-                </li>
-                <?php if($order->getStatus()->getValue() != 'paid'): ?>
-                <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid orders.">
-                <?php else: ?>
-                <li>
-                <?php endif; ?>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'send-etickets', 'id' => $order->getId())); ?>">Send E-Tickets</a>
-                </li>
-                <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'send-payment-reminder', 'id' => $order->getId())); ?>">Send Payment Reminder</a>
-                </li>
-                <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'change-buyer', 'id' => $order->getId())); ?>">Change Buyer</a>
-                </li>
-            </ul>
-        </li>
-        <li class="dropdown">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                <span>status<span class="caret"></span></span>
-            </a>
-            <ul id="page_2" class="dropdown-menu">
-                <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'refund', 'id' => $order->getId())); ?>">refund</a>
-                </li>
-                <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'cancel', 'id' => $order->getId())); ?>">cancelled</a>
-                </li>
-                <li>
-                    <a href="<?php echo $this->url('admin/order', array('action' => 'unpaid', 'id' => $order->getId())); ?>">unpaid</a>
-                </li>
-            </ul>
-        </li>
-    </ul>
 </div>
 
 <div class="panel panel-default">
@@ -131,80 +163,106 @@ $this->headTitle($title);
             $statusIcon = isset($statusIcons[$packageStatus]) ? $statusIcons[$packageStatus] : 'fa-warning';
         ?>
         <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <div class="row">
+                        <div class="col-md-6 col-md-push-6 col-xs-12">
+                            <div class="navbar pull-right">
+                                <ul class="nav nav-pills">
+                                    <li class="dropdown">
+                                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                                            <span>participant<span class="caret"></span></span>
+                                        </a>
+                                        <ul id="page_2" class="dropdown-menu pull-right">
+                                            <?php if($participant != 'unassigned items'):?>
+                                                <li>
+                                                    <a href="<?php echo $this->url('admin/user', array('action' => 'edit', 'id' => $user->getId())); ?>">edit participant detail</a>
+                                                </li>
+                                            <?php else: ?>
+                                                <li class="disabled">
+                                                    <a data-toggle="tooltip" data-placement="bottom"  title="Package is not assigned. Please use change owner." href="<?php echo $this->url('admin/user', array('action' => 'edit', 'id' => $user->getId())); ?>">edit participant detail</a>
+                                                </li>
+                                            <?php endif; ?>
+                                            <li>
+                                                <a href="<?php echo $this->url('admin/package', array('action' => 'change-participant', 'id' => $package->getId())); ?>">change participant</a>
+                                            </li>
+                                            <li>
+                                                <a href="<?php echo $this->url('admin/package', array('action' => 'move', 'id' => $package->getId())); ?>">move package to another order</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                                            <span>package<span class="caret"></span></span>
+                                        </a>
+                                        <ul id="page_2" class="dropdown-menu pull-right">
+                                            <li>
+                                                <a href="<?php echo $this->url('admin/package', array('action' => 'recalculate', 'id' => $package->getId())); ?>">recalculate prices</a>
+                                            </li>
+                                            <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
+                                                <a href="<?php echo $this->url('admin/package', array('action' => 'detail', 'id' => $package->getId())); ?>">change package detail</a>
+                                            </li>
+                                            <?php if(in_array($package->getStatus()->getValue(), $allowTicketSendStatus)): ?>
+                                            <li>
+                                            <?php else: ?>                                        
+                                            <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid packages.">
+                                            <?php endif; ?>
+                                                <a href="<?php echo $this->url('admin/package', array('action' => 'send-eticket', 'id' => $package->getId())); ?>">
+                                                    <?php if($package->getTicketStatus() == 'send_out'): ?>
+                                                        resend e-ticket
+                                                    <?php else: ?>
+                                                        send e-ticket
+                                                    <?php endif; ?>
+
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">download e-ticket</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                                            <span>status<span class="caret"></span></span>
+                                        </a>
+                                        <ul id="page_2" class="dropdown-menu pull-right">
+                                            <li>
+                                                <a href="<?php echo $this->url('admin/package', array('action' => 'change-status', 'id' => $package->getId())); ?>">change-status</a>
+                                            </li>
+                                            <li>
+                                                <a href="<?php echo $this->url('admin/package', array('action' => 'refund', 'id' => $package->getId())); ?>">refund</a>
+                                            </li>
+                                            <li>
+                                                <a href="<?php echo $this->url('admin/package', array('action' => 'cancel', 'id' => $package->getId())); ?>">cancelled</a>
+                                            </li>
+                                            <li>
+                                                <a href="<?php echo $this->url('admin/package', array('action' => 'unpaid', 'id' => $package->getId())); ?>">unpaid</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6 col-md-push-6 col-xs-12">
-                        <div class="navbar pull-right">
-                            <ul class="nav nav-pills">
-                                <li class="dropdown">
-                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                                        <span>participant<span class="caret"></span></span>
-                                    </a>
-                                    <ul id="page_2" class="dropdown-menu">
-                                        <?php if($participant != 'unassigned items'):?>
-                                            <li>
-                                                <a href="<?php echo $this->url('admin/user', array('action' => 'edit', 'id' => $user->getId())); ?>">edit participant detail</a>
-                                            </li>
-                                        <?php else: ?>
-                                            <li class="disabled">
-                                                <a data-toggle="tooltip" data-placement="bottom"  title="Package is not assigned. Please use change owner." href="<?php echo $this->url('admin/user', array('action' => 'edit', 'id' => $user->getId())); ?>">edit participant detail</a>
-                                            </li>
-                                        <?php endif; ?>
-                                        <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'change-participant', 'id' => $package->getId())); ?>">change participant</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'move', 'id' => $package->getId())); ?>">move package to another order</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                                        <span>package<span class="caret"></span></span>
-                                    </a>
-                                    <ul id="page_2" class="dropdown-menu">
-                                        <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'recalculate', 'id' => $package->getId())); ?>">recalculate prices</a>
-                                        </li>
-                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Change Package Detail</a>
-                                        </li>
-                                        <?php if($package->getStatus()->getValue() == 'paid'): ?>
-                                        <li>
-                                        <?php else: ?>                                        
-                                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="E-Tickets cannot be send for unpaid packages.">
-                                        <?php endif; ?>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'send-eticket', 'id' => $package->getId())); ?>">
-                                                <?php if($package->getTicketStatus() == 'send_out'): ?>
-                                                    resend e-ticket
-                                                <?php else: ?>
-                                                    send e-ticket
-                                                <?php endif; ?>
-                                                
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'download-eticket', 'id' => $package->getId())); ?>" target="_blank">download e-ticket</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                                        <span>status<span class="caret"></span></span>
-                                    </a>
-                                    <ul id="page_2" class="dropdown-menu">
-                                        <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'refund', 'id' => $package->getId())); ?>">refund</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'cancel', 'id' => $package->getId())); ?>">cancelled</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo $this->url('admin/package', array('action' => 'unpaid', 'id' => $package->getId())); ?>">unpaid</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
+                    <div class="col-md-6 col-md-push-6">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <div class="panel-title row">
+                                    <div class="col-md-6">participant comment</div>
+                                    <div class="col-md-6 text-right">
+                                        <a class="btn btn-sm btn-warning" href="<?php echo $this->url('admin/package', array('action' => 'change-comment', 'id' => $package->getId())); ?>">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <?php echo $package->getComment(); ?>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-8 col-md-4 col-md-pull-6">

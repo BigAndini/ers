@@ -4,7 +4,7 @@
     <?php foreach($agegroups as $agegroup) : ?>
         <th><?php echo $agegroup->getName().' ('.$agegroup->getAgegroup()->format('d.m.Y').')'; ?></th>
     <?php endforeach; ?>
-    <th>no Agegroup</th>
+    <th>adult</th>
 </tr>
 <?php foreach ($deadlines as $deadline) : ?>
 <tr>
@@ -61,7 +61,7 @@
 </tr>
 <?php endforeach; ?>
 <tr>
-    <th>no Deadline</th>
+    <th>after last deadline</th>
     <?php foreach($agegroups as $agegroup) : ?>
         <td>
         <?php foreach($currencies as $currency): 

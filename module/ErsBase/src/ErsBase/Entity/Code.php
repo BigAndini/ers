@@ -27,6 +27,10 @@ class Code extends Base\Code
     {
         parent::__construct();
     }
+    
+    public function __toString() {
+        return $this->getValue();
+    }
 
     public function genCode() {
         /*

@@ -77,46 +77,6 @@ class OrderController extends AbstractActionController {
         return $view;
     }
     
-    /*private function checkItemPrices() {
-        $orderService = $this->getServiceLocator()
-                ->get('ErsBase\Service\OrderService');
-        $order = $orderService->getOrder();
-        
-        $entityManager = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        
-        $deadlineService = $this->getServiceLocator()
-                ->get('ErsBase\Service\DeadlineService:price');
-        $deadline = $deadlineService->getDeadline();
-        
-        $agegroupService = $this->getServiceLocator()
-                ->get('ErsBase\Service\AgegroupService');
-        $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
-                    ->findBy(array('price_change' => '1'));
-        $agegroupService->setAgegroups($agegroups);
-        foreach($order->getPackages() as $package) {
-            $participant = $package->getParticipant();
-            if($participant == null) {
-                continue;
-            }
-            if($participant->getId() == 0) {
-                continue;
-            }
-            $agegroup = $agegroupService->getAgegroupByUser($participant);
-            foreach($package->getItems() as $item) {
-                $product = $entityManager->getRepository('ErsBase\Entity\Product')
-                    ->findOneBy(array('id' => $item->getProductId()));
-                if($product != null) {
-                    $productPrice = $product->getProductPrice($agegroup, $deadline);
-                    if($item->getPrice() != $productPrice->getCharge()) {
-                        $item->setPrice($productPrice->getCharge());
-                    }
-                }
-                
-            }
-        }
-    }*/
-    
     /**
      * Action that allows viewing an order by the hash key
      */

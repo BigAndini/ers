@@ -19,24 +19,9 @@ use ErsBase\Entity;
 class EmailService
 {
     protected $_sl;
-    protected $textMessage;
-    protected $htmlMessage;
-    protected $attachments;
-    protected $from;
-    protected $to;
-    protected $cc;
-    protected $bcc;
-    protected $subject;
-    protected $isHtml;
-    protected $isText;
 
     public function __construct() {
-        $this->to = array();
-        $this->cc = array();
-        $this->bcc = array();
-        $this->attachments = array();
-        $this->isHtml = false;
-        $this->isText = false;
+
     }
     
     /**
@@ -56,211 +41,27 @@ class EmailService
     protected function getServiceLocator() {
         return $this->_sl;
     }
-    
-    public function setTextMessage($text) {
-        $this->textMessage = new Mime\Part($text);
-        $this->textMessage->type        = Mime\Mime::TYPE_TEXT;
-        $this->textMessage->charset     = 'utf-8';
-        $this->textMessage->encoding    = Mime\Mime::ENCODING_QUOTEDPRINTABLE;
-        $this->textMessage->disposition = Mime\Mime::DISPOSITION_INLINE;
-        $this->isText = true;
-    }
-    
-    public function getTextMessage() {
-        return $this->textMessage;
-    }
-    
-    public function isTextMessage() {
-        return $this->isText;
-    }
-    
-    public function setHtmlMessage($markup) {
-        $this->htmlMessage = new Mime\Part($markup);
-        $this->htmlMessage->type        = Mime\Mime::TYPE_HTML;
-        $this->htmlMessage->charset     = 'utf-8';
-        #$this->htmlMessage->encoding    = Mime\Mime::ENCODING_8BIT;
-        $this->htmlMessage->encoding    = Mime\Mime::ENCODING_QUOTEDPRINTABLE;
-        $this->htmlMessage->disposition = Mime\Mime::DISPOSITION_INLINE;
-        #$convert_html = mb_convert_encoding($markup, 'HTML-ENTITIES', 'UTF-8');
-        $html2text = new \Html2Text\Html2Text($markup);
-        $text = $html2text->getText();
-        $this->setTextMessage($text);
-        $this->isHtml = true;
-    }
-    
-    public function getHtmlMessage() {
-        return $this->htmlMessage;
-    }
-    
-    public function isHtmlMessage() {
-        return $this->isHtml;
-    }
-    
-    public function setFrom($from) {
-        $this->from = $from;
-    }
-    
-    public function getFrom() {
-        return $this->from;
-    }
-    
-    public function addTo(Entity\User $user) {
-        $this->to[] = $user;
-    }
-    
-    public function getTo() {
-        return $this->to;
-    }
-    
-    public function addCc(Entity\User $user) {
-        $this->cc[] = $user;
-    }
-    
-    public function getCc() {
-        return $this->cc;
-    }
-    
-    public function addBcc(Entity\User $user) {
-        $this->bcc[] = $user;
-    }
-    
-    public function getBcc() {
-        return $this->bcc;
-    }
-    
-    public function setSubject($subject) {
-        $this->subject = $subject;
-    }
-    
-    public function getSubject() {
-        return $this->subject;
-    }
-    
-    public function addAttachment($attachment) {
-        if($attachment instanceof Mime\Part) {
-            $this->attachments[] = $attachment;
-        } else {
-            $pathToAtt = $attachment;
-            if(!file_exists($attachment)) {
-                $pathToAtt = getcwd() . '/' . $attachment;
-                if(!file_exists($pathToAtt)) {
-                    throw new \Exception("Unable to add attachment");
-                }
-            }
-            
-            #$att = new Mime\Part(fopen($pathToAtt, 'r'));
-            $att = new Mime\Part(file_get_contents($pathToAtt));
-            #$attachment->type = 'image/jpeg';
-            $att->type = \mime_content_type($pathToAtt);
-            #$att->type = Mime\Mime::TYPE_OCTETSTREAM;
-            $pattern = array(
-                '/\ /'
-            );
-            $replace = array(
-                '-',
-            );
-            $att->filename = preg_replace($pattern, $replace, basename($pathToAtt));
-            $att->encoding    = Mime\Mime::ENCODING_BASE64;
-            $att->disposition = Mime\Mime::DISPOSITION_ATTACHMENT;
-            
-            $this->attachments[] = $att;
-        }
-        
-    }
-    
-    public function getAttachments() {
-        return $this->attachments;
-    }
 
-    public function send() {
-        # differ the following scenarios:
-        # - plain text email
-        # - plain text email with 1 or n attachments
-        # - html email with text alternative
-        # - html email with text alternative and 1 or n attachments
-     
-        $content  = new Mime\Message();
-        
-        if(!$this->isHtmlMessage()) {
-            $content->addPart($this->getTextMessage());
-        } else {
-            $content->addPart($this->getTextMessage());
-            $content->addPart($this->getHtmlMessage());
-        }
-        
-        if(count($this->getAttachments()) == 0) {
-            $body = $content;
-        } else {
-            $contentPart = new Mime\Part($content->generateMessage());        
-            $contentPart->type = 'multipart/alternative;' . PHP_EOL . ' boundary="' . $content->getMime()->boundary() . '"';
-
-            $body = new Mime\Message();
-            $body->addPart($contentPart);
-            foreach($this->getAttachments() as $att) {
-                $body->addPart($att);
-            }
-        }
-
-        $message = new Mail\Message();
-        $message->setEncoding('utf-8');
-        
-        $message->setBody($body);
-        if($this->isHtmlMessage()) {
-            if(count($this->getAttachments()) == 0) {
-                $message->getHeaders()->get('content-type')
-                    ->addParameter('charset', 'utf-8')
-                    ->setType('multipart/alternative');
-            } else {
-                $message->getHeaders()->get('content-type')
-                    ->addParameter('charset', 'utf-8')
-                    ->setType('multipart/mixed'); // Important to get all attachments into this email.
-            }
-            
-        } else {
-            $message->getHeaders()->get('content-type')
-                ->addParameter('charset', 'utf-8')
-                ->setType('text/plain');
-        }
-        
-        foreach($this->getTo() as $user) {
-            $message->addTo($user->getEmail());
-        }
-        foreach($this->getCc() as $user) {
-            $message->addCc($user->getEmail());
-        }
-        foreach($this->getBcc() as $user) {
-            $message->addBcc($user->getEmail());
-        }
-        
-        $config = $this->getServiceLocator()->get('config');
-        $this->setFrom($config['ERS']['sender_email']);
-        
-        $message->addFrom($this->getFrom());
-        $message->setSubject($this->getSubject());
-        
-        $transport = new Mail\Transport\Sendmail();
-        $transport->send($message);
-    }
-    
-    public function sendExceptionEmail(\Exception $e) {
-        $config = $this->getServiceLocator()->get('config');
-        
-        $this->setFrom($config['ERS']['sender_email']);
+    public function sendExceptionEmail(\Exception $e) {        
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $role = $entityManager->getRepository('ErsBase\Entity\Role')
-                    ->findOneBy(array('roleId' => 'supradm'));
+                    ->findOneBy(array('roleId' => 'developer'));
+        if(!$role) {
+            return false;
+        }
         $users = $role->getUsers();
         if(count($users) <= 0) {
             return false;
         }
+        $recipients = [];
         foreach($users as $user) {
-            $this->addTo($user);
+            $recipients[] = $user;
         }
         
         $helper = new \Zend\View\Helper\ServerUrl();
         $url = $helper->__invoke(true);
-        $this->setSubject('An error occurred on '.$url.': '.$e->getMessage());
+        $subject = 'An error occurred on '.$url.': '.$e->getMessage();
         
         $auth = $this->getServiceLocator()->get('zfcuser_auth_service');
         if ($auth->hasIdentity()) {
@@ -279,14 +80,17 @@ class EmailService
         $viewRender = $this->getServiceLocator()->get('ViewRenderer');
         $html = $viewRender->render($viewModel);
         
-        $this->setHtmlMessage($html);
+        $this->addMailToQueue(null, $recipients, $subject, $html);
         
-        $this->send();
+        #$this->send();
         
         return true;
     }
     
     public function sendConfirmationEmail($order_id) {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+       
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
@@ -294,18 +98,26 @@ class EmailService
                     ->findOneBy(array('id' => $order_id));
         $buyer = $order->getBuyer();
         
+        $settingService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\SettingService');
+        
+        $recipients = [];
+        $recipients[] = [
+            'email' => $buyer,
+            'type' => 'to',
+        ];
+        #if($settingService->get('ers.bcc_email') != '') {
+            $recipients[] = [
+                'email' => $settingService->get('ers.sender_email'),
+                'type' => 'bcc',
+            ];    
+        #}
+        
+        #$subject = sprintf(_('Your registration for %s (order %s)'), $config['ERS']['name_short'], $order->getCode()->getValue());
+        $subject = sprintf(_('Deine Bestellung für die %s (order %s)'), $settingService->get('ers.name_short'), $order->getCode()->getValue());
+        #$this->setSubject($subject);
+        
         $config = $this->getServiceLocator()->get('config');
-        
-        $this->setFrom($config['ERS']['sender_email']);
-        
-        $this->addTo($buyer);
-        
-        $bcc = new Entity\User();
-        $bcc->setEmail($this->getFrom());
-        $this->addBcc($bcc);
-        
-        $subject = sprintf(_('Your registration for %s (order %s)'), $config['ERS']['name_short'], $order->getCode()->getValue());
-        $this->setSubject($subject);
         
         $viewModel = new ViewModel(array(
             'order' => $order,
@@ -315,31 +127,232 @@ class EmailService
         $viewRender = $this->getServiceLocator()->get('ViewRenderer');
         $html = $viewRender->render($viewModel);
         
-        $this->setHtmlMessage($html);
+        $this->addMailToQueue(null, $recipients, $subject, $html);
         
-        $terms1 = getcwd().'/public/Terms and Conditions ERS EN v7.pdf';
-        $this->addAttachment($terms1);
-        
-        $terms2 = getcwd().'/public/Terms and Conditions organisation EN v6.pdf';
-        $this->addAttachment($terms2);
-        
-        $promo = getcwd().'/public/pre-reg cover photo.png';
-        $this->addAttachment($promo);
-        
-        $this->send();
-        
-        #$orderStatus = new Entity\OrderStatus();
-        #$orderStatus->setOrder($order);
-        #$orderStatus->setValue('confirmation sent');
-        #$entityManager->persist($orderStatus);
-        # TODO: Create log entry that email was sent.
-        $log = new Entity\Log();
-        $log->setUser($order->getBuyer());
-        $log->setData('confirmation mail was send out to '.$order->getBuyer()->getEmail().' for order: '.$order->getCode()->getValue());
-        $entityManager->persist($log);
-
-        $entityManager->flush();
+        $logger->info('confirmation mail was send out to '.$order->getBuyer()->getEmail().' for order: '.$order->getCode()->getValue());
         
         return true;
+    }
+    
+    public function addMailToQueue($from, $recipients, $subject, $content, $is_html = true, $attachments = array()) {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $mailq = new Entity\Mailq();
+        
+        # from
+        if(!$from instanceof Entity\Base\User) {
+            if(is_string($from)) {
+                $from = $em->getRepository('ErsBase\Entity\User')
+                    ->findOneBy(['email' => $from]);
+            }
+            if(!$from) {
+                # use default sender if sender is not set.
+                $settingService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\SettingService');
+                $from = $em->getRepository('ErsBase\Entity\User')
+                    ->findOneBy(['email' => $settingService->get('ers.sender_email')]);
+                if(!$from) {
+                    $from = new Entity\User();
+                    $from->setEmail($settingService->get('ers.sender_email'));
+                    $from->setFirstname('');
+                    $from->setSurname('');
+                    $from->setActive(1);
+                    $em->persist($from);
+                    $em->flush();
+                }
+            }
+            
+        }
+        
+        $mailq->setFrom($from);
+        
+        # subject
+        $mailq->setSubject($subject);
+        
+        # content
+        $mailq->setIsHtml($is_html);
+        if($mailq->getIsHtml()) {
+            $mailq->setHtmlMessage($content);
+        } else {
+            $mailq->setTextMessage($content);
+        }
+        
+        # attachments
+        foreach($attachments as $attachment) {
+            $att = $attachment;
+            if(!$attachment instanceof Entity\MailAttachment) {
+                $att = new Entity\MailAttachment();
+                $att->setLocation($attachment);
+            }
+            $att->setMailq($mailq);
+            $mailq->addMailAttachment($att);
+        }
+        
+        $em->persist($mailq);
+        $em->flush();
+        
+        # recipients
+        foreach($recipients as $recipient) {
+            if(is_array($recipient)) {
+                $this->addUser($mailq, $recipient['email'], $recipient['type']);
+            } else {
+                # we do only send with to header
+                $this->addUser($mailq, $recipient);
+            }
+        }
+        
+        $em->flush();
+    }
+    
+    private function addUser($mailq, $recipient, $type = 'to') {
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        if(!$recipient instanceof Entity\User) {
+            $email = $recipient;
+            $recipient = $em->getRepository('ErsBase\Entity\User')
+                    ->findOneBy(['email' => $recipient]);
+            if(!$recipient) {
+                $recipient = new Entity\User();
+                $recipient->setEmail($email);
+                $recipient->setFirstname('System');
+                $recipient->setSurname('User');
+                $recipient->setActive(true);
+                
+                $em->persist($recipient);
+                $em->flush();
+            }
+        }
+
+        $mailqHasUser = new Entity\MailqHasUser();
+        $mailqHasUser->setUser($recipient);
+        $mailqHasUser->setUserId($recipient->getId());
+
+        $mailqHasUser->setMailq($mailq);
+        $mailqHasUser->setMailqId($mailq->getId());
+        switch($type) {
+            case 'cc':
+                $mailqHasUser->setCc();
+                break;
+            case 'bcc':
+                $mailqHasUser->setBcc();
+                break;
+            case 'to':
+            default:
+                $mailqHasUser->setTo();
+                break;
+        }
+        
+        $em->persist($mailqHasUser);
+    }
+    
+    /*
+     * TODO: check plain/text mail with attachment.
+     */
+    private function mailqEntityToMessage(Entity\Mailq $mailq) {
+        $em = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        
+        $content  = new Mime\Message();
+        
+        if($mailq->getIsHtml()) {
+            $content->addPart($mailq->getHtmlMessage());
+        }
+        $content->addPart($mailq->getTextMessage());
+        
+        if(count($mailq->getAttachments()) == 0) {
+            $body = $content;
+        } else {
+            $contentPart = new Mime\Part($content->generateMessage());        
+            $contentPart->setType('multipart/alternative;' . PHP_EOL . ' boundary="' . $content->getMime()->boundary() . '"');
+
+            $body = new Mime\Message();
+            $body->addPart($contentPart);
+            foreach($mailq->getAttachments() as $att) {
+                $body->addPart($att);
+            }
+        }
+
+        $message = new Mail\Message();
+        $message->setEncoding('utf-8');
+        
+        $message->setBody($body);
+
+        $type = 'text/plain';
+        if(count($mailq->getAttachments()) == 0) {
+            if($mailq->getIsHtml()) {
+                $type = 'multipart/alternative';
+            }
+        } else {
+            // Important to get all attachments into this email.
+            $type = 'multipart/mixed';
+        }
+
+        $message->getHeaders()->get('content-type')
+                ->addParameter('charset', 'utf-8')
+                ->setType($type);
+        
+        if(!$mailq->getTo()) {
+            $em->remove($mailq);
+            $em->flush();
+            return false;
+            #throw new \Exception('mail in mailq is invalid: '.$mailq->getId());
+        }
+        
+        foreach($mailq->getTo() as $user) {
+            $message->addTo($user->getEmail());
+        }
+        foreach($mailq->getCc() as $user) {
+            $message->addCc($user->getEmail());
+        }
+        foreach($mailq->getBcc() as $user) {
+            $message->addBcc($user->getEmail());
+        }
+        
+        if(!$mailq->getFrom()) {
+            $settingService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\SettingService');
+            $user = $em->getRepository('ErsBase\Entity\User')
+                    ->findOneBy(['email' => $settingService->get('ers.sender_email')]);
+            if(!$user) {
+                $user = new Entity\User();
+                $user->setEmail($settingService->get('ers.sender_email'));
+                $user->setFirstname('');
+                $user->setSurname('');
+                $user->setActive(1);
+                $em->persist($user);
+                $em->flush();
+            }
+            $mailq->setFrom($user);
+        }
+        
+        $message->addFrom($mailq->getFrom()->getEmail());
+        $message->setSubject($mailq->getSubject());
+        
+        return $message;
+    }
+    
+    public function mailqWorker() {
+        $em = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        $limit = 10; // to run process-mailq every five minutes
+        $mailqs = $em->getRepository('ErsBase\Entity\Mailq')
+                ->findBy(array(), array('created' => 'ASC'), $limit);
+        
+        foreach($mailqs as $mailq) {
+            $message = $this->mailqEntityToMessage($mailq);
+            
+            if(!$message) {
+                continue;
+            }
+            
+            $transport = new Mail\Transport\Sendmail();
+            $transport->send($message);
+            
+            $em->remove($mailq);
+            $em->flush();
+        }
     }
 }
