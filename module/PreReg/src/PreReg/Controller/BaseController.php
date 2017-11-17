@@ -9,12 +9,13 @@
 namespace PreReg\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 class BaseController extends AbstractActionController {
     
     protected $sm;
     
-    public function __construct($sm = null) {
+    public function __construct(ServiceLocatorInterface $sm) {
         if($sm != null) {
             $this->setServiceLocator($sm);
         }
