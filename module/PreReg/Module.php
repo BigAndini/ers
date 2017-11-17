@@ -350,7 +350,7 @@ class Module
                     $inputFilter->setServiceLocator($serviceManager);
                     return $inputFilter;
                 },
-                'PreReg\Controller\IndexController' => 'PreReg\Controller\Factory\ControllerFactory',
+                'PreReg\Controller\InfoController' => 'PreReg\Controller\Factory\ControllerFactory',
             ),
         );
     }
