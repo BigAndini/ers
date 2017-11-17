@@ -9,10 +9,10 @@
 
 namespace PreReg\Controller\Factory;
 
-use Zend\Mvc\Controller\AbstractActionController;
+#use Zend\Mvc\Controller\AbstractActionController;
 #use Application\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use ErsBase\Service;
+#use Zend\View\Model\ViewModel;
+#use ErsBase\Service;
 
 use PreReg\Controller;
 use Zend\ServiceManager\FactoryInterface;
@@ -32,6 +32,16 @@ class ControllerFactory implements FactoryInterface
         $realServiceLocator = $serviceLocator->getServiceLocator();
         #$postService        = $realServiceLocator->get('Blog\Service\PostServiceInterface');
 
+        error_log('name: '.$name);
+        error_log('requestedName: '.$requestedName);
+        
+        return new Controller\IndexController($realServiceLocator);
+    }
+    
+    public function __invoke($container, $name, $requestedName)
+    {
+        $realServiceLocator = $serviceLocator->getServiceLocator();
+        
         error_log('name: '.$name);
         error_log('requestedName: '.$requestedName);
         
