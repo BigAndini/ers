@@ -27,23 +27,13 @@ class ControllerFactory implements FactoryInterface
       *
       * @return mixed
       */
-    public function createService(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $realServiceLocator = $serviceLocator->getServiceLocator();
         #$postService        = $realServiceLocator->get('Blog\Service\PostServiceInterface');
 
-        error_log('name: '.$name);
-        error_log('requestedName: '.$requestedName);
-        
-        return new Controller\IndexController($realServiceLocator);
-    }
-    
-    public function __invoke($container, $name, $requestedName)
-    {
-        $realServiceLocator = $serviceLocator->getServiceLocator();
-        
-        error_log('name: '.$name);
-        error_log('requestedName: '.$requestedName);
+        #error_log('name: '.$name);
+        #error_log('requestedName: '.$requestedName);
         
         return new Controller\IndexController($realServiceLocator);
     }
