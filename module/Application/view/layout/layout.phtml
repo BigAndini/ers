@@ -46,21 +46,6 @@
             ->prependFile($this->basePath() . '/components/html5shiv/html5shiv-built.js',   'text/javascript', array('conditional' => 'lt IE 9',))
         ; ?>
         
-
-        <?php if (isset($this->setting('environment')) && $this->setting('environment') != 'production') : ?>
-        <!-- Hotjar Tracking Code for prereg.eja.net -->
-        <!--<script>
-            (function(h,o,t,j,a,r){
-                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-                h._hjSettings={hjid:82996,hjsv:5};
-                a=o.getElementsByTagName('head')[0];
-                r=o.createElement('script');r.async=1;
-                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-                a.appendChild(r);
-            })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
-        </script>-->
-        <?php endif; ?>
-        
     </head>
     <body>
         <?php if (! $this->setting('environment') == '') : ?>
