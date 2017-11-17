@@ -48,9 +48,9 @@
         
     </head>
     <body>
-        <?php if (! $this->setting('system.environment') == '') : ?>
+        <?php if ($this->setting('system.environment') == '') : ?>
         <div class="alert alert-danger text-center">
-            <p>Please add the <strong>system.environment</strong> config key to one of your local configurations.</p>
+            <p>Please add the <strong>system.environment</strong> setting key.</p>
         </div>
         <?php elseif ($this->setting('system.environment') != 'production') : ?>
         <div class="alert alert-danger text-center">
