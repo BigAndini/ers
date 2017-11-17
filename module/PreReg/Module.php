@@ -351,6 +351,7 @@ class Module
                     return $inputFilter;
                 },
                 'PreReg\Controller\InfoController' => 'PreReg\Controller\Factory\ControllerFactory',
+                'PreReg\Controller\ProfileController' => 'PreReg\Controller\Factory\ControllerFactory',
             ),
         );
     }
