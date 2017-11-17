@@ -8,12 +8,11 @@
 
 namespace PreReg\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ErsBase\Service;
 use PreReg\Form;
 
-class InfoController extends AbstractActionController {
+class InfoController extends BaseController {
     public function indexAction() {
         $breadcrumbService = new Service\BreadcrumbService(); 
         $breadcrumbService->reset();
