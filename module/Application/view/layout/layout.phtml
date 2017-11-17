@@ -47,7 +47,7 @@
         ; ?>
         
 
-        <?php if (isset($this->config()['environment']) && $this->config()['environment'] != 'production') : ?>
+        <?php if (isset($this->setting('environment')) && $this->setting('environment') != 'production') : ?>
         <!-- Hotjar Tracking Code for prereg.eja.net -->
         <!--<script>
             (function(h,o,t,j,a,r){
@@ -63,13 +63,13 @@
         
     </head>
     <body>
-        <?php if (!isset($this->config()['environment'])) : ?>
+        <?php if (!isset($this->setting('environment'))) : ?>
         <div class="alert alert-danger text-center">
             <p>Please add the <strong>environment</strong> config key to one of your local configurations.</p>
         </div>
-        <?php elseif ($this->config()['environment'] != 'production') : ?>
+        <?php elseif ($this->setting('environment') != 'production') : ?>
         <div class="alert alert-danger text-center">
-            <p>Keep in mind this environment is for: <strong><?php echo $this->config()['environment']; ?></strong></p>
+            <p>Keep in mind this environment is for: <strong><?php echo $this->setting('environment'); ?></strong></p>
         </div>
         <?php endif; ?>
         <!--<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">-->
@@ -143,7 +143,7 @@
                     <a href="https://github.com/inbaz/ers/issues" target="_blank"><?php echo _('report a bug'); ?></a><br />
                     <span>Version: <?php echo exec('git symbolic-ref -q HEAD || git describe --tags --exact-match'); ?></span>
                 </p>
-                <p>&copy; 2014 - <?php echo date('Y') ?> <?php echo $this->config()['ERS']['operator'] ?> <?php echo $this->translate('All rights reserved.') ?></p>
+                <p>&copy; 2014 - <?php echo date('Y') ?> <?php echo $this->setting('operator') ?> <?php echo $this->translate('All rights reserved.') ?></p>
             </footer>
         </div> <!-- /footer -->
         <?php echo $this->inlineScript() ?>
