@@ -22,8 +22,8 @@ return array(
             'PreReg\Controller\Test'        => 'PreReg\Controller\TestController',
         ],
         'factories' => [
-            'PreReg\Controller\Info' => 'PreReg\Controller\Factory\ControllerFactory',
-            'PreReg\Controller\Profile' => 'PreReg\Controller\Factory\ControllerFactory',
+            'PreReg\Controller\InfoController' => 'PreReg\Controller\Factory\ControllerFactory',
+            'PreReg\Controller\ProfileController' => 'PreReg\Controller\Factory\ControllerFactory',
         ],
     ],
     'navigation' => array(
