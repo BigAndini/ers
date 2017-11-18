@@ -39,6 +39,9 @@ return array(
             'Admin\Controller\Export'               => 'Admin\Controller\ExportController',
             'Admin\Controller\Setting'              => 'Admin\Controller\SettingController',
         ),
+        'factories' => [
+            'Admin\Controller\Cron'     => 'Admin\Controller\Factory\CronControllerFactory',
+        ],
     ),
     'navigation' => array(
         'admin_main_nav' => array(
