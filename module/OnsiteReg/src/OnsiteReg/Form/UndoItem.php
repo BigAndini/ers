@@ -13,7 +13,7 @@ use Zend\Form\Form;
 
 class UndoItem extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('UndoItems');
         $this->setAttribute('method', 'post');

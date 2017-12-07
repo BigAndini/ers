@@ -54,9 +54,9 @@ class LoginService
     }
     
     public function setUserId($user_id) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $this->setUser($em->getRepository('ErsBase\Entity\User')
+        $this->setUser($entityManager->getRepository('ErsBase\Entity\User')
                 ->findOneBy(array('id' => $user_id)));
     }
     
@@ -68,23 +68,23 @@ class LoginService
         $logger = $this->getServiceLocator()
                 ->get('Logger');
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $this->addParticipantsToOrder();
-        $em->flush();
+        $entityManager->flush();
         
         $this->setLoginUserAsBuyer();
-        $em->flush();
+        $entityManager->flush();
         
         #
-        /*$user = $em->getRepository('ErsBase\Entity\User')
+        /*$user = $entityManager->getRepository('ErsBase\Entity\User')
                 ->findOneBy(array('id' => $this->getUserId()));*/
         $user = $this->getUser();
         $user->setId($this->getUserId());
         $user->increaseLoginCount();
-        $em->merge($user);
-        $em->flush();
+        $entityManager->merge($user);
+        $entityManager->flush();
         
         $roles = '';
         foreach($user->getRoles() as $role) {
@@ -137,7 +137,7 @@ class LoginService
     }
     
     private function addParticipantsToOrder() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         if($this->getUser()) {
@@ -154,7 +154,7 @@ class LoginService
                 if(isset($countries[$newUser->getCountryId()])) {
                     $country = $countries[$newUser->getCountryId()];
                 } else {
-                    $country = $em->getRepository('ErsBase\Entity\Country')
+                    $country = $entityManager->getRepository('ErsBase\Entity\Country')
                         ->findOneBy(array('id' => $newUser->getCountryId()));
                     $countries[$country->getId()] = $country;
                 }
@@ -175,11 +175,11 @@ class LoginService
             /*
              * add users from former orders
              */
-            $orders = $em->getRepository('ErsBase\Entity\Order')
+            $orders = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findBy(array('buyer_id' => $this->getUser()->getId()));
         
             $container = new Container('ers');
-            $currency = $em->getRepository('ErsBase\Entity\Currency')
+            $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                 ->findOneBy(array('short' => $container->currency));
             if(!$currency) {
                 throw new \Exception('Unable to find currency: '.$container->currency);
@@ -203,7 +203,7 @@ class LoginService
                         if(isset($countries[$user->getCountryId()])) {
                             $country = $countries[$user->getCountryId()];
                         } else {
-                            $country = $em->getRepository('ErsBase\Entity\Country')
+                            $country = $entityManager->getRepository('ErsBase\Entity\Country')
                                 ->findOneBy(array('id' => $user->getCountryId()));
                             $countries[$country->getId()] = $country;
                         }

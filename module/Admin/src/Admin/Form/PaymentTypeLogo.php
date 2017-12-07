@@ -13,7 +13,7 @@ use Zend\Form\Form;
 
 class PaymentTypeCreditCard extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('PaymentTypeCreditCard');
         $this->setAttribute('method', 'post');

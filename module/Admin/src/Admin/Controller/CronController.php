@@ -56,10 +56,10 @@ class CronController extends AbstractActionController {
         
         $this->debug = true;
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $statements = $em->getRepository('ErsBase\Entity\BankStatement')
+        $statements = $entityManager->getRepository('ErsBase\Entity\BankStatement')
                 ->findAll();
         
         if($this->debug) {
@@ -91,7 +91,7 @@ class CronController extends AbstractActionController {
             if(is_array($ret)) {
                 $found = false;
                 foreach($ret as $code) {
-                    $order_code = $em->getRepository('ErsBase\Entity\Code')
+                    $order_code = $entityManager->getRepository('ErsBase\Entity\Code')
                         ->findOneBy(array('value' => $code->getValue()));
                     if($order_code) {
                         $found = true;
@@ -103,7 +103,7 @@ class CronController extends AbstractActionController {
                     if(is_array($ret)) {
                         $found = false;
                         foreach($ret as $code) {
-                            $order_code = $em->getRepository('ErsBase\Entity\Code')
+                            $order_code = $entityManager->getRepository('ErsBase\Entity\Code')
                                 ->findOneBy(array('value' => $code->getValue()));
                             if($order_code) {
                                 $found = true;
@@ -129,24 +129,24 @@ class CronController extends AbstractActionController {
          * check status of unpaid orders
          * set orders to paid if statements have the correct value
          */
-        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's');
-        $qb->where('s.value = :status');
-        $qb->setParameter('status', 'ordered');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder->join('o.status', 's');
+        $queryBuilder->where('s.value = :status');
+        $queryBuilder->setParameter('status', 'ordered');
         
-        $orders = $qb->getQuery()->getResult();
+        $orders = $queryBuilder->getQuery()->getResult();
         
         if($this->debug) {
             echo PHP_EOL."Phase 2: check ".count($orders)." orders and set payment status.".PHP_EOL;
         }
         
-        $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+        $statusPaid = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'paid'));
-        $statusPartlyPaid = $em->getRepository('ErsBase\Entity\Status')
+        $statusPartlyPaid = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'partly paid'));
-        $statusOverpaid = $em->getRepository('ErsBase\Entity\Status')
+        $statusOverpaid = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'overpaid'));
-        $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+        $statusOrdered = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'ordered'));
         
         foreach($orders as $order) {
@@ -160,17 +160,17 @@ class CronController extends AbstractActionController {
                 foreach($order->getPackages() as $package) {
                     if($package->getStatus()->getValue() == 'ordered') {
                         $package->setStatus($statusPaid);
-                        $em->persist($package);
+                        $entityManager->persist($package);
                         foreach($package->getItems() as $item) {
                             if($item->getStatus()->getValue() == 'ordered') {
                                 $item->setStatus($statusPaid);
-                                $em->persist($item);
+                                $entityManager->persist($item);
                             }
                         }
                     }
                 }
                 
-                $em->persist($order);
+                $entityManager->persist($order);
                 
                 $paid = true;
                 if($this->debug) {
@@ -185,17 +185,17 @@ class CronController extends AbstractActionController {
                 foreach($order->getPackages() as $package) {
                     if($package->getStatus()->getValue() == 'ordered') {
                         $package->setStatus($statusPaid);
-                        $em->persist($package);
+                        $entityManager->persist($package);
                         foreach($package->getItems() as $item) {
                             if($item->getStatus()->getValue() == 'ordered') {
                                 $item->setStatus($statusOverpaid);
-                                $em->persist($item);
+                                $entityManager->persist($item);
                             }
                         }
                     }
                 }
                 
-                $em->persist($order);
+                $entityManager->persist($order);
                 
                 $paid = true;
                 if($this->debug) {
@@ -208,14 +208,14 @@ class CronController extends AbstractActionController {
 
                 foreach($order->getPackages() as $package) {
                     $package->setStatus($statusOrdered);
-                    $em->persist($package);
+                    $entityManager->persist($package);
                     foreach($package->getItems() as $item) {
                         $item->setStatus($statusOrdered);
-                        $em->persist($item);
+                        $entityManager->persist($item);
                     }
                 }
                 
-                $em->persist($order);
+                $entityManager->persist($order);
                 
                 $paid = false;
                 if($this->debug) {
@@ -224,7 +224,7 @@ class CronController extends AbstractActionController {
                 #echo "INFO: found match for order ".$order->getCode()->getValue()." ".$order_amount." <=> ".$statement_amount." (partial)".PHP_EOL;
             }
         }
-        $em->flush();
+        $entityManager->flush();
         if($this->debug) {
             echo PHP_EOL.PHP_EOL."done.".PHP_EOL;
         }
@@ -234,37 +234,32 @@ class CronController extends AbstractActionController {
      * TODO: Move to MatchService
      */
     private function createMatch(Entity\BankStatement $statement, Entity\Code $code) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $bankaccount = $statement->getPaymentType();
-        #$statement_format = json_decode($bankaccount->getStatementFormat());
-        
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
             ->findOneBy(array('code_id' => $code->getId()));
         
         if(!$order) {
             # try to find order via package
-            $package = $em->getRepository('ErsBase\Entity\Package')
+            $package = $entityManager->getRepository('ErsBase\Entity\Package')
                 ->findOneBy(array('code_id' => $code->getId()));
             if(!$package) {
                 # try to find item via package
-                $item = $em->getRepository('ErsBase\Entity\Item')
+                $item = $entityManager->getRepository('ErsBase\Entity\Item')
                     ->findOneBy(array('code_id' => $code->getId()));
                 if(!$item) {
-                    echo "Unable to find neither item nor package nor order with code: ".$code->getValue().PHP_EOL;
-                    exit();
-                } else {
-                    $order = $item->getPackage()->getOrder();
+                    throw new \Exception("Unable to find neither item nor package nor order with code: ".$code->getValue());
                 }
-            } else {
-                $order = $package->getOrder();
+                #$order = $item->getPackage()->getOrder();
+                $package = $item->getPackage();
             }
+            $order = $package->getOrder();
         }
         
         $statement->setStatus('matched');
 
-        $em->persist($statement);
+        $entityManager->persist($statement);
 
         $match = new Entity\Match();
         $match->setBankStatement($statement);
@@ -275,13 +270,13 @@ class CronController extends AbstractActionController {
         /*
          * set andi as admin for auto-matching
          */
-        $admin = $em->getRepository('ErsBase\Entity\User')
+        $admin = $entityManager->getRepository('ErsBase\Entity\User')
             ->findOneBy(array('id' => 1));
         $match->setUser($admin);
         
         $order->addMatch($match);
 
-        $em->persist($match);
+        $entityManager->persist($match);
 
         #$statement_amount = (float) $statement->getBankStatementColByNumber($statement_format->amount)->getValue();
         $statement_amount = $order->getStatementAmount();
@@ -289,22 +284,23 @@ class CronController extends AbstractActionController {
         $matchInfo = "INFO: found match for order ".$order->getCode()->getValue()." ".\number_format($order_amount, 2, ',', '.')." <=> ".\number_format($statement_amount, 2, ',', '.');
         
         
-        $statusPaid = $em->getRepository('ErsBase\Entity\Status')
+        $statusPaid = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'paid'));
+
         if(!$statusPaid) {
             throw new \Exception('Unable to find status paid, please create this status.');
         }
-        $statusPartlyPaid = $em->getRepository('ErsBase\Entity\Status')
+        $statusPartlyPaid = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'partly paid'));
         if(!$statusPartlyPaid) {
             throw new \Exception('Unable to find status partly paid, please create this status.');
         }
-        $statusOverpaid = $em->getRepository('ErsBase\Entity\Status')
+        $statusOverpaid = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'overpaid'));
         if(!$statusOverpaid) {
             throw new \Exception('Unable to find status overpaid, please create this status.');
         }
-        $statusOrdered = $em->getRepository('ErsBase\Entity\Status')
+        $statusOrdered = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('value' => 'ordered'));
         if(!$statusOrdered) {
             throw new \Exception('Unable to find status ordered, please create this status.');
@@ -316,14 +312,14 @@ class CronController extends AbstractActionController {
         
             foreach($order->getPackages() as $package) {
                 $package->setStatus($statusPaid);
-                $em->persist($package);
+                $entityManager->persist($package);
                 foreach($package->getItems() as $item) {
                     $item->setStatus($statusPaid);
-                    $em->persist($item);
+                    $entityManager->persist($item);
                 }
             }
             
-            $em->persist($order);
+            $entityManager->persist($order);
             
             $paid = true;
             echo $matchInfo." (exact)".PHP_EOL;
@@ -333,14 +329,14 @@ class CronController extends AbstractActionController {
         
             foreach($order->getPackages() as $package) {
                 $package->setStatus($statusOverpaid);
-                $em->persist($package);
+                $entityManager->persist($package);
                 foreach($package->getItems() as $item) {
                     $item->setStatus($statusOverpaid);
-                    $em->persist($item);
+                    $entityManager->persist($item);
                 }
             }
             
-            $em->persist($order);
+            $entityManager->persist($order);
             
             #$paid = true;
             $paid = false;
@@ -349,10 +345,10 @@ class CronController extends AbstractActionController {
             $order->setStatus($statusOrdered);
             foreach($order->getPackages() as $package) {
                 $package->setStatus($statusOrdered);
-                $em->persist($package);
+                $entityManager->persist($package);
                 foreach($package->getItems() as $item) {
                     $item->setStatus($statusOrdered);
-                    $em->persist($item);
+                    $entityManager->persist($item);
                 }
             }
             
@@ -360,7 +356,7 @@ class CronController extends AbstractActionController {
             echo $matchInfo." (partial)".PHP_EOL;
         }
 
-        $em->flush();
+        $entityManager->flush();
     }
     
     /*
@@ -444,26 +440,26 @@ class CronController extends AbstractActionController {
     }
     
     public function removeMatchesAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $matches = $em->getRepository('ErsBase\Entity\Match')
+        $matches = $entityManager->getRepository('ErsBase\Entity\Match')
                 ->findAll();
         
         foreach($matches as $match) {
             $statement = $match->getBankStatement();
             $statement->setStatus('new');
-            $em->persist($statement);
-            $em->remove($match);
+            $entityManager->persist($statement);
+            $entityManager->remove($match);
         }
-        $em->flush();
+        $entityManager->flush();
     }
     
     public function genUserListAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $users = $em->getRepository('ErsBase\Entity\User')
+        $users = $entityManager->getRepository('ErsBase\Entity\User')
                 ->findAll();
         
         $fp = fopen('/tmp/users.csv', 'w');
@@ -485,15 +481,15 @@ class CronController extends AbstractActionController {
     public function generateEticketsAction() {
         $time_start = microtime();
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        #$order = $em->getRepository('ErsBase\Entity\Order')
+        #$order = $entityManager->getRepository('ErsBase\Entity\Order')
                 #->findOneBy(array('id' => '297'));
                 #->findOneBy(array('id' => '12'));
                 #->findOneBy(array('id' => '54'));
         
-        $orders = $em->getRepository('ErsBase\Entity\Order')
+        $orders = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findAll();
         $count = 0;
         $eticketService = $this->getServiceLocator()
@@ -505,9 +501,9 @@ class CronController extends AbstractActionController {
                 $eticketService->setPackage($package);
                 $eticketService->generatePdf();
                 $count++;
-                $em->detach($package);
+                $entityManager->detach($package);
             }
-            $em->detach($order);
+            $entityManager->detach($order);
         }
         echo "generated ".$count." etickets in ".(microtime()-$time_start).' $unit'.PHP_EOL;
     }
@@ -519,36 +515,37 @@ class CronController extends AbstractActionController {
         $short_real = (bool) $request->getParam('r',false);
         $isReal = ($long_real | $short_real);
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb1 = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb1->where($qb1->expr()->isNull('o.payment_reminder_status'));
+        $queryBuilder1 = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder1->where($queryBuilder1->expr()->isNull('o.payment_reminder_status'));
         
-        $correctOrders = $qb1->getQuery()->getResult();
+        $correctOrders = $queryBuilder1->getQuery()->getResult();
         
         echo "found ".count($correctOrders)." orders to correct".PHP_EOL;
         foreach($correctOrders as $o) {
             $o->setPaymentReminderStatus(0);
-            $em->persist($o);
+            $entityManager->persist($o);
         }
-        $em->flush();
+        $entityManager->flush();
         
         #$limit = 3;
-        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        $qb->andWhere($qb->expr()->lt('o.created', ':paymentTarget'));
-        $qb->andWhere($qb->expr()->eq('o.payment_reminder_status', ':prstatus'));
-        $qb->setParameter('status', 'ordered');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder->join('o.status', 's');
+        $queryBuilder->where($queryBuilder->expr()->eq('s.value', ':status'));
+        $queryBuilder->andWhere($queryBuilder->expr()->lt('o.created', ':paymentTarget'));
+        $queryBuilder->andWhere($queryBuilder->expr()->eq('o.payment_reminder_status', ':prstatus'));
+        $queryBuilder->setParameter('status', 'ordered');
         $paymentTarget = new \DateTime;
-        $paymentTarget->modify( '-10 days' );
-        $qb->setParameter('paymentTarget', $paymentTarget);
-        $qb->setParameter('prstatus', '0');
-        #$qb->setFirstResult( $offset )
-        #$qb->setMaxResults( $limit );
+
+        $paymentTarget->modify( '-20 days' );
+        $queryBuilder->setParameter('paymentTarget', $paymentTarget);
+        $queryBuilder->setParameter('prstatus', '0');
+        #$queryBuilder->setFirstResult( $offset )
+        #$queryBuilder->setMaxResults( $limit );
         
-        $notPaidOrders = $qb->getQuery()->getResult();
+        $notPaidOrders = $queryBuilder->getQuery()->getResult();
         echo count($notPaidOrders)." not paid orders found from before ".$paymentTarget->format('d.m.Y').".".PHP_EOL;
         
         #if(!$isReal) {
@@ -570,6 +567,41 @@ class CronController extends AbstractActionController {
             $orderService->setOrder($order);
             $orderService->sendPaymentReminder();
 
+            if($config['environment'] == 'production') {
+                /*** real buyer ***/
+                $buyer = $order->getBuyer();
+                $emailService->addTo($buyer);
+                /***/
+            } else {
+                /*** test buyer **/
+                $user = new Entity\User();
+                $user->setEmail('andi'.$order->getCode()->getValue().'@inbaz.org');
+                $emailService->addTo($user);
+                /***/
+            }
+            
+            $bcc = new Entity\User();
+            $bcc->setEmail($config['ERS']['info_mail']);
+            $emailService->addBcc($bcc);
+
+            $subject = "[".$config['ERS']['name_short']."] "._('Payment reminder for your order:')." ".$order->getCode()->getValue();
+            $emailService->setSubject($subject);
+
+            $viewModel = new ViewModel(array(
+                'order' => $order,
+            ));
+            $viewModel->setTemplate('email/payment-reminder.phtml');
+            $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+            $html = $viewRender->render($viewModel);
+
+            $emailService->setHtmlMessage($html);
+
+            $emailService->send();
+            
+            $order->setPaymentReminderStatus($order->getPaymentReminderStatus()+1);
+            $entityManager->persist($order);
+            $entityManager->flush();
+            
             echo "sent payment reminder for order ".$order->getCode()->getValue().PHP_EOL;
         }
     }
@@ -595,14 +627,14 @@ class CronController extends AbstractActionController {
             $ticket_count = $short_count;
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         # correct package ticket_status
-        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->where('p.ticket_status IS NULL');
-        $qb->orWhere("p.ticket_status = 'not_send'");
-        $noStatusPackages = $qb->getQuery()->getResult();
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $queryBuilder->where('p.ticket_status IS NULL');
+        $queryBuilder->orWhere("p.ticket_status = 'not_send'");
+        $noStatusPackages = $queryBuilder->getQuery()->getResult();
         if($isDebug) {
             echo count($noStatusPackages)." packages need to be corrected.".PHP_EOL;
         }
@@ -645,9 +677,9 @@ class CronController extends AbstractActionController {
             } else {
                 $package->setTicketStatus('not_send');
             }
-            $em->persist($package);
+            $entityManager->persist($package);
         }
-        $em->flush();
+        $entityManager->flush();
         
         $settingService = $this->getServiceLocator()
                 ->get('ErsBase\Service\SettingService');
@@ -656,17 +688,20 @@ class CronController extends AbstractActionController {
         if($settingService->get('ers.send_ticket_count') != '' && is_numeric($settingService->get('ers.send_ticket_count'))) {
             $ticket_count = $settingService->get('ers.send_ticket_count');
         }
+
         /*if(empty($ticket_count) || !is_numeric($ticket_count)) {
             #$ticket_count = 100;
             $ticket_count = 5;
         }*/
-        $can_send_packages = $em->getRepository('ErsBase\Entity\Package')
+       
+        $can_send_packages = $entityManager->getRepository('ErsBase\Entity\Package')
+
             ->findBy(array('ticket_status' => 'can_send'));
         if($isDebug) {
             echo "Can send out e-tickets for ".count($can_send_packages)." packages, will process ".$ticket_count." now.".PHP_EOL;
         }
         
-        $packages = $em->getRepository('ErsBase\Entity\Package')
+        $packages = $entityManager->getRepository('ErsBase\Entity\Package')
             ->findBy(array('ticket_status' => 'can_send'), array(), $ticket_count);
         
         #if(!$isReal) {
@@ -720,10 +755,10 @@ class CronController extends AbstractActionController {
     }
     
     public function emailStatusAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $users = $em->getRepository('ErsBase\Entity\User')
+        $users = $entityManager->getRepository('ErsBase\Entity\User')
                 ->findAll();
         
         echo "checking ".count($users)." emails".PHP_EOL;
@@ -741,8 +776,8 @@ class CronController extends AbstractActionController {
                 echo "failed!".PHP_EOL;
                 $user->setEmailStatus('fail');
             }
-            $em->persist($user);
-            $em->flush();
+            $entityManager->persist($user);
+            $entityManager->flush();
         }
     }
     
@@ -792,13 +827,13 @@ class CronController extends AbstractActionController {
     }
     
     public function itemAgegroupAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
-        $qb->where('i.agegroup IS NULL');
-        $items = $qb->getQuery()->getResult();
-        /*$items = $em->getRepository('ErsBase\Entity\Item')
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
+        $queryBuilder->where('i.agegroup IS NULL');
+        $items = $queryBuilder->getQuery()->getResult();
+        /*$items = $entityManager->getRepository('ErsBase\Entity\Item')
                 ->findAll();*/
         
         echo "checking ".count($items)." items".PHP_EOL;
@@ -817,11 +852,11 @@ class CronController extends AbstractActionController {
                     
                     if($agegroup) {
                         $item->setAgegroup($agegroup->getAgegroup());
-                        $em->persist($item);
+                        $entityManager->persist($item);
 
                         foreach($item->getChildItems() as $cItem) {
                             $cItem->setAgegroup($agegroup->getAgegroup());
-                            $em->persist($cItem);
+                            $entityManager->persist($cItem);
                         }
                     }
                     break;
@@ -832,7 +867,7 @@ class CronController extends AbstractActionController {
                     
                     if($agegroup) {
                         $item->setAgegroup($agegroup->getAgegroup());
-                        $em->persist($item);
+                        $entityManager->persist($item);
                     }
                     break;
                 case 5:
@@ -848,20 +883,20 @@ class CronController extends AbstractActionController {
                     break;
             }
         }
-        $em->flush();
+        $entityManager->flush();
         
         echo "found ".$count." items with no owner".PHP_EOL;
     }
     
     public function calcSumsAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's', 'WITH', 's.active = 1');
-        $qb->where($qb->expr()->neq('s.value', ':status'));
-        $qb->setParameter('status', 'order pending');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder->join('o.status', 's', 'WITH', 's.active = 1');
+        $queryBuilder->where($queryBuilder->expr()->neq('s.value', ':status'));
+        $queryBuilder->setParameter('status', 'order pending');
         
-        $orders = $qb->getQuery()->getResult();
+        $orders = $queryBuilder->getQuery()->getResult();
         #echo 'found '.count($orders).' orders'.PHP_EOL;
         
         foreach($orders as $order) {
@@ -880,77 +915,77 @@ class CronController extends AbstractActionController {
                 #echo "update total sum for ".$order->getCode()->getValue().": ".$orig_total_sum." != ".$order->getSum().PHP_EOL;
             }
             
-            $em->persist($order);
+            $entityManager->persist($order);
         }
-        $em->flush();
+        $entityManager->flush();
     }
     
     public function cleanupUserAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository('ErsBase\Entity\User')->createQueryBuilder('u');
-        $qb->leftJoin('u.roles', 'r');
-        $qb->where($qb->expr()->isNull('r.roleId'));
-        $qb->andWhere($qb->expr()->lt('u.updated', ':updated'));
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\User')->createQueryBuilder('u');
+        $queryBuilder->leftJoin('u.roles', 'r');
+        $queryBuilder->where($queryBuilder->expr()->isNull('r.roleId'));
+        $queryBuilder->andWhere($queryBuilder->expr()->lt('u.updated', ':updated'));
         $updated = new \DateTime();
         $updated->sub(new \DateInterval('PT2H'));
-        $qb->setParameter('updated', $updated);
-        $users = $qb->getQuery()->getResult();
+        $queryBuilder->setParameter('updated', $updated);
+        $users = $queryBuilder->getQuery()->getResult();
         echo 'found '.count($users).' users'.PHP_EOL;
         foreach($users as $user) {
             foreach($user->getOrders() as $order) {
                 if($order->getStatus()->getValue() != 'order pending') {
                     echo "ERROR: found order ".$order->getId()." which may not be pending. (".$order->getStatus()->getValue().") (user_id: ".$user->getId().")".PHP_EOL;
                 } else {
-                    $em->remove($order);
+                    $entityManager->remove($order);
                 }
             }
             foreach($user->getPackages() as $package) {
                 foreach($package->getItems() as $item) {
-                    $em->remove($item);
+                    $entityManager->remove($item);
                 }
-                $em->remove($package);
+                $entityManager->remove($package);
             }
-            $em->remove($user);
+            $entityManager->remove($user);
         }
-        $em->flush();
+        $entityManager->flush();
         
         
     }
     
     public function cleanupOrderAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $qb = $em->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
-        $qb->join('o.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        $qb->andWhere($qb->expr()->lt('o.updated', ':updated'));
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder->join('o.status', 's');
+        $queryBuilder->where($queryBuilder->expr()->eq('s.value', ':status'));
+        $queryBuilder->andWhere($queryBuilder->expr()->lt('o.updated', ':updated'));
         
         $updated = new \DateTime();
-        $updated->sub(new \DateInterval('PT2H'));
-        $qb->setParameter('updated', $updated);
-        $qb->setParameter('status', 'order pending');
+        $updated->sub(new \DateInterval('PT8H'));
+        $queryBuilder->setParameter('updated', $updated);
+        $queryBuilder->setParameter('status', 'order pending');
         
-        $orders = $qb->getQuery()->getResult();
+        $orders = $queryBuilder->getQuery()->getResult();
         echo 'found '.count($orders).' orders'.PHP_EOL;
         foreach($orders as $order) {
-            $em->remove($order);
+            $entityManager->remove($order);
             foreach($order->getPackages() as $package) {
-                $em->remove($package);
+                $entityManager->remove($package);
                 foreach($package->getItems() as $item) {
-                    $em->remove($item);
+                    $entityManager->remove($item);
                 }
             }
         }
-        $em->flush();
+        $entityManager->flush();
     }
     
     public function correctStatusAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $orders = $em->getRepository('ErsBase\Entity\Order')
+        $orders = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findAll();
         $statusService = $this->getServiceLocator()
                 ->get('ErsBase\Service\StatusService');
@@ -962,39 +997,114 @@ class CronController extends AbstractActionController {
             
             $order->setTotalSum($order->getSum());
             $order->setOrderSum($order->getPrice());
-            $em->persist($order);
-            $em->flush();
+            $entityManager->persist($order);
+            $entityManager->flush();
             $order = null;
             gc_collect_cycles();
         }
     }
     
-    public function correctActiveUserAction() {
-        $em = $this->getServiceLocator()
+    public function correctPackageStatusAction() {
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $users = $em->getRepository('ErsBase\Entity\User')
+        $packages = $entityManager->getRepository('ErsBase\Entity\Package')
+                ->findAll();
+        $statusService = $this->getServiceLocator()
+                ->get('ErsBase\Service\StatusService');
+        
+        foreach($packages as $package) {
+            $statusService->setPackageStatus($package, $package->getStatus(), true);
+        }
+    }
+    
+    public function correctPackagesInPaidOrdersAction() {
+        # correct-packages-in-paid-orders
+        $entityManager = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        
+        # correct from package side
+        $queryBuilder1 = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $queryBuilder1->join('p.status', 's');
+        $queryBuilder1->where($queryBuilder1->expr()->eq('s.value', ':status'));
+        $queryBuilder1->setParameter('status', 'ordered');
+        
+        $packages = $queryBuilder1->getQuery()->getResult();
+        
+        $statusService = $this->getServiceLocator()
+                ->get('ErsBase\Service\StatusService');
+        
+        echo "checking ".count($packages)." packages".PHP_EOL;
+        $count = 0;
+        foreach($packages as $package) {
+            $order = $package->getOrder();
+            $statusService->setPackageStatus($package, $order->getStatus(), false);
+            if($order->getStatus()->getValue() == 'paid') {
+                #$package->setStatus($order->getStatus());
+                $statusService->setPackageStatus($package, $order->getStatus(), false);
+                #$entityManager->persist($package);
+                $count++;
+            }
+        }
+        $entityManager->flush();
+        echo "corrected ".$count." packages".PHP_EOL;
+        
+        
+        # correct from order side
+        $queryBuilder2 = $entityManager->getRepository('ErsBase\Entity\Order')->createQueryBuilder('o');
+        $queryBuilder2->join('o.status', 's');
+        $queryBuilder2->where($queryBuilder2->expr()->eq('s.value', ':status'));
+        $queryBuilder2->setParameter('status', 'paid');
+        
+        
+        $orders = $queryBuilder2->getQuery()->getResult();
+        
+        echo "checking ".count($orders)." orders".PHP_EOL;
+        $count = [];
+        foreach($orders as $order) {
+            foreach($order->getPackages() as $package) {
+                $status = $package->getStatus()->getValue();
+                if(empty($count[$status])) {
+                    $count[$status] = 1;
+                } else {
+                    $count[$status]++;
+                }
+                
+                if($status == 'ordered') {
+                    $package->setStatus($order->getStatus());
+                    $entityManager->persist($package);
+                }
+            }
+        }
+        $entityManager->flush();
+        var_export($count);
+    }
+    
+    public function correctActiveUserAction() {
+        $entityManager = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $users = $entityManager->getRepository('ErsBase\Entity\User')
                 ->findAll();
         foreach($users as $user) {
             foreach($user->getPackages() as $package) {
                 $order = $package->getOrder();
                 if($order->getStatus()->getActive()) {
                     $user->setActive(true);
-                    $em->persist($user);
+                    $entityManager->persist($user);
                 }
             }
         }
-        $em->flush();
+        $entityManager->flush();
     }
     
     public function correctPaidPackagesAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->join('p.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        $qb->setParameter('status', 'paid');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $queryBuilder->join('p.status', 's');
+        $queryBuilder->where($queryBuilder->expr()->eq('s.value', ':status'));
+        $queryBuilder->setParameter('status', 'paid');
         
-        $packages = $qb->getQuery()->getResult();
+        $packages = $queryBuilder->getQuery()->getResult();
         
         foreach($packages as $package) {
             $order = $package->getOrder();
@@ -1002,22 +1112,22 @@ class CronController extends AbstractActionController {
                 $status = $package->getStatus()->getValue();
                 $package->setStatus($order->getStatus());
                 echo $package->getCode()->getValue().": package status was: ".$status."; package status is: ".$package->getStatus().PHP_EOL;
-                $em->persist($package);
+                $entityManager->persist($package);
             }
         }
         
-        $em->flush();
+        $entityManager->flush();
     }
     
     public function correctOrderedPackagesAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->join('p.status', 's');
-        $qb->where($qb->expr()->eq('s.value', ':status'));
-        $qb->setParameter('status', 'ordered');
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
+        $queryBuilder->join('p.status', 's');
+        $queryBuilder->where($queryBuilder->expr()->eq('s.value', ':status'));
+        $queryBuilder->setParameter('status', 'ordered');
         
-        $packages = $qb->getQuery()->getResult();
+        $packages = $queryBuilder->getQuery()->getResult();
         
         foreach($packages as $package) {
             $order = $package->getOrder();
@@ -1025,179 +1135,35 @@ class CronController extends AbstractActionController {
                 $status = $package->getStatus()->getValue();
                 $package->setStatus($order->getStatus());
                 echo $package->getCode()->getValue().": package status was: ".$status."; package status is: ".$package->getStatus().PHP_EOL;
-                $em->persist($package);
+                $entityManager->persist($package);
             }
         }
         
-        $em->flush();
+        $entityManager->flush();
     }
     
     public function correctItemStatusAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $items = $em->getRepository('ErsBase\Entity\Item')->findAll();
+        $items = $entityManager->getRepository('ErsBase\Entity\Item')->findAll();
         
         foreach($items as $item) {
             $package = $item->getPackage();
             if($item->getStatus()->getValue() == 'ordered' || $item->getStatus()->getValue() == 'paid' || $item->getStatus()->getValue() == 'order pending') {
-                $status = $item->getStatus();
                 $item->setStatus($package->getStatus());
-                echo $item->getCode()->getValue().": item status was: ".$status."; item status is: ".$item->getStatus().PHP_EOL;
-                $em->persist($item);
+                #echo $item->getCode()->getValue().": item status was: ".$status."; item status is: ".$item->getStatus().PHP_EOL;
+                $entityManager->persist($item);
             }
         }
         
-        $em->flush();
-    }
-    
-    public function sorryEticketSepaAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->join('p.status', 's');
-        $qb->join('p.order', 'o');
-        $qb->join('o.paymentType', 'pt');
-        $qb->where($qb->expr()->eq('p.ticket_status', ':ticket_status'));
-        $qb->andWhere($qb->expr()->eq('s.value', ':status'));
-        $qb->andWhere($qb->expr()->eq('pt.id', ':payment_type'));
-        
-        $qb->setParameter('ticket_status', 'send_out');
-        $qb->setParameter('status', 'ordered');
-        $qb->setParameter('payment_type', '1');
-        
-        $packages = $qb->getQuery()->getResult();
-        echo "found ".count($packages)." packages.".PHP_EOL;
-        
-        $config = $emailService = $this->getServiceLocator()
-                        ->get('config');
-        
-        foreach($packages as $package) {
-            # prepare email (participant, buyer)
-            #$emailService = new Service\EmailService();
-            $emailService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\EmailService');
-            $emailService->setFrom($config['ERS']['info_mail']);
-
-            $order = $package->getOrder();
-            $participant = $package->getParticipant();
-
-            $buyer = $order->getBuyer();
-            $emailService->addTo($buyer);
-            /*if($participant->getEmail() == '') {
-                $emailService->addTo($buyer);
-            } elseif($participant->getEmail() == $buyer->getEmail()) {
-                $emailService->addTo($buyer);
-            } else {
-                $emailService->addTo($participant);
-                $emailService->addCc($buyer);
-            }*/
-            /*$user = new Entity\User();
-            $user->setEmail('andi@inbaz.org');
-            $emailService->addTo($user);*/
-            
-            $bcc = new Entity\User();
-            $bcc->setEmail($config['ERS']['info_mail']);
-            $emailService->addBcc($bcc);
-
-            $subject = "[".$config['ERS']['name_short']."] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
-            $emailService->setSubject($subject);
-
-            $viewModel = new ViewModel(array(
-                'package' => $package,
-                'config' => $this->getServiceLocator()->get('config'),
-            ));
-            $viewModel->setTemplate('email/eticket-not-valid-sepa.phtml');
-            $viewRenderer = $this->getServiceLocator()->get('ViewRenderer');
-            $html = $viewRenderer->render($viewModel);
-
-            $emailService->setHtmlMessage($html);
-            
-            # send out email
-            $emailService->send();
-            echo "email sent to ".$buyer->getEmail().".".PHP_EOL;
-            
-            $package->setTicketStatus('not_send');
-            $em->persist($package);
-            $em->flush();
-        }
-    }
-    public function sorryEticketCcAction() {
-        $em = $this->getServiceLocator()
-            ->get('Doctrine\ORM\EntityManager');
-        $qb = $em->getRepository('ErsBase\Entity\Package')->createQueryBuilder('p');
-        $qb->join('p.status', 's');
-        $qb->join('p.order', 'o');
-        $qb->join('o.paymentType', 'pt');
-        $qb->where($qb->expr()->eq('p.ticket_status', ':ticket_status'));
-        $qb->andWhere($qb->expr()->eq('s.value', ':status'));
-        $qb->andWhere($qb->expr()->eq('pt.id', ':payment_type'));
-        
-        $qb->setParameter('ticket_status', 'send_out');
-        $qb->setParameter('status', 'ordered');
-        $qb->setParameter('payment_type', '2');
-        
-        $packages = $qb->getQuery()->getResult();
-        echo "found ".count($packages)." packages.".PHP_EOL;
-        
-        $config = $emailService = $this->getServiceLocator()
-                        ->get('config');
-        
-        foreach($packages as $package) {
-            # prepare email (participant, buyer)
-            #$emailService = new Service\EmailService();
-            $emailService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\EmailService');
-            $emailService->setFrom($config['ERS']['info_mail']);
-
-            $order = $package->getOrder();
-            $participant = $package->getParticipant();
-
-            $buyer = $order->getBuyer();
-            $emailService->addTo($buyer);
-            /*if($participant->getEmail() == '') {
-                $emailService->addTo($buyer);
-            } elseif($participant->getEmail() == $buyer->getEmail()) {
-                $emailService->addTo($buyer);
-            } else {
-                $emailService->addTo($participant);
-                $emailService->addCc($buyer);
-            }*/
-            /*$user = new Entity\User();
-            $user->setEmail('andi@inbaz.org');
-            $emailService->addTo($user);*/
-            
-            $bcc = new Entity\User();
-            $bcc->setEmail($config['ERS']['info_mail']);
-            $emailService->addBcc($bcc);
-
-            $subject = "[".$config['ERS']['name_short']."] Your E-Ticket is not valid for ".$participant->getFirstname()." ".$participant->getSurname()." (order ".$order->getCode()->getValue().")";
-            $emailService->setSubject($subject);
-
-            $viewModel = new ViewModel(array(
-                'package' => $package,
-                'config' => $this->getServiceLocator()->get('config'),
-            ));
-            $viewModel->setTemplate('email/eticket-not-valid-cc.phtml');
-            $viewRenderer = $this->getServiceLocator()->get('ViewRenderer');
-            $html = $viewRenderer->render($viewModel);
-
-            $emailService->setHtmlMessage($html);
-            
-            # send out email
-            $emailService->send();
-            echo "email sent to ".$buyer->getEmail().".".PHP_EOL;
-            
-            $package->setTicketStatus('not_send');
-            $em->persist($package);
-            $em->flush();
-        }
+        $entityManager->flush();
     }
     
     public function overpaidOrdersAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $orders = $em->getRepository('ErsBase\Entity\Order')
+        $orders = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findAll();
         
         $overpaid = [];

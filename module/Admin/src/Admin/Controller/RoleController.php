@@ -18,11 +18,11 @@ class RoleController extends AbstractActionController {
     
     public function indexAction()
     {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'roles' => $em->getRepository('ErsBase\Entity\Role')->findBy(array(),array('roleId' => 'ASC')),
+            'roles' => $entityManager->getRepository('ErsBase\Entity\Role')->findBy(array(),array('roleId' => 'ASC')),
          ));
     }
 
@@ -48,20 +48,19 @@ class RoleController extends AbstractActionController {
             if ($form->isValid()) {
                 $role->populate($form->getData());
                 
-                $em = $this->getServiceLocator()
+                $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
+                $role->setParentId(null);
                 if(is_numeric($role->getParentId()) && $role->getParentId() > 0) {
-                    $parent = $em->getRepository('ErsBase\Entity\Role')
+                    $parent = $entityManager->getRepository('ErsBase\Entity\Role')
                         ->findOneBy(array('id' => $role->getParentId()));
                 
                     $role->setParent($parent);
-                } else {
-                    $role->setParentId(null);
                 }
                 
-                $em->persist($role);
-                $em->flush();
+                $entityManager->persist($role);
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             } else {
@@ -90,9 +89,9 @@ class RoleController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $role = $em->getRepository('ErsBase\Entity\Role')->findOneBy(array('id' => $id));
+        $role = $entityManager->getRepository('ErsBase\Entity\Role')->findOneBy(array('id' => $id));
 
         #$form = new Form\Role();
         $form = $this->getServiceLocator()->get('Admin\Form\Role');
@@ -109,8 +108,8 @@ class RoleController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $em->persist($form->getData());
-                $em->flush();
+                $entityManager->persist($form->getData());
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
@@ -134,9 +133,9 @@ class RoleController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $role = $em->getRepository('ErsBase\Entity\Role')
+        $role = $entityManager->getRepository('ErsBase\Entity\Role')
                 ->findOneBy(array('id' => $id));
 
         $request = $this->getRequest();
@@ -145,16 +144,16 @@ class RoleController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $role = $em->getRepository('ErsBase\Entity\Role')
+                $role = $entityManager->getRepository('ErsBase\Entity\Role')
                     ->findOneBy(array('id' => $id));
-                $em->remove($role);
-                $em->flush();
+                $entityManager->remove($role);
+                $entityManager->flush();
             }
 
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        $childs = $em->getRepository('ErsBase\Entity\Role')
+        $childs = $entityManager->getRepository('ErsBase\Entity\Role')
                 ->findBy(array('Parent_id' => $id));
         
         return new ViewModel(array(

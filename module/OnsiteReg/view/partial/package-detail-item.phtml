@@ -43,7 +43,7 @@ $itemOK = $item->getStatus()->getValid();
             <?php endif; ?>
         </div>
         <div class="col-xs-2">
-            <p class="h4"><?php echo $this->currencyFormat($item->getPrice(), 'EUR', null, 'de_DE'); ?></p>
+            <p class="h4"><?php echo $this->currencyFormat($item->getPrice(), $item->getCurrency()->getShort(), null, 'de_DE'); ?></p>
         </div>
         
         <?php if($item->getShipped()): ?>

@@ -17,7 +17,7 @@ class User extends Form
 {
     public $inputFilter;
     
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('Participant');
         
@@ -64,27 +64,19 @@ class User extends Form
  
         $this->add(array( 
             'name' => 'birthday', 
-            #'require' => false,
-            #'type' => 'Zend\Form\Element\Date',
             'type' => 'PreReg\Form\Element\DateText',
             'attributes' => array( 
                 'placeholder' => _('Birthday...'), 
-                #'required' => 'required',
                 'class' => 'form-control form-element datepicker',
-                /*'min' => '1900-01-01', 
-                'max' => 2015-08-09, 
-                'step' => '1', */
             ), 
             'options' => array( 
                 'label' => _('Birthday'), 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
-                #'format' => 'd.m.Y',
                 'format' => 'Y-m-d',
             ), 
         ));
-        #$this->get('birthday')->setFormat('d.m.Y');
         $this->get('birthday')->setFormat('Y-m-d');
  
         $this->add(array( 
@@ -92,7 +84,6 @@ class User extends Form
             'type' => 'Zend\Form\Element\Email', 
             'attributes' => array( 
                 'placeholder' => _('Email Address...'), 
-                #'required' => 'required', 
                 'class' => 'form-control form-element',
             ), 
             'options' => array( 

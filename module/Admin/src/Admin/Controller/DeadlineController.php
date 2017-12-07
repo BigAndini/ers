@@ -17,11 +17,11 @@ class DeadlineController extends AbstractActionController {
     
     public function indexAction()
     {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         return new ViewModel(array(
-            'deadlines' => $em->getRepository('ErsBase\Entity\Deadline')
+            'deadlines' => $entityManager->getRepository('ErsBase\Entity\Deadline')
                 ->findBy(array(), array('deadline' => 'ASC')),
          ));
     }
@@ -39,18 +39,17 @@ class DeadlineController extends AbstractActionController {
             if ($form->isValid()) {
                 $deadline->populate($form->getData());
                 
-                $em = $this->getServiceLocator()
+                $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 
-                $em->persist($deadline);
-                $em->flush();
+                $entityManager->persist($deadline);
+                $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage('Deadline has been successfully added.');
                 return $this->redirect()->toRoute('admin/deadline');
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
             }
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
         
         return new ViewModel(array(
@@ -66,9 +65,9 @@ class DeadlineController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $deadline = $em->getRepository('ErsBase\Entity\Deadline')->findOneBy(array('id' => $id));
+        $deadline = $entityManager->getRepository('ErsBase\Entity\Deadline')->findOneBy(array('id' => $id));
 
         $form = new Form\Deadline();
         $form->bind($deadline);
@@ -79,8 +78,8 @@ class DeadlineController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $em->persist($form->getData());
-                $em->flush();
+                $entityManager->persist($form->getData());
+                $entityManager->flush();
 
                 $this->flashMessenger()->addSuccessMessage('Deadline has been successfully changed.');
                 return $this->redirect()->toRoute('admin/deadline');
@@ -99,17 +98,17 @@ class DeadlineController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('admin/deadline');
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $deadline = $em->getRepository('ErsBase\Entity\Deadline')
+        $deadline = $entityManager->getRepository('ErsBase\Entity\Deadline')
                 ->findOneBy(array('id' => $id));
         $productprices = $deadline->getProductPrices();
         
-        $qb = $em->getRepository('ErsBase\Entity\PaymentType')->createQueryBuilder('n');
-        $paymenttypes = $qb->where(
-                $qb->expr()->orX(
-                    $qb->expr()->eq('n.active_from_id', $id),
-                    $qb->expr()->eq('n.active_until_id', $id)
+        $queryBuilder = $entityManager->getRepository('ErsBase\Entity\PaymentType')->createQueryBuilder('n');
+        $paymenttypes = $queryBuilder->where(
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->eq('n.active_from_id', $id),
+                    $queryBuilder->expr()->eq('n.active_until_id', $id)
             ))->getQuery()->getResult();
         
         $request = $this->getRequest();
@@ -118,10 +117,10 @@ class DeadlineController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $deadline = $em->getRepository('ErsBase\Entity\Deadline')
+                $deadline = $entityManager->getRepository('ErsBase\Entity\Deadline')
                     ->findOneBy(array('id' => $id));
-                $em->remove($deadline);
-                $em->flush();
+                $entityManager->remove($deadline);
+                $entityManager->flush();
             }
 
             $this->flashMessenger()->addSuccessMessage('Deadline has been successfully deleted.');

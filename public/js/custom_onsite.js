@@ -72,7 +72,7 @@ jQuery(function($) {
     
     function updateConfirmButton() {
         var anythingSelected = $itemCheckboxes.is(':checked');
-        var agegroupConfirmed = ($confirmAgegroupCheckbox.length == 0 || $confirmAgegroupCheckbox.prop('checked'));
+        var agegroupConfirmed = ($confirmAgegroupCheckbox.length === 0 || $confirmAgegroupCheckbox.prop('checked'));
         if(!anythingSelected || !agegroupConfirmed) {
             $confirmButton.prop('disabled', true);
             $confirmButton.prop('class', 'btn btn-lg btn-danger confirm-items-button');
@@ -111,22 +111,26 @@ jQuery(function($) {
     
     $itemCheckboxes.change(function() {
         var $container = $(this).closest('li');
-        if($(this).prop('checked'))
+        if($(this).prop('checked')) {
             $container.addClass('light-green-bg');
-        else
+        } else {
             $container.removeClass('light-green-bg');
+        }
         
         updateConfirmButton();
         
-        if($itemCheckboxes.not(':checked').length === 0)
+        if($itemCheckboxes.not(':checked').length === 0) {
             $selectAllButton.text('Select none');
-        else
+        } else {
             $selectAllButton.text('Select all');
+        }
     });
     
-    if($itemCheckboxes.length === 0)
+    if($itemCheckboxes.length === 0) {
         $selectAllButton.prop('disabled', true);
+    }
     
-    if(!$('.package-detail-view').length)
+    if(!$('.package-detail-view').length) {
         $('.onsite-search-box').focus();
+    }
 });

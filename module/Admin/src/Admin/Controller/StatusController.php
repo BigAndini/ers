@@ -17,10 +17,10 @@ use ErsBase\Service;
 class StatusController extends AbstractActionController {
     public function indexAction()
     {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
-            'status' => $em->getRepository('ErsBase\Entity\Status')->findBy(array(), array('position' => 'ASC')),
+            'status' => $entityManager->getRepository('ErsBase\Entity\Status')->findBy(array(), array('position' => 'ASC')),
         ));
     }
 
@@ -43,10 +43,10 @@ class StatusController extends AbstractActionController {
             if ($form->isValid()) {
                 $entity->populate($form->getData());
 
-                $em = $this->getServiceLocator()
+                $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-                $em->persist($entity);
-                $em->flush();
+                $entityManager->persist($entity);
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
@@ -69,9 +69,9 @@ class StatusController extends AbstractActionController {
                 'action' => 'add'
             ));
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $status = $em->getRepository('ErsBase\Entity\Status')->findOneBy(array('id' => $id));
+        $status = $entityManager->getRepository('ErsBase\Entity\Status')->findOneBy(array('id' => $id));
 
         $form  = new Form\Status();
         $form->bind($status);
@@ -82,9 +82,9 @@ class StatusController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                #$em->persist($form->getData());
-                $em->persist($status);
-                $em->flush();
+                #$entityManager->persist($form->getData());
+                $entityManager->persist($status);
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
@@ -107,7 +107,7 @@ class StatusController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
 
         $request = $this->getRequest();
@@ -117,10 +117,10 @@ class StatusController extends AbstractActionController {
             if ($del == 'Yes') {
                 
                 $id = (int) $request->getPost('id');
-                $status = $em->getRepository('ErsBase\Entity\Status')
+                $status = $entityManager->getRepository('ErsBase\Entity\Status')
                         ->findOneBy(array('id' => $id));
-                $em->remove($status);
-                $em->flush();
+                $entityManager->remove($status);
+                $entityManager->flush();
             }
 
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
@@ -128,7 +128,7 @@ class StatusController extends AbstractActionController {
 
         return new ViewModel(array(
             'id'    => $id,
-            'status' => $status = $em->getRepository('ErsBase\Entity\Status')
+            'status' => $status = $entityManager->getRepository('ErsBase\Entity\Status')
                 ->findOneBy(array('id' => $id)),
             'breadcrumb' => $breadcrumb,
         ));

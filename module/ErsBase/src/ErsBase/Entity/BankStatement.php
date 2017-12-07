@@ -64,7 +64,7 @@ class BankStatement extends Base\BankStatement
      * get the amount of this statement according to the format
      */
     public function getAmount() {
-        $statement_format = json_decode($this->getPaymentType()->getStatementFormat());
+        $statement_format = \json_decode($this->getPaymentType()->getStatementFormat());
         return $this->getBankStatementColByNumber($statement_format->amount);
     }
     

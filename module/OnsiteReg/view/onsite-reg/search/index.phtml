@@ -24,10 +24,9 @@ $this->headTitle("Search");
     <table class="table">
         <thead>
             <tr>
-                <th>Order code</th>
-                <th>Package code</th>
-                <th>Participant</th>
-                <th>Status</th>
+                <th>codes</th>
+                <th>participant</th>
+                <th>status</th>
                 <th></th>
             </tr>
         </thead>
@@ -46,8 +45,10 @@ $this->headTitle("Search");
                 $bd = $package->getParticipant()->getBirthday();
             ?>
                 <tr>
-                    <td><?php echo $this->escapeHtml($package->getOrder()->getCode()->getValue()); ?></td>
-                    <td><?php echo $this->escapeHtml($package->getCode()->getValue()); ?></td>
+                    <td>
+                        order: <?php echo $this->escapeHtml($package->getOrder()->getCode()->getValue()); ?><br />
+                        package: <?php echo $this->escapeHtml($package->getCode()->getValue()); ?>
+                    </td>
                     <td>
                         <p>
                             <span class="text-primary"><?php echo $this->escapeHtml($package->getParticipant()->getFullName()); ?></span>
@@ -61,7 +62,7 @@ $this->headTitle("Search");
                             <?php echo $this->escapeHtml($packageStatus ?: 'unknown'); ?>
                         </p>
                     </td>
-                    <td><a class="btn btn-default" href="<?php echo $this->url('onsite/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Register</a></td>
+                    <td class="text-right"><a class="btn btn-lg btn-default" href="<?php echo $this->url('onsite/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Register</a></td>
                 </tr>
             <?php endforeach;
             if(empty($results)): ?>

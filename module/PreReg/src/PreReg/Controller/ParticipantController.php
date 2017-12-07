@@ -31,13 +31,13 @@ class ParticipantController extends AbstractActionController {
         $orderService = $this->getServiceLocator()->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         
-        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
         
         $participants = $order->getParticipants();
         
         foreach($participants as $participant) {
             if ($participant->getCountryId()) {
-                $country = $em->getRepository('ErsBase\Entity\Country')
+                $country = $entityManager->getRepository('ErsBase\Entity\Country')
                         ->findOneBy(['id' => $participant->getCountryId()]);
                 $participant->setCountry($country);
             }
@@ -74,13 +74,12 @@ class ParticipantController extends AbstractActionController {
                 $orderService = $this->getServiceLocator()->get('ErsBase\Service\OrderService');
                 $order = $orderService->getOrder();
 
-                $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+                $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-                if ($user->getCountryId() == 0) {
-                    $user->setCountryId(null);
-                    $user->setCountry(null);
-                } else {
-                    $country = $em->getRepository('ErsBase\Entity\Country')
+                $user->setCountryId(null);
+                $user->setCountry(null);
+                if ($user->getCountryId() != 0) {
+                    $country = $entityManager->getRepository('ErsBase\Entity\Country')
                         ->findOneBy(array('id' => $user->getCountryId()));
                     $user->setCountryId($country->getId());
                     $user->setCountry($country);
@@ -90,13 +89,13 @@ class ParticipantController extends AbstractActionController {
                     // No email address was entered. Treat as a new participant.
                     $orderService->addParticipant($user);
                 } else {
-                    $existing_user = $em->getRepository('ErsBase\Entity\User')
+                    $existing_user = $entityManager->getRepository('ErsBase\Entity\User')
                         ->findOneBy(['email' => $user->getEmail()]);
 
                     if ($existing_user && !$existing_user->getActive()) {
                         // Re-use the existing participant and add them to the current order
                         $existing_user->loadData($user);
-                        $em->persist($existing_user);
+                        $entityManager->persist($existing_user);
                         $orderService->addParticipant($existing_user);
                     } elseif ($existing_user && $existing_user->getActive() && !empty($this->zfcUserAuthentication()->getIdentity())) {
                         #throw new \Exception("This email address belongs to a registered user. Please log in.");
@@ -109,8 +108,8 @@ class ParticipantController extends AbstractActionController {
 
                 $orderService->setCountryId($user->getCountryId());
                 
-                $em->persist($order);
-                $em->flush();
+                $entityManager->persist($order);
+                $entityManager->flush();
                 
                 $breadcrumb = $breadcrumbService->get('participant');
                 if (
@@ -154,7 +153,7 @@ class ParticipantController extends AbstractActionController {
             ]);
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $orderService = $this->getServiceLocator()
@@ -190,8 +189,8 @@ class ParticipantController extends AbstractActionController {
                     $participant->setCountry(null);
                 }
                 
-                $em->persist($participant);
-                $em->flush();
+                $entityManager->persist($participant);
+                $entityManager->flush();
                 
                 $orderService = $this->getServiceLocator()
                         ->get('ErsBase\Service\OrderService');
@@ -222,10 +221,10 @@ class ParticipantController extends AbstractActionController {
             return $this->redirect()->toRoute('participant');
         }
 
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
 
-        $form = new Form\SimpleForm($em);
+        $form = new Form\SimpleForm($entityManager);
         $form->get('submit')->setAttributes(array(
             'value' => _('Delete'),
             'class' => 'btn btn-danger',

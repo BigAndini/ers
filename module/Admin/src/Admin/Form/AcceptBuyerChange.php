@@ -13,7 +13,7 @@ use Zend\Form\Form;
 
 class AcceptBuyerChange extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('AcceptBuyerChange');
         $this->setAttribute('method', 'post');

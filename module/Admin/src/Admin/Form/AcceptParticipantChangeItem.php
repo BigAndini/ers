@@ -13,7 +13,7 @@ use Zend\Form\Form;
 
 class AcceptParticipantChangeItem extends Form
 {
-    public function __construct($name = null)
+    public function __construct()
     {
         parent::__construct('AcceptParticipantChangeItem');
         $this->setAttribute('method', 'post');

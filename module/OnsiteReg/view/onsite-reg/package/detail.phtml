@@ -180,7 +180,7 @@ echo $this->flashMessenger()
                 <p><b>Contents:</b></p>
                 <ul class="list">
                 <?php foreach($order->getPackages() as $other): ?>
-                    <li><p>
+                    <li><p class="h4">
                     <?php
                     echo $this->escapeHtml($other->getParticipant()->getFullName()) . '&nbsp;(';
                     if($other == $package)
@@ -206,7 +206,8 @@ echo $this->flashMessenger()
     $late_payer_bs = 1; 
     ?>
     <div class="panel-body">
-        <a class="btn btn-success" href="<?php echo $this->url('admin/matching', array('action' => 'accept'), array('query' => array('statements[0]' => $late_payer_bs, 'orders[0]' => $order->getId()))); ?>">do match</a>
+        <!--<a class="btn btn-success" href="<?php echo $this->url('admin/matching', array('action' => 'accept'), array('query' => array('statements[0]' => $late_payer_bs, 'orders[0]' => $order->getId()))); ?>">do match</a>-->
+        <a class="btn btn-success" href="<?php echo $this->url('admin/package', array('action' => 'paid', 'id' => $package->getId())); ?>">set to paid</a>
     </div>    
 </div>
 <?php endif; ?>

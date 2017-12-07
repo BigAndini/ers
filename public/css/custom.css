@@ -67,11 +67,15 @@ a:hover, a:focus {
 
 .navbar-admin {
     color: #fff;
-  background-image: -webkit-linear-gradient(top, #3c3c3c 0%, #222222 100%);
-  background-image: linear-gradient(to bottom, #3c3c3c 0%, #222222 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3c3c3c', endColorstr='#ff222222', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    background: -moz-linear-gradient(top, #3c3c3c 0%, #222222 100%); /* FF3.6+ */
+    background: -webkit-gradient(top, #3c3c3c 0%, #222222 100%); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #3c3c3c 0%, #222222 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #3c3c3c 0%, #222222 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #3c3c3c 0%, #222222 100%); /* IE10+ */
+    background-image: linear-gradient(to bottom, #3c3c3c 0%, #222222 100%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3c3c3c', endColorstr='#ff222222', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
 /*.form-element {
@@ -422,11 +426,11 @@ div.product-info-field {
 
 .table-notbordered th,
 .table-notbordered td {
-    border: none !important;
+    border: none;
 }
 
 .price-table {
-    border: none !important;
+    border: none;
     width: auto;
     float: right;
 }

@@ -28,9 +28,9 @@ class ProductPackageController extends AbstractActionController {
      * @return array
      */
     private function getProductOptions(Entity\Product $thisProduct = null, $productId = null) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $products = $em->getRepository('ErsBase\Entity\Product')
+        $products = $entityManager->getRepository('ErsBase\Entity\Product')
                 ->findBy(array(), array('position' => 'ASC'));
         $options = array();
         foreach($products as $product) {
@@ -55,21 +55,21 @@ class ProductPackageController extends AbstractActionController {
         $forrest = new Service\BreadcrumbService();
         $breadcrumb = $forrest->get('product-package');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $productId = (int) $this->params()->fromRoute('id', 0);
+        if (!$productId) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $form = new Form\ProductPackage();
         $form->get('submit')->setValue('Add');
         
-        $thisProduct = $em->getRepository('ErsBase\Entity\Product')
-                ->findOneBy(array('id' => $id));
-        $form->get('sub_product_id')->setValueOptions($this->getProductOptions($thisProduct));
-        $form->get('product_id')->setValue($id);
+        $thisProduct = $entityManager->getRepository('ErsBase\Entity\Product')
+                ->findOneBy(array('id' => $productId));
+        $form->get('SubProduct_id')->setValueOptions($this->getProductOptions($thisProduct));
+        $form->get('Product_id')->setValue($productId);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -81,28 +81,27 @@ class ProductPackageController extends AbstractActionController {
                 $productPackage->populate($form->getData());
                 
                 if($productPackage->getSubProductId() != 0) {
-                    $subProduct = $em->getRepository('ErsBase\Entity\Product')
+                    $subProduct = $entityManager->getRepository('ErsBase\Entity\Product')
                         ->findOneBy(array('id' => $productPackage->getSubProductId()));
                     $productPackage->setSubProduct($subProduct);
                 }
                 if($productPackage->getProductId() != 0) {
-                    $product = $em->getRepository('ErsBase\Entity\Product')
+                    $product = $entityManager->getRepository('ErsBase\Entity\Product')
                         ->findOneBy(array('id' => $productPackage->getProductId()));
                     $productPackage->setProduct($product);
                 }
                 
-                $em->persist($productPackage);
-                $em->flush();
+                $entityManager->persist($productPackage);
+                $entityManager->flush();
            
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
-            } else {
-                $logger = $this->getServiceLocator()->get('Logger');
-                $logger->warn($form->getMessages());
             }
+            $logger = $this->getServiceLocator()->get('Logger');
+            $logger->warn($form->getMessages());
         }
         
         return new ViewModel(array(
-            'id' => $id,
+            'id' => $productId,
             'form' => $form,
             'product' => $thisProduct,
             'breadcrumb' => $breadcrumb,
@@ -114,8 +113,8 @@ class ProductPackageController extends AbstractActionController {
         $forrest = new Service\BreadcrumbService();
         $breadcrumb = $forrest->get('product-package');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $productPackageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$productPackageId) {
             return $this->redirect()->toRoute('admin/product-package', array(
                 'action' => 'add'
             ));
@@ -125,19 +124,20 @@ class ProductPackageController extends AbstractActionController {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $productPackage = $em->getRepository('ErsBase\Entity\ProductPackage')
-                ->findOneBy(array('id' => $id));
+        $productPackage = $entityManager->getRepository('ErsBase\Entity\ProductPackage')
+                ->findOneBy(array('id' => $productPackageId));
 
         $form = new Form\ProductPackage();
         $form->bind($productPackage);
         $form->get('submit')->setAttribute('value', 'Edit');
 
-        $thisProduct = $em->getRepository('ErsBase\Entity\Product')
+        $thisProduct = $entityManager->getRepository('ErsBase\Entity\Product')
                 ->findOneBy(array('id' => $productPackage->getProductId()));
-        $form->get('sub_product_id')->setValueOptions($this->getProductOptions($thisProduct, $subproduct_id));
-        $form->get('product_id')->setValue($id);
+
+        $form->get('SubProduct_id')->setValueOptions($this->getProductOptions($thisProduct, $subproduct_id));
+        $form->get('Product_id')->setValue($productPackageId);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -147,25 +147,25 @@ class ProductPackageController extends AbstractActionController {
             if ($form->isValid()) {
                 $productPackage = $form->getData();
                 if($productPackage->getSubProductId() != 0) {
-                    $subProduct = $em->getRepository('ErsBase\Entity\Product')
+                    $subProduct = $entityManager->getRepository('ErsBase\Entity\Product')
                         ->findOneBy(array('id' => $productPackage->getSubProductId()));
                     $productPackage->setSubProduct($subProduct);
                 }
                 if($productPackage->getProductId() != 0) {
-                    $product = $em->getRepository('ErsBase\Entity\Product')
+                    $product = $entityManager->getRepository('ErsBase\Entity\Product')
                         ->findOneBy(array('id' => $productPackage->getProductId()));
                     $productPackage->setProduct($product);
                 }
                 
-                $em->persist($productPackage);
-                $em->flush();
+                $entityManager->persist($productPackage);
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
 
         return new ViewModel(array(
-            'id' => $id,
+            'id' => $productPackageId,
             'form' => $form,
             'product' => $thisProduct,
             'breadcrumb' => $forrest->get('product-package'),
@@ -174,19 +174,19 @@ class ProductPackageController extends AbstractActionController {
 
     public function deleteAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $productPackageId = (int) $this->params()->fromRoute('id', 0);
+        if (!$productPackageId) {
             return $this->redirect()->toRoute('admin/product-package');
         }
         $forrest = new Service\BreadcrumbService();
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $productPackage = $em->getRepository('ErsBase\Entity\ProductPackage')
-                ->findOneBy(array('id' => $id));
-        $product = $em->getRepository('ErsBase\Entity\Product')
+        $productPackage = $entityManager->getRepository('ErsBase\Entity\ProductPackage')
+                ->findOneBy(array('id' => $productPackageId));
+        $product = $entityManager->getRepository('ErsBase\Entity\Product')
                 ->findOneBy(array('id' => $productPackage->getProductId()));
-        $subproduct = $em->getRepository('ErsBase\Entity\Product')
+        $subproduct = $entityManager->getRepository('ErsBase\Entity\Product')
                 ->findOneBy(array('id' => $productPackage->getSubProductId()));
 
         $request = $this->getRequest();
@@ -194,11 +194,11 @@ class ProductPackageController extends AbstractActionController {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
-                $id = (int) $request->getPost('id');
-                $productPackage = $em->getRepository('ErsBase\Entity\ProductPackage')
-                    ->findOneBy(array('id' => $id));
-                $em->remove($productPackage);
-                $em->flush();
+                $productPackageId = (int) $request->getPost('id');
+                $productPackage = $entityManager->getRepository('ErsBase\Entity\ProductPackage')
+                    ->findOneBy(array('id' => $productPackageId));
+                $entityManager->remove($productPackage);
+                $entityManager->flush();
             }
 
             $breadcrumb = $forrest->get('product-package');
@@ -206,7 +206,7 @@ class ProductPackageController extends AbstractActionController {
         }
 
         return new ViewModel(array(
-            'id'    => $id,
+            'id'    => $productPackageId,
             'product' => $product,
             'subproduct' => $subproduct,
             'productpackage' => $productPackage,

@@ -16,10 +16,10 @@ use Zend\InputFilter\InputFilterInterface;
 class PaymentType implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
-    protected $em;
+    protected $entityManager;
     
-    public function setEntityManager(\Doctrine\ORM\EntityManager $em) {
-        $this->em = $em;
+    public function setEntityManager(\Doctrine\ORM\EntityManager $entityManager) {
+        $this->em = $entityManager;
     }
     public function getEntityManager() {
         return $this->em;
@@ -133,7 +133,7 @@ class PaymentType implements InputFilterAwareInterface
                             \Zend\Validator\Callback::INVALID_VALUE => "The deadline active from may not be before active until.",
                         ),
                         'callback' => function($value, $context=array()) {
-                            $em = $this->getEntityManager();
+                            $entityManager = $this->getEntityManager();
                             /*
                              * if active_from_id or active_until_id is 0 
                              * everything is ok, because this means either on or
@@ -146,9 +146,9 @@ class PaymentType implements InputFilterAwareInterface
                                 return true;
                             }
                             
-                            $active_from = $em->getRepository('ErsBase\Entity\Deadline')
+                            $active_from = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findOneBy(array('id' => $value));
-                            $active_until = $em->getRepository('ErsBase\Entity\Deadline')
+                            $active_until = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findOneBy(array('id' => $context['active_until_id']));
                             
                             $diff = $active_from->getDeadline()->getTimestamp() - $active_until->getDeadline()->getTimestamp();
@@ -195,7 +195,7 @@ class PaymentType implements InputFilterAwareInterface
                             \Zend\Validator\Callback::INVALID_VALUE => "The deadline active from may not be before active until.",
                         ),
                         'callback' => function($value, $context=array()) {
-                            $em = $this->getEntityManager();
+                            $entityManager = $this->getEntityManager();
                             /*
                              * if active_from_id or active_until_id is 0 
                              * everything is ok, because this means either on or
@@ -208,9 +208,9 @@ class PaymentType implements InputFilterAwareInterface
                                 return true;
                             }
                             
-                            $active_from = $em->getRepository('ErsBase\Entity\Deadline')
+                            $active_from = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findOneBy(array('id' => $context['active_from_id']));
-                            $active_until = $em->getRepository('ErsBase\Entity\Deadline')
+                            $active_until = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findOneBy(array('id' => $value));
                             
                             $diff = $active_from->getDeadline()->getTimestamp() - $active_until->getDeadline()->getTimestamp();

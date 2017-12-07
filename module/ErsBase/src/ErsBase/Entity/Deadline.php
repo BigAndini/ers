@@ -30,10 +30,14 @@ class Deadline extends Base\Deadline
     {
         if($deadline instanceof \DateTime) {
             $this->deadline = $deadline;
-        } else {
-            $this->deadline = \DateTime::createFromFormat('Y-m-d H:i:s', $deadline);
+            
+            return $this;
+        } elseif(is_string($deadline)) {
+            $this->deadline = \date_create_from_format('Y-m-d H:i:s', $deadline);
+            
+            return $this;
         }
 
-        return $this;
+        throw new \Exception('Unable to get the form in which deadline is provided');
     }
 }

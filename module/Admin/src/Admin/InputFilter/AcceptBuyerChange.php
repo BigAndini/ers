@@ -16,10 +16,10 @@ use Zend\InputFilter\InputFilterInterface;
 class AcceptBuyerChange implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
-    protected $sm;
+    protected $serviceManager;
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
     }
     
     public function getServiceLocator() {
@@ -58,10 +58,10 @@ class AcceptBuyerChange implements InputFilterAwareInterface
                                     return false;
                                 }
                 
-                                $em = $this->getServiceLocator()
+                                $entityManager = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $order = $em->getRepository('ErsBase\Entity\Order')
+                                $order = $entityManager->getRepository('ErsBase\Entity\Order')
                                     ->findOneBy(array('id' => $value));
                 
                                 if($order) {
@@ -94,10 +94,10 @@ class AcceptBuyerChange implements InputFilterAwareInterface
                                     return false;
                                 }
                 
-                                $em = $this->getServiceLocator()
+                                $entityManager = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $user = $em->getRepository('ErsBase\Entity\User')
+                                $user = $entityManager->getRepository('ErsBase\Entity\User')
                                     ->findOneBy(array('id' => $value));
                 
                                 if($user) {

@@ -14,14 +14,14 @@ class AgegroupService
 {
     protected $agegroups;
     protected $mode = '';
-    protected $sm;
+    protected $serviceManager;
     
     public function __construct() {
         $this->agegroups = array();
     }
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
     }
     public function getServiceLocator() {
         return $this->sm;
@@ -40,7 +40,7 @@ class AgegroupService
     
     public function getAgegroups() {
         if(count($this->agegroups) <= 0) {
-            $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+            $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
             $criteria = array();
             switch($this->getMode()) {
                 case 'price':
@@ -53,7 +53,7 @@ class AgegroupService
                     throw new \Exception('Please set a mode for Agegroup Service: price or ticket');
                     break;
             }
-            $agegroups = $em->getRepository('ErsBase\Entity\Agegroup')
+            $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                         ->findBy($criteria);
             $this->setAgegroups($agegroups);
         }

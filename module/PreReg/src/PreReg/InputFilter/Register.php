@@ -17,20 +17,20 @@ use Zend\Session\Container;
 class Register implements InputFilterAwareInterface 
 { 
     protected $inputFilter; 
-    protected $em;
-    protected $sm;
+    protected $entityManager;
+    protected $serviceManager;
     protected $loginEmail;
     protected $email;
     
-    public function setEntityManager(\Doctrine\ORM\EntityManager $em) {
-        $this->em = $em;
+    public function setEntityManager(\Doctrine\ORM\EntityManager $entityManager) {
+        $this->em = $entityManager;
     }
     public function getEntityManager() {
         return $this->em;
     }
     
-    public function setServiceLocator($sm) {
-        $this->sm = $sm;
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
     }
     public function getServiceLocator() {
         return $this->sm;
@@ -96,7 +96,7 @@ class Register implements InputFilterAwareInterface
                                 \Zend\Validator\Callback::INVALID_VALUE => 'The email of this buyer already exists. Please login with this account to continue.',
                             ),
                             'callback' => function($value, $context=array()) {
-                                $cartContainer = new Container('ers');
+                                #$cartContainer = new Container('ers');
                                 $orderService = $this->getServiceLocator()
                                         ->get('ErsBase\Service\OrderService');
                                 $order = $orderService->getOrder();
@@ -114,10 +114,10 @@ class Register implements InputFilterAwareInterface
                                     }
                                 }
                                 
-                                $em = $this->getServiceLocator()
+                                $entityManager = $this->getServiceLocator()
                                     ->get('Doctrine\ORM\EntityManager');
                                 
-                                $user = $em->getRepository('ErsBase\Entity\User')->findOneBy(array(
+                                $user = $entityManager->getRepository('ErsBase\Entity\User')->findOneBy(array(
                                     'email' => $participant->getEmail(),
                                     'active' => true,
                                     ));

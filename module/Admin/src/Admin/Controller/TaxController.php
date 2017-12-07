@@ -17,10 +17,10 @@ use ErsBase\Service;
 class TaxController extends AbstractActionController {
     public function indexAction()
     {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
-            'taxes' => $em->getRepository('ErsBase\Entity\Tax')->findBy(array(), array('percentage' => 'ASC')),
+            'taxes' => $entityManager->getRepository('ErsBase\Entity\Tax')->findBy(array(), array('percentage' => 'ASC')),
         ));
     }
 
@@ -44,10 +44,10 @@ class TaxController extends AbstractActionController {
             if ($form->isValid()) {
                 $tax->populate($form->getData());
 
-                $em = $this->getServiceLocator()
+                $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
-                $em->persist($tax);
-                $em->flush();
+                $entityManager->persist($tax);
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
@@ -66,15 +66,15 @@ class TaxController extends AbstractActionController {
             $forrest->set('tax', 'admin/tax');
         }
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $taxId = (int) $this->params()->fromRoute('id', 0);
+        if (!$taxId) {
             return $this->redirect()->toRoute('admin/tax', array(
                 'action' => 'add'
             ));
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $tax = $em->getRepository('ErsBase\Entity\Tax')->findOneBy(array('id' => $id));
+        $tax = $entityManager->getRepository('ErsBase\Entity\Tax')->findOneBy(array('id' => $taxId));
 
         $form  = new Form\Tax();
         $form->bind($tax);
@@ -87,16 +87,16 @@ class TaxController extends AbstractActionController {
 
             if ($form->isValid()) {
                 #$tax->populate($form->getData());
-                #$em->persist($tax);
-                $em->persist($form->getData());
-                $em->flush();
+                #$entityManager->persist($tax);
+                $entityManager->persist($form->getData());
+                $entityManager->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
             }
         }
 
         return new ViewModel(array(
-            'id' => $id,
+            'id' => $taxId,
             'form' => $form,
             'breadcrumb' => $breadcrumb,
         ));
@@ -110,11 +110,11 @@ class TaxController extends AbstractActionController {
         }
         $breadcrumb = $forrest->get('tax');
         
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
+        $taxId = (int) $this->params()->fromRoute('id', 0);
+        if (!$taxId) {
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
 
         $request = $this->getRequest();
@@ -123,20 +123,20 @@ class TaxController extends AbstractActionController {
 
             if ($del == 'Yes') {
                 
-                $id = (int) $request->getPost('id');
-                $tax = $em->getRepository('ErsBase\Entity\Tax')
-                        ->findOneBy(array('id' => $id));
-                $em->remove($tax);
-                $em->flush();
+                $taxId = (int) $request->getPost('id');
+                $tax = $entityManager->getRepository('ErsBase\Entity\Tax')
+                        ->findOneBy(array('id' => $taxId));
+                $entityManager->remove($tax);
+                $entityManager->flush();
             }
 
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
 
         return new ViewModel(array(
-            'id'    => $id,
-            'tax' => $tax = $em->getRepository('ErsBase\Entity\Tax')
-                ->findOneBy(array('id' => $id)),
+            'id'    => $taxId,
+            'tax' => $tax = $entityManager->getRepository('ErsBase\Entity\Tax')
+                ->findOneBy(array('id' => $taxId)),
             'breadcrumb' => $breadcrumb,
         ));
     }
