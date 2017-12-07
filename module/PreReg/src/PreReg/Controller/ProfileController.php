@@ -138,8 +138,11 @@ class ProfileController extends AbstractActionController {
                     $emailService = $this->getServiceLocator()
                             ->get('ErsBase\Service\EmailService');
         
-                    $emailService->addTo($user);
-                    $emailService->setSubject(_('Event Registration System: Password Request Link'));
+                    $recipients[] = [
+                        'email' => $user,
+                        'type' => 'to',
+                    ];
+                    $subject = _('Event Registration System: Password Request Link');
 
                     $viewModel = new ViewModel(array(
                         'user' => $user,
@@ -148,8 +151,10 @@ class ProfileController extends AbstractActionController {
                     $viewRender = $this->getServiceLocator()->get('ViewRenderer');
                     $html = $viewRender->render($viewModel);
 
-                    $emailService->setHtmlMessage($html);
-                    $emailService->send();
+                    #$emailService->setHtmlMessage($html);
+                    #$emailService->send();
+                    
+                    $emailService->addMailToQueue(null, $recipients, $subject, $html, true);
                 }
                 
                 $sent = true;
