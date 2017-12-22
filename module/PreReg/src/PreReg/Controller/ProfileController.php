@@ -150,8 +150,13 @@ class ProfileController extends AbstractActionController {
                     $settingService = $this->getServiceLocator()
                         ->get('ErsBase\Service\SettingService');
 
+		    $recipients[] = [
+			'email' => $user->getEmail(),
+			'type' => 'to',
+		    ];
                     
-                    $emailService->addMailToQueue($settingService->get('ers.sender_email'), $user->getEmail(), $subject, $content);
+                    #$emailService->addMailToQueue($settingService->get('ers.sender_email'), $user->getEmail(), $subject, $content);
+                    $emailService->addMailToQueue($settingService->get('ers.sender_email'), $recipients, $subject, $content);
                 }
                 
                 $sent = true;
