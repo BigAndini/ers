@@ -24,9 +24,15 @@ $this->headTitle('Event Registration System');
                         $endDate,
                         $this->config()['ERS']['city'],
                         $this->config()['ERS']['country'],
-                        $website);*/ ?>
-                Die 15. Berliner Jonglierconvention findet im Zeitraum <strong>Donnerstag, 14.09.2017</strong> bis <strong>Sonntag, 17.09.2017</strong> im FEZ&#x2011;Berlin (Germany) statt. Im Prereg System kannst du Tickets für die Con und die Galashow kaufen.
-Aktuelle Informationen zur Convention findest du unter <a href="http://www.circulum.de/convention/17/" target="_blank">http://www.circulum.de/convention/17/</a>.
+                        $website);*/
+		printf($this->translate('The %s will take place from %s - %s in %s (%s). You can find all up-to-date information on %s.'),
+                        $this->setting('ers.name_with_number'),
+                        $startDate,
+                        $endDate,
+                        $this->setting('ers.city'),
+                        $this->setting('ers.country'),
+                        $website); ?>
+
             </p>
 
             <p class="justify"><?php #printf($this->translate('On this website you can purchase tickets for %s as well as other items such as galashow tickets.'), $this->config()['ERS']['name_with_year']); ?></p>
