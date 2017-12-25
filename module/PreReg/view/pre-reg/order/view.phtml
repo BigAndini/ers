@@ -3,8 +3,8 @@
 $title = $this->translate('My Order');
 $this->headTitle($title);
 
-$preregMail = '<a href=\'mailto:'.$this->config()['ERS']['prereg_mail'].'\'>'.$this->config()['ERS']['prereg_mail'].'</a>';
-$infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this->config()['ERS']['info_mail'].'</a>';
+$preregMail = $this->setting('ers.prereg_mail', 'email');
+$infoMail = $this->setting('ers.info_mail', 'email');
 ?>
 
 <h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
@@ -40,9 +40,9 @@ $infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this-
             <?php if($order->getStatus()->getValue() == 'paid'): ?>
                 <h3><?php echo $this->translate('This order is already paid'); ?></h3>
                 <p><?php echo $this->translate('Your E-Tickets will be sent out in june.'); ?></p>
-                <p><strong><?php echo $this->translate('Note:'); ?></strong> <?php echo $this->translate('Please add the email address 
-                    anmeldung@circulum.de to your address book. To be sure the email 
-                    with your E-Tickets will not arrive in your spamfolder.'); ?></p>
+                <p><strong><?php echo $this->translate('Note:'); ?></strong> <?php echo sprintf($this->translate('Please add the email address 
+                    %s to your address book. To be sure the email 
+                    with your E-Tickets will not arrive in your spamfolder.'), $this->setting('ers.info_mail', 'email')); ?></p>
             <?php elseif($order->getStatus()->getValue() == 'ordered'): ?>
                 <?php if($paymenttype->getType() == 'sepa'): ?>
                     <h3><?php echo $this->translate('Bank Transfer Details'); ?></h3>

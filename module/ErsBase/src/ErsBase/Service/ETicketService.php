@@ -310,7 +310,7 @@ class ETicketService
                 ->get('ErsBase\Service\SettingService');
         $primaryColor = $settingService->get('pdf.primary-color');
         if($primaryColor == '' || substr($primaryColor,1,1) != '#') {
-            $primaryColor = '#F48029';
+            $primaryColor = '#00D4F4';
         }
         list($r, $g, $b) = sscanf($primaryColor, "#%02x%02x%02x");
         $text_color = imagecolorallocate($textImage,$r,$g,$b);

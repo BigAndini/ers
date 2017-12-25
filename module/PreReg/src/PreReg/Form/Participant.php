@@ -305,7 +305,7 @@ class Participant extends Form implements InputFilterProviderInterface
                         'name' => 'Callback',
                         'options' => array(
                             'messages' => array(
-                                \Zend\Validator\Callback::INVALID_VALUE => _('A person with this email address already exists. To make changes to your existing order contact anmeldung@circulum.de or choose another e-mail'),
+                                \Zend\Validator\Callback::INVALID_VALUE => _('A person with this email address already exists. To make changes to your existing order contact prereg@eja.net or choose another e-mail'),
                             ),
                             'callback' => function($value, $context=array()) {
                                 $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');

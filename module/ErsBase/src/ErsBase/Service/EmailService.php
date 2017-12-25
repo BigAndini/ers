@@ -42,7 +42,7 @@ class EmailService
         return $this->_sl;
     }
 
-    public function sendExceptionEmail(\Exception $e) {        
+    public function sendExceptionEmail($e) {        
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $role = $entityManager->getRepository('ErsBase\Entity\Role')
@@ -114,7 +114,7 @@ class EmailService
         #}
         
         #$subject = sprintf(_('Your registration for %s (order %s)'), $config['ERS']['name_short'], $order->getCode()->getValue());
-        $subject = sprintf(_('Deine Bestellung für die %s (order %s)'), $settingService->get('ers.name_short'), $order->getCode()->getValue());
+        $subject = sprintf(_('Order confirmation for the %s (order %s)'), $settingService->get('ers.name_short'), $order->getCode()->getValue());
         #$this->setSubject($subject);
         
         $config = $this->getServiceLocator()->get('config');
@@ -135,7 +135,7 @@ class EmailService
     }
     
     public function addMailToQueue($from, $recipients, $subject, $content, $is_html = true, $attachments = array()) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $mailq = new Entity\Mailq();
@@ -143,14 +143,14 @@ class EmailService
         # from
         if(!$from instanceof Entity\Base\User) {
             if(is_string($from)) {
-                $from = $em->getRepository('ErsBase\Entity\User')
+                $from = $entityManager->getRepository('ErsBase\Entity\User')
                     ->findOneBy(['email' => $from]);
             }
             if(!$from) {
                 # use default sender if sender is not set.
                 $settingService = $this->getServiceLocator()
                     ->get('ErsBase\Service\SettingService');
-                $from = $em->getRepository('ErsBase\Entity\User')
+                $from = $entityManager->getRepository('ErsBase\Entity\User')
                     ->findOneBy(['email' => $settingService->get('ers.sender_email')]);
                 if(!$from) {
                     $from = new Entity\User();
@@ -158,8 +158,8 @@ class EmailService
                     $from->setFirstname('');
                     $from->setSurname('');
                     $from->setActive(1);
-                    $em->persist($from);
-                    $em->flush();
+                    $entityManager->persist($from);
+                    $entityManager->flush();
                 }
             }
             
@@ -189,8 +189,8 @@ class EmailService
             $mailq->addMailAttachment($att);
         }
         
-        $em->persist($mailq);
-        $em->flush();
+        $entityManager->persist($mailq);
+        $entityManager->flush();
         
         # recipients
         foreach($recipients as $recipient) {
@@ -202,16 +202,16 @@ class EmailService
             }
         }
         
-        $em->flush();
+        $entityManager->flush();
     }
     
     private function addUser($mailq, $recipient, $type = 'to') {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         if(!$recipient instanceof Entity\User) {
             $email = $recipient;
-            $recipient = $em->getRepository('ErsBase\Entity\User')
+            $recipient = $entityManager->getRepository('ErsBase\Entity\User')
                     ->findOneBy(['email' => $recipient]);
             if(!$recipient) {
                 $recipient = new Entity\User();
@@ -220,8 +220,8 @@ class EmailService
                 $recipient->setSurname('User');
                 $recipient->setActive(true);
                 
-                $em->persist($recipient);
-                $em->flush();
+                $entityManager->persist($recipient);
+                $entityManager->flush();
             }
         }
 
@@ -244,14 +244,14 @@ class EmailService
                 break;
         }
         
-        $em->persist($mailqHasUser);
+        $entityManager->persist($mailqHasUser);
     }
     
     /*
      * TODO: check plain/text mail with attachment.
      */
     private function mailqEntityToMessage(Entity\Mailq $mailq) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         $content  = new Mime\Message();
@@ -294,8 +294,8 @@ class EmailService
                 ->setType($type);
         
         if(!$mailq->getTo()) {
-            $em->remove($mailq);
-            $em->flush();
+            $entityManager->remove($mailq);
+            $entityManager->flush();
             return false;
             #throw new \Exception('mail in mailq is invalid: '.$mailq->getId());
         }
@@ -313,7 +313,7 @@ class EmailService
         if(!$mailq->getFrom()) {
             $settingService = $this->getServiceLocator()
                     ->get('ErsBase\Service\SettingService');
-            $user = $em->getRepository('ErsBase\Entity\User')
+            $user = $entityManager->getRepository('ErsBase\Entity\User')
                     ->findOneBy(['email' => $settingService->get('ers.sender_email')]);
             if(!$user) {
                 $user = new Entity\User();
@@ -321,8 +321,8 @@ class EmailService
                 $user->setFirstname('');
                 $user->setSurname('');
                 $user->setActive(1);
-                $em->persist($user);
-                $em->flush();
+                $entityManager->persist($user);
+                $entityManager->flush();
             }
             $mailq->setFrom($user);
         }
@@ -334,11 +334,11 @@ class EmailService
     }
     
     public function mailqWorker() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $limit = 10; // to run process-mailq every five minutes
-        $mailqs = $em->getRepository('ErsBase\Entity\Mailq')
+        $mailqs = $entityManager->getRepository('ErsBase\Entity\Mailq')
                 ->findBy(array(), array('created' => 'ASC'), $limit);
         
         foreach($mailqs as $mailq) {
@@ -351,8 +351,8 @@ class EmailService
             $transport = new Mail\Transport\Sendmail();
             $transport->send($message);
             
-            $em->remove($mailq);
-            $em->flush();
+            $entityManager->remove($mailq);
+            $entityManager->flush();
         }
     }
 }

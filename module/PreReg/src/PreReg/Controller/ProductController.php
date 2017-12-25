@@ -37,6 +37,9 @@ class ProductController extends AbstractActionController {
                     $container = new Container('ers');
                     $container->currency = $currency->getShort();
                 }
+	    } else {
+                $logger = $this->getServiceLocator()->get('Logger');
+                $logger->warn($form->getMessages());
             }
             
             $redirectUrl = $this->getRequest()->getHeader('Referer')->uri()->getPath();
@@ -255,10 +258,10 @@ class ProductController extends AbstractActionController {
                 $entityManager = $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
                 $product = $entityManager->getRepository('ErsBase\Entity\Product')
-                        ->findOneBy(array('id' => $data['Product_id']));
+                        ->findOneBy(array('id' => $data['product_id']));
 
                 if(!$product) {
-                    throw new Exception('Unable to find product with id '.$data['product_id']);
+                    throw new \Exception('Unable to find product with id '.$data['product_id']);
                 }
                 
                 /*
@@ -337,7 +340,7 @@ class ProductController extends AbstractActionController {
                  * check product packages and add data to item entity
                  */
                 $productPackages = $entityManager->getRepository('ErsBase\Entity\ProductPackage')
-                    ->findBy(array('Product_id' => $product->getId()));
+                    ->findBy(array('product_id' => $product->getId()));
 
                 foreach($productPackages as $package) {
                     $subProduct = $package->getSubProduct();

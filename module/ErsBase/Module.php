@@ -132,6 +132,9 @@ class Module
                     $deadlineService = new Service\DeadlineService();
                     $deadlineService->setServiceLocator($serviceManager);
                     
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $deadlineService->setEntityManager($entityManager);
+                    
                     return $deadlineService;
                 },
                 'ErsBase\Service\DeadlineService:price' => function($serviceManager) {
@@ -140,6 +143,11 @@ class Module
                     $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findBy(array('price_change' => '1'));
                     $deadlineService->setDeadlines($deadlines);
+                    
+                    $deadlineService->setMode('price');
+                    
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $deadlineService->setEntityManager($entityManager);
                     
                     return $deadlineService;
                 },
@@ -150,6 +158,11 @@ class Module
                                 ->findBy(array('price_change' => '0'));
                     $deadlineService->setDeadlines($deadlines);
                     
+                    $deadlineService->setMode('price');
+                    
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $deadlineService->setEntityManager($entityManager);
+                    
                     return $deadlineService;
                 },
                 'ErsBase\Service\DeadlineService:all' => function($serviceManager) {
@@ -158,6 +171,8 @@ class Module
                     $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                                 ->findAll();
                     $deadlineService->setDeadlines($deadlines);
+                    
+                    $deadlineService->setMode('all');
                     
                     return $deadlineService;
                 },

@@ -43,10 +43,10 @@ a:hover, a:focus {
 }
 
 .primary-color {
-    color: #f48029;
+    color: #00D4F4;
 }
 .primary-background {
-    background: #f48029;
+    background: #00D4F4;
 }
 
 .light-green {
@@ -339,7 +339,7 @@ a.product-item span.product-short-description {
 }
 
 .nav-pills > li > a {
-  color: #f48029;
+  color: #00D4F4;
 }
 
 .nav-pills > li.active > a {
@@ -453,7 +453,7 @@ div.product-info-field {
 
 .product-icon-lg {
     font-size: 340px; 
-    color: #f48029;
+    color: #00D4F4;
     margin-bottom: 20px;
 }
 

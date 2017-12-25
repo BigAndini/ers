@@ -8,8 +8,8 @@
 
 // module/PreReg/config/module.config.php:
 return array(
-    'controllers' => array(
-        'invokables' => array(
+    'controllers' => [
+        'invokables' => [
             'PreReg\Controller\Order'       => 'PreReg\Controller\OrderController',
             'PreReg\Controller\Cart'        => 'PreReg\Controller\CartController',
             'PreReg\Contsroller\Package'     => 'PreReg\Controller\PackageController',
@@ -20,8 +20,12 @@ return array(
             'PreReg\Controller\Info'        => 'PreReg\Controller\InfoController',
             'PreReg\Controller\Payment'     => 'PreReg\Controller\PaymentController',
             'PreReg\Controller\Test'        => 'PreReg\Controller\TestController',
-        ),
-    ),
+        ],
+        'factories' => [
+            'PreReg\Controller\InfoController' => 'PreReg\Controller\Factory\ControllerFactory',
+            'PreReg\Controller\ProfileController' => 'PreReg\Controller\Factory\ControllerFactory',
+        ],
+    ],
     'navigation' => array(
         'main_nav' => array(
             'home' => array(

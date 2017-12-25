@@ -1074,7 +1074,7 @@ class OrderController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/order', array());
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         $order = $em->getRepository('ErsBase\Entity\Order')
@@ -1175,7 +1175,7 @@ class OrderController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/order', array());
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         $order = $em->getRepository('ErsBase\Entity\Order')

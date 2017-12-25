@@ -42,7 +42,8 @@
             find another juggler who can take over your ticket. When you have 
             done that, it is very important that you let us know who the ticket 
             shall be transferred! Please contact  
-            <a href="mailto:anmeldung@circulum.de">anmeldung@circulum.de</a> in this case. If 
+		<?php echo $this->setting('ers.info_mail', 'email'); ?>
+             in this case. If 
             there is no-one to take over your order, you can find the guidelines 
             for refunds in our 
             <a href="<?php echo $this->url('info', array('action' => 'terms')); ?>">ERS terms and agreement document</a>.</p>

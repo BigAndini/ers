@@ -25,11 +25,11 @@ class ExportController extends AbstractActionController {
     {
         set_time_limit( 0 );
 
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        /*$orders = $em->getRepository('ErsBase\Entity\Order')
+        /*$orders = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findBy(array(), array('created' => 'ASC'));*/
-        $packages = $em->getRepository('ErsBase\Entity\Package')
+        $packages = $entityManager->getRepository('ErsBase\Entity\Package')
                 ->findBy(array(), array('created' => 'ASC'));
         
         $filename = getcwd() . "/tmp/excel-" . date( "m-d-Y" ) . ".xls";

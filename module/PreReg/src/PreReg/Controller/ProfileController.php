@@ -111,7 +111,6 @@ class ProfileController extends AbstractActionController {
     }
     
     public function requestPasswordAction() {
-        error_log('in request-password');
         $form = new Form\RequestPassword();
         
         $logger = $this->getServiceLocator()->get('Logger');
@@ -138,18 +137,26 @@ class ProfileController extends AbstractActionController {
                     $emailService = $this->getServiceLocator()
                             ->get('ErsBase\Service\EmailService');
         
-                    $emailService->addTo($user);
-                    $emailService->setSubject(_('Event Registration System: Password Request Link'));
+                    #$emailService->addTo($user);
+                    $subject = _('Event Registration System: Password Request Link');
 
                     $viewModel = new ViewModel(array(
                         'user' => $user,
                     ));
                     $viewModel->setTemplate('email/request-password.phtml');
                     $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-                    $html = $viewRender->render($viewModel);
+                    $content = $viewRender->render($viewModel);
 
-                    $emailService->setHtmlMessage($html);
-                    $emailService->send();
+                    $settingService = $this->getServiceLocator()
+                        ->get('ErsBase\Service\SettingService');
+
+		    $recipients[] = [
+			'email' => $user->getEmail(),
+			'type' => 'to',
+		    ];
+                    
+                    #$emailService->addMailToQueue($settingService->get('ers.sender_email'), $user->getEmail(), $subject, $content);
+                    $emailService->addMailToQueue($settingService->get('ers.sender_email'), $recipients, $subject, $content);
                 }
                 
                 $sent = true;

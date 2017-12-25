@@ -15,8 +15,9 @@ class DeadlineService
 {
     protected $deadlines = array();
     protected $mode;
-    protected $serviceManager;
     protected $compareDate;
+    protected $sm;
+    protected $em;
     
     public function __construct() {
         $this->compareDate = new \DateTime;
@@ -27,6 +28,13 @@ class DeadlineService
     }
     public function getServiceLocator() {
         return $this->sm;
+    }
+    
+    public function setEntityManager($em) {
+        $this->em = $em;
+    }
+    public function getEntityManager() {
+        return $this->em;
     }
     
     public function setMode($mode) {
@@ -50,7 +58,8 @@ class DeadlineService
     
     public function getDeadlines() {
         if(count($this->deadlines) <= 0) {
-            $entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+            #$entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+            $entityManager = $this->getEntityManager();
             $criteria = array();
             switch($this->getMode()) {
                 case 'price':

@@ -12,9 +12,9 @@
             ).'">' . $this->translate('terms and conditions') . '</a>';
     $orderDate = $order->getCreated()->format('d.m.Y');
     $orderId = '<b>'.$order->getCode()->getValue().'</b>';
-    $preregMail = '<a href=\'mailto:'.$this->config()['ERS']['prereg_mail'].'\'>'.$this->config()['ERS']['prereg_mail'].'</a>';
-    $infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this->config()['ERS']['info_mail'].'</a>';
-    $website = '<a href=\''.$this->config()['ERS']['website'].'\'>'.$this->config()['ERS']['website'].'</a>';
+    $preregMail = $this->setting('ers.prereg_mail', 'email');
+    $infoMail = $this->setting('ers.info_mail', 'email');
+    $website = $this->setting('ers.website', 'hyperlink', ['target' => '_blank']);
 ?>
 
 <html>
@@ -44,7 +44,7 @@
         ), array('force_canonical' => true)); ?>">resend email link</a>.
     </p>-->
 
-    <p>Danke für deine Anmeldung zur Berliner Jonglierconvention 2017.</p>
+    <p><?php printf($this->translate('Thank you for your registration.')); ?></p>
 
     <p><?php printf($this->translate('You\'ve chosen %s as payment method.'), $order->getPaymentType()->getName()); ?></p>
 
@@ -52,7 +52,7 @@
     $paymenttype = $order->getPaymentType();
     if($paymenttype->getType() == 'sepa'): ?>
 
-        <p><?php echo $this->translate('To complete your order, we need to receive your bank transfer within 7 days.'); ?></p>
+        <p><?php echo $this->translate('To complete your order, we need to receive your bank transfer within 14 days.'); ?></p>
 
         <?php echo $this->partial('partial/sepa-banktransfer-info.phtml', array('order' => $order)); ?>
 
@@ -65,41 +65,6 @@
         <?php echo $this->partial('partial/ukbt-banktransfer-info.phtml', array('order' => $order)); ?>
 
         <p><?php printf($this->translate('To see if we have already received your payment, you can visit the following link: %s'), $orderLink); ?></p>
-    <?php elseif($paymenttype->getType() == 'cheque'): ?>
-
-        <p>The conversation rate Euro to Pounds for cheques is set to 0.8 -
-            this means that you need to multiply the price with 0.8, i.e.
-            120 EUR --> 96 GBP.</p>
-        <p>​​Please make cheques payable to: <strong>European Juggling
-            Association</strong>.</p>
-        <p>Your order amount in GBP is: <strong>
-            <?php
-            $pound = ($order->getSum()*0.8);
-            echo $this->currencyFormat($pound, 'GBP', null, 'en_GB');
-            ?>
-                </strong></p>
-        <p>Please send:</p>
-        <ul>
-            <li>Cheques (amount in GBP, price calculated from Euro-price * 0,8 )</li>
-            <li>your name</li>
-            <li>order ID <?php echo $order->getCode()->getValue(); ?></li>
-            <li>to the address of the UK country-rep:<br /><br />
-                Ron Trickett<br />
-                14 Peterborough Road<br />
-                Newton Hall<br />
-                Durham<br />
-                DH1 5QX<br />
-            </li>
-        </ul>
-        <p>If you ordered a discounted ticket (phase 1 or phase 2), please
-            make sure that your cheque is received within 14 days after the
-            end of this phase (i.e. 14th of May / 14th of July).</p>
-        <p>To see if we have already received your payment, you can visit the following link:
-        <a href="<?php echo $this->url('order', array(
-            'action' => 'view',
-            'hashkey' => $order->getHashKey()
-        ), array('force_canonical' => true)); ?>">Your order details</a></p>
-
     <?php elseif($paymenttype->getType() == 'creditcard'): ?>
 
         <p>We should have received your payment by now.</br>
@@ -128,12 +93,10 @@
     </p>
 
     <p>
-        <?php printf($this->translate('Your E-Tickets and further information concerning the %s will be delivered in another email as soon as we start distributing the E-Tickets and your payment has been confirmed.'), $this->config()['ERS']['name_with_number']); ?>
+        <?php printf($this->translate('Your E-Tickets and further information concerning the %s will be delivered in another email as soon as we start distributing the E-Tickets and your payment has been confirmed.'), $this->setting('ers.name_with_number')); ?>
     </p>
     
-    <p><?php $this->translate('Regards,'); ?></p>
-
-    <p>Euer Berliner Convention Orga-Team</p>
+    <p><?php $this->translate('All the best'); ?></p>
 
     <hr>
     <p>
@@ -146,10 +109,20 @@
             text-align: center;
             padding: 1em;
             background-color: #eeeeee;">
-        Diese E-Mail wurde dir im Namen der Berliner Jonglierconvention 2017 vom Event Registration System (ERS) geschickt, 
-        das vom Circulum e.V. betrieben wird.<br />
-        Wenn du Fragen zu unserer Voranmeldung hast, kontaktiere uns bitte unter <a href="mailto:anmeldung@circulum.de">anmeldung@circulum.de</a><br />
-        Für mehr Informationen zur Berlin Convention 2017, besuche <a href="http://www.circulum.de">http://www.circulum.de</a>.
+        <?php printf($this->translate('This mail was sent to you by the Event Registration System (ERS),
+        operated by the European Juggling Association (EJA) on
+        behalf of %s.'), $this->config()['ERS']['name_with_year']); ?>
+        <br>
+        <?php printf($this->translate('If you have any questions about your pre-registration,
+        please contact the EJA pre-registration coordinator
+        at %s.'), $preregMail); ?>
+        <br>
+        <?php printf($this->translate('For more information about %s,
+        please visit %s
+        or contact %s.'),
+        $this->config()['ERS']['name_with_year'],
+        $website,
+        $infoMail); ?>
     </div>
 </div>
 </body>

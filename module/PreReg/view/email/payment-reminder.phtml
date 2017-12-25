@@ -1,8 +1,7 @@
 <?php
     # new
-    $config = $this->config();
-    $website = '<a href="'.$config['ERS']['website'].'">'.$config['ERS']['website'].'</a>';
-    #$infoMail = '<a href="mailto:'.$config['ERS']['info_mail'].'">'.$config['ERS']['info_mail'].'</a>';
+    $website = $this->setting('ers.website', 'hyperlink', ['target' => '_blank']);
+    #$infoMail = $this->setting('ers.info_mail', 'email');
     #$adobeReaderLink = '<a href="http://get.adobe.com/reader/">http://get.adobe.com/reader/</a>';
     #$termsUrl = $this->url('info', array('action' => 'terms'), array('force_canonical' => true));
     #$termsLink = '<a href="'.$termsUrl.'">'.$this->translate('terms and conditions').'</a>';

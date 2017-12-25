@@ -35,11 +35,11 @@ class TicketCounterService {
             $logger->debug(get_class().' found '.count($counter->getProductVariantValues()).' values');
             $i = 0;
             foreach ($counter->getProductVariantValues() as $productVariantValue) {
-                $qb->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.product_variant_value_id = :pvvid' . $i);
-                $qb->setParameter(':pvvid' . $i, $productVariantValue->getId());
+                $queryBuilder->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.product_variant_value_id = :pvvid' . $i);
+                $queryBuilder->setParameter(':pvvid' . $i, $productVariantValue->getId());
                 $i++;
             }
-            $productVariantValueCount = $qb->getQuery()->getSingleScalarResult();
+            $productVariantValueCount = $queryBuilder->getQuery()->getSingleScalarResult();
             $logger->debug(get_class().' productVariantValueCount: '.$productVariantValueCount);
             return $productVariantValueCount;
         }
@@ -47,11 +47,11 @@ class TicketCounterService {
         if(count($counter->getProductVariants()) != 0) {
             $i = 0;
             foreach ($counter->getProductVariants() as $productVariant) {
-                $qb->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.product_variant_id = :pvid' . $i);
-                $qb->setParameter(':pvid' . $i, $productVariant->getId());
+                $queryBuilder->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.product_variant_id = :pvid' . $i);
+                $queryBuilder->setParameter(':pvid' . $i, $productVariant->getId());
                 $i++;
             }
-            $productVariantCount = $qb->getQuery()->getSingleScalarResult();
+            $productVariantCount = $queryBuilder->getQuery()->getSingleScalarResult();
             $logger->debug(get_class().' productVariantCount: '.$productVariantCount);
             return $productVariantCount;
         }
@@ -60,13 +60,13 @@ class TicketCounterService {
         if(count($counter->getProducts()) != 0) {
             $i = 0;
             foreach ($counter->getProducts() as $product) {
-                #$qb->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.product_id = :pid' . $i);
-                $qb->andWhere($qb->expr()->eq('i.product_id', ':pid'.$i));
-                $qb->setParameter(':pid' . $i, $product->getId());
+                #$queryBuilder->join('i.itemVariants', 'ivar' . $i, 'WITH', 'ivar' . $i . '.product_id = :pid' . $i);
+                $queryBuilder->andWhere($queryBuilder->expr()->eq('i.product_id', ':pid'.$i));
+                $queryBuilder->setParameter(':pid' . $i, $product->getId());
                 $i++;
             }
             
-            $productCount = $qb->getQuery()->getSingleScalarResult();
+            $productCount = $queryBuilder->getQuery()->getSingleScalarResult();
             $logger->debug(get_class().' productCount: '.$productCount);
             return $productCount;
         }
