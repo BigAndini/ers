@@ -3,8 +3,8 @@
 $title = $this->translate('My Order');
 $this->headTitle($title);
 
-$preregMail = '<a href=\'mailto:'.$this->setting('ers.prereg_mail').'\'>'.$this->setting('ers.prereg_mail').'</a>';
-$infoMail = '<a href=\'mailto:'.$this->setting('ers.info_mail').'\'>'.$this->setting('ers.info_mail').'</a>';
+$preregMail = $this->setting('ers.prereg_mail', 'email');
+$infoMail = $this->setting('ers.info_mail', 'email');
 ?>
 
 <h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>

@@ -12,9 +12,9 @@
             ).'">' . $this->translate('terms and conditions') . '</a>';
     $orderDate = $order->getCreated()->format('d.m.Y');
     $orderId = '<b>'.$order->getCode()->getValue().'</b>';
-    $preregMail = '<a href=\'mailto:'.$this->setting('ers.prereg_mail').'\'>'.$this->setting('ers.prereg_mail').'</a>';
-    $infoMail = '<a href=\'mailto:'.$this->setting('ers.info_mail').'\'>'.$this->setting('ers.info_mail').'</a>';
-    $website = '<a href=\''.$this->setting('ers.website').'\'>'.$this->setting('ers.website').'</a>';
+    $preregMail = $this->setting('ers.prereg_mail', 'email');
+    $infoMail = $this->setting('ers.info_mail', 'email');
+    $website = $this->setting('ers.website', 'hyperlink', ['target' => '_blank']);
 ?>
 
 <html>
