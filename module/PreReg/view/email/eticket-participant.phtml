@@ -1,10 +1,9 @@
 <?php
-    $config = $this->config();
-    $website = '<a href="'.$config['ERS']['website'].'">'.$config['ERS']['website'].'</a>';
-    #$website_faq = '<a href="'.$config['ERS']['website_faq'].'">FAQ</a>';
-    #$facebook = '<a href="'.$config['ERS']['facebook'].'">'.$config['ERS']['facebook'].'</a>';
-    #$infoMail = '<a href="mailto:'.$config['ERS']['info_mail'].'">'.$config['ERS']['info_mail'].'</a>';
-    #$preregMail = '<a href="mailto:'.$config['ERS']['prereg_mail'].'">'.$config['ERS']['prereg_mail'].'</a>';
+    $website = '<a href="'.$this->setting('ers.website').'">'.$this->setting('ers.website').'</a>';
+    #$website_faq = '<a href="'.$this->setting('ers.website_faq').'">FAQ</a>';
+    #$facebook = '<a href="'.$this->setting('ers.facebook').'">'.$this->setting('ers.facebook').'</a>';
+    #$infoMail = '<a href="mailto:'.$this->setting('ers.info_mail').'">'.$this->setting('ers.info_mail').'</a>';
+    #$preregMail = '<a href="mailto:'.$this->setting('ers.prereg_mail').'">'.$this->setting('ers.prereg_mail').'</a>';
     #$adobeReaderLink = '<a href="http://get.adobe.com/reader/">http://get.adobe.com/reader/</a>';
     #$termsLink = '<a href="'.$this->url('info', array('action' => 'terms'), array('force_canonical' => true)).'">'.$this->translate('terms and conditions').'</a>';
     

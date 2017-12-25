@@ -12,9 +12,9 @@
             ).'">' . $this->translate('terms and conditions') . '</a>';
     $orderDate = $order->getCreated()->format('d.m.Y');
     $orderId = '<b>'.$order->getCode()->getValue().'</b>';
-    $preregMail = '<a href=\'mailto:'.$this->config()['ERS']['prereg_mail'].'\'>'.$this->config()['ERS']['prereg_mail'].'</a>';
-    $infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this->config()['ERS']['info_mail'].'</a>';
-    $website = '<a href=\''.$this->config()['ERS']['website'].'\'>'.$this->config()['ERS']['website'].'</a>';
+    $preregMail = '<a href=\'mailto:'.$this->setting('ers.prereg_mail').'\'>'.$this->setting('ers.prereg_mail').'</a>';
+    $infoMail = '<a href=\'mailto:'.$this->setting('ers.info_mail').'\'>'.$this->setting('ers.info_mail').'</a>';
+    $website = '<a href=\''.$this->setting('ers.website').'\'>'.$this->setting('ers.website').'</a>';
 ?>
 
 <html>
@@ -128,7 +128,7 @@
     </p>
 
     <p>
-        <?php printf($this->translate('Your E-Tickets and further information concerning the %s will be delivered in another email as soon as we start distributing the E-Tickets and your payment has been confirmed.'), $this->config()['ERS']['name_with_number']); ?>
+        <?php printf($this->translate('Your E-Tickets and further information concerning the %s will be delivered in another email as soon as we start distributing the E-Tickets and your payment has been confirmed.'), $this->setting('ers.name_with_number')); ?>
     </p>
     
     <p><?php $this->translate('Regards,'); ?></p>
@@ -142,15 +142,6 @@
 
     <?php echo $this->partial('partial/order-info.phtml', array('order' => $order)); ?>
 
-    <div style="width: 100%;
-            text-align: center;
-            padding: 1em;
-            background-color: #eeeeee;">
-        Diese E-Mail wurde dir im Namen der Berliner Jonglierconvention 2017 vom Event Registration System (ERS) geschickt, 
-        das vom Circulum e.V. betrieben wird.<br />
-        Wenn du Fragen zu unserer Voranmeldung hast, kontaktiere uns bitte unter <a href="mailto:anmeldung@circulum.de">anmeldung@circulum.de</a><br />
-        Für mehr Informationen zur Berlin Convention 2017, besuche <a href="http://www.circulum.de">http://www.circulum.de</a>.
-    </div>
 </div>
 </body>
 </html>
