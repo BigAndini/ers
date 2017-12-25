@@ -1179,7 +1179,7 @@ class CronController extends AbstractActionController {
         $emailService = $entityManager = $this->getServiceLocator()
             ->get('ErsBase\Service\EmailService');
         
-        $emailService>mailqWorker();
+        $emailService->mailqWorker();
     }
     
     public function insertTestMail2Action() {
