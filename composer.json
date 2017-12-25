@@ -48,7 +48,8 @@
         "trentrichardson/jquery-timepicker-addon": "1.6.3",
         "afarkas/html5shiv": "3.7.3",
         "rogeriopradoj/respond": "1.4.2",
-        "codeception/codeception": "dev-master"
+        "codeception/codeception": "dev-master",
+        "components/jquery-cookie": "1.4.1.2"
     },
     "require-dev": {
         

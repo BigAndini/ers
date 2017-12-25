@@ -50,15 +50,15 @@ class CounterController extends AbstractActionController {
                 $counter->populate($form->getData());
 
                 if($form->get('productVariantValue')->getValue()) {
-                    $counter->addProductVariantValue($em->getRepository('ErsBase\Entity\ProductVariantValue')
+                    $counter->addProductVariantValue($entityManager->getRepository('ErsBase\Entity\ProductVariantValue')
                         ->find((int)$form->get('productVariantValue')->getValue()));
                 }
                 if($form->get('productVariant')->getValue()) {
-                    $counter->addProductVariant($em->getRepository('ErsBase\Entity\ProductVariant')
+                    $counter->addProductVariant($entityManager->getRepository('ErsBase\Entity\ProductVariant')
                         ->find((int)$form->get('productVariant')->getValue()));
                 }
                 if($form->get('product')->getValue()) {
-                    $counter->addProduct($em->getRepository('ErsBase\Entity\Product')
+                    $counter->addProduct($entityManager->getRepository('ErsBase\Entity\Product')
                         ->find((int)$form->get('product')->getValue()));
                 }
                 
@@ -111,15 +111,15 @@ class CounterController extends AbstractActionController {
 
             if ($form->isValid()) {
                 /*if($form->get('productVariantValue')->getValue()) {
-                    $counter->addProductVariantValue($em->getRepository('ErsBase\Entity\ProductVariantValue')
+                    $counter->addProductVariantValue($entityManager->getRepository('ErsBase\Entity\ProductVariantValue')
                         ->find((int)$form->get('productVariantValue')->getValue()));
                 }
                 if($form->get('productVariant')->getValue()) {
-                    $counter->addProductVariant($em->getRepository('ErsBase\Entity\ProductVariant')
+                    $counter->addProductVariant($entityManager->getRepository('ErsBase\Entity\ProductVariant')
                         ->find((int)$form->get('productVariant')->getValue()));
                 }
                 if($form->get('product')->getValue()) {
-                    $counter->addProduct($em->getRepository('ErsBase\Entity\Product')
+                    $counter->addProduct($entityManager->getRepository('ErsBase\Entity\Product')
                         ->find((int)$form->get('product')->getValue()));
                 }*/
                 $counter->getProductVariantValues()->clear();

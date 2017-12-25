@@ -317,6 +317,13 @@ class ProductPriceController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
+        $productprice = $entityManager->getRepository('ErsBase\Entity\ProductPrice')
+                ->findOneBy(array('id' => $id));
+	if(!$forrest->exists('product-price')) {
+            $forrest->set('product-price', 'admin/product-price', ['action' => 'view', 'id' => $productprice->getProduct()->getId()]);
+        }
+        $breadcrumb = $forrest->get('product-price');
+
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
@@ -330,7 +337,6 @@ class ProductPriceController extends AbstractActionController {
                 $entityManager->flush();
             }
 
-            $breadcrumb = $forrest->get('product-price');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
 
