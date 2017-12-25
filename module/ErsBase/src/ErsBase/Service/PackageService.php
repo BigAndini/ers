@@ -52,7 +52,7 @@ class PackageService
     public function sendEticket() {
         $logger = $this->getServiceLocator()->get('Logger');
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $emailService = $this->getServiceLocator()
                 ->get('ErsBase\Service\EmailService');
@@ -130,8 +130,8 @@ class PackageService
         $emailService->addMailToQueue(null, $recipients, $subject, $html, true, $attachments);
 
         $package->setTicketStatus('send_out');
-        $em->persist($package);
-        $em->flush();
+        $entityManager->persist($package);
+        $entityManager->flush();
 
         $logger->info('E-tickets for package '.$package->getCode()->getValue().' has been send out.');
     }

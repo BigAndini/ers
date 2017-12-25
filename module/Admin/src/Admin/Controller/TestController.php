@@ -22,7 +22,7 @@ class TestController extends AbstractActionController {
     }
     
     public function mailqAction() {
-        $emailService = $em = $this->getServiceLocator()
+        $emailService = $entityManager = $this->getServiceLocator()
             ->get('ErsBase\Service\EmailService');
         
         $emailService->mailqWorker();
@@ -103,7 +103,7 @@ class TestController extends AbstractActionController {
     {
         set_time_limit( 0 );
 
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         /*$orders = $em->getRepository('ErsBase\Entity\Order')
                 ->findBy(array(), array('created' => 'ASC'));*/

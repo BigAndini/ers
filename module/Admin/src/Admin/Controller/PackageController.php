@@ -445,7 +445,7 @@ class PackageController extends AbstractActionController {
                 $package = $entityManager->getRepository('ErsBase\Entity\Package')
                     ->findOneBy(array('id' => $packageId));
                 
-                $validStatus = $em->getRepository('ErsBase\Entity\Status')
+                $validStatus = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findBy(array('valid' => 1));
                 $validArray = array_filter($validStatus, function($status) {return $status->getValid();});
                 
@@ -887,17 +887,17 @@ class PackageController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/order', array());
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
-        $package = $em->getRepository('ErsBase\Entity\Package')
+        $package = $entityManager->getRepository('ErsBase\Entity\Package')
                 ->findOneBy(array('id' => $id));
         
         if(!$package) {
             throw new \Exception('Unable to find package with ir '.$id);
         }
         
-        $form = new Form\SimpleForm($em);
+        $form = new Form\SimpleForm($entityManager);
         
         #$form->bind($package);
         
@@ -906,7 +906,7 @@ class PackageController extends AbstractActionController {
             'class' => 'btn btn-success',
         ));
 
-        $status = $em->getRepository('ErsBase\Entity\Status')
+        $status = $entityManager->getRepository('ErsBase\Entity\Status')
                 ->findBy(array(), array('position' => 'ASC'));
         
         $statusId = $package->getStatus()->getId();
@@ -954,10 +954,10 @@ class PackageController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $data = $form->getData();
-                $status = $em->getRepository('ErsBase\Entity\Status')
+                $status = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('id' => $data['status_id']));
                 
-                $package = $em->getRepository('ErsBase\Entity\Package')
+                $package = $entityManager->getRepository('ErsBase\Entity\Package')
                     ->findOneBy(array('id' => $data['package_id']));
                 
                 if(!$package instanceof \ErsBase\Entity\Package) {
@@ -997,17 +997,17 @@ class PackageController extends AbstractActionController {
             return $this->redirect()->toRoute('admin/order', array());
         }
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
-        $package = $em->getRepository('ErsBase\Entity\Package')
+        $package = $entityManager->getRepository('ErsBase\Entity\Package')
                 ->findOneBy(array('id' => $id));
         
         if(!$package) {
             throw new \Exception('Unable to find package with id '.$id);
         }
         
-        $form = new Form\SimpleForm($em);
+        $form = new Form\SimpleForm($entityManager);
         
         $form->get('submit')->setAttributes(array(
             'value' => _('save'),
@@ -1046,7 +1046,7 @@ class PackageController extends AbstractActionController {
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                $package = $em->getRepository('ErsBase\Entity\Package')
+                $package = $entityManager->getRepository('ErsBase\Entity\Package')
                     ->findOneBy(array('id' => $data['package_id']));
                 
                 if(!$package) {
@@ -1055,8 +1055,8 @@ class PackageController extends AbstractActionController {
                 
                 $package->setComment($data['comment']);
                 
-                $em->persist($package);
-                $em->flush();
+                $entityManager->persist($package);
+                $entityManager->flush();
                 
                 $this->flashMessenger()->addSuccessMessage('Comment for for package '.$package->getCode()->getValue().' has been saved.');
                 return $this->redirect()->toRoute('admin/order', array(

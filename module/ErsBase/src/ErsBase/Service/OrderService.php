@@ -508,10 +508,10 @@ class OrderService
 
         $logger->info('payment reminder for order '.$order->getCode()->getValue().' has been send out.');
         
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         $order->setPaymentReminderStatus(($order->getPaymentReminderstatus()+1));
-        $em->persist($order);
-        $em->flush();
+        $entityManager->persist($order);
+        $entityManager->flush();
     }
 }

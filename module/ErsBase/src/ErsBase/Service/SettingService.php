@@ -86,6 +86,9 @@ class SettingService
                 }
                 return strftime($param['toFormat'], $date->getTimestamp());
                 break;
+	    case 'balance':
+		return '<strong>'.number_format($setting->getValue(), 2, ',', '.').' EUR</strong> as of <strong>'.$setting->getUpdated()->format('d.m.Y').'</strong>';
+		break;
             default:
                 return $setting->getValue();
         }

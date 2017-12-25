@@ -260,9 +260,9 @@ class EmailServiceOld
         $config = $this->getServiceLocator()->get('config');
         
         $this->setFrom($config['ERS']['sender_email']);
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
-        $role = $em->getRepository('ErsBase\Entity\Role')
+        $role = $entityManager->getRepository('ErsBase\Entity\Role')
                     ->findOneBy(array('roleId' => 'supradm'));
         $users = $role->getUsers();
         if(count($users) <= 0) {
@@ -301,10 +301,10 @@ class EmailServiceOld
     }
     
     public function sendConfirmationEmail($order_id) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $order_id));
         $buyer = $order->getBuyer();
         
@@ -347,15 +347,15 @@ class EmailServiceOld
         $log = new Entity\Log();
         $log->setUser($order->getBuyer());
         $log->setData('confirmation mail was send out to '.$order->getBuyer()->getEmail().' for order: '.$order->getCode()->getValue());
-        $em->persist($log);
+        $entityManager->persist($log);
 
-        $em->flush();
+        $entityManager->flush();
         
         return true;
     }
     
     public function addMailToQueue($from, $recipients, $subject, $content, $is_html = true, $attachments = array()) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $mailq = new Entity\Mailq();
@@ -365,7 +365,7 @@ class EmailServiceOld
             if(!is_string($from)) {
                 throw new Exception('Unable to convert from into a sender user.');
             }
-            $from = $em->getRepository('ErsBase\Entity\User')
+            $from = $entityManager->getRepository('ErsBase\Entity\User')
                 ->findOneBy(['email' => $from]);
         }
         
@@ -393,8 +393,8 @@ class EmailServiceOld
             $mailq->addMailAttachment($att);
         }
         
-        $em->persist($mailq);
-        $em->flush();
+        $entityManager->persist($mailq);
+        $entityManager->flush();
         
         # recipients
         foreach($recipients as $recipient) {
@@ -406,15 +406,15 @@ class EmailServiceOld
             }
         }
         
-        $em->flush();
+        $entityManager->flush();
     }
     
     private function addUser($mailq, $recipient, $type = 'to') {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         if(!$recipient instanceof Entity\User) {
-            $recipient = $em->getRepository('ErsBase\Entity\User')
+            $recipient = $entityManager->getRepository('ErsBase\Entity\User')
                     ->findOneBy(['email' => $recipient]);
         }
 
@@ -437,14 +437,14 @@ class EmailServiceOld
                 break;
         }
         
-        $em->persist($mailqHasUser);
+        $entityManager->persist($mailqHasUser);
     }
     
     /*
      * TODO: check plain/text mail with attachment.
      */
     private function mailqEntityToMessage(Entity\Mailq $mailq) {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
         $content  = new Mime\Message();
@@ -487,8 +487,8 @@ class EmailServiceOld
                 ->setType($type);
         
         if(!$mailq->getTo()) {
-            $em->remove($mailq);
-            $em->flush();
+            $entityManager->remove($mailq);
+            $entityManager->flush();
             return false;
             #throw new \Exception('mail in mailq is invalid: '.$mailq->getId());
         }
@@ -506,7 +506,7 @@ class EmailServiceOld
         if(!$mailq->getFrom()) {
             $settingService = $this->getServiceLocator()
                     ->get('ErsBase\Service\SettingService');
-            $user = $em->getRepository('ErsBase\Entity\User')
+            $user = $entityManager->getRepository('ErsBase\Entity\User')
                     ->findOneBy(['email' => $settingService->get('ers.sender_email')]);
             if(!$user) {
                 $user = new Entity\User();
@@ -514,8 +514,8 @@ class EmailServiceOld
                 $user->setFirstname('');
                 $user->setSurname('');
                 $user->setActive(1);
-                $em->persist($user);
-                $em->flush();
+                $entityManager->persist($user);
+                $entityManager->flush();
             }
             $mailq->setFrom($user);
         }
@@ -527,11 +527,11 @@ class EmailServiceOld
     }
     
     public function mailqWorker() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $limit = 50;
-        $mailqs = $em->getRepository('ErsBase\Entity\Mailq')
+        $mailqs = $entityManager->getRepository('ErsBase\Entity\Mailq')
                 ->findBy(array(), array('created' => 'ASC'), $limit);
         
         foreach($mailqs as $mailq) {
@@ -544,8 +544,8 @@ class EmailServiceOld
             $transport = new Mail\Transport\Sendmail();
             $transport->send($message);
             
-            $em->remove($mailq);
-            $em->flush();
+            $entitaManager->remove($mailq);
+            $entityManager->flush();
         }
     }
 }

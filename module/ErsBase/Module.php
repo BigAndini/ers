@@ -132,8 +132,8 @@ class Module
                     $deadlineService = new Service\DeadlineService();
                     $deadlineService->setServiceLocator($serviceManager);
                     
-                    $em = $serviceManager->get('Doctrine\ORM\EntityManager');
-                    $deadlineService->setEntityManager($em);
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $deadlineService->setEntityManager($entityManager);
                     
                     return $deadlineService;
                 },
@@ -146,8 +146,8 @@ class Module
                     
                     $deadlineService->setMode('price');
                     
-                    $em = $serviceManager->get('Doctrine\ORM\EntityManager');
-                    $deadlineService->setEntityManager($em);
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $deadlineService->setEntityManager($entityManager);
                     
                     return $deadlineService;
                 },
@@ -160,8 +160,8 @@ class Module
                     
                     $deadlineService->setMode('price');
                     
-                    $em = $serviceManager->get('Doctrine\ORM\EntityManager');
-                    $deadlineService->setEntityManager($em);
+                    $entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    $deadlineService->setEntityManager($entityManager);
                     
                     return $deadlineService;
                 },

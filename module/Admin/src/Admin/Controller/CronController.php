@@ -570,22 +570,22 @@ class CronController extends AbstractActionController {
             if($config['environment'] == 'production') {
                 /*** real buyer ***/
                 $buyer = $order->getBuyer();
-                $emailService->addTo($buyer);
+                $emailService>addTo($buyer);
                 /***/
             } else {
                 /*** test buyer **/
                 $user = new Entity\User();
                 $user->setEmail('andi'.$order->getCode()->getValue().'@inbaz.org');
-                $emailService->addTo($user);
+                $emailService>addTo($user);
                 /***/
             }
             
             $bcc = new Entity\User();
             $bcc->setEmail($config['ERS']['info_mail']);
-            $emailService->addBcc($bcc);
+            $emailService>addBcc($bcc);
 
             $subject = "[".$config['ERS']['name_short']."] "._('Payment reminder for your order:')." ".$order->getCode()->getValue();
-            $emailService->setSubject($subject);
+            $emailService>setSubject($subject);
 
             $viewModel = new ViewModel(array(
                 'order' => $order,
@@ -594,9 +594,9 @@ class CronController extends AbstractActionController {
             $viewRender = $this->getServiceLocator()->get('ViewRenderer');
             $html = $viewRender->render($viewModel);
 
-            $emailService->setHtmlMessage($html);
+            $emailService>setHtmlMessage($html);
 
-            $emailService->send();
+            $emailService>send();
             
             $order->setPaymentReminderStatus($order->getPaymentReminderStatus()+1);
             $entityManager->persist($order);
@@ -722,7 +722,7 @@ class CronController extends AbstractActionController {
             #$emailService = new Service\EmailService();
             #$emailService = $this->getServiceLocator()
             #            ->get('ErsBase\Service\EmailService');
-            #$emailService->setFrom($config['ERS']['info_mail']);
+            #$emailService>setFrom($config['ERS']['info_mail']);
 
             #$order = $package->getOrder();
             #$participant = $package->getParticipant();
@@ -731,19 +731,19 @@ class CronController extends AbstractActionController {
             #    /*** remove last slash to comment ***/
             #    $buyer = $order->getBuyer();
             #    if($participant->getEmail() == '') {
-            #        $emailService->addTo($buyer);
+            #        $emailService>addTo($buyer);
             #    } elseif($participant->getEmail() == $buyer->getEmail()) {
-            #        $emailService->addTo($buyer);
+            #        $emailService>addTo($buyer);
             #    } else {
-            #        $emailService->addTo($participant);
-            #        $emailService->addCc($buyer);
+            #        $emailService>addTo($participant);
+            #        $emailService>addCc($buyer);
             #    }
             #    /*** remove leading slash to comment ***/
             #} else {
             #    /*** remove last slash to comment ***/
             #    $user = new Entity\User();
             #    $user->setEmail('andi'.$package->getCode()->getValue().'@inbaz.org');
-            #    $emailService->addTo($user);
+            #    $emailService>addTo($user);
             #    /*** remove leading slash to comment ***/
             #}
             
@@ -1176,10 +1176,10 @@ class CronController extends AbstractActionController {
     }
     
     public function processMailqAction() {
-        $emailService = $em = $this->getServiceLocator()
+        $emailService = $entityManager = $this->getServiceLocator()
             ->get('ErsBase\Service\EmailService');
         
-        $emailService->mailqWorker();
+        $emailService>mailqWorker();
     }
     
     public function insertTestMail2Action() {
@@ -1194,8 +1194,8 @@ class CronController extends AbstractActionController {
         $subject = 'This is a testmail';
         $content = '<h1>This is html content</h1>';
         
-        $emailService->addMailToQueue($from, $recipients, $subject, $content);
-        #$emailService->addMailToQueue($from, $recipients, $subject, $content, $is_html = true, $attachments = array());
+        $emailService>addMailToQueue($from, $recipients, $subject, $content);
+        #$emailService>addMailToQueue($from, $recipients, $subject, $content, $is_html = true, $attachments = array());
     }
     
     
@@ -1216,17 +1216,17 @@ class CronController extends AbstractActionController {
             'public/Terms and Conditions organisation EN v6.pdf',
         ];
         
-        $emailService->addMailToQueue($from, $recipients, $subject, $content, true, $attachments);
-        #$emailService->addMailToQueue($from, $recipients, $subject, $content, $is_html = true, $attachments = array());
+        $emailService>addMailToQueue($from, $recipients, $subject, $content, true, $attachments);
+        #$emailService>addMailToQueue($from, $recipients, $subject, $content, $is_html = true, $attachments = array());
     }
     
     public function insertTestMailAction() {
-        $em = $this->getServiceLocator()
+        $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
         $mailq = new Entity\Mailq();
         
-        $user = $em->getRepository('ErsBase\Entity\User')
+        $user = $entityManager->getRepository('ErsBase\Entity\User')
                 ->findOneBy(['email' => 'andi@inbaz.org']);
         
         $mailq->setFrom($user);
@@ -1241,8 +1241,8 @@ class CronController extends AbstractActionController {
         $mailq->setHtmlMessage('<h1>This is a text message.</h1>');
         $mailq->setIsHtml(true);
         
-        $em->persist($mailq);
-        $em->flush();
+        $entityManager->persist($mailq);
+        $entityManager->flush();
         
         $emailService = $this->getServiceLocator()
                 ->get('ErsBase\Service\EmailService');
@@ -1269,7 +1269,7 @@ class CronController extends AbstractActionController {
         $content = 'This is text content';
         $content = '<h1>This is html content</h1>';
         $is_html = true;
-        $emailService->addMailToQueue(
+        $emailService>addMailToQueue(
                 $from,
                 $recipients,
                 $content,
@@ -1284,7 +1284,7 @@ class CronController extends AbstractActionController {
         $mailqHasTo->setMailqId($mailq->getId());
         $mailqHasTo->setTo();
         
-        $em->persist($mailqHasTo);
-        $em->flush();
+        $entityManager->persist($mailqHasTo);
+        $entityManager->flush();
     }
 }
