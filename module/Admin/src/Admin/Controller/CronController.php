@@ -1187,7 +1187,7 @@ class CronController extends AbstractActionController {
         $emailService = $this->getServiceLocator()
                 ->get('ErsBase\Service\EmailService');
         
-        $from = 'anmeldung@circulum.de';
+        $from = 'prereg@eja.net';
         $recipients = [
             'andi@inbaz.org'
         ];
@@ -1204,7 +1204,7 @@ class CronController extends AbstractActionController {
         $emailService = $this->getServiceLocator()
                 ->get('ErsBase\Service\EmailService');
         
-        $from = 'anmeldung@circulum.de';
+        $from = 'prereg@eja.net';
         $recipients = [
             'andi@inbaz.org'
         ];

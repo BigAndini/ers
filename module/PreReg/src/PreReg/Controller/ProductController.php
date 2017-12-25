@@ -37,6 +37,9 @@ class ProductController extends AbstractActionController {
                     $container = new Container('ers');
                     $container->currency = $currency->getShort();
                 }
+	    } else {
+                $logger = $this->getServiceLocator()->get('Logger');
+                $logger->warn($form->getMessages());
             }
             
             $redirectUrl = $this->getRequest()->getHeader('Referer')->uri()->getPath();

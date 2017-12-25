@@ -158,15 +158,21 @@ class OrderService
     }
     
     public function changeCurrency($paramCurrency) {
+        $debug = false;
         $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         if(! $paramCurrency instanceof Entity\Currency) {
             $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                 ->findOneBy(array('short' => $paramCurrency));
+                if($debug) {
+			error_log('got currency from database: '.$currency->getShort());
+		}
         } else {
             $currency = $paramCurrency;
+                if($debug) {
+			error_log('got currency from param: '.$currency->getShort());
+		}
         }
-        $debug = false;
         $order = $this->getOrder();
         if($order->getCurrency()->getShort() != $currency->getShort()) {
             foreach($order->getPackages() as $package) {

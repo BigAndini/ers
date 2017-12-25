@@ -269,7 +269,7 @@ class OrderController extends AbstractActionController {
                         ->findOneBy(array('id' => $data['paymenttype_id']));
                 
                 if($paymenttype->getCurrency()->getShort() != $order->getCurrency()->getShort()) {
-                    throw new \Exception('Unable to set this payment type for this order. Please choose another payment type.');
+                    throw new \Exception('Unable to set this payment type for this order. Currencies do not match ('.$paymenttype->getCurrency()->getShort().' != '.$order->getCurrency()->getShort().') Please choose another payment type.');
                 }
                 
                 $order->setPaymentType($paymenttype);

@@ -100,9 +100,10 @@ class Module
         $sessionManager->start();
         
         $container = new Container('ers');
-        if (isset($container->init)) {
+	# removed to run through changeCurrency feature
+        /*if (isset($container->init)) {
             return;
-        }
+        }*/
         
         $serviceManager = $event->getApplication()->getServiceManager();
         $request        = $serviceManager->get('Request');
@@ -149,7 +150,6 @@ class Module
         }
         #$container->getManager()->getStorage()->clear('initialized');
         if (!isset($container->init) || $container->lifetime < time()) {
-            #error_log('reset session due to expiration');
             $container->getManager()->getStorage()->clear('ers');
             $container = new Container('ers');
             $container->init = 1;
@@ -173,7 +173,6 @@ class Module
         $orderService = $serviceManager->get('ErsBase\Service\OrderService');
         $order = $orderService->getOrder();
         if($order->getCurrency()->getShort() != $container->currency) {
-            #error_log('currencies are not the same!');
             $orderService->changeCurrency($container->currency);
         }
         
