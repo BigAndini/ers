@@ -52,7 +52,7 @@
     $paymenttype = $order->getPaymentType();
     if($paymenttype->getType() == 'sepa'): ?>
 
-        <p><?php echo $this->translate('To complete your order, we need to receive your bank transfer within 7 days.'); ?></p>
+        <p><?php echo $this->translate('To complete your order, we need to receive your bank transfer within 14 days.'); ?></p>
 
         <?php echo $this->partial('partial/sepa-banktransfer-info.phtml', array('order' => $order)); ?>
 

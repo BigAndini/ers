@@ -1212,8 +1212,8 @@ class CronController extends AbstractActionController {
         $content = '<h1>This is html content</h1>';
         
         $attachments = [
-            'public/Terms and Conditions ERS EN v7.pdf',
-            'public/Terms and Conditions organisation EN v6.pdf',
+            'public/Terms and Conditions ERS EN v9.pdf',
+            'public/Terms-and-Conditions-EN_v7.pdf',
         ];
         
         $emailService>addMailToQueue($from, $recipients, $subject, $content, true, $attachments);
@@ -1232,7 +1232,7 @@ class CronController extends AbstractActionController {
         $mailq->setFrom($user);
         
         $att = new Entity\MailAttachment();
-        $att->setLocation('public/Terms and Conditions ERS EN v7.pdf');
+        $att->setLocation('public/Terms and Conditions ERS EN v8.pdf');
         $att->setMailq($mailq);
         $mailq->addMailAttachment($att);
         

@@ -332,10 +332,10 @@ class EmailServiceOld
         
         $this->setHtmlMessage($html);
         
-        /*$terms1 = getcwd().'/public/Terms and Conditions ERS EN v7.pdf';
+        /*$terms1 = getcwd().'/public/Terms and Conditions ERS EN v8.pdf';
         $this->addAttachment($terms1);
         
-        $terms2 = getcwd().'/public/Terms and Conditions organisation EN v6.pdf';
+        $terms2 = getcwd().'/public/Terms-and-Conditions-EN_v7.pdf';
         $this->addAttachment($terms2);
         
         $promo = getcwd().'/public/pre-reg cover photo.png';
