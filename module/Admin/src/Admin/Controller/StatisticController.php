@@ -340,7 +340,7 @@ class StatisticController extends AbstractActionController {
                     ->from('ErsBase\Entity\Item', 'i')
                     #->join('i.status', 's', 'WITH', 's.active = 1')
                     ->join('i.status', 's', 'WITH', 's.value = :paid')
-                    ->where('i.Product_id = :prod_id')
+                    ->where('i.product_id = :prod_id')
                     ->setParameter('paid', 'paid')
                     ->setParameter('prod_id', $product->getId());
             
@@ -873,8 +873,8 @@ class StatisticController extends AbstractActionController {
         $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
         $queryBuilder->where("i.shipped = 1");
         $queryBuilder->andWhere($queryBuilder->expr()->orX(
-                $queryBuilder->expr()->eq("i.Product_id", "1"),
-                $queryBuilder->expr()->eq("i.Product_id", "4")));
+                $queryBuilder->expr()->eq("i.product_id", "1"),
+                $queryBuilder->expr()->eq("i.product_id", "4")));
         $shippedItems = $queryBuilder->getQuery()->getResult();
         
         $itemStats = array();
@@ -903,10 +903,10 @@ class StatisticController extends AbstractActionController {
         // GROUP BY DATE(`order`.created);
         $queryBuilder1 = $entityManager->getRepository("ErsBase\Entity\Order")
                 ->createQueryBuilder('o');
-        $queryBuilder1->select('COUNT(o.id) as count', 'DATE(o.created) as date');
+        $queryBuilder1->select('COUNT(o.id) AS order_count', 'DATE(o.created) AS order_date');
         $queryBuilder1->join('o.status','s');
         $queryBuilder1->where($queryBuilder1->expr()->eq('s.active', 1));
-        $queryBuilder1->groupBy('date');
+        $queryBuilder1->groupBy('order_date');
 
         $orderStats = $queryBuilder1->getQuery()->getResult();
         

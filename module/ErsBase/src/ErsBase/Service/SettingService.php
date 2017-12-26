@@ -49,10 +49,12 @@ class SettingService
         
         switch($type) {
             case 'hyperlink':
-                if($param['class']) {
+		$class = '';
+                if(!empty($param['class'])) {
                     $class = ' class="'.$param['class'].'"';
                 }
-                if($param['target']) {
+		$target = '';
+                if(!empty($param['target'])) {
                     $target = ' target="'.$param['target'].'"';
                 }
                 return '<a '.$class.'.href="'.$setting->getValue().'"'.$target.'>'.$setting->getValue().'</a>';
