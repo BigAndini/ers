@@ -113,9 +113,7 @@ class EmailService
             ];    
         #}
         
-        #$subject = sprintf(_('Your registration for %s (order %s)'), $config['ERS']['name_short'], $order->getCode()->getValue());
         $subject = sprintf(_('Order confirmation for the %s (order %s)'), $settingService->get('ers.name_short'), $order->getCode()->getValue());
-        #$this->setSubject($subject);
         
         $config = $this->getServiceLocator()->get('config');
         

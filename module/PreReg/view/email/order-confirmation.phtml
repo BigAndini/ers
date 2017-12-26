@@ -111,7 +111,7 @@
             background-color: #eeeeee;">
         <?php printf($this->translate('This mail was sent to you by the Event Registration System (ERS),
         operated by the European Juggling Association (EJA) on
-        behalf of %s.'), $this->config()['ERS']['name_with_year']); ?>
+        behalf of %s.'), $this->setting('ers.name_with_year')); ?>
         <br>
         <?php printf($this->translate('If you have any questions about your pre-registration,
         please contact the EJA pre-registration coordinator
@@ -120,7 +120,7 @@
         <?php printf($this->translate('For more information about %s,
         please visit %s
         or contact %s.'),
-        $this->config()['ERS']['name_with_year'],
+        $this->setting('ers.name_with_year'),
         $website,
         $infoMail); ?>
     </div>

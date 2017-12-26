@@ -259,7 +259,10 @@ class ETicketService
         $qr = $this->getServiceLocator()->get('QRCode');
         $qr->isHttps(); // or $qr->isHttp();
         #$qr->setData('http://prereg.eja.net/onsite/register/'.  \urlencode($code));
-        $onsitereg = $config['ERS']['onsitereg'];
+        #$onsitereg = $config['ERS']['onsitereg'];
+        $settingService = $this->getServiceLocator()
+                ->get('ErsBase\Service\SettingService');
+        $onsitereg = $settingService->get('ers.onsitereg');
         # ensure the url has no trailing slash
         \rtrim( $onsitereg, '/\\' );
         $qr->setData($onsitereg.'/'.\urlencode($code));
@@ -417,7 +420,8 @@ class ETicketService
         $pdfContent = $pdfEngine->output();
         
         #$filename = $config['ERS']['name_short']."_E-Ticket_".$this->getPackage()->getCode()->getValue().'_'.$this->getLanguage();
-        $filename = $config['ERS']['name_short']."_E-Ticket_".$this->getPackage()->getCode()->getValue();
+        #$filename = $config['ERS']['name_short']."_E-Ticket_".$this->getPackage()->getCode()->getValue();
+        $filename = $settingService->get('ers.name_short')."_E-Ticket_".$this->getPackage()->getCode()->getValue();
         
         # TODO: make ticket_path configurable
         $ticket_path = getcwd().'/data/etickets';
