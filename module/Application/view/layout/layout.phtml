@@ -3,10 +3,10 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta property="og:locale" content="de_DE" />
+        <meta property="og:locale" content="en GB" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Event Registration System" />
-        <meta property="og:description" content="Get your ticket for <?php echo $this->layout()->ers_config['name_with_year']; ?>" />
+        <meta property="og:description" content="Get your ticket for <?php echo $this->setting('ers.name_with_year'); ?>" />
         <meta property="og:url" content="<?php echo $this->serverUrl(); ?>" />
         <meta property="og:site_name" content="Event Registration System - ERS" />
         <?php if($this->setting('ers.og_image')): ?>
