@@ -48,7 +48,11 @@
         ; ?>
         
     </head>
-    <body>
+	<?php 
+		$class = preg_replace('/\//', '-', $_SERVER['REQUEST_URI']);
+		$class = preg_replace('/^-|-$/', '', $class);
+	?>
+    <body <?php if($class != ''): echo 'class="'.$class.'"'; endif; ?>>
         <?php if ($this->setting('system.environment') == '') : ?>
         <div class="alert alert-danger text-center">
             <p>Please add the <strong>system.environment</strong> setting key.</p>
