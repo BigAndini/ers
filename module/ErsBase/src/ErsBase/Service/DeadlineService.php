@@ -79,6 +79,22 @@ class DeadlineService
         return $this->deadlines;
     }
     
+    public function getFirstDeadline() {
+        $ret = null;
+        $now = $this->getCompareDate();
+        foreach($this->getDeadlines() as $deadline) {
+            if($ret == null) {
+                $ret = $deadline;
+                continue;
+            }
+            if($deadline->getDeadline()->getTimestamp() < $ret->getDeadline()->getTimestamp()) {
+                $ret = $deadline;
+            }
+        }
+        
+        return $ret;
+    }
+
     public function getDeadline() {
         $ret = null;
         $now = $this->getCompareDate();
@@ -94,7 +110,12 @@ class DeadlineService
                 $ret = $deadline;
             }
         }
-        
+
+	$firstDeadline = $this->getFirstDeadline();
+	if($firstDeadline && $firstDeadline->getDeadline()->getTimestamp() > $now->getTimestamp()) {
+		return null;
+	}
+
         return $ret;
     }
 }
