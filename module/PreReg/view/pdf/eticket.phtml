@@ -7,8 +7,18 @@
 <html>
     <head>
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> 
-	<script src="https://use.fontawesome.com/6bdf1b4b46.js"></script>
         <style type="text/css">
+		@font-face {
+		    font-family: "FontAwesome";
+		    font-weight: normal;
+		    font-style : normal;
+			   src : url("https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.eot?v=4.3.0");
+			   src : url("https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.eot?#iefix&v=4.3.0") format("embedded-opentype"),
+				 url("https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0") format("woff2"),
+				 url("https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.woff?v=4.3.0") format("woff"),
+				 url("https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.ttf?v=4.3.0") format("truetype"),
+				 url("https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular") format("svg");
+		}
             @page {
                 margin: 0;
             }
@@ -159,7 +169,7 @@
                 padding-top: 5px;
             }
             a {
-                text-decoration: underline;
+                text-decoration: none;
             }
         </style>
     </head>
@@ -170,6 +180,7 @@
         </div>
         <h1>
             <!--<img class="logo" src="<?php echo getcwd(); ?>/pdf/img/logo.png" alt="Logo" width="150" />-->
+            <img class="logo" src="<?php echo getcwd(); ?>/pdf/img/logo.png" alt="Logo" height="80" />
             <span class="ticket-heading">E-Ticket</span>
         </h1>
         <?php if($agegroup): ?>

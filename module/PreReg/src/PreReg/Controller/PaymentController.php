@@ -129,18 +129,6 @@ class PaymentController extends AbstractActionController {
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
-       
-        
-        /*$config = $this->getServiceLocator()->get('Config');
-        
-        $account_id     = $config['ERS\iPayment']['account_id'];
-        $trxuser_id     = $config['ERS\iPayment']['trxuser_id'];
-        $trx_currency   = $config['ERS\iPayment']['trx_currency'];
-        $trxpassword    = $config['ERS\iPayment']['trxpassword'];
-        $sec_key        = $config['ERS\iPayment']['sec_key'];
-        $tmp_action     = $config['ERS\iPayment']['action'];
-        $action = preg_replace('/%account_id%/', $account_id, $tmp_action);*/
-        
         $paymentType = $order->getPaymentType();
         $account_id     = $paymentType->getAccountId();
         $trxuser_id     = $paymentType->getTrxuserId();
@@ -214,14 +202,23 @@ class PaymentController extends AbstractActionController {
         
        
         
-        $config = $this->getServiceLocator()->get('Config');
+        #$config = $this->getServiceLocator()->get('Config');
         
-        $account_id     = $config['ERS\iPayment']['account_id'];
+        $paymentType = $order->getPaymentType();
+        $account_id     = $paymentType->getAccountId();
+        $trxuser_id     = $paymentType->getTrxuserId();
+        #$trx_currency   = $order->getCurrency()->getShort();
+        $trx_currency   = $paymentType->getTrxcurrency();
+        $trxpassword    = $paymentType->getTrxpassword();
+        $sec_key        = $paymentType->getSecKey();
+        $tmp_action     = $paymentType->getAction();
+
+        /*$account_id     = $config['ERS\iPayment']['account_id'];
         $trxuser_id     = $config['ERS\iPayment']['trxuser_id'];
         $trx_currency   = $config['ERS\iPayment']['trx_currency'];
         $trxpassword    = $config['ERS\iPayment']['trxpassword'];
         $sec_key        = $config['ERS\iPayment']['sec_key'];
-        $tmp_action     = $config['ERS\iPayment']['action'];
+        $tmp_action     = $config['ERS\iPayment']['action'];*/
         $action = preg_replace('/%account_id%/', $account_id, $tmp_action);
         
         if($order != null) {

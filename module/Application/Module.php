@@ -30,10 +30,7 @@ class Module
         $eventManager->attach('render', function($event) {
             $serviceManager = $event->getApplication()->getServiceManager();
 
-            #$config = $serviceManager->get('Config');
-            
             $view = $event->getViewModel();
-            #$view->setVariable('ers_config', $config['ERS']);
         });
     }
 
