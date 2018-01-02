@@ -449,7 +449,7 @@ class OrderController extends AbstractActionController {
                     ->findOneBy(array('id' => $orderId));
                 
                 
-                $validStatus = $em->getRepository('ErsBase\Entity\Status')
+                $validStatus = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findBy(array('valid' => 1));
                 $validArray = array_filter($validStatus, function($status) {return $status->getValid();});
                 
@@ -1077,21 +1077,21 @@ class OrderController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('id' => $id));
         
         if(!$order) {
             throw new \Exception('Unable to find order with id '.$id);
         }
         
-        $form = new Form\SimpleForm($em);
+        $form = new Form\SimpleForm($entityManager);
         
         $form->get('submit')->setAttributes(array(
             'value' => _('save'),
             'class' => 'btn btn-success',
         ));
 
-        $status = $em->getRepository('ErsBase\Entity\Status')
+        $status = $entityManager->getRepository('ErsBase\Entity\Status')
                 ->findBy(array(), array('position' => 'ASC'));
         
         $statusId = $order->getStatus()->getId();
@@ -1140,10 +1140,10 @@ class OrderController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $data = $form->getData();
-                $status = $em->getRepository('ErsBase\Entity\Status')
+                $status = $entityManager->getRepository('ErsBase\Entity\Status')
                     ->findOneBy(array('id' => $data['status_id']));
                 
-                $order = $em->getRepository('ErsBase\Entity\Order')
+                $order = $entityManager->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $data['order_id']));
                 
                 $statusService = $this->getServiceLocator()
@@ -1178,14 +1178,14 @@ class OrderController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
         
-        $order = $em->getRepository('ErsBase\Entity\Order')
+        $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('id' => $id));
         
         if(!$order) {
             throw new \Exception('Unable to find order with id '.$id);
         }
         
-        $form = new Form\SimpleForm($em);
+        $form = new Form\SimpleForm($entityManager);
         
         $form->get('submit')->setAttributes(array(
             'value' => _('save'),
@@ -1224,13 +1224,13 @@ class OrderController extends AbstractActionController {
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                $order = $em->getRepository('ErsBase\Entity\Order')
+                $order = $entityManager->getRepository('ErsBase\Entity\Order')
                     ->findOneBy(array('id' => $data['order_id']));
                 
                 $order->setComment($data['comment']);
                 
-                $em->persist($order);
-                $em->flush();
+                $entityManager->persist($order);
+                $eneityManager->flush();
                 
                 $this->flashMessenger()->addSuccessMessage('Comment for for order '.$order->getCode()->getValue().' has been saved.');
                 return $this->redirect()->toRoute('admin/order', array(
