@@ -1230,7 +1230,7 @@ class OrderController extends AbstractActionController {
                 $order->setComment($data['comment']);
                 
                 $entityManager->persist($order);
-                $eneityManager->flush();
+                $entityManager->flush();
                 
                 $this->flashMessenger()->addSuccessMessage('Comment for for order '.$order->getCode()->getValue().' has been saved.');
                 return $this->redirect()->toRoute('admin/order', array(
