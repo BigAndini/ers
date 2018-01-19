@@ -493,7 +493,7 @@ class OrderService
         }
 
         #$subject = "[".$settingService->get('ers.name_short')."] Payment reminder for your order: ".$order->getCode()->getValue();
-        $subject = "[".$settingService->get('ers.name_short')."] Zahlungserinnerung für deine Bestellung: ".$order->getCode()->getValue();
+        $subject = "[".$settingService->get('ers.name_short')."] Payment reminder for your order: ".$order->getCode()->getValue();
 
         $viewModel = new ViewModel(array(
             'order' => $order,
