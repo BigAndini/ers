@@ -68,7 +68,7 @@ class ShortcodeService
                     $urlViewHelper = $viewHelperManager->get('url');
                     $order = $this->getObject('order');
                     $orderUrl = $urlViewHelper('order', array('action' => 'view', 'hashkey' => $order->getHashKey()), array('force_canonical' => true));;
-                    $orderLink = '<a href="'.$orderUrl.'">Deine Bestellung</a>';
+                    $orderLink = '<a href="'.$orderUrl.'">your order</a>';
 
                     $pattern[] = '/\['.implode('.', $valuePath).'\]/';
                     $replace[] = $orderLink;
