@@ -19,7 +19,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "zendframework/zendframework": "2.*",
+        "zendframework/zendframework": "2.5.*",
         "doctrine/doctrine-orm-module": "0.*",
         "zendframework/zend-developer-tools": "1.0.0",
         "ckeditor/ckeditor": "dev-stable",
