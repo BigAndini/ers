@@ -167,6 +167,7 @@ return [
                 ['controller' => 'OnsiteReg\Controller\Index',                'roles' => ['onsitereg', 'admin', 'supradm']],
                 ['controller' => 'OnsiteReg\Controller\Search',               'roles' => ['onsitereg', 'admin', 'supradm']],
                 ['controller' => 'OnsiteReg\Controller\Package',              'roles' => ['onsitereg', 'admin', 'supradm']],
+                ['controller' => 'OnsiteReg\Controller\Cash',                 'roles' => ['onsitereg', 'admin', 'supradm']],
                 ['controller' => 'OnsiteReg\Controller\Redirect',             'roles' => ['guest', 'onsitereg', 'admin', 'supradm']],
                 
                 /* Admin */
