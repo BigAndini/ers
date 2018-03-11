@@ -20,7 +20,6 @@ $this->headTitle($title);
                     <?php 
                     $thisDate = '';
                     $itemSum = 0;
-                    ksort($itemStats);
                     foreach($itemStats as $date => $stat): 
                         if($thisDate != $date): 
                             $thisDate = $date; ?>
@@ -28,9 +27,7 @@ $this->headTitle($title);
                         <th colspan="2"><?php echo $thisDate; ?></th>
                     </tr>
                         <?php endif; ?>
-                        <?php 
-                        ksort($stat);
-                        foreach($stat as $hour => $count): ?>
+                        <?php foreach($stat as $hour => $count): ?>
                         <tr>
                             <td><?php echo $hour; ?></td>
                             <td><?php 

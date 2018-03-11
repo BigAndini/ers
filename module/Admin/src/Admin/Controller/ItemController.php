@@ -603,8 +603,9 @@ class ItemController extends AbstractActionController {
                     'action' => 'detail', 
                     'id' => $order->getId()
                 ));
+            } else {
+                $logger->warn($form->getMessages());
             }
-            $logger->warn($form->getMessages());
         }
         
         $user = null;

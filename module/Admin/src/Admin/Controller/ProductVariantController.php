@@ -35,7 +35,7 @@ class ProductVariantController extends AbstractActionController
         
         $form = new Form\ProductVariant();
         $form->get('submit')->setValue('Add');
-        $form->get('Product_id')->setValue($product_id);
+        $form->get('product_id')->setValue($product_id);
         $options['text'] = 'Text';
         $options['select'] = 'Select';
         $options['date'] = 'Date';
@@ -65,9 +65,10 @@ class ProductVariantController extends AbstractActionController
                         $breadcrumb->params, 
                         $breadcrumb->options
                         );
+            } else {
+                $logger = $this->getServiceLocator()->get('Logger');
+                $logger->warn($form->getMessages());
             }
-            $logger = $this->getServiceLocator()->get('Logger');
-            $logger->warn($form->getMessages());
         }
         
         $entityManager = $this->getServiceLocator()

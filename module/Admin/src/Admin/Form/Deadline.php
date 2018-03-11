@@ -29,13 +29,13 @@ class Deadline extends Form
             'name' => 'deadline', 
             'type' => 'Zend\Form\Element\DateTime', 
             'attributes' => array( 
-                'placeholder' => 'Start date...', 
+                'placeholder' => 'end date...', 
                 'required' => 'required',
                 'class' => 'form-control form-element datetimepicker',
                 'step' => 'any',
             ), 
             'options' => array( 
-                'label' => 'Phase starts at', 
+                'label' => 'Phase ends at', 
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),

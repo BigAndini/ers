@@ -211,29 +211,29 @@ class StatisticController extends AbstractActionController {
             $aggregate['ticket']['count']++;
             
             if(empty($aggregate['price'][$status])) {
-                $aggregate['price'][$status] = 0;
+                $aggregate['price'][$status] = 1;
+            } else {
+                $aggregate['price'][$status]++;
             }
-            $aggregate['price'][$status]++;
-
             if(empty($aggregate['ticket'][$status])) {
-                $aggregate['ticket'][$status] = 0;
-            } 
-            $aggregate['ticket'][$status]++;
-
+                $aggregate['ticket'][$status] = 1;
+            } else {
+                $aggregate['ticket'][$status]++;
+            }
             
             if($status == 'paid') {
                 if($participant->getCountryId()) {
                     if(empty($countryStats[$participant->getCountryId()])) {
-                        $countryStats[$participant->getCountryId()] = 0;
+                        $countryStats[$participant->getCountryId()] = 1;
+                    } else {
+                        $countryStats[$participant->getCountryId()]++;
                     }
-                    $countryStats[$participant->getCountryId()]++;
-
                 } else {
                     if(empty($countryStats[0])) {
-                        $countryStats[0] = 0;
+                        $countryStats[0] = 1;
+                    } else {
+                        $countryStats[0]++;
                     }
-                    $countryStats[0]++;
-
                 }
             }
             
@@ -247,8 +247,9 @@ class StatisticController extends AbstractActionController {
         $countries = [];
         foreach($dbCountries as $c) {
             $countries[$c['id']] = $c['name'];
-            $count = 0;
-            if(!empty($countryStats[$c['id']])) {
+            if(empty($countryStats[$c['id']])) {
+                $count = 0;
+            } else {
                 $count = $countryStats[$c['id']];
             }
             $countryStatsLive2[] = [
@@ -339,7 +340,7 @@ class StatisticController extends AbstractActionController {
                     ->from('ErsBase\Entity\Item', 'i')
                     #->join('i.status', 's', 'WITH', 's.active = 1')
                     ->join('i.status', 's', 'WITH', 's.value = :paid')
-                    ->where('i.Product_id = :prod_id')
+                    ->where('i.product_id = :prod_id')
                     ->setParameter('paid', 'paid')
                     ->setParameter('prod_id', $product->getId());
             
@@ -726,7 +727,7 @@ class StatisticController extends AbstractActionController {
                     ->select('COUNT(i.id) itemcount')
                     ->from('ErsBase\Entity\Item', 'i')
                     ->join('i.status', 's', 'WITH', 's.active = 1')
-                    ->where('i.Product_id = :prod_id')
+                    ->where('i.product_id = :prod_id')
                     ->setParameter('prod_id', $product->getId());
             
             $variantNames = [];
@@ -872,17 +873,17 @@ class StatisticController extends AbstractActionController {
         $queryBuilder = $entityManager->getRepository('ErsBase\Entity\Item')->createQueryBuilder('i');
         $queryBuilder->where("i.shipped = 1");
         $queryBuilder->andWhere($queryBuilder->expr()->orX(
-                $queryBuilder->expr()->eq("i.Product_id", "1"),
-                $queryBuilder->expr()->eq("i.Product_id", "2"),
-                $queryBuilder->expr()->eq("i.Product_id", "3")));
+                $queryBuilder->expr()->eq("i.product_id", "1"),
+                $queryBuilder->expr()->eq("i.product_id", "4")));
         $shippedItems = $queryBuilder->getQuery()->getResult();
         
         $itemStats = array();
         foreach($shippedItems as $item) {
-            if(!isset($itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')])) {
-                $itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')] = 0;
+            if(isset($itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')])) {
+                $itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')]++;
+            } else {
+                $itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')] = 1;
             }
-            $itemStats[$item->getShippedDate()->format('Y-m-d')][$item->getShippedDate()->format('H')]++;
         }
         
         return new ViewModel(array(
@@ -902,10 +903,10 @@ class StatisticController extends AbstractActionController {
         // GROUP BY DATE(`order`.created);
         $queryBuilder1 = $entityManager->getRepository("ErsBase\Entity\Order")
                 ->createQueryBuilder('o');
-        $queryBuilder1->select('COUNT(o.id) as count', 'DATE(o.created) as date');
+        $queryBuilder1->select('COUNT(o.id) AS order_count', 'DATE(o.created) AS order_date');
         $queryBuilder1->join('o.status','s');
         $queryBuilder1->where($queryBuilder1->expr()->eq('s.active', 1));
-        $queryBuilder1->groupBy('date');
+        $queryBuilder1->groupBy('order_date');
 
         $orderStats = $queryBuilder1->getQuery()->getResult();
         

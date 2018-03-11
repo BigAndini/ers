@@ -10,8 +10,9 @@ namespace Admin\Form;
 
 use Zend\Form\Form;
 use Doctrine\ORM\EntityManager;
+use Zend\InputFilter\InputFilterProviderInterface;
 
-class Counter extends Form
+class Counter extends Form implements InputFilterProviderInterface
 {
     public function __construct(EntityManager $entityManager)
     {
@@ -45,11 +46,11 @@ class Counter extends Form
             'name' => 'productVariantValue',
             'type'  => 'DoctrineModule\Form\Element\ObjectSelect',
             'attributes' => array(
-                'required' => 'required', 
+                #'required' => 'required', 
                 'class' => 'form-control form-element',
             ),
             'options' => array(
-                'label' => 'Product variant',
+                'label' => 'product variant value',
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
@@ -57,7 +58,47 @@ class Counter extends Form
                 'target_class' => 'ErsBase\Entity\ProductVariantValue',
                 'label_generator' => function($entity){ return $entity->getProductVariant()->getProduct()->getName() . ' - ' . $entity->getProductVariant()->getName() . ' - ' . $entity->getValue(); },
                 'display_empty_item' => true,
-                'empty_item_label' => 'Select variant ...',
+                'empty_item_label' => 'select product variant value ...',
+            ),
+        ));
+                
+        $this->add(array(
+            'name' => 'productVariant',
+            'type'  => 'DoctrineModule\Form\Element\ObjectSelect',
+            'attributes' => array(
+                #'required' => 'required', 
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'product variant',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                'object_manager' => $entityManager,
+                'target_class' => 'ErsBase\Entity\ProductVariant',
+                'label_generator' => function($entity){ return $entity->getProduct()->getName() . ' - ' . $entity->getName(); },
+                'display_empty_item' => true,
+                'empty_item_label' => 'select product variant ...',
+            ),
+        ));
+                
+        $this->add(array(
+            'name' => 'product',
+            'type'  => 'DoctrineModule\Form\Element\ObjectSelect',
+            'attributes' => array(
+                #'required' => 'required', 
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => 'product',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                'object_manager' => $entityManager,
+                'target_class' => 'ErsBase\Entity\Product',
+                'label_generator' => function($entity){ return $entity->getName(); },
+                'display_empty_item' => true,
+                'empty_item_label' => 'select product ...',
             ),
         ));
         
@@ -92,5 +133,69 @@ class Counter extends Form
                 'class' => 'btn btn-primary',
             ),
         ));
+    }
+    
+    /**
+     * Should return an array specification compatible with
+     * {@link Zend\InputFilter\Factory::createInputFilter()}.
+     *
+     * @return array
+     */
+    public function getInputFilterSpecification()
+    {
+        return array(
+            'id' => array(
+                'required' => false,
+                'filters' => array(
+                ),
+                'validators' => array(
+                    
+                ),
+            ),
+            'name' => array(
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    
+                ),
+            ),
+            'productVariantValue' => array(
+                'required' => false,
+                'filters' => array(
+                ),
+                'validators' => array(
+                    
+                ),
+            ),
+            'productVariant' => array(
+                'required' => false,
+                'filters' => array(
+                ),
+                'validators' => array(
+                    
+                ),
+            ),
+            'product' => array(
+                'required' => false,
+                'filters' => array(
+                ),
+                'validators' => array(
+                    
+                ),
+            ),
+            'name' => array(
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    
+                ),
+            ),
+        );
     }
 }

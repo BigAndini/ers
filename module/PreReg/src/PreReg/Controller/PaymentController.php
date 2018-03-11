@@ -129,18 +129,6 @@ class PaymentController extends AbstractActionController {
         $order = $entityManager->getRepository('ErsBase\Entity\Order')
                 ->findOneBy(array('hashkey' => $hashkey));
         
-       
-        
-        /*$config = $this->getServiceLocator()->get('Config');
-        
-        $account_id     = $config['ERS\iPayment']['account_id'];
-        $trxuser_id     = $config['ERS\iPayment']['trxuser_id'];
-        $trx_currency   = $config['ERS\iPayment']['trx_currency'];
-        $trxpassword    = $config['ERS\iPayment']['trxpassword'];
-        $sec_key        = $config['ERS\iPayment']['sec_key'];
-        $tmp_action     = $config['ERS\iPayment']['action'];
-        $action = preg_replace('/%account_id%/', $account_id, $tmp_action);*/
-        
         $paymentType = $order->getPaymentType();
         $account_id     = $paymentType->getAccountId();
         $trxuser_id     = $paymentType->getTrxuserId();
@@ -160,10 +148,10 @@ class PaymentController extends AbstractActionController {
         if($order == null) {
             return $this->redirect()->toRoute('order', array('action' => 'cc-error'));
         }
-        $numberFormatter = new \NumberFormatter("de-DE", \NumberFormatter::PATTERN_DECIMAL);
-        $numberFormatter->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
-        $numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
-        $trx_amount = $numberFormatter->format($order->getSum()*100); # amount in cents
+        $a = new \NumberFormatter("de-DE", \NumberFormatter::PATTERN_DECIMAL);
+        $a->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 0);
+        $a->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
+        $trx_amount = $a->format($order->getSum()*100); # amount in cents
         
         $trx_securityhash = \md5($trxuser_id.$trx_amount.$trx_currency.$trxpassword.$sec_key);
         
@@ -214,14 +202,23 @@ class PaymentController extends AbstractActionController {
         
        
         
-        $config = $this->getServiceLocator()->get('Config');
+        #$config = $this->getServiceLocator()->get('Config');
         
-        $account_id     = $config['ERS\iPayment']['account_id'];
+        $paymentType = $order->getPaymentType();
+        $account_id     = $paymentType->getAccountId();
+        $trxuser_id     = $paymentType->getTrxuserId();
+        #$trx_currency   = $order->getCurrency()->getShort();
+        $trx_currency   = $paymentType->getTrxcurrency();
+        $trxpassword    = $paymentType->getTrxpassword();
+        $sec_key        = $paymentType->getSecKey();
+        $tmp_action     = $paymentType->getAction();
+
+        /*$account_id     = $config['ERS\iPayment']['account_id'];
         $trxuser_id     = $config['ERS\iPayment']['trxuser_id'];
         $trx_currency   = $config['ERS\iPayment']['trx_currency'];
         $trxpassword    = $config['ERS\iPayment']['trxpassword'];
         $sec_key        = $config['ERS\iPayment']['sec_key'];
-        $tmp_action     = $config['ERS\iPayment']['action'];
+        $tmp_action     = $config['ERS\iPayment']['action'];*/
         $action = preg_replace('/%account_id%/', $account_id, $tmp_action);
         
         if($order != null) {

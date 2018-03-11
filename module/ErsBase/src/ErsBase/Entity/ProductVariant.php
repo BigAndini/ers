@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * ErsBase\Entity\ProductVariant
  *
  * @ORM\Entity()
- * @ORM\Table(name="product_variant", indexes={@ORM\Index(name="fk_ProductVariant_Product1_idx", columns={"Product_id"})})
+ * @ORM\Table(name="`product_variant`", indexes={@ORM\Index(name="fk_ProductVariant_Product1_idx", columns={"`product_id`"})})
  * @ORM\HasLifecycleCallbacks
  */
 class ProductVariant extends Base\ProductVariant

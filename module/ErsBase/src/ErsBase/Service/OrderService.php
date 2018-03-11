@@ -10,17 +10,37 @@ namespace ErsBase\Service;
 
 use Zend\Session\Container;
 use ErsBase\Entity;
+use Zend\View\Model\ViewModel;
 
 /**
  * order service
  */
-class OrderService extends ServiceLocatorAwareService
+class OrderService
 {
+    protected $_sl;
     protected $currency;
     protected $order;
     
     public function __construct() {
         
+    }
+    
+    /**
+     * set ServiceLocator
+     * 
+     * @param ServiceLocator $sl
+     */
+    public function setServiceLocator($sl) {
+        $this->_sl = $sl;
+    }
+    
+    /**
+     * get ServiceLocator
+     * 
+     * @return ServiceLocator
+     */
+    protected function getServiceLocator() {
+        return $this->_sl;
     }
     
     public function setCurrency(Entity\Currency $currency) {
@@ -69,16 +89,6 @@ class OrderService extends ServiceLocatorAwareService
         return $newOrder;
     }
     
-    public function setCountryId($country_id) {
-        $container = new Container('ers');
-        $container->country_id = $country_id;
-    }
-    
-    public function getCountryId() {
-        $container = new Container('ers');
-        return $container->country_id;
-    }
-    
     private function createNewOrder() {
         $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
@@ -105,40 +115,41 @@ class OrderService extends ServiceLocatorAwareService
         
         $debug = true;
         $order = $this->getOrder();
-        $currency = $order->getCurrency();
+        #$currency = $order->getCurrency();
         foreach($order->getPackages() as $package) {
+            $participant = $package->getParticipant();
+
+            $agegroupService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\AgegroupService');
+            $agegroupService->setMode('price');
+            $agegroup = $agegroupService->getAgegroupByUser($participant);
+            if($debug) {
+                if($agegroup != null) {
+                    error_log('found agegroup: '.$agegroup->getName());
+                }
+            }
+
+            $deadlineService = $this->getServiceLocator()
+                    ->get('ErsBase\Service\DeadlineService');
+            $deadlineService->setMode('price');
+            $deadline = $deadlineService->getDeadline($order->getCreated());
+            if($debug) {
+                if($deadline != null) {
+                    error_log('found deadline: '.$deadline->getName());
+                }
+            }
+
             foreach($package->getItems() as $item) {
+                if($item->getStatus() == 'refund') {
+                    continue;
+                }
                 if($item->hasParentItems()) {
                     continue;
                 }
                 $product = $item->getProduct();
-                $participant = $item->getPackage()->getParticipant();
+                $price = $product->getProductPrice($agegroup, $deadline, $package->getCurrency());
 
-                $agegroupService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\AgegroupService');
-                $agegroupService->setMode('price');
-                $agegroup = $agegroupService->getAgegroupByUser($participant);
-                if($debug) {
-                    if($agegroup != null) {
-                        error_log('found agegroup: '.$agegroup->getName());
-                    }
-                }
-
-                $deadlineService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\DeadlineService');
-                $deadlineService->setMode('price');
-                $deadline = $deadlineService->getDeadline($order->getCreated());
-                if($debug) {
-                    if($deadline != null) {
-                        error_log('found deadline: '.$deadline->getName());
-                    }
-                }
-
-                $price = $product->getProductPrice($agegroup, $deadline, $currency);
-                if($debug) {
-                    error_log('price: '.$price->getCharge());
-                }
-                $item->setPrice($price->getCharge());
+                $item->setPrice($price->getFullCharge());
                 $entityManager->persist($item);
             }
         }
@@ -147,56 +158,66 @@ class OrderService extends ServiceLocatorAwareService
     }
     
     public function changeCurrency($paramCurrency) {
-        $logger = $this->getServiceLocator()->get('Logger');
+        $debug = false;
         $entityManager = $this->getServiceLocator()
                 ->get('Doctrine\ORM\EntityManager');
-        
-        $currency = $paramCurrency;
         if(! $paramCurrency instanceof Entity\Currency) {
             $currency = $entityManager->getRepository('ErsBase\Entity\Currency')
                 ->findOneBy(array('short' => $paramCurrency));
+                if($debug) {
+			error_log('got currency from database: '.$currency->getShort());
+		}
+        } else {
+            $currency = $paramCurrency;
+                if($debug) {
+			error_log('got currency from param: '.$currency->getShort());
+		}
         }
-        $debug = false;
         $order = $this->getOrder();
-        if($order->getCurrency()->getShort() == $currency->getShort()) {
-            return $this;
-        }
-        foreach($order->getPackages() as $package) {
-            $package->setCurrency($currency);
-            $logger->debug(get_class().': set package to currency: '.$currency);
-            foreach($package->getItems() as $item) {
-                $item->setCurrency($currency);
-                
-                $logger->debug(get_class().': set item to currency: '.$currency);
-                if($item->hasParentItems()) {
-                    continue;
+        if($order->getCurrency()->getShort() != $currency->getShort()) {
+            foreach($order->getPackages() as $package) {
+                $package->setCurrency($currency);
+                if($debug) {
+                    error_log('set package to currency: '.$currency);
                 }
-                $product = $item->getProduct();
-                $participant = $item->getPackage()->getParticipant();
+                foreach($package->getItems() as $item) {
+                    $item->setCurrency($currency);
+                    if($debug) {
+                        error_log('set item to currency: '.$currency);
+                    }
+                    if($item->hasParentItems()) {
+                        continue;
+                    }
+                    $product = $item->getProduct();
+                    $participant = $item->getPackage()->getParticipant();
 
-                $agegroupService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\AgegroupService');
-                $agegroupService->setMode('price');
-                $agegroup = $agegroupService->getAgegroupByUser($participant);
-                
-                $deadlineService = $this->getServiceLocator()
-                        ->get('ErsBase\Service\DeadlineService');
-                $deadlineService->setMode('price');
-                $deadline = $deadlineService->getDeadline($order->getCreated());
+                    $agegroupService = $this->getServiceLocator()
+                            ->get('ErsBase\Service\AgegroupService');
+                    $agegroupService->setMode('price');
+                    $agegroup = $agegroupService->getAgegroupByUser($participant);
+                    #$agegroup = $participant->getAgegroup();
 
-                $price = $product->getProductPrice($agegroup, $deadline, $currency);
-                if(!$price) {
-                    throw new \Exception('Unable to find price for '.$product->getName().'.');
+                    $deadlineService = $this->getServiceLocator()
+                            ->get('ErsBase\Service\DeadlineService');
+                    $deadlineService->setMode('price');
+                    $deadline = $deadlineService->getDeadline($order->getCreated());
+
+                    $price = $product->getProductPrice($agegroup, $deadline, $currency);
+                    if($debug) {
+                        error_log('price: '.$price->getFullCharge());
+                    }
+                    if(!$price) {
+                        throw new \Exception('Unable to find price for '.$product->getName().'.');
+                    }
+                    $item->setPrice($price->getFullCharge());
+                    #$entityManager->persist($item);
                 }
-                $logger->debug(get_class().': price: '.$price->getCharge());
-                
-                $item->setPrice($price->getCharge());
+                #$entityManager->persist($package);
             }
-
             $order->setCurrency($currency);
-            $logger->debug(get_class().': set order to currency: '.$currency);
-                
-            # reset payment type if there is already on chosen
+            if($debug) {
+                error_log('set order to currency: '.$currency);
+            }
             if($order->getPaymentType()) {
                 $order->setPaymentType(null);
             }
@@ -224,6 +245,16 @@ class OrderService extends ServiceLocatorAwareService
             }
         }
         
+    }
+    
+    public function setCountryId($country_id) {
+        $container = new Container('ers');
+        $container->country_id = $country_id;
+    }
+    
+    public function getCountryId() {
+        $container = new Container('ers');
+        return $container->country_id;
     }
     
     /**
@@ -256,7 +287,7 @@ class OrderService extends ServiceLocatorAwareService
     
     public function removeParticipant(Entity\User $participant, $flush=true) {
         if(!$participant) {
-            throw new \Exception('Unable to find participant to delete');
+            throw new \Exception('Unable to find participant with id: '.$id);
         }
         
         # remove package of the active order
@@ -347,59 +378,58 @@ class OrderService extends ServiceLocatorAwareService
             #$price = $product->getProductPrice($agegroup, $deadline);
             $price = $product->getProductPrice($agegroup, $deadline, $package->getCurrency());
             
-            if($item->getPrice() == $price->getCharge()) {
-                continue;
-            }
-            /*
-             * disable item and create new item
-             */
-            #$newItem = clone $item;
-            $newItem = new Entity\Item();
-            $newItem->populate($item->getArrayCopy());
-            #$newItem->setStatus($item->getStatus());
-            foreach($item->getItemVariants() as $itemVariant) {
-                $newItemVariant = clone $itemVariant;
-                $newItem->addItemVariant($newItemVariant);
-                $newItemVariant->setItem($newItem);
-            }
-            $newItem->setPrice($price->getCharge());
+            if($item->getPrice() != $price->getFullCharge()) {
+                /*
+                 * disable item and create new item
+                 */
+                #$newItem = clone $item;
+                $newItem = new Entity\Item();
+                $newItem->populate($item->getArrayCopy());
+                #$newItem->setStatus($item->getStatus());
+                foreach($item->getItemVariants() as $itemVariant) {
+                    $newItemVariant = clone $itemVariant;
+                    $newItem->addItemVariant($newItemVariant);
+                    $newItemVariant->setItem($newItem);
+                }
+                $newItem->setPrice($price->getFullCharge());
 
-            $newItem->setProduct($item->getProduct());
-            $newItem->setPackage($item->getPackage());
-
-            if($newItem->getPrice() == 0) {
-                # set item to paid if it's 0 € worth
-                $newItem->setStatus($statusPaid);
-            } elseif($item->getStatus()->getValue() == 'paid') {
-                # if it's not 0 € worth set the item to ordered when it was paid.
-                $newItem->setStatus($statusOrdered);
-            } else {
-                # let the item in the old state otherwise
-                $newItem->setStatus($item->getStatus());
-            }
+                $newItem->setProduct($item->getProduct());
+                $newItem->setPackage($item->getPackage());
                 
-            $code = new Entity\Code();
-            $code->genCode();
-            $codecheck = 1;
-            while($codecheck != null) {
+                if($newItem->getPrice() == 0) {
+                    # set item to paid if it's 0 € worth
+                    $newItem->setStatus($statusPaid);
+                } elseif($item->getStatus()->getValue() == 'paid') {
+                    # if it's not 0 € worth set the item to ordered when it was paid.
+                    $newItem->setStatus($statusOrdered);
+                } else {
+                    # let the item in the old state otherwise
+                    $newItem->setStatus($item->getStatus());
+                }
+                
+                $code = new Entity\Code();
                 $code->genCode();
-                $codecheck = $entityManager->getRepository('ErsBase\Entity\Code')
-                    ->findOneBy(array('value' => $code->getValue()));
-            }
-            $newItem->setCodeId(null);
-            $newItem->setCode($code);
+                $codecheck = 1;
+                while($codecheck != null) {
+                    $code->genCode();
+                    $codecheck = $entityManager->getRepository('ErsBase\Entity\Code')
+                        ->findOneBy(array('value' => $code->getValue()));
+                }
+                $newItem->setCodeId(null);
+                $newItem->setCode($code);
 
-            /*
-             * add subitems to main item
-             */
-            foreach($item->getChildItems() as $cItem) {
-                $itemPackage = new Entity\ItemPackage();
-                $itemPackage->setSurItem($newItem);
-                $itemPackage->setSubItem($cItem);
-                $newItem->addItemPackageRelatedBySurItemId($itemPackage);
-            }
+                /*
+                 * add subitems to main item
+                 */
+                foreach($item->getChildItems() as $cItem) {
+                    $itemPackage = new Entity\ItemPackage();
+                    $itemPackage->setSurItem($newItem);
+                    $itemPackage->setSubItem($cItem);
+                    $newItem->addItemPackageRelatedBySurItemId($itemPackage);
+                }
 
-            $itemArray[$item->getId()]['after'] = $newItem;
+                $itemArray[$item->getId()]['after'] = $newItem;
+            }
             $itemArray[$item->getId()]['before'] = $item;
         }
         return $itemArray;
@@ -437,5 +467,57 @@ class OrderService extends ServiceLocatorAwareService
                 $entityManager->flush();
             }
         }
+    }
+    
+    public function sendPaymentReminder() {
+        $logger = $this->getServiceLocator()->get('Logger');
+        
+        $emailService = $this->getServiceLocator()
+                ->get('ErsBase\Service\EmailService');
+
+        $order = $this->getOrder();
+        $buyer = $order->getBuyer();
+        $recipients[] = [
+            'email' => $buyer,
+            'type' => 'to',
+        ];
+
+        $settingService = $this->getServiceLocator()
+                ->get('ErsBase\Service\SettingService');
+
+        if($settingService->get('ers.bcc_mail') != '') {
+            $recipients[] = [
+                'email' => $settingService->get('ers.bcc_mail'),
+                'type' => 'bcc',
+            ];
+        }
+
+        #$subject = "[".$settingService->get('ers.name_short')."] Payment reminder for your order: ".$order->getCode()->getValue();
+        $subject = "[".$settingService->get('ers.name_short')."] Zahlungserinnerung für deine Bestellung: ".$order->getCode()->getValue();
+
+        $viewModel = new ViewModel(array(
+            'order' => $order,
+        ));
+        $viewModel->setTemplate('email/payment-reminder.phtml');
+        $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+        $html = $viewRender->render($viewModel);
+
+        $shortcodeService = $this->getServiceLocator()
+                ->get('ErsBase\Service\ShortcodeService');
+        $shortcodeService->setText($html);
+        $shortcodeService->setObject('order', $order);
+        $shortcodeService->setObject('buyer', $order->getBuyer());
+        $shortcodeService->processFilters();
+        $html = $shortcodeService->getText();
+        
+        $emailService->addMailToQueue(null, $recipients, $subject, $html, true);
+
+        $logger->info('payment reminder for order '.$order->getCode()->getValue().' has been send out.');
+        
+        $entityManager = $this->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+        $order->setPaymentReminderStatus(($order->getPaymentReminderstatus()+1));
+        $entityManager->persist($order);
+        $entityManager->flush();
     }
 }

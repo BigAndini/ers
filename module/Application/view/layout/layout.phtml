@@ -3,13 +3,16 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta property="og:locale" content="de_DE" />
+        <meta property="og:locale" content="en GB" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Event Registration System" />
-        <meta property="og:description" content="Get your ticket for <?php echo $this->layout()->ers_config['name_with_year']; ?>" />
+        <meta property="og:description" content="Get your ticket for <?php echo $this->setting('ers.name_with_year'); ?>" />
         <meta property="og:url" content="<?php echo $this->serverUrl(); ?>" />
         <meta property="og:site_name" content="Event Registration System - ERS" />
-        <meta property="og:image" content="<?php echo $this->serverUrl('/img/og_image.png'); ?>" />
+        <?php if($this->setting('ers.og_image')): ?>
+            <meta property="og:image" content="<?php echo $this->serverUrl($this->setting('ers.og_image')); ?>" />
+        <?php endif; ?>
+        
         <?php echo $this->headTitle($this->translate('Event Registration System'))->setSeparator(' - ')->setAutoEscape(false)  // change Skeleton Application to Sticky Notes ?> 
 
         <?php echo $this->headMeta()
@@ -19,54 +22,44 @@
 
         <!-- Le styles -->
         <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
-                ->prependStylesheet($this->basePath() . '/css/style.css')
-                ->prependStylesheet($this->basePath() . '/components/bootstrap/css/bootstrap-theme.min.css')
-                ->prependStylesheet($this->basePath() . '/components/bootstrap/css/bootstrap.min.css')
-                ->prependStylesheet($this->basePath() . '/components/font-awesome/css/font-awesome.min.css')
-                ->prependStylesheet($this->basePath() . '/css/cookiecuttr.css')
-                ->prependStylesheet($this->basePath() . '/components/jquery-ui/themes/base/minified/jquery-ui.min.css')
-                ->prependStylesheet($this->basePath() . '/components/jquery-ui/themes/base/minified/jquery.ui.theme.min.css')
-                ->prependStylesheet($this->basePath() . '/components/jquery-timepicker-addon/dist/jquery-ui-timepicker-addon.css')
+                ->appendStylesheet($this->basePath() . '/components/jquery-ui/themes/base/minified/jquery-ui.min.css')
+                ->appendStylesheet($this->basePath() . '/components/jquery-ui/themes/base/minified/jquery.ui.theme.min.css')
+                ->appendStylesheet($this->basePath() . '/components/jquery-timepicker-addon/dist/jquery-ui-timepicker-addon.css')
+                ->appendStylesheet($this->basePath() . '/components/bootstrap/css/bootstrap.min.css')
+                ->appendStylesheet($this->basePath() . '/components/bootstrap/css/bootstrap-theme.min.css')
+                ->appendStylesheet($this->basePath() . '/components/font-awesome/css/font-awesome.min.css')
+                ->appendStylesheet($this->basePath() . '/css/cookiecuttr.css')
+                ->appendStylesheet($this->basePath() . '/css/style.css')
                 ->appendStylesheet($this->basePath() . '/css/custom.css')
         ?>
 
         <!-- Scripts -->
         <?php echo $this->headScript()
-            ->prependFile($this->basePath() . '/components/bootstrap/js/bootstrap.min.js')
-            ->prependFile($this->basePath() . '/components/jquery-timepicker-addon/dist/jquery-ui-timepicker-addon.js')
-            ->prependFile($this->basePath() . '/components/jquery-ui/ui/minified/jquery-ui.min.js')
-            ->prependFile($this->basePath() . '/components/jquery/jquery.min.js')        
-            ->prependFile($this->basePath() . '/js/jquery.cookiecuttr.js')
-            ->prependFile($this->basePath() . '/js/jquery.cookie.js')
+            ->appendFile($this->basePath() . '/components/jquery/jquery.min.js')        
+            ->appendFile($this->basePath() . '/components/jquery-ui/ui/minified/jquery-ui.min.js')
+            ->appendFile($this->basePath() . '/components/jquery-timepicker-addon/dist/jquery-ui-timepicker-addon.js')
+            ->appendFile($this->basePath() . '/components/jquery-cookie/jquery.cookie.js')
+            ->appendFile($this->basePath() . '/js/jquery.cookiecuttr.js')
+            ->appendFile($this->basePath() . '/components/bootstrap/js/bootstrap.min.js')
+            #->appendFile($this->basePath() . '/js/jquery.cookie.js')
             ->appendFile($this->basePath() . '/js/custom.js')
             ->prependFile($this->basePath() . '/components/respond/respond-built.js', 'text/javascript', array('conditional' => 'lt IE 9',))
             ->prependFile($this->basePath() . '/components/html5shiv/html5shiv-built.js',   'text/javascript', array('conditional' => 'lt IE 9',))
         ; ?>
         
-
-        <?php if (isset($this->config()['environment']) && $this->config()['environment'] != 'production') : ?>
-        <!-- Hotjar Tracking Code for prereg.eja.net -->
-        <!--<script>
-            (function(h,o,t,j,a,r){
-                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-                h._hjSettings={hjid:82996,hjsv:5};
-                a=o.getElementsByTagName('head')[0];
-                r=o.createElement('script');r.async=1;
-                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-                a.appendChild(r);
-            })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
-        </script>-->
-        <?php endif; ?>
-        
     </head>
-    <body>
-        <?php if (!isset($this->config()['environment'])) : ?>
+	<?php 
+		$class = preg_replace('/\//', '-', $_SERVER['REQUEST_URI']);
+		$class = preg_replace('/^-|-$/', '', $class);
+	?>
+    <body <?php if($class != ''): echo 'class="'.$class.'"'; endif; ?>>
+        <?php if ($this->setting('system.environment') == '') : ?>
         <div class="alert alert-danger text-center">
-            <p>Please add the <strong>environment</strong> config key to one of your local configurations.</p>
+            <p>Please add the <strong>system.environment</strong> setting key.</p>
         </div>
-        <?php elseif ($this->config()['environment'] != 'production') : ?>
+        <?php elseif ($this->setting('system.environment') != 'production') : ?>
         <div class="alert alert-danger text-center">
-            <p>Keep in mind this environment is for: <strong><?php echo $this->config()['environment']; ?></strong></p>
+            <p>Keep in mind this system.environment is for: <strong><?php echo $this->setting('system.environment'); ?></strong></p>
         </div>
         <?php endif; ?>
         <!--<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">-->
@@ -140,7 +133,7 @@
                     <a href="https://github.com/inbaz/ers/issues" target="_blank"><?php echo _('report a bug'); ?></a><br />
                     <span>Version: <?php echo exec('git symbolic-ref -q HEAD || git describe --tags --exact-match'); ?></span>
                 </p>
-                <p>&copy; 2014 - <?php echo date('Y') ?> <?php echo $this->config()['ERS']['operator'] ?> <?php echo $this->translate('All rights reserved.') ?></p>
+                <p>&copy; 2014 - <?php echo date('Y') ?> <?php echo $this->setting('operator') ?> <?php echo $this->translate('All rights reserved.') ?></p>
             </footer>
         </div> <!-- /footer -->
         <?php echo $this->inlineScript() ?>

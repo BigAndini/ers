@@ -10,7 +10,7 @@ if($order == null || $trx_amount == 0):
     <div class='jumbotron'>
         <h1><?php echo $this->escapeHtml($title); ?></h1>
         <p><?php echo $this->translate('Your order could not be found. Please recheck the link you\'ve used.'); ?></p>
-        <p><?php echo $this->translate('If there are any problems conntact us at'); ?> <a href='mailto:prereg@eja.net'>prereg@eja.net</a></p>
+        <p><?php echo $this->translate('If there are any problems conntact us at %s', $this->setting('ers.info_mail', 'email')); ?></p>
     </div>
 <?php else:
     $title = $this->translate('Pay by Credit Card');

@@ -181,11 +181,13 @@ class ProductController extends AbstractActionController {
                 #$this->copyProductVariants($productId, $new_id);
 
                 $forrest = new Service\BreadcrumbService();
+                $forrest->set('product', 'admin/product');
                 $breadcrumb = $forrest->get('product');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            } else {
+                $logger = $this->getServiceLocator()->get('Logger');
+                $logger->warn($form->getMessages());
             }
-            $logger = $this->getServiceLocator()->get('Logger');
-            $logger->warn($form->getMessages());
         }
 
         return new ViewModel(array(
@@ -255,6 +257,7 @@ class ProductController extends AbstractActionController {
         }
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
+
         $Product = $entityManager->getRepository('ErsBase\Entity\Product')
                 ->findOneBy(array('id' => $productId));
         $Items = $entityManager->getRepository('ErsBase\Entity\Item')
@@ -291,6 +294,7 @@ class ProductController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         $ProductPrices = $entityManager->getRepository('ErsBase\Entity\ProductPrice')
                 ->findBy(array('Product_id' => $Product->getId()));
+
         foreach($ProductPrices as $price) {
             $entityManager->remove($price);
         }
@@ -298,8 +302,10 @@ class ProductController extends AbstractActionController {
     private function removeProductVariants(Entity\Product $Product) {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
+
         $ProductVariants = $entityManager->getRepository('ErsBase\Entity\ProductVariant')
                 ->findBy(array('Product_id' => $Product->getId()));
+
         foreach($ProductVariants as $variant) {
             $ProductVariantValues = $entityManager->getRepository('ErsBase\Entity\ProductVariantValue')
                     ->findBy(array('ProductVariant_id' => $variant->getId()), array('position' => 'ASC'));
@@ -308,5 +314,15 @@ class ProductController extends AbstractActionController {
             }
             $entityManager->remove($variant);
         }
+    }
+    
+    public function addLogoAction() {
+        
+    }
+    public function editLogoAction() {
+        
+    }
+    public function deleteLogoAction() {
+        
     }
 }

@@ -46,6 +46,7 @@ class CurrencyController extends AbstractActionController {
                 $entityManager->persist($currency);
                 $entityManager->flush();
 
+                $this->flashMessenger()->addSuccessMessage('Currency has been successfully added.');
                 return $this->redirect()->toRoute('admin/currency');
             } else {
                 $logger = $this->getServiceLocator()->get('Logger');
@@ -83,6 +84,7 @@ class CurrencyController extends AbstractActionController {
                 $entityManager->persist($form->getData());
                 $entityManager->flush();
 
+                $this->flashMessenger()->addSuccessMessage('Currency has been successfully changed.');
                 return $this->redirect()->toRoute('admin/currency');
             }
         }
@@ -122,6 +124,7 @@ class CurrencyController extends AbstractActionController {
                 $entityManager->flush();
             }
 
+            $this->flashMessenger()->addSuccessMessage('Currency has been successfully deleted.');
             return $this->redirect()->toRoute('admin/currency');
         }
 

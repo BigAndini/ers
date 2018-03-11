@@ -27,6 +27,6 @@ $this->headTitle($title);
         printf($this->translate('You can request this information again, by simply bookmarking %s, or have a look at the email we\'ve sent you.'), $orderLink); ?>
     </p>
 
-    <p class="text-info"><strong><?php printf($this->translate('Thanks for registering, see you in %s!'), $this->config()['ERS']['city']); ?></strong></p>
+    <p class="text-info"><strong><?php printf($this->translate('Thanks for registering, see you in %s!'), $this->setting('ers.city')); ?></strong></p>
 </div>
 <?php endif;

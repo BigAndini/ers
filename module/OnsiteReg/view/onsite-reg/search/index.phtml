@@ -19,8 +19,8 @@ $this->headTitle("Search");
 
 <?php echo $this->partial('partial/search-box'); ?>
 
-<?php if ($searchQuery !== NULL): ?>
-    <h4>Search results for "<?php echo $this->escapeHtml($searchQuery); ?>" (<?php echo ($resultsNum > $displayLimit ? $displayLimit . ' of ' . $resultsNum : $resultsNum); ?>)</h4>
+<?php if ($query !== NULL): ?>
+    <h4>Search results for "<?php echo $this->escapeHtml($query); ?>" (<?php echo ($resultsNum > $displayLimit ? $displayLimit . ' of ' . $resultsNum : $resultsNum); ?>)</h4>
     <table class="table">
         <thead>
             <tr>

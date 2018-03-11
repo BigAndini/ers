@@ -23,6 +23,7 @@ class Status extends Base\Status
     public function __construct()
     {
         parent::__construct();
+        $this->setValid(0);
     }
 
     public function __toString() {

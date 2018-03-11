@@ -17,23 +17,23 @@ use ErsBase\Service;
 
 class Module
 {
-    public function onBootstrap($event)
+    public function onBootstrap($e)
     {
-        $eventManager        = $event->getApplication()->getEventManager();
-        $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($event) {
-            $controller      = $event->getTarget();
+        $eventManager        = $e->getApplication()->getEventManager();
+        $eventManager->getSharedManager()->attach('Zend\Mvc\Controller\AbstractActionController', 'dispatch', function($e) {
+            $controller      = $e->getTarget();
             $controllerClass = get_class($controller);
             $moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
-            $config          = $event->getApplication()->getServiceManager()->get('config');
+            $config          = $e->getApplication()->getServiceManager()->get('config');
             if (isset($config['module_layouts'][$moduleNamespace])) {
                 $controller->layout($config['module_layouts'][$moduleNamespace]);
             }
         }, 100);
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
-        $this->bootstrapSession($event);
+        $this->bootstrapSession($e);
         
-        $application   = $event->getApplication();
+        $application   = $e->getApplication();
         $serviceManager = $application->getServiceManager();
         $auth = $serviceManager->get('BjyAuthorize\Service\Authorize');
 
@@ -46,14 +46,14 @@ class Module
         
         $sharedManager = $application->getEventManager()->getSharedManager();
         $sharedManager->attach('Zend\Mvc\Application', 'dispatch.error',
-                function($event) use ($serviceManager) {
-                    if ($event->getParam('exception')){
-                        #$serviceManager->get('Logger')->crit($event->getParam('exception'));
+                function($e) use ($serviceManager) {
+                    if ($e->getParam('exception')){
+                        #$serviceManager->get('Logger')->crit($e->getParam('exception'));
                         
                         /*$auth = $serviceManager->get('zfcuser_auth_service');
                         if (!$auth->hasIdentity()) {
-                            $url = $event->getRouter()->assemble(array(), array('name' => 'zfcuser/login'));
-                            $response=$event->getResponse();
+                            $url = $e->getRouter()->assemble(array(), array('name' => 'zfcuser/login'));
+                            $response=$e->getResponse();
                             $response->getHeaders()->addHeaderLine('Location', $url);
                             $response->setStatusCode(302);
                             $response->sendHeaders(); 
@@ -69,7 +69,7 @@ class Module
                                 return $response;
                             };
                             //Attach the "break" as a listener with a high priority
-                            $event->getApplication()->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack,-10000);
+                            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack,-10000);
                             return $response;
                         }*/
                     }
@@ -95,9 +95,9 @@ class Module
         });*/
     }
     
-    public function bootstrapSession($event)
+    public function bootstrapSession($e)
     {
-        /*$session = $event->getApplication()
+        /*$session = $e->getApplication()
                      ->getServiceManager()
                      ->get('Zend\Session\SessionManager');
         $session->start();*/
@@ -126,46 +126,6 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(        
-                /*'Zend\Session\SessionManager' => function ($serviceManager) {
-                    $config = $serviceManager->get('config');
-                    if (isset($config['session'])) {
-                        $session = $config['session'];
-
-                        $sessionConfig = null;
-                        if (isset($session['config'])) {
-                            $class = isset($session['config']['class'])  ? $session['config']['class'] : 'Zend\Session\Config\SessionConfig';
-                            $options = isset($session['config']['options']) ? $session['config']['options'] : array();
-                            $sessionConfig = new $class();
-                            $sessionConfig->setOptions($options);
-                        }
-
-                        $sessionStorage = null;
-                        if (isset($session['storage'])) {
-                            $class = $session['storage'];
-                            $sessionStorage = new $class();
-                        }
-
-                        $sessionSaveHandler = null;
-                        if (isset($session['save_handler'])) {
-                            // class should be fetched from service manager since it will require constructor arguments
-                            $sessionSaveHandler = $serviceManager->get($session['save_handler']);
-                        }
-
-                        $sessionManager = new SessionManager($sessionConfig, $sessionStorage, $sessionSaveHandler);
-
-                        if (isset($session['validators'])) {
-                            $chain = $sessionManager->getValidatorChain();
-                            foreach ($session['validators'] as $validator) {
-                                $validator = new $validator();
-                                $chain->attach('session.validate', array($validator, 'isValid'));
-                            }
-                        }
-                    } else {
-                        $sessionManager = new SessionManager();
-                    }
-                    Container::setDefaultManager($sessionManager);
-                    return $sessionManager;
-                },*/
                 'OnsiteReg\Form\ProductView' => function ($serviceManager) {
                     $productView = new Form\ProductView();
                     $productView->setServiceLocator($serviceManager);

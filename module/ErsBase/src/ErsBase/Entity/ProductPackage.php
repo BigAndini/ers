@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * ErsBase\Entity\ProductPackage
  *
  * @ORM\Entity()
- * @ORM\Table(name="product_package", indexes={@ORM\Index(name="fk_ProductPackage_Product1_idx", columns={"Product_id"}), @ORM\Index(name="fk_ProductPackage_Product2_idx", columns={"SubProduct_id"})})
+ * @ORM\Table(name="`product_package`", indexes={@ORM\Index(name="fk_ProductPackage_Product1_idx", columns={"`product_id`"}), @ORM\Index(name="fk_ProductPackage_Product2_idx", columns={"`sub_product_id`"})})
  * @ORM\HasLifecycleCallbacks
  */
 class ProductPackage extends Base\ProductPackage
@@ -48,7 +48,7 @@ class ProductPackage extends Base\ProductPackage
 
 
     /**
-     * Set Product entity related by `SubProduct_id` (many to one).
+     * Set Product entity related by `sub_product_id` (many to one).
      *
      * @param \Entity\Product $product
      * @return \Entity\ProductPackage
@@ -59,7 +59,7 @@ class ProductPackage extends Base\ProductPackage
     }
 
     /**
-     * Get Product entity related by `SubProduct_id` (many to one).
+     * Get Product entity related by `sub_product_id` (many to one).
      *
      * @return \Entity\Product
      */

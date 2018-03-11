@@ -39,13 +39,13 @@
 
     </head>
     <body>
-        <?php if (!isset($this->config()['environment'])) : ?>
+        <?php if ($this->setting('system.environment') == '') : ?>
         <div class="alert alert-danger text-center">
             <p>Please add the <strong>environment</strong> config key to one of your local configurations.</p>
         </div>
-        <?php elseif ($this->config()['environment'] != 'production') : ?>
+        <?php elseif ($this->setting('system.environment') != 'production') : ?>
         <div class="alert alert-danger text-center">
-            <p>Keep in mind this environment is for: <strong><?php echo $this->config()['environment']; ?></strong></p>
+            <p>Keep in mind this environment is for: <strong><?php echo $this->setting('system.environment'); ?></strong></p>
         </div>
         <?php endif; ?>
         <nav class="navbar navbar-default" role="navigation">

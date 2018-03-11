@@ -12,8 +12,7 @@ return array(
         'invokables' => array(
             'OnsiteReg\Controller\Index'       => 'OnsiteReg\Controller\IndexController',
             'OnsiteReg\Controller\Search'      => 'OnsiteReg\Controller\SearchController',
-            'OnsiteReg\Controller\Package'     => 'OnsiteReg\Controller\PackageController',
-            'OnsiteReg\Controller\Cash'        => 'OnsiteReg\Controller\CashController',
+            'OnsiteReg\Controller\Package'      => 'OnsiteReg\Controller\PackageController',
             'OnsiteReg\Controller\Redirect'    => 'OnsiteReg\Controller\RedirectController',
         ),
     ),
@@ -85,16 +84,6 @@ return array(
                             'route'    => '/package[/:action][/:id][/:item-id]',
                             'defaults' => array(
                                 'controller' => 'OnsiteReg\Controller\Package',
-                                'action'     => 'index',
-                            ),
-                        ),
-                    ),
-                    'cash' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route'    => '/cash[/:action][/:id]',
-                            'defaults' => array(
-                                'controller' => 'OnsiteReg\Controller\Cash',
                                 'action'     => 'index',
                             ),
                         ),

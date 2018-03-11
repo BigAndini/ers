@@ -53,6 +53,20 @@ class Status extends Form
         ));
         $this->add(array(
             'type' => 'checkbox',
+            'name' => 'valid',
+            'attributes' => array(
+                'class' => 'checkbox',
+                'value' => '0',
+            ),
+            'options' => array(
+                'label' => 'Valid (System treats this status to send out e-tickets)',
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+            ),
+        ));
+        $this->add(array(
+            'type' => 'checkbox',
             'name' => 'active',
             'attributes' => array(
                 'class' => 'checkbox',

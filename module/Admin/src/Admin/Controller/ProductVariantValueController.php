@@ -24,22 +24,22 @@ class ProductVariantValueController extends AbstractActionController
 
     public function viewAction()
     {
-        $productVariantValueId = (int) $this->params()->fromRoute('id', 0);
-        if (!$productVariantValueId) {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
         
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         return new ViewModel(array(
-            'productvariant' => $entityManager->getRepository('ErsBase\Entity\ProductVariantValue')->findOneBy(array('id' => $productVariantValueId)),
+            'productvariant' => $entityManager->getRepository('ErsBase\Entity\ProductVariantValue')->findOneBy(array('id' => $id)),
         ));
     }
     
     public function addAction()
     {
-        $productVariantValueId = (int) $this->params()->fromRoute('id', 0);
-        if (!$productVariantValueId) {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
             return $this->redirect()->toRoute('admin/product-variant-value');
         }
         
@@ -50,7 +50,7 @@ class ProductVariantValueController extends AbstractActionController
         
         $form = new Form\ProductVariantValue();
         $form->get('submit')->setValue('Add');
-        $form->get('ProductVariant_id')->setValue($productVariantValueId);
+        $form->get('ProductVariant_id')->setValue($id);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -71,13 +71,14 @@ class ProductVariantValueController extends AbstractActionController
                 
                 $breadcrumb = $forrest->get('product-variant-value');
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            } else {
+                $logger = $this->getServiceLocator()->get('Logger');
+                $logger->warn($form->getMessages());
             }
-            $logger = $this->getServiceLocator()->get('Logger');
-            $logger->warn($form->getMessages());
         }
         
         return new ViewModel(array(
-            'productvariant_id' => $productVariantValueId,
+            'productvariant_id' => $id,
             'breadcrumb' => $forrest->get('product-variant-value'),
             'form' => $form,                
         ));
@@ -85,8 +86,8 @@ class ProductVariantValueController extends AbstractActionController
 
     public function editAction()
     {
-        $productVariantValueId = (int) $this->params()->fromRoute('id', 0);
-        if (!$productVariantValueId) {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
             return $this->redirect()->toRoute('admin/product-variant', array(
                 'action' => 'add'
             ));
@@ -99,7 +100,7 @@ class ProductVariantValueController extends AbstractActionController
             $forrest->set('product-variant-value', 'admin/product');
         }
         
-        $value = $entityManager->getRepository('ErsBase\Entity\ProductVariantValue')->findOneBy(array('id' => $productVariantValueId));
+        $value = $entityManager->getRepository('ErsBase\Entity\ProductVariantValue')->findOneBy(array('id' => $id));
 
         $form  = new Form\ProductVariantValue();
         $form->bind($value);
@@ -123,7 +124,7 @@ class ProductVariantValueController extends AbstractActionController
         }
 
         return new ViewModel(array(
-            'id' => $productVariantValueId,
+            'id' => $id,
             'breadcrumb' => $forrest->get('product-variant-value'),
             'form' => $form,
         ));
@@ -131,8 +132,8 @@ class ProductVariantValueController extends AbstractActionController
 
     public function deleteAction()
     {
-        $productVariantValueId = (int) $this->params()->fromRoute('id', 0);
-        if (!$productVariantValueId) {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
         $entityManager = $this->getServiceLocator()
@@ -144,9 +145,9 @@ class ProductVariantValueController extends AbstractActionController
 
             if ($del == 'Yes') {
                 
-                $productVariantValueId = (int) $request->getPost('id');
+                $id = (int) $request->getPost('id');
                 $value = $entityManager->getRepository('ErsBase\Entity\ProductVariantValue')
-                        ->findOneBy(array('id' => $productVariantValueId));
+                        ->findOneBy(array('id' => $id));
                 $entityManager->remove($value);
                 $entityManager->flush();
             }
@@ -157,9 +158,9 @@ class ProductVariantValueController extends AbstractActionController
         }
         
         return new ViewModel(array(
-            'id'    => $productVariantValueId,
+            'id'    => $id,
             'value' => $entityManager->getRepository('ErsBase\Entity\ProductVariantValue')
-                        ->findOneBy(array('id' => $productVariantValueId)),
+                        ->findOneBy(array('id' => $id)),
         ));
     }
 }

@@ -11,15 +11,30 @@ namespace ErsBase\Service;
 #use Zend\Session\Container;
 #use ErsBase\Entity;
 
-class DeadlineService extends ServiceLocatorAwareService
+class DeadlineService
 {
     protected $deadlines = array();
     protected $mode;
-    protected $serviceManager;
     protected $compareDate;
+    protected $sm;
+    protected $em;
     
     public function __construct() {
         $this->compareDate = new \DateTime;
+    }
+    
+    public function setServiceLocator($serviceManager) {
+        $this->sm = $serviceManager;
+    }
+    public function getServiceLocator() {
+        return $this->sm;
+    }
+    
+    public function setEntityManager($em) {
+        $this->em = $em;
+    }
+    public function getEntityManager() {
+        return $this->em;
     }
     
     public function setMode($mode) {
@@ -43,8 +58,8 @@ class DeadlineService extends ServiceLocatorAwareService
     
     public function getDeadlines() {
         if(count($this->deadlines) <= 0) {
-            $entityManager = $this->getServiceLocator()
-                    ->get('Doctrine\ORM\EntityManager');
+            #$entityManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+            $entityManager = $this->getEntityManager();
             $criteria = array();
             switch($this->getMode()) {
                 case 'price':
@@ -64,6 +79,22 @@ class DeadlineService extends ServiceLocatorAwareService
         return $this->deadlines;
     }
     
+    public function getFirstDeadline() {
+        $ret = null;
+        $now = $this->getCompareDate();
+        foreach($this->getDeadlines() as $deadline) {
+            if($ret == null) {
+                $ret = $deadline;
+                continue;
+            }
+            if($deadline->getDeadline()->getTimestamp() < $ret->getDeadline()->getTimestamp()) {
+                $ret = $deadline;
+            }
+        }
+        
+        return $ret;
+    }
+
     public function getDeadline() {
         $ret = null;
         $now = $this->getCompareDate();
@@ -79,7 +110,12 @@ class DeadlineService extends ServiceLocatorAwareService
                 $ret = $deadline;
             }
         }
-        
+
+	$firstDeadline = $this->getFirstDeadline();
+	if($firstDeadline && $firstDeadline->getDeadline()->getTimestamp() > $now->getTimestamp()) {
+		return null;
+	}
+
         return $ret;
     }
 }

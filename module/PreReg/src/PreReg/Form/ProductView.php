@@ -43,7 +43,7 @@ class ProductView extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'Product_id',
+            'name' => 'product_id',
             'attributes' => array(
                 'type'  => 'hidden',
             ),
@@ -105,14 +105,21 @@ class ProductView extends Form
     public function setVariants($variants, $defaults = array(), $package_info = array()) {
         $variant_count = count($variants);
         $variant_add = 1;
+        
+        $positionedVariants = array();
+        $unpositionedVariants = array();
         foreach($variants as $v) {
             if(is_object($v) && $v instanceof Entity\ProductVariant) {
                 if($v->getPosition() != null && $v->getPosition() != 0) {
-                    $this->variants[$v->getPosition()] = $v;
+                    $pos = $v->getPosition();
+                    while(!empty($positionedVariants[$pos])) {
+                        $pos++;
+                    }
+                    $positionedVariants[$pos] = $v;
                 } else {
-                    # Make sure the variants without order number or 
-                    # order number == 0 will be shown last.
-                    $this->variants[$variant_count+$variant_add] = $v;
+                    # Make sure the variants without position number or 
+                    # position number == 0 will be shown last.
+                    $unpositionedVariants[$variant_count+$variant_add] = $v;
                     $variant_add++;
                 }
             } else {
@@ -120,6 +127,7 @@ class ProductView extends Form
                 $logger->warn(get_class().': object is of class '.get_class($v));
             }
         }
+        $this->variants = array_merge($positionedVariants, $unpositionedVariants);
         $this->addVariants($defaults, $package_info);
     }
     
@@ -140,7 +148,7 @@ class ProductView extends Form
             
             $productVariant = array();
             $productVariant['name'] = 'pv['.$variant->getId().']';
-           
+            
             switch(strtolower($variant->getType())) {
                 case 'text':
                     $productVariant['attributes'] = array();
@@ -234,7 +242,7 @@ class ProductView extends Form
         $factory = new InputFactory();             
 
         $this->inputFilter->add($factory->createInput([ 
-            'name' => 'Product_id', 
+            'name' => 'product_id', 
             'required' => true,
             'filters' => array( 
                 array('name' => 'Int'),

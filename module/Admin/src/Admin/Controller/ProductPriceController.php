@@ -21,20 +21,20 @@ class ProductPriceController extends AbstractActionController {
     }
     
     public function viewAction() {
-        $productPriceId = (int) $this->params()->fromRoute('id', 0);
-        if (!$productPriceId) {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
         $forrest = new Service\BreadcrumbService();
         $forrest->set('product-price', 'admin/product-price', array(
             'action' => 'view',
-            'id' => $productPriceId,
+            'id' => $id,
             ));
         
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $product = $entityManager->getRepository('ErsBase\Entity\Product')
-                ->findOneBy(array('id' => $productPriceId));
+                ->findOneBy(array('id' => $id));
         $deadlines = $entityManager->getRepository('ErsBase\Entity\Deadline')
                 ->findBy(array('price_change' => '1'), array('deadline' => 'ASC'));
         $agegroups = $entityManager->getRepository('ErsBase\Entity\Agegroup')
@@ -117,7 +117,7 @@ class ProductPriceController extends AbstractActionController {
         }
         $options[] = array(
             'value' => 0,
-            'label' => 'no Deadline',
+            'label' => 'after last deadline',
             'selected' => $selected,
         );
         return $options;
@@ -152,7 +152,7 @@ class ProductPriceController extends AbstractActionController {
         }
         $options[] = array(
             'value' => 0,
-            'label' => 'no Agegroup',
+            'label' => 'adult',
             'selected' => $selected,
         );
         return $options;
@@ -161,8 +161,8 @@ class ProductPriceController extends AbstractActionController {
     
     public function addAction()
     {
-        $productPriceId = (int) $this->params()->fromRoute('id', 0);
-        if (!$productPriceId) {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
         $currencyId = (int) $this->params()->fromQuery('currency_id', null);
@@ -175,7 +175,7 @@ class ProductPriceController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
         
         $productprice = new Entity\ProductPrice();
-        $productprice->setProductId($productPriceId);
+        $productprice->setProductId($id);
 
         $form = new Form\ProductPrice();
         
@@ -236,7 +236,7 @@ class ProductPriceController extends AbstractActionController {
             }
         }
         
-        $product = $entityManager->getRepository('ErsBase\Entity\Product')->findOneBy(array('id' => $productPriceId));
+        $product = $entityManager->getRepository('ErsBase\Entity\Product')->findOneBy(array('id' => $id));
         
         if(!$forrest->exists('product-price')) {
             $forrest->set('product-price', 'admin/product');
@@ -251,8 +251,8 @@ class ProductPriceController extends AbstractActionController {
 
     public function editAction()
     {        
-        $productPriceId = (int) $this->params()->fromRoute('id', 0);
-        if (!$productPriceId) {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
             return $this->redirect()->toRoute('admin/product-price', array(
                 'action' => 'add'
             ));
@@ -262,7 +262,7 @@ class ProductPriceController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $productprice = $entityManager->getRepository('ErsBase\Entity\ProductPrice')
-                ->findOneBy(array('id' => $productPriceId));
+                ->findOneBy(array('id' => $id));
 
         $form = new Form\ProductPrice();
         $form->bind($productprice);
@@ -299,7 +299,7 @@ class ProductPriceController extends AbstractActionController {
         $product = $entityManager->getRepository('ErsBase\Entity\Product')->findOneBy(array('id' => $productprice->getProductId()));
         
         return new ViewModel(array(
-            'id' => $productPriceId,
+            'id' => $id,
             'product' => $product,
             'form' => $form,
             'breadcrumb' => $forrest->get('product-price'),
@@ -308,8 +308,8 @@ class ProductPriceController extends AbstractActionController {
 
     public function deleteAction()
     {
-        $productPriceId = (int) $this->params()->fromRoute('id', 0);
-        if (!$productPriceId) {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
             return $this->redirect()->toRoute('admin/product');
         }
         $forrest = new Service\BreadcrumbService();
@@ -317,30 +317,36 @@ class ProductPriceController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         
+        $productprice = $entityManager->getRepository('ErsBase\Entity\ProductPrice')
+                ->findOneBy(array('id' => $id));
+	if(!$forrest->exists('product-price')) {
+            $forrest->set('product-price', 'admin/product-price', ['action' => 'view', 'id' => $productprice->getProduct()->getId()]);
+        }
+        $breadcrumb = $forrest->get('product-price');
+
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
                 
-                $productPriceId = (int) $request->getPost('id');
+                $id = (int) $request->getPost('id');
                 $productprice = $entityManager->getRepository('ErsBase\Entity\ProductPrice')
-                        ->findOneBy(array('id' => $productPriceId));
+                        ->findOneBy(array('id' => $id));
                 $entityManager->remove($productprice);
                 $entityManager->flush();
             }
 
-            $breadcrumb = $forrest->get('product-price');
             return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
         }
 
         $productprice = $entityManager->getRepository('ErsBase\Entity\ProductPrice')
-                        ->findOneBy(array('id' => $productPriceId));
+                        ->findOneBy(array('id' => $id));
         
         $product = $entityManager->getRepository('ErsBase\Entity\Product')->findOneBy(array('id' => $productprice->getProductId()));
         
         return new ViewModel(array(
-            'id'    => $productPriceId,
+            'id'    => $id,
             'product' => $product,
             'price' => $productprice,
             'breadcrumb' => $forrest->get('product-price'),

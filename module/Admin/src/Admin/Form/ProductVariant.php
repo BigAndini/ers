@@ -93,7 +93,7 @@ class ProductVariant extends Form
         ));
         
         $this->add(array(
-            'name' => 'Product_id',
+            'name' => 'product_id',
             'attributes' => array(
                 'type'  => 'hidden',
             ),

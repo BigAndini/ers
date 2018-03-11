@@ -29,9 +29,10 @@ class AgegroupController extends AbstractActionController {
     public function addAction()
     {
         $agegroup = new Entity\Agegroup();
-        $config = $this->getServiceLocator()
-                ->get('Config');
-        $agegroup->setAgegroup($config['ERS']['start']->modify('-8 years'));
+        $settingService = $this->getServiceLocator()
+                ->get('ErsBase\Service\SettingService');
+	$start = new \DateTime($settingService->get('ers.start'));
+        $agegroup->setAgegroup($start->modify('-8 years'));
         
         $form = new Form\Agegroup();
         $form->bind($agegroup);
@@ -69,6 +70,7 @@ class AgegroupController extends AbstractActionController {
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
+            $this->flashMessenger()->addErrorMessage('Unable to edit agegroup, id is missing.');
             return $this->redirect()->toRoute('admin/agegroup', array(
                 'action' => 'add'
             ));
@@ -89,7 +91,7 @@ class AgegroupController extends AbstractActionController {
                 $entityManager->persist($form->getData());
                 $entityManager->flush();
 
-                $this->flashMessenger()->addSuccessMessage('The agegroup has been successfully changed');
+                $this->flashMessenger()->addSuccessMessage('The agegroup has been successfully changed.');
                 return $this->redirect()->toRoute('admin/agegroup');
             } else {
                 $this->flashMessenger()->addErrorMessage($form->getMessages());
@@ -122,10 +124,13 @@ class AgegroupController extends AbstractActionController {
                 $id = (int) $request->getPost('id');
                 $agegroup = $entityManager->getRepository('ErsBase\Entity\Agegroup')
                     ->findOneBy(array('id' => $id));
+                foreach($agegroup->getProductPrices() as $price) {
+                    $entityManager->remove($price);
+                }
                 $entityManager->remove($agegroup);
                 $entityManager->flush();
                 
-                $this->flashMessenger()->addSuccessMessage('The agegroup has been successfully deleted');
+                $this->flashMessenger()->addSuccessMessage('The agegroup has been successfully deleted.');
             }
 
             return $this->redirect()->toRoute('admin/agegroup');

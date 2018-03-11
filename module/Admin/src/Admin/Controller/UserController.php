@@ -133,9 +133,10 @@ class UserController extends AbstractActionController {
                 }
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
-            } 
-            $logger = $this->getServiceLocator()->get('Logger');
-            $logger->warn($form->getMessages());
+            } else {
+                $logger = $this->getServiceLocator()->get('Logger');
+                $logger->warn($form->getMessages());
+            }
         }
         
         return new ViewModel(array(
@@ -168,6 +169,9 @@ class UserController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
+            $inputFilter = $this->getServiceLocator()
+                    ->get('Admin\InputFilter\User');
+            #$form->setInputFilter($inputFilter->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -183,9 +187,10 @@ class UserController extends AbstractActionController {
                 $entityManager->flush();
 
                 return $this->redirect()->toRoute($breadcrumb->route, $breadcrumb->params, $breadcrumb->options);
+            } else {
+                $logger = $this->getServiceLocator()->get('Logger');
+                $logger->warn($form->getMessages());
             }
-            $logger = $this->getServiceLocator()->get('Logger');
-            $logger->warn($form->getMessages());
         }
 
         return new ViewModel(array(
@@ -258,8 +263,95 @@ class UserController extends AbstractActionController {
         ));
     }
     public function addRoleAction() {
+        $forrest = new Service\BreadcrumbService();
+        if(!$forrest->exists('user')) {
+            $forrest->set('user', 'admin/user');
+        }
+
+        $userId = (int) $this->params()->fromRoute('id', 0);
+
+        $entityManager = $this->getServiceLocator()
+            ->get('Doctrine\ORM\EntityManager');
+        $user = $entityManager->getRepository('ErsBase\Entity\User')
+                ->findOneBy(array('id' => $userId));
+        if(!$user instanceof \ErsBase\Entity\User) {
+            throw new \Exception('Unable to find user with id: '.$data['user_id']);
+        }
+
+        $roles = $entityManager->getRepository('ErsBase\Entity\Role')
+                ->findAll();
+
+        $form = new Form\SimpleForm($entityManager);
+
+        $form->get('submit')->setAttributes(array(
+            'value' => _('save'),
+            'class' => 'btn btn-success',
+        ));
+
+        $roleOptions = array();
+        $selected = false;
+        foreach($roles as $role) {
+            $roleOptions[] = array(
+                'value' => $role->getId(),
+                'label' => $role->getRoleId(),
+                'selected' => $selected,
+            );
+        }
+        $form->add(array(
+            'name' => 'role_id',
+            'type'  => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'required' => 'required',
+                'class' => 'form-control form-element',
+            ),
+            'options' => array(
+                'label' => _('new role'),
+                'label_attributes' => array(
+                    'class'  => 'media-object',
+                ),
+                'value_options' => $roleOptions,
+            ),
+        ));
+        $form->add(array(
+            'name' => 'user_id',
+            'type'  => 'Zend\Form\Element\Hidden',
+            'attributes' => array(
+                'required' => 'required',
+                'value' => $user->getId(),
+            ),
+        ));
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $role = $entityManager->getRepository('ErsBase\Entity\Role')
+                    ->findOneBy(array('id' => $data['role_id']));
+                
+                $user = $entityManager->getRepository('ErsBase\Entity\User')
+                    ->findOneBy(array('id' => $data['user_id']));
+                
+                if(!$user instanceof \ErsBase\Entity\User) {
+                    throw new \Exception('Unable to find user with id: '.$data['user_id']);
+                }
+
+		$user->addRole($role);
+
+                $entityManager->persist($user);
+                $entityManager->flush();
+                
+                return $this->redirect()->toRoute('admin/user');
+            } else {
+                $logger->warn($form->getMessages());
+            }
+        }
+
         return new ViewModel(array(
-            
+	    'form' => $form,
+	    'user' => $user,
+            'roles' => $roles,
         ));
     }
     public function deleteRoleAction() {
