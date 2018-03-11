@@ -199,6 +199,8 @@ return [
                 ['controller' => 'Admin\Controller\Status',              'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Overview',            'roles' => ['admin', 'supradm']],
                 ['controller' => 'Admin\Controller\Currency',            'roles' => ['admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Export',              'roles' => ['admin', 'supradm']],
+                ['controller' => 'Admin\Controller\Setting',             'roles' => ['admin', 'supradm']],
                 
                 /* Cron */
                 ['controller' => 'Admin\Controller\Cron',  'roles' => ['guest']],
