@@ -19,7 +19,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "zendframework/zendframework": "2.*",
+        "zendframework/zendframework": "2.4.*",
         "doctrine/doctrine-orm-module": "0.*",
         "zendframework/zend-developer-tools": "1.0.0",
         "ckeditor/ckeditor": "dev-stable",
@@ -48,7 +48,8 @@
         "trentrichardson/jquery-timepicker-addon": "1.6.3",
         "afarkas/html5shiv": "3.7.3",
         "rogeriopradoj/respond": "1.4.2",
-        "codeception/codeception": "dev-master"
+        "codeception/codeception": "dev-master",
+        "components/jquery-cookie": "1.4.1.2"
     },
     "require-dev": {
         
