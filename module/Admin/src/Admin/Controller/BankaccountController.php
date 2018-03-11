@@ -354,6 +354,12 @@ class BankaccountController extends AbstractActionController {
                 if (!$handle) {
                     throw new \Exception('Unable to open csv');
                 }
+
+		if(!is_dir(getcwd().'/data/csv')) {
+                    mkdir(getcwd().'/data/csv');
+                }
+		copy($file['tmp_name'], getcwd().'/data/csv/'.$file['name']);
+
                 
                 # only needed to disable negative statements.
                 # DO NOT ADJUST FIELDS ACCORDING TO THE STATEMENT FORMAT HERE!
