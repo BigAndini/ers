@@ -4,16 +4,5 @@ $this->headTitle($this->translate('Terms & Conditions'));
 ?>
 
 <div class="jumbotron">
-    <h1>Geschäftsbedingungen</h1>
-    <h2>Allgemeine Geschäftsbedingungen</h2>
-    <a href="http://www.circulum.de/convention/download/agb.pdf" target="_blank">http://www.circulum.de/convention/download/agb.pdf</a>
-
-    <h2>Haftungsausschluss</h2>
-    <p>Bei Teilnahme an der 15. Berliner Jonglierconvention gilt Haftungsausschluss für die Veranstalter, ihre Vertreter und Erfüllungsgehilfen für Schäden jeder Art, es sei denn, sie beruhen auf einer grob fahrlässigen oder vorsätzlichen Pflichtverletzung der Veranstalter, ihrer Vertreter oder Erfüllungsgehilfen. Teilnehmer nehmen aus freiem Willen und auf eigenes Risiko an der Veranstaltung teil, verantworten ihren Gesundheitszustand selbst und achten auf diesen.
-    Mit der Unterschrift auf dem E-Ticket/Vorortticket wird bestätigt, dass das Baden im See auf eigene Gefahr geschieht, dass keine Waschzusätze oder sonstige Chemikalien in das Wasser gelangen dürfen und dass über den Veranstalter kein Versicherungsschutz besteht. Aus Brandschutzgründen ist offenes Feuer auf dem Gelände des Badesees bzw. Zeltplatzes nicht gestattet. Die an der Info ausliegende Haus- und Brandschutzordnung des FEZ-Berlin ist einzuhalten.</p>
-
-    <h2>Disclaimer</h2>
-    <p>Upon attending the 15th Berlin Juggling Convention, in no event shall the host or its representatives or its assistants be liable for any loss or injury or any damages, unless they are grounded in a cause of gross negligence or wilful act of breach of duty by the host or its representatives or its assistants. Participants attend by choice, on their own risk, they take the responsibility for their own health status and pay attention to it.</p>
-
-    <p>I accept following by signature the e-ticket: Swimming in the lake is at your own risk. Detergents and other chemicals must not get into the water. There is no insurance coverage by the organizer. Due to fire prevention open fire at the lake and the camping site is not allowed. You have to observe the house rules and conditions for fire protection of the FEZ-Berlin displayed at the information desk.</p>
+    <?php echo $this->setting('page.terms'); ?>
 </div>

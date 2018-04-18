@@ -74,7 +74,7 @@ class Counter extends Form implements InputFilterProviderInterface
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
-                'object_manager' => $em,
+                'object_manager' => $entityManager,
                 'target_class' => 'ErsBase\Entity\ProductVariant',
                 'label_generator' => function($entity){ return $entity->getProduct()->getName() . ' - ' . $entity->getName(); },
                 'display_empty_item' => true,
@@ -94,7 +94,7 @@ class Counter extends Form implements InputFilterProviderInterface
                 'label_attributes' => array(
                     'class'  => 'media-object',
                 ),
-                'object_manager' => $em,
+                'object_manager' => $entityManager,
                 'target_class' => 'ErsBase\Entity\Product',
                 'label_generator' => function($entity){ return $entity->getName(); },
                 'display_empty_item' => true,

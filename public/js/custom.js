@@ -60,11 +60,11 @@ jQuery(function($) {
 	sliderAccessArgs: { touchonly: false }
     });
     
-    $.cookieCuttr({
+    /*$.cookieCuttr({
         cookieAnalytics: false,
         cookieMessage: 'We use cookies on this website, you can <a href="{{cookiePolicyLink}}" title="read about our cookies" target="_blank">read about them here</a>. To use the website as intended please...',
         cookiePolicyLink: '/info/cookie'
-    });
+    });*/
     
     $( '#person-detail' ).tabs({
         create: function( event, ui ) {
