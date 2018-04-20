@@ -249,7 +249,9 @@ class CronController extends AbstractActionController {
                 $item = $entityManager->getRepository('ErsBase\Entity\Item')
                     ->findOneBy(array('code_id' => $code->getId()));
                 if(!$item) {
-                    throw new \Exception("Unable to find neither item nor package nor order with code: ".$code->getValue());
+                    #throw new \Exception("Unable to find neither item nor package nor order with code: ".$code->getValue());
+                    echo "ERROR: Unable to find neither item nor package nor order with code: ".$code->getValue();
+                    return false;
                 }
                 #$order = $item->getPackage()->getOrder();
                 $package = $item->getPackage();
