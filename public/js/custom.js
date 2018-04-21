@@ -41,8 +41,8 @@ jQuery(function($) {
         firstDay: 1,
         changeMonth: true, 
         changeYear: true, 
-        yearRange: '1900:2016',
-	sliderAccessArgs: { touchonly: false },
+        yearRange: '1900:'+(new Date()).getFullYear(),
+	    sliderAccessArgs: { touchonly: false },
         /*beforeShow: function(input, inst) {
             if($(input).val() == '') {
                 $(input).val('15.04.1978');
