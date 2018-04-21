@@ -6,7 +6,7 @@
         <meta property="og:locale" content="de_DE" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Event Registration System" />
-        <meta property="og:description" content="Get your ticket for <?php echo $this->layout()->ers_config['name_with_year']; ?>" />
+        <meta property="og:description" content="Get your ticket for <?php echo $this->setting('ers.name_with_year'); ?>" />
         <meta property="og:url" content="<?php echo $this->serverUrl(); ?>" />
         <meta property="og:site_name" content="Event Registration System - ERS" />
         <?php if($this->setting('ers.og_image')): ?>
@@ -143,7 +143,7 @@
                     <a href="https://github.com/inbaz/ers/issues" target="_blank"><?php echo _('report a bug'); ?></a><br />
                     <span>Version: <?php echo exec('git symbolic-ref -q HEAD || git describe --tags --exact-match'); ?></span>
                 </p>
-                <p>&copy; 2014 - <?php echo date('Y') ?> <?php echo $this->config()['ERS']['operator'] ?> <?php echo $this->translate('All rights reserved.') ?></p>
+                <p>&copy; 2014 - <?php echo date('Y'); ?> <?php echo $this->setting('ers.operator'); ?> <?php echo $this->translate('All rights reserved.') ?></p>
             </footer>
         </div> <!-- /footer -->
         <?php echo $this->inlineScript() ?>

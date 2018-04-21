@@ -250,7 +250,7 @@ class CronController extends AbstractActionController {
                     ->findOneBy(array('code_id' => $code->getId()));
                 if(!$item) {
                     #throw new \Exception("Unable to find neither item nor package nor order with code: ".$code->getValue());
-                    echo "ERROR: Unable to find neither item nor package nor order with code: ".$code->getValue();
+                    echo "ERROR: Unable to find neither item nor package nor order with code: ".$code->getValue().PHP_EOL;
                     return false;
                 }
                 #$order = $item->getPackage()->getOrder();
@@ -563,6 +563,8 @@ class CronController extends AbstractActionController {
         }
         echo PHP_EOL;
         
+        $settingService = $this->getServiceLocator()
+                ->get('ErsBase\Service\SettingService');
         foreach($notPaidOrders as $order) {
             $orderService = $this->getServiceLocator()
                     ->get('ErsBase\Service\OrderService');
@@ -583,10 +585,10 @@ class CronController extends AbstractActionController {
             }
             
             $bcc = new Entity\User();
-            $bcc->setEmail($config['ERS']['info_mail']);
+            $bcc->setEmail($settingService->get('ers.info_mail'));
             $emailService->addBcc($bcc);
 
-            $subject = "[".$config['ERS']['name_short']."] "._('Payment reminder for your order:')." ".$order->getCode()->getValue();
+            $subject = "[".$settingService->get('ers.name_short')."] "._('Payment reminder for your order:')." ".$order->getCode()->getValue();
             $emailService->setSubject($subject);
 
             $viewModel = new ViewModel(array(
@@ -711,44 +713,7 @@ class CronController extends AbstractActionController {
         #    exit();
         #}
         
-        /*echo PHP_EOL;
-        for($i=10; $i > 0; $i--) {
-            echo "Really sending out e-tickets in... ".$i." seconds (ctrl+c to abort)   \r";
-            sleep(1);
-        }
-        echo PHP_EOL;*/
-        
-        #exit();
         foreach($packages as $package) {
-            # prepare email (participant, buyer)
-            #$emailService = new Service\EmailService();
-            #$emailService = $this->getServiceLocator()
-            #            ->get('ErsBase\Service\EmailService');
-            #$emailService->setFrom($config['ERS']['info_mail']);
-
-            #$order = $package->getOrder();
-            #$participant = $package->getParticipant();
-
-            #if($config['environment'] == 'production') {
-            #    /*** remove last slash to comment ***/
-            #    $buyer = $order->getBuyer();
-            #    if($participant->getEmail() == '') {
-            #        $emailService->addTo($buyer);
-            #    } elseif($participant->getEmail() == $buyer->getEmail()) {
-            #        $emailService->addTo($buyer);
-            #    } else {
-            #        $emailService->addTo($participant);
-            #        $emailService->addCc($buyer);
-            #    }
-            #    /*** remove leading slash to comment ***/
-            #} else {
-            #    /*** remove last slash to comment ***/
-            #    $user = new Entity\User();
-            #    $user->setEmail('andi'.$package->getCode()->getValue().'@inbaz.org');
-            #    $emailService->addTo($user);
-            #    /*** remove leading slash to comment ***/
-            #}
-            
             $packageService = $this->getServiceLocator()
                     ->get('ErsBase\Service\PackageService');
             $packageService->setPackage($package);

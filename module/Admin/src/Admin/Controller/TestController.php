@@ -301,7 +301,9 @@ class TestController extends AbstractActionController {
         $qr = $this->getServiceLocator()->get('QRCode');
         $qr->isHttps(); // or $qr->isHttp();
         #$qr->setData('http://prereg.eja.net/onsite/register/'.  \urlencode($code));
-        $onsitereg = $config['ERS']['onsitereg'];
+        $settingService = $this->getServiceLocator()
+                                ->get('ErsBase\Service\SettingService');
+        $onsitereg = $settingService->get('ers.onsitereg');
         # ensure the url has no trailing slash
         \rtrim( $onsitereg, '/\\' );
         $qr->setData($onsitereg.'/'.\urlencode($code));
