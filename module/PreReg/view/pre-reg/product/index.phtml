@@ -1,6 +1,6 @@
 <?php
 
-$title = sprintf($this->translate('Tickets for %s and other products'), $this->config()['ERS']['name_with_year']);
+$title = sprintf($this->translate('Tickets for %s and other products'), $this->setting('ers.name_with_year'));
 $this->headTitle($title);
 ?>
 <?php if($deadline): ?>

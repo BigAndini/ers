@@ -44,10 +44,10 @@ class Module
         $this->bootstrapSession($event);
         
         $translator = $event->getApplication()->getServiceManager()->get('translator');
-        $translator->setLocale('en_US');
-        setlocale(LC_TIME, 'en_US');
-        #$translator->setLocale('de_DE');
-        #setlocale(LC_TIME, 'de_DE');
+        #$translator->setLocale('en_US');
+        #setlocale(LC_TIME, 'en_US');
+        $translator->setLocale('de_DE');
+        setlocale(LC_TIME, 'de_DE');
         
         $application   = $event->getApplication();
         $serviceManager = $application->getServiceManager();

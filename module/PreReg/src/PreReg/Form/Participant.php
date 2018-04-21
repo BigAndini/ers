@@ -112,7 +112,7 @@ class Participant extends Form implements InputFilterProviderInterface
             ), 
         )); 
         
-        $this->add(array(
+        /*$this->add(array(
             'name' => 'newsletter',
             'type' => 'Zend\Form\Element\Checkbox',
             'attributes' => array(
@@ -128,7 +128,7 @@ class Participant extends Form implements InputFilterProviderInterface
                 'checked_value' => 1,
                 'unchecked_value' => 0,
             ),
-        ));
+        ));*/
         
         $this->add(array(
             'name' => 'Country_id',

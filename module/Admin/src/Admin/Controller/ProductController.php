@@ -221,7 +221,7 @@ class ProductController extends AbstractActionController {
         $form->bind($product);
         
         $items = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findBy(array('Product_id' => $productId));
+                ->findBy(array('product_id' => $productId));
 
         if ($this->request->isPost()) {
             $form->setData($this->request->getPost());
@@ -261,7 +261,7 @@ class ProductController extends AbstractActionController {
         $Product = $entityManager->getRepository('ErsBase\Entity\Product')
                 ->findOneBy(array('id' => $productId));
         $Items = $entityManager->getRepository('ErsBase\Entity\Item')
-                ->findBy(array('Product_id' => $productId));
+                ->findBy(array('product_id' => $productId));
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -293,7 +293,7 @@ class ProductController extends AbstractActionController {
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $ProductPrices = $entityManager->getRepository('ErsBase\Entity\ProductPrice')
-                ->findBy(array('Product_id' => $Product->getId()));
+                ->findBy(array('product_id' => $Product->getId()));
 
         foreach($ProductPrices as $price) {
             $entityManager->remove($price);
@@ -304,7 +304,7 @@ class ProductController extends AbstractActionController {
             ->get('Doctrine\ORM\EntityManager');
 
         $ProductVariants = $entityManager->getRepository('ErsBase\Entity\ProductVariant')
-                ->findBy(array('Product_id' => $Product->getId()));
+                ->findBy(array('product_id' => $Product->getId()));
 
         foreach($ProductVariants as $variant) {
             $ProductVariantValues = $entityManager->getRepository('ErsBase\Entity\ProductVariantValue')
