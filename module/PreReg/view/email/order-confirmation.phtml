@@ -44,7 +44,7 @@
         ), array('force_canonical' => true)); ?>">resend email link</a>.
     </p>-->
 
-    <p>Danke für deine Anmeldung zur Berliner Jonglierconvention 2017.</p>
+    <p>Danke für deine Anmeldung zur <?php echo $this->setting('ers.name_with_year')?>.</p>
 
     <p><?php printf($this->translate('You\'ve chosen %s as payment method.'), $order->getPaymentType()->getName()); ?></p>
 
@@ -146,10 +146,10 @@
             text-align: center;
             padding: 1em;
             background-color: #eeeeee;">
-        Diese E-Mail wurde dir im Namen der Berliner Jonglierconvention 2017 vom Event Registration System (ERS) geschickt, 
+                Diese E-Mail wurde dir im Namen der <?php echo $this->setting('ers.name_with_year'); ?> vom Event Registration System (ERS) geschickt, 
         das vom Circulum e.V. betrieben wird.<br />
         Wenn du Fragen zu unserer Voranmeldung hast, kontaktiere uns bitte unter <a href="mailto:anmeldung@circulum.de">anmeldung@circulum.de</a><br />
-        Für mehr Informationen zur Berlin Convention 2017, besuche <a href="http://www.circulum.de">http://www.circulum.de</a>.
+        Für mehr Informationen zur <?php echo $this->setting('ers.name_with_year'); ?>, besuche <a href="http://www.circulum.de">http://www.circulum.de</a>.
     </div>
 </div>
 </body>
