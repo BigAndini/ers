@@ -184,6 +184,11 @@ class Module
                     $service->setServiceLocator($sm);
                     return $service;
                 },
+                'ErsBase\Service\PayPalService' => function($sm) {
+                    $service = new Service\PayPalService();
+                    $service->setServiceLocator($sm);
+                    return $service;
+                },
             ),
         );
     }

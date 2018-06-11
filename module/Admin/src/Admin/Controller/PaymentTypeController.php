@@ -376,7 +376,11 @@ class PaymentTypeController extends AbstractActionController {
                 break;
             case 'paypal':
                 $form = new Form\AccountPaypalDetail($em);
+                $inputFilter = new InputFilter\AccountPaypalDetail();
+                $inputFilter->setServiceLocator($this->getServiceLocator());
+                $form->setInputFilter($inputFilter->getInputFilter());
                 break;
+            
             default:
                 $options = [
                     [
