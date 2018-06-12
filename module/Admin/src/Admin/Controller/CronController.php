@@ -152,6 +152,7 @@ class CronController extends AbstractActionController {
         foreach($orders as $order) {
             $statement_amount = $order->getStatementAmount();
             $order_amount = $order->getSum();
+            #$order_amount = $order->getSumWithoutFree();
             if($order_amount == $statement_amount) {
                 
                 $order->setPaymentStatus('paid');
@@ -541,7 +542,7 @@ class CronController extends AbstractActionController {
         $queryBuilder->setParameter('status', 'ordered');
         $paymentTarget = new \DateTime;
 
-        $paymentTarget->modify( '-20 days' );
+        $paymentTarget->modify( '-3 days' );
         $queryBuilder->setParameter('paymentTarget', $paymentTarget);
         $queryBuilder->setParameter('prstatus', '0');
         #$queryBuilder->setFirstResult( $offset )
@@ -571,40 +572,41 @@ class CronController extends AbstractActionController {
             $orderService->setOrder($order);
             $orderService->sendPaymentReminder();
 
-            if($config['environment'] == 'production') {
-                /*** real buyer ***/
-                $buyer = $order->getBuyer();
-                $emailService->addTo($buyer);
-                /***/
-            } else {
-                /*** test buyer **/
-                $user = new Entity\User();
-                $user->setEmail('andi'.$order->getCode()->getValue().'@inbaz.org');
-                $emailService->addTo($user);
-                /***/
-            }
-            
-            $bcc = new Entity\User();
-            $bcc->setEmail($settingService->get('ers.info_mail'));
-            $emailService->addBcc($bcc);
-
-            $subject = "[".$settingService->get('ers.name_short')."] "._('Payment reminder for your order:')." ".$order->getCode()->getValue();
-            $emailService->setSubject($subject);
-
-            $viewModel = new ViewModel(array(
-                'order' => $order,
-            ));
-            $viewModel->setTemplate('email/payment-reminder.phtml');
-            $viewRender = $this->getServiceLocator()->get('ViewRenderer');
-            $html = $viewRender->render($viewModel);
-
-            $emailService->setHtmlMessage($html);
-
-            $emailService->send();
-            
-            $order->setPaymentReminderStatus($order->getPaymentReminderStatus()+1);
-            $entityManager->persist($order);
-            $entityManager->flush();
+            #if($config['environment'] == 'production') {
+#            if($settingService->get('system.environment') == 'production') {
+#                /*** real buyer ***/
+#                $buyer = $order->getBuyer();
+#                $emailService->addTo($buyer);
+#                /***/
+#            } else {
+#                /*** test buyer **/
+#                $user = new Entity\User();
+#                $user->setEmail('andi'.$order->getCode()->getValue().'@inbaz.org');
+#                $emailService->addTo($user);
+#                /***/
+#            }
+#            
+#            $bcc = new Entity\User();
+#            $bcc->setEmail($settingService->get('ers.info_mail'));
+#            $emailService->addBcc($bcc);
+#
+#            $subject = "[".$settingService->get('ers.name_short')."] "._('Payment reminder for your order:')." ".$order->getCode()->getValue();
+#            $emailService->setSubject($subject);
+#
+#            $viewModel = new ViewModel(array(
+#                'order' => $order,
+#            ));
+#            $viewModel->setTemplate('email/payment-reminder.phtml');
+#            $viewRender = $this->getServiceLocator()->get('ViewRenderer');
+#            $html = $viewRender->render($viewModel);
+#
+#            $emailService->setHtmlMessage($html);
+#
+#            $emailService->send();
+#            
+#            $order->setPaymentReminderStatus($order->getPaymentReminderStatus()+1);
+#            $entityManager->persist($order);
+#            $entityManager->flush();
             
             echo "sent payment reminder for order ".$order->getCode()->getValue().PHP_EOL;
         }
