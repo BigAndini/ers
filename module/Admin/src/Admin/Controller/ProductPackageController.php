@@ -68,7 +68,7 @@ class ProductPackageController extends AbstractActionController {
         
         $thisProduct = $entityManager->getRepository('ErsBase\Entity\Product')
                 ->findOneBy(array('id' => $productId));
-        $form->get('SubProduct_id')->setValueOptions($this->getProductOptions($thisProduct));
+        $form->get('sub_product_id')->setValueOptions($this->getProductOptions($thisProduct));
         $form->get('Product_id')->setValue($productId);
         
         $request = $this->getRequest();
@@ -136,7 +136,7 @@ class ProductPackageController extends AbstractActionController {
         $thisProduct = $entityManager->getRepository('ErsBase\Entity\Product')
                 ->findOneBy(array('id' => $productPackage->getProductId()));
 
-        $form->get('SubProduct_id')->setValueOptions($this->getProductOptions($thisProduct, $subproduct_id));
+        $form->get('sub_product_id')->setValueOptions($this->getProductOptions($thisProduct, $subproduct_id));
         $form->get('Product_id')->setValue($productPackageId);
         
         $request = $this->getRequest();
