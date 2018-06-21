@@ -484,6 +484,16 @@ class Order extends Base\Order
         }
         return $sum;
     }
+
+    public function getSumWithoutFree() {
+        $sum = $this->getPrice();
+        if($this->getPaymentType()) {
+            if(!in_array($package->getStatus()->getValue(), ['free', 'bar'])) {
+                $sum += $this->getPaymentType()->calcFee($sum);
+            }
+        }
+        return $sum;
+    }
     
     public function getStatementAmount() {
         $statement_amount = 0;

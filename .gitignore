@@ -19,3 +19,8 @@ vendor/*
 bin/*
 data/etickets/*
 mailoutput/*
+components/
+data/logs/
+htdocs
+logs/
+sxp-bin/

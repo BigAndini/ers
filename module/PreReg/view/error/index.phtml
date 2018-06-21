@@ -1,8 +1,8 @@
 <h1><?php echo $this->translate('An error occurred') ?></h1>
 <h2>Sorry!</h2>
 <?php
-$preregMail = '<a href=\'mailto:'.$this->config()['ERS']['prereg_mail'].'\'>'.$this->config()['ERS']['prereg_mail'].'</a>';
-$infoMail = '<a href=\'mailto:'.$this->config()['ERS']['info_mail'].'\'>'.$this->config()['ERS']['info_mail'].'</a>';
+$preregMail = '<a href=\'mailto:'.$this->setting('ers.prereg_mail').'\'>'.$this->setting('ers.prereg_mail').'</a>';
+$infoMail = '<a href=\'mailto:'.$this->setting('ers.info_mail').'\'>'.$this->setting('ers.info_mail').'</a>';
 ?>
 <p>The page you are looking for doesn't exist. If you think this is an error, 
     please let us know at <?php echo $preregMail; ?>.</p>

@@ -42,7 +42,7 @@ class EmailService
         return $this->_sl;
     }
 
-    public function sendExceptionEmail(\Exception $e) {        
+    public function sendExceptionEmail($e) {        
         $entityManager = $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager');
         $role = $entityManager->getRepository('ErsBase\Entity\Role')
@@ -113,7 +113,6 @@ class EmailService
             ];    
         #}
         
-        #$subject = sprintf(_('Your registration for %s (order %s)'), $config['ERS']['name_short'], $order->getCode()->getValue());
         $subject = sprintf(_('Deine Bestellung für die %s (order %s)'), $settingService->get('ers.name_short'), $order->getCode()->getValue());
         #$this->setSubject($subject);
         

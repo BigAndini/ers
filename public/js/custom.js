@@ -41,8 +41,8 @@ jQuery(function($) {
         firstDay: 1,
         changeMonth: true, 
         changeYear: true, 
-        yearRange: '1900:2016',
-	sliderAccessArgs: { touchonly: false },
+        yearRange: '1900:'+(new Date()).getFullYear(),
+	    sliderAccessArgs: { touchonly: false },
         /*beforeShow: function(input, inst) {
             if($(input).val() == '') {
                 $(input).val('15.04.1978');
@@ -60,11 +60,11 @@ jQuery(function($) {
 	sliderAccessArgs: { touchonly: false }
     });
     
-    $.cookieCuttr({
+    /*$.cookieCuttr({
         cookieAnalytics: false,
         cookieMessage: 'We use cookies on this website, you can <a href="{{cookiePolicyLink}}" title="read about our cookies" target="_blank">read about them here</a>. To use the website as intended please...',
         cookiePolicyLink: '/info/cookie'
-    });
+    });*/
     
     $( '#person-detail' ).tabs({
         create: function( event, ui ) {

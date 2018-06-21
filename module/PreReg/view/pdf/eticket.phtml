@@ -8,6 +8,25 @@
 <html>
     <head>
         <style type="text/css">
+            @font-face {
+                font-family: 'OpenSans-Regular';
+                src: url("https://berlin-test.ers2.inbaz.org/fonts/OpenSans-Regular.ttf");
+            }
+            @font-face {
+                font-family: 'OpenSans-Bold';
+                src: url("https://berlin-test.ers2.inbaz.org/fonts/OpenSans-Bold.ttf");
+            }
+            @font-face {
+                font-family: 'FontAwesome';
+                font-weight: normal;
+                font-style : normal;
+                   src : url("https://berlin-test.ers2.inbaz.org/fonts/fontawesome-webfont.eot");
+                   src : url("https://berlin-test.ers2.inbaz.org/fonts/fontawesome-webfont.eot?#iefix") format("embedded-opentype"),
+                     url("https://berlin-test.ers2.inbaz.org/fonts/fontawesome-webfont.woff2") format("woff2"),
+                     url("https://berlin-test.ers2.inbaz.org/fonts/fontawesome-webfont.woff") format("woff"),
+                     url("https://berlin-test.ers2.inbaz.org/fonts/fontawesome-webfont.ttf") format("truetype"),
+                     url("https://berlin-test.ers2.inbaz.org/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format("svg");
+            }
             @page {
                 margin: 0;
             }
@@ -15,14 +34,14 @@
                 margin: 20px 25px 20px 60px;
                 padding: 0;
                 font-family: 'OpenSans-Regular';
-                font-size: 12px;
+                font-size: 10px;
             }
-            strong {
+            h1, strong {
                 font-family: 'OpenSans-Bold';
+                font-weight: 700;
             }
             .fa {
-                /*font-family: FontAwesome;*/
-		font-family: fontawesome-webfont;
+                font-family: 'FontAwesome';
             }
             .clear-both {
                 clear: both;
