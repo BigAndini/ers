@@ -66,21 +66,19 @@ jQuery(function($) {
     
     // package detail controls
     var $confirmAgegroupCheckbox = $('#confirm-agegroup-checkbox');
-    var $selectAllButton = $('.select-all-button');
-    var $confirmButton = $('.confirm-items-button');
-    var $itemCheckboxes = $('.item-ship-checkbox').not(':disabled');
+    var $itemShipButtons = $('.item-ship-button').not(':disabled');
     
-    function updateConfirmButton() {
-        var anythingSelected = $itemCheckboxes.is(':checked');
+    function updateShipButtons() {
         var agegroupConfirmed = ($confirmAgegroupCheckbox.length === 0 || $confirmAgegroupCheckbox.prop('checked'));
-        if(!anythingSelected || !agegroupConfirmed) {
-            $confirmButton.prop('disabled', true);
-            $confirmButton.prop('class', 'btn btn-lg btn-danger confirm-items-button');
+        if(agegroupConfirmed) {
+            $itemShipButtons.prop('disabled', false);
+            $itemShipButtons.removeClass('btn-danger');
+            $itemShipButtons.addClass('btn-success');
         } else {
-            $confirmButton.prop('disabled', false);
-            $confirmButton.prop('class', 'btn btn-lg btn-success confirm-items-button');
+            $itemShipButtons.prop('disabled', true);
+            $itemShipButtons.removeClass('btn-success');
+            $itemShipButtons.addClass('btn-danger');
         }
-        
     }
     
     $confirmAgegroupCheckbox.change(function() {
@@ -101,34 +99,41 @@ jQuery(function($) {
                     .addClass(replaceClasses[i][newClass]);
         }
         
-        updateConfirmButton();
+        updateShipButtons();
     });
+    $confirmAgegroupCheckbox.change();
     
-    $selectAllButton.click(function() {
-        var newState = ($selectAllButton.text() === 'Select all');
-        $itemCheckboxes.prop('checked', newState).change();
-    });
-    
-    $itemCheckboxes.change(function() {
-        var $container = $(this).closest('li');
-        if($(this).prop('checked')) {
-            $container.addClass('light-green-bg');
-        } else {
-            $container.removeClass('light-green-bg');
-        }
+    $itemShipButtons.click(function() {
+        var $button = $(this);
+        var $container = $button.closest('li');
         
-        updateConfirmButton();
+        $button.prop('disabled', true);
+        $container.addClass('bg-info');
         
-        if($itemCheckboxes.not(':checked').length === 0) {
-            $selectAllButton.text('Select none');
-        } else {
-            $selectAllButton.text('Select all');
-        }
+        var $form = $(this).closest('form');
+        var url = $form.prop('action');
+        $.post(url, {
+            id: $form[0].id.value,
+            csrf: $form[0].csrf.value,
+            itemId: $button.data('itemid'),
+        })
+        .done(function(data) {
+            var $newItem = $(data);
+            var $newPackage = $newItem.find(".package");
+            var highlightClass = $newPackage.find(".text-danger").length ? 'bg-danger' : 'bg-success';
+            $newPackage.addClass(highlightClass);
+            
+            $container.replaceWith($newItem);
+            setTimeout(function(){ 
+                $newPackage.removeClass(highlightClass);
+            }, 500);
+        })
+        .fail(function(e) {
+            alert('Failed to ship item: Network error!');
+            console.error(e);
+            $button.prop('disabled', false);
+        });
     });
-    
-    if($itemCheckboxes.length === 0) {
-        $selectAllButton.prop('disabled', true);
-    }
     
     if(!$('.package-detail-view').length) {
         $('.onsite-search-box').focus();

@@ -487,6 +487,8 @@ div.product-info-field {
     border-radius: 5px;
     padding: 10px 15px;
     margin-bottom: 20px;
+    -webkit-transition: background-color 0.8s;
+    transition: background-color 0.8s;
 }
 
 label.payment-type {
