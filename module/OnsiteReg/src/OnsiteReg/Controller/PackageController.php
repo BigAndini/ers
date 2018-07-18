@@ -73,9 +73,9 @@ class PackageController extends AbstractActionController {
         ));
     }
     
-    public function shipAction() {
+    public function shipAjaxAction() {
         if(!$this->getRequest()->isPost()) {
-            return $this->redirect()->toRoute('onsite/search');
+            return $this->notFoundAction();
         }
         
         $entityManager = $this->getServiceLocator()
@@ -89,60 +89,59 @@ class PackageController extends AbstractActionController {
             
         $postData = $this->getRequest()->getPost();
         
+        $itemId = $postData->itemId;
+        $matchedItems = $package->getAllItems()->filter(function($item) use ($itemId){ return $item->getId() === (int)$itemId; });
+        if($matchedItems->count() !== 1) {
+            return $this->notFoundAction();
+        }
+        $item = $matchedItems->first();
+        
+        $itemViewModel = new ViewModel();
+        $itemViewModel->setTemplate('partial/package-detail-item');
+        $itemViewModel->setVariable('item', $item);
+        $itemViewModel->setTerminal('true');
+        
         $form = new Form\ConfirmItems();
         $form->setData($postData);
         
-        $toDetailRedirect = $this->redirect()->toRoute('onsite/package', ['action' => 'detail', 'id' => $package->getId()]);
-        
         if($form->isValid()) {
-            $itemIds = $postData->items;
-            
-            foreach($itemIds as $itemId) {
-                $matchedItems = $package->getAllItems()->filter(function($item) use ($itemId){ return $item->getId() === (int)$itemId; });
-                if($matchedItems->count() !== 1) {
-                    $this->flashMessenger()->addErrorMessage('No item with id ' . $itemId . ' was not found in the package!');
-                    return $toDetailRedirect;
-                }
-                
-                $item = $matchedItems->first();
-                
-                if($item->getShipped()) {
-                    $this->flashMessenger()->addErrorMessage('The item ' . $item->getName() . ' was changed since it was last displayed. Please try again!');
-                    return $toDetailRedirect;
-                }
-                
-                #if($item->getStatus()->getValue() !== 'paid') {
-                if(!$item->getStatus()->getValid()) {
-                    $this->flashMessenger()->addErrorMessage('The item ' . $item->getName() . ' cannot be set to shipped because it is not paid.');
-                    return $toDetailRedirect;
-                }
-                
-                $item->setShipped(true);
-                $item->setShippedDate(new \DateTime());
-                $entityManager->persist($item);
-                
-                $log = new \ErsBase\Entity\Log();
-                $log->setUser($this->zfcUserAuthentication()->getIdentity());
-                $log->setData('SHIPPED Item ' . $item->getName() . ' of package ' . $package->getCode()->getValue() . '.');
-                $entityManager->persist($log);
-                
-                # TODO: create log entry for this.
-                error_log('set item ' . $item->getId() . ' of package ' . $package->getId() . ' to shipped');
+            if($item->getShipped()) {
+                $itemViewModel->setVariable('error', 'This item has already been shipped!');
+                error_log('attempted duplicate shipping of item ' . $item->getId() . ' in package ' . $package->getId() . '!');
+                return $itemViewModel;
             }
+
+            #if($item->getStatus()->getValue() !== 'paid') {
+            if(!$item->getStatus()->getValid()) {
+                $itemViewModel->setVariable('error', 'The item cannot be set to shipped because it is not paid.');
+                error_log('attempted shipping with invalid status of item ' . $item->getId() . ' in package ' . $package->getId() . '!');
+                return $itemViewModel;
+            }
+
+            $item->setShipped(true);
+            $item->setShippedDate(new \DateTime());
+            $entityManager->persist($item);
+
+            $log = new \ErsBase\Entity\Log();
+            $log->setUser($this->zfcUserAuthentication()->getIdentity());
+            $log->setData('SHIPPED Item ' . $item->getName() . ' of package ' . $package->getCode()->getValue() . '.');
+            $entityManager->persist($log);
             $entityManager->flush();
-            
-            $this->flashMessenger()->addSuccessMessage('The items were successfully marked as shipped!');
+
+            # TODO: create log entry for this.
+            error_log('set item ' . $item->getId() . ' of package ' . $package->getId() . ' to shipped');
         }
         else {
             $logger = $this->getServiceLocator()->get('Logger');
             $logger->warn($form->getMessages());
             
-            foreach(call_user_func_array('array_merge', $form->getMessages()) as $error) {
-                $this->flashMessenger()->addErrorMessage($error);
-            }
+            $errors = call_user_func_array('array_merge', $form->getMessages());
+            $itemViewModel->setVariable('error',
+                    implode("\n", $errors)
+                    . "\nPlease refresh the page and try again." );
         }
         
-        return $toDetailRedirect;
+        return $itemViewModel;
     }
     
     public function undoItemAction() {

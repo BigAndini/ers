@@ -60,7 +60,16 @@ $itemOK = $item->getStatus()->getValid();
             </div>
         
         <?php else: ?>
-            <div class="col-xs-4 text-<?php echo ($itemOK ? 'success' : 'warning'); ?>">
+            <div class="col-xs-5 text-<?php echo ($itemOK ? 'success' : 'warning'); ?>">
+                <div class="floatRight">
+                    <button type="button"
+                            class="btn btn-lg item-ship-button <?php echo ($itemOK ? 'btn-success' : 'btn-danger'); ?>"
+                            data-itemid="<?php echo $item->getId(); ?>"
+                            <?php echo ($itemOK ? '' : 'disabled'); ?>>
+                        Confirm
+                    </button>
+                </div>
+                
                 <p class="h4">
                     <i class="fa <?php echo ($itemOK ? 'fa-check' : 'fa-warning'); ?>"></i>
                     <?php echo $this->escapeHtml($status); ?>
@@ -71,9 +80,16 @@ $itemOK = $item->getStatus()->getValid();
                 endif;
                 ?>
             </div>
-            <div class="col-xs-1">
-                <input type="checkbox" class="checkbox item-ship-checkbox" name="items[]" value="<?php echo $item->getId(); ?>" <?php echo ($itemOK ? '' : ' disabled') ?>>
-            </div>
         <?php endif; ?>
     </div>
+    
+    <?php if(isset($error)): ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <h3 class="text-danger text-right">
+                    <?php echo nl2br($this->escapeHtml($error)) ?>
+                </h3>
+            </div>
+        </div>
+    <?php endif; ?>
 </label></li>

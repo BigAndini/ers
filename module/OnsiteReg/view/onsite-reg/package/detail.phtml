@@ -2,7 +2,7 @@
 $title = "Package " . $package->getCode()->getValue();
 $this->headTitle($package->getParticipant()->getFullName());
 
-$form->setAttribute('action', $this->url('onsite/package', array('action' => 'ship', 'id' => $package->getId())));
+$form->setAttribute('action', $this->url('onsite/package', array('action' => 'ship-ajax', 'id' => $package->getId())));
 $form->prepare();
 
 $packageStatus = $package->getStatusWithShipped();
@@ -111,54 +111,26 @@ echo $this->flashMessenger()
 
 
 <div class="panel panel-default">
-    <div class="panel-heading"><h3 class="panel-title">Unshipped items</h3></div>
-    <div class="panel-body">
-        <?php if(empty($unshippedItems)): ?>
-            <span class="gray">No unshipped items for this package.</span>
-        <?php else: ?>
-            <?php echo $this->form()->openTag($form); ?>
-
-            <ul class="list-unstyled">
-                <?php
-                foreach ($unshippedItems as $item):
-                    echo $this->partial('partial/package-detail-item.phtml', ['item' => $item]);
-                endforeach;
-                ?>
-            </ul>
-
-            <?php echo $this->formHidden($form->get('id')); ?>
-            <?php echo $this->formHidden($form->get('csrf')); ?>
-            <div class="text-right">
-                <button type="button" class="btn btn-lg btn-default select-all-button">Select all</button>
-                <?php
-                    $form->get('submit')->setAttribute('disabled', 'disabled');
-                    $form->get('submit')->setAttribute('class', 'btn btn-lg btn-danger confirm-items-button');
-                    echo $this->formSubmit($form->get('submit')); 
-                    
-                ?>
-            </div>
-
-            <?php echo $this->form()->closeTag(); ?>
-        <?php endif; ?>
-    </div>
-</div>
-
-<?php if(!empty($shippedItems)): ?>
-<div class="panel panel-default">
-    <div class="panel-heading"><h3 class="panel-title">Shipped items</h3></div>
+    <div class="panel-heading"><h3 class="panel-title">Items</h3></div>
     <div class="panel-body">
         <?php echo $this->form()->openTag($form); ?>
 
         <ul class="list-unstyled">
             <?php
+            foreach ($unshippedItems as $item):
+                echo $this->partial('partial/package-detail-item.phtml', ['item' => $item]);
+            endforeach;
             foreach ($shippedItems as $item):
                 echo $this->partial('partial/package-detail-item.phtml', ['item' => $item]);
             endforeach;
             ?>
         </ul>
+
+        <?php echo $this->formHidden($form->get('id')); ?>
+        <?php echo $this->formHidden($form->get('csrf')); ?>
+        <?php echo $this->form()->closeTag(); ?>
     </div>
 </div>
-<?php endif; ?>
 
 <div class="panel panel-default">
     <div class="panel-heading"><h3 class="panel-title">Order</h3></div>
