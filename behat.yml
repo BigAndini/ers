@@ -1,9 +1,0 @@
-default:
-    extensions:
-        Behat\MinkExtension:
-        #Behat\MinkExtension\Extension:
-            base_url: http://dev.ers.inbaz.org
-            #selenium2: ~
-            goutte: ~
-        MvLabs\Zf2Extension\Zf2Extension:
-    
