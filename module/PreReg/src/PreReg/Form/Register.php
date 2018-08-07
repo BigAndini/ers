@@ -1,0 +1,54 @@
+<?php   
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+namespace PreReg\Form;
+
+use Zend\Form\Form;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilter;
+
+
+class Register extends Form
+{
+    public $inputFilter;
+    
+    public function __construct()
+    {
+        parent::__construct('Buyer');
+        
+        $this->setAttribute('method', 'post'); 
+        
+        $this->add(array( 
+            'name' => 'buyer_id', 
+            #'disable_inarray_validator' => false,
+            'type' => 'Zend\Form\Element\Radio', 
+            'attributes' => array( 
+                'required' => 'required',
+            ), 
+            'options' => array( 
+                'label' => _('Choose Buyer'), 
+            ), 
+        ));
+        
+        $this->add(array( 
+            'name' => 'csrf', 
+            'type' => 'Zend\Form\Element\Csrf', 
+        )); 
+        
+        $this->add(array(
+            'name' => 'submit',
+            'attributes' => array(
+                'type'  => 'submit',
+                'value' => _('Save & Continue'),
+                'id' => 'submitbutton',
+                'class' => 'btn btn-primary btn-lg',
+            ),
+        ));
+    }
+    
+}

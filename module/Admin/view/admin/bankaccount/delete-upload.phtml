@@ -1,0 +1,24 @@
+<?php
+
+$title = 'Delete bank account csv including all bank statements';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Are you sure that you want to delete bank account csv
+    <strong><?php echo $csv->getCsvFile(); ?></strong>?
+</p>
+<p>All matches from this csv file will be deleted, too and all orders will be set to status <strong>ordered</strong>.</p>
+<?php
+$url = $this->url('admin/bankaccount', array(
+    'action' => 'delete-upload',
+    'id'     => $csv->getId(),
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $csv->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+    <a href="<?php echo $this->url('admin/bankaccount');?>">Cancel</a>
+</div>
+</form>

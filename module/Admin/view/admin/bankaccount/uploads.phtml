@@ -1,0 +1,31 @@
+<?php
+/* pizza would be really nice */
+
+$title = 'Bankaccount Uploads for '.$bankaccount->getName();
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('admin/bankaccount', array('action'=>'upload-csv'));?>">New Upload</a>
+</p>
+
+<table class="table">
+    <tr>
+        <th>Bank account</th>
+        <th>CSV file</th>
+        <th>Date</th>
+        <th>Statements</th>
+        <th>&nbsp;</th>
+    </tr>
+<?php foreach ($bankaccount->getBankAccountCsvs() as $csv) : ?>
+    <tr>
+        <td><?php echo $bankaccount->getName(); ?></td>
+        <td><?php echo $csv->getCsvFile() ?></td>
+        <td><?php echo $csv->getCreated()->format('d.m.Y H:i:s'); ?></td>
+        <td><?php echo count($csv->getBankStatements()); ?></td>
+        <td>
+            <a href="<?php echo $this->url('admin/bankaccount', array('action'=>'delete-upload', 'id' => $csv->getId()));?>"><?php echo $this->translate('Delete'); ?></a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

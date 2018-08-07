@@ -1,0 +1,23 @@
+<?php
+
+$title = 'Product Price for '.$product->getName();
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>
+    <a href="<?php echo $this->url('admin/product');?>">Back to Product Overview</a>
+</p>
+<p>
+    <a href="<?php echo $this->url('admin/product-price', array('action'=>'add', 'id' => $product->getId()));?>">Add price</a>
+</p>
+
+<?php echo $this->partial(
+        'partial/price-matrix.phtml', 
+        array(
+            'agegroups' => $agegroups,
+            'deadlines' => $deadlines,
+            'product' => $product,
+            'currencies' => $currencies,
+        )
+    ); ?>

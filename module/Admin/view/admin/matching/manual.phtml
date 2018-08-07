@@ -1,0 +1,109 @@
+<?php
+
+$title = 'Manual Matching';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('admin/matching', array('action' => 'manual')));
+$form->prepare();
+
+if(count($form->getMessages()) > 0): ?>
+    <div class="alert alert-danger">
+        <ul>
+            <?php foreach($form->getMessages() as $message): ?>
+                <?php foreach($message as $key => $value): ?>
+                    <li><strong><?php echo $key ?>:</strong> <?php echo $value; ?></li>
+                <?php endforeach; ?>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif;
+
+echo $this->form()->openTag($form); ?>
+<div class="row">
+    <div class="col-md-6">
+        <?php echo $this->formElementErrors($form->get('orders')); ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">orders (<?php echo count($orders); ?>)</div>
+            <div class="panel-body panel-matching">
+                <div class="panel-group" id="order-accordion">
+                    <?php foreach($orders as $order): 
+                        $code = $order->getCode();
+                        $buyer = $order->getBuyer();
+                    ?>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <input type="checkbox" name="orders[]" value="<?php echo $order->getId(); ?>" />
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#order-accordion" href="#order<?php echo $order->getId(); ?>">
+                                        <?php 
+                                            echo $code->getValue();
+                                            echo ' - ';
+                                            if($buyer):
+                                                echo $buyer->getFirstname().' '.$buyer->getSurname();
+                                            else:
+                                                echo 'no buyer set';
+                                            endif;
+                                            echo '<br>';
+                                            if($order->getPaymentType()):
+                                                echo '('.$order->getPaymentType()->getName().') ';    
+                                            endif;
+                                            echo $order->getCreated()->format('d.m.Y H:i:s');
+                                        ?>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="order<?php echo $order->getId(); ?>" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <i class="fa-li fa fa-spinner fa-spin"></i>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <?php echo $this->formElementErrors($form->get('statements')); ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">bank accounts</div>
+            <div class="panel-body panel-matching">
+                <div class="panel-group" id="bankaccount-accordion">
+                    <?php foreach($bankaccounts as $bankaccount): 
+                        $statements = $bankaccount->getBankStatements();
+                    ?>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#bankaccount-accordion" href="#bankaccount<?php echo $bankaccount->getId(); ?>">
+                                        <?php 
+                                            echo $bankaccount->getName();
+                                        ?>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="bankaccount<?php echo $bankaccount->getId(); ?>" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <p style="position: relative; margin: .5em auto; width: 20px;"><i class="fa-li fa fa-spinner fa-spin"></i></p>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <?php 
+        echo $this->formHidden($form->get('csrf'));
+        echo $this->formSubmit($form->get('submit')); 
+        ?>
+    </div>
+</div>
+<?php echo $this->form()->closeTag(); ?>

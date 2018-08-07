@@ -1,0 +1,152 @@
+<?php if($item->getStatus() == 'cancelled') {
+    $class = ' grey';
+} else {
+    $class = '';
+} ?>
+<tr class="<?php echo $class; ?>">
+    <td>
+        <div class="row">
+            <div class="col-md-12">
+                <p class="main-item">
+                    <span class="product-name">
+                        <?php echo $item->getName(); ?>
+                    </span>
+                    <?php if(count($item->getItemVariants()) > 0): ?>
+                        <span class="product-variants">
+                            (
+                            <?php 
+                            $numVariants = count($item->getItemVariants()); 
+                            $i = 0;
+                            $variants = array();
+                            ?>
+                            <?php foreach($item->getItemVariants() as $variant): 
+                                echo $variant->getName().': '.$variant->getValue(); 
+                                if(++$i != $numVariants):
+                                    echo '; ';
+                                endif;
+                            endforeach; ?>
+                            )
+                        </span>
+                    <?php endif; ?>
+                </p>
+            </div>
+        </div>
+        <?php if($item->hasChildItems()): ?>
+        <div class="row">
+            <div class="col-md-11 col-md-offset-1">
+                <?php foreach($item->getChildItems() as $cItem): ?>
+                    <span class="product-name">
+                        <?php echo $cItem->getName(); ?>
+                    </span>
+                    <?php if(count($cItem->getItemVariants()) > 0): ?>
+                <span class="product-variants">
+                    (
+                    <?php 
+                    $numVariants = count($cItem->getItemVariants()); 
+                    $i = 0;
+                    $variants = array();
+                    ?>
+                    <?php foreach($cItem->getItemVariants() as $variant): 
+                        echo $variant->getName().': '.$variant->getValue(); 
+                        if(++$i != $numVariants):
+                            echo '; ';
+                        endif;
+                    endforeach; ?>
+                    )
+                </span>
+            <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+    </td>
+    <td><?php echo $item->getAmount(); ?></td>
+    <td><?php echo $this->currencyFormat($item->getPrice(), $item->getCurrency()->getShort(), null, 'de_DE'); ?></td>
+    <td class="text-nowrap">
+        <span class="h3 color-primary">
+            <?php switch($item->getStatus()->getValue()):
+                case 'ordered': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-shopping-cart color-primary" title="ordered"></i>
+                    <?php break;
+                case 'paid': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-money color-primary" title="paid"></i>
+                    <?php break;
+                case 'refund': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-reply color-primary" title="refund"></i>
+                    <?php break;
+                case 'cancelled': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-ban color-primary" title="cancelled"></i>
+                    <?php break;
+                case 'shipped': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-barcode color-primary" title="shipped"></i>
+                    <?php break;
+                case 'zero_ok': ?>
+                    <i data-toggle="tooltip" data-placement="bottom" class="fa fa-child color-primary" title="0 € child ticket"></i>
+                    <?php break;
+                case 'transferred': 
+                    $transferredItem = $item->getTransferredItem();
+                    if($transferredItem):
+                        $transferredPackage = $transferredItem->getPackage();
+                        $transferredParticipant = $transferredPackage->getParticipant();
+                        $transferredOrder = $transferredPackage->getOrder();
+                        ?>
+                        <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $transferredOrder->getId())); ?>">
+                            <i data-toggle="tooltip" data-placement="bottom" class="fa fa-forward color-primary" title="transferred to <?php echo $transferredParticipant->getFirstname().' '.$transferredParticipant->getSurname(); ?>"></i>
+                        </a>
+                    <?php else: ?>
+                    <i class="fa fa-question text-info"></i>
+                    <?php endif; ?>
+                    
+                    <?php break;
+                default:
+                    echo $item->getStatus()->getValue();
+                    break;
+            endswitch; ?>
+        </span>
+        <div class="navbar pull-right">
+            <ul class="nav nav-pills">
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                        <span>tools<span class="caret"></span></span>
+                    </a>
+                    <ul id="page_2" class="dropdown-menu pull-right">
+                        <li>
+                            <?php if($item->getStatus() == 'cancelled'): ?>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'uncancel', 'id' => $item->getId())); ?>">uncancel</a>
+                            <?php elseif($item->getStatus() == 'shipped'): ?>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'unship', 'id' => $item->getId())); ?>">unship</a>
+                            <?php else: ?>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'cancel', 'id' => $item->getId())); ?>">cancel</a>
+                            <?php endif; ?>
+                        </li>
+                        <li>
+                            <?php if($item->getStatus() == 'refund'): ?>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'undo-refund', 'id' => $item->getId())); ?>">undo refund</a>
+                            <?php else: ?>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'refund', 'id' => $item->getId())); ?>">refund</a>
+                            <?php endif; ?>
+                        </li>
+                        <li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">
+                            <a href="<?php echo $this->url('admin/item', array('action' => 'change-item', 'id' => $item->getId())); ?>">change item</a>
+                        </li>
+                        <!--<li class="disabled" data-toggle="tooltip" data-placement="bottom"  title="This function is not implemented, yet.">-->
+                        <li>
+                            <a href="<?php echo $this->url('admin/item', array('action' => 'change-participant', 'id' => $item->getId())); ?>">change participant</a>
+                        </li>
+                        <?php if($item->getStatus() == 'zero_ok'): ?>
+                            <li>
+                                <a href="<?php echo $this->url('admin/item', array('action' => 'zero-not-ok', 'id' => $item->getId())); ?>">0 € not OK</a>
+                            </li>
+                        <?php else: ?>
+                            <?php if($item->getPrice() == 0): ?>
+                                <li>
+                                    <a href="<?php echo $this->url('admin/item', array('action' => 'zero-ok', 'id' => $item->getId())); ?>">0 € OK</a>
+                                </li>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </td>
+</tr>

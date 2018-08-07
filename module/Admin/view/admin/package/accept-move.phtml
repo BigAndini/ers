@@ -1,0 +1,69 @@
+<?php
+
+$title = 'Accept move for package '.$package->getCode()->getValue();
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php if($package == null) : ?>
+<h3>It was not possible to collect all data to change participant.</h3>
+<p><a href="<?php echo $this->url('admin/order', array('action' => 'search')); ?>">back to order search</a></p>
+<?php else: ?>
+<div class="row">
+    <div class="col-md-6">
+        <?php $oldOrder = $package->getOrder(); ?>
+        <h3>from order: <?php echo $oldOrder->getCode()->getValue(); ?></h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h3>
+            to order:
+            <?php if($order):
+                echo $order->getCode()->getValue();
+            else: ?>
+                new order
+            <?php endif; ?>
+        </h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <?php
+        
+        $form = $this->form;
+        $query = array();
+        $query['package_id'] = $package->getId();
+        if($order) {
+            $query['order_id'] = $order->getId();
+        }
+        $form->setAttribute('action', $this->url('admin/package', 
+                array(
+                    'action' => 'accept-move'
+                ),
+                array(
+                    'query' => $query,
+                    #'fragment' => $fragment,
+                )
+                ));
+        $form->prepare();
+
+        echo $this->form()->openTag($form); ?>
+        <?php echo $this->formHidden($form->get('package_id')); ?>
+        <?php echo $this->formHidden($form->get('order_id')); ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <?php echo $this->formRow($form->get('comment')); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <?php echo $this->formHidden($form->get('csrf')); ?>
+                <?php echo $this->formSubmit($form->get('submit')); ?>
+                <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+            </div>
+        </div>
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>
+<?php endif; ?>

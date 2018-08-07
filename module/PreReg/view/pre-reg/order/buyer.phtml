@@ -1,0 +1,95 @@
+<?php
+
+$title = $this->translate('My Shopping Cart');
+$this->headTitle($title);
+?>
+
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php 
+/*echo $this->navigation()
+    ->menu('checkout_nav')
+    ->setUlClass('nav navbar-nav navbar-checkout');*/
+?>
+
+<?php 
+$partial = array('partial/checkout-nav.phtml', 'checkout_nav');
+$this->navigation()
+        ->menu('checkout_nav')
+        ->setPartial($partial);
+echo $this->navigation()
+        ->menu('checkout_nav')
+        ->render(); 
+?>
+
+<div class="clear-both"></div>
+
+<?php
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('order', array('action' => 'buyer')));
+    $form->prepare();
+
+    echo $this->form()->openTag($form);
+?>
+<div>
+    <h2><?php echo $this->translate('Select Buyer'); ?></h2>
+    <?php if(count($order->getPackages()) > 0): ?>
+    <p><strong><?php echo $this->translate('All E-Tickets will be emailed to the buyer.'); ?></strong> 
+        <?php echo $this->translate('If you order items for multiple persons and provided their email addresses, they will automatically receive a copy of their E-Ticket.'); ?></p>
+    <h3><?php echo $this->translate('Choose Buyer');?> </h3>
+    <?php echo $this->formElementErrors($form->get('buyer_id')); ?>
+    <?php 
+    foreach($participants as $participant): ?>
+        <?php if($participant->getEmail() == '' || $participant->getFirstname() == '' || $participant->getSurname() == '' || $login_email != ''): 
+            $disabled = true;
+        else:
+            $disabled = false;
+        endif; ?>
+        <?php if($order->getBuyer() != null && $order->getBuyer()->getEmail() == $participant->getEmail()) :
+            $checked = true;
+        else:
+            $checked = false;
+        endif; ?>
+        <div class="buyer">
+            <label class="buyer-label">
+                <?php if($login_email != '' && $participant->getEmail() == $login_email):
+                    $form->get('buyer_id')->setValue($participant->getId());
+                    echo $this->formHidden($form->get('buyer_id'));
+                endif; ?>
+                <input type="radio" <?php echo $checked ? 'checked="checked"' : '' ?> <?php echo $disabled ? 'disabled="disabled"' : ''; ?> name="buyer_id" value="<?php echo $participant->getId() ?>" />
+                <?php echo $participant->getFirstname().' '.$participant->getSurname().' ('.$participant->getAge()->format('%Y '.$this->translate('years')).')'; ?>
+                <span style="font-size: 14px;">
+                    <a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getId())); ?>">edit</a>
+                </span>
+            </label>
+            <?php if($participant->getEmail() != ''): ?>
+                <p><?php echo $this->translate('Email:'); ?> <?php echo $participant->getEmail(); ?></p>
+            <?php else: ?>
+                <p><a href="<?php echo $this->url('participant', array('action' => 'edit', 'id' => $participant->getId())); ?>">E-Mail Adresse hinzufügen</a>, um diesen Teilnehmer als Käufer zu wählen.</p>
+            <?php endif; ?>
+
+            <?php if($participant->getBirthday() != null): ?>
+            <p><?php echo $this->translate('Birthday:'); ?> <?php echo $participant->getBirthday()->format('d.m.Y'); ?></p>
+            <?php endif; ?>
+
+        </div>
+    <?php endforeach; ?>
+    <?php
+    else: 
+        $form->get('buyer_id')->setAttribute('value', 0);
+        echo $this->formHidden($form->get('buyer_id'));
+    endif;
+    ?>
+    <div>
+        <a class="btn btn-primary<?php echo $login_email == '' ? '' : ' disabled'; ?>" href="<?php echo $this->url('participant', array('action' => 'add')); ?>"><?php echo $this->translate('add Buyer'); ?></a>
+    </div>
+</div>
+
+<div class="clear-both"></div>
+<div class="checkout">
+    <?php 
+        echo $this->formSubmit($form->get('submit'));
+        echo $this->formHidden($form->get('csrf'));
+    ?>
+</div>
+<?php echo $this->form()->closeTag(); ?>

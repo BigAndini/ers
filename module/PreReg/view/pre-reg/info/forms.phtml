@@ -1,0 +1,20 @@
+<?php
+$title = $this->translate('Forms for participants of age under 16 and under 18');
+$this->headTitle($title);
+?>
+<h1 class="page-title"><?php echo $title; ?></h1>
+<div class="row">
+    <div class="col-md-6">
+        <h2><?php echo $this->translate('Participants under 16'); ?></h2>
+        <p><?php echo $this->translate('Participants under 16 years need an adult supervisor who is responsible for the participant throughout the whole event.'); ?></p>
+    </div>
+    <div class="col-md-6">
+        <h2><?php echo $this->translate('Participants under 18'); ?></h2>
+        <p><?php echo $this->translate('Participants under 18 years need a letter of agreement signed by a legal guardian, so that they are allowed to attend the event on their own.'); ?></p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <a class="btn btn-lg btn-primary" target="_blank" href="http://prereg.eja.net/download/EJC2018_ParentalConsentEN.pdf" type="application/octet-stream" download><?php echo $this->translate('get the form for young participants'); ?></a>
+    </div>
+</div>

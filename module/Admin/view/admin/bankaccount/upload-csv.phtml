@@ -1,0 +1,12 @@
+<?php
+/* pizza would be really nice */
+
+$title = 'Upload CSV';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<?php 
+$form = $this->form;
+$form->prepare();
+echo $this->form()->render($form);
+?>

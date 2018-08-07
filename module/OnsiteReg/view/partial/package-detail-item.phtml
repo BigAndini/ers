@@ -1,0 +1,95 @@
+<?php
+$itemStatusMessages = [
+    'ordered' => 'The item was not paid.',
+    'cancelled' => 'The item was cancelled.',
+    'unknown' => 'No status information available about the item.',
+];
+$itemStatusColors = [
+    'paid' => 'success',
+    'shipped' => 'primary',
+    'default' => 'warning',
+];
+$itemStatusIcons = [
+    'paid' => 'fa-check',
+    'shipped' => 'fa-barcode',
+    'default' => 'fa-warning',
+];
+
+
+$status = ($item->getShipped() ? 'shipped' : ($item->getStatus()->getValue() ?: 'unknown'));
+#$itemOK = ($status === 'paid');
+$itemOK = $item->getStatus()->getValid();
+?>
+<li><label class="block package">
+    <div class="row">
+        <div class="col-xs-5">
+            <p class="h4 item-name"><?php echo $this->escapeHtml($item->getName()); ?></p>
+
+            <?php
+            foreach ($item->getItemVariants() AS $itemVariant) {
+                echo '<div>';
+                echo $this->escapeHtml($itemVariant->getName()) . ': ';
+                if($itemVariant->getName() === 'show')
+                    echo '<span class="h2 text-primary">' . date('D H:i', strtotime($itemVariant->getValue())) . '</span>';
+                else
+                    echo $this->escapeHtml($itemVariant->getValue());
+                
+                echo '</div>';
+            }
+            
+            if(!$item->getPersonalized()):
+            ?>
+                <p>agegroup: <span class="h3 text-primary"><?= ($item->getAgegroup() ? 'U' . (date('Y') - $item->getAgegroup()->format('Y')) : 'adult') ?></span></p>
+            <?php endif; ?>
+        </div>
+        <div class="col-xs-2">
+            <p class="h4"><?php echo $this->currencyFormat($item->getPrice(), $item->getCurrency()->getShort(), null, 'de_DE'); ?></p>
+        </div>
+        
+        <?php if($item->getShipped()): ?>
+            <div class="col-xs-5 text-primary">
+                <div class="floatRight">
+                    <a href="<?php echo $this->url('onsite/package', ['action' => 'undo-item', 'id' => $item->getPackage()->getId(), 'item-id' => $item->getId()])
+                    ?>" class="btn btn-lg btn-danger">Undo</a>
+                </div>
+                
+                <p class="h4">
+                    <i class="fa fa-barcode"></i> shipped<br>
+                    <small><?php echo ($item->getShippedDate() ? $item->getShippedDate()->format('d.m.Y H:i:s') : 'unknown time'); ?></small>
+                </p>
+            </div>
+        
+        <?php else: ?>
+            <div class="col-xs-5 text-<?php echo ($itemOK ? 'success' : 'warning'); ?>">
+                <div class="floatRight">
+                    <button type="button"
+                            class="btn btn-lg item-ship-button <?php echo ($itemOK ? 'btn-success' : 'btn-danger'); ?>"
+                            data-itemid="<?php echo $item->getId(); ?>"
+                            <?php echo ($itemOK ? '' : 'disabled'); ?>>
+                        Confirm
+                    </button>
+                </div>
+                
+                <p class="h4">
+                    <i class="fa <?php echo ($itemOK ? 'fa-check' : 'fa-warning'); ?>"></i>
+                    <?php echo $this->escapeHtml($status); ?>
+                </p>
+                <?php
+                if(isset($itemStatusMessages[$status])):
+                    echo '<p>' . $itemStatusMessages[$status] . '</p>';
+                endif;
+                ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    
+    <?php if(isset($error)): ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <h3 class="text-danger text-right">
+                    <?php echo nl2br($this->escapeHtml($error)) ?>
+                </h3>
+            </div>
+        </div>
+    <?php endif; ?>
+</label></li>

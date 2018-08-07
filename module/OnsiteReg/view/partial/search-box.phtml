@@ -1,0 +1,22 @@
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('onsite/search'));
+$form->prepare();
+?>
+
+<h2>
+    <span class="green">ERS Onsite Registration</span>
+</h2>
+
+<?php echo $this->form()->openTag($form); ?>
+<div class="row">
+    <div class="col-xs-9 input-group-lg">
+        <?php echo $this->formRow($form->get('q')); ?>
+    </div>
+    <div class="col-xs-3">
+        <button type="submit" class="btn btn-lg btn-success">&nbsp;<i class="fa fa-search"></i>&nbsp;</button>
+        <a class="btn btn-lg btn-warning" href="intent://scan#Intent;scheme=scan;package=me.scan.android.client;end">&nbsp;<i class="fa fa-qrcode"></i>&nbsp;</a>
+        <!--<a class="btn btn-lg btn-warning" href="intent://scan/#Intent;scheme=inigma;package=com.threegvision.products.inigma.Android;end">&nbsp;<i class="fa fa-qrcode"></i>&nbsp;</a>-->
+    </div>
+</div>
+<?php echo $this->form()->closeTag(); ?>

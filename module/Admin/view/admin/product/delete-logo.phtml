@@ -1,0 +1,23 @@
+<?php
+
+$title = 'Delete Product';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Are you sure that you want to delete product
+    <strong><?php echo $this->escapeHtml($product->getName()); ?></strong>?
+</p>
+<?php
+$url = $this->url('admin/product', array(
+    'action' => 'delete',
+    'id'     => $this->id,
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $product->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+    <a href="<?php echo $this->url('admin/product');?>">Cancel</a>
+</div>
+</form>

@@ -1,0 +1,129 @@
+<?php
+    $orderLink = '<a href="' . 
+            $this->url('order', array(
+                'action' => 'view',
+                'hashkey' => $order->getHashKey()
+            ), array('force_canonical' => true)) . 
+            '">' . $this->translate('your order') . '</a>';
+    $termsLink = '<a href="' . 
+            $this->url('info',
+                array('action' => 'terms'),
+                array('force_canonical' => true)
+            ).'">' . $this->translate('terms and conditions') . '</a>';
+    $orderDate = $order->getCreated()->format('d.m.Y');
+    $orderId = '<b>'.$order->getCode()->getValue().'</b>';
+    $preregMail = $this->setting('ers.prereg_mail', 'email');
+    $infoMail = $this->setting('ers.info_mail', 'email');
+    $website = $this->setting('ers.website', 'hyperlink', ['target' => '_blank']);
+?>
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+</head>
+<body>
+<div style="font-family: sans-serif;">
+    <p><?php printf($this->translate('Dear %s %s,'), $order->getBuyer()->getFirstname(), $order->getBuyer()->getSurname()); ?></p>
+
+    <p>
+        
+        <?php 
+        
+        printf($this->translate('This is the summary for %s from %s with the order ID %s.'),
+                $orderLink,
+                $orderDate,
+                $orderId); ?>
+    </p>
+    
+    <p><?php printf($this->translate('Your order is not confirmed until we receive your payment. Once we receive payment you will be sent your E-ticket, please allow 14 days for money transfer and processing')); ?></p>
+
+    <!--<p>
+        To receive this email in another language you can visit the <a href="<?php echo $this->url('order', array(
+            'action' => 'email',
+            'hashkey' => $order->getHashKey()
+        ), array('force_canonical' => true)); ?>">resend email link</a>.
+    </p>-->
+
+    <p><?php printf($this->translate('Thank you for your registration.')); ?></p>
+
+    <p><?php printf($this->translate('You\'ve chosen %s as payment method.'), $order->getPaymentType()->getName()); ?></p>
+
+    <?php
+    $paymenttype = $order->getPaymentType();
+    if($paymenttype->getType() == 'sepa'): ?>
+
+        <p><?php echo $this->translate('To complete your order, we need to receive your bank transfer within 14 days.'); ?></p>
+
+        <?php echo $this->partial('partial/sepa-banktransfer-info.phtml', array('order' => $order)); ?>
+
+        <p><?php printf($this->translate('To see if we have already received your payment, you can visit the following link: %s'), $orderLink); ?></p>
+
+    <?php elseif($paymenttype->getType() == 'ukbt'): ?>
+
+        <p><?php echo $this->translate('To complete your order, we need to receive your bank transfer within 14 days.'); ?></p>
+
+        <?php echo $this->partial('partial/ukbt-banktransfer-info.phtml', array('order' => $order)); ?>
+
+        <p><?php printf($this->translate('To see if we have already received your payment, you can visit the following link: %s'), $orderLink); ?></p>
+    <?php elseif($paymenttype->getType() == 'creditcard'): ?>
+
+        <p>We should have received your payment by now.</br>
+            In case your payment was not successful, you can restart your
+            credit card payment via the following link:
+            <a href="<?php echo $this->url('order', array(
+                'action' => 'view',
+                'hashkey' => $order->getHashKey()
+            ), array('force_canonical' => true)); ?>">Your order details</a></p>
+
+    <?php elseif($paymenttype->getType() == 'paypal'): ?>
+
+        <p><?php echo $this->translate('We should have received your payment by now.'); ?><br>
+            <?php echo $this->translate('In case your payment was not successful, you can restart your
+            PayPal payment via the following link:'); ?>
+            <a href="<?php echo $this->url('order', array(
+                'action' => 'view',
+                'hashkey' => $order->getHashKey()
+            ), array('force_canonical' => true)); ?>"><?php echo $this->translate('Your order details'); ?></a></p>
+
+    <?php endif; ?>
+
+    <p>
+        <?php printf($this->translate('Please consider our general %s. To be able to read the document, you need to install Adobe Acrobat Reader, which you can download here:'), $termsLink); ?>
+        <a href="http://get.adobe.com/reader">http://get.adobe.com/reader</a>
+    </p>
+
+    <p>
+        <?php printf($this->translate('Your E-Tickets and further information concerning the %s will be delivered in another email as soon as we start distributing the E-Tickets and your payment has been confirmed.'), $this->setting('ers.name_with_number')); ?>
+    </p>
+    
+    <p><?php $this->translate('All the best'); ?></p>
+
+    <hr>
+    <p>
+        <?php printf($this->translate('You purchased the following items (ordered by %s %s):'), $order->getBuyer()->getFirstname(), $order->getBuyer()->getSurname()); ?>
+    </p>
+
+    <?php echo $this->partial('partial/order-info.phtml', array('order' => $order)); ?>
+
+    <div style="width: 100%;
+            text-align: center;
+            padding: 1em;
+            background-color: #eeeeee;">
+        <?php printf($this->translate('This mail was sent to you by the Event Registration System (ERS),
+        operated by the European Juggling Association (EJA) on
+        behalf of %s.'), $this->setting('ers.name_with_year')); ?>
+        <br>
+        <?php printf($this->translate('If you have any questions about your pre-registration,
+        please contact the EJA pre-registration coordinator
+        at %s.'), $preregMail); ?>
+        <br>
+        <?php printf($this->translate('For more information about %s,
+        please visit %s
+        or contact %s.'),
+        $this->setting('ers.name_with_year'),
+        $website,
+        $infoMail); ?>
+    </div>
+</div>
+</body>
+</html>

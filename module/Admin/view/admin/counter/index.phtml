@@ -1,0 +1,55 @@
+<?php
+// module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+$title = 'Counter Overview';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    
+</p>
+
+<table class="table">
+    <tr>
+        <th>name</th>
+        <th>limit</th>
+        <th>product / variant / value</th>
+        <th>current value</th>
+        <th class="text-right">
+            <a class="btn btn-success" href="<?php echo $this->url('admin/counter', array('action'=>'add'));?>"><i class="fa fa-plus"></i> counter</a>
+        </th>
+    </tr>
+<?php foreach ($counters as $counter) : ?>
+    <tr>
+        <td><?php echo $this->escapeHtml($counter->getName()); ?></td>
+        <td><?php echo $counter->getValue(); ?></td>
+        <td>
+            <?php 
+            if(count($counter->getProductVariantValues()) != 0):
+            foreach($counter->getProductVariantValues() as $value): ?>
+                <p><?php echo $value->getValue(); ?></p>
+            <?php endforeach; 
+            endif; ?>
+            
+            <?php 
+            if(count($counter->getProductVariants()) != 0):
+            foreach($counter->getProductVariants() as $variant): ?>
+                <p><?php echo $variant->getName(); ?></p>
+            <?php endforeach; 
+            endif; ?>
+            
+            <?php 
+            if(count($counter->getProducts()) != 0):
+            foreach($counter->getProducts() as $product): ?>
+                <p><?php echo $product->getName(); ?></p>
+            <?php endforeach; 
+            endif; ?>
+        </td>
+        <td><i><?php echo $counterCurrentValues[$counter->getId()]; ?></i></td>
+        <td class="text-right">
+            <a class="btn btn-default" href="<?php echo $this->url('admin/counter', array('action'=>'edit', 'id' => $counter->getId()));?>"><i class="fa fa-edit"></i></a>
+            <a class="btn btn-danger" href="<?php echo $this->url('admin/counter', array('action'=>'delete', 'id' => $counter->getId()));?>"><i class="fa fa-trash"></i></a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

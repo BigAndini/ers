@@ -1,0 +1,323 @@
+<?php
+
+$title = 'Config Overview';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <?php # taxes ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">Tax</div>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Percentage</th>
+                        <th class="text-right">
+                            <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/tax', array('action'=>'add'));?>"><i class="fa fa-plus"></i> tax</a>
+                        </th>
+                    </tr>
+                    <?php foreach($taxes as $tax): ?>
+                    <tr>
+                        <td><?php echo $this->escapeHtml($tax->getName());?></td>
+                        <td><?php echo $this->escapeHtml($tax->getPercentage());?></td>
+                        <td class="text-right">
+                            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/tax', array('action'=>'edit', 'id' => $tax->getId()));?>"><i class="fa fa-edit"></i></a>
+                            <a class="btn btn-sm btn-danger" href="<?php echo $this->url('admin/tax', array('action'=>'delete', 'id' => $tax->getId()));?>"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>    
+                    <?php endforeach; ?>
+                </table>
+            </div>
+        </div>  
+    </div>
+    <div class="col-md-6">
+        <?php # status ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">Status</div>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <th>Pos.</th>
+                        <th>name</th>
+                        <th>description</th>
+                        <th class="text-right">
+                            <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/status', array('action'=>'add'));?>"><i class="fa fa-plus"></i> status</a>
+                        </th>
+                    </tr>
+                    <?php foreach($statuses as $status): ?>
+                    <tr>
+                        <td><?php echo $status->getPosition(); ?></td>
+                        <td><?php echo $status->getValue(); ?></td>
+                        <td><?php echo $status->getDescription(); ?></td>
+                        <td class="text-right">
+                            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/status', array('action'=>'edit', 'id' => $status->getId()));?>"><i class="fa fa-edit"></i></a>
+                            <a class="btn btn-sm btn-danger" href="<?php echo $this->url('admin/status', array('action'=>'delete', 'id' => $status->getId()));?>"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>    
+                    <?php endforeach; ?>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <?php # deadlines ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">Deadline</div>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>can change price</th>
+                        <th class="text-right">
+                            <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/deadline', array('action'=>'add'));?>"><i class="fa fa-plus"></i> deadline</a>
+                        </th>
+                    </tr>
+                    <?php foreach($deadlines as $deadline): ?>
+                    <tr>
+                        <td><?php echo $deadline->getDeadline()->format('Y-m-d H:i:s'); ?></td>
+                        <td><?php echo $deadline->getName(); ?></td>
+                        <td>
+                            <?php if($deadline->getPriceChange()): ?>
+                            <i class="fa fa-check"></i>
+                            <?php else: ?>
+                            <i class="fa fa-close"></i>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-right">
+                            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/deadline', array('action'=>'edit', 'id' => $deadline->getId()));?>"><i class="fa fa-edit"></i></a>
+                            <a class="btn btn-sm btn-danger" href="<?php echo $this->url('admin/deadline', array('action'=>'delete', 'id' => $deadline->getId()));?>"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>    
+                    <?php endforeach; ?>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <?php # agegroups ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">Agegroup</div>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Birthdate</th>
+                        <th>can change price</th>
+                        <th>can change ticket</th>
+                        <th class="text-right">
+                            <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/agegroup', array('action'=>'add'));?>"><i class="fa fa-plus"></i> agegroup</a>
+                        </th>
+                    </tr>
+                    <?php foreach($agegroups as $agegroup): ?>
+                    <tr>
+                        <td><?php echo $agegroup->getName(); ?></td>
+                        <td><?php echo $agegroup->getAgegroup()->format('d.m.Y'); ?></td>
+                        <td>
+                            <?php if($agegroup->getPriceChange()): ?>
+                            <i class="fa fa-check"></i>
+                            <?php else: ?>
+                            <i class="fa fa-close"></i>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if($agegroup->getTicketChange()): ?>
+                            <i class="fa fa-check"></i>
+                            <?php else: ?>
+                            <i class="fa fa-close"></i>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-right">
+                            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/agegroup', array('action'=>'edit', 'id' => $agegroup->getId()));?>"><i class="fa fa-edit"></i></a>
+                            <a class="btn btn-sm btn-danger" href="<?php echo $this->url('admin/agegroup', array('action'=>'delete', 'id' => $agegroup->getId()));?>"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>    
+                    <?php endforeach; ?>
+                </table>
+            </div>
+        </div>  
+    </div>
+</div>
+
+<?php # payment types ?>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Payment Types</div>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+            <tr>
+                <th>Pos.</th>
+                <th>Visible</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Period</th>
+                <th class="text-right">
+                    <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/payment-type', array('action'=>'add'));?>"><i class="fa fa-plus"></i> payment type</a>
+                </th>
+            </tr>
+            <?php foreach($paymenttypes as $paymenttype): ?>
+            <tr>
+                <td><?php echo $paymenttype->getPosition(); ?></td>
+                <td>
+                    <?php if($paymenttype->getVisible()) : ?>
+                        <i class="fa fa-eye"></i>
+                    <?php else: ?>
+                        <i class="fa fa-eye-slash"></i>
+                    <?php endif; ?>
+                </td>
+                <td><?php echo $paymenttype->getName(); ?></td>
+                <td><?php echo $paymenttype->getType(); ?></td>
+                <td>
+                    <?php if($paymenttype->getActiveFrom() == null) : ?>
+                       after last deadline
+                    <?php else: ?>
+                    <?php echo $paymenttype->getActiveFrom()->getDeadline()->format('Y-m-d H:i:s'); ?>
+                    <?php endif; ?>
+                    <?php echo ' - '; ?>
+                    <?php if($paymenttype->getActiveUntil() == null) : ?>
+                       after last deadline
+                    <?php else: ?>
+                    <?php echo $paymenttype->getActiveUntil()->getDeadline()->format('Y-m-d H:i:s'); ?>
+                    <?php endif; ?>
+                </td>
+                <td class="text-right">
+                    <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/payment-type', array('action'=>'edit', 'id' => $paymenttype->getId()));?>"><i class="fa fa-edit"></i></a>
+                    <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/payment-type', array('action'=>'detail', 'id' => $paymenttype->getId()));?>"><i class="fa fa-bars"></i></a>
+                    <a class="btn btn-sm btn-danger" href="<?php echo $this->url('admin/payment-type', array('action'=>'delete', 'id' => $paymenttype->getId()));?>"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>    
+            <?php endforeach; ?>
+        </table>
+    </div>
+</div>
+
+<?php # counter ?>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Counter</div>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+                <th class="text-right">
+                    <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/counter', array('action'=>'add'));?>"><i class="fa fa-plus"></i> counter</a>
+                </th>
+            </tr>
+            <?php foreach($counters as $counter): ?>
+            <tr>
+                <td><?php echo $this->escapeHtml($counter->getName()); ?></td>
+                <td><?php echo $counter->getValue(); ?></td>
+                <td class="text-right">
+                    <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/counter', array('action'=>'edit', 'id' => $counter->getId()));?>"><i class="fa fa-edit"></i></a>
+                    <a class="btn btn-sm btn-danger" href="<?php echo $this->url('admin/counter', array('action'=>'delete', 'id' => $counter->getId()));?>"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>    
+            <?php endforeach; ?>
+        </table>
+    </div>
+</div>
+
+<?php # product ?>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Product</div>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+            <tr>
+                <th>Order</th>
+                <th>Visible</th>
+                <th>Name</th>
+                <th>Variant</th>
+                <th class="text-right">
+                    <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/product', array('action'=>'add'));?>"><i class="fa fa-plus"></i> product</a>
+                </th>
+            </tr>
+            <?php foreach($products as $product): ?>
+            <tr>
+                <td><?php echo $this->escapeHtml($product->getPosition());?></td>
+                <td>
+                    <?php if($product->getVisible()) : ?>
+                        <i class="fa fa-eye"></i>
+                    <?php else: ?>
+                        <i class="fa fa-eye-slash"></i>
+                    <?php endif; ?>
+                </td>
+                <td><?php 
+                    if($product->getPersonalized()) : ?> 
+                        <!--<img src="/img/icons/32px/user.png" alt="(personalized)" title="This product needs to be linked to a user" />-->
+                        <i class="fa fa-user"></i>
+                    <?php endif;?>
+                    <?php if(count($product->getChildProducts()) > 0): ?>
+                        <i class="fa fa-archive"></i>
+                    <?php endif; ?>
+                    <?php echo $this->escapeHtml($product->getName()); ?>
+                </td>
+                <td>
+                    <table class="table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Values</th>
+                            <th class="text-right">
+                                <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/product-variant-value', array('action' => 'add'));?>"><i class="fa fa-plus"></i> variant</a>
+                            </th>
+                        </tr>
+                        <?php foreach($product->getProductVariants() as $variant) : ?>                        
+                        <tr>
+                            <td><?php echo $variant->getName(); ?></td>
+                            <td>
+                                <table class="table">
+                                    <tr>
+                                    <th>Value</th>
+                                    <th class="text-right">
+                                        <a href="<?php echo $this->url('admin/product-variant-value', array('action' => 'add'));?>">value <i class="fa fa-plus"></i></a>
+                                    </th>
+                                    </tr>
+                                    <?php foreach($variant->getProductVariantValues() as $value): ?>
+                                    <tr>
+                                        <td><?php echo $value->getValue(); ?></td>
+                                        <td class="text-right">
+                                            <a href="<?php echo $this->url('admin/product-variant-value', array('action' => 'edit', 'id' => $value->getId()));?>"><i class="fa fa-edit"></i></a>
+                                            <a href="<?php echo $this->url('admin/product-variant-value', array('action' => 'delete', 'id' => $value->getId()));?>"><i class="fa fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </table>
+
+                            </td>
+                            <td class="text-right">
+                                <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/product-variant', array('action' => 'edit', 'id' => $variant->getId()));?>"><i class="fa fa-edit"></i></a>
+                                <a class="btn btn-sm btn-danger" href="<?php echo $this->url('admin/product-variant', array('action' => 'delete', 'id' => $variant->getId()));?>"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>    
+                        <?php endforeach; ?>
+                    </table>
+                    
+                </td>
+                <td class="text-right">
+                    <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/product', array('action'=>'edit', 'id' => $product->getId()));?>"><i class="fa fa-edit"></i></a>
+                    <a class="btn btn-sm btn-danger" href="<?php echo $this->url('admin/product', array('action'=>'delete', 'id' => $product->getId()));?>"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>    
+            <?php endforeach; ?>
+        </table>
+    </div>
+</div>

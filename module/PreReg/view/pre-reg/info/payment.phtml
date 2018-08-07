@@ -1,0 +1,12 @@
+<?php
+
+$title = $this->translate('Payment Type:').' '.$paymenttype->getName();
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<div>
+    <?php echo $paymenttype->getLongDescription(); ?>
+</div>
+<div>
+    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">back to Checkout</a>
+</div>

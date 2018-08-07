@@ -1,0 +1,131 @@
+<?php
+$title = 'Statistics: Orders';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<div class="panel panel-success">
+    <div class="panel-heading">Money in prereg bank account</div>
+    <div class="panel-body">
+	<div class="row">
+		<div class="col-md-6">
+		        <h3>The prereg bank account holds <br /><?php echo $this->setting('account.amount', 'balance'); ?></h3>
+		</div>
+		<div class="col-md-6">
+			<div class="alert alert-info">
+				Be aware that in case of transfers to the EJC bank account this amount can become less than before.
+				This value is not updated automatically the EJA treasurer inserts this information from time to time.
+			</div>
+		</div>
+	</div>
+    </div>
+</div>
+<div class="panel panel-danger">
+    <div class="panel-heading">Orders by status</div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="col-xs-4">Status</th>
+                <th class="col-xs-1">Count</th>
+                <th class="col-xs-3 text-right">Order sum</th>
+                <th class="col-xs-2 text-right">Payment fees</th>
+                <th class="col-xs-2 text-right">Total sum</th>
+            </tr>
+        </thead>
+        
+        <?php foreach($stats_paymentStatusGroups AS $statusGroupName => $statusGroup): ?>
+            <tbody>
+                <tr>
+                    <td colspan="5"><?php echo $this->escapeHtml($statusGroupName); ?></td>
+                </tr>
+
+                <?php foreach($statusGroup as $value): ?>
+                    <tr>
+                        <td><div class="col-xs-offset-2"><?php echo $this->escapeHtml($value['label']); ?></div></td>
+                        <td><?php echo $value['ordercount']; ?></td>
+                        <td class="text-right">
+                            <?php echo $this->currencyFormat($value['ordersumeur'], 'EUR', null, 'de_DE'); ?>
+                        </td>
+                        <td class="text-right">
+                            <?php echo $this->currencyFormat($value['totalsumeur'] - $value['ordersumeur'], 'EUR', null, 'de_DE'); ?>
+                        </td>
+                        <td class="text-right">
+                            <?php echo $this->currencyFormat($value['totalsumeur'], 'EUR', null, 'de_DE'); ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+
+                <tr>
+                    <th><div class="col-xs-offset-2"><?php echo $this->escapeHtml($statusGroupName); ?> sum</div></th>
+                    <th><?php echo array_sum(array_column($statusGroup, 'ordercount')); ?></th>
+                    <th class="text-right">
+                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'ordersumeur')), 'EUR', null, 'de_DE'); ?>
+                    </th>
+                    <th class="text-right">
+                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'totalsumeur'))
+                                                        - array_sum(array_column($statusGroup, 'ordersumeur')), 'EUR', null, 'de_DE'); ?>
+                    </th>
+                    <th class="text-right">
+                        <?php echo $this->currencyFormat(array_sum(array_column($statusGroup, 'totalsumeur')), 'EUR', null, 'de_DE'); ?>
+                    </th>
+                </tr>
+            </tbody>
+        <?php endforeach; ?>
+    </table>
+</div>
+
+<div class="panel panel-danger">
+    <div class="panel-heading">Orders by payment type</div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="col-xs-4">Payment type</th>
+                <th class="col-xs-1">Count</th>
+                <th class="col-xs-3 text-right">Order sum</th>
+                <th class="col-xs-2 text-right">Payment fees</th>
+                <th class="col-xs-2 text-right">Total sum</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($stats_paymentTypes as $value): ?>
+            <tr>
+                <td><?php echo $this->escapeHtml($value['label']); ?></td>
+                <td><?php echo $value['ordercount']; ?></td>
+                <td class="text-right">
+                    <?php echo $this->currencyFormat($value['ordersum'], $value['currency'], null, 'de_DE'); ?>
+                </td>
+                <td class="text-right">
+                    <?php echo $this->currencyFormat($value['totalsum'] - $value['ordersum'], $value['currency'], null, 'de_DE'); ?>
+                </td>
+                <td class="text-right">
+                    <?php echo $this->currencyFormat($value['totalsum'], $value['currency'], null, 'de_DE'); ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <th>total sum</th>
+                <th><?php echo array_sum(array_column($stats_paymentTypes, 'ordercount')); ?></th>
+                <th class="text-right">
+                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'ordersumeur')), 'EUR', null, 'de_DE'); ?>
+                </th>
+                <th class="text-right">
+                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'totalsumeur'))
+                                                    - array_sum(array_column($stats_paymentTypes, 'ordersumeur')), 'EUR', null, 'de_DE'); ?>
+                </th>
+                <th class="text-right">
+                    <?php echo $this->currencyFormat(array_sum(array_column($stats_paymentTypes, 'totalsumeur')), 'EUR', null, 'de_DE'); ?>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+    
+    <div class="panel-footer">Only active orders are included in this view.</div>
+</div>
+
+<?php /*<div class="row">
+    <div class="col-xs-12">active order count: <?php echo $orderActiveCount; ?></div>
+    <div class="col-xs-12">inactive order count: <?php echo $orderInactiveCount; ?></div>
+</div>*/ ?>

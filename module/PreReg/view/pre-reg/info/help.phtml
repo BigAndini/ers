@@ -1,0 +1,52 @@
+<?php
+    $this->headTitle('Help - Event Registration System (ERS)');
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml('Help page for the Event Registration System (ERS)'); ?></h1>
+<div class="row">
+    <div class="col-lg-8">
+        <h2>Registration overview</h2>
+
+        <p>Here is a very short introduction on how to register.
+            And how to order additional goodies like more gala show tickets, 
+            if you want :-)</p>
+
+        <p>It's quite easy:</p>
+        <ol>
+            <li>Select a product</li>
+            <li>Provide the necessary information for your product (e.g. for the week ticket, we need the name and age of the juggler who will use the ticket)</li>
+            <li>Add it to your shopping cart</li>
+            <li>Repeat the previous steps as often as you like. If you want to buy three more week tickets for three friends, just add them to your shopping cart one after another.</li>
+            <li>When you have added everything to your shopping cart, check it out: First tell us your contact information ("buyer") and how you want to pay, then confirm your order. That's it!</li>
+            <li>If you have selected to pay by bank transfer, please make sure that your payment arrives within 14 days. Hint: Best make the transfer right now!</li>
+        </ol>
+        
+        <p>We will send you a confirmation mail with all information as soon as 
+            we receive your order. When we receive the payment, we will send 
+            you a second mail that includes PDF documents with your E-Tickets.</p>
+        
+        <h2>Personalised items</h2>
+
+        <p>Personalised items are items that are assigned to a specific person. Many items <strong>must</strong> be personalised, for example each week or day ticket must belong to a specific juggler. For some other items, you can <strong>choose</strong> to personalise them, so they will be handed out to the right person. For example, if you order additional gala-show tickets, you can assign each one to a specific person to avoid confusion later ("Is this mine or yours?").</p>
+
+        <h2>Persons in your order</h2>
+
+        <p>To make it easy for you to keep track of the persons in your order, we have added the "My Persons" button in the menu. It takes you to an overview of all persons for which you have entered any information. Here you can view and edit their details, e.g. correct a name that you have accidentally misspelled. </p>
+
+        <h2>Late payments, cancellation of orders, transfering of tickets</h2>
+
+        <p>If we don't receive your payment within 14 days after your order, 
+            we will have to cancel your order. Sorry. To avoid that, best pay 
+            immediately!<br>
+            If you have already paid your order and received your e-ticket, but 
+            for some reasons cannot attend 
+            <?php $this->setting('ers.name_short'); ?>, the best thing to do is
+            find another juggler who can take over your ticket. When you have 
+            done that, it is very important that you let us know who the ticket 
+            shall be transferred! Please contact  
+		<?php echo $this->setting('ers.info_mail', 'email'); ?>
+             in this case. If 
+            there is no-one to take over your order, you can find the guidelines 
+            for refunds in our 
+            <a href="<?php echo $this->url('info', array('action' => 'terms')); ?>">ERS terms and agreement document</a>.</p>
+    </div>
+</div>

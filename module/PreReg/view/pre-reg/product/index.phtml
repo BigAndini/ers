@@ -1,0 +1,39 @@
+<?php
+
+$title = sprintf($this->translate('Tickets for %s and other products'), $this->setting('ers.name_with_year'));
+$this->headTitle($title);
+?>
+<?php if($deadline): ?>
+    <h1><?php echo $this->escapeHtml($title); ?></h1>
+    <div class="row">
+        <div class="col-md-8 col-lg-9">
+            <p><?php echo $this->translate('Click on any item to add further information and place it in your shopping cart.'); ?></p>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <p class="small text-right"><?php echo sprintf($this->translate('The prices will increase after <br /> %s'), $deadline->getDeadline()->format('d.m.Y H:i:s T')); ?></p>
+            <p class="text-right">
+                <?php echo $this->partial('partial/currency-chooser.phtml', array('form' => $this->currencychooser())); ?>
+            </p>
+        </div>
+    </div>
+
+    <?php 
+    foreach ($products as $product) : 
+        if(count($product->getProductPrices()) == 0):
+            continue;
+        endif;
+    ?>
+    <a class="product-item" href="<?php echo $this->url('product', array('action' => 'add', 'product_id' => $product->getId()));?>">
+        <span class="product-title"><?php echo $product->getName(); ?></span>
+        <span class="product-short-description"><?php echo $product->getShortDescription(); ?></span>
+        <?php echo $this->partial('partial/product-price.phtml', array('agegroups' => $agegroups, 'deadline' => $deadline, 'product' => $product)); ?>
+        <div class="clear-both"></div>
+    </a>
+    <hr />
+
+    <?php endforeach;
+else: ?>
+    <div class="jumbotron">
+	<?php echo $this->setting('ers.closed_message'); ?>
+    </div>
+<?php endif;

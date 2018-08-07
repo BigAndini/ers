@@ -1,0 +1,27 @@
+<?php
+
+$title = 'Delete bank account';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php if(count($bankaccount->getBankStatements()) != 0): ?>
+    <p>This bank account cannot be deleted since there are bank statements connected.</p>
+<?php else: ?>
+<p>Are you sure that you want to delete bank account
+    <strong><?php echo $bankaccount->getName(); ?></strong>?
+</p>
+<?php
+$url = $this->url('admin/bankaccount', array(
+    'action' => 'delete',
+    'id'     => $this->id,
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $bankaccount->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-danger" id="submitbutton" />
+    <a href="<?php echo $this->url('admin/bankaccount');?>">Cancel</a>
+</div>
+</form>
+<?php endif; ?>

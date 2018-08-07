@@ -1,0 +1,38 @@
+<?php
+// module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+$title = 'Deadline Overview';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    
+</p>
+
+<table class="table">
+    <tr>
+        <th>end date</th>
+        <th>phase name</th>
+        <th>can change price</th>
+        <th class="text-right">
+            <a class="btn btn-success" href="<?php echo $this->url('admin/deadline', array('action'=>'add'));?>"><i class="fa fa-plus"></i> deadline</a>
+        </th>
+    </tr>
+<?php foreach ($deadlines as $deadline) : ?>
+    <tr>
+        <td><?php echo $deadline->getDeadline()->format('Y-m-d H:i:s'); ?></td>
+        <td><?php echo $deadline->getName(); ?></td>
+        <td>
+            <?php if($deadline->getPriceChange()): ?>
+            <i class="fa fa-check"></i>
+            <?php else: ?>
+            <i class="fa fa-close"></i>
+            <?php endif; ?>
+        </td>
+        <td class="text-right">
+            <a class="btn btn-default" href="<?php echo $this->url('admin/deadline', array('action'=>'edit', 'id' => $deadline->getId()));?>"><i class="fa fa-edit"></i></a>
+            <a class="btn btn-danger" href="<?php echo $this->url('admin/deadline', array('action'=>'delete', 'id' => $deadline->getId()));?>"><i class="fa fa-trash"></i></a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

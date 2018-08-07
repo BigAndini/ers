@@ -1,0 +1,21 @@
+<?php
+
+$title = 'Set status to cancelled for package '.$package->getCode()->getValue();
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Do you really want to set the status to <strong>cancelled</strong> for the package <?php echo $package->getCode()->getValue(); ?>?</p>
+<?php
+$url = $this->url('admin/package', array(
+    'action' => 'cancel',
+    'id'     => $package->getId(),
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $package->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-warning" id="submitbutton" />
+    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+</div>
+</form>

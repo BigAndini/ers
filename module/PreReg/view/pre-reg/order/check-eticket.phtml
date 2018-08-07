@@ -1,0 +1,59 @@
+<?php
+
+$title = $this->translate('Check your E-Ticket');
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+echo $this->flashMessenger()
+        ->setMessageOpenFormat('<p>&nbsp;</p><div%s><p>')
+        ->setMessageSeparatorString('</p><p>')
+        ->setMessageCloseString('</p></div>')
+        ->render('error', ['alert', 'alert-danger']);
+
+echo $this->flashMessenger()
+        ->setMessageOpenFormat('<p>&nbsp;</p><div%s><p>')
+        ->setMessageSeparatorString('</p><p>')
+        ->setMessageCloseString('</p></div>')
+        ->render('success', ['alert', 'alert-success']); ?>
+
+<div class="row">
+    <div class="col-md-6">
+    <?php if($package): ?>
+        <div class="panel panel-default">
+            <div class="panel-heading"><?php echo $package->getCode()->getValue(); ?></div>
+            <div class="panel-body">
+                <?php if($package->getStatus()->getValue() == 'paid'):
+                    $status = 'success';
+                else:
+                    $status = 'danger';
+                endif; ?>
+                <div class="alert <?php echo 'alert-'.$status; ?>">
+                    <?php if($status == 'success'): ?>
+                        <h3><i class="fa fa-check"></i> <?php echo $this->translate('Your ticket is valid and active.'); ?></h3>
+                    <?php else: ?>
+                        <h3><i class="fa fa-times"></i> <?php echo $this->translate('We\'re sorry, your e-ticket is not valid. You will not be able to attend EJC with this e-ticket.'); ?></h3>
+                        <ol>
+                            <li><?php echo $this->translate('If you haven\'t paid for your ticket, yet, please do so. We will then activate your ticket.'); ?></li>
+                            <li><?php sprintf($this->translate('If you have already paid for the ticket with the ticket code <strong>%s</strong>, please contact %s. We will solve the issue.'), $package->getCode()->getValue(), $this->setting('ers.info_mail', 'email')); ?></li>
+                        </ol>
+
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    <?php endif;
+        $form = $this->form;
+        $form->setAttribute('action', $this->url('order', array('action' => 'check-eticket')));
+        $form->prepare();
+
+        echo $this->form()->openTag($form);
+        echo $this->formRow($form->get('code'));
+        echo $this->formSubmit($form->get('submit'));
+        echo $this->formHidden($form->get('csrf'));
+        echo $this->form()->closeTag(); ?>
+    </div>
+    <div class="col-md-6">
+        <img src="/img/Where_is_the_E-Ticket_Code.png">
+    </div>
+</div>

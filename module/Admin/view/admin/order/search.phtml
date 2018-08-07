@@ -1,0 +1,90 @@
+<?php
+
+$title = 'Search for an Order';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        <?php
+        $form = $this->form;
+        $form->setAttribute('action', $this->url('admin/order', 
+                array('action' => 'search')
+                ));
+        $form->prepare();
+
+        echo $this->form()->openTag($form); ?>
+        <div class="input-group input-group-lg">
+            <?php echo $this->formRow($form->get('q')); ?>
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+            </span>
+        </div><!-- /input-group -->
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>
+
+<?php if($form->get('q')->getValue() != ''): ?>
+    <?php if(count($result) > 0): ?>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+                <div class="alert alert-success">
+                    <p>There are <?php echo count($result) ?> results for "<?php echo $form->get('q')->getValue(); ?>".</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <tr>
+                        <th>code</th>
+                        <th>date</th>
+                        <th>buyer</th>
+                        <th>payment type</th>
+                        <th>price</th>
+                        <th>status</th>
+                        <th></th>
+                    </tr>
+                    <?php foreach($result as $order): ?>
+                    <tr>
+                        <td><?php echo $order->getCode()->getValue(); ?></td>
+                        <td><?php echo $order->getCreated()->format('d.m.Y H:i:s'); ?></td>
+                        <td>
+                            <?php if($order->getBuyer() != null):
+                                echo $order->getBuyer()->getFirstname().' '.$order->getBuyer()->getSurname(); ?>
+                                <br />
+                                <a href="mailto:<?php echo $order->getBuyer()->getEmail(); ?>"><?php echo $order->getBuyer()->getEmail(); ?></a>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if($order->getPaymentType()):
+                                echo $order->getPaymentType()->getName();    
+                            else:
+                                echo "No payment type set";
+                            endif; ?>
+                        </td>
+                        <td>
+                            <?php echo $this->currencyFormat($order->getSum(), $order->getCurrency()->getShort(), null, 'de_DE'); ?>
+                        </td>
+                        <td>
+                            <?php echo $order->getPaymentStatus().'('.$order->getStatus()->getValue().')'; ?>
+                        </td>
+                        <td>
+                            <a href="<?php echo $this->url('admin/order', array('action' => 'detail', 'id' => $order->getId()));?>"><?php echo $this->translate('Detail'); ?></a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+                <div class="alert alert-danger">
+                    <p>There are no results for "<?php echo $form->get('q')->getValue(); ?>".</p>
+                </div>
+            </div>
+        </div>    
+    <?php endif; ?>
+<?php endif; ?>

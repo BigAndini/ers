@@ -1,0 +1,111 @@
+<h1>E-Ticket</h1>
+<?php if($agegroup): ?>
+<div class="agegroup">
+    <span><?php echo $agegroup->getName(); ?></span>
+</div>
+<?php endif; ?>
+<div class="left-field">
+    <h3>Istruzioni brevi</h3>
+    <?php if($agegroup):
+        switch($agegroup->getName()):
+            case 'U6': ?>
+                <p>Caro accompagnatore, per favore stampa questo biglietto e non darlo ad altri. Un genitore o tutore legale deve aggiungere e firmare le informazioni riguardanti la supervisione obbligatoria e lo scarico di responsabilità. Portare questo biglietto alla EJC e presentarlo al banco di registrazione. Se non sei un genitore o tutore legale del bambino, ma una chaperon, abbiamo anche bisogno di una copia di un documento di identità del tutore legale del bambino.</p>
+                <?php break;
+            case 'U16': ?>
+                <p>Caro accompagnatore, per favore stampa questo biglietto e non darlo ad altri. Un genitore o tutore legale deve aggiungere e firmare le informazioni riguardanti la supervisione obbligatoria e lo scarico di responsabilità. Portare questo biglietto alla EJC e presentarlo al banco di registrazione. Se non sei un genitore o tutore legale del bambino, ma una chaperon, abbiamo anche bisogno di una copia di un documento di identità del tutore legale del bambino.</p>
+                <?php break;
+            case 'U18': ?>
+                <p>Stampa questo biglietto e non darlo ad altri. Un genitore o tutore legale deve firmare le informazioni riguardanti la supervisione obbligatoria e lo scarico di responsabilità. Porta questo biglietto alla EJC e presentalo al banco di registrazione. Se frequenti la EJC da solo, abbiamo anche bisogno di una copia della carta d'identità del tuo tutore legale.</p>
+                <?php break;
+        endswitch; 
+    else: ?>
+    <p>Stampa questo biglietto e non darlo mai ad altri. Firma lo scarico di responsabilità. Porta questo biglietto con la carta d'identità valida alla EJC e presentali al banco di registrazione.</p>
+    <?php endif; ?>
+</div>
+<div class="left-field">
+    <h3>Scarico di responsabilità</h3>
+    <p>Partecipando alla EJC, in nessun caso l'organizzatore il padrone di casa o i suoi rappresentanti o i suoi assistenti saranno responsabili per qualsiasi perdita o infortunio o danni, a meno che non si fondano su causa di negligenza grave o atto deliberato di violazione del dovere da parte dell'organizzatore o dei suoi rappresentanti o dei suoi assistenti. I partecipanti frequentano per scelta, a loro rischio e pericolo; assumono la responsabilità per la propria salute e prestano attenzione ad essa. Si segnala in particolare che l'EJC è un evento sportivo in cui giocolieri e acrobati professionisti si alleneranno insieme con i non - professionisti di tutti i livelli di abilità. Ci saranno laboratori a tutti i tipi di discipline circensi aperti (ma forse non di livello appropriato!) per tutti; saranno resi accessibili strutture e attrezzi, sia perché l'organizzatore li fornisce sia perché qualsiasi partecipante li mette semplicemente a disposizione degli altri. E' vostra responsabilità, e non degli organizzatori, né dei conduttori dei laboratori, i loro rappresentanti o assistenti, assicurarsi che in qualsiasi momento la vostra salute e condizione fisica è sufficiente per prendere parte al workshop in questione o l'utilizzo di strutture e attrezzi menzionati precedentemente sia sicuro.</p>
+</div>
+<div class="left-field">
+    <?php if($agegroup):
+        switch($agegroup->getName()): 
+            case 'U6':
+            case 'U16': ?>
+                <h3>Supervisione obbligatoria: fai firmare ad un tuo genitore / tutore legale l'opzione A o B</h3>
+                <table>
+                    <tr>
+                        <td><span class="cc-option">A</span></td>
+                        <td colspan="2">
+                            <p>Acconsento che mio figlio / figlia (come indicato sulla destra) partecipi alla EJC Brunico dal 1 agosto al 9 agosto 2015. Parteciperò alla EJC io stesso e quindi fornirò la supervisione obbligatoria. Accetto lo scarico di responsabilità.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><span class="sign-field">place and date</span></td>
+                        <td><span class="sign-field">signature of legal guardian</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><span class="cc-option">OR</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="cc-option">B</span></td>
+                        <td colspan="2">
+                            <p>Acconsento che mio figlio / figlia (come indicato sulla destra) partecipi alla EJC Brunico dal 1 agosto al 9 agosto 2015. Non parteciperò alla EJC. Allego una copia della mia carta d'identità a questo E-Ticket. Senza entrambi i documenti la partecipazione di mio figlio alla EJC è impossibile. Accetto lo scarico di responsabilità.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><span class="sign-field">name of chaperon</span></td>
+                        <td><span class="sign-field">chaperon's date of birth</span></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><span class="sign-field">place and date</span></td>
+                        <td><span class="sign-field">signature of legal guardian</span></td>
+                    </tr>
+                </table>
+                <?php break;
+            case 'U18': ?>
+                <h3>Supervisione obbligatoria: fai firmare ad un genitore / tutore legale l'opzione A o B</h3>
+                <table>
+                    <tr>
+                        <td><span class="cc-option">A</span></td>
+                        <td colspan="2">
+                            <p>Acconsento che mio figlio / figlia (come indicato sulla destra) partecipi alla EJC Brunico dal 1 agosto al 9 agosto 2015. Parteciperò alla EJC io stesso e quindi fornirò la supervisione obbligatoria. Accetto lo scarico di responsabilità.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><span class="sign-field">place and date</span></td>
+                        <td><span class="sign-field">signature of legal guardian</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><span class="cc-option">OR</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="cc-option">B</span></td>
+                        <td colspan="2">
+                            <p>Acconsento che mio figlio / figlia (come indicato sulla destra) partecipi alla EJC Brunico dal 1 agosto  al 9 agosto 2015. Affido il seguente accompagnatore con la funzione di tutore legale e la supervisione obbligatoria. Garantisco che questo accompagnatore è un adulto (18 anni di età o superiore) e ha la capacità di prendersi cura di mio figlio / figlia. L'organizzatore non verificherà questo. Aggiungo una copia di un documento di identità di me stesso (come detto sopra). In caso contrario la partecipazione alla EJC non sarà possibile per mio figlio / figlia. Accetto lo scarico di responsabilità.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><span class="sign-field">place and date</span></td>
+                        <td><span class="sign-field">signature of legal guardian</span></td>
+                    </tr>
+                </table>
+                <?php break;
+            default:
+                echo $agegroup->getName();
+                break;
+        endswitch; 
+    else: ?>
+        <table>
+            <tr>
+                <td><span class="sign-field">place and date</span></td>
+                <td><span class="sign-field">signature</span></td>
+            </tr>
+        </table>
+    <?php endif;?>
+
+</div>

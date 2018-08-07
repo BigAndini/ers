@@ -1,0 +1,22 @@
+<?php
+
+$title = 'undo zero ok item '.$item->getName();
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Do you really want to <strong>unset 0 € OK</strong> for this item: <?php echo $item->getName(); ?>?</p>
+<p>The item will be set to unpaid and will be rematched with the next auto-match run.</p>
+<?php
+$url = $this->url('admin/item', array(
+    'action' => 'zero-not-ok',
+    'id'     => $item->getId(),
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $item->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-warning" id="submitbutton" />
+    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+</div>
+</form>

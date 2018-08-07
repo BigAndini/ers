@@ -1,0 +1,31 @@
+<?php if($product->getPriceCount() != 1): ?>
+<table class='table table-notbordered price-table'>
+    <?php foreach($agegroups as $ag): ?>
+    <tr>
+        <td>
+            <span class="product-price-list product-price-active"><?php echo $ag->getName(); ?></span>
+        </td>
+        <td>
+            <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice($ag, $deadline, $this->session()->currency)->getFullCharge(), $this->session()->currency, null, 'de_DE'); ?></span>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+
+    <tr>
+        <td>
+            <span class="product-price-list product-price-active">normal</span>
+        </td>
+        <td>
+            <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline, $this->session()->currency)->getFullCharge(), $this->session()->currency, null, 'de_DE'); ?></span>
+        </td>
+    </tr>
+</table>
+<?php else: ?>
+<table class='table table-notbordered price-table'>
+    <tr>
+        <td>
+            <span class="product-price-list product-price-active"><?php echo $this->currencyFormat($product->getProductPrice(null, $deadline, $this->session()->currency)->getFullCharge(), $this->session()->currency, null, 'de_DE'); ?></span>
+        </td>
+    </tr>
+</table>
+<?php endif; ?>

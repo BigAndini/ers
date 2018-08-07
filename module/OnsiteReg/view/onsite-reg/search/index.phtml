@@ -1,0 +1,79 @@
+<?php
+$displayLimit = 50;
+$resultsNum = count($results);
+
+$statusColors = [
+    'paid' => 'success',
+    'unpaid' => 'danger',
+    'mixed' => 'warning',
+    'shipped' => 'primary',
+];
+$statusIcons = [
+    'paid' => 'fa-check',
+    'shipped' => 'fa-barcode',
+];
+
+
+$this->headTitle("Search");
+?>
+
+<?php echo $this->partial('partial/search-box'); ?>
+
+<?php if ($query !== NULL): ?>
+    <h4>Search results for "<?php echo $this->escapeHtml($query); ?>" (<?php echo ($resultsNum > $displayLimit ? $displayLimit . ' of ' . $resultsNum : $resultsNum); ?>)</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>codes</th>
+                <th>participant</th>
+                <th>status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            foreach(array_slice($results, 0, $displayLimit) as $package):
+                $packageStatus = $package->getStatusWithShipped();
+                if($packageStatus === 'ordered')
+                    $packageStatus = 'unpaid';
+                elseif($packageStatus === 'undefined')
+                    $packageStatus = 'mixed';
+                
+                $statusCol = isset($statusColors[$packageStatus]) ? $statusColors[$packageStatus] : 'danger';
+                $statusIcon = isset($statusIcons[$packageStatus]) ? $statusIcons[$packageStatus] : 'fa-warning';
+                
+                $bd = $package->getParticipant()->getBirthday();
+            ?>
+                <tr>
+                    <td>
+                        order: <?php echo $this->escapeHtml($package->getOrder()->getCode()->getValue()); ?><br />
+                        package: <?php echo $this->escapeHtml($package->getCode()->getValue()); ?>
+                    </td>
+                    <td>
+                        <p>
+                            <span class="text-primary"><?php echo $this->escapeHtml($package->getParticipant()->getFullName()); ?></span>
+                            <?php if($bd){ echo ' (' . $bd->format('d.m.Y') . ')'; } ?>
+                        </p>
+                        <span style="color: #333;"><?php echo $this->escapeHtml($package->getParticipant()->getEmail() ?: ''); ?></span>
+                    </td>
+                    <td>
+                        <p class="h4 text-<?php echo $statusCol; ?>">
+                            <i class="fa <?php echo $statusIcon; ?>"></i>
+                            <?php echo $this->escapeHtml($packageStatus ?: 'unknown'); ?>
+                        </p>
+                    </td>
+                    <td class="text-right"><a class="btn btn-lg btn-default" href="<?php echo $this->url('onsite/package', array('action' => 'detail', 'id' => $package->getId())); ?>">Register</a></td>
+                </tr>
+            <?php endforeach;
+            if(empty($results)): ?>
+            <tr>
+                <td colspan="5" class="text-center gray">No packages found</td>
+            </tr>
+            <?php elseif($resultsNum > $displayLimit): ?>
+            <tr>
+                <td colspan="5" class="text-center gray h4"><?php echo ($resultsNum - $displayLimit); ?> more results. Please narrow down your search.</td>
+            </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+<?php endif; ?>

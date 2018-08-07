@@ -1,0 +1,26 @@
+<?php
+
+$title = 'Send E-Ticket for Order '.$order->getCode()->getValue();
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<p>Do you really want to send out e-tickets  for the order <?php echo $order->getCode()->getValue(); ?>?</p>
+<ul>
+<?php foreach($order->getPackages() as $package):
+    $participant = $package->getParticipant(); ?>
+    <li><?php echo $participant->getFirstname().' '.$participant->getSurname(); ?></li>
+<?php endforeach; ?>
+</ul>
+<?php
+$url = $this->url('admin/order', array(
+    'action' => 'send-etickets',
+    'id'     => $order->getId(),
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+<div>
+    <input type="hidden" name="id" value="<?php echo (int) $order->getId(); ?>" />
+    <input type="submit" name="del" value="Yes" class="btn btn-warning" id="submitbutton" />
+    <a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+</div>
+</form>

@@ -1,0 +1,51 @@
+<?php
+
+$title = $this->translate('Add Person');
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('participant', array('action' => 'add')));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+?>
+<div class="row">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-md-6">
+                <?php echo $this->formRow($form->get('firstname')); ?>
+            </div>
+            <div class="col-md-6">
+                <?php echo $this->formRow($form->get('surname')); ?>
+            </div>
+        </div>
+        <?php echo $this->formRow($form->get('birthday'));
+        echo $this->formRow($form->get('email'));
+        echo $this->formRow($form->get('newsletter'));
+        echo $this->formRow($form->get('Country_id')); ?>
+    </div>
+    <div class="col-md-5">
+        <p><strong><?php echo $this->translate('Note for personal data:'); ?></strong> <?php echo $this->translate('Please enter your  first name, surname and 
+            date of birth like they appear on your passport ID card (they will 
+            be checked at EJC onsite registration to validate that this E-Ticket 
+            belongs to you).'); ?></p>
+        <p><strong><?php echo $this->translate('Note for email address:'); ?></strong> <?php echo $this->translate('If you enter the email 
+            address of this person, they will receive a copy of their 
+            E-Ticket.'); ?></p>
+        <p><strong><?php echo $this->translate('Note for the buyer:'); ?></strong> <?php echo $this->translate('The person who performs the 
+            purchase will automatically receive all ordered E-Tickets. For this 
+            reason, they have to enter their email address.'); ?></p>
+        <p><strong><?php echo $this->translate('Note for edit details:'); ?></strong> <?php echo $this->translate('You can edit this person\'s 
+            details at any time by clicking My Persons in the menu'); ?></p>
+    </div>
+    <div class="col-md-3"></div>
+</div>
+<?php
+echo $this->formHidden($form->get('csrf'));
+echo $this->formSubmit($form->get('submit'));
+?>
+<a href="<?php echo $this->url($breadcrumb->route, $breadcrumb->params, $breadcrumb->options); ?>">Cancel</a>
+<?php
+echo $this->form()->closeTag();

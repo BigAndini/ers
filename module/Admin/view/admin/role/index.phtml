@@ -1,0 +1,38 @@
+<?php
+/* pizza would be really nice */
+
+$title = 'Role Overview';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    
+</p>
+
+<table class="table">
+    <tr>
+        <th>RoleId</th>
+        <th>Parent</th>
+        <th>
+            <a class="btn btn-sm btn-success" href="<?php echo $this->url('admin/role', array('action'=>'add'));?>"><i class="fa fa-plus"></i></a>
+        </th>
+    </tr>
+<?php foreach ($roles as $role) : ?>
+    <tr>
+        <td>
+            <?php echo $role->getRoleId();?>
+        </td>
+        <td>
+            <?php 
+            if($role->getParent() != null) {
+                echo $role->getParent()->getRoleId();
+            }
+            ?>
+        </td>
+        <td>
+            <a class="btn btn-sm btn-default" href="<?php echo $this->url('admin/role', array('action'=>'edit', 'id' => $role->getId()));?>"><i class="fa fa-edit"></i></a>
+            <a class="btn btn-sm btn-danger" href="<?php echo $this->url('admin/role', array('action'=>'delete', 'id' => $role->getId()));?>"><i class="fa fa-trash"></i></a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

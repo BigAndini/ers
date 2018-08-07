@@ -1,0 +1,32 @@
+<?php
+
+if($order == null) :
+$title = $this->translate('Unable to find payment information');
+$this->headTitle($title);
+?>
+<div class="jumbotron">
+    <h1><?php echo $this->escapeHtml($title); ?></h1>
+    <p><?php echo $this->translate('The system was not able to find the according order for this payment info page. With your purchase you got an email with all needed data. Please use the link in there.'); ?></p>
+</div>
+<?php 
+else:
+
+$title = $this->translate('Pay via Bank Transfer');
+$this->headTitle($title);
+?>
+<div class="jumbotron">
+    <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+    <?php echo $this->partial('partial/'.$order->getPaymentType()->getType().'-banktransfer-info.phtml', array('order' => $order)); ?>
+
+    <p><?php echo $this->translate('We\'ve sent this information to your email address:'); ?> <strong><?php echo $order->getBuyer()->getEmail(); ?></strong></p>
+
+    <p>
+        <?php 
+        $orderLink = '<a href="'.$this->url('order', array('action' => 'view', 'hashkey' => $order->getHashKey())).'">'.$this->translate('this link').'</a>';
+        printf($this->translate('You can request this information again, by simply bookmarking %s, or have a look at the email we\'ve sent you.'), $orderLink); ?>
+    </p>
+
+    <p class="text-info"><strong><?php printf($this->translate('Thanks for registering, see you in %s!'), $this->setting('ers.city')); ?></strong></p>
+</div>
+<?php endif;

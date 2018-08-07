@@ -1,0 +1,26 @@
+<?php
+// module/RegistrationSystem/view/registration-system/admin/index.phtml:
+
+$title = 'Country Overview';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+
+<table class="table">
+    <tr>
+        <th>Pos.</th>
+        <th>Name</th>
+        <th>Code</th>
+        <th>&nbsp;</th>
+    </tr>
+<?php foreach ($countries as $country) : ?>
+    <tr>
+        <td><?php echo $country->getPosition(); ?></td>
+        <td><?php echo $country->getName(); ?></td>
+        <td><?php echo $country->getCode(); ?></td>
+        <td>
+            <a class="btn btn-default" href="<?php echo $this->url('admin/country', array('action'=>'edit', 'id' => $country->getId()));?>"><i class="fa fa-edit"></i></a>
+        </td>
+    </tr>
+<?php endforeach; ?>
+</table>

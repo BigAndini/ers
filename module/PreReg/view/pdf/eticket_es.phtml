@@ -1,0 +1,341 @@
+<html>
+    <head>
+        <style type="text/css">
+            * {
+                font-family: sans-serif;
+            }
+            .fa {
+                font-family: fontawesome-webfont;
+            }
+            .clear-both {
+                clear: both;
+            }
+            .small {
+                font-size: 12px;
+            }
+            .very-small {
+                font-size: 10px;
+            }
+            .bluetext {
+                color: #5278cf;
+            }
+            .greytext {
+                color: #888;
+            }
+            .initial-info {
+                width: 40%;
+            }
+            .very-small p {
+                margin: 2px;
+                padding: 0;
+            }
+            .very-small h1 {
+                color: #5278cf;
+                font-size: 32px;
+            }
+            .justify {
+                text-align: justify;
+            }
+            
+            .black {
+                color: #000;
+            }
+            
+            h3, h4 {
+                margin:0;
+                padding:0;
+                color: #85b32a;
+            }
+            table {
+                width: 100%;
+            }
+            .left-field {
+                width: 485px;
+            }
+            .short-description {
+                width: 485px;
+            }
+            .disclaimer {
+                width: 485px;
+            }
+            .agegroup {
+                position: absolute;
+                right: 250px;
+                top: 30px;
+                font-size: 48px;
+                color: #85b32a;
+                font-weight: bold;
+            }
+            .codes {
+                width: 200px;
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                text-align: center;
+                font-size: 100%;
+                border: 1px solid #eee;
+                padding: 10px;
+            }
+            .order {
+                width: 200px;
+                position: absolute;
+                right: 0px;
+                top: 300px;
+                font-size: 100%;
+                border: 1px solid #eee;
+                padding: 10px;
+            }
+            .order-description {
+                padding: 0px;
+                margin: 5px 0 0 0;
+                font-size: 10px;
+            }
+            .order-value {
+                padding: 0px;
+                margin: 0 0 10px 0;
+                font-size: 16px;
+            }
+            .compulsory-control {
+                margin-top:80px;
+            }
+            .cc-option {
+                font-size: 20px;
+                color: #85b32a;
+                width: 30px;
+            }
+            .ticket-heading {
+                margin-left: 20px;
+            }
+            .day-table {
+                font-size: 10px;
+                width: 100%;
+            }
+            .day-table td {
+                text-align: center;
+            }
+            .sign-field {
+                width: 200px;
+                height: 40px;
+                display: block;
+                border-top: 1px solid;
+                margin-top: 35px;
+                padding-top: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="codes">
+            <img src="<?php echo $qrcode; ?>" alt="QR-Code is missing, please regenerate your E-Ticket" /><br />
+            <img src="<?php echo $barcode; ?>" alt="Barcode is missing, please regenerate your E-Ticket" />
+        </div>
+        <h1>
+            <img src="<?php echo getcwd(); ?>/pdf/img/logofinal_black_green2015_300.png" alt="EJC 2015 Bruneck" width="120" />
+            <span class="ticket-heading">E-Ticket</span>
+        </h1>
+        <?php if($agegroup): ?>
+        <div class="agegroup">
+            <span><?php echo $agegroup->getName(); ?></span>
+        </div>
+        <?php endif; ?>
+        <div class="left-field small">
+            <h3>Procedimiento</h3>
+            <?php if($agegroup):
+                switch($agegroup->getName()):
+                    case 'U6':
+                    case 'U16': ?>
+                        <p><strong>Querido responsable del menor, 
+                                imprime</strong> este tique y nunca se lo des a 
+                                una tercera persona, por favor. El (las, los) 
+                                padre(s), madre(s) o tutor(es) debe(n) firmar el 
+                                documento de consentimiento legal y de descargo 
+                                de responsabilidad. <strong>Entrega</strong> 
+                                este tique en el mostrador de inscripción de la 
+                                EJC. Si tú no eres el padre (madre) o tutor(a) 
+                                legal, entonces necesitaremos una 
+                                <strong>fotocopia del documento de identidad de 
+                                    su(s) padre(s), madre(s) o tutor(es) 
+                                    legal(es)</strong>.</p>
+                        <?php break;
+                    case 'U18': ?>
+                        <p><strong>Imprime</strong> este tique y nunca se lo des 
+                            a una tercera persona. <strong>Tu(s) padre(s), 
+                                madre(s) o tutor(es) debe(n) firmar el documento 
+                                de consentimiento legal. Entrega</strong> este 
+                                tique en el mostrador de inscripción de la EJC. 
+                                Si asistes por tus propios medios, entonces 
+                                necesitaremos una <strong>fotocopia del 
+                                    documento de identidad de tu(s) padre(s), 
+                                    madre(s) o tutor(es) legal(es)</strong>.</p>
+                        <?php break;
+                endswitch; 
+            else: ?>
+            <p><strong>Imprime</strong> este tique y nunca se lo des a una 
+                tercera persona. <strong>Firma</strong> la cláusula de descargo 
+                de responsabilidad. <strong>Entrega</strong> este tique, 
+                mostrando tu <strong>documento de identidad válido</strong> 
+                (D.N.I. o pasaporte), en el mostrador de inscripción de la 
+                EJC.</p>
+            <?php endif; ?>
+        </div>
+        <div class="left-field small">
+            <h3>Descargo de responsabilidad</h3>
+            <p>Durante la EJC, el anfitrión, sus representantes o ayudantes en 
+                ningún caso serán responsables de accidentes, lesiones o 
+                cualquier daño, excepto en crasa negligencia o acto deliberado 
+                de infracción del deber por parte del anfitrión, sus 
+                representantes o ayudantes. Los participantes asisten por su 
+                propia voluntad y riesgo; son responsables de su propia salud y 
+                velarán por ello. Remarcamos especialmente que éste se trata de 
+                un evento deportivo donde artistas circenses profesionales 
+                entrenarán con aficionados de todos los niveles. Habrá talleres 
+                de todo tipo de disciplinas circenses donde todos podrán 
+                participar (pero habrá talleres no aptos para cualquier nivel); 
+                los materiales y aparatos a los que se tendrá acceso será 
+                gracias a que el anfitrión o participantes simplemente los 
+                prestan. Es tu responsabilidad, y nunca del anfitrión, 
+                profesores de los talleres, sus representantes o asistentes, 
+                estar seguro en todo momento de que tu salud y condición física 
+                son los apropiados para participar en el taller en cuestión y 
+                que usarás los materiales y aparatos antes mencionados, de forma 
+                segura.</p>
+        </div>
+        <?php 
+        $variables = array(
+            'package' => $package,
+            'products' => $products,
+            'items' => $items,
+        );
+        echo $this->partial('partial/eticket-package-overview.phtml', $variables); 
+        ?>
+        <div class="left-field small">
+            <?php if($agegroup):
+                switch($agegroup->getName()): 
+                    case 'U6':
+                    case 'U16': ?>
+                        <h3>Consentimiento legal: tu(s) padre(s), madre(s) o 
+                            tutor(es) legal(es) debe(n) firmar la opción A o la 
+                            B</h3>
+                        <table>
+                            <tr>
+                                <td><span class="cc-option">A</span></td>
+                                <td colspan="2">
+                                    <p>Por la presente estoy conforme con que mi 
+                                        (nuestros/a) hijo(a) (como se nombra a 
+                                        la derecha) participe en la "EJC 2015 
+                                        Brunico" desde el 1 de agosto de 2015 
+                                        hasta el 9 de agosto de 2015. Asistiré 
+                                        (asistiremos) a la EJC y por lo tanto 
+                                        realizaré (realizaremos) la supervisión 
+                                        pertinente. Acepto (Aceptamos) el 
+                                        consentimiento legal.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><span class="sign-field">place and date</span></td>
+                                <td><span class="sign-field">signature of legal guardian</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"><span class="cc-option">OR</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="cc-option">B</span></td>
+                                <td colspan="2">
+                                    <p>Por la presente estoy conforme con que mi 
+                                        hijo(a) (como se nombra a la derecha) 
+                                        participe en la "EJC 2015 Brunico" desde 
+                                        el 1 de agosto de 2015 hasta el 9 de 
+                                        agosto de 2015. No asistiré 
+                                        (asistiremos) a la EJC. Adjunto 
+                                        (Adjuntamos) con el tique una 
+                                        fotocopia de mi (nuestro) documento(s) 
+                                        de identidad. Sin ambos documentos, la 
+                                        participación de mi (nuestro/a) hijo(a) 
+                                        a la EJC es imposible. Acepto 
+                                        (Aceptamos) el consentimiento legal.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><span class="sign-field">name of chaperon</span></td>
+                                <td><span class="sign-field">chaperon's date of birth</span></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><span class="sign-field">place and date</span></td>
+                                <td><span class="sign-field">signature of legal guardian</span></td>
+                            </tr>
+                        </table>
+                        <?php break;
+                    case 'U18': ?>
+                        <h3>Consentimiento legal: tu(s) padre(s), madre(s) o 
+                            tutor(es) legal(es) debe(n) firmar la opción A o la 
+                            B</h3>
+                        <table>
+                            <tr>
+                                <td><span class="cc-option">A</span></td>
+                                <td colspan="2">
+                                    <p>Por la presente estoy conforme con que mi 
+                                        (nuestros/a) hijo(a) (como se nombra a 
+                                        la derecha) participará en la "EJC 2015 
+                                        Brunico" desde el 1 de agosto de 2015 
+                                        hasta el 9 de agosto de 2015. Asistiré 
+                                        (Asistiremos) a la EJC y por lo tanto 
+                                        realizaré (realizaremos) la supervisión 
+                                        pertinente. Acepto (Aceptamos) el 
+                                        consentimiento legal.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><span class="sign-field">place and date</span></td>
+                                <td><span class="sign-field">signature of legal guardian</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"><span class="cc-option">OR</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="cc-option">B</span></td>
+                                <td colspan="2">
+                                    <p>Por la presente estoy conforme con que mi 
+                                        hijo(a) (como se nombra a la derecha) 
+                                        participará en la "EJC 2015 Brunico" 
+                                        desde el 1 de agosto de 2015 hasta el 9 
+                                        de agosto de 2015. Confio (confiamos) en 
+                                        el siguiente supervisor(a). Tengo 
+                                        (tenemos) la garantía de que este(a) 
+                                        supervisor(a) es mayor de edad y posee 
+                                        las habilidades requeridas para cuidar a 
+                                        mi (nuestro) hijo(a). El anfitrión no lo 
+                                        verificará. Adjunto (Adjuntamos) con el 
+                                        tique una fotocopia de mi (nuestro) 
+                                        documento(s) de identidad. Sin ambos 
+                                        documentos, la participación de mi 
+                                        (nuestro/a) hijo(a) a la EJC es 
+                                        imposible. Acepto (Aceptamos) el 
+                                        consentimiento legal.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><span class="sign-field">place and date</span></td>
+                                <td><span class="sign-field">signature of legal guardian</span></td>
+                            </tr>
+                        </table>
+                        <?php break;
+                    default:
+                        echo $agegroup->getName();
+                        break;
+                endswitch; 
+            else: ?>
+                <table>
+                    <tr>
+                        <td><span class="sign-field">place and date</span></td>
+                        <td><span class="sign-field">signature</span></td>
+                    </tr>
+                </table>
+            <?php endif;?>
+            
+        </div>
+    </body>
+</html>

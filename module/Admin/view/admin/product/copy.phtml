@@ -1,0 +1,37 @@
+<?php
+
+$title = 'Copy Product';
+$this->headTitle($title);
+?>
+<h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url(
+    'admin/product',
+    array(
+        'action' => 'copy',
+        'id'     => $this->id,
+    )
+));
+#$form->setAttribute('action', $this->url('admin/product', array('action' => 'copy')));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+?>
+<input type="hidden" name="id" value="0" />
+<?php
+echo $this->formRow($form->get('position'));
+echo $this->formRow($form->get('visible'));
+echo $this->formRow($form->get('calculated_as_subproduct'));
+echo $this->formRow($form->get('visible_on_eticket'));
+echo $this->formRow($form->get('name'));
+echo $this->formRow($form->get('short_description'));
+echo $this->formRow($form->get('long_description'));
+echo $this->formRow($form->get('personalized'));
+echo $this->formRow($form->get('tax_id'));
+echo $this->formRow($form->get('ticket_template'));
+echo $this->formSubmit($form->get('submit'));
+?>
+<a href="<?php echo $this->url('admin/product');?>">Cancel</a>
+<?php
+echo $this->form()->closeTag();

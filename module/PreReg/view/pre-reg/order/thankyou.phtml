@@ -1,0 +1,21 @@
+<?php
+
+$title = $this->translate('Thank you');
+$this->headTitle($title);
+?>
+
+<div class="jumbotron">
+    <h1><span class="green"><?php echo $this->escapeHtml($title); ?></span></h1>
+    
+    <p><?php echo sprintf($this->translate('...for your purchase and with that for your support to make the %s possible.'), $this->setting('ers.name_short')); ?></p>
+    
+    <p><strong><?php echo $this->translate('Note:'); ?></strong> <?php echo sprintf($this->translate('To receive the email with your E-Tickets correctly 
+        it\'s important that you add the email address %s to your 
+        address book.'), $this->setting('ers.info_mail', 'email')); ?></p>
+
+    <p><?php echo sprintf($this->translate('We sent an order confirmation mail to your email address. If you did not 
+        receive this email, please have a look at your spam folder. If it\'s not 
+        there contact us at %s.'), $this->setting('ers.info_mail', 'email')); ?></p>
+
+    <p><?php echo $this->translate('In this email you will find further information of your purchase.'); ?></p>
+</div>
