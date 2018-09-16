@@ -33,7 +33,12 @@ class AgegroupController extends AbstractActionController {
         $agegroup = new Entity\Agegroup();
         $config = $this->getServiceLocator()
                 ->get('Config');
-        $agegroup->setAgegroup($settingService->get('ers.start', 'date'))->modify('-8 years');
+		$param = [
+			'fromFormat' => 'Y-m-d',
+			'toFormat' => 'd.m.Y'
+		];
+        #$agegroup->setAgegroup($settingService->get('ers.start', 'date', $param));
+		#$agegroup->getAgegroup()->modify('-8 years');
         
         $form = new Form\Agegroup();
         $form->bind($agegroup);

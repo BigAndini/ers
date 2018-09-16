@@ -70,7 +70,7 @@ class ProductPackageController extends AbstractActionController {
                 ->findOneBy(array('id' => $productId));
 
         $form->get('sub_product_id')->setValueOptions($this->getProductOptions($thisProduct));
-        $form->get('Product_id')->setValue($productId);
+        $form->get('product_id')->setValue($productId);
         
         $request = $this->getRequest();
         if ($request->isPost()) {

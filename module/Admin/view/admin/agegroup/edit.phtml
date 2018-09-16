@@ -5,7 +5,7 @@ $title = 'Edit Agegroup';
 $this->headTitle($title);
 ?>
 <h1 class="page-header"><?php echo $this->escapeHtml($title); ?></h1>
-<p>EJC takes place: <?php echo $this->setting('ers.start', 'type')->format('d.m.Y'); ?> - <?php echo $this->setting('ers.end', 'date')->format('d.m.Y'); ?></p>
+<p>EJC takes place: <?php echo $this->setting('ers.start', 'type'); ?> - <?php echo $this->setting('ers.end', 'date'); ?></p>
 <?php
 $form = $this->form;
 $form->setAttribute('action', $this->url(
